@@ -4,7 +4,6 @@ package config
 
 import (
 	"flag"
-	"net/url"
 
 	"go.redsock.ru/rerrors"
 	"go.vervstack.ru/matreshka/pkg/matreshka"
@@ -17,7 +16,6 @@ type Config struct {
 
 	Environment EnvironmentConfig
 	Overrides   matreshka.ServiceDiscovery
-	CouchDB     CouchDB
 
 	MatreshkaConfig matreshka.AppConfig
 }
@@ -77,27 +75,5 @@ func Load(configsPaths ...string) (Config, error) {
 		return defaultConfig, rerrors.Wrap(err, "error parsing environment config")
 	}
 
-	defaultConfig.CouchDB, err = parseCouchDBConfig(defaultConfig.Environment.CouchdbUrl)
-	if err != nil {
-		return defaultConfig, rerrors.Wrap(err, "error parsing couchdb config")
-	}
-
 	return defaultConfig, nil
-}
-
-func parseCouchDBConfig(rawURL string) (CouchDB, error) {
-	u, err := url.Parse(rawURL)
-	if err != nil {
-		return CouchDB{}, rerrors.Wrap(err, "invalid couchdb url")
-	}
-
-	var c CouchDB
-	if u.User != nil {
-		c.User = u.User.Username()
-		c.Password, _ = u.User.Password()
-		u.User = nil
-	}
-	c.BaseURL = u.String()
-
-	return c, nil
 }

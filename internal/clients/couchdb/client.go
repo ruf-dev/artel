@@ -7,8 +7,6 @@ import (
 	"net/http"
 
 	"go.redsock.ru/rerrors"
-
-	"github.com/ruf-dev/artel/internal/config"
 )
 
 type Client struct {
@@ -18,7 +16,7 @@ type Client struct {
 	password string
 }
 
-func New(cfg config.CouchDB) *Client {
+func New(cfg Config) *Client {
 	return &Client{
 		baseURL:  cfg.BaseURL,
 		http:     &http.Client{},
@@ -48,7 +46,7 @@ func (c *Client) CreateDatabase(ctx context.Context, name string) error {
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return rerrors.New(fmt.Sprintf("unexpected status code %d: %s", resp.StatusCode, string(body)))
+		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
 	}
 
 	return nil
@@ -75,7 +73,7 @@ func (c *Client) DeleteDatabase(ctx context.Context, name string) error {
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return rerrors.New(fmt.Sprintf("unexpected status code %d: %s", resp.StatusCode, string(body)))
+		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
 	}
 
 	return nil

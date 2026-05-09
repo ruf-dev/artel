@@ -10,8 +10,8 @@ import (
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox/closer"
 
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/service"
-	"github.com/ruf-dev/artel/internal/storage/couchdb"
 	"github.com/ruf-dev/artel/internal/transport/http"
 )
 
@@ -20,9 +20,14 @@ type Custom struct {
 }
 
 func (c *Custom) Init(a *App) error {
-	couchdbClient := couchdb.New(a.Cfg.CouchDB)
+	couchCfg, err := couchdb.NewConfig()
+	if err != nil {
+		return rerrors.Wrap(err, "error loading couchdb config")
+	}
 
-	vaultService := service.NewVaultService(couchdbClient)
+	couchClient := couchdb.New(couchCfg)
+
+	vaultService := service.NewVaultService(couchClient)
 
 	httpServer := http.New(":8080", vaultService)
 	c.httpServer = httpServer

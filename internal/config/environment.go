@@ -3,9 +3,8 @@
 package config
 
 type EnvironmentConfig struct {
-	LogLevel   string
-	LogFormat  string
-	CouchdbUrl string
+	LogLevel  string
+	LogFormat string
 }
 
 const (

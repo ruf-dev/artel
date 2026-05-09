@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/ruf-dev/artel/internal/storage/couchdb"
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 )
 
 type VaultService interface {
