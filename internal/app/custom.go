@@ -42,7 +42,7 @@ func (c *Custom) Init(a *App) error {
 func (c *Custom) Start(ctx context.Context) error {
 	log.Info().Msg("starting HTTP server")
 
-	err := c.httpServer.Start(ctx)
+	err := c.httpServer.Start()
 	if err != nil {
 		return rerrors.Wrap(err, "error starting HTTP server")
 	}
