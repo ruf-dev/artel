@@ -1,8 +1,7 @@
 package config
 
 type CouchDB struct {
-	Host     string
-	Port     int
+	BaseURL  string
 	User     string
 	Password string
 }

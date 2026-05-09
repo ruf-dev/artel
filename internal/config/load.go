@@ -4,6 +4,7 @@ package config
 
 import (
 	"flag"
+	"net/url"
 
 	"go.redsock.ru/rerrors"
 	"go.vervstack.ru/matreshka/pkg/matreshka"
@@ -76,7 +77,7 @@ func Load(configsPaths ...string) (Config, error) {
 		return defaultConfig, rerrors.Wrap(err, "error parsing environment config")
 	}
 
-	defaultConfig.CouchDB, err = parseCouchDBConfig(defaultConfig.MatreshkaConfig)
+	defaultConfig.CouchDB, err = parseCouchDBConfig(defaultConfig.Environment.CouchdbUrl)
 	if err != nil {
 		return defaultConfig, rerrors.Wrap(err, "error parsing couchdb config")
 	}
@@ -84,18 +85,19 @@ func Load(configsPaths ...string) (Config, error) {
 	return defaultConfig, nil
 }
 
-func parseCouchDBConfig(cfg matreshka.AppConfig) (CouchDB, error) {
-	var couchdb CouchDB
-
-	for _, ds := range cfg.DataSources {
-		if ds.Name == "couchdb" {
-			couchdb.Host = ds.Host
-			couchdb.Port = ds.Port
-			couchdb.User = ds.User
-			couchdb.Password = ds.Password
-			return couchdb, nil
-		}
+func parseCouchDBConfig(rawURL string) (CouchDB, error) {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return CouchDB{}, rerrors.Wrap(err, "invalid couchdb url")
 	}
 
-	return couchdb, rerrors.New("couchdb data source not found in config")
+	var c CouchDB
+	if u.User != nil {
+		c.User = u.User.Username()
+		c.Password, _ = u.User.Password()
+		u.User = nil
+	}
+	c.BaseURL = u.String()
+
+	return c, nil
 }

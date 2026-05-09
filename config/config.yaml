@@ -11,3 +11,6 @@ environment:
       type: string
       enum: [Trace, Debug, Info, Warn, Error, Fatal, Panic]
       value: Info
+    - name: couchdb_url
+      type: string
+      value: ""

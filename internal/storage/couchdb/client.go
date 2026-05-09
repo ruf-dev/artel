@@ -12,16 +12,15 @@ import (
 )
 
 type Client struct {
-	baseURL string
-	http    *http.Client
-	user    string
+	baseURL  string
+	http     *http.Client
+	user     string
 	password string
 }
 
 func New(cfg config.CouchDB) *Client {
-	baseURL := fmt.Sprintf("http://%s:%d", cfg.Host, cfg.Port)
 	return &Client{
-		baseURL:  baseURL,
+		baseURL:  cfg.BaseURL,
 		http:     &http.Client{},
 		user:     cfg.User,
 		password: cfg.Password,

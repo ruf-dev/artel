@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/service"
 )
