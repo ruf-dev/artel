@@ -1,0 +1,18 @@
+services:
+  couchdb:
+    image: apache/couchdb:3
+    container_name: couchdb
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: admin
+      COUCHDB_NODENAME: nonode@nohost
+    ports:
+      - "15984:5984"
+    volumes:
+      - ./data/couch:/opt/couchdb/data
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:5984/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s

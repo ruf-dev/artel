@@ -10,6 +10,7 @@
 
 # Configs
 config/dev.yaml
+CLAUDE.local.md
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -17,4 +18,4 @@ config/dev.yaml
 # vendor/
 .idea
 proto_deps
-
+data/
