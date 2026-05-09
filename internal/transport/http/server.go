@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"go.redsock.ru/rerrors"
@@ -26,14 +27,14 @@ func New(addr string, vs service.VaultService) *Server {
 	}
 }
 
-func (s *Server) Start(ctx context.Context) error {
+func (s *Server) Start() error {
 	s.server = &http.Server{
 		Addr:    s.addr,
 		Handler: s.router,
 	}
 
 	err := s.server.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return rerrors.Wrap(err, "failed to start server")
 	}
 

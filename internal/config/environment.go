@@ -3,9 +3,14 @@
 package config
 
 type EnvironmentConfig struct {
-	LogLevel  string
 	LogFormat string
+	LogLevel  string
 }
+
+const (
+	LogFormat_Json = "JSON"
+	LogFormat_Text = "TEXT"
+)
 
 const (
 	LogLevel_Trace = "Trace"
@@ -15,9 +20,4 @@ const (
 	LogLevel_Error = "Error"
 	LogLevel_Fatal = "Fatal"
 	LogLevel_Panic = "Panic"
-)
-
-const (
-	LogFormat_Json = "JSON"
-	LogFormat_Text = "TEXT"
 )

@@ -11,7 +11,7 @@ import (
 	"go.redsock.ru/toolbox/closer"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	"github.com/ruf-dev/artel/internal/service"
+	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport/http"
 )
 
@@ -27,9 +27,9 @@ func (c *Custom) Init(a *App) error {
 
 	couchClient := couchdb.New(couchCfg)
 
-	vaultService := service.NewVaultService(couchClient)
+	services := svcv1.New(couchClient)
 
-	httpServer := http.New(":8080", vaultService)
+	httpServer := http.New(":8080", services.Vault)
 	c.httpServer = httpServer
 
 	closer.Add(c.Stop)
