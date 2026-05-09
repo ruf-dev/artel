@@ -5,23 +5,54 @@ package app
 
 import (
 	"context"
+
+	"github.com/rs/zerolog/log"
+	"go.redsock.ru/rerrors"
+	"go.redsock.ru/toolbox/closer"
+
+	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/storage/couchdb"
+	"github.com/ruf-dev/artel/internal/transport/http"
 )
 
-type Custom struct{}
+type Custom struct {
+	httpServer *http.Server
+}
 
 func (c *Custom) Init(a *App) error {
-	// Repository, Service logic, transport registration happens here
+	couchdbClient := couchdb.New(a.Cfg.CouchDB)
+
+	vaultService := service.NewVaultService(couchdbClient)
+
+	httpServer := http.New(":8080", vaultService)
+	c.httpServer = httpServer
+
+	closer.Add(c.Stop)
+
 	return nil
 }
 
 // Start - launch custom handlers
 // Even if you won't use it keep it for proper work
 func (c *Custom) Start(ctx context.Context) error {
+	log.Info().Msg("starting HTTP server")
+
+	err := c.httpServer.Start(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "error starting HTTP server")
+	}
+
 	return nil
 }
 
 // Stop - gracefully stop custom handlers
 // Even if you won't use it keep it for proper work
 func (c *Custom) Stop() error {
+	if c.httpServer != nil {
+		err := c.httpServer.Stop()
+		if err != nil {
+			return rerrors.Wrap(err, "error stopping HTTP server")
+		}
+	}
 	return nil
 }

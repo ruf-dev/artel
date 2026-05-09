@@ -16,6 +16,7 @@ type Config struct {
 
 	Environment EnvironmentConfig
 	Overrides   matreshka.ServiceDiscovery
+	CouchDB     CouchDB
 
 	MatreshkaConfig matreshka.AppConfig
 }
@@ -75,5 +76,26 @@ func Load(configsPaths ...string) (Config, error) {
 		return defaultConfig, rerrors.Wrap(err, "error parsing environment config")
 	}
 
+	defaultConfig.CouchDB, err = parseCouchDBConfig(defaultConfig.MatreshkaConfig)
+	if err != nil {
+		return defaultConfig, rerrors.Wrap(err, "error parsing couchdb config")
+	}
+
 	return defaultConfig, nil
+}
+
+func parseCouchDBConfig(cfg matreshka.AppConfig) (CouchDB, error) {
+	var couchdb CouchDB
+
+	for _, ds := range cfg.DataSources {
+		if ds.Name == "couchdb" {
+			couchdb.Host = ds.Host
+			couchdb.Port = ds.Port
+			couchdb.User = ds.User
+			couchdb.Password = ds.Password
+			return couchdb, nil
+		}
+	}
+
+	return couchdb, rerrors.New("couchdb data source not found in config")
 }
