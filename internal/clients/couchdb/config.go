@@ -2,7 +2,6 @@ package couchdb
 
 import (
 	"net/url"
-	"os"
 
 	"go.redsock.ru/rerrors"
 )
@@ -13,10 +12,9 @@ type Config struct {
 	Password string
 }
 
-func NewConfig() (Config, error) {
-	raw := os.Getenv("COUCHDB_URL")
+func NewConfig(raw string) (Config, error) {
 	if raw == "" {
-		return Config{}, rerrors.New("COUCHDB_URL is not set")
+		return Config{}, rerrors.New("couchdb_url is not set")
 	}
 
 	u, err := url.Parse(raw)

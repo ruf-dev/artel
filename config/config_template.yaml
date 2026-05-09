@@ -2,6 +2,15 @@ app_info:
     name: github.com/ruf-dev/artel
     version: v0.0.1
     startup_duration: 10s
+data_sources:
+    - resource_name: postgres
+      migrations_folder: ./migrations
+      host: localhost
+      port: 5432
+      user: artel
+      pwd: ""
+      name: artel
+      ssl_mode: ""
 environment:
     - name: couchdb_url
       type: string

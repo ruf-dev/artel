@@ -56,6 +56,8 @@ Env vars parsed into `internal/config/environment.go` (`EnvironmentConfig`). Dat
 
 The `-config <path>` flag overrides the config file at runtime.
 
+**Adding a new env variable**: edit `config/config.yaml` (add the entry under `environment:`), then run `rscli-dev project tidy`. This regenerates `internal/config/environment.go` and the new field appears in `EnvironmentConfig`. Never edit `environment.go` by hand.
+
 ### Planned Layers
 
 ```
@@ -63,9 +65,24 @@ cmd/service/main.go
   → internal/app/custom.go (Init/Start/Stop)
     → internal/transport/   (HTTP/gRPC handlers)
     → internal/service/     (business logic)
-    → internal/storage/     (CouchDB client, provisioning)
+    → internal/clients/     (external service clients, e.g. CouchDB)
 pkg/client/ArtelUI/         (React UI, built with Bun)
 ```
+
+### Service Layer Layout
+
+Interfaces live in `internal/service/interfaces.go` (package `service`). Implementations live under `internal/service/v1/`:
+
+```
+internal/service/
+  interfaces.go          ← all service interfaces, package service
+  v1/
+    impl.go              ← Services struct (container for all v1 implementations)
+    vault/
+      vault.go           ← VaultService implementation
+```
+
+`v1.Services` is constructed in `custom.go` and its fields (e.g. `services.Vault`) are passed to transports. Transport handlers accept interfaces from the `service` package, never concrete v1 types.
 
 ### Key Dependencies
 

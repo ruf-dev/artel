@@ -20,7 +20,7 @@ type Custom struct {
 }
 
 func (c *Custom) Init(a *App) error {
-	couchCfg, err := couchdb.NewConfig()
+	couchCfg, err := couchdb.NewConfig(a.Cfg.Environment.CouchdbURL)
 	if err != nil {
 		return rerrors.Wrap(err, "error loading couchdb config")
 	}

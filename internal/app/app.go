@@ -4,6 +4,7 @@ package app
 
 import (
 	"context"
+	"database/sql"
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox"
@@ -17,6 +18,8 @@ type App struct {
 	Ctx  context.Context
 	Stop func()
 	Cfg  config.Config
+	/* Data source connection */
+	Postgres *sql.DB
 
 	Custom Custom
 }
@@ -27,6 +30,11 @@ func New() (app App, err error) {
 	err = app.InitConfig()
 	if err != nil {
 		return App{}, rerrors.Wrap(err, "error initializing config")
+	}
+
+	err = app.InitDataSources()
+	if err != nil {
+		return App{}, rerrors.Wrap(err, "error during data sources initialization")
 	}
 
 	err = app.Custom.Init(&app)
