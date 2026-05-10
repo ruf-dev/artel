@@ -10,11 +10,13 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 
-	"github.com/ruf-dev/artel/internal/api/server/artel_api_impl"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
+	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport"
+	"github.com/ruf-dev/artel/internal/transport/users_api"
+	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
 
 type Custom struct {
@@ -43,12 +45,16 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error creating server manager")
 	}
 
-	vaultsImpl := artel_api_impl.NewVaultsImpl(services.Vault)
-	usersImpl := artel_api_impl.NewUsersImpl(services.User)
+	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
+	usersImpl := users_api.NewUsersImpl(services.User)
 
 	c.Transport.AddImplementation(vaultsImpl, usersImpl)
 
-	c.Transport.AddServerOption()
+	c.Transport.AddServerOption(
+		middleware.PanicInterceptor(),
+		middleware.LogInterceptor(),
+		//middleware.GrpcAuthInterceptor(services),
+	)
 	return nil
 }
 

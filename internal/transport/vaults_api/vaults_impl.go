@@ -1,4 +1,4 @@
-package artel_api_impl
+package vaults_api
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 
-	artel_api "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
 )
 
