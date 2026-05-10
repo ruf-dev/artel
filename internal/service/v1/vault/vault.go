@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
@@ -39,23 +38,23 @@ func (s *Service) CreateVault(ctx context.Context, name string) error {
 		return rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	couchClient, err := s.pool.Get(ctx, vault.Uuid)
-	if err != nil {
-		return rerrors.Wrap(err, "get couchdb client from pool")
-	}
-
-	err := couchClient.CreateDatabase(ctx, couchDBName)
-	if err != nil {
-		return rerrors.Wrap(err, "create couchdb database")
-	}
-
-	vault, err := s.vaultsRepo.Create(ctx, uuid.Nil, name, couchDBName)
+	v, err := s.vaultsRepo.Create(ctx, uc.UserUuid, name, couchDBName)
 	if err != nil {
 		return rerrors.Wrap(err, "create vault metadata")
 	}
 
-	cfg := s.couchClient.Config()
-	err = s.couchCredsRepo.Store(ctx, vault.Uuid, cfg.BaseURL, cfg.User, []byte(cfg.Password))
+	couchClient, err := s.pool.GetDefault(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "get default couchdb client")
+	}
+
+	err = couchClient.CreateDatabase(ctx, couchDBName)
+	if err != nil {
+		return rerrors.Wrap(err, "create couchdb database")
+	}
+
+	cfg := couchClient.Config()
+	err = s.couchCredsRepo.Store(ctx, v.Uuid, cfg.BaseURL, cfg.User, []byte(cfg.Password))
 	if err != nil {
 		return rerrors.Wrap(err, "store couch credentials")
 	}

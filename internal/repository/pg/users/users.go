@@ -6,61 +6,65 @@ import (
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
 type UsersRepo struct {
-	db sqldb.DB
+	q *artel_q.Queries
 }
 
-func New(db sqldb.DB) *UsersRepo {
-	return &UsersRepo{db: db}
+func New(q *artel_q.Queries) *UsersRepo {
+	return &UsersRepo{q: q}
 }
 
 func (r *UsersRepo) Create(ctx context.Context, email string) (domain.User, error) {
-	query := `INSERT INTO users (email) VALUES ($1) RETURNING id, email, created_at, updated_at`
-
-	var u domain.User
-	row := r.db.QueryRowContext(ctx, query, email)
-	err := row.Scan(&u.Uuid, &u.Email, &u.CreatedAt, &u.UpdatedAt)
+	row, err := r.q.CreateUser(ctx, email)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "error creating user")
 	}
 
+	u := domain.User{
+		Uuid:      row.ID,
+		Email:     row.Email,
+		CreatedAt: row.CreatedAt,
+		UpdatedAt: row.UpdatedAt,
+	}
 	return u, nil
 }
 
 func (r *UsersRepo) GetByID(ctx context.Context, id uuid.UUID) (domain.User, error) {
-	query := `SELECT id, email, created_at, updated_at FROM users WHERE id = $1`
-
-	var u domain.User
-	row := r.db.QueryRowContext(ctx, query, id)
-	err := row.Scan(&u.Uuid, &u.Email, &u.CreatedAt, &u.UpdatedAt)
+	row, err := r.q.GetUserByID(ctx, id)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "error getting user by id")
 	}
 
+	u := domain.User{
+		Uuid:      row.ID,
+		Email:     row.Email,
+		CreatedAt: row.CreatedAt,
+		UpdatedAt: row.UpdatedAt,
+	}
 	return u, nil
 }
 
 func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, error) {
-	query := `SELECT id, email, created_at, updated_at FROM users WHERE email = $1`
-
-	var u domain.User
-	row := r.db.QueryRowContext(ctx, query, email)
-	err := row.Scan(&u.Uuid, &u.Email, &u.CreatedAt, &u.UpdatedAt)
+	row, err := r.q.GetUserByEmail(ctx, email)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "error getting user by email")
 	}
 
+	u := domain.User{
+		Uuid:      row.ID,
+		Email:     row.Email,
+		CreatedAt: row.CreatedAt,
+		UpdatedAt: row.UpdatedAt,
+	}
 	return u, nil
 }
 
 func (r *UsersRepo) Delete(ctx context.Context, id uuid.UUID) error {
-	query := `DELETE FROM users WHERE id = $1`
-
-	_, err := r.db.ExecContext(ctx, query, id)
+	err := r.q.DeleteUser(ctx, id)
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting user")
 	}

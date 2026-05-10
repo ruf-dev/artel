@@ -11,6 +11,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/api/server/artel_api_impl"
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport"
@@ -29,7 +30,13 @@ func (c *Custom) Init(a *App) error {
 
 	repo := repopg.New(a.Postgres, encKey)
 
-	services := svcv1.New(repo)
+	couchCfg := couchdb.Config{
+		BaseURL:  "http://localhost:5984",
+		User:     "admin",
+		Password: "",
+	}
+
+	services := svcv1.New(repo, couchCfg)
 
 	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
 	if err != nil {

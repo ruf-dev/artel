@@ -5,6 +5,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/repository/pg/couchcreds"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/users"
 	"github.com/ruf-dev/artel/internal/repository/pg/vaults"
@@ -18,10 +19,12 @@ type Repos struct {
 }
 
 func New(db *sql.DB, encryptionKey []byte) *Repos {
+	q := artel_q.New(db)
+
 	return &Repos{
-		Users:            users.New(db),
-		Vaults:           vaults.New(db),
-		Subscriptions:    subscriptions.New(db),
-		CouchCredentials: couchcreds.New(db, encryptionKey),
+		Users:            users.New(q),
+		Vaults:           vaults.New(q),
+		Subscriptions:    subscriptions.New(q),
+		CouchCredentials: couchcreds.New(q, encryptionKey),
 	}
 }

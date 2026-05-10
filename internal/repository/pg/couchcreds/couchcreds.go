@@ -6,19 +6,19 @@ import (
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
 type CouchCredsRepo struct {
-	db            sqldb.DB
+	q             *artel_q.Queries
 	encryptionKey []byte
 }
 
-func New(db sqldb.DB, encryptionKey []byte) *CouchCredsRepo {
+func New(q *artel_q.Queries, encryptionKey []byte) *CouchCredsRepo {
 	return &CouchCredsRepo{
-		db:            db,
+		q:             q,
 		encryptionKey: encryptionKey,
 	}
 }
@@ -29,9 +29,13 @@ func (r *CouchCredsRepo) Store(ctx context.Context, vaultID uuid.UUID, host, use
 		return rerrors.Wrap(err, "error encrypting password")
 	}
 
-	query := `INSERT INTO couch_credentials (vault_id, host, username, password_enc) VALUES ($1, $2, $3, $4)`
-
-	_, err = r.db.ExecContext(ctx, query, vaultID, host, username, passwordEnc)
+	params := artel_q.StoreCouchCredParams{
+		VaultID:     vaultID,
+		Host:        host,
+		Username:    username,
+		PasswordEnc: passwordEnc,
+	}
+	err = r.q.StoreCouchCred(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error storing couch credentials")
 	}
@@ -40,30 +44,29 @@ func (r *CouchCredsRepo) Store(ctx context.Context, vaultID uuid.UUID, host, use
 }
 
 func (r *CouchCredsRepo) Load(ctx context.Context, vaultID uuid.UUID) (domain.CouchCred, error) {
-	query := `SELECT id, vault_id, host, username, password_enc, created_at FROM couch_credentials WHERE vault_id = $1`
-
-	var c domain.CouchCred
-	var passwordEnc []byte
-	row := r.db.QueryRowContext(ctx, query, vaultID)
-	err := row.Scan(&c.Uuid, &c.VaultUuid, &c.Host, &c.Username, &passwordEnc, &c.CreatedAt)
+	row, err := r.q.LoadCouchCred(ctx, vaultID)
 	if err != nil {
 		return domain.CouchCred{}, rerrors.Wrap(err, "error loading couch credentials")
 	}
 
-	passwordPlain, err := cryptoutil.Decrypt(r.encryptionKey, passwordEnc)
+	passwordPlain, err := cryptoutil.Decrypt(r.encryptionKey, row.PasswordEnc)
 	if err != nil {
 		return domain.CouchCred{}, rerrors.Wrap(err, "error decrypting password")
 	}
 
-	c.Password = passwordPlain
-
+	c := domain.CouchCred{
+		Uuid:      row.ID,
+		VaultUuid: row.VaultID,
+		Host:      row.Host,
+		Username:  row.Username,
+		Password:  passwordPlain,
+		CreatedAt: row.CreatedAt,
+	}
 	return c, nil
 }
 
 func (r *CouchCredsRepo) Delete(ctx context.Context, vaultID uuid.UUID) error {
-	query := `DELETE FROM couch_credentials WHERE vault_id = $1`
-
-	_, err := r.db.ExecContext(ctx, query, vaultID)
+	err := r.q.DeleteCouchCred(ctx, vaultID)
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting couch credentials")
 	}

@@ -1,0 +1,14 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "internal/repository/pg/queries"
+    schema: "migrations"
+    gen:
+      go:
+        package: "artel_q"
+        out: "internal/repository/pg/generated"
+        sql_package: "database/sql"
+        emit_prepared_queries: false
+        emit_interface: true
+        emit_exact_table_names: false
+        emit_empty_slices: true

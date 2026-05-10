@@ -18,17 +18,27 @@ type CredentialSource interface {
 
 // Pool caches CouchDB clients keyed by BaseURL. Credentials are fetched from
 // Postgres on the first call for a given vault and reused on subsequent calls.
+// The defaultClient is the admin-level client used for provisioning new vaults.
 type Pool struct {
-	mu      sync.RWMutex
-	clients map[string]*Client
-	creds   CredentialSource
+	mu            sync.RWMutex
+	clients       map[string]*Client
+	creds         CredentialSource
+	defaultClient *Client
 }
 
-func NewPool(creds CredentialSource) *Pool {
+func NewPool(creds CredentialSource, defaultCfg Config) *Pool {
 	return &Pool{
-		clients: make(map[string]*Client),
-		creds:   creds,
+		clients:       make(map[string]*Client),
+		creds:         creds,
+		defaultClient: New(defaultCfg),
 	}
+}
+
+func (p *Pool) GetDefault(_ context.Context) (*Client, error) {
+	if p.defaultClient == nil {
+		return nil, rerrors.New("no default couchdb client configured")
+	}
+	return p.defaultClient, nil
 }
 
 func (p *Pool) Get(ctx context.Context, vaultID uuid.UUID) (*Client, error) {

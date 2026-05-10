@@ -16,7 +16,8 @@ CREATE TABLE subscriptions
     user_id    UUID        NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     active     BOOLEAN     NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (user_id)
 );
 
 CREATE TABLE vaults

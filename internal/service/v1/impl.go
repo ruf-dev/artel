@@ -13,11 +13,12 @@ type Services struct {
 	User  service.UserService
 }
 
-func New(repo *pg.Repos) *Services {
-	pool := couchdb.NewPool(repo.CouchCredentials)
+func New(repo *pg.Repos, couchDefaultCfg couchdb.Config) *Services {
+	defaultClient := couchdb.New(couchDefaultCfg)
+	pool := couchdb.NewPool(repo.CouchCredentials, couchDefaultCfg)
 
 	return &Services{
 		Vault: vault.New(repo.Vaults, repo.CouchCredentials, pool),
-		User:  users.New(repo.Users),
+		User:  users.New(repo.Users, defaultClient),
 	}
 }
