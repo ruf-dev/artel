@@ -12,9 +12,9 @@ data_sources:
       name: artel
       ssl_mode: ""
 environment:
-    - name: couchdb_url
+    - name: creds_encryption_key
       type: string
-      value: http://admin:admin@localhost:15984
+      value: ""
     - name: log_format
       type: string
       enum: [JSON, TEXT]

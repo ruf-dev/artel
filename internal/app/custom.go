@@ -5,12 +5,14 @@ package app
 
 import (
 	"context"
+	"encoding/hex"
 
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 
 	artel_api_impl "github.com/ruf-dev/artel/internal/api/server/artel_api_impl"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
+	repov1 "github.com/ruf-dev/artel/internal/repository/v1"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport"
 )
@@ -20,11 +22,15 @@ type Custom struct {
 }
 
 func (c *Custom) Init(a *App) error {
-	couchCfg, err := couchdb.NewConfig(a.Cfg.Environment.CouchdbURL)
+	encKeyHex := a.Cfg.Environment.CredsEncryptionKey
+	encKey, err := hex.DecodeString(encKeyHex)
 	if err != nil {
-		return rerrors.Wrap(err, "error loading couchdb config")
+		return rerrors.Wrap(err, "error decoding creds_encryption_key")
 	}
 
+	_ = repov1.New(a.Postgres, encKey)
+
+	couchCfg := couchdb.Config{}
 	couchClient := couchdb.New(couchCfg)
 
 	services := svcv1.New(couchClient)

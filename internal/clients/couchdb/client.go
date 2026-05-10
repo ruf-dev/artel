@@ -9,6 +9,12 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
+type Config struct {
+	BaseURL  string
+	User     string
+	Password string
+}
+
 type Client struct {
 	baseURL  string
 	http     *http.Client
