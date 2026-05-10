@@ -1,5 +1,5 @@
 services:
-  couchdb:
+  artel-couchdb:
     image: apache/couchdb:3
     container_name: couchdb
     environment:
@@ -9,10 +9,21 @@ services:
     ports:
       - "15984:5984"
     volumes:
-      - ./data/couch:/opt/couchdb/data
+      - ./local_data/couch:/opt/couchdb/data
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:5984/"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+  artel-db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: artel
+      POSTGRES_PASSWORD:
+      POSTGRES_DB: artel_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - '15433:5432'
+    volumes:
+      - ./local_data/pg:/var/lib/postgresql

@@ -9,11 +9,11 @@ import (
 func main() {
 	a, err := app.New()
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Fatal().Err(err).Msg("Failed to create application")
 	}
 
 	err = a.Start()
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Fatal().Err(err).Msg("Failed to create application")
 	}
 }

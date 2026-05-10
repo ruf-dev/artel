@@ -18,4 +18,4 @@ CLAUDE.local.md
 # vendor/
 .idea
 proto_deps
-data/
+local_data/
