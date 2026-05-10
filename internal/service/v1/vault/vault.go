@@ -9,7 +9,9 @@ import (
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type Service struct {
@@ -32,6 +34,10 @@ func New(
 
 func (s *Service) CreateVault(ctx context.Context, name string) error {
 	couchDBName := name
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
 
 	couchClient, err := s.pool.Get(ctx, vault.Uuid)
 	if err != nil {

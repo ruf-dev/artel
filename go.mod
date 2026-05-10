@@ -10,6 +10,7 @@ require (
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/rs/cors v1.11.1
 	github.com/rs/zerolog v1.35.1
+	github.com/sirupsen/logrus v1.9.3
 	github.com/soheilhy/cmux v0.1.5
 	go.redsock.ru/protoc-gen-npm v0.0.12
 	go.redsock.ru/rerrors v0.0.13

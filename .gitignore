@@ -19,3 +19,4 @@ CLAUDE.local.md
 .idea
 proto_deps
 local_data/
+proto_modules

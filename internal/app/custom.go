@@ -41,6 +41,7 @@ func (c *Custom) Init(a *App) error {
 
 	c.Transport.AddImplementation(vaultsImpl, usersImpl)
 
+	c.Transport.AddServerOption()
 	return nil
 }
 
