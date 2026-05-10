@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 )
 
@@ -18,4 +19,13 @@ type UserService interface {
 	GetUser(ctx context.Context, username string) (domain.User, error)
 	UpdateUser(ctx context.Context, username, password string, roles []string) error
 	DeleteUser(ctx context.Context, username string) error
+}
+
+type AuthService interface {
+	AuthWithToken(ctx context.Context, token string) (uuid.UUID, error)
+}
+
+type Service interface {
+	AuthService() AuthService
+	UserService() UserService
 }
