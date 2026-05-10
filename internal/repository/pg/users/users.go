@@ -56,3 +56,14 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 
 	return u, nil
 }
+
+func (r *UsersRepo) Delete(ctx context.Context, id uuid.UUID) error {
+	query := `DELETE FROM users WHERE id = $1`
+
+	_, err := r.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return rerrors.Wrap(err, "error deleting user")
+	}
+
+	return nil
+}

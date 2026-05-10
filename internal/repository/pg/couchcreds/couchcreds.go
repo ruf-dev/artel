@@ -43,11 +43,30 @@ func (r *CouchCredsRepo) Load(ctx context.Context, vaultID uuid.UUID) (domain.Co
 	query := `SELECT id, vault_id, host, username, password_enc, created_at FROM couch_credentials WHERE vault_id = $1`
 
 	var c domain.CouchCred
+	var passwordEnc []byte
 	row := r.db.QueryRowContext(ctx, query, vaultID)
-	err := row.Scan(&c.Uuid, &c.VaultUuid, &c.Host, &c.Username, &c.PasswordEnc, &c.CreatedAt)
+	err := row.Scan(&c.Uuid, &c.VaultUuid, &c.Host, &c.Username, &passwordEnc, &c.CreatedAt)
 	if err != nil {
 		return domain.CouchCred{}, rerrors.Wrap(err, "error loading couch credentials")
 	}
 
+	passwordPlain, err := cryptoutil.Decrypt(r.encryptionKey, passwordEnc)
+	if err != nil {
+		return domain.CouchCred{}, rerrors.Wrap(err, "error decrypting password")
+	}
+
+	c.Password = passwordPlain
+
 	return c, nil
+}
+
+func (r *CouchCredsRepo) Delete(ctx context.Context, vaultID uuid.UUID) error {
+	query := `DELETE FROM couch_credentials WHERE vault_id = $1`
+
+	_, err := r.db.ExecContext(ctx, query, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "error deleting couch credentials")
+	}
+
+	return nil
 }

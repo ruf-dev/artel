@@ -16,6 +16,7 @@ type Config struct {
 
 	DataSources DataSourcesConfig
 	Environment EnvironmentConfig
+	Servers     ServersConfig
 	Overrides   matreshka.ServiceDiscovery
 
 	MatreshkaConfig matreshka.AppConfig

@@ -31,6 +31,14 @@ func New(cfg Config) *Client {
 	}
 }
 
+func (c *Client) Config() Config {
+	return Config{
+		BaseURL:  c.baseURL,
+		User:     c.user,
+		Password: c.password,
+	}
+}
+
 func (c *Client) CreateDatabase(ctx context.Context, name string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/%s", c.baseURL, name), nil)
 	if err != nil {
