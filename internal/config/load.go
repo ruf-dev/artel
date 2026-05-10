@@ -14,9 +14,9 @@ var ErrAlreadyLoaded = rerrors.New("config already loaded")
 type Config struct {
 	AppInfo matreshka.AppInfo
 
+	Servers     ServersConfig
 	DataSources DataSourcesConfig
 	Environment EnvironmentConfig
-	Servers     ServersConfig
 	Overrides   matreshka.ServiceDiscovery
 
 	MatreshkaConfig matreshka.AppConfig
@@ -71,6 +71,11 @@ func Load(configsPaths ...string) (Config, error) {
 	defaultConfig.AppInfo = defaultConfig.MatreshkaConfig.AppInfo
 	defaultConfig.Overrides = defaultConfig.MatreshkaConfig.ServiceDiscovery
 
+	err = defaultConfig.MatreshkaConfig.Servers.
+		ParseToStruct(&defaultConfig.Servers)
+	if err != nil {
+		return defaultConfig, rerrors.Wrap(err, "Error parsing servers to config")
+	}
 	err = defaultConfig.MatreshkaConfig.DataSources.
 		ParseToStruct(&defaultConfig.DataSources)
 	if err != nil {

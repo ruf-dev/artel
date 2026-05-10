@@ -8,18 +8,17 @@ type EnvironmentConfig struct {
 	LogLevel           string
 }
 
-const ( 
-    LogFormat_Json = "JSON"
-    LogFormat_Text = "TEXT"
+const (
+	LogFormat_Json = "JSON"
+	LogFormat_Text = "TEXT"
 )
 
-const ( 
-    LogLevel_Trace = "Trace"
-    LogLevel_Debug = "Debug"
-    LogLevel_Info = "Info"
-    LogLevel_Warn = "Warn"
-    LogLevel_Error = "Error"
-    LogLevel_Fatal = "Fatal"
-    LogLevel_Panic = "Panic"
+const (
+	LogLevel_Trace = "Trace"
+	LogLevel_Debug = "Debug"
+	LogLevel_Info  = "Info"
+	LogLevel_Warn  = "Warn"
+	LogLevel_Error = "Error"
+	LogLevel_Fatal = "Fatal"
+	LogLevel_Panic = "Panic"
 )
-

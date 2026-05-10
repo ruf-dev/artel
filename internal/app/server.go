@@ -3,15 +3,15 @@
 package app
 
 import (
-     "go.redsock.ru/rerrors"
-     "net"
+	"go.redsock.ru/rerrors"
+	"net"
 )
 
-func (a *App) InitServers() (err error) { 
-		a.MASTER, err = net.Listen("tcp", ":"+a.Cfg.Servers.MASTER.Port)
-		if err != nil {
-			return  rerrors.Wrap(err, "error opening listener")
-		}
-    	
+func (a *App) InitServers() (err error) {
+	a.MASTER, err = net.Listen("tcp", ":"+a.Cfg.Servers.Master.Port)
+	if err != nil {
+		return rerrors.Wrap(err, "error opening listener")
+	}
+
 	return nil
 }

@@ -1,7 +1,7 @@
 ---
 id: "08"
 title: "PostgreSQL Metadata Schema"
-status: "pending"
+status: "done"
 model: "qwen2.5-coder:3b"
 created: "2026-05-09"
 branch: "factory/08-postgres-metadata-schema"
@@ -36,14 +36,14 @@ Store CouchDB credentials (host, username, password) in a `couch_credentials` ta
 
 ## Acceptance Criteria
 
-- [ ] `couchdb_url` is removed from `config/config.yaml` and `environment.go` is regenerated (no `CouchdbURL` field)
-- [ ] `creds_encryption_key` is added to `config/config.yaml` and appears in `EnvironmentConfig`
-- [ ] `internal/clients/couchdb/config.go` is deleted; `custom.go` no longer references `CouchdbURL`
-- [ ] `migrations/001_initial_schema.sql` exists with all four tables (see Notes)
-- [ ] `internal/repository/interfaces.go` defines `Users`, `Vaults`, `Subscriptions`, `CouchCredentials` interfaces
-- [ ] `internal/repository/v1/` contains implementations that compile and pass `go test ./...`
-- [ ] `internal/cryptoutil/aes.go` compiles; `Encrypt` → `Decrypt` round-trips correctly in a unit test
-- [ ] `go test ./...` passes from repo root
+- [x] `couchdb_url` is removed from `config/config.yaml` and `environment.go` is regenerated (no `CouchdbURL` field)
+- [x] `creds_encryption_key` is added to `config/config.yaml` and appears in `EnvironmentConfig`
+- [x] `internal/clients/couchdb/config.go` is deleted; `custom.go` no longer references `CouchdbURL`
+- [x] `migrations/001_initial_schema.sql` exists with all four tables (see Notes)
+- [x] `internal/repository/interfaces.go` defines `Users`, `Vaults`, `Subscriptions`, `CouchCredentials` interfaces
+- [x] `internal/repository/pg/` contains sqlc-backed implementations that compile and pass `go test ./...`
+- [x] `internal/cryptoutil/aes.go` compiles; `Encrypt` → `Decrypt` round-trips correctly in a unit test
+- [x] `go test ./...` passes from repo root
 
 ## Files to Create / Modify
 
