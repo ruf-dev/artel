@@ -5,45 +5,49 @@ import (
 
 	"go.redsock.ru/rerrors"
 
-	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/repository"
 )
 
 type Service struct {
-	db *couchdb.Client
+	vaultRepo repository.Vaults
 }
 
-func New(db *couchdb.Client) *Service {
-	return &Service{db: db}
+func New(db repository.Repo) *Service {
+	return &Service{
+		vaultRepo: db.Vaults(),
+	}
 }
 
 func (s *Service) CreateVault(ctx context.Context, name string) error {
-	err := s.db.CreateDatabase(ctx, name)
+	err := s.vaultRepo.Create(ctx, name)
 	if err != nil {
 		return rerrors.Wrap(err, "create vault")
 	}
 	return nil
 }
 
-func (s *Service) GetVault(ctx context.Context, name string) (service.Vault, error) {
-	v := service.Vault{
-		Name:  name,
-		DBURL: s.db.DatabaseURL(name),
+func (s *Service) GetVault(ctx context.Context, name string) (domain.Vault, error) {
+	v := domain.Vault{
+		Name:        name,
+		CouchDBName: name,
+		CouchDBURL:  s.db.DatabaseURL(name),
 	}
 	return v, nil
 }
 
-func (s *Service) ListVaults(ctx context.Context) ([]service.Vault, error) {
+func (s *Service) ListVaults(ctx context.Context) ([]domain.Vault, error) {
 	names, err := s.db.ListDatabases(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list vaults")
 	}
 
-	vaults := make([]service.Vault, 0, len(names))
+	vaults := make([]domain.Vault, 0, len(names))
 	for _, name := range names {
-		v := service.Vault{
-			Name:  name,
-			DBURL: s.db.DatabaseURL(name),
+		v := domain.Vault{
+			Name:        name,
+			CouchDBName: name,
+			CouchDBURL:  s.db.DatabaseURL(name),
 		}
 		vaults = append(vaults, v)
 	}

@@ -7,7 +7,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
-	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/domain"
 )
 
 type VaultsRepo struct {
@@ -18,20 +18,20 @@ func New(db sqldb.DB) *VaultsRepo {
 	return &VaultsRepo{db: db}
 }
 
-func (r *VaultsRepo) Create(ctx context.Context, userID uuid.UUID, name, couchDBName string) (repository.Vault, error) {
+func (r *VaultsRepo) Create(ctx context.Context, userID uuid.UUID, name, couchDBName string) (domain.Vault, error) {
 	query := `INSERT INTO vaults (user_id, name, couch_db_name) VALUES ($1, $2, $3) RETURNING id, user_id, name, couch_db_name, created_at`
 
-	var v repository.Vault
+	var v domain.Vault
 	row := r.db.QueryRowContext(ctx, query, userID, name, couchDBName)
-	err := row.Scan(&v.ID, &v.UserID, &v.Name, &v.CouchDBName, &v.CreatedAt)
+	err := row.Scan(&v.Uuid, &v.UserUuid, &v.Name, &v.CouchDBName, &v.CreatedAt)
 	if err != nil {
-		return repository.Vault{}, rerrors.Wrap(err, "error creating vault")
+		return domain.Vault{}, rerrors.Wrap(err, "error creating vault")
 	}
 
 	return v, nil
 }
 
-func (r *VaultsRepo) ListByUser(ctx context.Context, userID uuid.UUID) ([]repository.Vault, error) {
+func (r *VaultsRepo) ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.Vault, error) {
 	query := `SELECT id, user_id, name, couch_db_name, created_at FROM vaults WHERE user_id = $1`
 
 	rows, err := r.db.QueryContext(ctx, query, userID)
@@ -40,10 +40,10 @@ func (r *VaultsRepo) ListByUser(ctx context.Context, userID uuid.UUID) ([]reposi
 	}
 	defer rows.Close()
 
-	var vaultList []repository.Vault
+	var vaultList []domain.Vault
 	for rows.Next() {
-		var v repository.Vault
-		err = rows.Scan(&v.ID, &v.UserID, &v.Name, &v.CouchDBName, &v.CreatedAt)
+		var v domain.Vault
+		err = rows.Scan(&v.Uuid, &v.UserUuid, &v.Name, &v.CouchDBName, &v.CreatedAt)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error scanning vault")
 		}

@@ -10,9 +10,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 
-	artel_api_impl "github.com/ruf-dev/artel/internal/api/server/artel_api_impl"
-	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	repov1 "github.com/ruf-dev/artel/internal/repository/v1"
+	"github.com/ruf-dev/artel/internal/api/server/artel_api_impl"
+	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport"
 )
@@ -28,12 +27,9 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error decoding creds_encryption_key")
 	}
 
-	_ = repov1.New(a.Postgres, encKey)
+	repo := repopg.New(a.Postgres, encKey)
 
-	couchCfg := couchdb.Config{}
-	couchClient := couchdb.New(couchCfg)
-
-	services := svcv1.New(couchClient)
+	services := svcv1.New(repo)
 
 	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
 	if err != nil {

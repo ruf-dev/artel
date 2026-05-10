@@ -1,27 +1,21 @@
 package service
 
-import "context"
+import (
+	"context"
+
+	"github.com/ruf-dev/artel/internal/domain"
+)
 
 type VaultService interface {
 	CreateVault(ctx context.Context, name string) error
-	GetVault(ctx context.Context, name string) (Vault, error)
-	ListVaults(ctx context.Context) ([]Vault, error)
+	GetVault(ctx context.Context, name string) (domain.Vault, error)
+	ListVaults(ctx context.Context) ([]domain.Vault, error)
 	DeleteVault(ctx context.Context, name string) error
 }
 
 type UserService interface {
 	CreateUser(ctx context.Context, username, password string, roles []string) error
-	GetUser(ctx context.Context, username string) (User, error)
+	GetUser(ctx context.Context, username string) (domain.User, error)
 	UpdateUser(ctx context.Context, username, password string, roles []string) error
 	DeleteUser(ctx context.Context, username string) error
-}
-
-type Vault struct {
-	Name  string
-	DBURL string
-}
-
-type User struct {
-	Username string
-	Roles    []string
 }

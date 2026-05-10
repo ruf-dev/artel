@@ -58,7 +58,7 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *artel_api.GetVault_Reque
 
 	resp := &artel_api.GetVault_Response{
 		Name:  vault.Name,
-		DbUrl: vault.DBURL,
+		DbUrl: vault.CouchDBURL,
 	}
 	return resp, nil
 }
@@ -73,7 +73,7 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *artel_api.ListVaults_R
 	for _, vault := range vaults {
 		item := &artel_api.VaultItem{
 			Name:  vault.Name,
-			DbUrl: vault.DBURL,
+			DbUrl: vault.CouchDBURL,
 		}
 		items = append(items, item)
 	}

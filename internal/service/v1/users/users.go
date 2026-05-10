@@ -6,7 +6,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/domain"
 )
 
 type Service struct {
@@ -25,15 +25,15 @@ func (s *Service) CreateUser(ctx context.Context, username, password string, rol
 	return nil
 }
 
-func (s *Service) GetUser(ctx context.Context, username string) (service.User, error) {
+func (s *Service) GetUser(ctx context.Context, username string) (domain.User, error) {
 	info, err := s.db.GetUser(ctx, username)
 	if err != nil {
-		return service.User{}, rerrors.Wrap(err, "get user")
+		return domain.User{}, rerrors.Wrap(err, "get user")
 	}
 
-	u := service.User{
-		Username: info.Name,
-		Roles:    info.Roles,
+	u := domain.User{
+		Email: info.Name,
+		Roles: info.Roles,
 	}
 	return u, nil
 }

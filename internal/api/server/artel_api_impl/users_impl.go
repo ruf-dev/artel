@@ -57,7 +57,7 @@ func (u *UsersImpl) GetUser(ctx context.Context, req *artel_api.GetUser_Request)
 	}
 
 	resp := &artel_api.GetUser_Response{
-		Username: user.Username,
+		Username: user.Email,
 		Roles:    user.Roles,
 	}
 	return resp, nil

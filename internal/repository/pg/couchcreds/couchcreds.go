@@ -8,7 +8,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
-	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/domain"
 )
 
 type CouchCredsRepo struct {
@@ -39,14 +39,14 @@ func (r *CouchCredsRepo) Store(ctx context.Context, vaultID uuid.UUID, host, use
 	return nil
 }
 
-func (r *CouchCredsRepo) Load(ctx context.Context, vaultID uuid.UUID) (repository.CouchCred, error) {
+func (r *CouchCredsRepo) Load(ctx context.Context, vaultID uuid.UUID) (domain.CouchCred, error) {
 	query := `SELECT id, vault_id, host, username, password_enc, created_at FROM couch_credentials WHERE vault_id = $1`
 
-	var c repository.CouchCred
+	var c domain.CouchCred
 	row := r.db.QueryRowContext(ctx, query, vaultID)
-	err := row.Scan(&c.ID, &c.VaultID, &c.Host, &c.Username, &c.PasswordEnc, &c.CreatedAt)
+	err := row.Scan(&c.Uuid, &c.VaultUuid, &c.Host, &c.Username, &c.PasswordEnc, &c.CreatedAt)
 	if err != nil {
-		return repository.CouchCred{}, rerrors.Wrap(err, "error loading couch credentials")
+		return domain.CouchCred{}, rerrors.Wrap(err, "error loading couch credentials")
 	}
 
 	return c, nil
