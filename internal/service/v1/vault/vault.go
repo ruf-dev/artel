@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
@@ -43,7 +44,8 @@ func (s *Service) CreateVault(ctx context.Context, name string) error {
 		return rerrors.Wrap(err, "create vault metadata")
 	}
 
-	couchClient, err := s.pool.GetDefault(ctx)
+	//todo pick random
+	couchClient, err := s.pool.Get(ctx, uuid.UUID{})
 	if err != nil {
 		return rerrors.Wrap(err, "get default couchdb client")
 	}

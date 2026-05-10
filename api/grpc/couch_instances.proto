@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package artel_couch;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+service CouchInstancesAPI {
+  rpc RegisterCouchInstance(RegisterCouchInstance.Request) returns (RegisterCouchInstance.Response) {
+    option (google.api.http) = {
+      post: "/api/couch/add"
+      body: "*"
+    };
+  };
+  rpc GetCouchInstance(GetCouchInstance.Request) returns (GetCouchInstance.Response) {
+    option (google.api.http) = {
+      get: "/api/couch/{id}"
+    };
+  };
+  rpc ListCouchInstances(ListCouchInstances.Request) returns (ListCouchInstances.Response) {
+    option (google.api.http) = {
+      post: "/api/couch/list",
+      body: "*"
+    };
+  };
+  rpc DeleteCouchInstance(DeleteCouchInstance.Request) returns (DeleteCouchInstance.Response) {
+    option (google.api.http) = {
+      delete: "/api/couch/{id}"
+    };
+  };
+}
+
+message RegisterCouchInstance {
+  message Request {
+    string url = 1;
+    string username = 2;
+    string password = 3;
+  }
+  message Response {
+    string id = 1;
+  }
+}
+
+message GetCouchInstance {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    string id = 1;
+    string url = 2;
+    string username = 3;
+    string created_at = 4;
+  }
+}
+
+message ListCouchInstances {
+  message Request {}
+  message Response {
+    repeated GetCouchInstance.Response instances = 1;
+  }
+}
+
+message DeleteCouchInstance {
+  message Request {
+    string id = 1;
+  }
+  message Response {}
+}

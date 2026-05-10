@@ -4,8 +4,16 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+
 	"github.com/ruf-dev/artel/internal/domain"
 )
+
+type Service interface {
+	AuthService() AuthService
+	UserService() UserService
+	VaultService() VaultService
+	CouchInstanceService() CouchInstanceService
+}
 
 type VaultService interface {
 	CreateVault(ctx context.Context, name string) error
@@ -25,7 +33,9 @@ type AuthService interface {
 	AuthWithToken(ctx context.Context, token string) (uuid.UUID, error)
 }
 
-type Service interface {
-	AuthService() AuthService
-	UserService() UserService
+type CouchInstanceService interface {
+	RegisterCouchInstance(ctx context.Context, url, username, password string) (string, error)
+	GetCouchInstance(ctx context.Context, id string) (domain.CouchInstance, error)
+	ListCouchInstances(ctx context.Context) ([]domain.CouchInstance, error)
+	DeleteCouchInstance(ctx context.Context, id string) error
 }

@@ -23,6 +23,7 @@ type Querier interface {
 	ListAllVaults(ctx context.Context) ([]Vault, error)
 	ListVaultsByUser(ctx context.Context, userID uuid.UUID) ([]Vault, error)
 	LoadCouchCred(ctx context.Context, vaultID uuid.UUID) (CouchCredential, error)
+	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	StoreCouchCred(ctx context.Context, arg StoreCouchCredParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
 }

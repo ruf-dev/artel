@@ -29,7 +29,8 @@ bun run build     # Production build
 ### Code Generation
 ```bash
 make warmup    # Install proto dependencies (protopack mod download)
-make codegen   # Generate protos
+moti g         # Generate protos (preferred — runs protoc via moti.yaml config)
+sqlc generate  # Generate Go from SQL queries (internal/repository/pg/queries → internal/repository/pg/generated)
 make lint      # golangci-lint run ./...
 ```
 

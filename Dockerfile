@@ -19,4 +19,6 @@ WORKDIR /app
 
 COPY --from=builder /deploy/server/ .
 
+EXPOSE 1551
+
 ENTRYPOINT ["./service"]

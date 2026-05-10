@@ -40,3 +40,10 @@ type CouchCredentials interface {
 	Load(ctx context.Context, vaultID uuid.UUID) (domain.CouchCred, error)
 	Delete(ctx context.Context, vaultID uuid.UUID) error
 }
+
+type CouchInstances interface {
+	Register(ctx context.Context, url, username string, passwordPlain []byte) (uuid.UUID, error)
+	Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, error)
+	List(ctx context.Context) ([]domain.CouchInstance, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+}

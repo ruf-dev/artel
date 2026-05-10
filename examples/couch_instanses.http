@@ -1,0 +1,21 @@
+### Register CouchDB instance
+POST {{artel_url}}/api/couch/add
+Content-Type: application/json
+
+{
+  "url": "http://localhost:5984",
+  "username": "admin",
+  "password": "secret"
+}
+
+### Get CouchDB instance
+GET {{artel_url}}/api/couch/a2ddec01-e512-4c66-8bbb-bb2518f46efc
+
+### List CouchDB instances
+POST {{artel_url}}/api/couch/list
+Content-Type: application/json
+
+{}
+
+### Delete CouchDB instance
+DELETE {{artel_url}}/api/couch/a2ddec01-e512-4c66-8bbb-bb2518f46efc

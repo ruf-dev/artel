@@ -19,6 +19,14 @@ type CouchCredential struct {
 	CreatedAt   time.Time
 }
 
+type CouchInstance struct {
+	ID          uuid.UUID
+	Url         string
+	Username    string
+	PasswordEnc []byte
+	CreatedAt   time.Time
+}
+
 type Subscription struct {
 	ID        uuid.UUID
 	UserID    uuid.UUID
