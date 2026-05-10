@@ -1,6 +1,6 @@
 module github.com/ruf-dev/artel
 
-go 1.25.5
+go 1.26.3
 
 require (
 	github.com/Red-Sock/go-swagger-ui v0.0.2
@@ -16,6 +16,7 @@ require (
 	go.redsock.ru/rerrors v0.0.13
 	go.redsock.ru/toolbox v0.0.13
 	go.vervstack.ru/matreshka v1.0.95
+	golang.org/x/crypto v0.51.0
 	golang.org/x/sync v0.20.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250519155744-55703ea1f237
 	google.golang.org/grpc v1.72.1
@@ -29,7 +30,6 @@ require (
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	go.redsock.ru/evon v0.0.30 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.51.0 // indirect
 	golang.org/x/net v0.53.0 // indirect
 	golang.org/x/sys v0.44.0 // indirect
 	golang.org/x/text v0.37.0 // indirect

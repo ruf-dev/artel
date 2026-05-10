@@ -9,6 +9,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type SessionsRepo struct {
@@ -42,7 +43,7 @@ func (r *SessionsRepo) Create(ctx context.Context, userID uuid.UUID, token strin
 func (r *SessionsRepo) GetByToken(ctx context.Context, token string) (domain.Session, error) {
 	session, err := r.q.GetSessionByToken(ctx, token)
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(err, "failed to get session by token")
+		return domain.Session{}, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
 	return domain.Session{

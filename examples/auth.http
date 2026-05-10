@@ -1,0 +1,26 @@
+### Register
+POST {{artel_url}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "alex@redsock.ru",
+  "password": "secret"
+}
+
+### Login
+POST {{artel_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "password": {
+    "email": "alex@redsock.ru",
+    "password": "secret"
+  }
+}
+
+### Logout
+POST {{artel_url}}/api/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{}

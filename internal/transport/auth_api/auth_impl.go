@@ -89,5 +89,5 @@ func (a *AuthImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.Di
 		log.Error().Err(err).Msg("error registering auth grpc-gateway handler")
 	}
 
-	return "/api/auth", gwMux
+	return "/api/auth/", gwMux
 }

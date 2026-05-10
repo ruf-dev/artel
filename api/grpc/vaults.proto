@@ -9,7 +9,7 @@ option go_package = "/artel_api";
 service VaultsAPI {
   rpc CreateVault(CreateVault.Request) returns (CreateVault.Response) {
     option (google.api.http) = {
-      post: "/api/vaults"
+      post: "/api/vaults/create"
       body: "*"
     };
   };
@@ -20,7 +20,7 @@ service VaultsAPI {
   };
   rpc ListVaults(ListVaults.Request) returns (ListVaults.Response) {
     option (google.api.http) = {
-      get: "/api/vaults"
+      get: "/api/vaults/list"
     };
   };
   rpc DeleteVault(DeleteVault.Request) returns (DeleteVault.Response) {

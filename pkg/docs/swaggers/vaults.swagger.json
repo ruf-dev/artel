@@ -16,27 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/api/vaults": {
-      "get": {
-        "operationId": "VaultsAPI_ListVaults",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsListVaultsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "VaultsAPI"
-        ]
-      },
+    "/api/vaults/create": {
       "post": {
         "operationId": "VaultsAPI_CreateVault",
         "responses": {
@@ -63,6 +43,28 @@
             }
           }
         ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/list": {
+      "get": {
+        "operationId": "VaultsAPI_ListVaults",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListVaultsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
         "tags": [
           "VaultsAPI"
         ]

@@ -273,7 +273,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -313,7 +313,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -431,7 +431,7 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -465,7 +465,7 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -533,9 +533,9 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 }
 
 var (
-	pattern_VaultsAPI_CreateVault_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "vaults"}, ""))
+	pattern_VaultsAPI_CreateVault_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "create"}, ""))
 	pattern_VaultsAPI_GetVault_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "vaults", "id"}, ""))
-	pattern_VaultsAPI_ListVaults_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "vaults"}, ""))
+	pattern_VaultsAPI_ListVaults_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "list"}, ""))
 	pattern_VaultsAPI_DeleteVault_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "vaults", "id"}, ""))
 	pattern_VaultsAPI_AddMember_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "members"}, ""))
 	pattern_VaultsAPI_RemoveMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "vaults", "vault_id", "members", "user_id"}, ""))

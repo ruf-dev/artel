@@ -35,7 +35,7 @@ func (v *VaultsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.
 		log.Error().Err(err).Msg("error registering vaults grpc-gateway handler")
 	}
 
-	return "/api/vaults", gwMux
+	return "/api/vaults/", gwMux
 }
 
 func (v *VaultsImpl) CreateVault(ctx context.Context, req *artel_api.CreateVault_Request) (*artel_api.CreateVault_Response, error) {

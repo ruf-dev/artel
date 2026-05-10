@@ -886,12 +886,12 @@ const file_vaults_proto_rawDesc = "" +
 	"\tVaultItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl2\xbf\x05\n" +
-	"\tVaultsAPI\x12l\n" +
-	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/api/vaults\x12e\n" +
-	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/vaults/{id}\x12f\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl2\xcb\x05\n" +
+	"\tVaultsAPI\x12s\n" +
+	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/vaults/create\x12e\n" +
+	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/vaults/{id}\x12k\n" +
 	"\n" +
-	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/api/vaults\x12n\n" +
+	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/vaults/list\x12n\n" +
 	"\vDeleteVault\x12!.artel_vaults.DeleteVault.Request\x1a\".artel_vaults.DeleteVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12*\x10/api/vaults/{id}\x12y\n" +
 	"\tAddMember\x12\x1f.artel_vaults.AddMember.Request\x1a .artel_vaults.AddMember.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/vaults/{vault_id}/members\x12\x89\x01\n" +
 	"\fRemoveMember\x12\".artel_vaults.RemoveMember.Request\x1a#.artel_vaults.RemoveMember.Response\"0\x82\xd3\xe4\x93\x02**(/api/vaults/{vault_id}/members/{user_id}B\fZ\n" +
