@@ -43,9 +43,14 @@ func (v *VaultsImpl) CreateVault(ctx context.Context, req *artel_api.CreateVault
 		return nil, rerrors.Wrap(err, "create vault")
 	}
 
+	vault, err := v.vaultSvc.GetVault(ctx, req.Name)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "get vault after create")
+	}
+
 	resp := &artel_api.CreateVault_Response{
-		Name:  req.Name,
-		DbUrl: "",
+		Name:  vault.Name,
+		DbUrl: vault.CouchDBURL,
 	}
 	return resp, nil
 }
