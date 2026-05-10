@@ -1,0 +1,93 @@
+package auth_api
+
+import (
+	"context"
+	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/rs/zerolog/log"
+	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/service"
+)
+
+// authHandler implements the AuthAPIServer proto interface.
+// Kept separate from AuthImpl because the proto defines a method named "Register"
+// which collides with the transport.GrpcImpl interface method Register(grpc.ServiceRegistrar).
+type authHandler struct {
+	artel_api.UnimplementedAuthAPIServer
+	authSvc service.AuthService
+}
+
+func (h *authHandler) Register(ctx context.Context, req *artel_api.Register_Request) (*artel_api.Register_Response, error) {
+	user, err := h.authSvc.Register(ctx, req.Email, req.Password)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "register")
+	}
+
+	resp := &artel_api.Register_Response{
+		Id:    user.Uuid.String(),
+		Email: user.Email,
+	}
+	return resp, nil
+}
+
+func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (*artel_api.Login_Response, error) {
+	passwordCreds := req.GetPassword()
+
+	session, err := h.authSvc.Login(ctx, passwordCreds.GetEmail(), passwordCreds.GetPassword())
+	if err != nil {
+		return nil, rerrors.Wrap(err, "login")
+	}
+
+	resp := &artel_api.Login_Response{
+		Token:     session.Token,
+		ExpiresAt: timestamppb.New(session.ExpiresAt),
+	}
+	return resp, nil
+}
+
+func (h *authHandler) Logout(ctx context.Context, req *artel_api.Logout_Request) (*artel_api.Logout_Response, error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	tokens := md.Get("authorization")
+
+	token := ""
+	if len(tokens) > 0 {
+		token = tokens[0]
+	}
+
+	err := h.authSvc.Logout(ctx, token)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "logout")
+	}
+
+	return &artel_api.Logout_Response{}, nil
+}
+
+// AuthImpl satisfies transport.GrpcImpl and transport.GrpcWithGateway.
+type AuthImpl struct {
+	handler *authHandler
+}
+
+func NewAuthImpl(authSvc service.AuthService) *AuthImpl {
+	return &AuthImpl{handler: &authHandler{authSvc: authSvc}}
+}
+
+func (a *AuthImpl) Register(srv grpc.ServiceRegistrar) {
+	artel_api.RegisterAuthAPIServer(srv, a.handler)
+}
+
+func (a *AuthImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
+	gwMux := runtime.NewServeMux()
+
+	err := artel_api.RegisterAuthAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
+	if err != nil {
+		log.Error().Err(err).Msg("error registering auth grpc-gateway handler")
+	}
+
+	return "/api/auth", gwMux
+}
