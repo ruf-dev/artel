@@ -7,19 +7,19 @@ import (
 )
 
 type Vault struct {
-	Uuid        uuid.UUID
-	UserUuid    uuid.UUID
-	Name        string
-	CouchDBName string
-	CouchDBURL  string
-	CreatedAt   time.Time
+	Uuid              uuid.UUID
+	UserUuid          uuid.UUID
+	CouchInstanceUuid uuid.UUID
+	Name              string
+	CouchDBName       string
+	CouchDBURL        string
+	CreatedAt         time.Time
 }
 
-type CouchCred struct {
+type VaultMember struct {
 	Uuid      uuid.UUID
 	VaultUuid uuid.UUID
-	Host      string
-	Username  string
-	Password  []byte
+	UserUuid  uuid.UUID
+	Role      string
 	CreatedAt time.Time
 }

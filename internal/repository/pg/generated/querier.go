@@ -11,20 +11,32 @@ import (
 )
 
 type Querier interface {
-	CreateUser(ctx context.Context, email string) (User, error)
-	CreateVault(ctx context.Context, arg CreateVaultParams) (Vault, error)
-	DeleteCouchCred(ctx context.Context, vaultID uuid.UUID) error
+	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
+	CreateCouchAccount(ctx context.Context, arg CreateCouchAccountParams) (CouchAccount, error)
+	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
+	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
+	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
+	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
+	DeleteSession(ctx context.Context, token string) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
+	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
+	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
+	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
+	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
-	GetUserByEmail(ctx context.Context, email string) (User, error)
-	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
-	GetVaultByName(ctx context.Context, name string) (Vault, error)
-	ListAllVaults(ctx context.Context) ([]Vault, error)
-	ListVaultsByUser(ctx context.Context, userID uuid.UUID) ([]Vault, error)
-	LoadCouchCred(ctx context.Context, vaultID uuid.UUID) (CouchCredential, error)
+	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
+	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
+	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
+	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
+	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
+	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
+	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
+	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
-	StoreCouchCred(ctx context.Context, arg StoreCouchCredParams) error
+	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
 }
 

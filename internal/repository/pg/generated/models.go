@@ -10,13 +10,13 @@ import (
 	"github.com/google/uuid"
 )
 
-type CouchCredential struct {
-	ID          uuid.UUID
-	VaultID     uuid.UUID
-	Host        string
-	Username    string
-	PasswordEnc []byte
-	CreatedAt   time.Time
+type CouchAccount struct {
+	ID               uuid.UUID
+	UserID           uuid.UUID
+	CouchInstanceID  uuid.UUID
+	CouchUsername    string
+	CouchPasswordEnc []byte
+	CreatedAt        time.Time
 }
 
 type CouchInstance struct {
@@ -25,6 +25,14 @@ type CouchInstance struct {
 	Username    string
 	PasswordEnc []byte
 	CreatedAt   time.Time
+}
+
+type Session struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	Token     string
+	ExpiresAt time.Time
+	CreatedAt time.Time
 }
 
 type Subscription struct {
@@ -36,16 +44,26 @@ type Subscription struct {
 }
 
 type User struct {
-	ID        uuid.UUID
-	Email     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID           uuid.UUID
+	Email        string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	PasswordHash string
 }
 
 type Vault struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	Name        string
-	CouchDbName string
-	CreatedAt   time.Time
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	Name            string
+	CouchDbName     string
+	CreatedAt       time.Time
+	CouchInstanceID uuid.NullUUID
+}
+
+type VaultMember struct {
+	ID        uuid.UUID
+	VaultID   uuid.UUID
+	UserID    uuid.UUID
+	Role      string
+	CreatedAt time.Time
 }

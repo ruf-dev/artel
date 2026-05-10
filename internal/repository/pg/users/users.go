@@ -18,17 +18,22 @@ func New(q *artel_q.Queries) *UsersRepo {
 	return &UsersRepo{q: q}
 }
 
-func (r *UsersRepo) Create(ctx context.Context, email string) (domain.User, error) {
-	row, err := r.q.CreateUser(ctx, email)
+func (r *UsersRepo) Create(ctx context.Context, email, passwordHash string) (domain.User, error) {
+	params := artel_q.CreateUserParams{
+		Email:        email,
+		PasswordHash: passwordHash,
+	}
+	row, err := r.q.CreateUser(ctx, params)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "error creating user")
 	}
 
 	u := domain.User{
-		Uuid:      row.ID,
-		Email:     row.Email,
-		CreatedAt: row.CreatedAt,
-		UpdatedAt: row.UpdatedAt,
+		Uuid:         row.ID,
+		Email:        row.Email,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
 	}
 	return u, nil
 }
@@ -40,10 +45,11 @@ func (r *UsersRepo) GetByID(ctx context.Context, id uuid.UUID) (domain.User, err
 	}
 
 	u := domain.User{
-		Uuid:      row.ID,
-		Email:     row.Email,
-		CreatedAt: row.CreatedAt,
-		UpdatedAt: row.UpdatedAt,
+		Uuid:         row.ID,
+		Email:        row.Email,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
 	}
 	return u, nil
 }
@@ -55,10 +61,11 @@ func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, 
 	}
 
 	u := domain.User{
-		Uuid:      row.ID,
-		Email:     row.Email,
-		CreatedAt: row.CreatedAt,
-		UpdatedAt: row.UpdatedAt,
+		Uuid:         row.ID,
+		Email:        row.Email,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
 	}
 	return u, nil
 }

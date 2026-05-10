@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package artel_auth;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/artel_api";
+
+service AuthAPI {
+  rpc Register(Register.Request) returns (Register.Response) {
+    option (google.api.http) = {
+      post: "/api/auth/register"
+      body: "*"
+    };
+  };
+  rpc Login(Login.Request) returns (Login.Response) {
+    option (google.api.http) = {
+      post: "/api/auth/login"
+      body: "*"
+    };
+  };
+  rpc Logout(Logout.Request) returns (Logout.Response) {
+    option (google.api.http) = {
+      post: "/api/auth/logout"
+      body: "*"
+    };
+  };
+}
+
+message PasswordCredentials {
+  string email    = 1;
+  string password = 2;
+}
+
+message Register {
+  message Request {
+    string email    = 1;
+    string password = 2;
+  }
+  message Response {
+    string id    = 1;
+    string email = 2;
+  }
+}
+
+message Login {
+  message Request {
+    oneof method {
+      PasswordCredentials password = 1;
+    }
+  }
+  message Response {
+    string                    token      = 1;
+    google.protobuf.Timestamp expires_at = 2;
+  }
+}
+
+message Logout {
+  message Request {}
+  message Response {}
+}

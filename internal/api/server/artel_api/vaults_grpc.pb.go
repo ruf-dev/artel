@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VaultsAPI_CreateVault_FullMethodName = "/artel_vaults.VaultsAPI/CreateVault"
-	VaultsAPI_GetVault_FullMethodName    = "/artel_vaults.VaultsAPI/GetVault"
-	VaultsAPI_ListVaults_FullMethodName  = "/artel_vaults.VaultsAPI/ListVaults"
-	VaultsAPI_DeleteVault_FullMethodName = "/artel_vaults.VaultsAPI/DeleteVault"
+	VaultsAPI_CreateVault_FullMethodName  = "/artel_vaults.VaultsAPI/CreateVault"
+	VaultsAPI_GetVault_FullMethodName     = "/artel_vaults.VaultsAPI/GetVault"
+	VaultsAPI_ListVaults_FullMethodName   = "/artel_vaults.VaultsAPI/ListVaults"
+	VaultsAPI_DeleteVault_FullMethodName  = "/artel_vaults.VaultsAPI/DeleteVault"
+	VaultsAPI_AddMember_FullMethodName    = "/artel_vaults.VaultsAPI/AddMember"
+	VaultsAPI_RemoveMember_FullMethodName = "/artel_vaults.VaultsAPI/RemoveMember"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -33,6 +35,8 @@ type VaultsAPIClient interface {
 	GetVault(ctx context.Context, in *GetVault_Request, opts ...grpc.CallOption) (*GetVault_Response, error)
 	ListVaults(ctx context.Context, in *ListVaults_Request, opts ...grpc.CallOption) (*ListVaults_Response, error)
 	DeleteVault(ctx context.Context, in *DeleteVault_Request, opts ...grpc.CallOption) (*DeleteVault_Response, error)
+	AddMember(ctx context.Context, in *AddMember_Request, opts ...grpc.CallOption) (*AddMember_Response, error)
+	RemoveMember(ctx context.Context, in *RemoveMember_Request, opts ...grpc.CallOption) (*RemoveMember_Response, error)
 }
 
 type vaultsAPIClient struct {
@@ -83,6 +87,26 @@ func (c *vaultsAPIClient) DeleteVault(ctx context.Context, in *DeleteVault_Reque
 	return out, nil
 }
 
+func (c *vaultsAPIClient) AddMember(ctx context.Context, in *AddMember_Request, opts ...grpc.CallOption) (*AddMember_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddMember_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_AddMember_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) RemoveMember(ctx context.Context, in *RemoveMember_Request, opts ...grpc.CallOption) (*RemoveMember_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveMember_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_RemoveMember_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VaultsAPIServer is the server API for VaultsAPI service.
 // All implementations must embed UnimplementedVaultsAPIServer
 // for forward compatibility.
@@ -91,6 +115,8 @@ type VaultsAPIServer interface {
 	GetVault(context.Context, *GetVault_Request) (*GetVault_Response, error)
 	ListVaults(context.Context, *ListVaults_Request) (*ListVaults_Response, error)
 	DeleteVault(context.Context, *DeleteVault_Request) (*DeleteVault_Response, error)
+	AddMember(context.Context, *AddMember_Request) (*AddMember_Response, error)
+	RemoveMember(context.Context, *RemoveMember_Request) (*RemoveMember_Response, error)
 	mustEmbedUnimplementedVaultsAPIServer()
 }
 
@@ -112,6 +138,12 @@ func (UnimplementedVaultsAPIServer) ListVaults(context.Context, *ListVaults_Requ
 }
 func (UnimplementedVaultsAPIServer) DeleteVault(context.Context, *DeleteVault_Request) (*DeleteVault_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteVault not implemented")
+}
+func (UnimplementedVaultsAPIServer) AddMember(context.Context, *AddMember_Request) (*AddMember_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddMember not implemented")
+}
+func (UnimplementedVaultsAPIServer) RemoveMember(context.Context, *RemoveMember_Request) (*RemoveMember_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method RemoveMember not implemented")
 }
 func (UnimplementedVaultsAPIServer) mustEmbedUnimplementedVaultsAPIServer() {}
 func (UnimplementedVaultsAPIServer) testEmbeddedByValue()                   {}
@@ -206,6 +238,42 @@ func _VaultsAPI_DeleteVault_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_AddMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddMember_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).AddMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_AddMember_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).AddMember(ctx, req.(*AddMember_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_RemoveMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveMember_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).RemoveMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_RemoveMember_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).RemoveMember(ctx, req.(*RemoveMember_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VaultsAPI_ServiceDesc is the grpc.ServiceDesc for VaultsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +296,14 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteVault",
 			Handler:    _VaultsAPI_DeleteVault_Handler,
+		},
+		{
+			MethodName: "AddMember",
+			Handler:    _VaultsAPI_AddMember_Handler,
+		},
+		{
+			MethodName: "RemoveMember",
+			Handler:    _VaultsAPI_RemoveMember_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

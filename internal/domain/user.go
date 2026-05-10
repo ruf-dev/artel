@@ -7,11 +7,12 @@ import (
 )
 
 type User struct {
-	Uuid      uuid.UUID
-	Email     string
-	Roles     []string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Uuid         uuid.UUID
+	Email        string
+	PasswordHash string
+	Roles        []string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type Subscription struct {

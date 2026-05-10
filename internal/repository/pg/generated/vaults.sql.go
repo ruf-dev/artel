@@ -7,28 +7,46 @@ package artel_q
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const createVault = `-- name: CreateVault :one
-INSERT INTO vaults (user_id, name, couch_db_name) VALUES ($1, $2, $3) RETURNING id, user_id, name, couch_db_name, created_at
+INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id) VALUES ($1, $2, $3, $4)
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, created_at
 `
 
 type CreateVaultParams struct {
-	UserID      uuid.UUID
-	Name        string
-	CouchDbName string
+	UserID          uuid.UUID
+	Name            string
+	CouchDbName     string
+	CouchInstanceID uuid.NullUUID
 }
 
-func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Vault, error) {
-	row := q.db.QueryRowContext(ctx, createVault, arg.UserID, arg.Name, arg.CouchDbName)
-	var i Vault
+type CreateVaultRow struct {
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	Name            string
+	CouchDbName     string
+	CouchInstanceID uuid.NullUUID
+	CreatedAt       time.Time
+}
+
+func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error) {
+	row := q.db.QueryRowContext(ctx, createVault,
+		arg.UserID,
+		arg.Name,
+		arg.CouchDbName,
+		arg.CouchInstanceID,
+	)
+	var i CreateVaultRow
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.Name,
 		&i.CouchDbName,
+		&i.CouchInstanceID,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -43,74 +61,64 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const getVaultByName = `-- name: GetVaultByName :one
-SELECT id, user_id, name, couch_db_name, created_at FROM vaults WHERE name = $1
+const getVaultByID = `-- name: GetVaultByID :one
+SELECT id, user_id, name, couch_db_name, couch_instance_id, created_at FROM vaults WHERE id = $1
 `
 
-func (q *Queries) GetVaultByName(ctx context.Context, name string) (Vault, error) {
-	row := q.db.QueryRowContext(ctx, getVaultByName, name)
-	var i Vault
+type GetVaultByIDRow struct {
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	Name            string
+	CouchDbName     string
+	CouchInstanceID uuid.NullUUID
+	CreatedAt       time.Time
+}
+
+func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getVaultByID, id)
+	var i GetVaultByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.Name,
 		&i.CouchDbName,
+		&i.CouchInstanceID,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
-const listAllVaults = `-- name: ListAllVaults :many
-SELECT id, user_id, name, couch_db_name, created_at FROM vaults
+const listVaultsByMembership = `-- name: ListVaultsByMembership :many
+SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.created_at
+FROM vaults v
+JOIN vault_members vm ON vm.vault_id = v.id
+WHERE vm.user_id = $1
 `
 
-func (q *Queries) ListAllVaults(ctx context.Context) ([]Vault, error) {
-	rows, err := q.db.QueryContext(ctx, listAllVaults)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Vault{}
-	for rows.Next() {
-		var i Vault
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.Name,
-			&i.CouchDbName,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+type ListVaultsByMembershipRow struct {
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	Name            string
+	CouchDbName     string
+	CouchInstanceID uuid.NullUUID
+	CreatedAt       time.Time
 }
 
-const listVaultsByUser = `-- name: ListVaultsByUser :many
-SELECT id, user_id, name, couch_db_name, created_at FROM vaults WHERE user_id = $1
-`
-
-func (q *Queries) ListVaultsByUser(ctx context.Context, userID uuid.UUID) ([]Vault, error) {
-	rows, err := q.db.QueryContext(ctx, listVaultsByUser, userID)
+func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error) {
+	rows, err := q.db.QueryContext(ctx, listVaultsByMembership, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Vault{}
+	items := []ListVaultsByMembershipRow{}
 	for rows.Next() {
-		var i Vault
+		var i ListVaultsByMembershipRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
 			&i.Name,
 			&i.CouchDbName,
+			&i.CouchInstanceID,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err

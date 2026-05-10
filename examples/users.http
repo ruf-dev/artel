@@ -1,0 +1,8 @@
+### Create user
+POST {{artel_url}}/api/users/add
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "secret"
+}

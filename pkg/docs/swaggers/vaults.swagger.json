@@ -68,7 +68,7 @@
         ]
       }
     },
-    "/api/vaults/{name}": {
+    "/api/vaults/{id}": {
       "get": {
         "operationId": "VaultsAPI_GetVault",
         "responses": {
@@ -87,7 +87,7 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -115,7 +115,81 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/{vaultId}/members": {
+      "post": {
+        "operationId": "VaultsAPI_AddMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsAddMemberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "vaultId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsVaultsAPIAddMemberBody"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/{vaultId}/members/{userId}": {
+      "delete": {
+        "operationId": "VaultsAPI_RemoveMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsRemoveMemberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "vaultId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -128,6 +202,9 @@
     }
   },
   "definitions": {
+    "artel_vaultsAddMemberResponse": {
+      "type": "object"
+    },
     "artel_vaultsCreateVaultRequest": {
       "type": "object",
       "properties": {
@@ -139,6 +216,9 @@
     "artel_vaultsCreateVaultResponse": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -148,16 +228,14 @@
       }
     },
     "artel_vaultsDeleteVaultResponse": {
-      "type": "object",
-      "properties": {
-        "ok": {
-          "type": "boolean"
-        }
-      }
+      "type": "object"
     },
     "artel_vaultsGetVaultResponse": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -178,13 +256,27 @@
         }
       }
     },
+    "artel_vaultsRemoveMemberResponse": {
+      "type": "object"
+    },
     "artel_vaultsVaultItem": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
         "dbUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsVaultsAPIAddMemberBody": {
+      "type": "object",
+      "properties": {
+        "userId": {
           "type": "string"
         }
       }

@@ -31,12 +31,12 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "artel_api.swagger.json"),
 				},
 				{
-					Name: "CouchInstances",
-					URL:  path.Join(swaggerPath, "couch_instances.swagger.json"),
+					Name: "Auth",
+					URL:  path.Join(swaggerPath, "auth.swagger.json"),
 				},
 				{
-					Name: "Users",
-					URL:  path.Join(swaggerPath, "users.swagger.json"),
+					Name: "CouchInstances",
+					URL:  path.Join(swaggerPath, "couch_instances.swagger.json"),
 				},
 				{
 					Name: "Vaults",

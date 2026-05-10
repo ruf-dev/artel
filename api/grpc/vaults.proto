@@ -15,7 +15,7 @@ service VaultsAPI {
   };
   rpc GetVault(GetVault.Request) returns (GetVault.Response) {
     option (google.api.http) = {
-      get: "/api/vaults/{name}"
+      get: "/api/vaults/{id}"
     };
   };
   rpc ListVaults(ListVaults.Request) returns (ListVaults.Response) {
@@ -25,7 +25,18 @@ service VaultsAPI {
   };
   rpc DeleteVault(DeleteVault.Request) returns (DeleteVault.Response) {
     option (google.api.http) = {
-      delete: "/api/vaults/{name}"
+      delete: "/api/vaults/{id}"
+    };
+  };
+  rpc AddMember(AddMember.Request) returns (AddMember.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/{vault_id}/members"
+      body: "*"
+    };
+  };
+  rpc RemoveMember(RemoveMember.Request) returns (RemoveMember.Response) {
+    option (google.api.http) = {
+      delete: "/api/vaults/{vault_id}/members/{user_id}"
     };
   };
 }
@@ -35,18 +46,20 @@ message CreateVault {
     string name = 1;
   }
   message Response {
-    string name = 1;
-    string db_url = 2;
+    string id     = 1;
+    string name   = 2;
+    string db_url = 3;
   }
 }
 
 message GetVault {
   message Request {
-    string name = 1;
+    string id = 1;
   }
   message Response {
-    string name = 1;
-    string db_url = 2;
+    string id     = 1;
+    string name   = 2;
+    string db_url = 3;
   }
 }
 
@@ -59,14 +72,29 @@ message ListVaults {
 
 message DeleteVault {
   message Request {
-    string name = 1;
+    string id = 1;
   }
-  message Response {
-    bool ok = 1;
+  message Response {}
+}
+
+message AddMember {
+  message Request {
+    string vault_id = 1;
+    string user_id  = 2;
   }
+  message Response {}
+}
+
+message RemoveMember {
+  message Request {
+    string vault_id = 1;
+    string user_id  = 2;
+  }
+  message Response {}
 }
 
 message VaultItem {
-  string name = 1;
-  string db_url = 2;
+  string id     = 1;
+  string name   = 2;
+  string db_url = 3;
 }

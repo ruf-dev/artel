@@ -166,17 +166,90 @@ func (*DeleteVault) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{3}
 }
 
+type AddMember struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMember) Reset() {
+	*x = AddMember{}
+	mi := &file_vaults_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMember) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMember) ProtoMessage() {}
+
+func (x *AddMember) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMember.ProtoReflect.Descriptor instead.
+func (*AddMember) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{4}
+}
+
+type RemoveMember struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMember) Reset() {
+	*x = RemoveMember{}
+	mi := &file_vaults_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMember) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMember) ProtoMessage() {}
+
+func (x *RemoveMember) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMember.ProtoReflect.Descriptor instead.
+func (*RemoveMember) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{5}
+}
+
 type VaultItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	DbUrl         string                 `protobuf:"bytes,2,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DbUrl         string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *VaultItem) Reset() {
 	*x = VaultItem{}
-	mi := &file_vaults_proto_msgTypes[4]
+	mi := &file_vaults_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -188,7 +261,7 @@ func (x *VaultItem) String() string {
 func (*VaultItem) ProtoMessage() {}
 
 func (x *VaultItem) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[4]
+	mi := &file_vaults_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -201,7 +274,14 @@ func (x *VaultItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultItem.ProtoReflect.Descriptor instead.
 func (*VaultItem) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{4}
+	return file_vaults_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *VaultItem) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *VaultItem) GetName() string {
@@ -227,7 +307,7 @@ type CreateVault_Request struct {
 
 func (x *CreateVault_Request) Reset() {
 	*x = CreateVault_Request{}
-	mi := &file_vaults_proto_msgTypes[5]
+	mi := &file_vaults_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -239,7 +319,7 @@ func (x *CreateVault_Request) String() string {
 func (*CreateVault_Request) ProtoMessage() {}
 
 func (x *CreateVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[5]
+	mi := &file_vaults_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -264,15 +344,16 @@ func (x *CreateVault_Request) GetName() string {
 
 type CreateVault_Response struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	DbUrl         string                 `protobuf:"bytes,2,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DbUrl         string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateVault_Response) Reset() {
 	*x = CreateVault_Response{}
-	mi := &file_vaults_proto_msgTypes[6]
+	mi := &file_vaults_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -284,7 +365,7 @@ func (x *CreateVault_Response) String() string {
 func (*CreateVault_Response) ProtoMessage() {}
 
 func (x *CreateVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[6]
+	mi := &file_vaults_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -298,6 +379,13 @@ func (x *CreateVault_Response) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CreateVault_Response.ProtoReflect.Descriptor instead.
 func (*CreateVault_Response) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{0, 1}
+}
+
+func (x *CreateVault_Response) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *CreateVault_Response) GetName() string {
@@ -316,14 +404,14 @@ func (x *CreateVault_Response) GetDbUrl() string {
 
 type GetVault_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetVault_Request) Reset() {
 	*x = GetVault_Request{}
-	mi := &file_vaults_proto_msgTypes[7]
+	mi := &file_vaults_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -335,7 +423,7 @@ func (x *GetVault_Request) String() string {
 func (*GetVault_Request) ProtoMessage() {}
 
 func (x *GetVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[7]
+	mi := &file_vaults_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -351,24 +439,25 @@ func (*GetVault_Request) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{1, 0}
 }
 
-func (x *GetVault_Request) GetName() string {
+func (x *GetVault_Request) GetId() string {
 	if x != nil {
-		return x.Name
+		return x.Id
 	}
 	return ""
 }
 
 type GetVault_Response struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	DbUrl         string                 `protobuf:"bytes,2,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DbUrl         string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetVault_Response) Reset() {
 	*x = GetVault_Response{}
-	mi := &file_vaults_proto_msgTypes[8]
+	mi := &file_vaults_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -380,7 +469,7 @@ func (x *GetVault_Response) String() string {
 func (*GetVault_Response) ProtoMessage() {}
 
 func (x *GetVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[8]
+	mi := &file_vaults_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,6 +483,13 @@ func (x *GetVault_Response) ProtoReflect() protoreflect.Message {
 // Deprecated: Use GetVault_Response.ProtoReflect.Descriptor instead.
 func (*GetVault_Response) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{1, 1}
+}
+
+func (x *GetVault_Response) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *GetVault_Response) GetName() string {
@@ -418,7 +514,7 @@ type ListVaults_Request struct {
 
 func (x *ListVaults_Request) Reset() {
 	*x = ListVaults_Request{}
-	mi := &file_vaults_proto_msgTypes[9]
+	mi := &file_vaults_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -430,7 +526,7 @@ func (x *ListVaults_Request) String() string {
 func (*ListVaults_Request) ProtoMessage() {}
 
 func (x *ListVaults_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[9]
+	mi := &file_vaults_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -455,7 +551,7 @@ type ListVaults_Response struct {
 
 func (x *ListVaults_Response) Reset() {
 	*x = ListVaults_Response{}
-	mi := &file_vaults_proto_msgTypes[10]
+	mi := &file_vaults_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -467,7 +563,7 @@ func (x *ListVaults_Response) String() string {
 func (*ListVaults_Response) ProtoMessage() {}
 
 func (x *ListVaults_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[10]
+	mi := &file_vaults_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -492,14 +588,14 @@ func (x *ListVaults_Response) GetVaults() []*VaultItem {
 
 type DeleteVault_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DeleteVault_Request) Reset() {
 	*x = DeleteVault_Request{}
-	mi := &file_vaults_proto_msgTypes[11]
+	mi := &file_vaults_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -511,7 +607,7 @@ func (x *DeleteVault_Request) String() string {
 func (*DeleteVault_Request) ProtoMessage() {}
 
 func (x *DeleteVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[11]
+	mi := &file_vaults_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -527,23 +623,22 @@ func (*DeleteVault_Request) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{3, 0}
 }
 
-func (x *DeleteVault_Request) GetName() string {
+func (x *DeleteVault_Request) GetId() string {
 	if x != nil {
-		return x.Name
+		return x.Id
 	}
 	return ""
 }
 
 type DeleteVault_Response struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Ok            bool                   `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DeleteVault_Response) Reset() {
 	*x = DeleteVault_Response{}
-	mi := &file_vaults_proto_msgTypes[12]
+	mi := &file_vaults_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -555,7 +650,7 @@ func (x *DeleteVault_Response) String() string {
 func (*DeleteVault_Response) ProtoMessage() {}
 
 func (x *DeleteVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[12]
+	mi := &file_vaults_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -571,49 +666,235 @@ func (*DeleteVault_Response) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{3, 1}
 }
 
-func (x *DeleteVault_Response) GetOk() bool {
+type AddMember_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMember_Request) Reset() {
+	*x = AddMember_Request{}
+	mi := &file_vaults_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMember_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMember_Request) ProtoMessage() {}
+
+func (x *AddMember_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[15]
 	if x != nil {
-		return x.Ok
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-	return false
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMember_Request.ProtoReflect.Descriptor instead.
+func (*AddMember_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{4, 0}
+}
+
+func (x *AddMember_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *AddMember_Request) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type AddMember_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMember_Response) Reset() {
+	*x = AddMember_Response{}
+	mi := &file_vaults_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMember_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMember_Response) ProtoMessage() {}
+
+func (x *AddMember_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMember_Response.ProtoReflect.Descriptor instead.
+func (*AddMember_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{4, 1}
+}
+
+type RemoveMember_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMember_Request) Reset() {
+	*x = RemoveMember_Request{}
+	mi := &file_vaults_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMember_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMember_Request) ProtoMessage() {}
+
+func (x *RemoveMember_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMember_Request.ProtoReflect.Descriptor instead.
+func (*RemoveMember_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *RemoveMember_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *RemoveMember_Request) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type RemoveMember_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveMember_Response) Reset() {
+	*x = RemoveMember_Response{}
+	mi := &file_vaults_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveMember_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveMember_Response) ProtoMessage() {}
+
+func (x *RemoveMember_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveMember_Response.ProtoReflect.Descriptor instead.
+func (*RemoveMember_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{5, 1}
 }
 
 var File_vaults_proto protoreflect.FileDescriptor
 
 const file_vaults_proto_rawDesc = "" +
 	"\n" +
-	"\fvaults.proto\x12\fartel_vaults\x1a\x1cgoogle/api/annotations.proto\"c\n" +
+	"\fvaults.proto\x12\fartel_vaults\x1a\x1cgoogle/api/annotations.proto\"s\n" +
 	"\vCreateVault\x1a\x1d\n" +
 	"\aRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x1a5\n" +
-	"\bResponse\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x02 \x01(\tR\x05dbUrl\"`\n" +
-	"\bGetVault\x1a\x1d\n" +
-	"\aRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x1a5\n" +
-	"\bResponse\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x02 \x01(\tR\x05dbUrl\"T\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x1aE\n" +
+	"\bResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"l\n" +
+	"\bGetVault\x1a\x19\n" +
+	"\aRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x1aE\n" +
+	"\bResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"T\n" +
 	"\n" +
 	"ListVaults\x1a\t\n" +
 	"\aRequest\x1a;\n" +
 	"\bResponse\x12/\n" +
-	"\x06vaults\x18\x01 \x03(\v2\x17.artel_vaults.VaultItemR\x06vaults\"H\n" +
-	"\vDeleteVault\x1a\x1d\n" +
-	"\aRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x1a\x1a\n" +
-	"\bResponse\x12\x0e\n" +
-	"\x02ok\x18\x01 \x01(\bR\x02ok\"6\n" +
-	"\tVaultItem\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x02 \x01(\tR\x05dbUrl2\xbc\x03\n" +
-	"\tVaultsAPI\x12l\n" +
-	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/api/vaults\x12g\n" +
-	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/api/vaults/{name}\x12f\n" +
+	"\x06vaults\x18\x01 \x03(\v2\x17.artel_vaults.VaultItemR\x06vaults\"4\n" +
+	"\vDeleteVault\x1a\x19\n" +
+	"\aRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x1a\n" +
 	"\n" +
-	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/api/vaults\x12p\n" +
-	"\vDeleteVault\x12!.artel_vaults.DeleteVault.Request\x1a\".artel_vaults.DeleteVault.Response\"\x1a\x82\xd3\xe4\x93\x02\x14*\x12/api/vaults/{name}B\fZ\n" +
+	"\bResponse\"V\n" +
+	"\tAddMember\x1a=\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x1a\n" +
+	"\n" +
+	"\bResponse\"Y\n" +
+	"\fRemoveMember\x1a=\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x1a\n" +
+	"\n" +
+	"\bResponse\"F\n" +
+	"\tVaultItem\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl2\xbf\x05\n" +
+	"\tVaultsAPI\x12l\n" +
+	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/api/vaults\x12e\n" +
+	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/vaults/{id}\x12f\n" +
+	"\n" +
+	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/api/vaults\x12n\n" +
+	"\vDeleteVault\x12!.artel_vaults.DeleteVault.Request\x1a\".artel_vaults.DeleteVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12*\x10/api/vaults/{id}\x12y\n" +
+	"\tAddMember\x12\x1f.artel_vaults.AddMember.Request\x1a .artel_vaults.AddMember.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/vaults/{vault_id}/members\x12\x89\x01\n" +
+	"\fRemoveMember\x12\".artel_vaults.RemoveMember.Request\x1a#.artel_vaults.RemoveMember.Response\"0\x82\xd3\xe4\x93\x02**(/api/vaults/{vault_id}/members/{user_id}B\fZ\n" +
 	"/artel_apib\x06proto3"
 
 var (
@@ -628,34 +909,44 @@ func file_vaults_proto_rawDescGZIP() []byte {
 	return file_vaults_proto_rawDescData
 }
 
-var file_vaults_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_vaults_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_vaults_proto_goTypes = []any{
-	(*CreateVault)(nil),          // 0: artel_vaults.CreateVault
-	(*GetVault)(nil),             // 1: artel_vaults.GetVault
-	(*ListVaults)(nil),           // 2: artel_vaults.ListVaults
-	(*DeleteVault)(nil),          // 3: artel_vaults.DeleteVault
-	(*VaultItem)(nil),            // 4: artel_vaults.VaultItem
-	(*CreateVault_Request)(nil),  // 5: artel_vaults.CreateVault.Request
-	(*CreateVault_Response)(nil), // 6: artel_vaults.CreateVault.Response
-	(*GetVault_Request)(nil),     // 7: artel_vaults.GetVault.Request
-	(*GetVault_Response)(nil),    // 8: artel_vaults.GetVault.Response
-	(*ListVaults_Request)(nil),   // 9: artel_vaults.ListVaults.Request
-	(*ListVaults_Response)(nil),  // 10: artel_vaults.ListVaults.Response
-	(*DeleteVault_Request)(nil),  // 11: artel_vaults.DeleteVault.Request
-	(*DeleteVault_Response)(nil), // 12: artel_vaults.DeleteVault.Response
+	(*CreateVault)(nil),           // 0: artel_vaults.CreateVault
+	(*GetVault)(nil),              // 1: artel_vaults.GetVault
+	(*ListVaults)(nil),            // 2: artel_vaults.ListVaults
+	(*DeleteVault)(nil),           // 3: artel_vaults.DeleteVault
+	(*AddMember)(nil),             // 4: artel_vaults.AddMember
+	(*RemoveMember)(nil),          // 5: artel_vaults.RemoveMember
+	(*VaultItem)(nil),             // 6: artel_vaults.VaultItem
+	(*CreateVault_Request)(nil),   // 7: artel_vaults.CreateVault.Request
+	(*CreateVault_Response)(nil),  // 8: artel_vaults.CreateVault.Response
+	(*GetVault_Request)(nil),      // 9: artel_vaults.GetVault.Request
+	(*GetVault_Response)(nil),     // 10: artel_vaults.GetVault.Response
+	(*ListVaults_Request)(nil),    // 11: artel_vaults.ListVaults.Request
+	(*ListVaults_Response)(nil),   // 12: artel_vaults.ListVaults.Response
+	(*DeleteVault_Request)(nil),   // 13: artel_vaults.DeleteVault.Request
+	(*DeleteVault_Response)(nil),  // 14: artel_vaults.DeleteVault.Response
+	(*AddMember_Request)(nil),     // 15: artel_vaults.AddMember.Request
+	(*AddMember_Response)(nil),    // 16: artel_vaults.AddMember.Response
+	(*RemoveMember_Request)(nil),  // 17: artel_vaults.RemoveMember.Request
+	(*RemoveMember_Response)(nil), // 18: artel_vaults.RemoveMember.Response
 }
 var file_vaults_proto_depIdxs = []int32{
-	4,  // 0: artel_vaults.ListVaults.Response.vaults:type_name -> artel_vaults.VaultItem
-	5,  // 1: artel_vaults.VaultsAPI.CreateVault:input_type -> artel_vaults.CreateVault.Request
-	7,  // 2: artel_vaults.VaultsAPI.GetVault:input_type -> artel_vaults.GetVault.Request
-	9,  // 3: artel_vaults.VaultsAPI.ListVaults:input_type -> artel_vaults.ListVaults.Request
-	11, // 4: artel_vaults.VaultsAPI.DeleteVault:input_type -> artel_vaults.DeleteVault.Request
-	6,  // 5: artel_vaults.VaultsAPI.CreateVault:output_type -> artel_vaults.CreateVault.Response
-	8,  // 6: artel_vaults.VaultsAPI.GetVault:output_type -> artel_vaults.GetVault.Response
-	10, // 7: artel_vaults.VaultsAPI.ListVaults:output_type -> artel_vaults.ListVaults.Response
-	12, // 8: artel_vaults.VaultsAPI.DeleteVault:output_type -> artel_vaults.DeleteVault.Response
-	5,  // [5:9] is the sub-list for method output_type
-	1,  // [1:5] is the sub-list for method input_type
+	6,  // 0: artel_vaults.ListVaults.Response.vaults:type_name -> artel_vaults.VaultItem
+	7,  // 1: artel_vaults.VaultsAPI.CreateVault:input_type -> artel_vaults.CreateVault.Request
+	9,  // 2: artel_vaults.VaultsAPI.GetVault:input_type -> artel_vaults.GetVault.Request
+	11, // 3: artel_vaults.VaultsAPI.ListVaults:input_type -> artel_vaults.ListVaults.Request
+	13, // 4: artel_vaults.VaultsAPI.DeleteVault:input_type -> artel_vaults.DeleteVault.Request
+	15, // 5: artel_vaults.VaultsAPI.AddMember:input_type -> artel_vaults.AddMember.Request
+	17, // 6: artel_vaults.VaultsAPI.RemoveMember:input_type -> artel_vaults.RemoveMember.Request
+	8,  // 7: artel_vaults.VaultsAPI.CreateVault:output_type -> artel_vaults.CreateVault.Response
+	10, // 8: artel_vaults.VaultsAPI.GetVault:output_type -> artel_vaults.GetVault.Response
+	12, // 9: artel_vaults.VaultsAPI.ListVaults:output_type -> artel_vaults.ListVaults.Response
+	14, // 10: artel_vaults.VaultsAPI.DeleteVault:output_type -> artel_vaults.DeleteVault.Response
+	16, // 11: artel_vaults.VaultsAPI.AddMember:output_type -> artel_vaults.AddMember.Response
+	18, // 12: artel_vaults.VaultsAPI.RemoveMember:output_type -> artel_vaults.RemoveMember.Response
+	7,  // [7:13] is the sub-list for method output_type
+	1,  // [1:7] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -672,7 +963,7 @@ func file_vaults_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_vaults_proto_rawDesc), len(file_vaults_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

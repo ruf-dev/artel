@@ -19,7 +19,6 @@ type authMiddleware struct {
 	ignoredPaths   map[string]struct{}
 	isDebugEnabled bool
 	authService    service.AuthService
-	userService    service.UserService
 }
 
 func (am *authMiddleware) isIgnored(path string) bool {
@@ -47,7 +46,6 @@ func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOpt
 	ac := &authMiddleware{
 		ignoredPaths: make(map[string]struct{}),
 		authService:  srv.AuthService(),
-		userService:  srv.UserService(),
 	}
 
 	for _, opt := range opts {
@@ -89,23 +87,15 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
 
-	userUuid, err := am.authService.AuthWithToken(ctx, auth[0])
+	userUuid, err := am.authService.ValidateToken(ctx, auth[0])
 	if err != nil {
-		wrapped := rerrors.Wrap(err, "auth with token")
+		wrapped := rerrors.Wrap(err, "validate token")
 		return nil, status.Error(codes.Unauthenticated, wrapped.Error())
 	}
 
 	uc := user_context.UserContext{
 		UserUuid: userUuid,
 	}
-
-	user, err := am.userService.GetUser(ctx, userUuid.String())
-	if err != nil {
-		wrapped := rerrors.Wrap(err, "get user")
-		return nil, status.Error(codes.Internal, wrapped.Error())
-	}
-
-	uc.Roles = user.Roles
 
 	ctxWithUser := user_context.WithUserContext(ctx, uc)
 	return ctxWithUser, nil

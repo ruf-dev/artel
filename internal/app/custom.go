@@ -10,11 +10,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 
+	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport"
+	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
-	"github.com/ruf-dev/artel/internal/transport/users_api"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
 
@@ -31,7 +32,7 @@ func (c *Custom) Init(a *App) error {
 
 	repo := repopg.New(a.Postgres, encKey)
 
-	services := svcv1.New(repo, encKey)
+	services := svcv1.New(repo)
 
 	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
 	if err != nil {
@@ -39,16 +40,18 @@ func (c *Custom) Init(a *App) error {
 	}
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
-	usersImpl := users_api.NewUsersImpl(services.User)
+	authImpl := auth_api.NewAuthImpl(services.Auth)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 
 	c.Transport.AddServerOption(
-	//middleware.PanicInterceptor(),
-	//middleware.LogInterceptor(),
-	//middleware.GrpcAuthInterceptor(services),
+		middleware.GrpcAuthInterceptor(services,
+			middleware.WithIgnoredPathAuthOption(
+				"/artel_auth.AuthAPI/Register",
+				"/artel_auth.AuthAPI/Login",
+			),
+		),
 	)
-	_, _ = vaultsImpl, usersImpl
-	c.Transport.AddImplementation(couchInstancesImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl)
 
 	return nil
 }
