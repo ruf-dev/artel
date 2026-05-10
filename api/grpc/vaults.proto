@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package artel_vaults;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+service VaultsAPI {
+  rpc CreateVault(CreateVault.Request) returns (CreateVault.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults"
+      body: "*"
+    };
+  };
+  rpc GetVault(GetVault.Request) returns (GetVault.Response) {
+    option (google.api.http) = {
+      get: "/api/vaults/{name}"
+    };
+  };
+  rpc ListVaults(ListVaults.Request) returns (ListVaults.Response) {
+    option (google.api.http) = {
+      get: "/api/vaults"
+    };
+  };
+  rpc DeleteVault(DeleteVault.Request) returns (DeleteVault.Response) {
+    option (google.api.http) = {
+      delete: "/api/vaults/{name}"
+    };
+  };
+}
+
+message CreateVault {
+  message Request {
+    string name = 1;
+  }
+  message Response {
+    string name = 1;
+    string db_url = 2;
+  }
+}
+
+message GetVault {
+  message Request {
+    string name = 1;
+  }
+  message Response {
+    string name = 1;
+    string db_url = 2;
+  }
+}
+
+message ListVaults {
+  message Request {}
+  message Response {
+    repeated VaultItem vaults = 1;
+  }
+}
+
+message DeleteVault {
+  message Request {
+    string name = 1;
+  }
+  message Response {
+    bool ok = 1;
+  }
+}
+
+message VaultItem {
+  string name = 1;
+  string db_url = 2;
+}

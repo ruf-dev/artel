@@ -8,15 +8,15 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
-	"go.redsock.ru/toolbox/closer"
 
+	artel_api_impl "github.com/ruf-dev/artel/internal/api/server/artel_api_impl"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
-	"github.com/ruf-dev/artel/internal/transport/http"
+	"github.com/ruf-dev/artel/internal/transport"
 )
 
 type Custom struct {
-	httpServer *http.Server
+	Transport *transport.ServersManager
 }
 
 func (c *Custom) Init(a *App) error {
@@ -29,10 +29,15 @@ func (c *Custom) Init(a *App) error {
 
 	services := svcv1.New(couchClient)
 
-	httpServer := http.New(":8080", services.Vault)
-	c.httpServer = httpServer
+	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
+	if err != nil {
+		return rerrors.Wrap(err, "error creating server manager")
+	}
 
-	closer.Add(c.Stop)
+	vaultsImpl := artel_api_impl.NewVaultsImpl(services.Vault)
+	usersImpl := artel_api_impl.NewUsersImpl(services.User)
+
+	c.Transport.AddImplementation(vaultsImpl, usersImpl)
 
 	return nil
 }
@@ -40,11 +45,11 @@ func (c *Custom) Init(a *App) error {
 // Start - launch custom handlers
 // Even if you won't use it keep it for proper work
 func (c *Custom) Start(ctx context.Context) error {
-	log.Info().Msg("starting HTTP server")
+	log.Info().Msg("starting server")
 
-	err := c.httpServer.Start()
+	err := c.Transport.Start()
 	if err != nil {
-		return rerrors.Wrap(err, "error starting HTTP server")
+		return rerrors.Wrap(err, "error starting server")
 	}
 
 	return nil
@@ -53,11 +58,9 @@ func (c *Custom) Start(ctx context.Context) error {
 // Stop - gracefully stop custom handlers
 // Even if you won't use it keep it for proper work
 func (c *Custom) Stop() error {
-	if c.httpServer != nil {
-		err := c.httpServer.Stop()
-		if err != nil {
-			return rerrors.Wrap(err, "error stopping HTTP server")
-		}
+	err := c.Transport.Stop()
+	if err != nil {
+		return rerrors.Wrap(err, "error stopping server")
 	}
 	return nil
 }

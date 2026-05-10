@@ -1,0 +1,221 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "vaults.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "VaultsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/vaults": {
+      "get": {
+        "operationId": "VaultsAPI_ListVaults",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListVaultsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "VaultsAPI"
+        ]
+      },
+      "post": {
+        "operationId": "VaultsAPI_CreateVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateVaultRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/{name}": {
+      "get": {
+        "operationId": "VaultsAPI_GetVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsGetVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      },
+      "delete": {
+        "operationId": "VaultsAPI_DeleteVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsDeleteVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_vaultsCreateVaultRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsCreateVaultResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "dbUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsDeleteVaultResponse": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_vaultsGetVaultResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "dbUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsListVaultsResponse": {
+      "type": "object",
+      "properties": {
+        "vaults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_vaultsVaultItem"
+          }
+        }
+      }
+    },
+    "artel_vaultsVaultItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "dbUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

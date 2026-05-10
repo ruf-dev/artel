@@ -5,6 +5,8 @@ package app
 import (
 	"context"
 	"database/sql"
+	"net"
+
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox"
@@ -18,8 +20,10 @@ type App struct {
 	Ctx  context.Context
 	Stop func()
 	Cfg  config.Config
-	/* Data source connection */
-	Postgres *sql.DB
+     /* Data source connection */ 
+    Postgres *sql.DB
+     /* Servers network listeners */ 
+    MASTER net.Listener
 
 	Custom Custom
 }
@@ -31,11 +35,17 @@ func New() (app App, err error) {
 	if err != nil {
 		return App{}, rerrors.Wrap(err, "error initializing config")
 	}
-
+	
 	err = app.InitDataSources()
 	if err != nil {
-		return App{}, rerrors.Wrap(err, "error during data sources initialization")
-	}
+        return App{}, rerrors.Wrap(err, "error during data sources initialization")
+    }
+	
+	err = app.InitServers()
+	if err != nil {
+        return App{}, rerrors.Wrap(err, "error during network listeners initialization")
+    }
+	
 
 	err = app.Custom.Init(&app)
 	if err != nil {
@@ -47,15 +57,15 @@ func New() (app App, err error) {
 
 func (a *App) Start() (err error) {
 	var eg *errgroup.Group
-	eg, a.Ctx = errgroup.WithContext(a.Ctx)
+	eg, a.Ctx = errgroup.WithContext(a.Ctx) 
 
 	eg.Go(func() error {
 		return a.Custom.Start(a.Ctx)
 	})
 	closer.Add(a.Custom.Stop)
 
-	interaptedC := func() chan struct{} {
-		c := make(chan struct{})
+	interaptedC := func() chan struct{}{
+		c :=  make(chan struct{})
 		go func() {
 			toolbox.WaitForInterrupt()
 			close(c)
@@ -64,9 +74,9 @@ func (a *App) Start() (err error) {
 		return c
 	}()
 
-	errC := func() chan error {
+	errC := func() chan error{
 		c := make(chan error)
-		go func() {
+			go func() {
 			c <- eg.Wait()
 			close(c)
 			return
@@ -75,7 +85,7 @@ func (a *App) Start() (err error) {
 	}()
 
 	select {
-	case err := <-errC:
+	case err := <- errC:
 		if err != nil {
 			log.Error().Err(err).Msg("error during application startup")
 		} else {
@@ -93,3 +103,4 @@ func (a *App) Start() (err error) {
 
 	return nil
 }
+
