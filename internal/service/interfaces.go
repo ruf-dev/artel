@@ -12,6 +12,7 @@ type Service interface {
 	AuthService() AuthService
 	VaultService() VaultService
 	CouchInstanceService() CouchInstanceService
+	McpService() McpService
 }
 
 type AuthService interface {
@@ -36,4 +37,13 @@ type CouchInstanceService interface {
 	GetCouchInstance(ctx context.Context, id string) (domain.CouchInstance, error)
 	ListCouchInstances(ctx context.Context) ([]domain.CouchInstance, error)
 	DeleteCouchInstance(ctx context.Context, id string) error
+}
+
+type McpService interface {
+	// CreateKey generates a new bearer token, stores it hashed, returns the raw token once.
+	CreateKey(ctx context.Context, vaultID uuid.UUID, name string) (rawToken string, key domain.McpKey, err error)
+	ListKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
+	RevokeKey(ctx context.Context, keyID uuid.UUID) error
+	// ResolveKey validates the raw bearer token and returns vault+couch context.
+	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
 }

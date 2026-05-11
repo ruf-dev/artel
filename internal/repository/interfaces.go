@@ -19,6 +19,7 @@ type Repo interface {
 	Subscriptions() Subscriptions
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
+	McpKeyRepository() McpKeyRepository
 
 	TxManager() tx_manager.TxManager
 }
@@ -80,4 +81,12 @@ type CouchInstances interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	WithTx(tx sqldb.DB) CouchInstances
+}
+
+type McpKeyRepository interface {
+	CreateMcpKey(ctx context.Context, vaultID, userID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error)
+	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
+	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error)
+	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
+	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 }

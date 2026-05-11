@@ -7,6 +7,7 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchinstances"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
@@ -23,6 +24,7 @@ type Repos struct {
 	subscriptions  repository.Subscriptions
 	couchAccounts  repository.CouchAccounts
 	couchInstances repository.CouchInstances
+	mcpKey         repository.McpKeyRepository
 
 	txManager tx_manager.TxManager
 }
@@ -59,6 +61,10 @@ func (r Repos) TxManager() tx_manager.TxManager {
 	return r.txManager
 }
 
+func (r Repos) McpKeyRepository() repository.McpKeyRepository {
+	return r.mcpKey
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(db)
 
@@ -71,6 +77,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		sessions:      sessions.New(q),
 		subscriptions: subscriptions.New(q),
 		couchAccounts: couchaccounts.New(db, encryptionKey),
+		mcpKey:        mcpkeys.New(),
 
 		txManager: tx_manager.New(db),
 	}
