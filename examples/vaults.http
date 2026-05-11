@@ -8,24 +8,24 @@ Authorization: {{auth_token}}
 }
 
 ### Get Vault
-GET {{artel_url}}/api/vaults/00000000-0000-0000-0000-000000000000
-Authorization: Bearer {{auth_token}}
+GET {{artel_url}}/api/vaults/4263b2d0-3d12-4746-b361-b9702f5e8bc6
+Authorization: {{auth_token}}
 
 ### List Vaults
 POST {{artel_url}}/api/vaults/list
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: {{auth_token}}
 
 {}
 
 ### Delete Vault
 DELETE {{artel_url}}/api/vaults/00000000-0000-0000-0000-000000000000
-Authorization: Bearer {{auth_token}}
+Authorization: {{auth_token}}
 
 ### Add Member
 POST {{artel_url}}/api/vaults/member/add
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: {{auth_token}}
 
 {
   "vault_id": "00000000-0000-0000-0000-000000000000",
@@ -35,7 +35,7 @@ Authorization: Bearer {{auth_token}}
 ### Remove Member
 POST {{artel_url}}/api/vaults/member/remove
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: {{auth_token}}
 
 {
   "vault_id": "00000000-0000-0000-0000-000000000000",

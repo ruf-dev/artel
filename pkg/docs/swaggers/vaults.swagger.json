@@ -49,7 +49,7 @@
       }
     },
     "/api/vaults/list": {
-      "get": {
+      "post": {
         "operationId": "VaultsAPI_ListVaults",
         "responses": {
           "200": {
@@ -65,6 +65,16 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListVaultsRequest"
+            }
+          }
+        ],
         "tags": [
           "VaultsAPI"
         ]
@@ -245,6 +255,9 @@
           "type": "string"
         }
       }
+    },
+    "artel_vaultsListVaultsRequest": {
+      "type": "object"
     },
     "artel_vaultsListVaultsResponse": {
       "type": "object",

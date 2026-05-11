@@ -8,6 +8,7 @@ import (
 var (
 	Unauthenticated = rerrors.New("unauthenticated", codes.Unauthenticated)
 
-	InvalidDatabaseName   = rerrors.New("invalid database name", codes.InvalidArgument)
-	DatabaseAlreadyExists = rerrors.New("database already exists", codes.FailedPrecondition)
+	InvalidCouchDbDatabaseName   = rerrors.New("invalid database name", codes.InvalidArgument)
+	CouchDbDatabaseAlreadyExists = rerrors.New("database already exists", codes.FailedPrecondition)
+	UserAlreadyExistInCouchDb    = rerrors.New("user already exists in couch db", codes.AlreadyExists)
 )

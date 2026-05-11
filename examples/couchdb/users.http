@@ -1,0 +1,17 @@
+### Create _users database (run once on a fresh CouchDB instance)
+PUT {{couch_url}}/_users
+Authorization: Basic {{couch_auth}}
+
+###
+
+### Create CouchDB user
+PUT {{couch_url}}/_users/org.couchdb.user:AlexSkilled
+Authorization: Basic {{couch_auth}}
+Content-Type: application/json
+
+{
+  "name": "AlexSkilled",
+  "password": "secret",
+  "roles": [],
+  "type": "user"
+}

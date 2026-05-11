@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 )
@@ -24,6 +25,18 @@ func (s *Service) RegisterCouchInstance(ctx context.Context, url, username, pass
 	id, err := s.couchInstancesRepo.Register(ctx, url, username, []byte(password))
 	if err != nil {
 		return "", rerrors.Wrap(err, "register couch instance")
+	}
+
+	cfg := couchdb.Config{
+		BaseURL:  url,
+		User:     username,
+		Password: password,
+	}
+	client := couchdb.New(cfg)
+
+	err = client.Setup(ctx)
+	if err != nil {
+		return "", rerrors.Wrap(err, "setup couch instance")
 	}
 
 	return id.String(), nil

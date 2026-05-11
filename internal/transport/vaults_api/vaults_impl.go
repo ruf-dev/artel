@@ -71,28 +71,6 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *artel_api.GetVault_Reque
 	return resp, nil
 }
 
-func (v *VaultsImpl) ListVaults(ctx context.Context, req *artel_api.ListVaults_Request) (*artel_api.ListVaults_Response, error) {
-	vaults, err := v.vaultSvc.ListVaults(ctx)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "list vaults")
-	}
-
-	items := make([]*artel_api.VaultItem, 0, len(vaults))
-	for _, vault := range vaults {
-		item := &artel_api.VaultItem{
-			Id:    vault.Uuid.String(),
-			Name:  vault.Name,
-			DbUrl: vault.CouchDBURL,
-		}
-		items = append(items, item)
-	}
-
-	resp := &artel_api.ListVaults_Response{
-		Vaults: items,
-	}
-	return resp, nil
-}
-
 func (v *VaultsImpl) DeleteVault(ctx context.Context, req *artel_api.DeleteVault_Request) (*artel_api.DeleteVault_Response, error) {
 	vaultID, err := uuid.Parse(req.Id)
 	if err != nil {

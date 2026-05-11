@@ -191,7 +191,7 @@ func (s *Service) ensureCouchUserExists(ctx context.Context,
 	}
 
 	err = adminClient.CreateUser(ctx, uc.UserName, couchPassword, []string{})
-	if err != nil {
+	if err != nil && !errors.Is(err, user_errors.UserAlreadyExistInCouchDb) {
 		return rerrors.Wrap(err, "create user in couch")
 	}
 
@@ -223,7 +223,7 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 
 	err := adminClient.CreateDatabase(ctx, databaseName)
 	if err != nil {
-		if !errors.Is(err, user_errors.DatabaseAlreadyExists) {
+		if !errors.Is(err, user_errors.CouchDbDatabaseAlreadyExists) {
 			return domain.Vault{}, rerrors.Wrap(err, "create database in couch")
 		}
 	}

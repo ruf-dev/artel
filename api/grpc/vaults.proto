@@ -20,7 +20,8 @@ service VaultsAPI {
   };
   rpc ListVaults(ListVaults.Request) returns (ListVaults.Response) {
     option (google.api.http) = {
-      get: "/api/vaults/list"
+      post: "/api/vaults/list",
+      body: "*"
     };
   };
   rpc DeleteVault(DeleteVault.Request) returns (DeleteVault.Response) {
@@ -46,8 +47,8 @@ message CreateVault {
     string name = 1;
   }
   message Response {
-    string id     = 1;
-    string name   = 2;
+    string id = 1;
+    string name = 2;
     string db_url = 3;
   }
 }
@@ -57,8 +58,8 @@ message GetVault {
     string id = 1;
   }
   message Response {
-    string id     = 1;
-    string name   = 2;
+    string id = 1;
+    string name = 2;
     string db_url = 3;
   }
 }
@@ -80,7 +81,7 @@ message DeleteVault {
 message AddMember {
   message Request {
     string vault_id = 1;
-    string user_id  = 2;
+    string user_id = 2;
   }
   message Response {}
 }
@@ -88,13 +89,13 @@ message AddMember {
 message RemoveMember {
   message Request {
     string vault_id = 1;
-    string user_id  = 2;
+    string user_id = 2;
   }
   message Response {}
 }
 
 message VaultItem {
-  string id     = 1;
-  string name   = 2;
+  string id = 1;
+  string name = 2;
   string db_url = 3;
 }

@@ -1,16 +1,7 @@
 package couchdb
 
 import (
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
-)
-
-var ErrUnknownError = rerrors.New("unknown error")
-
-const (
-	ErrorCodeIllegalDatabaseName = "illegal_database_name"
-	ErrorCodeAlreadyExists       = "file_exists"
 )
 
 type CreateDbErrorResp struct {
@@ -21,9 +12,9 @@ type CreateDbErrorResp struct {
 func (e CreateDbErrorResp) Error() error {
 	switch e.ErrorCode {
 	case ErrorCodeIllegalDatabaseName:
-		return user_errors.InvalidDatabaseName
+		return user_errors.InvalidCouchDbDatabaseName
 	case ErrorCodeAlreadyExists:
-		return user_errors.DatabaseAlreadyExists
+		return user_errors.CouchDbDatabaseAlreadyExists
 	default:
 		return ErrUnknownError
 	}
