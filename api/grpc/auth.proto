@@ -4,8 +4,10 @@ package artel_auth;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
+import "npm.proto";
 
 option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
 
 service AuthAPI {
   rpc Register(Register.Request) returns (Register.Response) {

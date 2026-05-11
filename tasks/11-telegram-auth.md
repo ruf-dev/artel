@@ -1,7 +1,7 @@
 ---
 id: "11"
 title: "Telegram Auth"
-status: "pending"
+status: "done"
 model: "qwen2.5-coder:3b"
 
 Plan: Telegram OIDC Auth Feature

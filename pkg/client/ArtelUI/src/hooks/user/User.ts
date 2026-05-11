@@ -1,6 +1,7 @@
 import {create} from 'zustand'
 
-import {AuthMiddleware, Session} from "@/processes/Auth.ts"
+import {AuthMiddleware} from "@/processes/AuthMiddleware.ts"
+import { Session} from "@/processes/Auth.ts"
 
 interface UserState {
     auth: AuthMiddleware

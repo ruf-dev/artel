@@ -3,8 +3,10 @@ syntax = "proto3";
 package artel_vaults;
 
 import "google/api/annotations.proto";
+import "npm.proto";
 
 option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
 
 service VaultsAPI {
   rpc CreateVault(CreateVault.Request) returns (CreateVault.Response) {

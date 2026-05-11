@@ -12,9 +12,8 @@ POST {{artel_url}}/api/auth/login
 Content-Type: application/json
 
 {
-  "password": {
-    "email": "alex@redsock.ru",
-    "password": "secret"
+  "telegram": {
+    "idToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im9pZGMtMSJ9.eyJzdWIiOiIxMzY3MDEzNjE5NjQ1MTE1NjgzOCIsImF1ZCI6Ijg3MTk3MDU4ODgiLCJleHAiOjE3Nzg1MTExMDUsImlhdCI6MTc3ODUxMTA3NSwiaXNzIjoiaHR0cHM6XC9cL29hdXRoLnRlbGVncmFtLm9yZyIsInBob25lX251bWJlciI6Ijc5OTUzMDEzNjI4IiwibmFtZSI6IkFsZXggQnVrb3YiLCJwaWN0dXJlIjoiaHR0cHM6XC9cL3QubWVcL2lcL3VzZXJwaWNcLzMyMFwvMGxXLTV6bEtRTUExaVdrYmdhSW5abWhQdUc1dXFWU0VxM2E2akFieGRuSS5qcGciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBbGV4U2tpbGxlZCIsImlkIjoiNzQzNTIzNDE2In0.jL0TT6ya2gODupBG5n-Not-6KJkinWsejMNVx8zxGsfEVKhzw0xfKAG8q3SHUUc4bYbNMmX91YmDlroy0RNW-07ozy2uhgQBFJ8i_X7UV2EtQs0x2qdSW-5Q3ZlKDd_TEuPVrh8oTHaRN_oFZnZFaXDEum7knzzFjrbpZzCZvr-IQSO_HHF-RyaEvtuxdIEJxOShtfKD2rbZjtMj-rFVCkvLdp2uRPYTX7oZ4bjURLskAUAhyS9IZ_qJA3lTrO8Xj9Uf8lonS1Qp6Sl011hXv3EgIKa2hFI3rE-0cB1aWKXlx_QJr7OFdQHdnd-o7ntwXAKTkw-8NjKvGqPd7OKqig"
   }
 }
 

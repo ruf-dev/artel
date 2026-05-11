@@ -2,11 +2,6 @@ app_info:
     name: github.com/ruf-dev/artel
     version: v0.0.1
     startup_duration: 10s
-servers:
-    80:
-        /{GRPC}:
-            module: github.com/ruf-dev/artel
-            gateway: /api
 data_sources:
     - resource_name: postgres
       migrations_folder: ./migrations
@@ -16,6 +11,16 @@ data_sources:
       pwd: ""
       name: artel
       ssl_mode: ""
+servers:
+    80:
+        /{GRPC}:
+            module: github.com/ruf-dev/artel
+            gateway: /api
+    1551:
+        /{GRPC}:
+            module: github.com/ruf-dev/artel
+            gateway: /api
+        name: MASTER2
 environment:
     - name: creds_encryption_key
       type: string
@@ -28,3 +33,6 @@ environment:
       type: string
       enum: [Trace, Debug, Info, Warn, Error, Fatal, Panic]
       value: Info
+    - name: telegram_client_id
+      type: string
+      value: ""

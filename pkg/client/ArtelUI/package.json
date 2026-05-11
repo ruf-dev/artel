@@ -7,6 +7,7 @@
     "dev": "vite",
     "build:ui": "tsc -b && vite build",
     "build": "bun run build:ui",
+    "gen": "moti g && mv src/app/api/artel/@artel/api/index.ts src/app/api/artel/index.ts && rm -rf src/app/api/artel/@artel",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
@@ -49,10 +50,12 @@ func (c *Custom) Init(a *App) error {
 	c.Transport.AddServerOption(
 		middleware.GrpcAuthInterceptor(services,
 			middleware.WithIgnoredPathAuthOption(
-				"/artel_auth.AuthAPI/Register",
-				"/artel_auth.AuthAPI/Login",
+				pb.AuthAPI_Register_FullMethodName,
+				pb.AuthAPI_Login_FullMethodName,
 			),
 		),
+		middleware.LogInterceptor(),
+		middleware.PanicInterceptor(),
 	)
 	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl)
 

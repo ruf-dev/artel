@@ -13,7 +13,8 @@ import (
 )
 
 const createVault = `-- name: CreateVault :one
-INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status) VALUES ($1, $2, $3, $4, $5)
+INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, created_at
 `
 
@@ -57,7 +58,9 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 }
 
 const deleteVault = `-- name: DeleteVault :exec
-DELETE FROM vaults WHERE id = $1
+DELETE
+FROM vaults
+WHERE id = $1
 `
 
 func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
@@ -66,7 +69,9 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 }
 
 const getVaultByID = `-- name: GetVaultByID :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at FROM vaults WHERE id = $1
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at
+FROM vaults
+WHERE id = $1
 `
 
 type GetVaultByIDRow struct {
@@ -95,7 +100,10 @@ func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDR
 }
 
 const getVaultByNameAndUser = `-- name: GetVaultByNameAndUser :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at FROM vaults WHERE user_id = $1 AND name = $2
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at
+FROM vaults
+WHERE user_id = $1
+  AND name = $2
 `
 
 type GetVaultByNameAndUserParams struct {
@@ -131,7 +139,7 @@ func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameA
 const listVaultsByMembership = `-- name: ListVaultsByMembership :many
 SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.created_at
 FROM vaults v
-JOIN vault_members vm ON vm.vault_id = v.id
+         JOIN vault_members vm ON vm.vault_id = v.id
 WHERE vm.user_id = $1
 `
 
@@ -177,7 +185,9 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 }
 
 const updateVaultStatus = `-- name: UpdateVaultStatus :exec
-UPDATE vaults SET status = $2 WHERE id = $1
+UPDATE vaults
+SET status = $2
+WHERE id = $1
 `
 
 type UpdateVaultStatusParams struct {

@@ -119,6 +119,9 @@
       "properties": {
         "password": {
           "$ref": "#/definitions/artel_authPasswordCredentials"
+        },
+        "telegram": {
+          "$ref": "#/definitions/artel_authTelegramCredentials"
         }
       }
     },
@@ -169,6 +172,14 @@
           "type": "string"
         },
         "email": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_authTelegramCredentials": {
+      "type": "object",
+      "properties": {
+        "idToken": {
           "type": "string"
         }
       }

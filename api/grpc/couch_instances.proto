@@ -3,8 +3,10 @@ syntax = "proto3";
 package artel_couch;
 
 import "google/api/annotations.proto";
+import "npm.proto";
 
 option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
 
 service CouchInstancesAPI {
   rpc RegisterCouchInstance(RegisterCouchInstance.Request) returns (RegisterCouchInstance.Response) {
