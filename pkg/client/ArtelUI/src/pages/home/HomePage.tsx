@@ -1,18 +1,31 @@
-import {useEffect} from "react"
+import {useCallback, useEffect, useRef, useState} from "react"
+import type {KeyboardEvent} from "react"
 import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/home/HomePage.module.css"
 
-import {AuthMiddleware} from "@/processes/Auth.ts"
+import {AuthMiddleware} from "@/processes/AuthMiddleware.ts"
+import {VaultService} from "@/processes/Vaults.ts"
 import {Path} from "@/app/routing/Router.tsx"
+import {VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
+import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
+import VaultCard from "@/pages/home/VaultCard.tsx"
 
 interface Props {
     auth: AuthMiddleware
     onLogout: () => void
 }
 
+const vaultService = new VaultService()
+
 export default function HomePage({auth, onLogout}: Props) {
     const navigate = useNavigate()
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [vaultName, setVaultName] = useState("")
+    const [creating, setCreating] = useState(false)
+    const [vaults, setVaults] = useState<VaultItem[]>([])
+    const [loading, setLoading] = useState(true)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
@@ -20,9 +33,58 @@ export default function HomePage({auth, onLogout}: Props) {
         }
     }, [auth, navigate])
 
+    useEffect(() => {
+        if (dialogOpen) {
+            inputRef.current?.focus()
+        }
+    }, [dialogOpen])
+
+    const fetchVaults = useCallback(async () => {
+        setLoading(true)
+        try {
+            const list = await vaultService.ListVaults()
+            setVaults(list)
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (auth.isAuthenticated()) {
+            void fetchVaults()
+        }
+    }, [auth, fetchVaults])
+
     function handleLogout() {
         onLogout()
         navigate(Path.InitPage)
+    }
+
+    function openDialog() {
+        setVaultName("")
+        setDialogOpen(true)
+    }
+
+    function closeDialog() {
+        setDialogOpen(false)
+    }
+
+    async function handleCreate() {
+        const name = vaultName.trim()
+        if (!name) return
+        setCreating(true)
+        try {
+            await VaultsAPI.CreateVault({name}, auth.getInitReq())
+            closeDialog()
+            void fetchVaults()
+        } finally {
+            setCreating(false)
+        }
+    }
+
+    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+        if (e.key === "Enter") void handleCreate()
+        if (e.key === "Escape") closeDialog()
     }
 
     return (
@@ -33,8 +95,43 @@ export default function HomePage({auth, onLogout}: Props) {
             </header>
 
             <div className={cls.Content}>
-                <p>Your vaults will appear here.</p>
+                {loading ? (
+                    <p className={cls.Empty}>Loading…</p>
+                ) : vaults.length === 0 ? (
+                    <p className={cls.Empty}>No vaults yet. Create one with +</p>
+                ) : (
+                    <div className={cls.Grid}>
+                        {vaults.map(v => (
+                            <VaultCard key={v.id} vault={v}/>
+                        ))}
+                    </div>
+                )}
             </div>
+
+            <button className={cls.Fab} onClick={openDialog} aria-label="Create vault">+</button>
+
+            {dialogOpen && (
+                <div className={cls.Overlay} onClick={closeDialog}>
+                    <div className={cls.Dialog} onClick={e => e.stopPropagation()}>
+                        <h2 className={cls.DialogTitle}>New vault</h2>
+                        <input
+                            ref={inputRef}
+                            className={cls.DialogInput}
+                            placeholder="Vault name"
+                            value={vaultName}
+                            onChange={e => setVaultName(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            disabled={creating}
+                        />
+                        <div className={cls.DialogActions}>
+                            <button className={cls.CancelBtn} onClick={closeDialog} disabled={creating}>Cancel</button>
+                            <button className={cls.CreateBtn} onClick={handleCreate} disabled={creating || !vaultName.trim()}>
+                                {creating ? "Creating…" : "Create"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
