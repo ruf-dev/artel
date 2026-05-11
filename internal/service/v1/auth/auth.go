@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"time"
 
+	"github.com/MicahParks/keyfunc/v3"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 	"golang.org/x/crypto/bcrypt"
@@ -15,15 +17,24 @@ import (
 )
 
 type Service struct {
-	usersRepo    repository.Users
-	sessionsRepo repository.Sessions
+	usersRepo        repository.Users
+	sessionsRepo     repository.Sessions
+	jwksClient       keyfunc.Keyfunc
+	telegramClientId string
 }
 
-func New(repo repository.Repo) *Service {
-	return &Service{
-		usersRepo:    repo.Users(),
-		sessionsRepo: repo.Sessions(),
+func New(repo repository.Repo, telegramClientId string) (*Service, error) {
+	jwks, err := keyfunc.NewDefaultCtx(context.Background(), []string{"https://oauth.telegram.org/.well-known/jwks.json"})
+	if err != nil {
+		return nil, rerrors.Wrap(err, "init telegram jwks client")
 	}
+
+	return &Service{
+		usersRepo:        repo.Users(),
+		sessionsRepo:     repo.Sessions(),
+		jwksClient:       jwks,
+		telegramClientId: telegramClientId,
+	}, nil
 }
 
 func (s *Service) Register(ctx context.Context, email, password string) (domain.User, error) {
@@ -83,6 +94,36 @@ func (s *Service) ValidateToken(ctx context.Context, token string) (uuid.UUID, e
 	}
 
 	return session.UserUuid, nil
+}
+
+func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {
+	claims := &jwt.RegisteredClaims{}
+	token, err := jwt.ParseWithClaims(idToken, claims, s.jwksClient.Keyfunc,
+		jwt.WithValidMethods([]string{"RS256", "ES256"}))
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "parse telegram id_token")
+	}
+
+	if !token.Valid {
+		return domain.Session{}, rerrors.New("invalid telegram token")
+	}
+
+	telegramId := claims.Subject
+
+	user, err := s.usersRepo.UpsertByTelegramId(ctx, telegramId, telegramId)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "upsert telegram user")
+	}
+
+	sessionToken := generateToken()
+	expiresAt := time.Now().Add(24 * time.Hour)
+
+	session, err := s.sessionsRepo.Create(ctx, user.Uuid, sessionToken, expiresAt)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "create session")
+	}
+
+	return session, nil
 }
 
 func generateToken() string {

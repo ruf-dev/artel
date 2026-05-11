@@ -1,10 +1,12 @@
 package users
 
 import (
-	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
+	"golang.org/x/net/context"
 
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -20,7 +22,7 @@ func New(q *artel_q.Queries) *UsersRepo {
 
 func (r *UsersRepo) Create(ctx context.Context, email, passwordHash string) (domain.User, error) {
 	params := artel_q.CreateUserParams{
-		Email:        email,
+		Email:        sql.NullString{String: email, Valid: email != ""},
 		PasswordHash: passwordHash,
 	}
 	row, err := r.q.CreateUser(ctx, params)
@@ -30,7 +32,7 @@ func (r *UsersRepo) Create(ctx context.Context, email, passwordHash string) (dom
 
 	u := domain.User{
 		Uuid:         row.ID,
-		Email:        row.Email,
+		Email:        row.Email.String,
 		PasswordHash: row.PasswordHash,
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,
@@ -46,7 +48,7 @@ func (r *UsersRepo) GetByID(ctx context.Context, id uuid.UUID) (domain.User, err
 
 	u := domain.User{
 		Uuid:         row.ID,
-		Email:        row.Email,
+		Email:        row.Email.String,
 		PasswordHash: row.PasswordHash,
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,
@@ -55,14 +57,15 @@ func (r *UsersRepo) GetByID(ctx context.Context, id uuid.UUID) (domain.User, err
 }
 
 func (r *UsersRepo) GetByEmail(ctx context.Context, email string) (domain.User, error) {
-	row, err := r.q.GetUserByEmail(ctx, email)
+	nullEmail := sql.NullString{String: email, Valid: email != ""}
+	row, err := r.q.GetUserByEmail(ctx, nullEmail)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "error getting user by email")
 	}
 
 	u := domain.User{
 		Uuid:         row.ID,
-		Email:        row.Email,
+		Email:        row.Email.String,
 		PasswordHash: row.PasswordHash,
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,
@@ -77,4 +80,68 @@ func (r *UsersRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (r *UsersRepo) GetByTelegramId(ctx context.Context, telegramId string) (domain.User, error) {
+	row, err := r.q.GetUserByTelegramId(ctx, telegramId)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "error getting user by telegram id")
+	}
+
+	u := domain.User{
+		Uuid:         row.ID,
+		Email:        row.Email.String,
+		Username:     row.Username,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
+	}
+	return u, nil
+}
+
+func (r *UsersRepo) UpsertByTelegramId(ctx context.Context, telegramId string, username string) (domain.User, error) {
+	existing, err := r.q.GetUserByTelegramId(ctx, telegramId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return domain.User{}, rerrors.Wrap(err, "get user by telegram id")
+	}
+
+	if err == nil {
+		touchErr := r.q.TouchTelegramIdentity(ctx, telegramId)
+		if touchErr != nil {
+			return domain.User{}, rerrors.Wrap(touchErr, "touch telegram identity")
+		}
+		u := domain.User{
+			Uuid:         existing.ID,
+			Email:        existing.Email.String,
+			Username:     existing.Username,
+			PasswordHash: existing.PasswordHash,
+			CreatedAt:    existing.CreatedAt,
+			UpdatedAt:    existing.UpdatedAt,
+		}
+		return u, nil
+	}
+
+	newUser, err := r.q.CreateTelegramUser(ctx, username)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "create telegram user")
+	}
+
+	params := artel_q.InsertTelegramIdentityParams{
+		UserID:     newUser.ID,
+		TelegramID: telegramId,
+	}
+	err = r.q.InsertTelegramIdentity(ctx, params)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "insert telegram identity")
+	}
+
+	u := domain.User{
+		Uuid:         newUser.ID,
+		Email:        newUser.Email.String,
+		Username:     newUser.Username,
+		PasswordHash: newUser.PasswordHash,
+		CreatedAt:    newUser.CreatedAt,
+		UpdatedAt:    newUser.UpdatedAt,
+	}
+	return u, nil
 }

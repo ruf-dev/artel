@@ -111,3 +111,9 @@
     color: var(--error-color);
     text-align: center;
 }
+
+.TelegramContainer {
+    display: flex;
+    justify-content: center;
+    min-height: 2.5rem;
+}

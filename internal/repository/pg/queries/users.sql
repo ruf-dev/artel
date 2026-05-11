@@ -9,3 +9,18 @@ SELECT id, email, password_hash, created_at, updated_at FROM users WHERE email =
 
 -- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1;
+
+-- name: GetUserByTelegramId :one
+SELECT u.id, u.email, u.username, u.password_hash, u.created_at, u.updated_at
+FROM users u
+JOIN identities_telegram i ON u.id = i.user_id
+WHERE i.telegram_id = $1;
+
+-- name: CreateTelegramUser :one
+INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at;
+
+-- name: InsertTelegramIdentity :exec
+INSERT INTO identities_telegram (user_id, telegram_id) VALUES ($1, $2);
+
+-- name: TouchTelegramIdentity :exec
+UPDATE identities_telegram SET updated_at = NOW() WHERE telegram_id = $1;

@@ -28,6 +28,8 @@ type Users interface {
 	GetByID(ctx context.Context, id uuid.UUID) (domain.User, error)
 	GetByEmail(ctx context.Context, email string) (domain.User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+	GetByTelegramId(ctx context.Context, telegramId string) (domain.User, error)
+	UpsertByTelegramId(ctx context.Context, telegramId string, username string) (domain.User, error)
 }
 
 type Vaults interface {

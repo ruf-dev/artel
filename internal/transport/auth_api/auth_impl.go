@@ -37,18 +37,32 @@ func (h *authHandler) Register(ctx context.Context, req *artel_api.Register_Requ
 }
 
 func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (*artel_api.Login_Response, error) {
-	passwordCreds := req.GetPassword()
-
-	session, err := h.authSvc.Login(ctx, passwordCreds.GetEmail(), passwordCreds.GetPassword())
-	if err != nil {
-		return nil, rerrors.Wrap(err, "login")
+	switch {
+	case req.GetPassword() != nil:
+		passwordCreds := req.GetPassword()
+		session, err := h.authSvc.Login(ctx, passwordCreds.GetEmail(), passwordCreds.GetPassword())
+		if err != nil {
+			return nil, rerrors.Wrap(err, "login")
+		}
+		resp := &artel_api.Login_Response{
+			Token:     session.Token,
+			ExpiresAt: timestamppb.New(session.ExpiresAt),
+		}
+		return resp, nil
+	case req.GetTelegram() != nil:
+		telegramCreds := req.GetTelegram()
+		session, err := h.authSvc.LoginViaTelegram(ctx, telegramCreds.GetIdToken())
+		if err != nil {
+			return nil, rerrors.Wrap(err, "login via telegram")
+		}
+		resp := &artel_api.Login_Response{
+			Token:     session.Token,
+			ExpiresAt: timestamppb.New(session.ExpiresAt),
+		}
+		return resp, nil
+	default:
+		return nil, rerrors.New("unsupported login method")
 	}
-
-	resp := &artel_api.Login_Response{
-		Token:     session.Token,
-		ExpiresAt: timestamppb.New(session.ExpiresAt),
-	}
-	return resp, nil
 }
 
 func (h *authHandler) Logout(ctx context.Context, req *artel_api.Logout_Request) (*artel_api.Logout_Response, error) {

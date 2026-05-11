@@ -7,23 +7,51 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+const createTelegramUser = `-- name: CreateTelegramUser :one
+INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at
+`
+
+type CreateTelegramUserRow struct {
+	ID           uuid.UUID
+	Email        sql.NullString
+	Username     string
+	PasswordHash string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+func (q *Queries) CreateTelegramUser(ctx context.Context, username string) (CreateTelegramUserRow, error) {
+	row := q.db.QueryRowContext(ctx, createTelegramUser, username)
+	var i CreateTelegramUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Username,
+		&i.PasswordHash,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, password_hash, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Email        string
+	Email        sql.NullString
 	PasswordHash string
 }
 
 type CreateUserRow struct {
 	ID           uuid.UUID
-	Email        string
+	Email        sql.NullString
 	PasswordHash string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -57,13 +85,13 @@ SELECT id, email, password_hash, created_at, updated_at FROM users WHERE email =
 
 type GetUserByEmailRow struct {
 	ID           uuid.UUID
-	Email        string
+	Email        sql.NullString
 	PasswordHash string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
+func (q *Queries) GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
 	var i GetUserByEmailRow
 	err := row.Scan(
@@ -82,7 +110,7 @@ SELECT id, email, password_hash, created_at, updated_at FROM users WHERE id = $1
 
 type GetUserByIDRow struct {
 	ID           uuid.UUID
-	Email        string
+	Email        sql.NullString
 	PasswordHash string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -99,4 +127,57 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const getUserByTelegramId = `-- name: GetUserByTelegramId :one
+SELECT u.id, u.email, u.username, u.password_hash, u.created_at, u.updated_at
+FROM users u
+JOIN identities_telegram i ON u.id = i.user_id
+WHERE i.telegram_id = $1
+`
+
+type GetUserByTelegramIdRow struct {
+	ID           uuid.UUID
+	Email        sql.NullString
+	Username     string
+	PasswordHash string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+func (q *Queries) GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserByTelegramId, telegramID)
+	var i GetUserByTelegramIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Username,
+		&i.PasswordHash,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const insertTelegramIdentity = `-- name: InsertTelegramIdentity :exec
+INSERT INTO identities_telegram (user_id, telegram_id) VALUES ($1, $2)
+`
+
+type InsertTelegramIdentityParams struct {
+	UserID     uuid.UUID
+	TelegramID string
+}
+
+func (q *Queries) InsertTelegramIdentity(ctx context.Context, arg InsertTelegramIdentityParams) error {
+	_, err := q.db.ExecContext(ctx, insertTelegramIdentity, arg.UserID, arg.TelegramID)
+	return err
+}
+
+const touchTelegramIdentity = `-- name: TouchTelegramIdentity :exec
+UPDATE identities_telegram SET updated_at = NOW() WHERE telegram_id = $1
+`
+
+func (q *Queries) TouchTelegramIdentity(ctx context.Context, telegramID string) error {
+	_, err := q.db.ExecContext(ctx, touchTelegramIdentity, telegramID)
+	return err
 }

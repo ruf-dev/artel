@@ -1,6 +1,9 @@
 package v1
 
 import (
+	"go.redsock.ru/rerrors"
+
+	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
@@ -14,12 +17,17 @@ type Services struct {
 	CouchInstance service.CouchInstanceService
 }
 
-func New(repo *pg.Repos) *Services {
+func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
+	authSvc, err := auth.New(repo, cfg.TelegramClientID)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "init auth service")
+	}
+
 	return &Services{
-		Auth:          auth.New(repo),
+		Auth:          authSvc,
 		Vault:         vault.New(repo),
 		CouchInstance: couchinstances.New(repo),
-	}
+	}, nil
 }
 
 func (s *Services) AuthService() service.AuthService {

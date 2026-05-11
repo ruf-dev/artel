@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState, useRef, useEffect} from "react"
 import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/init/InitPage.module.css"
@@ -20,6 +20,40 @@ export default function InitPage({auth, onLogin}: Props) {
     const [loading, setLoading] = useState(false)
 
     const svc = new AuthService()
+    const telegramContainerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(function() {
+        if (!telegramContainerRef.current) return
+
+        ;(window as unknown as Record<string, unknown>).onTelegramAuth = function(data: {id_token: string}) {
+            setLoading(true)
+            setError("")
+            svc.LoginViaTelegram(data.id_token)
+                .then(function(session) {
+                    onLogin(session)
+                    navigate(Path.HomePage)
+                })
+                .catch(function(err: unknown) {
+                    setError(err instanceof Error ? err.message : "Telegram login failed")
+                })
+                .finally(function() {
+                    setLoading(false)
+                })
+        }
+
+        const script = document.createElement("script")
+        script.src = "https://oauth.telegram.org/telegram-login.js"
+        script.setAttribute("data-telegram-login", import.meta.env.VITE_TELEGRAM_BOT_ID ?? "")
+        script.setAttribute("data-size", "large")
+        script.setAttribute("data-onauth", "onTelegramAuth(user)")
+        script.setAttribute("data-request-access", "write")
+        script.async = true
+        telegramContainerRef.current.appendChild(script)
+
+        return function() {
+            delete (window as unknown as Record<string, unknown>).onTelegramAuth
+        }
+    }, [])
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -77,15 +111,7 @@ export default function InitPage({auth, onLogin}: Props) {
 
                 <div className={cls.Divider}>or</div>
 
-                {/* Telegram auth — wire up after `moti g` and TelegramLogin widget integration */}
-                <button
-                    className={cls.SubmitBtn}
-                    type="button"
-                    disabled
-                    title="Coming soon"
-                >
-                    Telegram (coming soon)
-                </button>
+                <div ref={telegramContainerRef} className={cls.TelegramContainer} />
 
                 <div className={cls.Toggle}>
                     {mode === "login" ? (

@@ -1,4 +1,4 @@
-import {apiPrefix} from "@/app/api/api.ts"
+import {apiPrefix, loginTelegram} from "@/app/api/api.ts"
 
 // Session shape derived from auth.proto Login.Response
 export interface Session {
@@ -9,6 +9,7 @@ export interface Session {
 export interface IAuthService {
     LoginViaPass: (email: string, password: string) => Promise<Session>
     Register: (email: string, password: string) => Promise<void>
+    LoginViaTelegram: (idToken: string) => Promise<Session>
 }
 
 // TODO: replace with generated grpc-web client after running `moti g`
@@ -19,6 +20,11 @@ export class AuthService implements IAuthService {
 
     async Register(_email: string, _password: string): Promise<void> {
         throw new Error("not implemented — run `moti g` to generate gRPC client")
+    }
+
+    async LoginViaTelegram(idToken: string): Promise<Session> {
+        const resp = await loginTelegram(idToken)
+        return {token: resp.token, expiresAt: resp.expiresAt}
     }
 }
 

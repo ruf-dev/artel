@@ -19,6 +19,7 @@ type AuthService interface {
 	Login(ctx context.Context, email, password string) (domain.Session, error)
 	Logout(ctx context.Context, token string) error
 	ValidateToken(ctx context.Context, token string) (uuid.UUID, error)
+	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
 }
 
 type VaultService interface {

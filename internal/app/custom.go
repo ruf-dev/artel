@@ -32,7 +32,10 @@ func (c *Custom) Init(a *App) error {
 
 	repo := repopg.New(a.Postgres, encKey)
 
-	services := svcv1.New(repo)
+	services, err := svcv1.New(repo, a.Cfg.Environment)
+	if err != nil {
+		return rerrors.Wrap(err, "init services")
+	}
 
 	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
 	if err != nil {

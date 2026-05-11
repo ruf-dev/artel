@@ -6,6 +6,7 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -14,6 +15,7 @@ type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
 	CreateCouchAccount(ctx context.Context, arg CreateCouchAccountParams) (CouchAccount, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
+	CreateTelegramUser(ctx context.Context, username string) (CreateTelegramUserRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
@@ -26,11 +28,13 @@ type Querier interface {
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
-	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
+	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
+	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	InsertTelegramIdentity(ctx context.Context, arg InsertTelegramIdentityParams) error
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
@@ -38,6 +42,7 @@ type Querier interface {
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
+	TouchTelegramIdentity(ctx context.Context, telegramID string) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
 }

@@ -75,6 +75,50 @@ func (x *PasswordCredentials) GetPassword() string {
 	return ""
 }
 
+type TelegramCredentials struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IdToken       string                 `protobuf:"bytes,1,opt,name=id_token,json=idToken,proto3" json:"id_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TelegramCredentials) Reset() {
+	*x = TelegramCredentials{}
+	mi := &file_auth_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TelegramCredentials) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TelegramCredentials) ProtoMessage() {}
+
+func (x *TelegramCredentials) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TelegramCredentials.ProtoReflect.Descriptor instead.
+func (*TelegramCredentials) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *TelegramCredentials) GetIdToken() string {
+	if x != nil {
+		return x.IdToken
+	}
+	return ""
+}
+
 type Register struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -83,7 +127,7 @@ type Register struct {
 
 func (x *Register) Reset() {
 	*x = Register{}
-	mi := &file_auth_proto_msgTypes[1]
+	mi := &file_auth_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -95,7 +139,7 @@ func (x *Register) String() string {
 func (*Register) ProtoMessage() {}
 
 func (x *Register) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[1]
+	mi := &file_auth_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -108,7 +152,7 @@ func (x *Register) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Register.ProtoReflect.Descriptor instead.
 func (*Register) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{1}
+	return file_auth_proto_rawDescGZIP(), []int{2}
 }
 
 type Login struct {
@@ -119,7 +163,7 @@ type Login struct {
 
 func (x *Login) Reset() {
 	*x = Login{}
-	mi := &file_auth_proto_msgTypes[2]
+	mi := &file_auth_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -131,7 +175,7 @@ func (x *Login) String() string {
 func (*Login) ProtoMessage() {}
 
 func (x *Login) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[2]
+	mi := &file_auth_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -144,7 +188,7 @@ func (x *Login) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Login.ProtoReflect.Descriptor instead.
 func (*Login) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2}
+	return file_auth_proto_rawDescGZIP(), []int{3}
 }
 
 type Logout struct {
@@ -155,7 +199,7 @@ type Logout struct {
 
 func (x *Logout) Reset() {
 	*x = Logout{}
-	mi := &file_auth_proto_msgTypes[3]
+	mi := &file_auth_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -167,7 +211,7 @@ func (x *Logout) String() string {
 func (*Logout) ProtoMessage() {}
 
 func (x *Logout) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[3]
+	mi := &file_auth_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -180,7 +224,7 @@ func (x *Logout) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Logout.ProtoReflect.Descriptor instead.
 func (*Logout) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3}
+	return file_auth_proto_rawDescGZIP(), []int{4}
 }
 
 type Register_Request struct {
@@ -193,7 +237,7 @@ type Register_Request struct {
 
 func (x *Register_Request) Reset() {
 	*x = Register_Request{}
-	mi := &file_auth_proto_msgTypes[4]
+	mi := &file_auth_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -205,7 +249,7 @@ func (x *Register_Request) String() string {
 func (*Register_Request) ProtoMessage() {}
 
 func (x *Register_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[4]
+	mi := &file_auth_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -218,7 +262,7 @@ func (x *Register_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Register_Request.ProtoReflect.Descriptor instead.
 func (*Register_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{1, 0}
+	return file_auth_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *Register_Request) GetEmail() string {
@@ -245,7 +289,7 @@ type Register_Response struct {
 
 func (x *Register_Response) Reset() {
 	*x = Register_Response{}
-	mi := &file_auth_proto_msgTypes[5]
+	mi := &file_auth_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -257,7 +301,7 @@ func (x *Register_Response) String() string {
 func (*Register_Response) ProtoMessage() {}
 
 func (x *Register_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[5]
+	mi := &file_auth_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -270,7 +314,7 @@ func (x *Register_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Register_Response.ProtoReflect.Descriptor instead.
 func (*Register_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{1, 1}
+	return file_auth_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (x *Register_Response) GetId() string {
@@ -292,6 +336,7 @@ type Login_Request struct {
 	// Types that are valid to be assigned to Method:
 	//
 	//	*Login_Request_Password
+	//	*Login_Request_Telegram
 	Method        isLogin_Request_Method `protobuf_oneof:"method"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -299,7 +344,7 @@ type Login_Request struct {
 
 func (x *Login_Request) Reset() {
 	*x = Login_Request{}
-	mi := &file_auth_proto_msgTypes[6]
+	mi := &file_auth_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -311,7 +356,7 @@ func (x *Login_Request) String() string {
 func (*Login_Request) ProtoMessage() {}
 
 func (x *Login_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[6]
+	mi := &file_auth_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -324,7 +369,7 @@ func (x *Login_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Login_Request.ProtoReflect.Descriptor instead.
 func (*Login_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2, 0}
+	return file_auth_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *Login_Request) GetMethod() isLogin_Request_Method {
@@ -343,6 +388,15 @@ func (x *Login_Request) GetPassword() *PasswordCredentials {
 	return nil
 }
 
+func (x *Login_Request) GetTelegram() *TelegramCredentials {
+	if x != nil {
+		if x, ok := x.Method.(*Login_Request_Telegram); ok {
+			return x.Telegram
+		}
+	}
+	return nil
+}
+
 type isLogin_Request_Method interface {
 	isLogin_Request_Method()
 }
@@ -351,7 +405,13 @@ type Login_Request_Password struct {
 	Password *PasswordCredentials `protobuf:"bytes,1,opt,name=password,proto3,oneof"`
 }
 
+type Login_Request_Telegram struct {
+	Telegram *TelegramCredentials `protobuf:"bytes,2,opt,name=telegram,proto3,oneof"`
+}
+
 func (*Login_Request_Password) isLogin_Request_Method() {}
+
+func (*Login_Request_Telegram) isLogin_Request_Method() {}
 
 type Login_Response struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -363,7 +423,7 @@ type Login_Response struct {
 
 func (x *Login_Response) Reset() {
 	*x = Login_Response{}
-	mi := &file_auth_proto_msgTypes[7]
+	mi := &file_auth_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -375,7 +435,7 @@ func (x *Login_Response) String() string {
 func (*Login_Response) ProtoMessage() {}
 
 func (x *Login_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[7]
+	mi := &file_auth_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -388,7 +448,7 @@ func (x *Login_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Login_Response.ProtoReflect.Descriptor instead.
 func (*Login_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2, 1}
+	return file_auth_proto_rawDescGZIP(), []int{3, 1}
 }
 
 func (x *Login_Response) GetToken() string {
@@ -413,7 +473,7 @@ type Logout_Request struct {
 
 func (x *Logout_Request) Reset() {
 	*x = Logout_Request{}
-	mi := &file_auth_proto_msgTypes[8]
+	mi := &file_auth_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -425,7 +485,7 @@ func (x *Logout_Request) String() string {
 func (*Logout_Request) ProtoMessage() {}
 
 func (x *Logout_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[8]
+	mi := &file_auth_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -438,7 +498,7 @@ func (x *Logout_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Logout_Request.ProtoReflect.Descriptor instead.
 func (*Logout_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3, 0}
+	return file_auth_proto_rawDescGZIP(), []int{4, 0}
 }
 
 type Logout_Response struct {
@@ -449,7 +509,7 @@ type Logout_Response struct {
 
 func (x *Logout_Response) Reset() {
 	*x = Logout_Response{}
-	mi := &file_auth_proto_msgTypes[9]
+	mi := &file_auth_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -461,7 +521,7 @@ func (x *Logout_Response) String() string {
 func (*Logout_Response) ProtoMessage() {}
 
 func (x *Logout_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[9]
+	mi := &file_auth_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -474,7 +534,7 @@ func (x *Logout_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Logout_Response.ProtoReflect.Descriptor instead.
 func (*Logout_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3, 1}
+	return file_auth_proto_rawDescGZIP(), []int{4, 1}
 }
 
 var File_auth_proto protoreflect.FileDescriptor
@@ -486,17 +546,20 @@ const file_auth_proto_rawDesc = "" +
 	"artel_auth\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"G\n" +
 	"\x13PasswordCredentials\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"y\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"0\n" +
+	"\x13TelegramCredentials\x12\x19\n" +
+	"\bid_token\x18\x01 \x01(\tR\aidToken\"y\n" +
 	"\bRegister\x1a;\n" +
 	"\aRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x1a0\n" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\"\xb8\x01\n" +
-	"\x05Login\x1aR\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\"\xf8\x01\n" +
+	"\x05Login\x1a\x91\x01\n" +
 	"\aRequest\x12=\n" +
-	"\bpassword\x18\x01 \x01(\v2\x1f.artel_auth.PasswordCredentialsH\x00R\bpasswordB\b\n" +
+	"\bpassword\x18\x01 \x01(\v2\x1f.artel_auth.PasswordCredentialsH\x00R\bpassword\x12=\n" +
+	"\btelegram\x18\x02 \x01(\v2\x1f.artel_auth.TelegramCredentialsH\x00R\btelegramB\b\n" +
 	"\x06method\x1a[\n" +
 	"\bResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x129\n" +
@@ -524,34 +587,36 @@ func file_auth_proto_rawDescGZIP() []byte {
 	return file_auth_proto_rawDescData
 }
 
-var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_auth_proto_goTypes = []any{
 	(*PasswordCredentials)(nil),   // 0: artel_auth.PasswordCredentials
-	(*Register)(nil),              // 1: artel_auth.Register
-	(*Login)(nil),                 // 2: artel_auth.Login
-	(*Logout)(nil),                // 3: artel_auth.Logout
-	(*Register_Request)(nil),      // 4: artel_auth.Register.Request
-	(*Register_Response)(nil),     // 5: artel_auth.Register.Response
-	(*Login_Request)(nil),         // 6: artel_auth.Login.Request
-	(*Login_Response)(nil),        // 7: artel_auth.Login.Response
-	(*Logout_Request)(nil),        // 8: artel_auth.Logout.Request
-	(*Logout_Response)(nil),       // 9: artel_auth.Logout.Response
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*TelegramCredentials)(nil),   // 1: artel_auth.TelegramCredentials
+	(*Register)(nil),              // 2: artel_auth.Register
+	(*Login)(nil),                 // 3: artel_auth.Login
+	(*Logout)(nil),                // 4: artel_auth.Logout
+	(*Register_Request)(nil),      // 5: artel_auth.Register.Request
+	(*Register_Response)(nil),     // 6: artel_auth.Register.Response
+	(*Login_Request)(nil),         // 7: artel_auth.Login.Request
+	(*Login_Response)(nil),        // 8: artel_auth.Login.Response
+	(*Logout_Request)(nil),        // 9: artel_auth.Logout.Request
+	(*Logout_Response)(nil),       // 10: artel_auth.Logout.Response
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
 }
 var file_auth_proto_depIdxs = []int32{
 	0,  // 0: artel_auth.Login.Request.password:type_name -> artel_auth.PasswordCredentials
-	10, // 1: artel_auth.Login.Response.expires_at:type_name -> google.protobuf.Timestamp
-	4,  // 2: artel_auth.AuthAPI.Register:input_type -> artel_auth.Register.Request
-	6,  // 3: artel_auth.AuthAPI.Login:input_type -> artel_auth.Login.Request
-	8,  // 4: artel_auth.AuthAPI.Logout:input_type -> artel_auth.Logout.Request
-	5,  // 5: artel_auth.AuthAPI.Register:output_type -> artel_auth.Register.Response
-	7,  // 6: artel_auth.AuthAPI.Login:output_type -> artel_auth.Login.Response
-	9,  // 7: artel_auth.AuthAPI.Logout:output_type -> artel_auth.Logout.Response
-	5,  // [5:8] is the sub-list for method output_type
-	2,  // [2:5] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	1,  // 1: artel_auth.Login.Request.telegram:type_name -> artel_auth.TelegramCredentials
+	11, // 2: artel_auth.Login.Response.expires_at:type_name -> google.protobuf.Timestamp
+	5,  // 3: artel_auth.AuthAPI.Register:input_type -> artel_auth.Register.Request
+	7,  // 4: artel_auth.AuthAPI.Login:input_type -> artel_auth.Login.Request
+	9,  // 5: artel_auth.AuthAPI.Logout:input_type -> artel_auth.Logout.Request
+	6,  // 6: artel_auth.AuthAPI.Register:output_type -> artel_auth.Register.Response
+	8,  // 7: artel_auth.AuthAPI.Login:output_type -> artel_auth.Login.Response
+	10, // 8: artel_auth.AuthAPI.Logout:output_type -> artel_auth.Logout.Response
+	6,  // [6:9] is the sub-list for method output_type
+	3,  // [3:6] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_auth_proto_init() }
@@ -559,8 +624,9 @@ func file_auth_proto_init() {
 	if File_auth_proto != nil {
 		return
 	}
-	file_auth_proto_msgTypes[6].OneofWrappers = []any{
+	file_auth_proto_msgTypes[7].OneofWrappers = []any{
 		(*Login_Request_Password)(nil),
+		(*Login_Request_Telegram)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -568,7 +634,7 @@ func file_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_proto_rawDesc), len(file_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

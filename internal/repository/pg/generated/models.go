@@ -5,6 +5,7 @@
 package artel_q
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,6 +28,14 @@ type CouchInstance struct {
 	CreatedAt   time.Time
 }
 
+type IdentitiesTelegram struct {
+	ID         uuid.UUID
+	UserID     uuid.UUID
+	TelegramID string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
 type Session struct {
 	ID        uuid.UUID
 	UserID    uuid.UUID
@@ -45,10 +54,11 @@ type Subscription struct {
 
 type User struct {
 	ID           uuid.UUID
-	Email        string
+	Email        sql.NullString
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	PasswordHash string
+	Username     string
 }
 
 type Vault struct {
