@@ -1,0 +1,18 @@
+deps:
+  - github.com/googleapis/googleapis
+  - go.redsock.ru/protoc-gen-npm@v0.0.17
+  - go.redsock.ru/artel
+generate:
+  - inputs:
+      - git_repo:
+          url: go.redsock.ru/artel
+          sub_directory: api/grpc
+    plugins:
+      - name: grpc-gateway-ts
+        out: src/app/api/artel
+      - name: npm
+        out: src/app/api/artel
+
+replace:
+  - old: go.redsock.ru/artel
+    new: /Users/alexbukov/ruf/artel
