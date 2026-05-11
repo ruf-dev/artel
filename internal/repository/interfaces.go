@@ -6,7 +6,9 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 )
 
 type Repo interface {
@@ -17,6 +19,8 @@ type Repo interface {
 	Subscriptions() Subscriptions
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
+
+	TxManager() tx_manager.TxManager
 }
 
 type Users interface {
@@ -27,10 +31,14 @@ type Users interface {
 }
 
 type Vaults interface {
-	Create(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName string) (domain.Vault, error)
+	Create(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status string) (domain.Vault, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error)
+	GetByNameAndUser(ctx context.Context, userID uuid.UUID, name string) (domain.Vault, error)
+	UpdateStatus(ctx context.Context, vaultID uuid.UUID, status string) error
 	ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain.Vault, error)
 	Delete(ctx context.Context, vaultID uuid.UUID) error
+
+	WithTx(tx sqldb.DB) Vaults
 }
 
 type VaultMembers interface {
@@ -38,6 +46,8 @@ type VaultMembers interface {
 	Remove(ctx context.Context, vaultID, userID uuid.UUID) error
 	Get(ctx context.Context, vaultID, userID uuid.UUID) (domain.VaultMember, error)
 	ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMember, error)
+
+	WithTx(tx sqldb.DB) VaultMembers
 }
 
 type Sessions interface {
@@ -52,16 +62,20 @@ type Subscriptions interface {
 }
 
 type CouchAccounts interface {
-	Create(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain []byte) (domain.CouchAccount, error)
+	Create(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error)
 	GetByUserAndInstance(ctx context.Context, userID, instanceID uuid.UUID) (domain.CouchAccount, error)
 	ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.CouchAccount, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+
+	WithTx(tx sqldb.DB) CouchAccounts
 }
 
 type CouchInstances interface {
 	Register(ctx context.Context, url, username string, passwordPlain []byte) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, error)
-	RandomPick(ctx context.Context) (domain.CouchInstance, error)
+	Pick(ctx context.Context, id uuid.UUID) (domain.CouchInstanceWithAccount, error)
 	List(ctx context.Context) ([]domain.CouchInstance, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+
+	WithTx(tx sqldb.DB) CouchInstances
 }

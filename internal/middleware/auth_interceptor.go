@@ -95,6 +95,9 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 
 	uc := user_context.UserContext{
 		UserUuid: userUuid,
+		//TODO remove onto real
+		UserName: "AlexSkilled",
+		Roles:    nil,
 	}
 
 	ctxWithUser := user_context.WithUserContext(ctx, uc)

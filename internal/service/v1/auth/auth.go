@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ruf-dev/artel/internal/domain"
-	repository "github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/repository"
 )
 
 type Service struct {
@@ -19,10 +19,10 @@ type Service struct {
 	sessionsRepo repository.Sessions
 }
 
-func New(usersRepo repository.Users, sessionsRepo repository.Sessions) *Service {
+func New(repo repository.Repo) *Service {
 	return &Service{
-		usersRepo:    usersRepo,
-		sessionsRepo: sessionsRepo,
+		usersRepo:    repo.Users(),
+		sessionsRepo: repo.Sessions(),
 	}
 }
 

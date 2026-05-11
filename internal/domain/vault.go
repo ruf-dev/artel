@@ -13,6 +13,7 @@ type Vault struct {
 	Name              string
 	CouchDBName       string
 	CouchDBURL        string
+	Status            string
 	CreatedAt         time.Time
 }
 

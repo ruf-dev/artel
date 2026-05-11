@@ -2,6 +2,7 @@ package couchdb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -59,11 +60,23 @@ func (c *Client) CreateDatabase(ctx context.Context, name string) error {
 		return rerrors.Wrap(err, "failed to read response body")
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	if resp.StatusCode == http.StatusCreated {
+		return nil
 	}
 
-	return nil
+	switch resp.StatusCode {
+	case http.StatusBadRequest,
+		http.StatusPreconditionFailed:
+		var er CreateDbErrorResp
+		err = json.Unmarshal(body, &er)
+		if err != nil {
+			return rerrors.Wrap(err, "failed to unmarshal response body")
+		}
+
+		return rerrors.Wrap(er.Error())
+	default:
+		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
 }
 
 func (c *Client) DeleteDatabase(ctx context.Context, name string) error {

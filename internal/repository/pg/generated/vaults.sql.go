@@ -13,8 +13,8 @@ import (
 )
 
 const createVault = `-- name: CreateVault :one
-INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id) VALUES ($1, $2, $3, $4)
-RETURNING id, user_id, name, couch_db_name, couch_instance_id, created_at
+INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status) VALUES ($1, $2, $3, $4, $5)
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, created_at
 `
 
 type CreateVaultParams struct {
@@ -22,6 +22,7 @@ type CreateVaultParams struct {
 	Name            string
 	CouchDbName     string
 	CouchInstanceID uuid.NullUUID
+	Status          string
 }
 
 type CreateVaultRow struct {
@@ -30,6 +31,7 @@ type CreateVaultRow struct {
 	Name            string
 	CouchDbName     string
 	CouchInstanceID uuid.NullUUID
+	Status          string
 	CreatedAt       time.Time
 }
 
@@ -39,6 +41,7 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		arg.Name,
 		arg.CouchDbName,
 		arg.CouchInstanceID,
+		arg.Status,
 	)
 	var i CreateVaultRow
 	err := row.Scan(
@@ -47,6 +50,7 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		&i.Name,
 		&i.CouchDbName,
 		&i.CouchInstanceID,
+		&i.Status,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -62,7 +66,7 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 }
 
 const getVaultByID = `-- name: GetVaultByID :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, created_at FROM vaults WHERE id = $1
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at FROM vaults WHERE id = $1
 `
 
 type GetVaultByIDRow struct {
@@ -71,6 +75,7 @@ type GetVaultByIDRow struct {
 	Name            string
 	CouchDbName     string
 	CouchInstanceID uuid.NullUUID
+	Status          string
 	CreatedAt       time.Time
 }
 
@@ -83,13 +88,48 @@ func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDR
 		&i.Name,
 		&i.CouchDbName,
 		&i.CouchInstanceID,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getVaultByNameAndUser = `-- name: GetVaultByNameAndUser :one
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at FROM vaults WHERE user_id = $1 AND name = $2
+`
+
+type GetVaultByNameAndUserParams struct {
+	UserID uuid.UUID
+	Name   string
+}
+
+type GetVaultByNameAndUserRow struct {
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	Name            string
+	CouchDbName     string
+	CouchInstanceID uuid.NullUUID
+	Status          string
+	CreatedAt       time.Time
+}
+
+func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error) {
+	row := q.db.QueryRowContext(ctx, getVaultByNameAndUser, arg.UserID, arg.Name)
+	var i GetVaultByNameAndUserRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.CouchDbName,
+		&i.CouchInstanceID,
+		&i.Status,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listVaultsByMembership = `-- name: ListVaultsByMembership :many
-SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.created_at
+SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.created_at
 FROM vaults v
 JOIN vault_members vm ON vm.vault_id = v.id
 WHERE vm.user_id = $1
@@ -101,6 +141,7 @@ type ListVaultsByMembershipRow struct {
 	Name            string
 	CouchDbName     string
 	CouchInstanceID uuid.NullUUID
+	Status          string
 	CreatedAt       time.Time
 }
 
@@ -119,6 +160,7 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 			&i.Name,
 			&i.CouchDbName,
 			&i.CouchInstanceID,
+			&i.Status,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -132,4 +174,18 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateVaultStatus = `-- name: UpdateVaultStatus :exec
+UPDATE vaults SET status = $2 WHERE id = $1
+`
+
+type UpdateVaultStatusParams struct {
+	ID     uuid.UUID
+	Status string
+}
+
+func (q *Queries) UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error {
+	_, err := q.db.ExecContext(ctx, updateVaultStatus, arg.ID, arg.Status)
+	return err
 }

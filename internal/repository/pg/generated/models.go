@@ -58,6 +58,7 @@ type Vault struct {
 	CouchDbName     string
 	CreatedAt       time.Time
 	CouchInstanceID uuid.NullUUID
+	Status          string
 }
 
 type VaultMember struct {

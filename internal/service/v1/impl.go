@@ -16,9 +16,9 @@ type Services struct {
 
 func New(repo *pg.Repos) *Services {
 	return &Services{
-		Auth:          auth.New(repo.Users, repo.Sessions),
-		Vault:         vault.New(repo.Vaults, repo.VaultMembers, repo.CouchAccounts, repo.CouchInstances),
-		CouchInstance: couchinstances.New(repo.CouchInstances),
+		Auth:          auth.New(repo),
+		Vault:         vault.New(repo),
+		CouchInstance: couchinstances.New(repo),
 	}
 }
 

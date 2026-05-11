@@ -9,6 +9,8 @@ import (
 // UserContext encapsulates user-specific data.
 type UserContext struct {
 	UserUuid uuid.UUID
+	//TODO fill
+	UserName string
 	Roles    []string
 }
 

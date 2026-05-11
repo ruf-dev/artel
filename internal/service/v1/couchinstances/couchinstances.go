@@ -11,15 +11,17 @@ import (
 )
 
 type Service struct {
-	repo repository.CouchInstances
+	couchInstancesRepo repository.CouchInstances
 }
 
-func New(repo repository.CouchInstances) *Service {
-	return &Service{repo: repo}
+func New(repo repository.Repo) *Service {
+	return &Service{
+		couchInstancesRepo: repo.CouchInstances(),
+	}
 }
 
 func (s *Service) RegisterCouchInstance(ctx context.Context, url, username, password string) (string, error) {
-	id, err := s.repo.Register(ctx, url, username, []byte(password))
+	id, err := s.couchInstancesRepo.Register(ctx, url, username, []byte(password))
 	if err != nil {
 		return "", rerrors.Wrap(err, "register couch instance")
 	}
@@ -33,7 +35,7 @@ func (s *Service) GetCouchInstance(ctx context.Context, id string) (domain.Couch
 		return domain.CouchInstance{}, rerrors.Wrap(err, "parse uuid")
 	}
 
-	instance, err := s.repo.Get(ctx, uid)
+	instance, err := s.couchInstancesRepo.Get(ctx, uid)
 	if err != nil {
 		return domain.CouchInstance{}, rerrors.Wrap(err, "get couch instance")
 	}
@@ -42,7 +44,7 @@ func (s *Service) GetCouchInstance(ctx context.Context, id string) (domain.Couch
 }
 
 func (s *Service) ListCouchInstances(ctx context.Context) ([]domain.CouchInstance, error) {
-	instances, err := s.repo.List(ctx)
+	instances, err := s.couchInstancesRepo.List(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list couch instances")
 	}
@@ -56,7 +58,7 @@ func (s *Service) DeleteCouchInstance(ctx context.Context, id string) error {
 		return rerrors.Wrap(err, "parse uuid")
 	}
 
-	err = s.repo.Delete(ctx, uid)
+	err = s.couchInstancesRepo.Delete(ctx, uid)
 	if err != nil {
 		return rerrors.Wrap(err, "delete couch instance")
 	}

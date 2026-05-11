@@ -3,7 +3,10 @@ package vault
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
+	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
@@ -12,6 +15,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
@@ -20,19 +24,20 @@ type Service struct {
 	vaultMembersRepo   repository.VaultMembers
 	couchAccountsRepo  repository.CouchAccounts
 	couchInstancesRepo repository.CouchInstances
+
+	txManager tx_manager.TxManager
 }
 
 func New(
-	vaultsRepo repository.Vaults,
-	vaultMembersRepo repository.VaultMembers,
-	couchAccountsRepo repository.CouchAccounts,
-	couchInstancesRepo repository.CouchInstances,
+	repo repository.Repo,
 ) *Service {
 	return &Service{
-		vaultsRepo:         vaultsRepo,
-		vaultMembersRepo:   vaultMembersRepo,
-		couchAccountsRepo:  couchAccountsRepo,
-		couchInstancesRepo: couchInstancesRepo,
+		vaultsRepo:         repo.Vaults(),
+		vaultMembersRepo:   repo.VaultMembers(),
+		couchAccountsRepo:  repo.CouchAccounts(),
+		couchInstancesRepo: repo.CouchInstances(),
+
+		txManager: repo.TxManager(),
 	}
 }
 
@@ -45,96 +50,54 @@ func generatePassword() (string, error) {
 	return hex.EncodeToString(b), nil
 }
 
-// TODO func should be idempotent
-func (s *Service) CreateVault(ctx context.Context, name string) (domain.Vault, error) {
+func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vault, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.Vault{}, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	//TODO pick by user or random by default.
-	//TODO move to separate func and return client
-	instance, err := s.couchInstancesRepo.RandomPick(ctx)
-	if err != nil {
-		return domain.Vault{}, rerrors.Wrap(err, "pick random couch instance")
-	}
+	var vault domain.Vault
 
-	couchCfg := couchdb.Config{
-		BaseURL:  instance.Url,
-		User:     instance.Username,
-		Password: instance.Password,
-	}
-	adminClient := couchdb.New(couchCfg)
+	err := s.txManager.Execute(
+		func(tx *sql.Tx) error {
+			couchInstanceRepo := s.couchInstancesRepo.WithTx(tx)
+			couchAccountsRepo := s.couchAccountsRepo.WithTx(tx)
+			vaultsRepo := s.vaultsRepo.WithTx(tx)
+			vaultMembersRepo := s.vaultMembersRepo.WithTx(tx)
 
-	//TODO make idempotent
-	err = s.ensureCouchAccount(ctx, uc.UserUuid, instance, adminClient)
-	if err != nil {
-		return domain.Vault{}, rerrors.Wrap(err, "ensure couch account")
-	}
+			instanceWithAccount, err := pickCouchInstance(ctx, couchInstanceRepo, uc.UserUuid)
+			if err != nil {
+				return rerrors.Wrap(err, "pick couch admin client")
+			}
 
-	//TODO make idempotent
-	err = s.createCouchDatabase(ctx, adminClient, name)
-	if err != nil {
-		return domain.Vault{}, rerrors.Wrap(err, "create couch database")
-	}
+			couchClient := newCouchClient(instanceWithAccount.Instance)
 
-	vault, err := s.vaultsRepo.Create(ctx, uc.UserUuid, instance.Uuid, name, name)
-	if err != nil {
-		return domain.Vault{}, rerrors.Wrap(err, "create vault")
-	}
-	//TODO move to top. Create metadata first, add status 'provisioning' and change status by the end of this func.
-	err = s.vaultMembersRepo.Add(ctx, vault.Uuid, uc.UserUuid, "owner")
-	if err != nil {
-		return domain.Vault{}, rerrors.Wrap(err, "add vault owner member")
-	}
+			vault, err = s.ensureVaultExists(ctx, couchClient, uc, instanceWithAccount, vaultName, vaultsRepo)
+			if err != nil {
+				return rerrors.Wrap(err, "create couch database")
+			}
 
-	vault.CouchDBURL = adminClient.DatabaseURL(name)
+			err = s.ensureCouchUserExists(ctx,
+				couchClient,
+				uc, &instanceWithAccount,
+				couchAccountsRepo,
+			)
+			if err != nil {
+				return rerrors.Wrap(err, "error ensuring couch user exists")
+			}
+
+			err = vaultMembersRepo.Add(ctx, vault.Uuid, uc.UserUuid, "owner")
+			if err != nil {
+				return rerrors.Wrap(err, "add vault owner member")
+			}
+
+			return nil
+		})
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(err, "error during tx")
+	}
 
 	return vault, nil
-}
-
-func (s *Service) ensureCouchAccount(ctx context.Context, userUuid uuid.UUID, instance domain.CouchInstance, adminClient *couchdb.Client) error {
-	account, err := s.couchAccountsRepo.GetByUserAndInstance(ctx, userUuid, instance.Uuid)
-	if err == nil {
-		_ = account
-		return nil
-	}
-
-	err = s.createCouchUser(ctx, userUuid, instance, adminClient)
-	if err != nil {
-		return rerrors.Wrap(err, "create couch user")
-	}
-
-	return nil
-}
-
-func (s *Service) createCouchUser(ctx context.Context, userUuid uuid.UUID, instance domain.CouchInstance, adminClient *couchdb.Client) error {
-	couchUsername := "artel-" + userUuid.String()
-
-	couchPassword, err := generatePassword()
-	if err != nil {
-		return rerrors.Wrap(err, "generate couch password")
-	}
-
-	err = adminClient.CreateUser(ctx, couchUsername, couchPassword, []string{})
-	if err != nil {
-		return rerrors.Wrap(err, "create user in couch")
-	}
-
-	_, err = s.couchAccountsRepo.Create(ctx, userUuid, instance.Uuid, couchUsername, []byte(couchPassword))
-	if err != nil {
-		return rerrors.Wrap(err, "store couch account")
-	}
-
-	return nil
-}
-
-func (s *Service) createCouchDatabase(ctx context.Context, adminClient *couchdb.Client, databaseName string) error {
-	err := adminClient.CreateDatabase(ctx, databaseName)
-	if err != nil {
-		return rerrors.Wrap(err, "create database in couch")
-	}
-	return nil
 }
 
 func (s *Service) GetVault(ctx context.Context, vaultID uuid.UUID) (domain.Vault, error) {
@@ -175,6 +138,15 @@ func (s *Service) ListVaults(ctx context.Context) ([]domain.Vault, error) {
 	return vaults, nil
 }
 
+func (s *Service) AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error {
+	err := s.vaultMembersRepo.Add(ctx, vaultID, targetUserUuid, "member")
+	if err != nil {
+		return rerrors.Wrap(err, "add vault member")
+	}
+
+	return nil
+}
+
 func (s *Service) DeleteVault(ctx context.Context, vaultID uuid.UUID) error {
 	vault, err := s.vaultsRepo.GetByID(ctx, vaultID)
 	if err != nil {
@@ -191,15 +163,6 @@ func (s *Service) DeleteVault(ctx context.Context, vaultID uuid.UUID) error {
 	return nil
 }
 
-func (s *Service) AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error {
-	err := s.vaultMembersRepo.Add(ctx, vaultID, targetUserUuid, "member")
-	if err != nil {
-		return rerrors.Wrap(err, "add vault member")
-	}
-
-	return nil
-}
-
 func (s *Service) RemoveMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error {
 	err := s.vaultMembersRepo.Remove(ctx, vaultID, targetUserUuid)
 	if err != nil {
@@ -207,4 +170,106 @@ func (s *Service) RemoveMember(ctx context.Context, vaultID, targetUserUuid uuid
 	}
 
 	return nil
+}
+
+func (s *Service) ensureCouchUserExists(ctx context.Context,
+	adminClient *couchdb.Client,
+	uc user_context.UserContext,
+	instanceWithAccountPtr *domain.CouchInstanceWithAccount,
+	couchAccountsRepo repository.CouchAccounts,
+) (err error) {
+	// TODO Validate user exists
+
+	var couchPassword string
+	if instanceWithAccountPtr.Account != nil {
+		couchPassword = instanceWithAccountPtr.Account.CouchPassword
+	} else {
+		couchPassword, err = generatePassword()
+		if err != nil {
+			return rerrors.Wrap(err, "generate couch password")
+		}
+	}
+
+	err = adminClient.CreateUser(ctx, uc.UserName, couchPassword, []string{})
+	if err != nil {
+		return rerrors.Wrap(err, "create user in couch")
+	}
+
+	account, err := couchAccountsRepo.Create(ctx,
+		uc.UserUuid,
+		instanceWithAccountPtr.Instance.Uuid,
+		uc.UserName,
+		couchPassword,
+	)
+	if err != nil {
+		return rerrors.Wrap(err, "error creating couch account")
+	}
+
+	instanceWithAccountPtr.Account = &account
+
+	return nil
+}
+
+func (s *Service) ensureVaultExists(ctx context.Context,
+	adminClient *couchdb.Client,
+	uc user_context.UserContext,
+	instanceWithAccount domain.CouchInstanceWithAccount,
+	vaultName string,
+	vaultsRepo repository.Vaults,
+) (domain.Vault, error) {
+	// TODO make idempotent
+
+	databaseName := sanitizeCouchDBName(vaultName)
+
+	err := adminClient.CreateDatabase(ctx, databaseName)
+	if err != nil {
+		if !errors.Is(err, user_errors.DatabaseAlreadyExists) {
+			return domain.Vault{}, rerrors.Wrap(err, "create database in couch")
+		}
+	}
+
+	vault, err := vaultsRepo.Create(ctx,
+		uc.UserUuid,
+		instanceWithAccount.Instance.Uuid,
+		vaultName, databaseName,
+		//TODO move to sql
+		"ready")
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(err, "create vault")
+	}
+
+	return vault, nil
+}
+
+func pickCouchInstance(
+	ctx context.Context,
+	couchInstance repository.CouchInstances,
+	userUuid uuid.UUID,
+) (domain.CouchInstanceWithAccount, error) {
+	instance, err := couchInstance.Pick(ctx, userUuid)
+	if err != nil {
+		return domain.CouchInstanceWithAccount{}, rerrors.Wrap(err, "pick random couch instance")
+	}
+
+	return instance, nil
+}
+
+func newCouchClient(instance domain.CouchInstance) *couchdb.Client {
+	cfg := couchdb.Config{
+		BaseURL:  instance.Url,
+		User:     instance.Username,
+		Password: instance.Password,
+	}
+
+	adminClient := couchdb.New(cfg)
+
+	return adminClient
+}
+
+func sanitizeCouchDBName(name string) string {
+	name = strings.ToLower(name)
+
+	name = strings.Replace(name, " ", "_", -1)
+
+	return name
 }

@@ -13,3 +13,8 @@ type CouchInstance struct {
 	Password  string
 	CreatedAt time.Time
 }
+
+type CouchInstanceWithAccount struct {
+	Instance CouchInstance
+	Account  *CouchAccount
+}
