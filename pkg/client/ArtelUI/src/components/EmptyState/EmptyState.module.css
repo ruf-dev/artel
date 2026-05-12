@@ -4,19 +4,19 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 80px 24px 60px;
+    padding: 5rem 1.5rem 3.75rem;
     animation: fadeUp 500ms cubic-bezier(.2,.7,.2,1) both;
 }
 
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(0.5rem); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
 .Art {
-    width: 96px;
-    height: 96px;
-    margin-bottom: 32px;
+    width: 6rem;
+    height: 6rem;
+    margin-bottom: 2rem;
 }
 
 .Art svg {
@@ -26,31 +26,31 @@
 }
 
 .Title {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--color-fg-primary);
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
 }
 
 .Sub {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--color-fg-secondary);
     line-height: 1.6;
-    max-width: 420px;
-    margin: 0 auto 28px;
+    max-width: 26.25rem;
+    margin: 0 auto 1.75rem;
 }
 
 .Cta {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 18px;
-    border-radius: 12px;
+    gap: 0.5rem;
+    padding: 0.75rem 1.125rem;
+    border-radius: 0.75rem;
     border: 1px solid var(--coral);
     background: var(--coral);
     color: white;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     font-family: inherit;
     cursor: pointer;
@@ -64,5 +64,5 @@
 }
 
 .Cta:active {
-    transform: translateY(1px);
+    transform: translateY(0.0625rem);
 }
