@@ -11,6 +11,7 @@ import {VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import VaultCard from "@/pages/home/VaultCard.tsx"
 import Topbar from "@/components/Topbar/Topbar.tsx"
+import EmptyState from "@/components/EmptyState/EmptyState.tsx"
 
 interface Props {
     auth: AuthMiddleware
@@ -26,6 +27,7 @@ export default function HomePage({auth, onLogout}: Props) {
     const [creating, setCreating] = useState(false)
     const [vaults, setVaults] = useState<VaultItem[]>([])
     const [loading, setLoading] = useState(true)
+    const [_editVaultId, setEditVaultId] = useState<string | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
@@ -113,11 +115,11 @@ export default function HomePage({auth, onLogout}: Props) {
                 {loading ? (
                     <p className={cls.Empty}>Loading…</p>
                 ) : vaults.length === 0 ? (
-                    <p className={cls.Empty}>No vaults yet. Create one with +</p>
+                    <EmptyState onCreateClick={openDialog}/>
                 ) : (
                     <div className={cls.Grid}>
                         {vaults.map(v => (
-                            <VaultCard key={v.id} vault={v}/>
+                            <VaultCard key={v.id} vault={v} onEdit={id => setEditVaultId(id)}/>
                         ))}
                     </div>
                 )}
@@ -125,21 +127,43 @@ export default function HomePage({auth, onLogout}: Props) {
 
             {dialogOpen && (
                 <div className={cls.Overlay} onClick={closeDialog}>
-                    <div className={cls.Dialog} onClick={e => e.stopPropagation()}>
-                        <h2 className={cls.DialogTitle}>New vault</h2>
-                        <input
-                            ref={inputRef}
-                            className={cls.DialogInput}
-                            placeholder="Vault name"
-                            value={vaultName}
-                            onChange={e => setVaultName(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            disabled={creating}
-                        />
-                        <div className={cls.DialogActions}>
-                            <button className={cls.CancelBtn} onClick={closeDialog} disabled={creating}>Cancel</button>
-                            <button className={cls.CreateBtn} onClick={handleCreate} disabled={creating || !vaultName.trim()}>
-                                {creating ? "Creating…" : "Create"}
+                    <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="createModalTitle">
+                        <div className={cls.ModalHead}>
+                            <h2 className={cls.ModalTitle} id="createModalTitle">New vault</h2>
+                            <button className={cls.ModalClose} type="button" onClick={closeDialog} aria-label="Close">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p className={cls.ModalSub}>Give it a name — that's all we need to spin one up.</p>
+
+                        <label className={cls.Field}>
+                            <span className={cls.FieldLabel}>Vault name</span>
+                            <input
+                                ref={inputRef}
+                                className={cls.Input}
+                                placeholder="e.g. Marketplace inventory"
+                                value={vaultName}
+                                onChange={e => setVaultName(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                disabled={creating}
+                                maxLength={48}
+                                autoComplete="off"
+                            />
+                        </label>
+
+                        <div className={cls.ModalActions}>
+                            <button className={cls.BtnGhost} type="button" onClick={closeDialog} disabled={creating}>
+                                Cancel
+                            </button>
+                            <button
+                                className={cls.BtnPrimary}
+                                type="button"
+                                onClick={handleCreate}
+                                disabled={creating || !vaultName.trim()}
+                            >
+                                {creating ? "Creating…" : "Create vault"}
                             </button>
                         </div>
                     </div>

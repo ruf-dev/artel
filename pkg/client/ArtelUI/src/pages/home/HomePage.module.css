@@ -121,96 +121,170 @@
     gap: var(--space-4);
 }
 
+@keyframes overlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .Overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    backdrop-filter: blur(4px);
+    padding: 24px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: overlayIn 200ms ease both;
 }
 
-.Dialog {
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--element-border-color-lighter);
-    border-radius: var(--border-radius-md);
-    padding: var(--space-6);
-    width: min(22rem, 90vw);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    box-shadow: 0 16px 48px var(--color-shadow-deep);
-}
-
-.DialogTitle {
-    margin: 0;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--main-fg-color);
-}
-
-.DialogInput {
-    background: var(--color-bg-accent);
-    border: 1px solid var(--element-border-color-lighter);
-    border-radius: var(--border-radius-sm);
-    color: var(--main-fg-color);
-    font-size: var(--font-size-base);
-    padding: var(--space-3) var(--space-4);
-    outline: none;
-    transition: border-color var(--ease-default);
+.Modal {
     width: 100%;
+    max-width: 460px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 20px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: modalIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+.ModalHead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+
+.ModalTitle {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+}
+
+.ModalClose {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    color: var(--color-fg-tertiary);
+    cursor: pointer;
+    transition: all 140ms ease;
+}
+
+.ModalClose:hover {
+    color: var(--color-fg-primary);
+    background: var(--color-bg-hover);
+}
+
+.ModalSub {
+    font-size: 13px;
+    color: var(--color-fg-secondary);
+    margin-bottom: 24px;
+    line-height: 1.55;
+}
+
+.Field {
+    display: block;
+    margin-bottom: 18px;
+}
+
+.FieldLabel {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-fg-secondary);
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+}
+
+.Input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border-light);
+    border-radius: 10px;
+    color: var(--color-fg-primary);
+    font-size: 14px;
+    font-family: inherit;
+    letter-spacing: -0.005em;
+    transition: border-color 160ms ease, background 160ms ease;
+    outline: none;
     box-sizing: border-box;
 }
 
-.DialogInput::placeholder {
-    color: var(--thirdy-fg-color);
+.Input::placeholder {
+    color: var(--color-fg-disabled);
 }
 
-.DialogInput:focus {
-    border-color: var(--color-accent-border);
+.Input:focus {
+    border-color: var(--color-border-bright);
+    background: #131313;
 }
 
-.DialogActions {
+.ModalActions {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    gap: var(--space-3);
+    gap: 10px;
+    margin-top: 24px;
 }
 
-.CancelBtn {
-    background: none;
-    border: 1px solid var(--element-border-color);
-    border-radius: var(--border-radius-sm);
-    color: var(--secondary-fg-color);
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--font-size-sm);
+.BtnGhost {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border-light);
+    background: transparent;
+    color: var(--color-fg-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
     cursor: pointer;
-    transition: border-color var(--ease-default), color var(--ease-default);
+    transition: all 160ms ease;
 }
 
-.CancelBtn:hover {
-    border-color: var(--color-accent-border);
-    color: var(--accent-fg-color);
+.BtnGhost:hover {
+    color: var(--color-fg-primary);
+    border-color: var(--color-border-bright);
 }
 
-.CreateBtn {
-    background: var(--accent-fg-color);
-    border: none;
-    border-radius: var(--border-radius-sm);
-    color: var(--color-bg-base);
-    padding: var(--space-2) var(--space-5);
-    font-size: var(--font-size-sm);
+.BtnPrimary {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--coral);
+    background: var(--coral);
+    color: white;
+    font-size: 13px;
     font-weight: 600;
+    font-family: inherit;
     cursor: pointer;
-    transition: background var(--ease-default), opacity var(--ease-default);
+    box-shadow: 0 10px 28px -12px var(--coral-glow);
+    transition: filter 160ms ease, opacity 160ms ease;
 }
 
-.CreateBtn:hover:not(:disabled) {
-    background: #00d9f5;
+.BtnPrimary:hover:not(:disabled) {
+    filter: brightness(1.06);
 }
 
-.CreateBtn:disabled {
+.BtnPrimary:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
