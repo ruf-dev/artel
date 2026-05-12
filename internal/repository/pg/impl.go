@@ -77,7 +77,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		sessions:      sessions.New(q),
 		subscriptions: subscriptions.New(q),
 		couchAccounts: couchaccounts.New(db, encryptionKey),
-		mcpKey:        mcpkeys.New(),
+		mcpKey:        mcpkeys.New(q),
 
 		txManager: tx_manager.New(db),
 	}

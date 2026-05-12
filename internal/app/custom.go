@@ -17,6 +17,8 @@ import (
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
+	"github.com/ruf-dev/artel/internal/transport/mcp_api"
+	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
 
@@ -46,6 +48,8 @@ func (c *Custom) Init(a *App) error {
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
 	authImpl := auth_api.NewAuthImpl(services.Auth)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
+	mcpHandler := mcp_api.NewMcpHandler(services.McpService())
 
 	c.Transport.AddServerOption(
 		middleware.GrpcAuthInterceptor(services,
@@ -57,7 +61,8 @@ func (c *Custom) Init(a *App) error {
 		middleware.LogInterceptor(),
 		middleware.PanicInterceptor(),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl)
+	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 
 	return nil
 }
