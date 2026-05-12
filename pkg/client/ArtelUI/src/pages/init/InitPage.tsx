@@ -3,17 +3,13 @@ import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/init/InitPage.module.css"
 
-import {AuthMiddleware} from "@/processes/AuthMiddleware.ts"
-import {AuthService, Session} from "@/processes/Auth.ts"
+import useUser from "@/hooks/user/User.ts"
+import {AuthService} from "@/processes/Auth.ts"
 import {Path} from "@/app/routing/Router.tsx"
 
-interface Props {
-    auth: AuthMiddleware
-    onLogin: (session: Session) => void
-}
-
-export default function InitPage({auth, onLogin}: Props) {
+export default function InitPage() {
     const navigate = useNavigate()
+    const {auth, login} = useUser()
 
     const svc = new AuthService()
     const telegramContainerRef = useRef<HTMLDivElement>(null)
@@ -25,7 +21,7 @@ export default function InitPage({auth, onLogin}: Props) {
 
             svc.LoginViaTelegram(data.id_token)
                 .then(function (session) {
-                    onLogin(session)
+                    login(session)
                     navigate(Path.HomePage)
                 })
                 .catch(function (err: unknown) {

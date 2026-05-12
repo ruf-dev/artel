@@ -7,29 +7,26 @@ import HomePage from "@/pages/home/HomePage.tsx"
 import ErrorPage from "@/pages/error/ErrorPage.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 
-import useUser from "@/hooks/user/User.ts"
-
+// eslint-disable-next-line react-refresh/only-export-components
 export enum Path {
     InitPage = "/init",
     HomePage = "/",
 }
 
 export default function Router() {
-    const {auth, login, logout} = useUser()
-
     return (
         <div className={cls.Root}>
             <div className={cls.Content}>
                 <Routes>
                     <Route
                         path={Path.InitPage}
-                        element={<InitPage auth={auth} onLogin={login}/>}
+                        element={<InitPage/>}
                         errorElement={<ErrorPage/>}
                     />
 
                     <Route
                         path={Path.HomePage}
-                        element={<HomePage auth={auth} onLogout={logout}/>}
+                        element={<HomePage/>}
                         errorElement={<ErrorPage/>}
                     />
 

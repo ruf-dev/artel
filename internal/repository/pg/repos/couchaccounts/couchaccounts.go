@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
 )
 
 type Repo struct {
@@ -25,7 +26,7 @@ func New(db sqldb.DB, encryptionKey []byte) *Repo {
 	}
 }
 
-func (r *Repo) Create(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error) {
+func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error) {
 	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passwordPlain))
 	if err != nil {
 		return domain.CouchAccount{}, rerrors.Wrap(err, "encrypt password")
@@ -39,7 +40,7 @@ func (r *Repo) Create(ctx context.Context, userID, instanceID uuid.UUID, usernam
 	}
 	row, err := r.q.CreateCouchAccount(ctx, params)
 	if err != nil {
-		return domain.CouchAccount{}, rerrors.Wrap(err, "create couch account")
+		return domain.CouchAccount{}, pg_err.WrapPgErr(err)
 	}
 
 	account := domain.CouchAccount{

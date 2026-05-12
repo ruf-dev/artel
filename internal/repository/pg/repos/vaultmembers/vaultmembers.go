@@ -23,11 +23,13 @@ func New(db sqldb.DB) *Repo {
 }
 
 func (r *Repo) Add(ctx context.Context, vaultUuid, userUuid uuid.UUID, role string) error {
-	err := r.q.AddVaultMember(ctx, artel_q.AddVaultMemberParams{
+	params := artel_q.AddVaultMemberParams{
 		VaultID: vaultUuid,
 		UserID:  userUuid,
 		Role:    role,
-	})
+	}
+
+	err := r.q.AddVaultMember(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "failed to add vault member")
 	}

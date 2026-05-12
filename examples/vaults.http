@@ -19,7 +19,7 @@ Authorization: {{auth_token}}
 {}
 
 ### Delete Vault
-DELETE {{artel_url}}/api/vaults/00000000-0000-0000-0000-000000000000
+POST {{artel_url}}/api/vaults/00000000-0000-0000-0000-000000000000/delete
 Authorization: {{auth_token}}
 
 ### Add Member

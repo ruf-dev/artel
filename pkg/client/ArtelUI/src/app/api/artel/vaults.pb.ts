@@ -83,7 +83,7 @@ export class VaultsAPI {
     return fm.fetchRequest<ListVaultsResponse>(`/api/vaults/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static DeleteVault(this:void, req: DeleteVaultRequest, initReq?: fm.InitReq): Promise<DeleteVaultResponse> {
-    return fm.fetchRequest<DeleteVaultResponse>(`/api/vaults/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "DELETE"});
+    return fm.fetchRequest<DeleteVaultResponse>(`/api/vaults/${req.id}/delete`, {...initReq, method: "POST"});
   }
   static AddMember(this:void, req: AddMemberRequest, initReq?: fm.InitReq): Promise<AddMemberResponse> {
     return fm.fetchRequest<AddMemberResponse>(`/api/vaults/${req.vaultId}/members`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

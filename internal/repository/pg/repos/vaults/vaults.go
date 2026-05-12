@@ -23,7 +23,7 @@ func New(db sqldb.DB) *Repo {
 	}
 }
 
-func (r *Repo) Create(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status string) (domain.Vault, error) {
+func (r *Repo) Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status string) (domain.Vault, error) {
 	params := artel_q.CreateVaultParams{
 		UserID:          userID,
 		Name:            name,

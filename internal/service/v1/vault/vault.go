@@ -195,14 +195,14 @@ func (s *Service) ensureCouchUserExists(ctx context.Context,
 		return rerrors.Wrap(err, "create user in couch")
 	}
 
-	account, err := couchAccountsRepo.Create(ctx,
+	account, err := couchAccountsRepo.Upsert(ctx,
 		uc.UserUuid,
 		instanceWithAccountPtr.Instance.Uuid,
 		uc.UserName,
 		couchPassword,
 	)
 	if err != nil {
-		return rerrors.Wrap(err, "error creating couch account")
+		return rerrors.Wrap(err, "error saving couch account")
 	}
 
 	instanceWithAccountPtr.Account = &account
@@ -217,7 +217,6 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 	vaultName string,
 	vaultsRepo repository.Vaults,
 ) (domain.Vault, error) {
-	// TODO make idempotent
 
 	databaseName := sanitizeCouchDBName(vaultName)
 
@@ -228,7 +227,7 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 		}
 	}
 
-	vault, err := vaultsRepo.Create(ctx,
+	vault, err := vaultsRepo.Upsert(ctx,
 		uc.UserUuid,
 		instanceWithAccount.Instance.Uuid,
 		vaultName, databaseName,

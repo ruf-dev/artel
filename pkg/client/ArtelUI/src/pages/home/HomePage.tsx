@@ -1,51 +1,33 @@
-import {useCallback, useEffect, useRef, useState} from "react"
-import type {KeyboardEvent} from "react"
+import {useState, useEffect} from "react"
 import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/home/HomePage.module.css"
 
-import {AuthMiddleware} from "@/processes/AuthMiddleware.ts"
-import {VaultService} from "@/processes/Vaults.ts"
-import {Path} from "@/app/routing/Router.tsx"
-import {VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
+import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
+import {useVaults} from "@/app/hooks/Vaults.ts"
+import useUser from "@/hooks/user/User.ts"
+
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
 import Topbar from "@/components/Topbar/Topbar.tsx"
 import EmptyState from "@/components/EmptyState/EmptyState.tsx"
+import ModalClose from "@/components/ModalClose/ModalClose.tsx"
+import FormField from "@/components/FormField/FormField.tsx"
+import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 
-interface Props {
-    auth: AuthMiddleware
-    onLogout: () => void
-}
-
-const vaultService = new VaultService()
-
-export default function HomePage({auth, onLogout}: Props) {
+export default function HomePage() {
     const navigate = useNavigate()
+
+    const {auth} = useUser()
     const {OpenDialog} = useDialog()
-    const [vaultName, setVaultName] = useState("")
-    const [creating, setCreating] = useState(false)
-    const [vaults, setVaults] = useState<VaultItem[]>([])
-    const [loading, setLoading] = useState(true)
-    const inputRef = useRef<HTMLInputElement>(null)
+    const {vaults, fetch: fetchVaults} = useVaults()
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
             navigate(Path.InitPage)
         }
     }, [auth, navigate])
-
-
-    const fetchVaults = useCallback(async () => {
-        setLoading(true)
-        try {
-            const list = await vaultService.ListVaults()
-            setVaults(list)
-        } finally {
-            setLoading(false)
-        }
-    }, [])
 
     useEffect(() => {
         if (auth.isAuthenticated()) {
@@ -54,41 +36,6 @@ export default function HomePage({auth, onLogout}: Props) {
     }, [auth, fetchVaults])
 
 
-    function handleLogout() {
-        onLogout()
-        navigate(Path.InitPage)
-    }
-
-    function openDialog() {
-        setVaultName("")
-        const {CloseDialog} = useDialog.getState()
-        OpenDialog(
-            <CreateVaultDialog
-                vaultName={vaultName}
-                creating={creating}
-                onClose={CloseDialog}
-                onNameChange={e => setVaultName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onCreate={handleCreate}
-                inputRef={inputRef}
-            />
-        )
-    }
-
-    async function handleCreate() {
-        const name = vaultName.trim()
-        if (!name) return
-        setCreating(true)
-        try {
-            await VaultsAPI.CreateVault({name}, auth.getInitReq())
-            const {CloseDialog} = useDialog.getState()
-            CloseDialog()
-            void fetchVaults()
-        } finally {
-            setCreating(false)
-        }
-    }
-
     function openEditDialog(vaultId: string) {
         const vault = vaults.find(v => v.id === vaultId)
         if (!vault) return
@@ -96,38 +43,24 @@ export default function HomePage({auth, onLogout}: Props) {
         OpenDialog(
             <EditVaultDialog
                 vault={vault}
-                auth={auth}
                 onClose={CloseDialog}
-                onDeleted={() => {
-                    CloseDialog()
-                    void fetchVaults()
-                }}
+                onDeleted={CloseDialog}
             />
         )
     }
 
-    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-        if (e.key === "Enter") void handleCreate()
-        if (e.key === "Escape") {
-            const {CloseDialog} = useDialog.getState()
-            CloseDialog()
-        }
-    }
-
     return (
         <div className={cls.Root}>
-            <Topbar onLogout={handleLogout}/>
-            <HeroSegment loading={loading} vaults={vaults} onCreateClick={openDialog}/>
-            <ContentSegment loading={loading} vaults={vaults} onEditClick={openEditDialog}/>
+            <Topbar/>
+            <HeroSegment onCreateClick={() => OpenDialog(<CreateVaultDialog/>)}/>
+            <ContentSegment onEditClick={openEditDialog}/>
         </div>
     )
 }
 
-function HeroSegment({loading, vaults, onCreateClick}: {
-    loading: boolean;
-    vaults: VaultItem[];
-    onCreateClick: () => void
-}) {
+function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
+    const {vaults, loading} = useVaults()
+
     return (
         <div className={cls.Hero}>
             <div className={cls.HeroTitles}>
@@ -150,11 +83,8 @@ function HeroSegment({loading, vaults, onCreateClick}: {
     )
 }
 
-function ContentSegment({loading, vaults, onEditClick}: {
-    loading: boolean;
-    vaults: VaultItem[];
-    onEditClick: (id: string) => void
-}) {
+function ContentSegment({onEditClick}: { onEditClick: (id: string) => void }) {
+    const {vaults, loading} = useVaults()
 
     let loadingState = null
 
@@ -170,7 +100,6 @@ function ContentSegment({loading, vaults, onEditClick}: {
         )
     }
 
-
     return (
         <div className={cls.Content}>
             {loadingState}
@@ -185,76 +114,78 @@ function ContentSegment({loading, vaults, onEditClick}: {
     )
 }
 
-function CreateVaultDialog({vaultName, creating, onClose, onNameChange, onKeyDown, onCreate, inputRef}: {
-    vaultName: string
-    creating: boolean
-    onClose: () => void
-    onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
-    onCreate: () => void
-    inputRef: React.RefObject<HTMLInputElement | null>
-}) {
+
+function CreateVaultDialog() {
+    const [isCreating, setIsCreating] = useState(false)
+    const [vaultName, setVaultName] = useState("")
+
+    const {create} = useVaults()
+    const {CloseDialog} = useDialog()
+
+
+    async function handleCreate() {
+        setIsCreating(true)
+        const name = vaultName.trim()
+        create(name)
+            .then(CloseDialog)
+            .catch(err => {
+                console.error(err)
+            })
+            .finally(() => {
+                setIsCreating(false)
+            })
+    }
+
     return (
-        <div className={cls.Overlay} onClick={onClose}>
+        <div className={cls.Overlay}>
             <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
                  aria-labelledby="createModalTitle">
                 <div className={cls.ModalHead}>
                     <h2 className={cls.ModalTitle} id="createModalTitle">New vault</h2>
-                    <button className={cls.ModalClose} type="button" onClick={onClose} aria-label="Close">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-                             strokeWidth="1.8" strokeLinecap="round">
-                            <line x1="18" y1="6" x2="6" y2="18"/>
-                            <line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                    </button>
+                    <ModalClose onClick={CloseDialog} disabled={isCreating} className={cls.ModalClose}/>
                 </div>
                 <p className={cls.ModalSub}>Give it a name — that's all we need to spin one up.</p>
 
-                <label className={cls.Field}>
-                    <span className={cls.FieldLabel}>Vault name</span>
-                    <input
-                        ref={inputRef}
-                        className={cls.Input}
-                        placeholder="e.g. Marketplace inventory"
-                        value={vaultName}
-                        onChange={onNameChange}
-                        onKeyDown={onKeyDown}
-                        disabled={creating}
-                        maxLength={48}
-                        autoComplete="off"
-                    />
-                </label>
+                <FormField
+                    label="Vault name"
+                    placeholder="e.g. Marketplace inventory"
+                    onChange={setVaultName}
+                    disabled={isCreating}
+                    maxLength={48}
+                    fieldClassName={cls.Field}
+                    labelClassName={cls.FieldLabel}
+                    inputClassName={cls.Input}
+                />
 
-                <div className={cls.ModalActions}>
-                    <button className={cls.BtnGhost} type="button" onClick={onClose} disabled={creating}>
-                        Cancel
-                    </button>
-                    <button
-                        className={cls.BtnPrimary}
-                        type="button"
-                        onClick={onCreate}
-                        disabled={creating || !vaultName.trim()}
-                    >
-                        {creating ? "Creating…" : "Create vault"}
-                    </button>
-                </div>
+                <ModalActions
+                    containerClassName={cls.ModalActions}
+                    buttons={[
+                        {
+                            label: isCreating ? "Creating…" : "Create vault",
+                            onClick: handleCreate,
+                            className: cls.BtnPrimary,
+                            disabled: isCreating
+                        }
+                    ]}
+                />
             </div>
         </div>
     )
 }
 
-function EditVaultDialog({vault, auth, onClose, onDeleted}: {
+function EditVaultDialog({vault, onClose, onDeleted}: {
     vault: VaultItem
-    auth: AuthMiddleware
     onClose: () => void
     onDeleted: () => void
 }) {
+    const {remove} = useVaults()
     const [deleting, setDeleting] = useState(false)
 
     async function handleDelete() {
+        if (!vault.id) return
         setDeleting(true)
         try {
-            await VaultsAPI.DeleteVault({id: vault.id}, auth.getInitReq())
+            await remove(vault.id)
             onDeleted()
         } finally {
             setDeleting(false)
@@ -266,13 +197,7 @@ function EditVaultDialog({vault, auth, onClose, onDeleted}: {
              aria-labelledby="editModalTitle">
             <div className={cls.ModalHead}>
                 <h2 className={cls.ModalTitle} id="editModalTitle">Edit vault</h2>
-                <button className={cls.ModalClose} type="button" onClick={onClose} aria-label="Close">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8"
-                         strokeLinecap="round">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
+                <ModalClose onClick={onClose} className={cls.ModalClose}/>
             </div>
             <p className={cls.ModalSub}>Rename or delete this vault.</p>
 
@@ -296,11 +221,16 @@ function EditVaultDialog({vault, auth, onClose, onDeleted}: {
                 </div>
             </div>
 
-            <div className={cls.ModalActions}>
-                <button className={cls.BtnGhost} type="button" onClick={onClose}>
-                    Close
-                </button>
-            </div>
+            <ModalActions
+                containerClassName={cls.ModalActions}
+                buttons={[
+                    {
+                        label: "Close",
+                        onClick: onClose,
+                        className: cls.BtnGhost
+                    }
+                ]}
+            />
         </div>
     )
 }

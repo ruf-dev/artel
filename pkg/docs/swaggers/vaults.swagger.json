@@ -108,8 +108,10 @@
         "tags": [
           "VaultsAPI"
         ]
-      },
-      "delete": {
+      }
+    },
+    "/api/vaults/{id}/delete": {
+      "post": {
         "operationId": "VaultsAPI_DeleteVault",
         "responses": {
           "200": {

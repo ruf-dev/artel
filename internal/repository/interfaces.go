@@ -34,7 +34,7 @@ type Users interface {
 }
 
 type Vaults interface {
-	Create(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status string) (domain.Vault, error)
+	Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status string) (domain.Vault, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error)
 	GetByNameAndUser(ctx context.Context, userID uuid.UUID, name string) (domain.Vault, error)
 	UpdateStatus(ctx context.Context, vaultID uuid.UUID, status string) error
@@ -65,7 +65,7 @@ type Subscriptions interface {
 }
 
 type CouchAccounts interface {
-	Create(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error)
+	Upsert(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error)
 	GetByUserAndInstance(ctx context.Context, userID, instanceID uuid.UUID) (domain.CouchAccount, error)
 	ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.CouchAccount, error)
 	Delete(ctx context.Context, id uuid.UUID) error

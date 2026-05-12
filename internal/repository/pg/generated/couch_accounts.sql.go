@@ -12,9 +12,18 @@ import (
 )
 
 const createCouchAccount = `-- name: CreateCouchAccount :one
-INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
-VALUES ($1, $2, $3, $4)
-RETURNING id, user_id, couch_instance_id, couch_username, couch_password_enc, created_at
+WITH _inserting AS (
+    INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
+        VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING)
+SELECT id,
+       user_id,
+       couch_instance_id,
+       couch_username,
+       couch_password_enc,
+       created_at
+FROM couch_accounts
+WHERE couch_accounts.user_id = $1
+  AND couch_accounts.couch_instance_id = $2
 `
 
 type CreateCouchAccountParams struct {
@@ -44,7 +53,9 @@ func (q *Queries) CreateCouchAccount(ctx context.Context, arg CreateCouchAccount
 }
 
 const deleteCouchAccount = `-- name: DeleteCouchAccount :exec
-DELETE FROM couch_accounts WHERE id = $1
+DELETE
+FROM couch_accounts
+WHERE id = $1
 `
 
 func (q *Queries) DeleteCouchAccount(ctx context.Context, id uuid.UUID) error {
@@ -55,7 +66,8 @@ func (q *Queries) DeleteCouchAccount(ctx context.Context, id uuid.UUID) error {
 const getCouchAccountByUserAndInstance = `-- name: GetCouchAccountByUserAndInstance :one
 SELECT id, user_id, couch_instance_id, couch_username, couch_password_enc, created_at
 FROM couch_accounts
-WHERE user_id = $1 AND couch_instance_id = $2
+WHERE user_id = $1
+  AND couch_instance_id = $2
 `
 
 type GetCouchAccountByUserAndInstanceParams struct {

@@ -28,7 +28,7 @@ service VaultsAPI {
   };
   rpc DeleteVault(DeleteVault.Request) returns (DeleteVault.Response) {
     option (google.api.http) = {
-      delete: "/api/vaults/{id}"
+      post: "/api/vaults/{id}/delete"
     };
   };
   rpc AddMember(AddMember.Request) returns (AddMember.Response) {
