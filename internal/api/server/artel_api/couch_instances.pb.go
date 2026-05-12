@@ -7,6 +7,7 @@
 package artel_api
 
 import (
+	_ "go.redsock.ru/protoc-gen-npm/npmplugin"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -546,7 +547,7 @@ var File_couch_instances_proto protoreflect.FileDescriptor
 
 const file_couch_instances_proto_rawDesc = "" +
 	"\n" +
-	"\x15couch_instances.proto\x12\vartel_couch\x1a\x1cgoogle/api/annotations.proto\"\x88\x01\n" +
+	"\x15couch_instances.proto\x12\vartel_couch\x1a\x1cgoogle/api/annotations.proto\x1a\tnpm.proto\"\x88\x01\n" +
 	"\x15RegisterCouchInstance\x1aS\n" +
 	"\aRequest\x12\x10\n" +
 	"\x03url\x18\x01 \x01(\tR\x03url\x12\x1a\n" +
@@ -576,7 +577,8 @@ const file_couch_instances_proto_rawDesc = "" +
 	"\x15RegisterCouchInstance\x12*.artel_couch.RegisterCouchInstance.Request\x1a+.artel_couch.RegisterCouchInstance.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/couch/add\x12z\n" +
 	"\x10GetCouchInstance\x12%.artel_couch.GetCouchInstance.Request\x1a&.artel_couch.GetCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/couch/{id}\x12\x83\x01\n" +
 	"\x12ListCouchInstances\x12'.artel_couch.ListCouchInstances.Request\x1a(.artel_couch.ListCouchInstances.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/couch/list\x12\x83\x01\n" +
-	"\x13DeleteCouchInstance\x12(.artel_couch.DeleteCouchInstance.Request\x1a).artel_couch.DeleteCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/api/couch/{id}B\fZ\n" +
+	"\x13DeleteCouchInstance\x12(.artel_couch.DeleteCouchInstance.Request\x1a).artel_couch.DeleteCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/api/couch/{id}B\x1a\x92\x82\x19\n" +
+	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
 var (

@@ -7,6 +7,7 @@
 package artel_api
 
 import (
+	_ "go.redsock.ru/protoc-gen-npm/npmplugin"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -543,7 +544,7 @@ const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
 	"auth.proto\x12\n" +
-	"artel_auth\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"G\n" +
+	"artel_auth\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\tnpm.proto\"G\n" +
 	"\x13PasswordCredentials\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"0\n" +
@@ -572,7 +573,8 @@ const file_auth_proto_rawDesc = "" +
 	"\aAuthAPI\x12f\n" +
 	"\bRegister\x12\x1c.artel_auth.Register.Request\x1a\x1d.artel_auth.Register.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/auth/register\x12Z\n" +
 	"\x05Login\x12\x19.artel_auth.Login.Request\x1a\x1a.artel_auth.Login.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/auth/login\x12^\n" +
-	"\x06Logout\x12\x1a.artel_auth.Logout.Request\x1a\x1b.artel_auth.Logout.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/auth/logoutB\fZ\n" +
+	"\x06Logout\x12\x1a.artel_auth.Logout.Request\x1a\x1b.artel_auth.Logout.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/auth/logoutB\x1a\x92\x82\x19\n" +
+	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
 var (

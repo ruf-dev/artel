@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/VersionResponse"
+              "$ref": "#/definitions/artel_apiVersionResponse"
             }
           },
           "default": {
@@ -40,7 +40,7 @@
     }
   },
   "definitions": {
-    "VersionResponse": {
+    "artel_apiVersionResponse": {
       "type": "object",
       "properties": {
         "version": {

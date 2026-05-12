@@ -7,6 +7,7 @@
 package artel_api
 
 import (
+	_ "go.redsock.ru/protoc-gen-npm/npmplugin"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -846,7 +847,7 @@ var File_vaults_proto protoreflect.FileDescriptor
 
 const file_vaults_proto_rawDesc = "" +
 	"\n" +
-	"\fvaults.proto\x12\fartel_vaults\x1a\x1cgoogle/api/annotations.proto\"s\n" +
+	"\fvaults.proto\x12\fartel_vaults\x1a\x1cgoogle/api/annotations.proto\x1a\tnpm.proto\"s\n" +
 	"\vCreateVault\x1a\x1d\n" +
 	"\aRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x1aE\n" +
@@ -894,7 +895,8 @@ const file_vaults_proto_rawDesc = "" +
 	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/vaults/list\x12n\n" +
 	"\vDeleteVault\x12!.artel_vaults.DeleteVault.Request\x1a\".artel_vaults.DeleteVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12*\x10/api/vaults/{id}\x12y\n" +
 	"\tAddMember\x12\x1f.artel_vaults.AddMember.Request\x1a .artel_vaults.AddMember.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/vaults/{vault_id}/members\x12\x89\x01\n" +
-	"\fRemoveMember\x12\".artel_vaults.RemoveMember.Request\x1a#.artel_vaults.RemoveMember.Response\"0\x82\xd3\xe4\x93\x02**(/api/vaults/{vault_id}/members/{user_id}B\fZ\n" +
+	"\fRemoveMember\x12\".artel_vaults.RemoveMember.Request\x1a#.artel_vaults.RemoveMember.Response\"0\x82\xd3\xe4\x93\x02**(/api/vaults/{vault_id}/members/{user_id}B\x1a\x92\x82\x19\n" +
+	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
 var (
