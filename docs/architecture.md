@@ -1,0 +1,68 @@
+# Architecture
+
+## rscli Application Structure
+
+rscli scaffolds a fixed two-part app lifecycle:
+
+- **`internal/app/app.go`** — Generated, DO NOT EDIT. Wires config → `Custom.Init` → `Custom.Start`. Handles graceful
+  shutdown via `go.redsock.ru/toolbox/closer`.
+- **`internal/app/custom.go`** — User-editable entry point. `Custom.Init` wires repositories, services, and transports.
+  `Custom.Start` launches them. `Custom.Stop` tears them down.
+- **`internal/app/config.go`** — Generated. Initializes context and loads config via matreshka.
+
+All new application wiring belongs in `custom.go` — never modify `app.go` or `config.go`.
+
+## Configuration (matreshka)
+
+Config is YAML-based using the [matreshka](https://go.vervstack.ru/matreshka) framework:
+
+- `config/config.yaml` — production config (committed)
+- `config/dev.yaml` — local dev overrides (run with `-dev` flag)
+- `config/config_template.yaml` — template for generated config
+
+Env vars parsed into `internal/config/environment.go` (`EnvironmentConfig`). Data source connection strings and server
+addresses go in separate config structs added to `internal/config/`.
+
+The `-config <path>` flag overrides the config file at runtime.
+
+**Adding a new env variable**: edit `config/config.yaml` (add the entry under `environment:`), then run
+`rscli-dev project tidy`. This regenerates `internal/config/environment.go` and the new field appears in
+`EnvironmentConfig`. Never edit `environment.go` by hand.
+
+## Planned Layers
+
+```
+cmd/service/main.go
+  → internal/app/custom.go (Init/Start/Stop)
+    → internal/transport/   (HTTP/gRPC handlers)
+    → internal/service/     (business logic)
+    → internal/clients/     (external service clients, e.g. CouchDB)
+pkg/client/ArtelUI/         (React UI, built with Bun)
+```
+
+## Service Layer Layout
+
+Interfaces live in `internal/service/interfaces.go` (package `service`). Implementations live under
+`internal/service/v1/`:
+
+```
+internal/service/
+  interfaces.go          ← all service interfaces, package service
+  v1/
+    impl.go              ← Services struct (container for all v1 implementations)
+    vault/
+      vault.go           ← VaultService implementation
+```
+
+`v1.Services` is constructed in `custom.go` and its fields (e.g. `services.Vault`) are passed to transports. Transport
+handlers accept interfaces from the `service` package, never concrete v1 types.
+
+## Key Dependencies
+
+| Package                        | Purpose                                        |
+|--------------------------------|------------------------------------------------|
+| `go.redsock.ru/rerrors`        | Error wrapping with `rerrors.Wrap(err, "msg")` |
+| `go.redsock.ru/toolbox/closer` | Graceful shutdown registry                     |
+| `github.com/rs/zerolog`        | Structured logging via `log.Info().Msg(...)`   |
+| `go.vervstack.ru/matreshka`    | Config loading                                 |
+| `golang.org/x/sync/errgroup`   | Concurrent startup                             |
