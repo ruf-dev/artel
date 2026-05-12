@@ -11,6 +11,7 @@ type McpKey struct {
 	VaultUuid  uuid.UUID
 	UserUuid   uuid.UUID
 	Name       string
+	KeyHash    []byte
 	KeyPreview string
 	CreatedAt  time.Time
 	RevokedAt  *time.Time
