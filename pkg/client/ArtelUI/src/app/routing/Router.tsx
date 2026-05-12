@@ -5,6 +5,7 @@ import {Navigate, Route, Routes} from "react-router-dom"
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
 import ErrorPage from "@/pages/error/ErrorPage.tsx"
+import Dialog from "@/pages/segments/Dialog.tsx"
 
 import useUser from "@/hooks/user/User.ts"
 
@@ -38,6 +39,8 @@ export default function Router() {
                         errorElement={<ErrorPage/>}
                     />
                 </Routes>
+
+                <Dialog/>
             </div>
         </div>
     )

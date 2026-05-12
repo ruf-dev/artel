@@ -27,8 +27,6 @@ export class AuthService extends AuthMiddleware implements IAuthService {
             },
         } as LoginRequest
 
-        console.debug(r, initR)
-
         return AuthAPI.Login(r, initR).then(res => {
             return {
                 token: res.token,

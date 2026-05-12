@@ -1,0 +1,14 @@
+.VaultCardQrContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-shrink: 0;
+
+    .QRPlaceholder {
+        width: 120px;
+        height: 120px;
+        background: white;
+        border-radius: 4px;
+    }
+}

@@ -1,0 +1,50 @@
+.VaultCardConnBarContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 10px 10px 14px;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    margin-top: auto;
+}
+
+.ConnString {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--color-fg-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.CopyBtn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-light);
+    border-radius: 7px;
+    color: var(--color-fg-secondary);
+    font-size: 11px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 140ms ease;
+}
+
+.CopyBtn:hover {
+    color: var(--color-fg-primary);
+    border-color: var(--color-border-bright);
+    background: var(--color-bg-hover-mid);
+}
+
+.CopyBtnCopied {
+    color: var(--status-online) !important;
+    border-color: var(--status-online-glow) !important;
+}
