@@ -14,6 +14,7 @@ import (
 type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
 	CreateCouchAccount(ctx context.Context, arg CreateCouchAccountParams) (CouchAccount, error)
+	CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateTelegramUser(ctx context.Context, username string) (CreateTelegramUserRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
@@ -26,6 +27,7 @@ type Querier interface {
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
+	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
@@ -35,13 +37,16 @@ type Querier interface {
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	InsertTelegramIdentity(ctx context.Context, arg InsertTelegramIdentityParams) error
+	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
+	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
+	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	TouchTelegramIdentity(ctx context.Context, telegramID string) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)

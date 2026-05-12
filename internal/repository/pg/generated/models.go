@@ -36,6 +36,17 @@ type IdentitiesTelegram struct {
 	UpdatedAt  time.Time
 }
 
+type McpKey struct {
+	ID         uuid.UUID
+	VaultID    uuid.UUID
+	UserID     uuid.UUID
+	Name       string
+	KeyHash    []byte
+	KeyPreview string
+	CreatedAt  time.Time
+	RevokedAt  sql.NullTime
+}
+
 type Session struct {
 	ID        uuid.UUID
 	UserID    uuid.UUID
