@@ -1,3 +1,32 @@
+---
+status: todo
+---
+
+# Task 20 — UI: Design Tokens — Coral Palette + JetBrains Mono
+
+## Goal
+
+Migrate the color palette from teal/cyan to coral/red as specified in the design, and add JetBrains Mono
+as the monospace font. No component changes — only CSS variable values and font imports.
+
+## Files to modify
+
+### 1. `pkg/client/ArtelUI/index.html`
+
+Add a Google Fonts preconnect + stylesheet link in `<head>` before `</head>`:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+```
+
+### 2. `pkg/client/ArtelUI/src/colors_and_type.css`
+
+Replace the `:root` block entirely with the following. Keep ALL existing variable names
+so existing components don't break — just change values and add new tokens:
+
+```css
 :root {
   /* ── Coral accent (new primary accent) ─────────────────── */
   --coral:              #FF4B3E;
@@ -95,76 +124,22 @@
   --ease-default: 0.2s ease;
   --ease-slow:    0.3s ease-in-out;
 }
+```
 
-/* ── Typography ──────────────────────────────────────────── */
+Also update the `* { font-family: ... }` rule in the Typography section to keep Comfortaa:
 
-html {
-  font-size: 16px;
-}
-
+```css
 * {
   font-family: 'Comfortaa', sans-serif;
 }
+```
 
-.t-display {
-  font-size: 2.5em;
-  font-weight: 700;
-  color: var(--color-fg-primary);
-  line-height: 1.1;
-}
+No other changes.
 
-h1, .t-h1 {
-  font-size: 2em;
-  font-weight: 700;
-  color: var(--color-fg-primary);
-  line-height: 1.2;
-}
+## Build check
 
-h2, .t-h2 {
-  font-size: 1.5em;
-  font-weight: 600;
-  color: var(--color-fg-primary);
-  line-height: 1.3;
-}
+```bash
+cd pkg/client/ArtelUI && bun run build
+```
 
-.t-accent {
-  color: var(--color-fg-accent);
-}
-
-p, .t-body {
-  font-size: 1em;
-  font-weight: 400;
-  color: var(--color-fg-secondary);
-  line-height: 1.6;
-}
-
-.t-caption {
-  font-size: 0.75em;
-  font-weight: 400;
-  color: var(--color-fg-tertiary);
-  text-transform: lowercase;
-}
-
-.t-label {
-  font-size: 0.875em;
-  font-weight: 500;
-  color: var(--color-fg-secondary);
-}
-
-.t-muted {
-  color: var(--color-fg-disabled);
-}
-
-.t-gradient-animated {
-  background: linear-gradient(270deg, var(--color-fg-primary), #00d9b4);
-  background-size: 600% 600%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientShift 5s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%   { background-position: 0 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0 50%; }
-}
+Expected: zero errors. The app should still render identically in structure, just with coral accent color instead of teal.

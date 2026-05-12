@@ -1,0 +1,158 @@
+### Initialize
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {}
+  }
+}
+
+### List Tools
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list",
+  "params": {}
+}
+
+### List Notes
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "list_notes",
+    "arguments": {}
+  }
+}
+
+### Read Note
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "read_note",
+    "arguments": {
+      "path": "Daily/2026-05-12.md"
+    }
+  }
+}
+
+### Write Note
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "write_note",
+    "arguments": {
+      "path": "AI/hello.md",
+      "content": "# Hello from MCP\n\nCreated via JSON-RPC."
+    }
+  }
+}
+
+### Delete Note
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "method": "tools/call",
+  "params": {
+    "name": "delete_note",
+    "arguments": {
+      "path": "AI/hello.md"
+    }
+  }
+}
+
+### Move Note
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "method": "tools/call",
+  "params": {
+    "name": "move_note",
+    "arguments": {
+      "old_path": "Daily/2026-05-12.md",
+      "new_path": "Archive/2026-05-12.md"
+    }
+  }
+}
+
+### List Folders
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 8,
+  "method": "tools/call",
+  "params": {
+    "name": "list_folders",
+    "arguments": {}
+  }
+}
+
+### List Tags
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 9,
+  "method": "tools/call",
+  "params": {
+    "name": "list_tags",
+    "arguments": {}
+  }
+}
+
+### Get Note Metadata
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "tools/call",
+  "params": {
+    "name": "get_note_metadata",
+    "arguments": {
+      "path": "Daily/2026-05-12.md"
+    }
+  }
+}
