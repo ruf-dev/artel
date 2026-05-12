@@ -10,6 +10,7 @@ import {Path} from "@/app/routing/Router.tsx"
 import {VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import VaultCard from "@/pages/home/VaultCard.tsx"
+import Topbar from "@/components/Topbar/Topbar.tsx"
 
 interface Props {
     auth: AuthMiddleware
@@ -89,10 +90,24 @@ export default function HomePage({auth, onLogout}: Props) {
 
     return (
         <div className={cls.Root}>
-            <header className={cls.Header}>
-                <span className={cls.Logo}>artel</span>
-                <button className={cls.LogoutBtn} onClick={handleLogout}>log out</button>
-            </header>
+            <Topbar onLogout={handleLogout}/>
+
+            <div className={cls.Hero}>
+                <div className={cls.HeroTitles}>
+                    <div className={cls.Eyebrow}>Workspace</div>
+                    <h1 className={cls.HeroTitle}>Your vaults</h1>
+                    <p className={cls.HeroSub}>
+                        <b>{loading ? "…" : `${vaults.length} ${vaults.length === 1 ? "vault" : "vaults"}`}</b>
+                        {" · "}<span>all systems operational</span>
+                    </p>
+                </div>
+                <button className={cls.NewVaultBtn} onClick={openDialog}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    New vault
+                </button>
+            </div>
 
             <div className={cls.Content}>
                 {loading ? (
@@ -107,8 +122,6 @@ export default function HomePage({auth, onLogout}: Props) {
                     </div>
                 )}
             </div>
-
-            <button className={cls.Fab} onClick={openDialog} aria-label="Create vault">+</button>
 
             {dialogOpen && (
                 <div className={cls.Overlay} onClick={closeDialog}>
