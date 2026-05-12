@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # Task 25 — UI: Edit / Delete Vault Modal

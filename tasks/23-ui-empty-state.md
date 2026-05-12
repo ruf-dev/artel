@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # Task 23 — UI: Empty State Component

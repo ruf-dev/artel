@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # Task 20 — UI: Design Tokens — Coral Palette + JetBrains Mono

@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # Task 21 — UI: Topbar + Hero Section

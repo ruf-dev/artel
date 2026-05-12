@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # Task 22 — UI: VaultCard Redesign

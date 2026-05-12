@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 
 # Task 24 — UI: Create Modal Redesign

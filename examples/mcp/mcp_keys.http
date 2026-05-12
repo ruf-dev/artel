@@ -1,6 +1,6 @@
 ### Create MCP Key
 # Returns rawToken once — save it immediately.
-POST {{artel_url}}/api/vaults/{{vault_id}}/mcp-keys
+POST {{artel_url}}/api/mcp/{{vault_id}}/mcp-keys
 Content-Type: application/json
 Authorization: {{auth_token}}
 
@@ -9,9 +9,9 @@ Authorization: {{auth_token}}
 }
 
 ### List MCP Keys
-GET {{artel_url}}/api/vaults/{{vault_id}}/mcp-keys
+GET {{artel_url}}/api/mcp/{{vault_id}}/mcp-keys
 Authorization: {{auth_token}}
 
 ### Revoke MCP Key
-DELETE {{artel_url}}/api/vaults/{{vault_id}}/mcp-keys/{{mcp_key_id}}
+DELETE {{artel_url}}/api/mcp/{{vault_id}}/mcp-keys/{{mcp_key_id}}
 Authorization: {{auth_token}}

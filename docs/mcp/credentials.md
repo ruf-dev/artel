@@ -11,7 +11,7 @@ You need the UUID of the vault you want to connect to. The vault UUID is display
 Call the REST API:
 
 ```http
-POST /api/vaults/{vault_id}/mcp-keys
+POST /api/mcp/{vault_id}/mcp-keys
 Content-Type: application/json
 
 {"name": "my-llm-key"}
@@ -20,7 +20,7 @@ Content-Type: application/json
 **curl example:**
 
 ```bash
-curl -X POST https://your-artel-host/api/vaults/VAULT_UUID/mcp-keys \
+curl -X POST https://your-artel-host/api/mcp/VAULT_UUID/mcp-keys \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
   -d '{"name": "my-llm-key"}'
@@ -50,14 +50,14 @@ The `keyPreview` field (first 12 characters) is stored permanently and lets you 
 List keys for a vault:
 
 ```bash
-curl https://your-artel-host/api/vaults/VAULT_UUID/mcp-keys \
+curl https://your-artel-host/api/mcp/VAULT_UUID/mcp-keys \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 
 Revoke a key:
 
 ```bash
-curl -X DELETE https://your-artel-host/api/vaults/VAULT_UUID/mcp-keys/KEY_ID \
+curl -X DELETE https://your-artel-host/api/mcp/VAULT_UUID/mcp-keys/KEY_ID \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 
