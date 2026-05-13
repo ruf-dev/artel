@@ -110,7 +110,6 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 
 	mcpKey, err := s.mcpKeys.GetMcpKeyByID(ctx, keyUUID)
 	if err != nil {
-
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get mcp key")
 	}
 

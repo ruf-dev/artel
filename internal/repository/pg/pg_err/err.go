@@ -10,7 +10,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
-func WrapPgErr(err error) error {
+func UnwrapPgErr(err error) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return user_errors.NotFound
 	}

@@ -40,7 +40,7 @@ func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, usernam
 	}
 	row, err := r.q.CreateCouchAccount(ctx, params)
 	if err != nil {
-		return domain.CouchAccount{}, pg_err.WrapPgErr(err)
+		return domain.CouchAccount{}, pg_err.UnwrapPgErr(err)
 	}
 
 	account := domain.CouchAccount{

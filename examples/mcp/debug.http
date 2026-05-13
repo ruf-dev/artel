@@ -3,20 +3,33 @@ POST {{artel_url}}/token
 Content-Type: application/x-www-form-urlencoded
 Accept-Encoding: gzip, deflate, br, zstd
 
-grant_type=authorization_code&code=4593f8bcde194b577906e9a932fb2a06&client_id=33b343b2f1911f76160442ece36ba2d6&code_verifier=30RO__Sm98GzGISwG84JwRG-S77eoe8uqgI6NoK7RJThUswmAZ_9LL-wWwGbCpwxoI6uUjVxMzg_og3AO4IXYb7z1lFbPXJkcF5Y0JD4h40XKg7NT_CU6xuQ2mXVawhW&redirect_uri=https%3A%2F%2Fclaude.ai%2Fapi%2Fmcp%2Fauth_callback&resource=https%3A%2F%2Falexskilled.zpotify.ru%2Fmcp
+grant_type = authorization_code &
+code = 4593f8bcde194b577906e9a932fb2a06 &
+client_id = 33b343b2f1911f76160442ece36ba2d6 &
+code_verifier = 30RO__Sm98GzGISwG84JwRG-S77eoe8uqgI6NoK7RJThUswmAZ_9LL-wWwGbCpwxoI6uUjVxMzg_og3AO4IXYb7z1lFbPXJkcF5Y0JD4h40XKg7NT_CU6xuQ2mXVawhW &
+redirect_uri = https%3A%2F%2Fclaude.ai%2Fapi%2Fmcp%2Fauth_callback &
+resource = https%3A%2F%2Falexskilled.zpotify.ru%2Fmcp
 
 ### Initialize
 POST {{artel_url}}/mcp
 Content-Type: application/json
-Authorization: Bearer artel_vtk_885d5bcd3ff247b5b62aab5269cd67c9_7159320b82e96b315571683d1d75c812
+Authorization: Bearer artel_vtk_3c4e25ef5d0c42f99f4915f1554fde17_d08600fc59d773223d5dd1159bbfa294
 
 {
   "method": "initialize",
   "params": {
     "protocolVersion": "2025-11-25",
-    "capabilities": {},
+    "capabilities": {
+      "extensions": {
+        "io.modelcontextprotocol/ui": {
+          "mimeTypes": [
+            "text/html;profile=mcp-app"
+          ]
+        }
+      }
+    },
     "clientInfo": {
-      "name": "Anthropic/Toolbox",
+      "name": "Anthropic/ClaudeAI",
       "version": "1.0.0"
     }
   },

@@ -8,6 +8,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
 )
 
 type McpKeyRepo struct {
@@ -28,7 +29,7 @@ func (r *McpKeyRepo) CreateMcpKey(ctx context.Context, vaultID, userID uuid.UUID
 	}
 	row, err := r.q.CreateMcpKey(ctx, params)
 	if err != nil {
-		return domain.McpKey{}, rerrors.Wrap(err, "store mcp key")
+		return domain.McpKey{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "store mcp key")
 	}
 
 	return toMcpKey(row), nil
@@ -37,7 +38,7 @@ func (r *McpKeyRepo) CreateMcpKey(ctx context.Context, vaultID, userID uuid.UUID
 func (r *McpKeyRepo) ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error) {
 	rows, err := r.q.ListMcpKeysByVault(ctx, vaultID)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "list mcp keys by vault")
+		return nil, rerrors.Wrap(pg_err.UnwrapPgErr(err), "list mcp keys by vault")
 	}
 
 	keys := make([]domain.McpKey, 0, len(rows))
@@ -50,7 +51,7 @@ func (r *McpKeyRepo) ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) 
 func (r *McpKeyRepo) GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error) {
 	row, err := r.q.GetMcpKeyByID(ctx, id)
 	if err != nil {
-		return domain.McpKey{}, rerrors.Wrap(err, "get mcp key by id")
+		return domain.McpKey{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "get mcp key by id")
 	}
 
 	return toMcpKey(row), nil
@@ -59,7 +60,7 @@ func (r *McpKeyRepo) GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.Mc
 func (r *McpKeyRepo) ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error) {
 	rows, err := r.q.ListActiveMcpKeys(ctx, vaultID)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "list active mcp keys")
+		return nil, rerrors.Wrap(pg_err.UnwrapPgErr(err), "list active mcp keys")
 	}
 
 	keys := make([]domain.McpKey, 0, len(rows))
@@ -72,7 +73,7 @@ func (r *McpKeyRepo) ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) (
 func (r *McpKeyRepo) RevokeMcpKey(ctx context.Context, id uuid.UUID) error {
 	err := r.q.RevokeMcpKey(ctx, id)
 	if err != nil {
-		return rerrors.Wrap(err, "revoke mcp key")
+		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "revoke mcp key")
 	}
 	return nil
 }

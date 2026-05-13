@@ -259,9 +259,11 @@ func (h *OAuthHandler) ServeToken(w http.ResponseWriter, r *http.Request) {
 		oauthTokenError(w, "invalid_grant", "authorization code expired or not found")
 		return
 	}
-	if err := h.pendingCodes.Delete(r.Context(), code); err != nil {
-		log.Error().Err(err).Msg("failed to delete pending auth code")
-	}
+
+	//err = h.pendingCodes.Delete(r.Context(), code);
+	//if  err != nil {
+	//	log.Error().Err(err).Msg("failed to delete pending auth code")
+	//}
 
 	if time.Now().After(pending.ExpiresAt) {
 		oauthTokenError(w, "invalid_grant", "authorization code expired")
