@@ -6,6 +6,7 @@ package app
 import (
 	"context"
 	"encoding/hex"
+	"net/http"
 
 	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
@@ -50,6 +51,7 @@ func (c *Custom) Init(a *App) error {
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService())
+	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
 	c.Transport.AddServerOption(
 		middleware.GrpcAuthInterceptor(services,
@@ -63,6 +65,14 @@ func (c *Custom) Init(a *App) error {
 	)
 	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl)
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
+	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
+	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
+	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource/mcp", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
+	c.Transport.AddHttpHandler("/register", http.HandlerFunc(oauthHandler.ServeRegistration))
+	c.Transport.AddHttpHandler("/oauth/login", http.HandlerFunc(oauthHandler.ServeOAuthLogin))
+	c.Transport.AddHttpHandler("/oauth/vaults", http.HandlerFunc(oauthHandler.ServeOAuthVaults))
+	c.Transport.AddHttpHandler("/oauth/vault", http.HandlerFunc(oauthHandler.ServeOAuthVault))
+	c.Transport.AddHttpHandler("/token", http.HandlerFunc(oauthHandler.ServeToken))
 
 	return nil
 }

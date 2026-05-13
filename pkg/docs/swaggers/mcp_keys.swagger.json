@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/api/vaults/{vaultId}/mcp-keys": {
+    "/api/mcp/{vaultId}/mcp-keys": {
       "get": {
         "operationId": "McpKeysAPI_ListMcpKeys",
         "responses": {
@@ -82,7 +82,7 @@
         ]
       }
     },
-    "/api/vaults/{vaultId}/mcp-keys/{keyId}": {
+    "/api/mcp/{vaultId}/mcp-keys/{keyId}": {
       "delete": {
         "operationId": "McpKeysAPI_RevokeMcpKey",
         "responses": {

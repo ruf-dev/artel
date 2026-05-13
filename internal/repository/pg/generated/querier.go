@@ -15,12 +15,15 @@ type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
 	CreateCouchAccount(ctx context.Context, arg CreateCouchAccountParams) (CouchAccount, error)
 	CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error)
+	CreatePendingAuthCode(ctx context.Context, arg CreatePendingAuthCodeParams) error
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateTelegramUser(ctx context.Context, username string) (CreateTelegramUserRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
+	DeleteExpiredPendingAuthCodes(ctx context.Context) error
+	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
@@ -28,6 +31,7 @@ type Querier interface {
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
+	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)

@@ -28,7 +28,7 @@ func (r *McpKeyRepo) CreateMcpKey(ctx context.Context, vaultID, userID uuid.UUID
 	}
 	row, err := r.q.CreateMcpKey(ctx, params)
 	if err != nil {
-		return domain.McpKey{}, rerrors.Wrap(err, "create mcp key")
+		return domain.McpKey{}, rerrors.Wrap(err, "store mcp key")
 	}
 
 	return toMcpKey(row), nil

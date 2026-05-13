@@ -47,6 +47,15 @@ type McpKey struct {
 	RevokedAt  sql.NullTime
 }
 
+type PendingAuthCode struct {
+	Code          string
+	RawToken      string
+	CodeChallenge string
+	RedirectUri   string
+	ClientID      string
+	ExpiresAt     time.Time
+}
+
 type Session struct {
 	ID        uuid.UUID
 	UserID    uuid.UUID

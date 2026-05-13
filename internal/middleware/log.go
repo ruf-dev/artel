@@ -1,11 +1,56 @@
 package middleware
 
 import (
+	"bytes"
 	"context"
+	"io"
+	"net/http"
 
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
+
+type capturingResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+	body       bytes.Buffer
+}
+
+func (w *capturingResponseWriter) WriteHeader(code int) {
+	w.statusCode = code
+	w.ResponseWriter.WriteHeader(code)
+}
+
+func (w *capturingResponseWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	return w.ResponseWriter.Write(b)
+}
+
+func HttpLogMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cw := &capturingResponseWriter{ResponseWriter: w, statusCode: http.StatusOK}
+
+		reqBody, _ := io.ReadAll(r.Body)
+		r.Body = io.NopCloser(bytes.NewReader(reqBody))
+
+		fields := log.Debug().
+			Str("method", r.Method).
+			Str("path", r.URL.Path).
+			Any("req_headers", r.Header).
+			Str("req_body", string(reqBody))
+
+		defer func() {
+			fields.Msg("incoming HTTP request")
+		}()
+
+		next.ServeHTTP(cw, r)
+
+		fields = fields.
+			Int("status", cw.statusCode).
+			Any("resp_headers", cw.Header()).
+			Str("resp_body", cw.body.String())
+	})
+}
 
 func LogInterceptor() grpc.ServerOption {
 	return grpc.ChainUnaryInterceptor(

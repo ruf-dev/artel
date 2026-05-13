@@ -20,3 +20,6 @@ CLAUDE.local.md
 proto_deps
 local_data/
 proto_modules
+
+.verv/local
+.verv/notes.local.md

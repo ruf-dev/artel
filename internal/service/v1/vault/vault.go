@@ -116,28 +116,6 @@ func (s *Service) GetVault(ctx context.Context, vaultID uuid.UUID) (domain.Vault
 	return vault, nil
 }
 
-func (s *Service) ListVaults(ctx context.Context) ([]domain.Vault, error) {
-	uc, ok := user_context.GetUserContext(ctx)
-	if !ok {
-		return nil, rerrors.Wrap(user_errors.Unauthenticated)
-	}
-
-	vaults, err := s.vaultsRepo.ListByMembership(ctx, uc.UserUuid)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "list vaults by membership")
-	}
-
-	for i, vault := range vaults {
-		instance, err := s.couchInstancesRepo.Get(ctx, vault.CouchInstanceUuid)
-		if err != nil {
-			return nil, rerrors.Wrap(err, "get couch instance")
-		}
-		vaults[i].CouchDBURL = instance.Url + "/" + vault.CouchDBName
-	}
-
-	return vaults, nil
-}
-
 func (s *Service) AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error {
 	err := s.vaultMembersRepo.Add(ctx, vaultID, targetUserUuid, "member")
 	if err != nil {
@@ -178,7 +156,6 @@ func (s *Service) ensureCouchUserExists(ctx context.Context,
 	instanceWithAccountPtr *domain.CouchInstanceWithAccount,
 	couchAccountsRepo repository.CouchAccounts,
 ) (err error) {
-	// TODO Validate user exists
 
 	var couchPassword string
 	if instanceWithAccountPtr.Account != nil {
@@ -218,7 +195,7 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 	vaultsRepo repository.Vaults,
 ) (domain.Vault, error) {
 
-	databaseName := sanitizeCouchDBName(vaultName)
+	databaseName := sanitizeCouchDBName(uc.UserName + "-" + vaultName + "-vault")
 
 	err := adminClient.CreateDatabase(ctx, databaseName)
 	if err != nil {

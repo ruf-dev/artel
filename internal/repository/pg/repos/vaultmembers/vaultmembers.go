@@ -33,25 +33,30 @@ func (r *Repo) Add(ctx context.Context, vaultUuid, userUuid uuid.UUID, role stri
 	if err != nil {
 		return rerrors.Wrap(err, "failed to add vault member")
 	}
+
 	return nil
 }
 
 func (r *Repo) Remove(ctx context.Context, vaultUuid, userUuid uuid.UUID) error {
-	err := r.q.RemoveVaultMember(ctx, artel_q.RemoveVaultMemberParams{
+	params := artel_q.RemoveVaultMemberParams{
 		VaultID: vaultUuid,
 		UserID:  userUuid,
-	})
+	}
+
+	err := r.q.RemoveVaultMember(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "failed to remove vault member")
 	}
+
 	return nil
 }
 
 func (r *Repo) Get(ctx context.Context, vaultUuid, userUuid uuid.UUID) (domain.VaultMember, error) {
-	member, err := r.q.GetVaultMembership(ctx, artel_q.GetVaultMembershipParams{
+	params := artel_q.GetVaultMembershipParams{
 		VaultID: vaultUuid,
 		UserID:  userUuid,
-	})
+	}
+	member, err := r.q.GetVaultMembership(ctx, params)
 	if err != nil {
 		return domain.VaultMember{}, rerrors.Wrap(err, "get vault membership")
 	}

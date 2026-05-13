@@ -8,12 +8,17 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
+
+const tokenPrefix = "artel_vtk_"
 
 const bcryptCost = 12
 
@@ -36,6 +41,11 @@ func New(
 }
 
 func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name string) (rawToken string, key domain.McpKey, err error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return "", domain.McpKey{}, user_errors.Unauthenticated
+	}
+
 	keyID := uuid.New()
 
 	secretBytes := make([]byte, 16)
@@ -46,7 +56,7 @@ func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name 
 	secretHex := hex.EncodeToString(secretBytes)
 
 	uuidHex := strings.ReplaceAll(keyID.String(), "-", "")
-	rawToken = fmt.Sprintf("artel_vtk_%s_%s", uuidHex, secretHex)
+	rawToken = tokenPrefix + fmt.Sprintf("%s_%s", uuidHex, secretHex)
 
 	keyPreview := rawToken[:12]
 
@@ -55,7 +65,7 @@ func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name 
 		return "", domain.McpKey{}, rerrors.Wrap(err, "hash secret")
 	}
 
-	key, err = s.mcpKeys.CreateMcpKey(ctx, vaultID, uuid.Nil, name, keyHash, keyPreview)
+	key, err = s.mcpKeys.CreateMcpKey(ctx, vaultID, uc.UserUuid, name, keyHash, keyPreview)
 	if err != nil {
 		return "", domain.McpKey{}, rerrors.Wrap(err, "create mcp key")
 	}
@@ -80,15 +90,14 @@ func (s *McpServiceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
 }
 
 func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error) {
-	prefix := "artel_vtk_"
-	if !strings.HasPrefix(rawToken, prefix) {
-		return domain.McpKeyContext{}, rerrors.New("invalid token format")
+	if !strings.HasPrefix(rawToken, tokenPrefix) {
+		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.McpInvalidToken, "prefix missing", tokenPrefix)
 	}
 
-	rest := rawToken[len(prefix):]
+	rest := rawToken[len(tokenPrefix):]
 	parts := strings.SplitN(rest, "_", 2)
 	if len(parts) != 2 {
-		return domain.McpKeyContext{}, rerrors.New("invalid token format")
+		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.McpInvalidToken, "invalid token format")
 	}
 	uuidHex := parts[0]
 	secretHex := parts[1]
@@ -101,25 +110,28 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 
 	mcpKey, err := s.mcpKeys.GetMcpKeyByID(ctx, keyUUID)
 	if err != nil {
+
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get mcp key")
 	}
 
 	if mcpKey.RevokedAt != nil {
-		return domain.McpKeyContext{}, rerrors.New("key revoked")
+		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.McpKeyRevoked)
 	}
 
 	err = bcrypt.CompareHashAndPassword(mcpKey.KeyHash, []byte(secretHex))
 	if err != nil {
-		return domain.McpKeyContext{}, rerrors.New("unauthorized")
+		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
 	vault, err := s.vaults.GetByID(ctx, mcpKey.VaultUuid)
 	if err != nil {
+		log.Error().Err(err).Str("vault_uuid", mcpKey.VaultUuid.String()).Msg("ResolveKey: get vault failed")
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get vault")
 	}
 
 	couchWithAccount, err := s.couchInstances.Pick(ctx, vault.CouchInstanceUuid)
 	if err != nil {
+		log.Error().Err(err).Str("couch_instance_uuid", vault.CouchInstanceUuid.String()).Msg("ResolveKey: pick couch instance failed")
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "pick couch instance")
 	}
 

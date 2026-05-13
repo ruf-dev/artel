@@ -8,6 +8,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchinstances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
@@ -17,14 +18,15 @@ import (
 )
 
 type Repos struct {
-	users          repository.Users
-	vaults         repository.Vaults
-	vaultMembers   repository.VaultMembers
-	sessions       repository.Sessions
-	subscriptions  repository.Subscriptions
-	couchAccounts  repository.CouchAccounts
-	couchInstances repository.CouchInstances
-	mcpKey         repository.McpKeyRepository
+	users            repository.Users
+	vaults           repository.Vaults
+	vaultMembers     repository.VaultMembers
+	sessions         repository.Sessions
+	subscriptions    repository.Subscriptions
+	couchAccounts    repository.CouchAccounts
+	couchInstances   repository.CouchInstances
+	mcpKey           repository.McpKeyRepository
+	pendingAuthCodes repository.PendingAuthCodes
 
 	txManager tx_manager.TxManager
 }
@@ -65,6 +67,10 @@ func (r Repos) McpKeyRepository() repository.McpKeyRepository {
 	return r.mcpKey
 }
 
+func (r Repos) PendingAuthCodes() repository.PendingAuthCodes {
+	return r.pendingAuthCodes
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(db)
 
@@ -73,11 +79,12 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		vaultMembers:   vaultmembers.New(db),
 		couchInstances: couchinstances.New(db, encryptionKey),
 
-		users:         users.New(q),
-		sessions:      sessions.New(q),
-		subscriptions: subscriptions.New(q),
-		couchAccounts: couchaccounts.New(db, encryptionKey),
-		mcpKey:        mcpkeys.New(q),
+		users:            users.New(q),
+		sessions:         sessions.New(q),
+		subscriptions:    subscriptions.New(q),
+		couchAccounts:    couchaccounts.New(db, encryptionKey),
+		mcpKey:           mcpkeys.New(q),
+		pendingAuthCodes: pendingauthcodes.New(q),
 
 		txManager: tx_manager.New(db),
 	}

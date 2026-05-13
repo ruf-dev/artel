@@ -1,15 +1,16 @@
 ### Create MCP Key
-# Returns rawToken once — save it immediately.
-POST {{artel_url}}/api/mcp/{{vault_id}}/mcp-keys
+POST {{artel_url}}/api/mcp/f5cf9ccf-947a-4347-8fa4-2ef12d120646/mcp-keys
 Content-Type: application/json
 Authorization: {{auth_token}}
 
 {
-  "name": "my-llm-key"
+  "name": "alex-skilled-key"
 }
 
+###artel_vtk_08d0af24287a481d8dde9c629905efb9_e30f50eb966a2e99c059d76a5b55374b
+
 ### List MCP Keys
-GET {{artel_url}}/api/mcp/{{vault_id}}/mcp-keys
+GET {{artel_url}}/api/mcp/f5cf9ccf-947a-4347-8fa4-2ef12d120646/mcp-keys
 Authorization: {{auth_token}}
 
 ### Revoke MCP Key

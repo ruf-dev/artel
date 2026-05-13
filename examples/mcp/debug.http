@@ -1,0 +1,25 @@
+### Issue token
+POST {{artel_url}}/token
+Content-Type: application/x-www-form-urlencoded
+Accept-Encoding: gzip, deflate, br, zstd
+
+grant_type=authorization_code&code=4593f8bcde194b577906e9a932fb2a06&client_id=33b343b2f1911f76160442ece36ba2d6&code_verifier=30RO__Sm98GzGISwG84JwRG-S77eoe8uqgI6NoK7RJThUswmAZ_9LL-wWwGbCpwxoI6uUjVxMzg_og3AO4IXYb7z1lFbPXJkcF5Y0JD4h40XKg7NT_CU6xuQ2mXVawhW&redirect_uri=https%3A%2F%2Fclaude.ai%2Fapi%2Fmcp%2Fauth_callback&resource=https%3A%2F%2Falexskilled.zpotify.ru%2Fmcp
+
+### Initialize
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer artel_vtk_885d5bcd3ff247b5b62aab5269cd67c9_7159320b82e96b315571683d1d75c812
+
+{
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "Anthropic/Toolbox",
+      "version": "1.0.0"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 0
+}

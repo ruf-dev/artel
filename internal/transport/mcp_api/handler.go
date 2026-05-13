@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/service"
@@ -42,15 +43,21 @@ func NewMcpHandler(mcpSvc service.McpService) *McpHandler {
 }
 
 func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		h.serveSSE(w, r)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 
 	if r.Method != http.MethodPost {
-		writeErrorResponse(w, nil, -32000, "method not allowed")
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
 	token := extractBearerToken(r)
 	if token == "" {
+		w.Header().Set("WWW-Authenticate", `Bearer realm="`+publicHost(r)+`"`)
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -97,6 +104,31 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.dispatchMethod(w, ctx, req)
 }
 
+func (h *McpHandler) serveSSE(w http.ResponseWriter, r *http.Request) {
+	if !strings.Contains(r.Header.Get("Accept"), "text/event-stream") {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	token := extractBearerToken(r)
+	if token == "" {
+		w.Header().Set("WWW-Authenticate", `Bearer realm="`+publicHost(r)+`"`)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	if _, err := h.mcpSvc.ResolveKey(r.Context(), token); err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.WriteHeader(http.StatusOK)
+	if f, ok := w.(http.Flusher); ok {
+		f.Flush()
+	}
+	<-r.Context().Done()
+}
+
 func (h *McpHandler) dispatchMethod(w http.ResponseWriter, ctx context.Context, req rpcRequest) {
 	switch req.Method {
 	case "initialize":
@@ -111,8 +143,10 @@ func (h *McpHandler) dispatchMethod(w http.ResponseWriter, ctx context.Context, 
 }
 
 func (h *McpHandler) handleInitialize(w http.ResponseWriter, ctx context.Context, req rpcRequest) {
+	w.Header().Set("Mcp-Session-Id", uuid.New().String())
+
 	result := map[string]any{
-		"protocolVersion": "2025-06-18",
+		"protocolVersion": "2025-03-26",
 		"capabilities": map[string]any{
 			"tools": map[string]any{},
 		},
@@ -187,6 +221,13 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	if err != nil {
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 	}
+}
+
+func publicHost(r *http.Request) string {
+	if h := r.Header.Get("X-Forwarded-Host"); h != "" {
+		return h
+	}
+	return r.Host
 }
 
 func extractBearerToken(r *http.Request) string {

@@ -11,7 +11,6 @@ import useUser from "@/hooks/user/User.ts"
 
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
 import Topbar from "@/components/Topbar/Topbar.tsx"
-import EmptyState from "@/components/EmptyState/EmptyState.tsx"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
@@ -91,12 +90,6 @@ function ContentSegment({onEditClick}: { onEditClick: (id: string) => void }) {
     if (loading) {
         loadingState = (
             <p className={cls.Empty}>Loading…</p>
-        )
-    } else if (vaults.length === 0) {
-        loadingState = (
-            <EmptyState
-                onCreateClick={() => {/* handled by HeroSegment */
-                }}/>
         )
     }
 

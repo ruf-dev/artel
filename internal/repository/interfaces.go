@@ -20,6 +20,7 @@ type Repo interface {
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
 	McpKeyRepository() McpKeyRepository
+	PendingAuthCodes() PendingAuthCodes
 
 	TxManager() tx_manager.TxManager
 }
@@ -89,4 +90,11 @@ type McpKeyRepository interface {
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
+}
+
+type PendingAuthCodes interface {
+	Create(ctx context.Context, code, rawToken, codeChallenge, redirectUri, clientId string, expiresAt time.Time) error
+	Get(ctx context.Context, code string) (domain.PendingAuthCode, error)
+	Delete(ctx context.Context, code string) error
+	DeleteExpired(ctx context.Context) error
 }

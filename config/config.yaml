@@ -30,4 +30,4 @@ environment:
       value: Info
     - name: telegram_client_id
       type: string
-      value: ""
+      value: "8719705888"
