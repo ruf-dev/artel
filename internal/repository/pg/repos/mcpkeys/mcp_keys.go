@@ -19,8 +19,9 @@ func New(q *artel_q.Queries) *McpKeyRepo {
 	return &McpKeyRepo{q: q}
 }
 
-func (r *McpKeyRepo) CreateMcpKey(ctx context.Context, vaultID, userID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error) {
+func (r *McpKeyRepo) CreateMcpKey(ctx context.Context, vaultID, userID, keyID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error) {
 	params := artel_q.CreateMcpKeyParams{
+		ID:         keyID,
 		VaultID:    vaultID,
 		UserID:     userID,
 		Name:       name,

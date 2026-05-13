@@ -65,7 +65,7 @@ func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name 
 		return "", domain.McpKey{}, rerrors.Wrap(err, "hash secret")
 	}
 
-	key, err = s.mcpKeys.CreateMcpKey(ctx, vaultID, uc.UserUuid, name, keyHash, keyPreview)
+	key, err = s.mcpKeys.CreateMcpKey(ctx, vaultID, uc.UserUuid, keyID, name, keyHash, keyPreview)
 	if err != nil {
 		return "", domain.McpKey{}, rerrors.Wrap(err, "create mcp key")
 	}

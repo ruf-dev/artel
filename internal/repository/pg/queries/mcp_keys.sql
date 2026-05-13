@@ -1,6 +1,6 @@
 -- name: CreateMcpKey :one
-INSERT INTO mcp_keys (vault_id, user_id, name, key_hash, key_preview)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO mcp_keys (id, vault_id, user_id, name, key_hash, key_preview)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at;
 
 -- name: ListMcpKeysByVault :many

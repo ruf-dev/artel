@@ -12,12 +12,13 @@ import (
 )
 
 const createMcpKey = `-- name: CreateMcpKey :one
-INSERT INTO mcp_keys (vault_id, user_id, name, key_hash, key_preview)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO mcp_keys (id, vault_id, user_id, name, key_hash, key_preview)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at
 `
 
 type CreateMcpKeyParams struct {
+	ID         uuid.UUID
 	VaultID    uuid.UUID
 	UserID     uuid.UUID
 	Name       string
@@ -27,6 +28,7 @@ type CreateMcpKeyParams struct {
 
 func (q *Queries) CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error) {
 	row := q.db.QueryRowContext(ctx, createMcpKey,
+		arg.ID,
 		arg.VaultID,
 		arg.UserID,
 		arg.Name,

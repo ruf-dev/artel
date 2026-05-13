@@ -85,7 +85,7 @@ type CouchInstances interface {
 }
 
 type McpKeyRepository interface {
-	CreateMcpKey(ctx context.Context, vaultID, userID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error)
+	CreateMcpKey(ctx context.Context, vaultID, userID, keyID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
