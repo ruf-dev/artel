@@ -20,6 +20,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
+	"github.com/ruf-dev/artel/internal/transport/ui"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
 
@@ -64,6 +65,7 @@ func (c *Custom) Init(a *App) error {
 		middleware.PanicInterceptor(),
 	)
 	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl)
+
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
@@ -73,6 +75,7 @@ func (c *Custom) Init(a *App) error {
 	c.Transport.AddHttpHandler("/oauth/vaults", http.HandlerFunc(oauthHandler.ServeOAuthVaults))
 	c.Transport.AddHttpHandler("/oauth/vault", http.HandlerFunc(oauthHandler.ServeOAuthVault))
 	c.Transport.AddHttpHandler("/token", http.HandlerFunc(oauthHandler.ServeToken))
+	c.Transport.AddHttpHandler("/", ui.NewHandler())
 
 	return nil
 }

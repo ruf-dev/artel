@@ -23,3 +23,6 @@ proto_modules
 
 .verv/local
 .verv/notes.local.md
+
+internal/transport/ui/dist/*
+!internal/transport/ui/dist/.gitkeep
