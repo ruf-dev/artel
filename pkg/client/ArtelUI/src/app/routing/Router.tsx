@@ -4,6 +4,7 @@ import {Navigate, Route, Routes} from "react-router-dom"
 
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
+import EmailsPage from "@/pages/emails/EmailsPage.tsx"
 import ErrorPage from "@/pages/error/ErrorPage.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
@@ -12,6 +13,7 @@ import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
 export enum Path {
     InitPage = "/init",
     HomePage = "/",
+    EmailsPage = "/emails",
     McpAuth = "/authorize",
 }
 
@@ -29,6 +31,12 @@ export default function Router() {
                     <Route
                         path={Path.HomePage}
                         element={<HomePage/>}
+                        errorElement={<ErrorPage/>}
+                    />
+
+                    <Route
+                        path={Path.EmailsPage}
+                        element={<EmailsPage/>}
                         errorElement={<ErrorPage/>}
                     />
 

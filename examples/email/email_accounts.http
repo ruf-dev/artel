@@ -1,0 +1,21 @@
+### Add email account
+POST {{artel_url}}/api/email-accounts
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "email": "user@gmail.com",
+  "imapHost": "imap.gmail.com",
+  "imapPort": 993,
+  "smtpHost": "smtp.gmail.com",
+  "smtpPort": 587,
+  "password": "secret"
+}
+
+### List email accounts
+GET {{artel_url}}/api/email-accounts
+Authorization: {{auth_token}}
+
+### Delete email account
+DELETE {{artel_url}}/api/email-accounts/{{email_account_id}}
+Authorization: {{auth_token}}

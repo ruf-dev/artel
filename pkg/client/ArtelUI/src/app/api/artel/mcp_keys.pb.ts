@@ -49,12 +49,12 @@ export type RevokeMcpKey = Record<string, never>;
 
 export class McpKeysAPI {
   static CreateMcpKey(this:void, req: CreateMcpKeyRequest, initReq?: fm.InitReq): Promise<CreateMcpKeyResponse> {
-    return fm.fetchRequest<CreateMcpKeyResponse>(`/api/vaults/${req.vaultId}/mcp-keys`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<CreateMcpKeyResponse>(`/api/mcp/${req.vaultId}/mcp-keys`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListMcpKeys(this:void, req: ListMcpKeysRequest, initReq?: fm.InitReq): Promise<ListMcpKeysResponse> {
-    return fm.fetchRequest<ListMcpKeysResponse>(`/api/vaults/${req.vaultId}/mcp-keys?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListMcpKeysResponse>(`/api/mcp/${req.vaultId}/mcp-keys?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
   }
   static RevokeMcpKey(this:void, req: RevokeMcpKeyRequest, initReq?: fm.InitReq): Promise<RevokeMcpKeyResponse> {
-    return fm.fetchRequest<RevokeMcpKeyResponse>(`/api/vaults/${req.vaultId}/mcp-keys/${req.keyId}?${fm.renderURLSearchParams(req, ["vaultId", "keyId"])}`, {...initReq, method: "DELETE"});
+    return fm.fetchRequest<RevokeMcpKeyResponse>(`/api/mcp/${req.vaultId}/mcp-keys/${req.keyId}?${fm.renderURLSearchParams(req, ["vaultId", "keyId"])}`, {...initReq, method: "DELETE"});
   }
 }

@@ -33,12 +33,14 @@ type rpcError struct {
 }
 
 type McpHandler struct {
-	mcpSvc service.McpService
+	mcpSvc   service.McpService
+	emailSvc service.EmailService
 }
 
-func NewMcpHandler(mcpSvc service.McpService) *McpHandler {
+func NewMcpHandler(mcpSvc service.McpService, emailSvc service.EmailService) *McpHandler {
 	return &McpHandler{
-		mcpSvc: mcpSvc,
+		mcpSvc:   mcpSvc,
+		emailSvc: emailSvc,
 	}
 }
 
@@ -205,7 +207,7 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 		return
 	}
 
-	result, err := dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx)
+	result, err := dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)
 	if err != nil {
 		writeErrorResponse(w, req.Id, -32603, "tool execution failed")
 		return

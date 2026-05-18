@@ -14,7 +14,8 @@ by [RedSock CLI (rscli)](https://github.com/Red-Sock/rscli).
 
 ```bash
 moti i          # Install protoc dependencies if new added to moti.yaml
-moti g          # Generate protos (preferred — runs protoc via moti.yaml config)
+moti g          # Generate protos for Go backend (internal/api/server/artel_api)
+bun gen         # Generate TypeScript proto clients for frontend (run from pkg/client/ArtelUI)
 sqlc generate   # Generate Go from SQL queries (internal/repository/pg/queries → internal/repository/pg/generated)
 make lint       # golangci-lint run ./...
 ```

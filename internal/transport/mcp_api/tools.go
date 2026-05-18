@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service"
 )
 
 type KeyContext struct {
@@ -127,12 +129,75 @@ func getToolDefinitions() []ToolDef {
 				"required": []string{"path"},
 			},
 		},
+		{
+			Name:        "list_email_accounts",
+			Description: "List the user's configured email accounts",
+			InputSchema: map[string]interface{}{
+				"type":       "object",
+				"properties": map[string]interface{}{},
+				"required":   []string{},
+			},
+		},
+		{
+			Name:        "list_emails",
+			Description: "List recent emails from an account's inbox",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+					"limit":      map[string]interface{}{"type": "integer", "description": "Max number of emails to return (default 20)"},
+				},
+				"required": []string{"account_id"},
+			},
+		},
+		{
+			Name:        "read_email",
+			Description: "Read the full content of an email by its ID",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+					"id":         map[string]string{"type": "string", "description": "Email UID from list_emails"},
+				},
+				"required": []string{"account_id", "id"},
+			},
+		},
+		{
+			Name:        "send_email",
+			Description: "Send an email from one of the user's configured accounts",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+					"to":         map[string]string{"type": "string", "description": "Recipient email address"},
+					"subject":    map[string]string{"type": "string", "description": "Email subject"},
+					"body":       map[string]string{"type": "string", "description": "Email body (plain text)"},
+				},
+				"required": []string{"account_id", "to", "subject", "body"},
+			},
+		},
 	}
 }
 
-func dispatchToolCall(ctx context.Context, toolName string, arguments map[string]interface{}, keyCtx KeyContext) (interface{}, error) {
-	client := couchdb.NewLiveSyncClient(keyCtx.CouchURL, keyCtx.CouchDb, keyCtx.CouchUser, keyCtx.CouchPass)
+func dispatchToolCall(ctx context.Context, toolName string, arguments map[string]interface{}, keyCtx KeyContext, emailSvc service.EmailService) (interface{}, error) {
+	switch toolName {
+	case "list_notes", "read_note", "write_note", "delete_note", "move_note", "list_folders", "list_tags", "get_note_metadata":
+		client := couchdb.NewLiveSyncClient(keyCtx.CouchURL, keyCtx.CouchDb, keyCtx.CouchUser, keyCtx.CouchPass)
+		return dispatchVaultTool(ctx, toolName, arguments, client)
+	case "list_email_accounts":
+		return handleListEmailAccounts(ctx, keyCtx, emailSvc)
+	case "list_emails":
+		return handleListEmails(ctx, arguments, emailSvc)
+	case "read_email":
+		return handleReadEmail(ctx, arguments, emailSvc)
+	case "send_email":
+		return handleSendEmail(ctx, arguments, emailSvc)
+	default:
+		return nil, rerrors.New(fmt.Sprintf("unknown tool: %s", toolName))
+	}
+}
 
+func dispatchVaultTool(ctx context.Context, toolName string, arguments map[string]interface{}, client *couchdb.LiveSyncClient) (interface{}, error) {
 	switch toolName {
 	case "list_notes":
 		return handleListNotes(ctx, client)
@@ -151,7 +216,7 @@ func dispatchToolCall(ctx context.Context, toolName string, arguments map[string
 	case "get_note_metadata":
 		return handleGetNoteMetadata(ctx, client, arguments)
 	default:
-		return nil, rerrors.New(fmt.Sprintf("unknown tool: %s", toolName))
+		return nil, rerrors.New(fmt.Sprintf("unknown vault tool: %s", toolName))
 	}
 }
 
@@ -330,6 +395,140 @@ func handleGetNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, 
 			{
 				"type": "text",
 				"text": toJsonString(metadataMap),
+			},
+		},
+	}, nil
+}
+
+func handleListEmailAccounts(ctx context.Context, keyCtx KeyContext, emailSvc service.EmailService) (interface{}, error) {
+	userUuid, err := uuid.Parse(keyCtx.UserUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "invalid user uuid")
+	}
+
+	accounts, err := emailSvc.ListAccounts(ctx, userUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list email accounts")
+	}
+
+	var result []map[string]interface{}
+	for _, a := range accounts {
+		result = append(result, map[string]interface{}{
+			"id":         a.Uuid.String(),
+			"email":      a.Email,
+			"imap_host":  a.ImapHost,
+			"smtp_host":  a.SmtpHost,
+			"created_at": a.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
+		})
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{
+				"type": "text",
+				"text": toJsonString(result),
+			},
+		},
+	}, nil
+}
+
+func handleListEmails(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
+	accountIdStr, ok := arguments["account_id"].(string)
+	if !ok {
+		return nil, rerrors.New("account_id is required and must be a string")
+	}
+	accountUuid, err := uuid.Parse(accountIdStr)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "invalid account_id")
+	}
+
+	limit := 20
+	if l, ok := arguments["limit"]; ok {
+		switch v := l.(type) {
+		case float64:
+			limit = int(v)
+		case int:
+			limit = v
+		}
+	}
+
+	emails, err := emailSvc.ListEmails(ctx, accountUuid, limit)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list emails")
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{
+				"type": "text",
+				"text": toJsonString(emails),
+			},
+		},
+	}, nil
+}
+
+func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
+	accountIdStr, ok := arguments["account_id"].(string)
+	if !ok {
+		return nil, rerrors.New("account_id is required and must be a string")
+	}
+	accountUuid, err := uuid.Parse(accountIdStr)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "invalid account_id")
+	}
+
+	id, ok := arguments["id"].(string)
+	if !ok {
+		return nil, rerrors.New("id is required and must be a string")
+	}
+
+	msg, err := emailSvc.ReadEmail(ctx, accountUuid, id)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "read email")
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{
+				"type": "text",
+				"text": toJsonString(msg),
+			},
+		},
+	}, nil
+}
+
+func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
+	accountIdStr, ok := arguments["account_id"].(string)
+	if !ok {
+		return nil, rerrors.New("account_id is required and must be a string")
+	}
+	accountUuid, err := uuid.Parse(accountIdStr)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "invalid account_id")
+	}
+
+	to, ok := arguments["to"].(string)
+	if !ok {
+		return nil, rerrors.New("to is required and must be a string")
+	}
+	subject, ok := arguments["subject"].(string)
+	if !ok {
+		return nil, rerrors.New("subject is required and must be a string")
+	}
+	body, ok := arguments["body"].(string)
+	if !ok {
+		return nil, rerrors.New("body is required and must be a string")
+	}
+
+	if err := emailSvc.SendEmail(ctx, accountUuid, to, subject, body); err != nil {
+		return nil, rerrors.Wrap(err, "send email")
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{
+				"type": "text",
+				"text": "Email sent successfully",
 			},
 		},
 	}, nil

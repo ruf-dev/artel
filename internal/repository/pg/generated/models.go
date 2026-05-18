@@ -28,6 +28,18 @@ type CouchInstance struct {
 	CreatedAt   time.Time
 }
 
+type EmailAccount struct {
+	ID          uuid.UUID
+	UserID      uuid.UUID
+	Email       string
+	ImapHost    string
+	ImapPort    int32
+	SmtpHost    string
+	SmtpPort    int32
+	PasswordEnc []byte
+	CreatedAt   time.Time
+}
+
 type IdentitiesTelegram struct {
 	ID         uuid.UUID
 	UserID     uuid.UUID

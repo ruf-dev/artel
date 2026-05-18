@@ -21,6 +21,7 @@ type Repo interface {
 	CouchInstances() CouchInstances
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
+	EmailAccounts() EmailAccounts
 
 	TxManager() tx_manager.TxManager
 }
@@ -97,4 +98,11 @@ type PendingAuthCodes interface {
 	Get(ctx context.Context, code string) (domain.PendingAuthCode, error)
 	Delete(ctx context.Context, code string) error
 	DeleteExpired(ctx context.Context) error
+}
+
+type EmailAccounts interface {
+	Insert(ctx context.Context, account domain.EmailAccount) (domain.EmailAccount, error)
+	GetByUuid(ctx context.Context, id uuid.UUID) (domain.EmailAccount, error)
+	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.EmailAccount, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }

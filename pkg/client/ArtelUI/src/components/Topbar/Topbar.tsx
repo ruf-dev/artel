@@ -1,7 +1,7 @@
 import {useState} from "react"
 import cls from "./Topbar.module.css"
 import {Path} from "@/app/routing/Router.tsx";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, NavLink} from "react-router-dom";
 
 
 export default function Topbar() {
@@ -14,7 +14,7 @@ export default function Topbar() {
 
     return (
         <header className={cls.Topbar}>
-            <a className={cls.Brand} href="/" aria-label="Artel home">
+            <a className={cls.Brand} href={Path.HomePage} aria-label="Artel home">
                 <svg className={cls.BrandMark} viewBox="0 0 100 100" aria-hidden="true">
                     <defs>
                         <mask id="brand-a-cut">
@@ -28,6 +28,22 @@ export default function Topbar() {
                 </svg>
                 <span className={cls.BrandWord}>artel</span>
             </a>
+
+            <nav className={cls.Nav}>
+                <NavLink
+                    to={Path.HomePage}
+                    end
+                    className={({isActive}) => isActive ? `${cls.NavLink} ${cls.NavLinkActive}` : cls.NavLink}
+                >
+                    Vaults
+                </NavLink>
+                <NavLink
+                    to={Path.EmailsPage}
+                    className={({isActive}) => isActive ? `${cls.NavLink} ${cls.NavLinkActive}` : cls.NavLink}
+                >
+                    Emails
+                </NavLink>
+            </nav>
 
             <div className={cls.Right}>
                 <div className={cls.UserWrap}>

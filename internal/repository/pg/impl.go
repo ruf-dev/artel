@@ -7,6 +7,7 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchinstances"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/emailaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
@@ -27,6 +28,7 @@ type Repos struct {
 	couchInstances   repository.CouchInstances
 	mcpKey           repository.McpKeyRepository
 	pendingAuthCodes repository.PendingAuthCodes
+	emailAccounts    repository.EmailAccounts
 
 	txManager tx_manager.TxManager
 }
@@ -71,6 +73,10 @@ func (r Repos) PendingAuthCodes() repository.PendingAuthCodes {
 	return r.pendingAuthCodes
 }
 
+func (r Repos) EmailAccounts() repository.EmailAccounts {
+	return r.emailAccounts
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(db)
 
@@ -85,6 +91,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		couchAccounts:    couchaccounts.New(db, encryptionKey),
 		mcpKey:           mcpkeys.New(q),
 		pendingAuthCodes: pendingauthcodes.New(q),
+		emailAccounts:    emailaccounts.New(q, encryptionKey),
 
 		txManager: tx_manager.New(db),
 	}

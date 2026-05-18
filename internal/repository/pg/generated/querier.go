@@ -22,6 +22,7 @@ type Querier interface {
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
+	DeleteEmailAccount(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteSession(ctx context.Context, token string) error
@@ -30,6 +31,7 @@ type Querier interface {
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
+	GetEmailAccountByUuid(ctx context.Context, id uuid.UUID) (EmailAccount, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
@@ -40,10 +42,12 @@ type Querier interface {
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	InsertEmailAccount(ctx context.Context, arg InsertEmailAccountParams) (EmailAccount, error)
 	InsertTelegramIdentity(ctx context.Context, arg InsertTelegramIdentityParams) error
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
+	ListEmailAccountsByUser(ctx context.Context, userID uuid.UUID) ([]EmailAccount, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)

@@ -13,6 +13,7 @@ type Service interface {
 	VaultService() VaultService
 	CouchInstanceService() CouchInstanceService
 	McpService() McpService
+	EmailService() EmailService
 }
 
 type AuthService interface {
@@ -46,4 +47,16 @@ type McpService interface {
 	RevokeKey(ctx context.Context, keyID uuid.UUID) error
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
+}
+
+type EmailService interface {
+	// Account management — called from gRPC transport only.
+	AddAccount(ctx context.Context, account domain.EmailAccount) (domain.EmailAccount, error)
+	ListAccounts(ctx context.Context, userUuid uuid.UUID) ([]domain.EmailAccount, error)
+	DeleteAccount(ctx context.Context, accountUuid uuid.UUID) error
+
+	// Email operations — called from MCP tools.
+	ListEmails(ctx context.Context, accountUuid uuid.UUID, limit int) ([]domain.EmailMeta, error)
+	ReadEmail(ctx context.Context, accountUuid uuid.UUID, id string) (domain.EmailMessage, error)
+	SendEmail(ctx context.Context, accountUuid uuid.UUID, to, subject, body string) error
 }
