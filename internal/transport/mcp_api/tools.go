@@ -2,8 +2,10 @@ package mcp_api
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
@@ -130,6 +132,17 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
+			Name:        "list_email_folders",
+			Description: "List IMAP folders available in an email account",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+				},
+				"required": []string{"account_id"},
+			},
+		},
+		{
 			Name:        "list_email_accounts",
 			Description: "List the user's configured email accounts",
 			InputSchema: map[string]interface{}{
@@ -176,14 +189,60 @@ func getToolDefinitions() []ToolDef {
 				"required": []string{"account_id", "to", "subject", "body"},
 			},
 		},
+		{
+			Name:        "list_files",
+			Description: "List all binary files (images, PDFs, etc.) in the vault. Does not include text or markdown notes — use list_notes for those.",
+			InputSchema: map[string]interface{}{
+				"type":       "object",
+				"properties": map[string]interface{}{},
+				"required":   []string{},
+			},
+		},
+		{
+			Name:        "read_file",
+			Description: "Read a binary file (image, PDF, etc.) by path. Returns base64-encoded content with MIME type. Use read_note for text/markdown files.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"path": map[string]string{"type": "string"},
+				},
+				"required": []string{"path"},
+			},
+		},
+		{
+			Name:        "delete_file",
+			Description: "Delete a binary file by path. Use delete_note for text/markdown files.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"path": map[string]string{"type": "string"},
+				},
+				"required": []string{"path"},
+			},
+		},
+		{
+			Name:        "move_file",
+			Description: "Move or rename a binary file. Not supported for large chunked files — use Obsidian directly for those. Use move_note for text/markdown files.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"old_path": map[string]string{"type": "string"},
+					"new_path": map[string]string{"type": "string"},
+				},
+				"required": []string{"old_path", "new_path"},
+			},
+		},
 	}
 }
 
 func dispatchToolCall(ctx context.Context, toolName string, arguments map[string]interface{}, keyCtx KeyContext, emailSvc service.EmailService) (interface{}, error) {
 	switch toolName {
-	case "list_notes", "read_note", "write_note", "delete_note", "move_note", "list_folders", "list_tags", "get_note_metadata":
+	case "list_notes", "read_note", "write_note", "delete_note", "move_note", "list_folders", "list_tags", "get_note_metadata",
+		"list_files", "read_file", "delete_file", "move_file":
 		client := couchdb.NewLiveSyncClient(keyCtx.CouchURL, keyCtx.CouchDb, keyCtx.CouchUser, keyCtx.CouchPass)
 		return dispatchVaultTool(ctx, toolName, arguments, client)
+	case "list_email_folders":
+		return handleListEmailFolders(ctx, arguments, emailSvc)
 	case "list_email_accounts":
 		return handleListEmailAccounts(ctx, keyCtx, emailSvc)
 	case "list_emails":
@@ -215,6 +274,14 @@ func dispatchVaultTool(ctx context.Context, toolName string, arguments map[strin
 		return handleListTags(ctx, client)
 	case "get_note_metadata":
 		return handleGetNoteMetadata(ctx, client, arguments)
+	case "list_files":
+		return handleListFiles(ctx, client)
+	case "read_file":
+		return handleReadFile(ctx, client, arguments)
+	case "delete_file":
+		return handleDeleteFile(ctx, client, arguments)
+	case "move_file":
+		return handleMoveFile(ctx, client, arguments)
 	default:
 		return nil, rerrors.New(fmt.Sprintf("unknown vault tool: %s", toolName))
 	}
@@ -400,6 +467,26 @@ func handleGetNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, 
 	}, nil
 }
 
+func handleListEmailFolders(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
+	accountIdStr, ok := arguments["account_id"].(string)
+	if !ok {
+		return nil, rerrors.New("account_id is required and must be a string")
+	}
+	accountUuid, err := uuid.Parse(accountIdStr)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "invalid account_id")
+	}
+	folders, err := emailSvc.ListFolders(ctx, accountUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list email folders")
+	}
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{"type": "text", "text": toJsonString(folders)},
+		},
+	}, nil
+}
+
 func handleListEmailAccounts(ctx context.Context, keyCtx KeyContext, emailSvc service.EmailService) (interface{}, error) {
 	userUuid, err := uuid.Parse(keyCtx.UserUuid)
 	if err != nil {
@@ -532,6 +619,115 @@ func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emai
 			},
 		},
 	}, nil
+}
+
+func handleListFiles(ctx context.Context, client *couchdb.LiveSyncClient) (interface{}, error) {
+	files, err := client.ListFiles(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to list files")
+	}
+
+	var filesInfo []map[string]interface{}
+	for _, f := range files {
+		filesInfo = append(filesInfo, map[string]interface{}{
+			"path":     f.Path,
+			"mtime":    f.Mtime,
+			"mimeType": f.MimeType,
+		})
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{
+				"type": "text",
+				"text": toJsonString(filesInfo),
+			},
+		},
+	}, nil
+}
+
+func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
+	path, ok := arguments["path"].(string)
+	if !ok {
+		return nil, rerrors.New("path is required and must be a string")
+	}
+
+	file, err := client.ReadFile(ctx, path)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to read file")
+	}
+
+	contentBlock := buildContentBlock(file.RawBytes, file.MimeType, file.Id)
+
+	return map[string]interface{}{
+		"content": []interface{}{contentBlock},
+	}, nil
+}
+
+func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
+	path, ok := arguments["path"].(string)
+	if !ok {
+		return nil, rerrors.New("path is required and must be a string")
+	}
+
+	if err := client.DeleteFile(ctx, path); err != nil {
+		return nil, rerrors.Wrap(err, "failed to delete file")
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{"type": "text", "text": "File deleted successfully"},
+		},
+	}, nil
+}
+
+func handleMoveFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
+	oldPath, ok := arguments["old_path"].(string)
+	if !ok {
+		return nil, rerrors.New("old_path is required and must be a string")
+	}
+	newPath, ok := arguments["new_path"].(string)
+	if !ok {
+		return nil, rerrors.New("new_path is required and must be a string")
+	}
+
+	if err := client.MoveFile(ctx, oldPath, newPath); err != nil {
+		return nil, rerrors.Wrap(err, "failed to move file")
+	}
+
+	return map[string]interface{}{
+		"content": []map[string]interface{}{
+			{"type": "text", "text": "File moved successfully"},
+		},
+	}, nil
+}
+
+func buildContentBlock(data []byte, mimeType, path string) map[string]interface{} {
+	b64 := base64.StdEncoding.EncodeToString(data)
+
+	switch {
+	case strings.HasPrefix(mimeType, "image/"):
+		return map[string]interface{}{
+			"type":     "image",
+			"data":     b64,
+			"mimeType": mimeType,
+		}
+	case mimeType == "application/pdf":
+		return map[string]interface{}{
+			"type":     "document",
+			"data":     b64,
+			"mimeType": mimeType,
+		}
+	default:
+		return map[string]interface{}{
+			"type": "resource",
+			"resource": map[string]interface{}{
+				"uri":      "file://" + path,
+				"mimeType": mimeType,
+				"blob":     b64,
+			},
+		}
+	}
 }
 
 func toJsonString(data interface{}) string {

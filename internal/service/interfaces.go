@@ -56,6 +56,7 @@ type EmailService interface {
 	DeleteAccount(ctx context.Context, accountUuid uuid.UUID) error
 
 	// Email operations — called from MCP tools.
+	ListFolders(ctx context.Context, accountUuid uuid.UUID) ([]string, error)
 	ListEmails(ctx context.Context, accountUuid uuid.UUID, limit int) ([]domain.EmailMeta, error)
 	ReadEmail(ctx context.Context, accountUuid uuid.UUID, id string) (domain.EmailMessage, error)
 	SendEmail(ctx context.Context, accountUuid uuid.UUID, to, subject, body string) error

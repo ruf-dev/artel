@@ -476,3 +476,388 @@ type NoteDoc struct {
 	Size    int64
 	Deleted bool
 }
+
+type FileEntry struct {
+	Path     string
+	Mtime    int64
+	MimeType string
+}
+
+type FileDoc struct {
+	Id       string
+	Rev      string
+	RawBytes []byte
+	MimeType string
+	Mtime    int64
+	Ctime    int64
+	Size     int64
+	Deleted  bool
+}
+
+func mimeTypeForPath(path string) string {
+	switch strings.ToLower(filepath.Ext(path)) {
+	case ".md", ".markdown":
+		return "text/markdown"
+	case ".txt", ".csv", ".yaml", ".yml", ".json", ".xml", ".html", ".htm", ".css", ".js", ".ts":
+		return "text/plain"
+	case ".png":
+		return "image/png"
+	case ".jpg", ".jpeg":
+		return "image/jpeg"
+	case ".gif":
+		return "image/gif"
+	case ".webp":
+		return "image/webp"
+	case ".svg":
+		return "image/svg+xml"
+	case ".pdf":
+		return "application/pdf"
+	default:
+		return "application/octet-stream"
+	}
+}
+
+func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, error) {
+	encodedId := url.PathEscape(path)
+	docURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, docURL, nil)
+	if err != nil {
+		return "", rerrors.Wrap(err, "failed to create request")
+	}
+	req.SetBasicAuth(c.username, c.password)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return "", rerrors.Wrap(err, "failed to execute request")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", rerrors.Wrap(err, "failed to read response body")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return "", rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
+
+	var doc struct {
+		Rev string `json:"_rev"`
+	}
+	if err := json.Unmarshal(body, &doc); err != nil {
+		return "", rerrors.Wrap(err, "failed to unmarshal response")
+	}
+	return doc.Rev, nil
+}
+
+func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) ([]byte, error) {
+	encodedId := url.PathEscape(hash)
+	leafURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, leafURL, nil)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to create leaf request")
+	}
+	req.SetBasicAuth(c.username, c.password)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to execute leaf request")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to read leaf body")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, rerrors.New(fmt.Sprintf("leaf fetch unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
+
+	var leafDoc struct {
+		Data string `json:"data"`
+	}
+	if err := json.Unmarshal(body, &leafDoc); err != nil {
+		return nil, rerrors.Wrap(err, "failed to unmarshal leaf")
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(leafDoc.Data)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to decode leaf base64")
+	}
+	return decoded, nil
+}
+
+func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
+	listURL := fmt.Sprintf("%s/%s/_all_docs?include_docs=true", c.baseURL, c.dbName)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, listURL, nil)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to create request")
+	}
+	req.SetBasicAuth(c.username, c.password)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to execute request")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to read response body")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
+
+	var allDocsResp struct {
+		Rows []struct {
+			Id  string `json:"id"`
+			Doc struct {
+				Type    string `json:"type"`
+				Deleted bool   `json:"deleted"`
+				Mtime   int64  `json:"mtime"`
+			} `json:"doc"`
+		} `json:"rows"`
+	}
+	if err := json.Unmarshal(body, &allDocsResp); err != nil {
+		return nil, rerrors.Wrap(err, "failed to unmarshal response")
+	}
+
+	var files []FileEntry
+	for _, row := range allDocsResp.Rows {
+		if strings.HasPrefix(row.Id, "_design/") {
+			continue
+		}
+		if row.Doc.Type != "plain" && row.Doc.Type != "newnote" {
+			continue
+		}
+		if row.Doc.Deleted {
+			continue
+		}
+		mime := mimeTypeForPath(row.Id)
+		if strings.HasPrefix(mime, "text/") {
+			continue
+		}
+		files = append(files, FileEntry{
+			Path:     row.Id,
+			Mtime:    row.Doc.Mtime,
+			MimeType: mime,
+		})
+	}
+	return files, nil
+}
+
+func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, error) {
+	mime := mimeTypeForPath(path)
+	if strings.HasPrefix(mime, "text/") {
+		return FileDoc{}, rerrors.New("use read_note for text files")
+	}
+
+	encodedId := url.PathEscape(path)
+	docURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, docURL, nil)
+	if err != nil {
+		return FileDoc{}, rerrors.Wrap(err, "failed to create request")
+	}
+	req.SetBasicAuth(c.username, c.password)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return FileDoc{}, rerrors.Wrap(err, "failed to execute request")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return FileDoc{}, rerrors.Wrap(err, "failed to read response body")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return FileDoc{}, rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
+
+	var couchDoc struct {
+		Id       string   `json:"_id"`
+		Rev      string   `json:"_rev"`
+		Type     string   `json:"type"`
+		Data     string   `json:"data"`
+		Children []string `json:"children"`
+		Mtime    int64    `json:"mtime"`
+		Ctime    int64    `json:"ctime"`
+		Size     int64    `json:"size"`
+		Deleted  bool     `json:"deleted"`
+	}
+	if err := json.Unmarshal(body, &couchDoc); err != nil {
+		return FileDoc{}, rerrors.Wrap(err, "failed to unmarshal response")
+	}
+
+	var rawBytes []byte
+	switch couchDoc.Type {
+	case "newnote":
+		for _, hash := range couchDoc.Children {
+			chunk, err := c.fetchLeaf(ctx, hash)
+			if err != nil {
+				return FileDoc{}, rerrors.Wrap(err, fmt.Sprintf("failed to fetch leaf %s", hash))
+			}
+			rawBytes = append(rawBytes, chunk...)
+		}
+	default:
+		decoded, err := base64.StdEncoding.DecodeString(couchDoc.Data)
+		if err != nil {
+			return FileDoc{}, rerrors.Wrap(err, "failed to decode base64 data")
+		}
+		rawBytes = decoded
+	}
+
+	return FileDoc{
+		Id:       couchDoc.Id,
+		Rev:      couchDoc.Rev,
+		RawBytes: rawBytes,
+		MimeType: mime,
+		Mtime:    couchDoc.Mtime,
+		Ctime:    couchDoc.Ctime,
+		Size:     couchDoc.Size,
+		Deleted:  couchDoc.Deleted,
+	}, nil
+}
+
+func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
+	if strings.HasPrefix(mimeTypeForPath(path), "text/") {
+		return rerrors.New("use delete_note for text files")
+	}
+
+	rev, err := c.getDocRev(ctx, path)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to get doc rev")
+	}
+
+	encodedId := url.PathEscape(path)
+	docURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
+
+	doc := map[string]interface{}{
+		"_id":     path,
+		"_rev":    rev,
+		"deleted": true,
+	}
+	docBody, err := json.Marshal(doc)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to marshal document")
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, docURL, strings.NewReader(string(docBody)))
+	if err != nil {
+		return rerrors.Wrap(err, "failed to create request")
+	}
+	req.SetBasicAuth(c.username, c.password)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to execute request")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to read response body")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
+	return nil
+}
+
+func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) error {
+	if strings.HasPrefix(mimeTypeForPath(oldPath), "text/") {
+		return rerrors.New("use move_note for text files")
+	}
+
+	encodedId := url.PathEscape(oldPath)
+	docURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, docURL, nil)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to create request")
+	}
+	req.SetBasicAuth(c.username, c.password)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to execute request")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to read response body")
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+	}
+
+	var couchDoc struct {
+		Rev  string `json:"_rev"`
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(body, &couchDoc); err != nil {
+		return rerrors.Wrap(err, "failed to unmarshal response")
+	}
+
+	if couchDoc.Type == "newnote" {
+		return rerrors.New("move of chunked binary files is not supported; use Obsidian to move large files")
+	}
+
+	file, err := c.ReadFile(ctx, oldPath)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to read file")
+	}
+
+	encoded := base64.StdEncoding.EncodeToString(file.RawBytes)
+	newDoc := map[string]interface{}{
+		"_id":   newPath,
+		"data":  encoded,
+		"mtime": file.Mtime,
+		"ctime": file.Ctime,
+		"size":  file.Size,
+		"type":  "plain",
+	}
+	newDocBody, err := json.Marshal(newDoc)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to marshal new document")
+	}
+
+	newEncodedId := url.PathEscape(newPath)
+	newDocURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, newEncodedId)
+
+	putReq, err := http.NewRequestWithContext(ctx, http.MethodPut, newDocURL, strings.NewReader(string(newDocBody)))
+	if err != nil {
+		return rerrors.Wrap(err, "failed to create put request")
+	}
+	putReq.SetBasicAuth(c.username, c.password)
+	putReq.Header.Set("Content-Type", "application/json")
+	putReq.Header.Set("Accept", "application/json")
+
+	putResp, err := c.http.Do(putReq)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to execute put request")
+	}
+	defer putResp.Body.Close()
+
+	putBody, err := io.ReadAll(putResp.Body)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to read put response body")
+	}
+	if putResp.StatusCode < 200 || putResp.StatusCode >= 300 {
+		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", putResp.StatusCode, string(putBody)))
+	}
+
+	return c.DeleteFile(ctx, oldPath)
+}
