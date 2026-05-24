@@ -56,10 +56,7 @@ export default function InitPage() {
             <div className={cls.Card}>
                 <div className={cls.Logo}>artel</div>
 
-                <div>
-                    <div ref={telegramContainerRef} className={cls.TelegramContainer}/>
-                    <button className="tg-auth-button" data-style="shine">Sign In with Telegram</button>
-                </div>
+                <div ref={telegramContainerRef} className={cls.TelegramContainer}/>
             </div>
         </div>
     )
