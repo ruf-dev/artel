@@ -9,6 +9,9 @@ jobs:
   image-build:
     runs-on: ${{ vars.UBUNTU_IMAGE }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Restore cache
         uses: actions/cache@v4
         with:
