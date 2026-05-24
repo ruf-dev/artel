@@ -26,3 +26,5 @@ proto_modules
 
 internal/transport/ui/dist/*
 !internal/transport/ui/dist/.gitkeep
+
+.deploy/

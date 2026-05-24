@@ -10,7 +10,7 @@ COPY pkg/client/ArtelUI/ ./
 RUN bun run build
 
 # Stage 2: build Go binary (embeds UI dist)
-FROM --platform=$BUILDPLATFORM golang AS go-builder
+FROM --platform=$BUILDPLATFORM golang:1.26.3 AS go-builder
 
 WORKDIR /app
 
