@@ -14,7 +14,7 @@ FROM --platform=$BUILDPLATFORM golang:1.26.3 AS builder
 
 WORKDIR /app
 
-COPY --from=ui-builder /ui/dist internal/transport/ui/dist
+COPY --from=ui-builder /ui/dist /app/internal/transport/ui/dist
 
 RUN --mount=target=. \
     --mount=type=cache,target=/root/.cache/go-build \
