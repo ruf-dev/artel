@@ -73,7 +73,7 @@ jobs:
       - name: Release image
         uses: RedSockActions/release_image@v1.0.39
         with:
-          REGISTRY_USER: oauth
+          REGISTRY_USER: redsockruf
           REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
           DISABLE_CHECKOUT: true
           REGISTRY_URL: ${{ vars.REGISTRY_URL }}
