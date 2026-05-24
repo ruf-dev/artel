@@ -10,7 +10,7 @@ COPY pkg/client/ArtelUI/ ./
 RUN bun run build
 
 # Stage 2: build Go binary (embeds UI dist)
-FROM --platform=$BUILDPLATFORM golang:1.26.3 AS go-builder
+FROM --platform=$BUILDPLATFORM golang:1.26.3 AS builder
 
 WORKDIR /app
 
@@ -28,8 +28,8 @@ FROM scratch
 
 LABEL MATRESHKA_CONFIG_ENABLED=true
 
-COPY --from=go-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=go-builder /deploy/server/ /app/
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /deploy/server/ /app/
 
 WORKDIR /app
 
