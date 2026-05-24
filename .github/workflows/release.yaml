@@ -22,7 +22,7 @@ jobs:
         uses: RedSockActions/release_image@v1.0.39
         with:
           DRYRUN: true
-          REGISTRY_USER: oauth
+          REGISTRY_USER: redsockruf
           REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
           REGISTRY_URL: ${{ vars.REGISTRY_URL }}
           IMAGE_NAME: ${{ vars.IMAGE_NAME }}
