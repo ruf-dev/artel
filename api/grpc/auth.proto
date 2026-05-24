@@ -28,6 +28,11 @@ service AuthAPI {
       body: "*"
     };
   };
+  rpc GetConfig(GetConfig.Request) returns (GetConfig.Response) {
+    option (google.api.http) = {
+      get: "/api/auth/config"
+    };
+  };
 }
 
 message PasswordCredentials {
@@ -66,4 +71,11 @@ message Login {
 message Logout {
   message Request {}
   message Response {}
+}
+
+message GetConfig {
+  message Request {}
+  message Response {
+    string telegram_client_id = 1;
+  }
 }

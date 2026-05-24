@@ -20,7 +20,8 @@ import (
 // which collides with the transport.GrpcImpl interface method Register(grpc.ServiceRegistrar).
 type authHandler struct {
 	artel_api.UnimplementedAuthAPIServer
-	authSvc service.AuthService
+	authSvc          service.AuthService
+	telegramClientID string
 }
 
 func (h *authHandler) Register(ctx context.Context, req *artel_api.Register_Request) (*artel_api.Register_Response, error) {
@@ -65,6 +66,10 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 	}
 }
 
+func (h *authHandler) GetConfig(_ context.Context, _ *artel_api.GetConfig_Request) (*artel_api.GetConfig_Response, error) {
+	return &artel_api.GetConfig_Response{TelegramClientId: h.telegramClientID}, nil
+}
+
 func (h *authHandler) Logout(ctx context.Context, req *artel_api.Logout_Request) (*artel_api.Logout_Response, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	tokens := md.Get("authorization")
@@ -87,8 +92,8 @@ type AuthImpl struct {
 	handler *authHandler
 }
 
-func NewAuthImpl(authSvc service.AuthService) *AuthImpl {
-	return &AuthImpl{handler: &authHandler{authSvc: authSvc}}
+func NewAuthImpl(authSvc service.AuthService, telegramClientID string) *AuthImpl {
+	return &AuthImpl{handler: &authHandler{authSvc: authSvc, telegramClientID: telegramClientID}}
 }
 
 func (a *AuthImpl) Register(srv grpc.ServiceRegistrar) {

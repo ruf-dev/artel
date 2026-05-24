@@ -49,7 +49,7 @@ func (c *Custom) Init(a *App) error {
 	}
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
-	authImpl := auth_api.NewAuthImpl(services.Auth)
+	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
 	emailAccountsImpl := email_accounts_api.NewEmailAccountsImpl(services.EmailService())
@@ -61,6 +61,7 @@ func (c *Custom) Init(a *App) error {
 			middleware.WithIgnoredPathAuthOption(
 				pb.AuthAPI_Register_FullMethodName,
 				pb.AuthAPI_Login_FullMethodName,
+				pb.AuthAPI_GetConfig_FullMethodName,
 			),
 		),
 		middleware.LogInterceptor(),

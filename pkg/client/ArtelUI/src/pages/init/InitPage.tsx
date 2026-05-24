@@ -6,6 +6,8 @@ import cls from "@/pages/init/InitPage.module.css"
 import useUser from "@/hooks/user/User.ts"
 import {AuthService} from "@/processes/Auth.ts"
 import {Path} from "@/app/routing/Router.tsx"
+import {AuthAPI} from "@/app/api/artel"
+import {apiPrefix} from "@/app/api/api.ts"
 
 type TelegramLoginWindow = Window & {
     Telegram?: {
@@ -16,14 +18,13 @@ type TelegramLoginWindow = Window & {
     }
 }
 
-const BOT_ID = import.meta.env.VITE_TELEGRAM_BOT_ID ?? ""
-
 export default function InitPage() {
     const navigate = useNavigate()
     const {auth, login} = useUser()
 
     const svc = new AuthService()
     const scriptReadyRef = useRef(false)
+    const botIdRef = useRef("")
     const authCallbackRef = useRef<(data: { id_token: string }) => void>(() => {})
 
     authCallbackRef.current = function (data: { id_token: string }) {
@@ -41,17 +42,25 @@ export default function InitPage() {
         const script = document.createElement("script")
         script.src = "https://oauth.telegram.org/js/telegram-login.js?3"
         script.async = true
+
+        AuthAPI.GetConfig({}, apiPrefix()).then(function (cfg) {
+            botIdRef.current = cfg.telegramClientId ?? ""
+            document.head.appendChild(script)
+        })
+
         script.onload = function () {
             const tg = (window as TelegramLoginWindow).Telegram
             if (tg) {
-                tg.Login.init({client_id: BOT_ID, redirect_uri: window.location.origin}, function (data) { authCallbackRef.current(data) })
+                tg.Login.init(
+                    {client_id: botIdRef.current, redirect_uri: window.location.origin},
+                    function (data) { authCallbackRef.current(data) },
+                )
                 scriptReadyRef.current = true
             }
         }
-        document.head.appendChild(script)
 
         return function () {
-            document.head.removeChild(script)
+            if (document.head.contains(script)) document.head.removeChild(script)
             scriptReadyRef.current = false
         }
     }, [])
@@ -59,7 +68,10 @@ export default function InitPage() {
     function handleLoginClick() {
         const tg = (window as TelegramLoginWindow).Telegram
         if (!tg || !scriptReadyRef.current) return
-        tg.Login.auth({client_id: BOT_ID, redirect_uri: window.location.origin, request_access: "write"}, function (data) { authCallbackRef.current(data) })
+        tg.Login.auth(
+            {client_id: botIdRef.current, redirect_uri: window.location.origin, request_access: "write"},
+            function (data) { authCallbackRef.current(data) },
+        )
     }
 
 

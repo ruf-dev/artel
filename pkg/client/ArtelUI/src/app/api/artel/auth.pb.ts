@@ -61,6 +61,14 @@ export type LogoutResponse = Record<string, never>;
 
 export type Logout = Record<string, never>;
 
+export type GetConfigRequest = Record<string, never>;
+
+export type GetConfigResponse = {
+  telegramClientId?: string;
+};
+
+export type GetConfig = Record<string, never>;
+
 export class AuthAPI {
   static Register(this:void, req: RegisterRequest, initReq?: fm.InitReq): Promise<RegisterResponse> {
     return fm.fetchRequest<RegisterResponse>(`/api/auth/register`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -70,5 +78,8 @@ export class AuthAPI {
   }
   static Logout(this:void, req: LogoutRequest, initReq?: fm.InitReq): Promise<LogoutResponse> {
     return fm.fetchRequest<LogoutResponse>(`/api/auth/logout`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static GetConfig(this:void, req: GetConfigRequest, initReq?: fm.InitReq): Promise<GetConfigResponse> {
+    return fm.fetchRequest<GetConfigResponse>(`/api/auth/config?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
   }
 }

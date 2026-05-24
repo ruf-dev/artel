@@ -16,6 +16,28 @@
     "application/json"
   ],
   "paths": {
+    "/api/auth/config": {
+      "get": {
+        "operationId": "AuthAPI_GetConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_authGetConfigResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthAPI"
+        ]
+      }
+    },
     "/api/auth/login": {
       "post": {
         "operationId": "AuthAPI_Login",
@@ -114,6 +136,14 @@
     }
   },
   "definitions": {
+    "artel_authGetConfigResponse": {
+      "type": "object",
+      "properties": {
+        "telegramClientId": {
+          "type": "string"
+        }
+      }
+    },
     "artel_authLoginRequest": {
       "type": "object",
       "properties": {
