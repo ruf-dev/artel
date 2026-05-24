@@ -10,8 +10,8 @@ import {Path} from "@/app/routing/Router.tsx"
 type TelegramLoginWindow = Window & {
     Telegram?: {
         Login: {
-            init: (botId: string, callback: (data: { id_token: string }) => void) => void
-            auth: (options: { request_access: string }, callback: (data: { id_token: string }) => void) => void
+            init: (options: { client_id: string; redirect_uri?: string }, callback: (data: { id_token: string }) => void) => void
+            auth: (options: { client_id: string; redirect_uri?: string; request_access: string }, callback: (data: { id_token: string }) => void) => void
         }
     }
 }
@@ -44,7 +44,7 @@ export default function InitPage() {
         script.onload = function () {
             const tg = (window as TelegramLoginWindow).Telegram
             if (tg) {
-                tg.Login.init(BOT_ID, function (data) { authCallbackRef.current(data) })
+                tg.Login.init({client_id: BOT_ID, redirect_uri: window.location.origin}, function (data) { authCallbackRef.current(data) })
                 scriptReadyRef.current = true
             }
         }
@@ -59,7 +59,7 @@ export default function InitPage() {
     function handleLoginClick() {
         const tg = (window as TelegramLoginWindow).Telegram
         if (!tg || !scriptReadyRef.current) return
-        tg.Login.auth({request_access: "write"}, function (data) { authCallbackRef.current(data) })
+        tg.Login.auth({client_id: BOT_ID, redirect_uri: window.location.origin, request_access: "write"}, function (data) { authCallbackRef.current(data) })
     }
 
 
