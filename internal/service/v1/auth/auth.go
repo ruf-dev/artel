@@ -14,6 +14,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type Service struct {
@@ -90,7 +91,7 @@ func (s *Service) ValidateToken(ctx context.Context, token string) (uuid.UUID, e
 	}
 
 	if time.Now().After(session.ExpiresAt) {
-		return uuid.UUID{}, rerrors.New("session expired")
+		return uuid.UUID{}, user_errors.SessionExpired
 	}
 
 	return session.UserUuid, nil
@@ -105,7 +106,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	}
 
 	if !token.Valid {
-		return domain.Session{}, rerrors.New("invalid telegram token")
+		return domain.Session{}, user_errors.InvalidTelegramToken
 	}
 
 	telegramId := claims.Subject

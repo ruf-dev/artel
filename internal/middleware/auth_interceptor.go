@@ -11,14 +11,16 @@ import (
 
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 const authHeader = "authorization"
 
 type authMiddleware struct {
-	ignoredPaths   map[string]struct{}
-	isDebugEnabled bool
-	authService    service.AuthService
+	ignoredPaths        map[string]struct{}
+	isDebugEnabled      bool
+	authService         service.AuthService
+	subscriptionService service.SubscriptionService
 }
 
 func (am *authMiddleware) isIgnored(path string) bool {
@@ -44,8 +46,9 @@ func WithDebug(b bool) authOption {
 
 func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOption {
 	ac := &authMiddleware{
-		ignoredPaths: make(map[string]struct{}),
-		authService:  srv.AuthService(),
+		ignoredPaths:        make(map[string]struct{}),
+		authService:         srv.AuthService(),
+		subscriptionService: srv.SubscriptionService(),
 	}
 
 	for _, opt := range opts {
@@ -60,8 +63,7 @@ func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOpt
 
 			md, ok := metadata.FromIncomingContext(ctx)
 			if !ok {
-				err := rerrors.New("error getting metadata from context")
-				return nil, status.Error(codes.FailedPrecondition, err.Error())
+				return nil, status.Error(codes.FailedPrecondition, user_errors.NoMetadataInContext.Error())
 			}
 
 			ctxWithUser, err := ac.authWithSession(ctx, md)
@@ -83,14 +85,18 @@ func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOpt
 func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (context.Context, error) {
 	auth := md.Get(authHeader)
 	if len(auth) == 0 {
-		err := rerrors.New("error getting auth header")
-		return nil, status.Error(codes.Unauthenticated, err.Error())
+		return nil, status.Error(codes.Unauthenticated, user_errors.NoAuthHeader.Error())
 	}
 
 	userUuid, err := am.authService.ValidateToken(ctx, auth[0])
 	if err != nil {
 		wrapped := rerrors.Wrap(err, "validate token")
 		return nil, status.Error(codes.Unauthenticated, wrapped.Error())
+	}
+
+	err = am.subscriptionService.CheckActive(ctx, userUuid)
+	if err != nil {
+		return nil, status.Error(codes.PermissionDenied, user_errors.NoActiveSubscription.Error())
 	}
 
 	uc := user_context.UserContext{
@@ -105,6 +111,5 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 }
 
 func (am *authMiddleware) authWithDebugHeaders(ctx context.Context, md metadata.MD) (context.Context, error) {
-	err := rerrors.New("debug not supported")
-	return nil, status.Error(codes.Unimplemented, err.Error())
+	return nil, status.Error(codes.Unimplemented, user_errors.DebugNotSupported.Error())
 }

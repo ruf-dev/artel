@@ -13,6 +13,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type KeyContext struct {
@@ -308,7 +309,7 @@ func handleListFiles(ctx context.Context, client *couchdb.LiveSyncClient) (ToolR
 func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (ToolResult, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("path is required and must be a string")
+		return ToolResult{}, user_errors.McpPathRequired
 	}
 
 	if strings.HasPrefix(couchdb.MimeTypeForPath(path), "text/") {
@@ -330,12 +331,12 @@ func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, argumen
 func handleWriteNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (ToolResult, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("path is required and must be a string")
+		return ToolResult{}, user_errors.McpPathRequired
 	}
 
 	content, ok := arguments["content"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("content is required and must be a string")
+		return ToolResult{}, user_errors.McpContentRequired
 	}
 
 	err := client.WriteNote(ctx, path, content)
@@ -349,7 +350,7 @@ func handleWriteNote(ctx context.Context, client *couchdb.LiveSyncClient, argume
 func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (ToolResult, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("path is required and must be a string")
+		return ToolResult{}, user_errors.McpPathRequired
 	}
 
 	var err error
@@ -368,11 +369,11 @@ func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, argum
 func handleMoveFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (ToolResult, error) {
 	oldPath, ok := arguments["old_path"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("old_path is required and must be a string")
+		return ToolResult{}, user_errors.McpOldPathRequired
 	}
 	newPath, ok := arguments["new_path"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("new_path is required and must be a string")
+		return ToolResult{}, user_errors.McpNewPathRequired
 	}
 
 	var err error
@@ -409,7 +410,7 @@ func handleListTags(ctx context.Context, client *couchdb.LiveSyncClient) (ToolRe
 func handleGetNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (ToolResult, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("path is required and must be a string")
+		return ToolResult{}, user_errors.McpPathRequired
 	}
 
 	metadata, err := client.GetNoteMetadata(ctx, path)
@@ -432,7 +433,7 @@ func handleGetNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, 
 func handleListEmailFolders(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (ToolResult, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("account_id is required and must be a string")
+		return ToolResult{}, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -473,7 +474,7 @@ func handleListEmailAccounts(ctx context.Context, keyCtx KeyContext, emailSvc se
 func handleListEmails(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (ToolResult, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("account_id is required and must be a string")
+		return ToolResult{}, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -501,7 +502,7 @@ func handleListEmails(ctx context.Context, arguments map[string]interface{}, ema
 func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (ToolResult, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("account_id is required and must be a string")
+		return ToolResult{}, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -510,7 +511,7 @@ func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emai
 
 	id, ok := arguments["id"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("id is required and must be a string")
+		return ToolResult{}, user_errors.McpIdRequired
 	}
 
 	msg, err := emailSvc.ReadEmail(ctx, accountUuid, id)
@@ -524,7 +525,7 @@ func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emai
 func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (ToolResult, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("account_id is required and must be a string")
+		return ToolResult{}, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -533,15 +534,15 @@ func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emai
 
 	to, ok := arguments["to"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("to is required and must be a string")
+		return ToolResult{}, user_errors.McpToRequired
 	}
 	subject, ok := arguments["subject"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("subject is required and must be a string")
+		return ToolResult{}, user_errors.McpSubjectRequired
 	}
 	body, ok := arguments["body"].(string)
 	if !ok {
-		return ToolResult{}, rerrors.New("body is required and must be a string")
+		return ToolResult{}, user_errors.McpBodyRequired
 	}
 
 	err = emailSvc.SendEmail(ctx, accountUuid, to, subject, body)

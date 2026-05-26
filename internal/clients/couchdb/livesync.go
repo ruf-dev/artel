@@ -13,6 +13,8 @@ import (
 	"strings"
 
 	"go.redsock.ru/rerrors"
+
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type LiveSyncClient struct {
@@ -800,7 +802,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 	}
 
 	if couchDoc.Type == "newnote" {
-		return rerrors.New("move of chunked binary files is not supported; use Obsidian to move large files")
+		return user_errors.ChunkedBinaryMoveNotSupported
 	}
 
 	file, err := c.ReadFile(ctx, oldPath)
