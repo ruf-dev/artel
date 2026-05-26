@@ -2,6 +2,8 @@ package subscriptions
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
@@ -38,18 +40,23 @@ func (r *SubscriptionsRepo) Upsert(ctx context.Context, userID uuid.UUID, active
 	return s, nil
 }
 
-func (r *SubscriptionsRepo) GetByUser(ctx context.Context, userID uuid.UUID) (domain.Subscription, error) {
+func (r *SubscriptionsRepo) GetByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Subscription], error) {
 	row, err := r.q.GetSubscriptionByUser(ctx, userID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return sql.Null[domain.Subscription]{}, nil
+	}
 	if err != nil {
-		return domain.Subscription{}, rerrors.Wrap(err, "error getting subscription by user")
+		return sql.Null[domain.Subscription]{}, rerrors.Wrap(err, "error getting subscription by user")
 	}
 
-	s := domain.Subscription{
-		Uuid:      row.ID,
-		UserUuid:  row.UserID,
-		Active:    row.Active,
-		CreatedAt: row.CreatedAt,
-		UpdatedAt: row.UpdatedAt,
-	}
-	return s, nil
+	return sql.Null[domain.Subscription]{
+		V: domain.Subscription{
+			Uuid:      row.ID,
+			UserUuid:  row.UserID,
+			Active:    row.Active,
+			CreatedAt: row.CreatedAt,
+			UpdatedAt: row.UpdatedAt,
+		},
+		Valid: true,
+	}, nil
 }

@@ -10,6 +10,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type Client struct {
@@ -91,7 +92,7 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 
 	var uidNum uint32
 	if _, err := fmt.Sscanf(uid, "%d", &uidNum); err != nil {
-		return domain.EmailMessage{}, rerrors.New("invalid email id")
+		return domain.EmailMessage{}, user_errors.InvalidEmailId
 	}
 
 	seqSet := new(imap.SeqSet)
@@ -106,7 +107,7 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 
 	msg := <-messages
 	if msg == nil {
-		return domain.EmailMessage{}, rerrors.New("message not found")
+		return domain.EmailMessage{}, user_errors.EmailMessageNotFound
 	}
 
 	result := domain.EmailMessage{

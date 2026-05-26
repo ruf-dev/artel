@@ -13,6 +13,8 @@ import (
 	"strings"
 
 	"go.redsock.ru/rerrors"
+
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type LiveSyncClient struct {
@@ -655,7 +657,7 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, error) {
 	mime := mimeTypeForPath(path)
 	if strings.HasPrefix(mime, "text/") {
-		return FileDoc{}, rerrors.New("use read_note for text files")
+		return FileDoc{}, user_errors.UseReadNoteForTextFiles
 	}
 
 	encodedId := url.PathEscape(path)
@@ -729,7 +731,7 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 
 func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 	if strings.HasPrefix(mimeTypeForPath(path), "text/") {
-		return rerrors.New("use delete_note for text files")
+		return user_errors.UseDeleteNoteForTextFiles
 	}
 
 	rev, err := c.getDocRev(ctx, path)
@@ -776,7 +778,7 @@ func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 
 func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) error {
 	if strings.HasPrefix(mimeTypeForPath(oldPath), "text/") {
-		return rerrors.New("use move_note for text files")
+		return user_errors.UseMoveNoteForTextFiles
 	}
 
 	encodedId := url.PathEscape(oldPath)
@@ -812,7 +814,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 	}
 
 	if couchDoc.Type == "newnote" {
-		return rerrors.New("move of chunked binary files is not supported; use Obsidian to move large files")
+		return user_errors.ChunkedBinaryMoveNotSupported
 	}
 
 	file, err := c.ReadFile(ctx, oldPath)

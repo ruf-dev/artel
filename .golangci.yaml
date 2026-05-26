@@ -22,7 +22,7 @@ linters:
   disable-all: true
   enable:
     - varnamelen # check lenght of scope of a variable
-
+    - err113
     - asasalint # prevents from passing []any
     - asciicheck
     - bidichk

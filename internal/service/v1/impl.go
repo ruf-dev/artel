@@ -10,6 +10,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
 	"github.com/ruf-dev/artel/internal/service/v1/email"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
+	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/vault"
 )
 
@@ -19,6 +20,7 @@ type Services struct {
 	CouchInstance service.CouchInstanceService
 	Mcp           service.McpService
 	Email         service.EmailService
+	Subscription  service.SubscriptionService
 }
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
@@ -33,6 +35,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		CouchInstance: couchinstances.New(repo),
 		Mcp:           mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.CouchInstances()),
 		Email:         email.New(repo.EmailAccounts()),
+		Subscription:  subscription.New(repo.Subscriptions()),
 	}, nil
 }
 
@@ -54,4 +57,8 @@ func (s *Services) McpService() service.McpService {
 
 func (s *Services) EmailService() service.EmailService {
 	return s.Email
+}
+
+func (s *Services) SubscriptionService() service.SubscriptionService {
+	return s.Subscription
 }

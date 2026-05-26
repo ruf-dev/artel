@@ -13,6 +13,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 // authHandler implements the AuthAPIServer proto interface.
@@ -62,7 +63,7 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 		}
 		return resp, nil
 	default:
-		return nil, rerrors.New("unsupported login method")
+		return nil, user_errors.UnsupportedLoginMethod
 	}
 }
 

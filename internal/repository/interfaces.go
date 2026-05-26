@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -63,7 +64,7 @@ type Sessions interface {
 
 type Subscriptions interface {
 	Upsert(ctx context.Context, userID uuid.UUID, active bool) (domain.Subscription, error)
-	GetByUser(ctx context.Context, userID uuid.UUID) (domain.Subscription, error)
+	GetByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Subscription], error)
 }
 
 type CouchAccounts interface {

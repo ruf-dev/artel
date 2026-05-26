@@ -13,6 +13,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type KeyContext struct {
@@ -314,7 +315,7 @@ func handleListNotes(ctx context.Context, client *couchdb.LiveSyncClient) (inter
 func handleReadNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
+		return nil, user_errors.McpPathRequired
 	}
 
 	note, err := client.ReadNote(ctx, path)
@@ -335,12 +336,12 @@ func handleReadNote(ctx context.Context, client *couchdb.LiveSyncClient, argumen
 func handleWriteNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
+		return nil, user_errors.McpPathRequired
 	}
 
 	content, ok := arguments["content"].(string)
 	if !ok {
-		return nil, rerrors.New("content is required and must be a string")
+		return nil, user_errors.McpContentRequired
 	}
 
 	err := client.WriteNote(ctx, path, content)
@@ -361,7 +362,7 @@ func handleWriteNote(ctx context.Context, client *couchdb.LiveSyncClient, argume
 func handleDeleteNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
+		return nil, user_errors.McpPathRequired
 	}
 
 	err := client.DeleteNote(ctx, path)
@@ -382,12 +383,12 @@ func handleDeleteNote(ctx context.Context, client *couchdb.LiveSyncClient, argum
 func handleMoveNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	oldPath, ok := arguments["old_path"].(string)
 	if !ok {
-		return nil, rerrors.New("old_path is required and must be a string")
+		return nil, user_errors.McpOldPathRequired
 	}
 
 	newPath, ok := arguments["new_path"].(string)
 	if !ok {
-		return nil, rerrors.New("new_path is required and must be a string")
+		return nil, user_errors.McpNewPathRequired
 	}
 
 	err := client.MoveNote(ctx, oldPath, newPath)
@@ -440,7 +441,7 @@ func handleListTags(ctx context.Context, client *couchdb.LiveSyncClient) (interf
 func handleGetNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
+		return nil, user_errors.McpPathRequired
 	}
 
 	metadata, err := client.GetNoteMetadata(ctx, path)
@@ -470,7 +471,7 @@ func handleGetNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, 
 func handleListEmailFolders(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return nil, rerrors.New("account_id is required and must be a string")
+		return nil, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -522,7 +523,7 @@ func handleListEmailAccounts(ctx context.Context, keyCtx KeyContext, emailSvc se
 func handleListEmails(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return nil, rerrors.New("account_id is required and must be a string")
+		return nil, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -557,7 +558,7 @@ func handleListEmails(ctx context.Context, arguments map[string]interface{}, ema
 func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return nil, rerrors.New("account_id is required and must be a string")
+		return nil, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -566,7 +567,7 @@ func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emai
 
 	id, ok := arguments["id"].(string)
 	if !ok {
-		return nil, rerrors.New("id is required and must be a string")
+		return nil, user_errors.McpIdRequired
 	}
 
 	msg, err := emailSvc.ReadEmail(ctx, accountUuid, id)
@@ -587,7 +588,7 @@ func handleReadEmail(ctx context.Context, arguments map[string]interface{}, emai
 func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emailSvc service.EmailService) (interface{}, error) {
 	accountIdStr, ok := arguments["account_id"].(string)
 	if !ok {
-		return nil, rerrors.New("account_id is required and must be a string")
+		return nil, user_errors.McpAccountIdRequired
 	}
 	accountUuid, err := uuid.Parse(accountIdStr)
 	if err != nil {
@@ -596,15 +597,15 @@ func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emai
 
 	to, ok := arguments["to"].(string)
 	if !ok {
-		return nil, rerrors.New("to is required and must be a string")
+		return nil, user_errors.McpToRequired
 	}
 	subject, ok := arguments["subject"].(string)
 	if !ok {
-		return nil, rerrors.New("subject is required and must be a string")
+		return nil, user_errors.McpSubjectRequired
 	}
 	body, ok := arguments["body"].(string)
 	if !ok {
-		return nil, rerrors.New("body is required and must be a string")
+		return nil, user_errors.McpBodyRequired
 	}
 
 	if err := emailSvc.SendEmail(ctx, accountUuid, to, subject, body); err != nil {
@@ -649,7 +650,7 @@ func handleListFiles(ctx context.Context, client *couchdb.LiveSyncClient) (inter
 func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
+		return nil, user_errors.McpPathRequired
 	}
 
 	file, err := client.ReadFile(ctx, path)
@@ -667,7 +668,7 @@ func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, argumen
 func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
+		return nil, user_errors.McpPathRequired
 	}
 
 	if err := client.DeleteFile(ctx, path); err != nil {
@@ -684,11 +685,11 @@ func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, argum
 func handleMoveFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	oldPath, ok := arguments["old_path"].(string)
 	if !ok {
-		return nil, rerrors.New("old_path is required and must be a string")
+		return nil, user_errors.McpOldPathRequired
 	}
 	newPath, ok := arguments["new_path"].(string)
 	if !ok {
-		return nil, rerrors.New("new_path is required and must be a string")
+		return nil, user_errors.McpNewPathRequired
 	}
 
 	if err := client.MoveFile(ctx, oldPath, newPath); err != nil {

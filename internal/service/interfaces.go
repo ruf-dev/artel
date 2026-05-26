@@ -14,6 +14,7 @@ type Service interface {
 	CouchInstanceService() CouchInstanceService
 	McpService() McpService
 	EmailService() EmailService
+	SubscriptionService() SubscriptionService
 }
 
 type AuthService interface {
@@ -47,6 +48,10 @@ type McpService interface {
 	RevokeKey(ctx context.Context, keyID uuid.UUID) error
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
+}
+
+type SubscriptionService interface {
+	CheckActive(ctx context.Context, userUuid uuid.UUID) error
 }
 
 type EmailService interface {
