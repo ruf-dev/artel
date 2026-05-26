@@ -28,6 +28,23 @@ type contextKey string
 
 const keyContextKey contextKey = "mcpKeyContext"
 
+const (
+	toolListFiles       = "list_files"
+	toolReadFile        = "read_file"
+	toolWriteNote       = "write_note"
+	toolDeleteFile      = "delete_file"
+	toolMoveFile        = "move_file"
+	toolListFolders     = "list_folders"
+	toolListTags        = "list_tags"
+	toolGetNoteMetadata = "get_note_metadata"
+
+	toolListEmailFolders  = "list_email_folders"
+	toolListEmailAccounts = "list_email_accounts"
+	toolListEmails        = "list_emails"
+	toolReadEmail         = "read_email"
+	toolSendEmail         = "send_email"
+)
+
 func contextWithKeyCtx(ctx context.Context, keyCtx domain.McpKeyContext) context.Context {
 	return context.WithValue(ctx, keyContextKey, KeyContext{
 		VaultUuid: keyCtx.VaultUuid.String(),
@@ -48,8 +65,8 @@ type ToolDef struct {
 func getToolDefinitions() []ToolDef {
 	return []ToolDef{
 		{
-			Name:        "list_notes",
-			Description: "List all notes in the vault",
+			Name:        toolListFiles,
+			Description: "List all files in the vault (notes and binary files)",
 			InputSchema: map[string]interface{}{
 				"type":       "object",
 				"properties": map[string]interface{}{},
@@ -57,8 +74,8 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "read_note",
-			Description: "Read a note by path",
+			Name:        toolReadFile,
+			Description: "Read any file by path. Returns text content for notes/text files, base64-encoded binary for images/PDFs.",
 			InputSchema: map[string]interface{}{
 				"type": "object",
 				"properties": map[string]interface{}{
@@ -68,7 +85,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "write_note",
+			Name:        toolWriteNote,
 			Description: "Create or update a note",
 			InputSchema: map[string]interface{}{
 				"type": "object",
@@ -80,8 +97,8 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "delete_note",
-			Description: "Delete a note by path",
+			Name:        toolDeleteFile,
+			Description: "Delete any file by path",
 			InputSchema: map[string]interface{}{
 				"type": "object",
 				"properties": map[string]interface{}{
@@ -91,8 +108,8 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "move_note",
-			Description: "Move a note to a new path",
+			Name:        toolMoveFile,
+			Description: "Move or rename any file. Not supported for large chunked binary files.",
 			InputSchema: map[string]interface{}{
 				"type": "object",
 				"properties": map[string]interface{}{
@@ -103,7 +120,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "list_folders",
+			Name:        toolListFolders,
 			Description: "List all folders in the vault",
 			InputSchema: map[string]interface{}{
 				"type":       "object",
@@ -112,7 +129,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "list_tags",
+			Name:        toolListTags,
 			Description: "List all tags in the vault",
 			InputSchema: map[string]interface{}{
 				"type":       "object",
@@ -121,7 +138,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "get_note_metadata",
+			Name:        toolGetNoteMetadata,
 			Description: "Get metadata for a note",
 			InputSchema: map[string]interface{}{
 				"type": "object",
@@ -132,7 +149,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "list_email_folders",
+			Name:        toolListEmailFolders,
 			Description: "List IMAP folders available in an email account",
 			InputSchema: map[string]interface{}{
 				"type": "object",
@@ -143,7 +160,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "list_email_accounts",
+			Name:        toolListEmailAccounts,
 			Description: "List the user's configured email accounts",
 			InputSchema: map[string]interface{}{
 				"type":       "object",
@@ -152,7 +169,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "list_emails",
+			Name:        toolListEmails,
 			Description: "List recent emails from an account's inbox",
 			InputSchema: map[string]interface{}{
 				"type": "object",
@@ -164,7 +181,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "read_email",
+			Name:        toolReadEmail,
 			Description: "Read the full content of an email by its ID",
 			InputSchema: map[string]interface{}{
 				"type": "object",
@@ -176,7 +193,7 @@ func getToolDefinitions() []ToolDef {
 			},
 		},
 		{
-			Name:        "send_email",
+			Name:        toolSendEmail,
 			Description: "Send an email from one of the user's configured accounts",
 			InputSchema: map[string]interface{}{
 				"type": "object",
@@ -189,67 +206,24 @@ func getToolDefinitions() []ToolDef {
 				"required": []string{"account_id", "to", "subject", "body"},
 			},
 		},
-		{
-			Name:        "list_files",
-			Description: "List all binary files (images, PDFs, etc.) in the vault. Does not include text or markdown notes — use list_notes for those.",
-			InputSchema: map[string]interface{}{
-				"type":       "object",
-				"properties": map[string]interface{}{},
-				"required":   []string{},
-			},
-		},
-		{
-			Name:        "read_file",
-			Description: "Read a binary file (image, PDF, etc.) by path. Returns base64-encoded content with MIME type. Use read_note for text/markdown files.",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"path": map[string]string{"type": "string"},
-				},
-				"required": []string{"path"},
-			},
-		},
-		{
-			Name:        "delete_file",
-			Description: "Delete a binary file by path. Use delete_note for text/markdown files.",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"path": map[string]string{"type": "string"},
-				},
-				"required": []string{"path"},
-			},
-		},
-		{
-			Name:        "move_file",
-			Description: "Move or rename a binary file. Not supported for large chunked files — use Obsidian directly for those. Use move_note for text/markdown files.",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"old_path": map[string]string{"type": "string"},
-					"new_path": map[string]string{"type": "string"},
-				},
-				"required": []string{"old_path", "new_path"},
-			},
-		},
 	}
 }
 
 func dispatchToolCall(ctx context.Context, toolName string, arguments map[string]interface{}, keyCtx KeyContext, emailSvc service.EmailService) (interface{}, error) {
 	switch toolName {
-	case "list_notes", "read_note", "write_note", "delete_note", "move_note", "list_folders", "list_tags", "get_note_metadata",
-		"list_files", "read_file", "delete_file", "move_file":
+	case toolListFiles, toolReadFile, toolWriteNote, toolDeleteFile, toolMoveFile,
+		toolListFolders, toolListTags, toolGetNoteMetadata:
 		client := couchdb.NewLiveSyncClient(keyCtx.CouchURL, keyCtx.CouchDb, keyCtx.CouchUser, keyCtx.CouchPass)
 		return dispatchVaultTool(ctx, toolName, arguments, client)
-	case "list_email_folders":
+	case toolListEmailFolders:
 		return handleListEmailFolders(ctx, arguments, emailSvc)
-	case "list_email_accounts":
+	case toolListEmailAccounts:
 		return handleListEmailAccounts(ctx, keyCtx, emailSvc)
-	case "list_emails":
+	case toolListEmails:
 		return handleListEmails(ctx, arguments, emailSvc)
-	case "read_email":
+	case toolReadEmail:
 		return handleReadEmail(ctx, arguments, emailSvc)
-	case "send_email":
+	case toolSendEmail:
 		return handleSendEmail(ctx, arguments, emailSvc)
 	default:
 		return nil, rerrors.New(fmt.Sprintf("unknown tool: %s", toolName))
@@ -258,77 +232,84 @@ func dispatchToolCall(ctx context.Context, toolName string, arguments map[string
 
 func dispatchVaultTool(ctx context.Context, toolName string, arguments map[string]interface{}, client *couchdb.LiveSyncClient) (interface{}, error) {
 	switch toolName {
-	case "list_notes":
-		return handleListNotes(ctx, client)
-	case "read_note":
-		return handleReadNote(ctx, client, arguments)
-	case "write_note":
-		return handleWriteNote(ctx, client, arguments)
-	case "delete_note":
-		return handleDeleteNote(ctx, client, arguments)
-	case "move_note":
-		return handleMoveNote(ctx, client, arguments)
-	case "list_folders":
-		return handleListFolders(ctx, client)
-	case "list_tags":
-		return handleListTags(ctx, client)
-	case "get_note_metadata":
-		return handleGetNoteMetadata(ctx, client, arguments)
-	case "list_files":
+	case toolListFiles:
 		return handleListFiles(ctx, client)
-	case "read_file":
+	case toolReadFile:
 		return handleReadFile(ctx, client, arguments)
-	case "delete_file":
+	case toolWriteNote:
+		return handleWriteNote(ctx, client, arguments)
+	case toolDeleteFile:
 		return handleDeleteFile(ctx, client, arguments)
-	case "move_file":
+	case toolMoveFile:
 		return handleMoveFile(ctx, client, arguments)
+	case toolListFolders:
+		return handleListFolders(ctx, client)
+	case toolListTags:
+		return handleListTags(ctx, client)
+	case toolGetNoteMetadata:
+		return handleGetNoteMetadata(ctx, client, arguments)
 	default:
 		return nil, rerrors.New(fmt.Sprintf("unknown vault tool: %s", toolName))
 	}
 }
 
-func handleListNotes(ctx context.Context, client *couchdb.LiveSyncClient) (interface{}, error) {
+func handleListFiles(ctx context.Context, client *couchdb.LiveSyncClient) (interface{}, error) {
 	notes, err := client.ListNotes(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "failed to list notes")
 	}
+	binaries, err := client.ListFiles(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to list files")
+	}
 
-	var notesInfo []map[string]interface{}
-	for _, note := range notes {
-		notesInfo = append(notesInfo, map[string]interface{}{
-			"path":  note.Path,
-			"mtime": note.Mtime,
+	var entries []map[string]interface{}
+	for _, n := range notes {
+		entries = append(entries, map[string]interface{}{
+			"path":     n.Path,
+			"mtime":    n.Mtime,
+			"mimeType": couchdb.MimeTypeForPath(n.Path),
+		})
+	}
+	for _, f := range binaries {
+		entries = append(entries, map[string]interface{}{
+			"path":     f.Path,
+			"mtime":    f.Mtime,
+			"mimeType": f.MimeType,
 		})
 	}
 
 	return map[string]interface{}{
 		"content": []map[string]interface{}{
-			{
-				"type": "text",
-				"text": toJsonString(notesInfo),
-			},
+			{"type": "text", "text": toJsonString(entries)},
 		},
 	}, nil
 }
 
-func handleReadNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
+func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
 		return nil, rerrors.New("path is required and must be a string")
 	}
 
-	note, err := client.ReadNote(ctx, path)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to read note")
+	if strings.HasPrefix(couchdb.MimeTypeForPath(path), "text/") {
+		note, err := client.ReadNote(ctx, path)
+		if err != nil {
+			return nil, rerrors.Wrap(err, "failed to read file")
+		}
+		return map[string]interface{}{
+			"content": []map[string]interface{}{
+				{"type": "text", "text": note.Content},
+			},
+		}, nil
 	}
 
+	file, err := client.ReadFile(ctx, path)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "failed to read file")
+	}
 	return map[string]interface{}{
-		"content": []map[string]interface{}{
-			{
-				"type": "text",
-				"text": note.Content,
-			},
-		},
+		"content": []interface{}{buildContentBlock(file.RawBytes, file.MimeType, file.Id)},
 	}, nil
 }
 
@@ -358,49 +339,52 @@ func handleWriteNote(ctx context.Context, client *couchdb.LiveSyncClient, argume
 	}, nil
 }
 
-func handleDeleteNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
+func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	path, ok := arguments["path"].(string)
 	if !ok {
 		return nil, rerrors.New("path is required and must be a string")
 	}
 
-	err := client.DeleteNote(ctx, path)
+	var err error
+	if strings.HasPrefix(couchdb.MimeTypeForPath(path), "text/") {
+		err = client.DeleteNote(ctx, path)
+	} else {
+		err = client.DeleteFile(ctx, path)
+	}
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to delete note")
+		return nil, rerrors.Wrap(err, "failed to delete file")
 	}
 
 	return map[string]interface{}{
 		"content": []map[string]interface{}{
-			{
-				"type": "text",
-				"text": "Note deleted successfully",
-			},
+			{"type": "text", "text": "File deleted successfully"},
 		},
 	}, nil
 }
 
-func handleMoveNote(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
+func handleMoveFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
 	oldPath, ok := arguments["old_path"].(string)
 	if !ok {
 		return nil, rerrors.New("old_path is required and must be a string")
 	}
-
 	newPath, ok := arguments["new_path"].(string)
 	if !ok {
 		return nil, rerrors.New("new_path is required and must be a string")
 	}
 
-	err := client.MoveNote(ctx, oldPath, newPath)
+	var err error
+	if strings.HasPrefix(couchdb.MimeTypeForPath(oldPath), "text/") {
+		err = client.MoveNote(ctx, oldPath, newPath)
+	} else {
+		err = client.MoveFile(ctx, oldPath, newPath)
+	}
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to move note")
+		return nil, rerrors.Wrap(err, "failed to move file")
 	}
 
 	return map[string]interface{}{
 		"content": []map[string]interface{}{
-			{
-				"type": "text",
-				"text": "Note moved successfully",
-			},
+			{"type": "text", "text": "File moved successfully"},
 		},
 	}, nil
 }
@@ -617,87 +601,6 @@ func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emai
 				"type": "text",
 				"text": "Email sent successfully",
 			},
-		},
-	}, nil
-}
-
-func handleListFiles(ctx context.Context, client *couchdb.LiveSyncClient) (interface{}, error) {
-	files, err := client.ListFiles(ctx)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to list files")
-	}
-
-	var filesInfo []map[string]interface{}
-	for _, f := range files {
-		filesInfo = append(filesInfo, map[string]interface{}{
-			"path":     f.Path,
-			"mtime":    f.Mtime,
-			"mimeType": f.MimeType,
-		})
-	}
-
-	return map[string]interface{}{
-		"content": []map[string]interface{}{
-			{
-				"type": "text",
-				"text": toJsonString(filesInfo),
-			},
-		},
-	}, nil
-}
-
-func handleReadFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
-	path, ok := arguments["path"].(string)
-	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
-	}
-
-	file, err := client.ReadFile(ctx, path)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to read file")
-	}
-
-	contentBlock := buildContentBlock(file.RawBytes, file.MimeType, file.Id)
-
-	return map[string]interface{}{
-		"content": []interface{}{contentBlock},
-	}, nil
-}
-
-func handleDeleteFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
-	path, ok := arguments["path"].(string)
-	if !ok {
-		return nil, rerrors.New("path is required and must be a string")
-	}
-
-	if err := client.DeleteFile(ctx, path); err != nil {
-		return nil, rerrors.Wrap(err, "failed to delete file")
-	}
-
-	return map[string]interface{}{
-		"content": []map[string]interface{}{
-			{"type": "text", "text": "File deleted successfully"},
-		},
-	}, nil
-}
-
-func handleMoveFile(ctx context.Context, client *couchdb.LiveSyncClient, arguments map[string]interface{}) (interface{}, error) {
-	oldPath, ok := arguments["old_path"].(string)
-	if !ok {
-		return nil, rerrors.New("old_path is required and must be a string")
-	}
-	newPath, ok := arguments["new_path"].(string)
-	if !ok {
-		return nil, rerrors.New("new_path is required and must be a string")
-	}
-
-	if err := client.MoveFile(ctx, oldPath, newPath); err != nil {
-		return nil, rerrors.Wrap(err, "failed to move file")
-	}
-
-	return map[string]interface{}{
-		"content": []map[string]interface{}{
-			{"type": "text", "text": "File moved successfully"},
 		},
 	}, nil
 }
