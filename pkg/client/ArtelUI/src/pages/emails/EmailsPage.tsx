@@ -9,7 +9,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useEmailAccounts} from "@/app/hooks/EmailAccounts.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import Topbar from "@/components/Topbar/Topbar.tsx"
+import Topbar from "@/segments/Topbar/Topbar.tsx"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
