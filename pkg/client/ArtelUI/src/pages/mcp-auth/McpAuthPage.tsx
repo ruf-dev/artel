@@ -3,12 +3,13 @@ import {useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/init/InitPage.module.css"
 
+import {useDialog} from "@/app/hooks/Dialog.ts"
+import useUser from "@/hooks/user/User.ts"
+
 type Vault = {
     id: string
     name: string
 }
-
-type Step = "login" | "vaults" | "done"
 
 const SESSION_KEY = "mcpSessionToken"
 
@@ -19,43 +20,98 @@ export default function McpAuthPage() {
     const codeChallenge = params.get("code_challenge") ?? ""
     const state = params.get("state") ?? ""
 
-    const [step, setStep] = useState<Step>("login")
-    const [sessionToken, setSessionToken] = useState("")
-    const [vaults, setVaults] = useState<Vault[]>([])
+    const {OpenDialog, LockClosing} = useDialog()
+    const {auth} = useUser()
+
+    useEffect(function () {
+        LockClosing()
+
+        async function init() {
+            // 1. Try main Artel session token
+            if (auth.isAuthenticated()) {
+                const token = auth.getToken()
+                try {
+                    const vaults = await fetchVaults(token)
+                    OpenDialog(
+                        <VaultSelect
+                            vaults={vaults}
+                            sessionToken={token}
+                            clientId={clientId}
+                            redirectUri={redirectUri}
+                            codeChallenge={codeChallenge}
+                            state={state}
+                        />
+                    )
+                    return
+                } catch {
+                    // main token rejected by oauth endpoint — fall through
+                }
+            }
+
+            // 2. Try stored MCP session token
+            const stored = localStorage.getItem(SESSION_KEY)
+            if (stored) {
+                try {
+                    const vaults = await fetchVaults(stored)
+                    OpenDialog(
+                        <VaultSelect
+                            vaults={vaults}
+                            sessionToken={stored}
+                            clientId={clientId}
+                            redirectUri={redirectUri}
+                            codeChallenge={codeChallenge}
+                            state={state}
+                        />
+                    )
+                    return
+                } catch {
+                    localStorage.removeItem(SESSION_KEY)
+                }
+            }
+
+            // 3. Show login dialog
+            OpenDialog(
+                <McpLogin
+                    clientId={clientId}
+                    redirectUri={redirectUri}
+                    codeChallenge={codeChallenge}
+                    state={state}
+                />
+            )
+        }
+
+        void init()
+    }, [])
+
+    return <div className={cls.Root}/>
+}
+
+async function fetchVaults(sessionToken: string): Promise<Vault[]> {
+    const res = await fetch("/oauth/vaults", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({session_token: sessionToken}),
+    })
+    if (!res.ok) throw new Error("failed")
+    const body = await res.json()
+    return body.vaults ?? []
+}
+
+interface McpLoginProps {
+    clientId: string
+    redirectUri: string
+    codeChallenge: string
+    state: string
+}
+
+function McpLogin({clientId, redirectUri, codeChallenge, state}: McpLoginProps) {
+    const {OpenDialog} = useDialog()
+    const telegramRef = useRef<HTMLDivElement>(null)
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
 
-    const telegramRef = useRef<HTMLDivElement>(null)
-
     useEffect(function () {
-        const stored = localStorage.getItem(SESSION_KEY)
-        if (!stored) return
-
-        setLoading(true)
-        fetch("/oauth/vaults", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({session_token: stored}),
-        })
-            .then(function (res) {
-                if (!res.ok) throw new Error()
-                return res.json()
-            })
-            .then(function (body) {
-                setSessionToken(stored)
-                setVaults(body.vaults ?? [])
-                setStep("vaults")
-            })
-            .catch(function () {
-                localStorage.removeItem(SESSION_KEY)
-            })
-            .finally(function () {
-                setLoading(false)
-            })
-    }, [])
-
-    useEffect(function () {
-        if (step !== "login" || !telegramRef.current) return
+        if (!telegramRef.current) return
 
         ;(window as unknown as Record<string, unknown>).onMcpTelegramAuth = async function (data: {id_token: string}) {
             setLoading(true)
@@ -69,9 +125,16 @@ export default function McpAuthPage() {
                 if (!res.ok) throw new Error("Authentication failed")
                 const body = await res.json()
                 localStorage.setItem(SESSION_KEY, body.session_token)
-                setSessionToken(body.session_token)
-                setVaults(body.vaults ?? [])
-                setStep("vaults")
+                OpenDialog(
+                    <VaultSelect
+                        vaults={body.vaults ?? []}
+                        sessionToken={body.session_token}
+                        clientId={clientId}
+                        redirectUri={redirectUri}
+                        codeChallenge={codeChallenge}
+                        state={state}
+                    />
+                )
             } catch (e) {
                 setError(e instanceof Error ? e.message : "Login failed")
             } finally {
@@ -91,7 +154,34 @@ export default function McpAuthPage() {
         return function () {
             delete (window as unknown as Record<string, unknown>).onMcpTelegramAuth
         }
-    }, [step])
+    }, [])
+
+    return (
+        <div className={cls.Card}>
+            <div className={cls.Logo}>artel</div>
+            <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
+                Sign in to grant Claude access to your vault
+            </p>
+            {error && <div className={cls.Error}>{error}</div>}
+            {loading && <span style={{color: "var(--secondary-fg-color)"}}>Checking…</span>}
+            <div ref={telegramRef} className={cls.TelegramContainer}/>
+        </div>
+    )
+}
+
+interface VaultSelectProps {
+    vaults: Vault[]
+    sessionToken: string
+    clientId: string
+    redirectUri: string
+    codeChallenge: string
+    state: string
+}
+
+function VaultSelect({vaults, sessionToken, clientId, redirectUri, codeChallenge, state}: VaultSelectProps) {
+    const {OpenDialog} = useDialog()
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
 
     async function selectVault(vaultId: string) {
         setLoading(true)
@@ -111,7 +201,6 @@ export default function McpAuthPage() {
             })
             if (!res.ok) throw new Error("Failed to grant access")
             const body = await res.json()
-            setStep("done")
             window.location.href = body.redirect_url
         } catch (e) {
             setError(e instanceof Error ? e.message : "Failed to grant access")
@@ -122,56 +211,30 @@ export default function McpAuthPage() {
 
     function switchAccount() {
         localStorage.removeItem(SESSION_KEY)
-        setSessionToken("")
-        setVaults([])
-        setError("")
-        setStep("login")
+        OpenDialog(
+            <McpLogin
+                clientId={clientId}
+                redirectUri={redirectUri}
+                codeChallenge={codeChallenge}
+                state={state}
+            />
+        )
     }
 
     return (
-        <div className={cls.Root}>
-            <div className={cls.Card}>
-                <div className={cls.Logo}>artel</div>
-
-                {loading && step === "login" && (
-                    <span style={{color: "var(--secondary-fg-color)"}}>Checking session…</span>
-                )}
-
-                {step === "login" && !loading && (
-                    <>
-                        <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
-                            Sign in to grant Claude access to your vault
-                        </p>
-                        {error && <div className={cls.Error}>{error}</div>}
-                        <div>
-                            <div ref={telegramRef} className={cls.TelegramContainer}/>
-                            <button className="tg-auth-button" data-style="shine">Sign In with Telegram</button>
-                        </div>
-                    </>
-                )}
-
-                {step === "vaults" && (
-                    <>
-                        <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
-                            Select a vault for Claude to access
-                        </p>
-                        {error && <div className={cls.Error}>{error}</div>}
-                        <VaultList vaults={vaults} loading={loading} onSelect={selectVault}/>
-                        <button
-                            onClick={switchAccount}
-                            style={{background: "none", border: "none", color: "var(--thirdy-fg-color)", fontSize: "var(--font-size-sm)", cursor: "pointer", padding: 0}}
-                        >
-                            Use a different account
-                        </button>
-                    </>
-                )}
-
-                {step === "done" && (
-                    <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
-                        Access granted. Redirecting…
-                    </p>
-                )}
-            </div>
+        <div className={cls.Card}>
+            <div className={cls.Logo}>artel</div>
+            <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
+                Select a vault for Claude to access
+            </p>
+            {error && <div className={cls.Error}>{error}</div>}
+            <VaultList vaults={vaults} loading={loading} onSelect={selectVault}/>
+            <button
+                onClick={switchAccount}
+                style={{background: "none", border: "none", color: "var(--thirdy-fg-color)", fontSize: "var(--font-size-sm)", cursor: "pointer", padding: 0}}
+            >
+                Use a different account
+            </button>
         </div>
     )
 }

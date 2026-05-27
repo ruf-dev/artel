@@ -12,6 +12,7 @@ import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
 import ClosedAlphaPage from "@/pages/closed-alpha/ClosedAlphaPage.tsx"
 import AdminPage from "@/pages/admin/AdminPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
+import Dialog from "@/pages/segments/Dialog.tsx"
 import {AuthService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -53,6 +54,7 @@ export default function Router() {
                     <Route path={Path.ClosedAlpha} element={<ClosedAlphaPage/>} errorElement={<ErrorPage/>}/>
                 </Routes>
             </div>
+            <Dialog/>
         </div>
     )
 }
