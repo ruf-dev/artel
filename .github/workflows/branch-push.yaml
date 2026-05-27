@@ -29,8 +29,16 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Install dependencies
         run: go mod download
+
+      - name: Build frontend
+        run: make build-ui
 
       - name: Build
         run: go build -v ./...
