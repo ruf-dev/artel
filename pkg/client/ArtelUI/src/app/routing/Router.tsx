@@ -8,6 +8,7 @@ import EmailsPage from "@/pages/emails/EmailsPage.tsx"
 import ErrorPage from "@/pages/error/ErrorPage.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
+import ClosedAlphaPage from "@/pages/closed-alpha/ClosedAlphaPage.tsx"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum Path {
@@ -15,6 +16,7 @@ export enum Path {
     HomePage = "/",
     EmailsPage = "/emails",
     McpAuth = "/authorize",
+    ClosedAlpha = "/closed-alpha",
 }
 
 export default function Router() {
@@ -43,6 +45,12 @@ export default function Router() {
                     <Route
                         path={Path.McpAuth}
                         element={<McpAuthPage/>}
+                        errorElement={<ErrorPage/>}
+                    />
+
+                    <Route
+                        path={Path.ClosedAlpha}
+                        element={<ClosedAlphaPage/>}
                         errorElement={<ErrorPage/>}
                     />
 

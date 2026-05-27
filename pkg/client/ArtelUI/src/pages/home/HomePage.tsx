@@ -20,7 +20,7 @@ export default function HomePage() {
 
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
-    const {vaults, fetch: fetchVaults} = useVaults()
+    const {vaults, fetch: fetchVaults, forbidden} = useVaults()
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
@@ -33,6 +33,10 @@ export default function HomePage() {
             void fetchVaults()
         }
     }, [auth, fetchVaults])
+
+    useEffect(() => {
+        if (forbidden) navigate(Path.ClosedAlpha)
+    }, [forbidden, navigate])
 
 
     function openEditDialog(vaultId: string) {

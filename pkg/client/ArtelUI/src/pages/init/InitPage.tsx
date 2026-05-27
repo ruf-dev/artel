@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
-import {TelegramAuth} from "telegram-auth"
+import {TelegramAuth} from "@vervstack/telegram-auth"
 
 import cls from "@/pages/init/InitPage.module.css"
 
@@ -45,15 +45,26 @@ export default function InitPage() {
                             })
                     }}
                 >
-                    {function ({login: telegramLogin, isReady}) {
-                        return (
-                            <button className={cls.SubmitBtn} onClick={telegramLogin} disabled={!isReady}>
-                                Sign in with Telegram
-                            </button>
-                        )
-                    }}
+                    {TelegramAuthButton}
                 </TelegramAuth>
             </div>
         </div>
+    )
+}
+
+
+interface TgAuthProps {
+    login: () => void;
+    isReady: boolean;
+}
+
+function TelegramAuthButton({login: telegramLogin, isReady}: TgAuthProps) {
+    return (
+        <button
+            className={cls.SubmitBtn}
+            onClick={telegramLogin}
+            disabled={!isReady}>
+            Sign in with Telegram
+        </button>
     )
 }
