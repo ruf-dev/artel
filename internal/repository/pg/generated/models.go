@@ -77,11 +77,8 @@ type Session struct {
 }
 
 type Subscription struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	Active    bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	UserID uuid.UUID
+	Active bool
 }
 
 type User struct {
@@ -91,6 +88,11 @@ type User struct {
 	UpdatedAt    time.Time
 	PasswordHash string
 	Username     string
+}
+
+type UserPermission struct {
+	UserID          uuid.UUID
+	IsAdministrator bool
 }
 
 type Vault struct {

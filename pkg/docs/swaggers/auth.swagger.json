@@ -102,6 +102,28 @@
         ]
       }
     },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthAPI_GetMe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_authGetMeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AuthAPI"
+        ]
+      }
+    },
     "/api/auth/register": {
       "post": {
         "operationId": "AuthAPI_Register",
@@ -144,6 +166,23 @@
         }
       }
     },
+    "artel_authGetMeResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "permissions": {
+          "$ref": "#/definitions/artel_authPermissions"
+        }
+      }
+    },
     "artel_authLoginRequest": {
       "type": "object",
       "properties": {
@@ -181,6 +220,14 @@
         },
         "password": {
           "type": "string"
+        }
+      }
+    },
+    "artel_authPermissions": {
+      "type": "object",
+      "properties": {
+        "isAdministrator": {
+          "type": "boolean"
         }
       }
     },

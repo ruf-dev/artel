@@ -88,6 +88,36 @@ func (h *authHandler) Logout(ctx context.Context, req *artel_api.Logout_Request)
 	return &artel_api.Logout_Response{}, nil
 }
 
+func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*artel_api.GetMe_Response, error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	tokens := md.Get("authorization")
+
+	token := ""
+	if len(tokens) > 0 {
+		token = tokens[0]
+	}
+
+	userUuid, err := h.authSvc.ValidateToken(ctx, token)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "validate token")
+	}
+
+	user, perms, err := h.authSvc.GetMe(ctx, userUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "get me")
+	}
+
+	resp := &artel_api.GetMe_Response{
+		Id:       user.Uuid.String(),
+		Username: user.Username,
+		Email:    user.Email,
+		Permissions: &artel_api.Permissions{
+			IsAdministrator: perms.IsAdministrator,
+		},
+	}
+	return resp, nil
+}
+
 // AuthImpl satisfies transport.GrpcImpl and transport.GrpcWithGateway.
 type AuthImpl struct {
 	handler *authHandler

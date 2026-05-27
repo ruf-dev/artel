@@ -41,6 +41,17 @@ export type ListCouchInstancesResponse = {
 
 export type ListCouchInstances = Record<string, never>;
 
+export type UpdateCouchInstanceRequest = {
+  id?: string;
+  url?: string;
+  username?: string;
+  password?: string;
+};
+
+export type UpdateCouchInstanceResponse = Record<string, never>;
+
+export type UpdateCouchInstance = Record<string, never>;
+
 export type DeleteCouchInstanceRequest = {
   id?: string;
 };
@@ -58,6 +69,9 @@ export class CouchInstancesAPI {
   }
   static ListCouchInstances(this:void, req: ListCouchInstancesRequest, initReq?: fm.InitReq): Promise<ListCouchInstancesResponse> {
     return fm.fetchRequest<ListCouchInstancesResponse>(`/api/couch/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static UpdateCouchInstance(this:void, req: UpdateCouchInstanceRequest, initReq?: fm.InitReq): Promise<UpdateCouchInstanceResponse> {
+    return fm.fetchRequest<UpdateCouchInstanceResponse>(`/api/couch/${req.id}`, {...initReq, method: "PUT", body: JSON.stringify(req, fm.replacer)});
   }
   static DeleteCouchInstance(this:void, req: DeleteCouchInstanceRequest, initReq?: fm.InitReq): Promise<DeleteCouchInstanceResponse> {
     return fm.fetchRequest<DeleteCouchInstanceResponse>(`/api/couch/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "DELETE"});

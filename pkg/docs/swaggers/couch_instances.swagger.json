@@ -136,10 +136,60 @@
         "tags": [
           "CouchInstancesAPI"
         ]
+      },
+      "put": {
+        "operationId": "CouchInstancesAPI_UpdateCouchInstance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_couchUpdateCouchInstanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_couchCouchInstancesAPIUpdateCouchInstanceBody"
+            }
+          }
+        ],
+        "tags": [
+          "CouchInstancesAPI"
+        ]
       }
     }
   },
   "definitions": {
+    "artel_couchCouchInstancesAPIUpdateCouchInstanceBody": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
     "artel_couchDeleteCouchInstanceResponse": {
       "type": "object"
     },
@@ -196,6 +246,9 @@
           "type": "string"
         }
       }
+    },
+    "artel_couchUpdateCouchInstanceResponse": {
+      "type": "object"
     },
     "protobufAny": {
       "type": "object",

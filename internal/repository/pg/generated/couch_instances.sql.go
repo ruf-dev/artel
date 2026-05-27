@@ -135,3 +135,26 @@ func (q *Queries) RegisterCouchInstance(ctx context.Context, arg RegisterCouchIn
 	err := row.Scan(&id)
 	return id, err
 }
+
+const updateCouchInstance = `-- name: UpdateCouchInstance :exec
+UPDATE couch_instances
+SET url = $2, username = $3, password_enc = $4
+WHERE id = $1
+`
+
+type UpdateCouchInstanceParams struct {
+	ID          uuid.UUID
+	Url         string
+	Username    string
+	PasswordEnc []byte
+}
+
+func (q *Queries) UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error {
+	_, err := q.db.ExecContext(ctx, updateCouchInstance,
+		arg.ID,
+		arg.Url,
+		arg.Username,
+		arg.PasswordEnc,
+	)
+	return err
+}

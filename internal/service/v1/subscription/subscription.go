@@ -23,7 +23,7 @@ func (s *Service) CheckActive(ctx context.Context, userUuid uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "get subscription")
 	}
-	if !sub.Valid || !sub.V.Active {
+	if !sub.Active {
 		return user_errors.NoActiveSubscription
 	}
 

@@ -1,4 +1,4 @@
-import {AuthMiddleware} from "@/processes/AuthMiddleware.ts";
+import {AuthMiddleware, UserInfo} from "@/processes/AuthMiddleware.ts";
 import {
     LoginRequest,
     AuthAPI
@@ -11,6 +11,7 @@ export interface Session {
 
 export interface IAuthService {
     LoginViaTelegram: (idToken: string) => Promise<Session>
+    FetchUserInfo: () => Promise<UserInfo>
 }
 
 export class AuthService extends AuthMiddleware implements IAuthService {
@@ -34,5 +35,15 @@ export class AuthService extends AuthMiddleware implements IAuthService {
             } as Session
         })
     }
-}
 
+    async FetchUserInfo(): Promise<UserInfo> {
+        const initR = this.getInitReq()
+        const res = await AuthAPI.GetMe({}, initR)
+        return {
+            id: res.id ?? "",
+            username: res.username ?? "",
+            email: res.email ?? "",
+            isAdministrator: res.permissions?.isAdministrator === true,
+        }
+    }
+}

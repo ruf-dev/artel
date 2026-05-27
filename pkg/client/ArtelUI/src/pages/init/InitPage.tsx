@@ -36,8 +36,15 @@ export default function InitPage() {
                     botId={botId}
                     onSuccess={function (data) {
                         svc.LoginViaTelegram(data.id_token)
-                            .then(function (session) {
+                            .then(async function (session) {
                                 login(session)
+                                try {
+                                    svc.login(session)
+                                    const userInfo = await svc.FetchUserInfo()
+                                    login(session, userInfo)
+                                } catch {
+                                    // permissions unavailable — proceed without admin flag
+                                }
                                 navigate(Path.HomePage)
                             })
                             .catch(function (err: unknown) {

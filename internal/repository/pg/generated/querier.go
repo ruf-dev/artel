@@ -14,6 +14,8 @@ import (
 type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
 	CreateCouchAccount(ctx context.Context, arg CreateCouchAccountParams) (CouchAccount, error)
+	CreateDefaultSubscription(ctx context.Context, userID uuid.UUID) error
+	CreateDefaultUserPermissions(ctx context.Context, userID uuid.UUID) error
 	CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error)
 	CreatePendingAuthCode(ctx context.Context, arg CreatePendingAuthCodeParams) error
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
@@ -39,6 +41,7 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
+	GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error)
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
@@ -56,8 +59,10 @@ type Querier interface {
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	TouchTelegramIdentity(ctx context.Context, telegramID string) error
+	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
+	UpsertUserPermissions(ctx context.Context, arg UpsertUserPermissionsParams) (UserPermission, error)
 }
 
 var _ Querier = (*Queries)(nil)

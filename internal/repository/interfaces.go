@@ -20,6 +20,7 @@ type Repo interface {
 	Subscriptions() Subscriptions
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
+	UserPermissions() UserPermissionsRepo
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
 	EmailAccounts() EmailAccounts
@@ -34,6 +35,8 @@ type Users interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 	GetByTelegramId(ctx context.Context, telegramId string) (domain.User, error)
 	UpsertByTelegramId(ctx context.Context, telegramId string, username string) (domain.User, error)
+
+	WithTx(tx *sql.Tx) Users
 }
 
 type Vaults interface {
@@ -64,7 +67,10 @@ type Sessions interface {
 
 type Subscriptions interface {
 	Upsert(ctx context.Context, userID uuid.UUID, active bool) (domain.Subscription, error)
-	GetByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Subscription], error)
+	GetByUser(ctx context.Context, userID uuid.UUID) (domain.Subscription, error)
+	CreateDefault(ctx context.Context, userID uuid.UUID) error
+
+	WithTx(tx *sql.Tx) Subscriptions
 }
 
 type CouchAccounts interface {
@@ -81,9 +87,18 @@ type CouchInstances interface {
 	Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, error)
 	Pick(ctx context.Context, id uuid.UUID) (domain.CouchInstanceWithAccount, error)
 	List(ctx context.Context) ([]domain.CouchInstance, error)
+	Update(ctx context.Context, id uuid.UUID, url, username string, passwordPlain []byte) error
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	WithTx(tx sqldb.DB) CouchInstances
+}
+
+type UserPermissionsRepo interface {
+	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
+	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (domain.UserPermissions, error)
+	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
+
+	WithTx(tx *sql.Tx) UserPermissionsRepo
 }
 
 type McpKeyRepository interface {

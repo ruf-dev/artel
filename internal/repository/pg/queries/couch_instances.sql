@@ -15,5 +15,10 @@ SELECT id, url, username, password_enc, created_at FROM couch_instances ORDER BY
 -- name: ListCouchInstances :many
 SELECT id, url, username, created_at FROM couch_instances ORDER BY created_at DESC;
 
+-- name: UpdateCouchInstance :exec
+UPDATE couch_instances
+SET url = $2, username = $3, password_enc = $4
+WHERE id = $1;
+
 -- name: DeleteCouchInstance :exec
 DELETE FROM couch_instances WHERE id = $1;

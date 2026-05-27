@@ -77,6 +77,24 @@ func (r *Repo) List(ctx context.Context) ([]domain.CouchInstance, error) {
 	return instances, nil
 }
 
+func (r *Repo) Update(ctx context.Context, id uuid.UUID, url, username string, passwordPlain []byte) error {
+	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, passwordPlain)
+	if err != nil {
+		return rerrors.Wrap(err, "encrypt password")
+	}
+
+	err = r.q.UpdateCouchInstance(ctx, artel_q.UpdateCouchInstanceParams{
+		ID:          id,
+		Url:         url,
+		Username:    username,
+		PasswordEnc: passwordEnc,
+	})
+	if err != nil {
+		return rerrors.Wrap(err, "update couch instance")
+	}
+	return nil
+}
+
 func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	err := r.q.DeleteCouchInstance(ctx, id)
 	if err != nil {

@@ -1,0 +1,26 @@
+.Brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+@keyframes artelPulse {
+    0%   { filter: drop-shadow(0 0 0    rgba(255,75,62,0.7)); }
+    60%  { filter: drop-shadow(0 0 1.2rem rgba(255,75,62,0));  }
+    100% { filter: drop-shadow(0 0 0    rgba(255,75,62,0.7)); }
+}
+
+.BrandMark {
+    width: 1.5rem;
+    height: 1.5rem;
+    animation: artelPulse 2.6s ease-in-out infinite;
+}
+
+.BrandWord {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+}
