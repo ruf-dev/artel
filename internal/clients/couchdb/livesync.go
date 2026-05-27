@@ -496,7 +496,7 @@ type FileDoc struct {
 	Deleted  bool
 }
 
-func mimeTypeForPath(path string) string {
+func MimeTypeForPath(path string) string {
 	switch strings.ToLower(filepath.Ext(path)) {
 	case ".md", ".markdown":
 		return "text/markdown"
@@ -641,7 +641,7 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 		if row.Doc.Deleted {
 			continue
 		}
-		mime := mimeTypeForPath(row.Id)
+		mime := MimeTypeForPath(row.Id)
 		if strings.HasPrefix(mime, "text/") {
 			continue
 		}
@@ -655,11 +655,7 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 }
 
 func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, error) {
-	mime := mimeTypeForPath(path)
-	if strings.HasPrefix(mime, "text/") {
-		return FileDoc{}, user_errors.UseReadNoteForTextFiles
-	}
-
+	mime := MimeTypeForPath(path)
 	encodedId := url.PathEscape(path)
 	docURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
 
@@ -730,10 +726,6 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 }
 
 func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
-	if strings.HasPrefix(mimeTypeForPath(path), "text/") {
-		return user_errors.UseDeleteNoteForTextFiles
-	}
-
 	rev, err := c.getDocRev(ctx, path)
 	if err != nil {
 		return rerrors.Wrap(err, "failed to get doc rev")
@@ -777,10 +769,6 @@ func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 }
 
 func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) error {
-	if strings.HasPrefix(mimeTypeForPath(oldPath), "text/") {
-		return user_errors.UseMoveNoteForTextFiles
-	}
-
 	encodedId := url.PathEscape(oldPath)
 	docURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
 
