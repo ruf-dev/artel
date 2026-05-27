@@ -10,7 +10,7 @@ codegen:
 # Build Web User Interface from pkg/client/ArtelUI
 build-ui:
 	@echo --- Building WebUI ---
-	cd pkg/client/ArtelUI && bun run build
+	cd pkg/client/ArtelUI &&  bun i &&  bun run build
 	@echo --- Moving WebUI to go app to serve ---
 	rm -rf internal/transport/ui/dist
 	cp -r pkg/client/ArtelUI/dist internal/transport/ui/dist
