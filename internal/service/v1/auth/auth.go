@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
 	"time"
 
@@ -14,13 +15,17 @@ import (
 
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 type Service struct {
-	usersRepo        repository.Users
-	sessionsRepo     repository.Sessions
-	jwksClient       keyfunc.Keyfunc
+	usersRepo       repository.Users
+	sessionsRepo    repository.Sessions
+	permissionsRepo repository.UserPermissionsRepo
+	subsRepo        repository.Subscriptions
+	txManager       tx_manager.TxManager
+	jwksClient      keyfunc.Keyfunc
 	telegramClientId string
 }
 
@@ -33,6 +38,9 @@ func New(repo repository.Repo, telegramClientId string) (*Service, error) {
 	return &Service{
 		usersRepo:        repo.Users(),
 		sessionsRepo:     repo.Sessions(),
+		permissionsRepo:  repo.UserPermissions(),
+		subsRepo:         repo.Subscriptions(),
+		txManager:        repo.TxManager(),
 		jwksClient:       jwks,
 		telegramClientId: telegramClientId,
 	}, nil
@@ -44,9 +52,26 @@ func (s *Service) Register(ctx context.Context, email, password string) (domain.
 		return domain.User{}, rerrors.Wrap(err, "generate password hash")
 	}
 
-	user, err := s.usersRepo.Create(ctx, email, string(hash))
+	var user domain.User
+
+	err = s.txManager.Execute(func(tx *sql.Tx) error {
+		user, err = s.usersRepo.WithTx(tx).Create(ctx, email, string(hash))
+		if err != nil {
+			return rerrors.Wrap(err, "create user")
+		}
+
+		if err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
+			return rerrors.Wrap(err, "create default permissions")
+		}
+
+		if err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
+			return rerrors.Wrap(err, "create default subscription")
+		}
+
+		return nil
+	})
 	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "create user")
+		return domain.User{}, err
 	}
 
 	return user, nil
@@ -111,9 +136,26 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 
 	telegramId := claims.Subject
 
-	user, err := s.usersRepo.UpsertByTelegramId(ctx, telegramId, telegramId)
+	var user domain.User
+
+	err = s.txManager.Execute(func(tx *sql.Tx) error {
+		user, err = s.usersRepo.WithTx(tx).UpsertByTelegramId(ctx, telegramId, telegramId)
+		if err != nil {
+			return rerrors.Wrap(err, "upsert telegram user")
+		}
+
+		if err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
+			return rerrors.Wrap(err, "create default permissions")
+		}
+
+		if err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
+			return rerrors.Wrap(err, "create default subscription")
+		}
+
+		return nil
+	})
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(err, "upsert telegram user")
+		return domain.Session{}, err
 	}
 
 	sessionToken := generateToken()
@@ -125,6 +167,33 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	}
 
 	return session, nil
+}
+
+func (s *Service) GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, domain.UserPermissions, error) {
+	user, err := s.usersRepo.GetByID(ctx, userUuid)
+	if err != nil {
+		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user by id")
+	}
+
+	perms, err := s.permissionsRepo.Get(ctx, userUuid)
+	if err != nil {
+		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user permissions")
+	}
+
+	return user, perms, nil
+}
+
+func (s *Service) CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error {
+	perms, err := s.permissionsRepo.Get(ctx, userUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get user permissions")
+	}
+
+	if !perms.IsAdministrator {
+		return user_errors.NotAdmin
+	}
+
+	return nil
 }
 
 func generateToken() string {

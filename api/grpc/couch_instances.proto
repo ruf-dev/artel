@@ -26,6 +26,12 @@ service CouchInstancesAPI {
       body: "*"
     };
   };
+  rpc UpdateCouchInstance(UpdateCouchInstance.Request) returns (UpdateCouchInstance.Response) {
+    option (google.api.http) = {
+      put: "/api/couch/{id}"
+      body: "*"
+    };
+  };
   rpc DeleteCouchInstance(DeleteCouchInstance.Request) returns (DeleteCouchInstance.Response) {
     option (google.api.http) = {
       delete: "/api/couch/{id}"
@@ -61,6 +67,16 @@ message ListCouchInstances {
   message Response {
     repeated GetCouchInstance.Response instances = 1;
   }
+}
+
+message UpdateCouchInstance {
+  message Request {
+    string id       = 1;
+    string url      = 2;
+    string username = 3;
+    string password = 4;
+  }
+  message Response {}
 }
 
 message DeleteCouchInstance {

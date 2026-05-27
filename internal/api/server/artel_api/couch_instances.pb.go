@@ -131,6 +131,42 @@ func (*ListCouchInstances) Descriptor() ([]byte, []int) {
 	return file_couch_instances_proto_rawDescGZIP(), []int{2}
 }
 
+type UpdateCouchInstance struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateCouchInstance) Reset() {
+	*x = UpdateCouchInstance{}
+	mi := &file_couch_instances_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCouchInstance) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCouchInstance) ProtoMessage() {}
+
+func (x *UpdateCouchInstance) ProtoReflect() protoreflect.Message {
+	mi := &file_couch_instances_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCouchInstance.ProtoReflect.Descriptor instead.
+func (*UpdateCouchInstance) Descriptor() ([]byte, []int) {
+	return file_couch_instances_proto_rawDescGZIP(), []int{3}
+}
+
 type DeleteCouchInstance struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -139,7 +175,7 @@ type DeleteCouchInstance struct {
 
 func (x *DeleteCouchInstance) Reset() {
 	*x = DeleteCouchInstance{}
-	mi := &file_couch_instances_proto_msgTypes[3]
+	mi := &file_couch_instances_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -151,7 +187,7 @@ func (x *DeleteCouchInstance) String() string {
 func (*DeleteCouchInstance) ProtoMessage() {}
 
 func (x *DeleteCouchInstance) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[3]
+	mi := &file_couch_instances_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -164,7 +200,7 @@ func (x *DeleteCouchInstance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCouchInstance.ProtoReflect.Descriptor instead.
 func (*DeleteCouchInstance) Descriptor() ([]byte, []int) {
-	return file_couch_instances_proto_rawDescGZIP(), []int{3}
+	return file_couch_instances_proto_rawDescGZIP(), []int{4}
 }
 
 type RegisterCouchInstance_Request struct {
@@ -178,7 +214,7 @@ type RegisterCouchInstance_Request struct {
 
 func (x *RegisterCouchInstance_Request) Reset() {
 	*x = RegisterCouchInstance_Request{}
-	mi := &file_couch_instances_proto_msgTypes[4]
+	mi := &file_couch_instances_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -190,7 +226,7 @@ func (x *RegisterCouchInstance_Request) String() string {
 func (*RegisterCouchInstance_Request) ProtoMessage() {}
 
 func (x *RegisterCouchInstance_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[4]
+	mi := &file_couch_instances_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -236,7 +272,7 @@ type RegisterCouchInstance_Response struct {
 
 func (x *RegisterCouchInstance_Response) Reset() {
 	*x = RegisterCouchInstance_Response{}
-	mi := &file_couch_instances_proto_msgTypes[5]
+	mi := &file_couch_instances_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -248,7 +284,7 @@ func (x *RegisterCouchInstance_Response) String() string {
 func (*RegisterCouchInstance_Response) ProtoMessage() {}
 
 func (x *RegisterCouchInstance_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[5]
+	mi := &file_couch_instances_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -280,7 +316,7 @@ type GetCouchInstance_Request struct {
 
 func (x *GetCouchInstance_Request) Reset() {
 	*x = GetCouchInstance_Request{}
-	mi := &file_couch_instances_proto_msgTypes[6]
+	mi := &file_couch_instances_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -292,7 +328,7 @@ func (x *GetCouchInstance_Request) String() string {
 func (*GetCouchInstance_Request) ProtoMessage() {}
 
 func (x *GetCouchInstance_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[6]
+	mi := &file_couch_instances_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -327,7 +363,7 @@ type GetCouchInstance_Response struct {
 
 func (x *GetCouchInstance_Response) Reset() {
 	*x = GetCouchInstance_Response{}
-	mi := &file_couch_instances_proto_msgTypes[7]
+	mi := &file_couch_instances_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -339,7 +375,7 @@ func (x *GetCouchInstance_Response) String() string {
 func (*GetCouchInstance_Response) ProtoMessage() {}
 
 func (x *GetCouchInstance_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[7]
+	mi := &file_couch_instances_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -391,7 +427,7 @@ type ListCouchInstances_Request struct {
 
 func (x *ListCouchInstances_Request) Reset() {
 	*x = ListCouchInstances_Request{}
-	mi := &file_couch_instances_proto_msgTypes[8]
+	mi := &file_couch_instances_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -403,7 +439,7 @@ func (x *ListCouchInstances_Request) String() string {
 func (*ListCouchInstances_Request) ProtoMessage() {}
 
 func (x *ListCouchInstances_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[8]
+	mi := &file_couch_instances_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -428,7 +464,7 @@ type ListCouchInstances_Response struct {
 
 func (x *ListCouchInstances_Response) Reset() {
 	*x = ListCouchInstances_Response{}
-	mi := &file_couch_instances_proto_msgTypes[9]
+	mi := &file_couch_instances_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -440,7 +476,7 @@ func (x *ListCouchInstances_Response) String() string {
 func (*ListCouchInstances_Response) ProtoMessage() {}
 
 func (x *ListCouchInstances_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[9]
+	mi := &file_couch_instances_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -463,6 +499,110 @@ func (x *ListCouchInstances_Response) GetInstances() []*GetCouchInstance_Respons
 	return nil
 }
 
+type UpdateCouchInstance_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Url           string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	Username      string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	Password      string                 `protobuf:"bytes,4,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateCouchInstance_Request) Reset() {
+	*x = UpdateCouchInstance_Request{}
+	mi := &file_couch_instances_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCouchInstance_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCouchInstance_Request) ProtoMessage() {}
+
+func (x *UpdateCouchInstance_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_couch_instances_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCouchInstance_Request.ProtoReflect.Descriptor instead.
+func (*UpdateCouchInstance_Request) Descriptor() ([]byte, []int) {
+	return file_couch_instances_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *UpdateCouchInstance_Request) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateCouchInstance_Request) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *UpdateCouchInstance_Request) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *UpdateCouchInstance_Request) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type UpdateCouchInstance_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateCouchInstance_Response) Reset() {
+	*x = UpdateCouchInstance_Response{}
+	mi := &file_couch_instances_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCouchInstance_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCouchInstance_Response) ProtoMessage() {}
+
+func (x *UpdateCouchInstance_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_couch_instances_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCouchInstance_Response.ProtoReflect.Descriptor instead.
+func (*UpdateCouchInstance_Response) Descriptor() ([]byte, []int) {
+	return file_couch_instances_proto_rawDescGZIP(), []int{3, 1}
+}
+
 type DeleteCouchInstance_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -472,7 +612,7 @@ type DeleteCouchInstance_Request struct {
 
 func (x *DeleteCouchInstance_Request) Reset() {
 	*x = DeleteCouchInstance_Request{}
-	mi := &file_couch_instances_proto_msgTypes[10]
+	mi := &file_couch_instances_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -484,7 +624,7 @@ func (x *DeleteCouchInstance_Request) String() string {
 func (*DeleteCouchInstance_Request) ProtoMessage() {}
 
 func (x *DeleteCouchInstance_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[10]
+	mi := &file_couch_instances_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -497,7 +637,7 @@ func (x *DeleteCouchInstance_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCouchInstance_Request.ProtoReflect.Descriptor instead.
 func (*DeleteCouchInstance_Request) Descriptor() ([]byte, []int) {
-	return file_couch_instances_proto_rawDescGZIP(), []int{3, 0}
+	return file_couch_instances_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *DeleteCouchInstance_Request) GetId() string {
@@ -515,7 +655,7 @@ type DeleteCouchInstance_Response struct {
 
 func (x *DeleteCouchInstance_Response) Reset() {
 	*x = DeleteCouchInstance_Response{}
-	mi := &file_couch_instances_proto_msgTypes[11]
+	mi := &file_couch_instances_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -527,7 +667,7 @@ func (x *DeleteCouchInstance_Response) String() string {
 func (*DeleteCouchInstance_Response) ProtoMessage() {}
 
 func (x *DeleteCouchInstance_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_couch_instances_proto_msgTypes[11]
+	mi := &file_couch_instances_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -540,7 +680,7 @@ func (x *DeleteCouchInstance_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCouchInstance_Response.ProtoReflect.Descriptor instead.
 func (*DeleteCouchInstance_Response) Descriptor() ([]byte, []int) {
-	return file_couch_instances_proto_rawDescGZIP(), []int{3, 1}
+	return file_couch_instances_proto_rawDescGZIP(), []int{4, 1}
 }
 
 var File_couch_instances_proto protoreflect.FileDescriptor
@@ -567,16 +707,25 @@ const file_couch_instances_proto_rawDesc = "" +
 	"\x12ListCouchInstances\x1a\t\n" +
 	"\aRequest\x1aP\n" +
 	"\bResponse\x12D\n" +
-	"\tinstances\x18\x01 \x03(\v2&.artel_couch.GetCouchInstance.ResponseR\tinstances\"<\n" +
+	"\tinstances\x18\x01 \x03(\v2&.artel_couch.GetCouchInstance.ResponseR\tinstances\"\x86\x01\n" +
+	"\x13UpdateCouchInstance\x1ac\n" +
+	"\aRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\x12\x1a\n" +
+	"\busername\x18\x03 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x04 \x01(\tR\bpassword\x1a\n" +
+	"\n" +
+	"\bResponse\"<\n" +
 	"\x13DeleteCouchInstance\x1a\x19\n" +
 	"\aRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\n" +
 	"\n" +
-	"\bResponse2\xa9\x04\n" +
+	"\bResponse2\xb2\x05\n" +
 	"\x11CouchInstancesAPI\x12\x8b\x01\n" +
 	"\x15RegisterCouchInstance\x12*.artel_couch.RegisterCouchInstance.Request\x1a+.artel_couch.RegisterCouchInstance.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/couch/add\x12z\n" +
 	"\x10GetCouchInstance\x12%.artel_couch.GetCouchInstance.Request\x1a&.artel_couch.GetCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/couch/{id}\x12\x83\x01\n" +
-	"\x12ListCouchInstances\x12'.artel_couch.ListCouchInstances.Request\x1a(.artel_couch.ListCouchInstances.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/couch/list\x12\x83\x01\n" +
+	"\x12ListCouchInstances\x12'.artel_couch.ListCouchInstances.Request\x1a(.artel_couch.ListCouchInstances.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/couch/list\x12\x86\x01\n" +
+	"\x13UpdateCouchInstance\x12(.artel_couch.UpdateCouchInstance.Request\x1a).artel_couch.UpdateCouchInstance.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\x1a\x0f/api/couch/{id}\x12\x83\x01\n" +
 	"\x13DeleteCouchInstance\x12(.artel_couch.DeleteCouchInstance.Request\x1a).artel_couch.DeleteCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/api/couch/{id}B\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
@@ -593,33 +742,38 @@ func file_couch_instances_proto_rawDescGZIP() []byte {
 	return file_couch_instances_proto_rawDescData
 }
 
-var file_couch_instances_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_couch_instances_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_couch_instances_proto_goTypes = []any{
 	(*RegisterCouchInstance)(nil),          // 0: artel_couch.RegisterCouchInstance
 	(*GetCouchInstance)(nil),               // 1: artel_couch.GetCouchInstance
 	(*ListCouchInstances)(nil),             // 2: artel_couch.ListCouchInstances
-	(*DeleteCouchInstance)(nil),            // 3: artel_couch.DeleteCouchInstance
-	(*RegisterCouchInstance_Request)(nil),  // 4: artel_couch.RegisterCouchInstance.Request
-	(*RegisterCouchInstance_Response)(nil), // 5: artel_couch.RegisterCouchInstance.Response
-	(*GetCouchInstance_Request)(nil),       // 6: artel_couch.GetCouchInstance.Request
-	(*GetCouchInstance_Response)(nil),      // 7: artel_couch.GetCouchInstance.Response
-	(*ListCouchInstances_Request)(nil),     // 8: artel_couch.ListCouchInstances.Request
-	(*ListCouchInstances_Response)(nil),    // 9: artel_couch.ListCouchInstances.Response
-	(*DeleteCouchInstance_Request)(nil),    // 10: artel_couch.DeleteCouchInstance.Request
-	(*DeleteCouchInstance_Response)(nil),   // 11: artel_couch.DeleteCouchInstance.Response
+	(*UpdateCouchInstance)(nil),            // 3: artel_couch.UpdateCouchInstance
+	(*DeleteCouchInstance)(nil),            // 4: artel_couch.DeleteCouchInstance
+	(*RegisterCouchInstance_Request)(nil),  // 5: artel_couch.RegisterCouchInstance.Request
+	(*RegisterCouchInstance_Response)(nil), // 6: artel_couch.RegisterCouchInstance.Response
+	(*GetCouchInstance_Request)(nil),       // 7: artel_couch.GetCouchInstance.Request
+	(*GetCouchInstance_Response)(nil),      // 8: artel_couch.GetCouchInstance.Response
+	(*ListCouchInstances_Request)(nil),     // 9: artel_couch.ListCouchInstances.Request
+	(*ListCouchInstances_Response)(nil),    // 10: artel_couch.ListCouchInstances.Response
+	(*UpdateCouchInstance_Request)(nil),    // 11: artel_couch.UpdateCouchInstance.Request
+	(*UpdateCouchInstance_Response)(nil),   // 12: artel_couch.UpdateCouchInstance.Response
+	(*DeleteCouchInstance_Request)(nil),    // 13: artel_couch.DeleteCouchInstance.Request
+	(*DeleteCouchInstance_Response)(nil),   // 14: artel_couch.DeleteCouchInstance.Response
 }
 var file_couch_instances_proto_depIdxs = []int32{
-	7,  // 0: artel_couch.ListCouchInstances.Response.instances:type_name -> artel_couch.GetCouchInstance.Response
-	4,  // 1: artel_couch.CouchInstancesAPI.RegisterCouchInstance:input_type -> artel_couch.RegisterCouchInstance.Request
-	6,  // 2: artel_couch.CouchInstancesAPI.GetCouchInstance:input_type -> artel_couch.GetCouchInstance.Request
-	8,  // 3: artel_couch.CouchInstancesAPI.ListCouchInstances:input_type -> artel_couch.ListCouchInstances.Request
-	10, // 4: artel_couch.CouchInstancesAPI.DeleteCouchInstance:input_type -> artel_couch.DeleteCouchInstance.Request
-	5,  // 5: artel_couch.CouchInstancesAPI.RegisterCouchInstance:output_type -> artel_couch.RegisterCouchInstance.Response
-	7,  // 6: artel_couch.CouchInstancesAPI.GetCouchInstance:output_type -> artel_couch.GetCouchInstance.Response
-	9,  // 7: artel_couch.CouchInstancesAPI.ListCouchInstances:output_type -> artel_couch.ListCouchInstances.Response
-	11, // 8: artel_couch.CouchInstancesAPI.DeleteCouchInstance:output_type -> artel_couch.DeleteCouchInstance.Response
-	5,  // [5:9] is the sub-list for method output_type
-	1,  // [1:5] is the sub-list for method input_type
+	8,  // 0: artel_couch.ListCouchInstances.Response.instances:type_name -> artel_couch.GetCouchInstance.Response
+	5,  // 1: artel_couch.CouchInstancesAPI.RegisterCouchInstance:input_type -> artel_couch.RegisterCouchInstance.Request
+	7,  // 2: artel_couch.CouchInstancesAPI.GetCouchInstance:input_type -> artel_couch.GetCouchInstance.Request
+	9,  // 3: artel_couch.CouchInstancesAPI.ListCouchInstances:input_type -> artel_couch.ListCouchInstances.Request
+	11, // 4: artel_couch.CouchInstancesAPI.UpdateCouchInstance:input_type -> artel_couch.UpdateCouchInstance.Request
+	13, // 5: artel_couch.CouchInstancesAPI.DeleteCouchInstance:input_type -> artel_couch.DeleteCouchInstance.Request
+	6,  // 6: artel_couch.CouchInstancesAPI.RegisterCouchInstance:output_type -> artel_couch.RegisterCouchInstance.Response
+	8,  // 7: artel_couch.CouchInstancesAPI.GetCouchInstance:output_type -> artel_couch.GetCouchInstance.Response
+	10, // 8: artel_couch.CouchInstancesAPI.ListCouchInstances:output_type -> artel_couch.ListCouchInstances.Response
+	12, // 9: artel_couch.CouchInstancesAPI.UpdateCouchInstance:output_type -> artel_couch.UpdateCouchInstance.Response
+	14, // 10: artel_couch.CouchInstancesAPI.DeleteCouchInstance:output_type -> artel_couch.DeleteCouchInstance.Response
+	6,  // [6:11] is the sub-list for method output_type
+	1,  // [1:6] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -636,7 +790,7 @@ func file_couch_instances_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_couch_instances_proto_rawDesc), len(file_couch_instances_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

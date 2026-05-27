@@ -12,6 +12,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultmembers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaults"
@@ -26,6 +27,7 @@ type Repos struct {
 	subscriptions    repository.Subscriptions
 	couchAccounts    repository.CouchAccounts
 	couchInstances   repository.CouchInstances
+	userPermissions  repository.UserPermissionsRepo
 	mcpKey           repository.McpKeyRepository
 	pendingAuthCodes repository.PendingAuthCodes
 	emailAccounts    repository.EmailAccounts
@@ -77,6 +79,10 @@ func (r Repos) EmailAccounts() repository.EmailAccounts {
 	return r.emailAccounts
 }
 
+func (r Repos) UserPermissions() repository.UserPermissionsRepo {
+	return r.userPermissions
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(db)
 
@@ -89,6 +95,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		sessions:         sessions.New(q),
 		subscriptions:    subscriptions.New(q),
 		couchAccounts:    couchaccounts.New(db, encryptionKey),
+		userPermissions:  userpermissions.New(q),
 		mcpKey:           mcpkeys.New(q),
 		pendingAuthCodes: pendingauthcodes.New(q),
 		emailAccounts:    emailaccounts.New(q, encryptionKey),

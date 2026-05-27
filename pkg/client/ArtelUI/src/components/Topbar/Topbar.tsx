@@ -2,13 +2,16 @@ import {useState} from "react"
 import cls from "./Topbar.module.css"
 import {Path} from "@/app/routing/Router.tsx";
 import {useNavigate, NavLink} from "react-router-dom";
+import useUser from "@/hooks/user/User.ts";
 
 
 export default function Topbar() {
     const [menuOpen, setMenuOpen] = useState(false)
     const navigate = useNavigate();
+    const {isAdmin, logout} = useUser();
 
     function handleLogout() {
+        logout()
         navigate(Path.InitPage)
     }
 
@@ -79,6 +82,24 @@ export default function Topbar() {
                         <>
                             <div className={cls.Backdrop} onClick={() => setMenuOpen(false)}/>
                             <div className={cls.Menu} role="menu">
+                                {isAdmin && (
+                                    <button
+                                        className={cls.MenuItem}
+                                        role="menuitem"
+                                        type="button"
+                                        onClick={() => {
+                                            setMenuOpen(false);
+                                            navigate(Path.Admin)
+                                        }}
+                                    >
+                                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                                             strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="3"/>
+                                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+                                        </svg>
+                                        <span>Admin Panel</span>
+                                    </button>
+                                )}
                                 <button
                                     className={`${cls.MenuItem} ${cls.MenuItemDanger}`}
                                     role="menuitem"

@@ -35,10 +35,12 @@ type UserIdentities struct {
 	Artel    *ArtelIdentity
 }
 
+type UserPermissions struct {
+	UserUuid        uuid.UUID
+	IsAdministrator bool
+}
+
 type Subscription struct {
-	Uuid      uuid.UUID
-	UserUuid  uuid.UUID
-	Active    bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	UserUuid uuid.UUID
+	Active   bool
 }

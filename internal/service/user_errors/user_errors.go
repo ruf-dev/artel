@@ -27,6 +27,9 @@ var (
 	// subscription
 	NoActiveSubscription = rerrors.New("no active subscription", codes.PermissionDenied)
 
+	// admin
+	NotAdmin = rerrors.New("not an administrator", codes.PermissionDenied)
+
 	// middleware
 	NoMetadataInContext = rerrors.New("error getting metadata from context", codes.FailedPrecondition)
 	NoAuthHeader        = rerrors.New("error getting auth header", codes.Unauthenticated)

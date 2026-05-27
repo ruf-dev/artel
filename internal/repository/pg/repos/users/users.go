@@ -9,6 +9,7 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
@@ -18,6 +19,10 @@ type UsersRepo struct {
 
 func New(q *artel_q.Queries) *UsersRepo {
 	return &UsersRepo{q: q}
+}
+
+func (r *UsersRepo) WithTx(tx *sql.Tx) repository.Users {
+	return &UsersRepo{q: r.q.WithTx(tx)}
 }
 
 func (r *UsersRepo) Create(ctx context.Context, email, passwordHash string) (domain.User, error) {

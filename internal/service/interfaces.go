@@ -23,6 +23,8 @@ type AuthService interface {
 	Logout(ctx context.Context, token string) error
 	ValidateToken(ctx context.Context, token string) (uuid.UUID, error)
 	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
+	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, domain.UserPermissions, error)
+	CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error
 }
 
 type VaultService interface {
@@ -38,6 +40,7 @@ type CouchInstanceService interface {
 	RegisterCouchInstance(ctx context.Context, url, username, password string) (string, error)
 	GetCouchInstance(ctx context.Context, id string) (domain.CouchInstance, error)
 	ListCouchInstances(ctx context.Context) ([]domain.CouchInstance, error)
+	UpdateCouchInstance(ctx context.Context, id, url, username, password string) error
 	DeleteCouchInstance(ctx context.Context, id string) error
 }
 

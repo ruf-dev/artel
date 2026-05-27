@@ -69,6 +69,21 @@ export type GetConfigResponse = {
 
 export type GetConfig = Record<string, never>;
 
+export type Permissions = {
+  isAdministrator?: boolean;
+};
+
+export type GetMeRequest = Record<string, never>;
+
+export type GetMeResponse = {
+  id?: string;
+  username?: string;
+  email?: string;
+  permissions?: Permissions;
+};
+
+export type GetMe = Record<string, never>;
+
 export class AuthAPI {
   static Register(this:void, req: RegisterRequest, initReq?: fm.InitReq): Promise<RegisterResponse> {
     return fm.fetchRequest<RegisterResponse>(`/api/auth/register`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -81,5 +96,8 @@ export class AuthAPI {
   }
   static GetConfig(this:void, req: GetConfigRequest, initReq?: fm.InitReq): Promise<GetConfigResponse> {
     return fm.fetchRequest<GetConfigResponse>(`/api/auth/config?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+  }
+  static GetMe(this:void, req: GetMeRequest, initReq?: fm.InitReq): Promise<GetMeResponse> {
+    return fm.fetchRequest<GetMeResponse>(`/api/auth/me?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
   }
 }

@@ -11,28 +11,33 @@ import (
 	"github.com/google/uuid"
 )
 
+const createDefaultSubscription = `-- name: CreateDefaultSubscription :exec
+INSERT INTO subscriptions (user_id, active)
+VALUES ($1, FALSE)
+ON CONFLICT DO NOTHING
+`
+
+func (q *Queries) CreateDefaultSubscription(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, createDefaultSubscription, userID)
+	return err
+}
+
 const getSubscriptionByUser = `-- name: GetSubscriptionByUser :one
-SELECT id, user_id, active, created_at, updated_at FROM subscriptions WHERE user_id = $1
+SELECT user_id, active FROM subscriptions WHERE user_id = $1
 `
 
 func (q *Queries) GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error) {
 	row := q.db.QueryRowContext(ctx, getSubscriptionByUser, userID)
 	var i Subscription
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Active,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
+	err := row.Scan(&i.UserID, &i.Active)
 	return i, err
 }
 
 const upsertSubscription = `-- name: UpsertSubscription :one
 INSERT INTO subscriptions (user_id, active)
 VALUES ($1, $2)
-ON CONFLICT (user_id) DO UPDATE SET active = EXCLUDED.active, updated_at = NOW()
-RETURNING id, user_id, active, created_at, updated_at
+ON CONFLICT (user_id) DO UPDATE SET active = EXCLUDED.active
+RETURNING user_id, active
 `
 
 type UpsertSubscriptionParams struct {
@@ -43,12 +48,6 @@ type UpsertSubscriptionParams struct {
 func (q *Queries) UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error) {
 	row := q.db.QueryRowContext(ctx, upsertSubscription, arg.UserID, arg.Active)
 	var i Subscription
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Active,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
+	err := row.Scan(&i.UserID, &i.Active)
 	return i, err
 }

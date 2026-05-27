@@ -65,6 +65,20 @@ func (s *Service) ListCouchInstances(ctx context.Context) ([]domain.CouchInstanc
 	return instances, nil
 }
 
+func (s *Service) UpdateCouchInstance(ctx context.Context, id, url, username, password string) error {
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return rerrors.Wrap(err, "parse uuid")
+	}
+
+	err = s.couchInstancesRepo.Update(ctx, uid, url, username, []byte(password))
+	if err != nil {
+		return rerrors.Wrap(err, "update couch instance")
+	}
+
+	return nil
+}
+
 func (s *Service) DeleteCouchInstance(ctx context.Context, id string) error {
 	uid, err := uuid.Parse(id)
 	if err != nil {

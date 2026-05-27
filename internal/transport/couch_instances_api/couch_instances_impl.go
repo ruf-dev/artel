@@ -86,6 +86,15 @@ func (c *CouchInstancesImpl) ListCouchInstances(ctx context.Context, req *artel_
 	return resp, nil
 }
 
+func (c *CouchInstancesImpl) UpdateCouchInstance(ctx context.Context, req *artel_api.UpdateCouchInstance_Request) (*artel_api.UpdateCouchInstance_Response, error) {
+	err := c.couchInstanceSvc.UpdateCouchInstance(ctx, req.Id, req.Url, req.Username, req.Password)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "update couch instance")
+	}
+
+	return &artel_api.UpdateCouchInstance_Response{}, nil
+}
+
 func (c *CouchInstancesImpl) DeleteCouchInstance(ctx context.Context, req *artel_api.DeleteCouchInstance_Request) (*artel_api.DeleteCouchInstance_Response, error) {
 	err := c.couchInstanceSvc.DeleteCouchInstance(ctx, req.Id)
 	if err != nil {

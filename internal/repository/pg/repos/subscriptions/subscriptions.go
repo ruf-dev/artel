@@ -3,12 +3,12 @@ package subscriptions
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
@@ -20,43 +20,42 @@ func New(q *artel_q.Queries) *SubscriptionsRepo {
 	return &SubscriptionsRepo{q: q}
 }
 
+func (r *SubscriptionsRepo) WithTx(tx *sql.Tx) repository.Subscriptions {
+	return &SubscriptionsRepo{q: r.q.WithTx(tx)}
+}
+
 func (r *SubscriptionsRepo) Upsert(ctx context.Context, userID uuid.UUID, active bool) (domain.Subscription, error) {
-	params := artel_q.UpsertSubscriptionParams{
+	row, err := r.q.UpsertSubscription(ctx, artel_q.UpsertSubscriptionParams{
 		UserID: userID,
 		Active: active,
-	}
-	row, err := r.q.UpsertSubscription(ctx, params)
+	})
 	if err != nil {
 		return domain.Subscription{}, rerrors.Wrap(err, "error upserting subscription")
 	}
 
-	s := domain.Subscription{
-		Uuid:      row.ID,
-		UserUuid:  row.UserID,
-		Active:    row.Active,
-		CreatedAt: row.CreatedAt,
-		UpdatedAt: row.UpdatedAt,
-	}
-	return s, nil
+	return domain.Subscription{
+		UserUuid: row.UserID,
+		Active:   row.Active,
+	}, nil
 }
 
-func (r *SubscriptionsRepo) GetByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Subscription], error) {
+func (r *SubscriptionsRepo) GetByUser(ctx context.Context, userID uuid.UUID) (domain.Subscription, error) {
 	row, err := r.q.GetSubscriptionByUser(ctx, userID)
-	if errors.Is(err, sql.ErrNoRows) {
-		return sql.Null[domain.Subscription]{}, nil
-	}
 	if err != nil {
-		return sql.Null[domain.Subscription]{}, rerrors.Wrap(err, "error getting subscription by user")
+		return domain.Subscription{}, rerrors.Wrap(err, "error getting subscription by user")
 	}
 
-	return sql.Null[domain.Subscription]{
-		V: domain.Subscription{
-			Uuid:      row.ID,
-			UserUuid:  row.UserID,
-			Active:    row.Active,
-			CreatedAt: row.CreatedAt,
-			UpdatedAt: row.UpdatedAt,
-		},
-		Valid: true,
+	return domain.Subscription{
+		UserUuid: row.UserID,
+		Active:   row.Active,
 	}, nil
+}
+
+func (r *SubscriptionsRepo) CreateDefault(ctx context.Context, userID uuid.UUID) error {
+	err := r.q.CreateDefaultSubscription(ctx, userID)
+	if err != nil {
+		return rerrors.Wrap(err, "create default subscription")
+	}
+
+	return nil
 }
