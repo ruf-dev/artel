@@ -71,6 +71,7 @@ export type GetConfig = Record<string, never>;
 
 export type Permissions = {
   isAdministrator?: boolean;
+  hasEmails?: boolean;
 };
 
 export type GetMeRequest = Record<string, never>;

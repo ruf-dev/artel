@@ -95,7 +95,7 @@ type CouchInstances interface {
 
 type UserPermissionsRepo interface {
 	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
-	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (domain.UserPermissions, error)
+	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool) (domain.UserPermissions, error)
 	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
 
 	WithTx(tx *sql.Tx) UserPermissionsRepo

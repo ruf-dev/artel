@@ -113,6 +113,7 @@ func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*a
 		Email:    user.Email,
 		Permissions: &artel_api.Permissions{
 			IsAdministrator: perms.IsAdministrator,
+			HasEmails:       perms.HasEmails,
 		},
 	}
 	return resp, nil

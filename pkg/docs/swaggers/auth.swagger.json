@@ -228,6 +228,9 @@
       "properties": {
         "isAdministrator": {
           "type": "boolean"
+        },
+        "hasEmails": {
+          "type": "boolean"
         }
       }
     },

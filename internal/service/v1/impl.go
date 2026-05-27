@@ -33,7 +33,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Auth:          authSvc,
 		Vault:         vault.New(repo),
 		CouchInstance: couchinstances.New(repo),
-		Mcp:           mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.CouchInstances()),
+		Mcp:           mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.CouchInstances(), repo.UserPermissions()),
 		Email:         email.New(repo.EmailAccounts()),
 		Subscription:  subscription.New(repo.Subscriptions()),
 	}, nil

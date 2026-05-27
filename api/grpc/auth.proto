@@ -87,6 +87,7 @@ message GetConfig {
 
 message Permissions {
   bool is_administrator = 1;
+  bool has_emails = 2;
 }
 
 message GetMe {

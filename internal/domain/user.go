@@ -38,6 +38,7 @@ type UserIdentities struct {
 type UserPermissions struct {
 	UserUuid        uuid.UUID
 	IsAdministrator bool
+	HasEmails       bool
 }
 
 type Subscription struct {

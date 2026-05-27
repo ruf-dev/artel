@@ -15,6 +15,7 @@ import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import {AuthService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
+import { Tooltip } from "react-tooltip"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum Path {
@@ -55,6 +56,10 @@ export default function Router() {
                 </Routes>
             </div>
             <Dialog/>
+            <Tooltip
+                id="root-tooltip"
+                variant={"light"}
+            />
         </div>
     )
 }
