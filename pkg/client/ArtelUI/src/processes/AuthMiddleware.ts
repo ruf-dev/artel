@@ -31,6 +31,7 @@ export class AuthMiddleware {
     login(s: Session, info?: UserInfo) {
         this.session = s
         this.userInfo = info
+
         saveToLocalStorage({session: s, userInfo: info})
     }
 

@@ -10,7 +10,6 @@ import {useVaults} from "@/app/hooks/Vaults.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
-import Topbar from "@/segments/Topbar/Topbar.tsx"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
@@ -54,7 +53,6 @@ export default function HomePage() {
 
     return (
         <div className={cls.Root}>
-            <Topbar/>
             <HeroSegment onCreateClick={() => OpenDialog(<CreateVaultDialog/>)}/>
             <ContentSegment onEditClick={openEditDialog}/>
         </div>
