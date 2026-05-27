@@ -4,6 +4,7 @@ export enum ErrorReason {
 }
 
 export enum Errors {
+    PERMISSION_DENIED = 7,
     UNAUTHENTICATED = 16,
 }
 
