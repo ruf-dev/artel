@@ -87,10 +87,13 @@ func (r *UsersRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (r *UsersRepo) GetByTelegramId(ctx context.Context, telegramId string) (domain.User, error) {
+func (r *UsersRepo) GetByTelegramId(ctx context.Context, telegramId string) (sql.Null[domain.User], error) {
 	row, err := r.q.GetUserByTelegramId(ctx, telegramId)
 	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "error getting user by telegram id")
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.Null[domain.User]{}, nil
+		}
+		return sql.Null[domain.User]{}, rerrors.Wrap(err, "get user by telegram id")
 	}
 
 	u := domain.User{
@@ -101,59 +104,36 @@ func (r *UsersRepo) GetByTelegramId(ctx context.Context, telegramId string) (dom
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,
 	}
-	return u, nil
+	return sql.Null[domain.User]{V: u, Valid: true}, nil
 }
 
-func (r *UsersRepo) UpsertByTelegramId(ctx context.Context, telegramId string, username string, photoUrl string) (domain.User, error) {
-	userRow, err := r.q.GetUserByTelegramId(ctx, telegramId)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return domain.User{}, rerrors.Wrap(err, "get user by telegram id")
-	}
-
-	if err == nil {
-		params := artel_q.TouchTelegramIdentityParams{
-			TelegramID: telegramId,
-			PhotoUrl:   photoUrl,
-		}
-		touchErr := r.q.TouchTelegramIdentity(ctx, params)
-		if touchErr != nil {
-			return domain.User{}, rerrors.Wrap(touchErr, "touch telegram identity")
-		}
-		u := domain.User{
-			Uuid:         userRow.ID,
-			Email:        userRow.Email.String,
-			Username:     userRow.Username,
-			PasswordHash: userRow.PasswordHash,
-			CreatedAt:    userRow.CreatedAt,
-			UpdatedAt:    userRow.UpdatedAt,
-		}
-		return u, nil
-	}
-
-	newUser, err := r.q.CreateTelegramUser(ctx, username)
+func (r *UsersRepo) CreateByUsername(ctx context.Context, username string) (domain.User, error) {
+	row, err := r.q.CreateByUsername(ctx, username)
 	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "create telegram user")
+		return domain.User{}, rerrors.Wrap(err, "create user by username")
 	}
 
-	params := artel_q.InsertTelegramIdentityParams{
-		UserID:     newUser.ID,
-		TelegramID: telegramId,
-		PhotoUrl:   photoUrl,
+	return domain.User{
+		Uuid:         row.ID,
+		Email:        row.Email.String,
+		Username:     row.Username,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
+	}, nil
+}
+
+func (r *UsersRepo) UpsertTelegramIdentity(ctx context.Context, identity domain.TelegramIdentity) error {
+	params := artel_q.UpsertTelegramIdentityParams{
+		UserID:     identity.UserUuid,
+		TelegramID: identity.TelegramId,
+		PhotoUrl:   identity.PhotoUrl,
 	}
-	err = r.q.InsertTelegramIdentity(ctx, params)
+	err := r.q.UpsertTelegramIdentity(ctx, params)
 	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "insert telegram identity")
+		return rerrors.Wrap(err, "upsert telegram identity")
 	}
-
-	u := domain.User{
-		Uuid:         newUser.ID,
-		Email:        newUser.Email.String,
-		Username:     newUser.Username,
-		PasswordHash: newUser.PasswordHash,
-		CreatedAt:    newUser.CreatedAt,
-		UpdatedAt:    newUser.UpdatedAt,
-	}
-	return u, nil
+	return nil
 }
 
 func (r *UsersRepo) GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error) {

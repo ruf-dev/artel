@@ -5,8 +5,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
-	"encoding/json"
-	"net/http"
 	"time"
 
 	"github.com/MicahParks/keyfunc/v3"
@@ -124,36 +122,8 @@ func (s *Service) ValidateToken(ctx context.Context, token string) (uuid.UUID, e
 	return session.UserUuid, nil
 }
 
-type telegramClaims struct {
-	jwt.RegisteredClaims
-	PhotoUrl string `json:"photo_url"`
-}
-
-type telegramUserInfo struct {
-	PhotoUrl string `json:"photo_url"`
-}
-
-func fetchTelegramUserInfo(ctx context.Context, idToken string) (telegramUserInfo, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://oauth.telegram.org/userinfo", nil)
-	if err != nil {
-		return telegramUserInfo{}, err
-	}
-	req.Header.Set("Authorization", "Bearer "+idToken)
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return telegramUserInfo{}, err
-	}
-	defer resp.Body.Close()
-	var info telegramUserInfo
-	err = json.NewDecoder(resp.Body).Decode(&info)
-	if err != nil {
-		return telegramUserInfo{}, err
-	}
-	return info, nil
-}
-
 func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {
-	claims := &telegramClaims{}
+	claims := &jwt.RegisteredClaims{}
 	token, err := jwt.ParseWithClaims(idToken, claims, s.jwksClient.Keyfunc,
 		jwt.WithValidMethods([]string{"RS256", "ES256"}))
 	if err != nil {
@@ -166,14 +136,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 
 	telegramId := claims.Subject
 
-	photoUrl := claims.PhotoUrl
-	if photoUrl == "" {
-		if info, fetchErr := fetchTelegramUserInfo(ctx, idToken); fetchErr == nil {
-			photoUrl = info.PhotoUrl
-		}
-	}
-
-	var user domain.User
+	var userUuid uuid.UUID
 
 	err = s.txManager.Execute(
 		func(tx *sql.Tx) error {
@@ -181,17 +144,37 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 			permissionsRepo := s.permissionsRepo.WithTx(tx)
 			subsRepo := s.subsRepo.WithTx(tx)
 
-			user, err = usersRepo.UpsertByTelegramId(ctx, telegramId, telegramId, photoUrl)
+			var userValue sql.Null[domain.User]
+
+			userValue, err = usersRepo.GetByTelegramId(ctx, telegramId)
 			if err != nil {
-				return rerrors.Wrap(err, "upsert telegram user")
+				return rerrors.Wrap(err, "get user by telegram id")
 			}
 
-			err = permissionsRepo.CreateDefault(ctx, user.Uuid)
+			if !userValue.Valid {
+				userValue.V, err = usersRepo.CreateByUsername(ctx, telegramId)
+				if err != nil {
+					return rerrors.Wrap(err, "create user")
+				}
+			}
+
+			user := userValue.V
+
+			identity := domain.TelegramIdentity{
+				UserUuid:   user.Uuid,
+				TelegramId: telegramId,
+			}
+			err = usersRepo.UpsertTelegramIdentity(ctx, identity)
+			if err != nil {
+				return rerrors.Wrap(err, "upsert telegram identity")
+			}
+
+			err = permissionsRepo.CreateDefault(ctx, userUuid)
 			if err != nil {
 				return rerrors.Wrap(err, "create default permissions")
 			}
 
-			err = subsRepo.CreateDefault(ctx, user.Uuid)
+			err = subsRepo.CreateDefault(ctx, userUuid)
 			if err != nil {
 				return rerrors.Wrap(err, "create default subscription")
 			}
@@ -205,7 +188,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	sessionToken := generateToken()
 	expiresAt := time.Now().Add(24 * time.Hour)
 
-	session, err := s.sessionsRepo.Create(ctx, user.Uuid, sessionToken, expiresAt)
+	session, err := s.sessionsRepo.Create(ctx, userUuid, sessionToken, expiresAt)
 	if err != nil {
 		return domain.Session{}, rerrors.Wrap(err, "create session")
 	}
@@ -218,12 +201,6 @@ func (s *Service) GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, d
 	if err != nil {
 		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user by id")
 	}
-
-	photoUrl, err := s.usersRepo.GetTelegramPhotoUrl(ctx, userUuid)
-	if err != nil {
-		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get telegram photo url")
-	}
-	user.PhotoUrl = photoUrl
 
 	perms, err := s.permissionsRepo.Get(ctx, userUuid)
 	if err != nil {

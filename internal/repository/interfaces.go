@@ -33,8 +33,9 @@ type Users interface {
 	GetByID(ctx context.Context, id uuid.UUID) (domain.User, error)
 	GetByEmail(ctx context.Context, email string) (domain.User, error)
 
-	GetByTelegramId(ctx context.Context, telegramId string) (domain.User, error)
-	UpsertByTelegramId(ctx context.Context, telegramId string, username string, photoUrl string) (domain.User, error)
+	GetByTelegramId(ctx context.Context, telegramId string) (sql.Null[domain.User], error)
+	CreateByUsername(ctx context.Context, username string) (domain.User, error)
+	UpsertTelegramIdentity(ctx context.Context, identity domain.TelegramIdentity) error
 	GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error)
 
 	Delete(ctx context.Context, id uuid.UUID) error

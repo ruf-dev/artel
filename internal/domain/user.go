@@ -19,11 +19,9 @@ type User struct {
 }
 
 type TelegramIdentity struct {
-	Id         uuid.UUID
 	UserUuid   uuid.UUID
 	TelegramId string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	PhotoUrl   string
 }
 
 type ArtelIdentity struct {
