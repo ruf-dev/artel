@@ -784,6 +784,7 @@ type GetMe_Response struct {
 	Username      string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
 	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 	Permissions   *Permissions           `protobuf:"bytes,4,opt,name=permissions,proto3" json:"permissions,omitempty"`
+	PhotoUrl      string                 `protobuf:"bytes,5,opt,name=photo_url,json=photoUrl,proto3" json:"photo_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -846,6 +847,13 @@ func (x *GetMe_Response) GetPermissions() *Permissions {
 	return nil
 }
 
+func (x *GetMe_Response) GetPhotoUrl() string {
+	if x != nil {
+		return x.PhotoUrl
+	}
+	return ""
+}
+
 var File_auth_proto protoreflect.FileDescriptor
 
 const file_auth_proto_rawDesc = "" +
@@ -885,14 +893,15 @@ const file_auth_proto_rawDesc = "" +
 	"\vPermissions\x12)\n" +
 	"\x10is_administrator\x18\x01 \x01(\bR\x0fisAdministrator\x12\x1d\n" +
 	"\n" +
-	"has_emails\x18\x02 \x01(\bR\thasEmails\"\x9c\x01\n" +
+	"has_emails\x18\x02 \x01(\bR\thasEmails\"\xb9\x01\n" +
 	"\x05GetMe\x1a\t\n" +
-	"\aRequest\x1a\x87\x01\n" +
+	"\aRequest\x1a\xa4\x01\n" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x129\n" +
-	"\vpermissions\x18\x04 \x01(\v2\x17.artel_auth.PermissionsR\vpermissions2\xe9\x03\n" +
+	"\vpermissions\x18\x04 \x01(\v2\x17.artel_auth.PermissionsR\vpermissions\x12\x1b\n" +
+	"\tphoto_url\x18\x05 \x01(\tR\bphotoUrl2\xe9\x03\n" +
 	"\aAuthAPI\x12f\n" +
 	"\bRegister\x12\x1c.artel_auth.Register.Request\x1a\x1d.artel_auth.Register.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/auth/register\x12Z\n" +
 	"\x05Login\x12\x19.artel_auth.Login.Request\x1a\x1a.artel_auth.Login.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/auth/login\x12^\n" +

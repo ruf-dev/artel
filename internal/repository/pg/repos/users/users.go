@@ -104,24 +104,28 @@ func (r *UsersRepo) GetByTelegramId(ctx context.Context, telegramId string) (dom
 	return u, nil
 }
 
-func (r *UsersRepo) UpsertByTelegramId(ctx context.Context, telegramId string, username string) (domain.User, error) {
-	existing, err := r.q.GetUserByTelegramId(ctx, telegramId)
+func (r *UsersRepo) UpsertByTelegramId(ctx context.Context, telegramId string, username string, photoUrl string) (domain.User, error) {
+	userRow, err := r.q.GetUserByTelegramId(ctx, telegramId)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return domain.User{}, rerrors.Wrap(err, "get user by telegram id")
 	}
 
 	if err == nil {
-		touchErr := r.q.TouchTelegramIdentity(ctx, telegramId)
+		params := artel_q.TouchTelegramIdentityParams{
+			TelegramID: telegramId,
+			PhotoUrl:   photoUrl,
+		}
+		touchErr := r.q.TouchTelegramIdentity(ctx, params)
 		if touchErr != nil {
 			return domain.User{}, rerrors.Wrap(touchErr, "touch telegram identity")
 		}
 		u := domain.User{
-			Uuid:         existing.ID,
-			Email:        existing.Email.String,
-			Username:     existing.Username,
-			PasswordHash: existing.PasswordHash,
-			CreatedAt:    existing.CreatedAt,
-			UpdatedAt:    existing.UpdatedAt,
+			Uuid:         userRow.ID,
+			Email:        userRow.Email.String,
+			Username:     userRow.Username,
+			PasswordHash: userRow.PasswordHash,
+			CreatedAt:    userRow.CreatedAt,
+			UpdatedAt:    userRow.UpdatedAt,
 		}
 		return u, nil
 	}
@@ -134,6 +138,7 @@ func (r *UsersRepo) UpsertByTelegramId(ctx context.Context, telegramId string, u
 	params := artel_q.InsertTelegramIdentityParams{
 		UserID:     newUser.ID,
 		TelegramID: telegramId,
+		PhotoUrl:   photoUrl,
 	}
 	err = r.q.InsertTelegramIdentity(ctx, params)
 	if err != nil {
@@ -149,4 +154,15 @@ func (r *UsersRepo) UpsertByTelegramId(ctx context.Context, telegramId string, u
 		UpdatedAt:    newUser.UpdatedAt,
 	}
 	return u, nil
+}
+
+func (r *UsersRepo) GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error) {
+	photoUrl, err := r.q.GetTelegramPhotoUrlByUserId(ctx, userUuid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", nil
+		}
+		return "", rerrors.Wrap(err, "get telegram photo url by user id")
+	}
+	return photoUrl, nil
 }

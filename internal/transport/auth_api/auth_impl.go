@@ -111,6 +111,7 @@ func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*a
 		Id:       user.Uuid.String(),
 		Username: user.Username,
 		Email:    user.Email,
+		PhotoUrl: user.PhotoUrl,
 		Permissions: &artel_api.Permissions{
 			IsAdministrator: perms.IsAdministrator,
 			HasEmails:       perms.HasEmails,

@@ -180,6 +180,9 @@
         },
         "permissions": {
           "$ref": "#/definitions/artel_authPermissions"
+        },
+        "photoUrl": {
+          "type": "string"
         }
       }
     },

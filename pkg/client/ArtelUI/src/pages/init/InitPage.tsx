@@ -42,7 +42,8 @@ function LoginContent({login, navigate}: LoginContentProps) {
     useEffect(function () {
         AuthAPI.GetConfig({}, apiPrefix()).then(function (cfg) {
             setBotId(cfg.telegramClientId ?? "")
-        }).catch(() => {})
+        }).catch(() => {
+        })
     }, [])
 
     return (
@@ -61,12 +62,12 @@ function LoginContent({login, navigate}: LoginContentProps) {
                             } catch {
                                 // permissions unavailable — proceed without admin flag
                             }
-                            CloseDialog()
                             navigate(Path.HomePage)
                         })
                         .catch(function (err: unknown) {
                             alert(err instanceof Error ? err.message : "Telegram login failed")
                         })
+                        .finally(CloseDialog)
                 }}
             >
                 {TelegramAuthButton}

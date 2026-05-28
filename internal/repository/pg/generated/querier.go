@@ -38,6 +38,7 @@ type Querier interface {
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
+	GetTelegramPhotoUrlByUserId(ctx context.Context, userID uuid.UUID) (string, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
@@ -58,7 +59,7 @@ type Querier interface {
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
-	TouchTelegramIdentity(ctx context.Context, telegramID string) error
+	TouchTelegramIdentity(ctx context.Context, arg TouchTelegramIdentityParams) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)

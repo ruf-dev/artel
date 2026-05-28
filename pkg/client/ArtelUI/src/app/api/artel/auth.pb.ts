@@ -81,6 +81,7 @@ export type GetMeResponse = {
   username?: string;
   email?: string;
   permissions?: Permissions;
+  photoUrl?: string;
 };
 
 export type GetMe = Record<string, never>;

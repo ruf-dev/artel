@@ -6,10 +6,11 @@ import useUser from "@/hooks/user/User.ts"
 
 interface UserPillProps {
     menuOpen: boolean
+    photoUrl?: string
     onClick: (e: React.MouseEvent) => void
 }
 
-function UserPill({menuOpen, onClick}: UserPillProps) {
+function UserPill({menuOpen, photoUrl, onClick}: UserPillProps) {
     return (
         <button
             className={cls.UserPill}
@@ -19,11 +20,16 @@ function UserPill({menuOpen, onClick}: UserPillProps) {
             onClick={onClick}
         >
             <span className={cls.Avatar}>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" strokeWidth="2"
-                     strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
+                {photoUrl ? (
+                    <img src={photoUrl} alt="avatar" width={28} height={28}
+                         style={{borderRadius: '50%', objectFit: 'cover', display: 'block'}}/>
+                ) : (
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" strokeWidth="2"
+                         strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                )}
             </span>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -91,7 +97,7 @@ function UserMenu({isAdmin, onAdmin, onLogout}: UserMenuProps) {
 export default function TopbarUserMenu() {
     const [menuOpen, setMenuOpen] = useState(false)
     const navigate = useNavigate()
-    const {isAdmin, logout} = useUser()
+    const {isAdmin, logout, photoUrl} = useUser()
 
     function handleLogout() {
         setMenuOpen(false)
@@ -106,7 +112,7 @@ export default function TopbarUserMenu() {
     
     return (
         <div className={cls.UserWrap}>
-            <UserPill menuOpen={menuOpen} onClick={e => {
+            <UserPill menuOpen={menuOpen} photoUrl={photoUrl} onClick={e => {
                 e.stopPropagation();
                 setMenuOpen(v => !v)
             }}/>

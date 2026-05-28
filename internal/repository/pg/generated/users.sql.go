@@ -79,6 +79,17 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getTelegramPhotoUrlByUserId = `-- name: GetTelegramPhotoUrlByUserId :one
+SELECT photo_url FROM identities_telegram WHERE user_id = $1
+`
+
+func (q *Queries) GetTelegramPhotoUrlByUserId(ctx context.Context, userID uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getTelegramPhotoUrlByUserId, userID)
+	var photo_url string
+	err := row.Scan(&photo_url)
+	return photo_url, err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, email, password_hash, created_at, updated_at FROM users WHERE email = $1
 `
@@ -160,24 +171,30 @@ func (q *Queries) GetUserByTelegramId(ctx context.Context, telegramID string) (G
 }
 
 const insertTelegramIdentity = `-- name: InsertTelegramIdentity :exec
-INSERT INTO identities_telegram (user_id, telegram_id) VALUES ($1, $2)
+INSERT INTO identities_telegram (user_id, telegram_id, photo_url) VALUES ($1, $2, $3)
 `
 
 type InsertTelegramIdentityParams struct {
 	UserID     uuid.UUID
 	TelegramID string
+	PhotoUrl   string
 }
 
 func (q *Queries) InsertTelegramIdentity(ctx context.Context, arg InsertTelegramIdentityParams) error {
-	_, err := q.db.ExecContext(ctx, insertTelegramIdentity, arg.UserID, arg.TelegramID)
+	_, err := q.db.ExecContext(ctx, insertTelegramIdentity, arg.UserID, arg.TelegramID, arg.PhotoUrl)
 	return err
 }
 
 const touchTelegramIdentity = `-- name: TouchTelegramIdentity :exec
-UPDATE identities_telegram SET updated_at = NOW() WHERE telegram_id = $1
+UPDATE identities_telegram SET updated_at = NOW(), photo_url = $2 WHERE telegram_id = $1
 `
 
-func (q *Queries) TouchTelegramIdentity(ctx context.Context, telegramID string) error {
-	_, err := q.db.ExecContext(ctx, touchTelegramIdentity, telegramID)
+type TouchTelegramIdentityParams struct {
+	TelegramID string
+	PhotoUrl   string
+}
+
+func (q *Queries) TouchTelegramIdentity(ctx context.Context, arg TouchTelegramIdentityParams) error {
+	_, err := q.db.ExecContext(ctx, touchTelegramIdentity, arg.TelegramID, arg.PhotoUrl)
 	return err
 }

@@ -20,7 +20,10 @@ WHERE i.telegram_id = $1;
 INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at;
 
 -- name: InsertTelegramIdentity :exec
-INSERT INTO identities_telegram (user_id, telegram_id) VALUES ($1, $2);
+INSERT INTO identities_telegram (user_id, telegram_id, photo_url) VALUES ($1, $2, $3);
 
 -- name: TouchTelegramIdentity :exec
-UPDATE identities_telegram SET updated_at = NOW() WHERE telegram_id = $1;
+UPDATE identities_telegram SET updated_at = NOW(), photo_url = $2 WHERE telegram_id = $1;
+
+-- name: GetTelegramPhotoUrlByUserId :one
+SELECT photo_url FROM identities_telegram WHERE user_id = $1;

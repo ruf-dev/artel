@@ -10,6 +10,7 @@ type User struct {
 	Uuid         uuid.UUID
 	Email        string
 	Username     string
+	PhotoUrl     string
 	PasswordHash string
 	Roles        []string
 	Identities   UserIdentities
