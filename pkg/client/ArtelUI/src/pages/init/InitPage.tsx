@@ -36,7 +36,8 @@ interface LoginContentProps {
 
 function LoginContent({login, navigate}: LoginContentProps) {
     const svc = new AuthService()
-    const {CloseDialog} = useDialog()
+    const {CloseDialog, UnlockClosing} = useDialog()
+
     const [botId, setBotId] = useState("")
 
     useEffect(function () {
@@ -59,6 +60,7 @@ function LoginContent({login, navigate}: LoginContentProps) {
                                 svc.login(session)
                                 const userInfo = await svc.FetchUserInfo()
                                 login(session, userInfo)
+                                UnlockClosing()
                             } catch {
                                 // permissions unavailable — proceed without admin flag
                             }
