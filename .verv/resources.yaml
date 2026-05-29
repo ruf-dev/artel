@@ -1,0 +1,15 @@
+databases:
+  - name: pg
+    type: postgres
+    resources:
+      # Two types of resources:
+#       - box (pre defiend patterns)
+      memory: small # small, medium, large - default or custom create by admin
+      disk_size: medium
+      cpu: small
+#       - exact (selected by user)
+      memory_mb: 128
+      disk_size_mb: 1024
+      cpu_count: 1
+
+
