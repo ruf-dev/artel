@@ -157,7 +157,7 @@ function McpLogin({clientId, redirectUri, codeChallenge, state}: McpLoginProps) 
     }, [])
 
     return (
-        <div className={cls.Card}>
+        <div className={cls.CardContainer}>
             <div className={cls.Logo}>artel</div>
             <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
                 Sign in to grant Claude access to your vault
@@ -222,7 +222,7 @@ function VaultSelect({vaults, sessionToken, clientId, redirectUri, codeChallenge
     }
 
     return (
-        <div className={cls.Card}>
+        <div className={cls.CardContainer}>
             <div className={cls.Logo}>artel</div>
             <p style={{color: "var(--secondary-fg-color)", fontSize: "var(--font-size-sm)", textAlign: "center", margin: 0}}>
                 Select a vault for Claude to access

@@ -1,4 +1,3 @@
-
 all: codegen build-ui
 
 codegen:

@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 import {NavigateFunction, useNavigate} from "react-router-dom"
-import {TelegramAuth} from "@vervstack/telegram-auth"
+import {TelegramAuth, TelegramAuthData} from "@vervstack/telegram-auth"
 
 import cls from "@/pages/init/InitPage.module.css"
 
@@ -11,6 +11,7 @@ import {Path} from "@/app/routing/Router.tsx"
 import {AuthAPI} from "@/app/api/artel"
 import {apiPrefix} from "@/app/api/api.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
+import {useToaster} from "@vervstack/chures"
 
 export default function InitPage() {
     const navigate = useNavigate()
@@ -37,6 +38,7 @@ interface LoginContentProps {
 function LoginContent({login, navigate}: LoginContentProps) {
     const svc = new AuthService()
     const {CloseDialog, UnlockClosing} = useDialog()
+    const {bake} = useToaster()
 
     const [botId, setBotId] = useState("")
 
@@ -47,50 +49,36 @@ function LoginContent({login, navigate}: LoginContentProps) {
         })
     }, [])
 
+    function onSuccessLoginTg(data: TelegramAuthData) {
+        svc.LoginViaTelegram(data.id_token)
+            .then(async function (session) {
+                login(session)
+                try {
+                    svc.login(session)
+                    const userInfo = await svc.FetchUserInfo()
+                    login(session, userInfo)
+                    UnlockClosing()
+                } catch {
+                    // permissions unavailable — proceed without admin flag
+                }
+                navigate(Path.HomePage)
+            })
+            .catch(function (err: unknown) {
+                bake({title: "Telegram login failed", description: err instanceof Error ? err.message : "Telegram login failed", level: "Error"})
+            })
+            .finally(CloseDialog)
+    }
+
+
     return (
-        <div className={cls.Card}>
+        <div className={cls.CardContainer}>
             <div className={cls.Logo}>artel</div>
             <TelegramAuth
+                title="Sign in with Telegram"
                 botId={botId}
-                onSuccess={function (data) {
-                    svc.LoginViaTelegram(data.id_token)
-                        .then(async function (session) {
-                            login(session)
-                            try {
-                                svc.login(session)
-                                const userInfo = await svc.FetchUserInfo()
-                                login(session, userInfo)
-                                UnlockClosing()
-                            } catch {
-                                // permissions unavailable — proceed without admin flag
-                            }
-                            navigate(Path.HomePage)
-                        })
-                        .catch(function (err: unknown) {
-                            alert(err instanceof Error ? err.message : "Telegram login failed")
-                        })
-                        .finally(CloseDialog)
-                }}
-            >
-                {TelegramAuthButton}
-            </TelegramAuth>
+                className={cls.LoginButton}
+                onSuccess={onSuccessLoginTg}
+            />
         </div>
-    )
-}
-
-interface TgAuthProps {
-    login: () => void
-    isReady: boolean
-}
-
-function TelegramAuthButton({login: telegramLogin, isReady}: TgAuthProps) {
-    return (
-        <button
-            className={cls.SubmitBtn}
-            onClick={telegramLogin}
-            disabled={!isReady}
-        >
-            Sign in with Telegram
-        </button>
     )
 }

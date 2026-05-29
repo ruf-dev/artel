@@ -135,8 +135,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	}
 
 	telegramId := claims.Subject
-
-	var userUuid uuid.UUID
+	var user domain.User
 
 	err = s.txManager.Execute(
 		func(tx *sql.Tx) error {
@@ -158,7 +157,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 				}
 			}
 
-			user := userValue.V
+			user = userValue.V
 
 			identity := domain.TelegramIdentity{
 				UserUuid:   user.Uuid,
@@ -169,12 +168,12 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 				return rerrors.Wrap(err, "upsert telegram identity")
 			}
 
-			err = permissionsRepo.CreateDefault(ctx, userUuid)
+			err = permissionsRepo.CreateDefault(ctx, user.Uuid)
 			if err != nil {
 				return rerrors.Wrap(err, "create default permissions")
 			}
 
-			err = subsRepo.CreateDefault(ctx, userUuid)
+			err = subsRepo.CreateDefault(ctx, user.Uuid)
 			if err != nil {
 				return rerrors.Wrap(err, "create default subscription")
 			}
@@ -188,7 +187,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	sessionToken := generateToken()
 	expiresAt := time.Now().Add(24 * time.Hour)
 
-	session, err := s.sessionsRepo.Create(ctx, userUuid, sessionToken, expiresAt)
+	session, err := s.sessionsRepo.Create(ctx, user.Uuid, sessionToken, expiresAt)
 	if err != nil {
 		return domain.Session{}, rerrors.Wrap(err, "create session")
 	}
