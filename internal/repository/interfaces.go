@@ -32,9 +32,13 @@ type Users interface {
 	Create(ctx context.Context, email, passwordHash string) (domain.User, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.User, error)
 	GetByEmail(ctx context.Context, email string) (domain.User, error)
+
+	GetByTelegramId(ctx context.Context, telegramId string) (sql.Null[domain.User], error)
+	CreateByUsername(ctx context.Context, username string) (domain.User, error)
+	UpsertTelegramIdentity(ctx context.Context, identity domain.TelegramIdentity) error
+	GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error)
+
 	Delete(ctx context.Context, id uuid.UUID) error
-	GetByTelegramId(ctx context.Context, telegramId string) (domain.User, error)
-	UpsertByTelegramId(ctx context.Context, telegramId string, username string) (domain.User, error)
 
 	WithTx(tx *sql.Tx) Users
 }
@@ -95,7 +99,7 @@ type CouchInstances interface {
 
 type UserPermissionsRepo interface {
 	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
-	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (domain.UserPermissions, error)
+	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool) (domain.UserPermissions, error)
 	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
 
 	WithTx(tx *sql.Tx) UserPermissionsRepo

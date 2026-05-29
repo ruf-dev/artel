@@ -1,5 +1,4 @@
 import {Outlet} from 'react-router-dom'
-import {Tooltip} from 'react-tooltip'
 
 import cls from '@/app/routing/HomeLayout.module.css'
 
@@ -12,7 +11,6 @@ export default function HomeLayout() {
             <main className={cls.Content}>
                 <Outlet/>
             </main>
-            <Tooltip id="root-tooltip"/>
         </div>
     )
 }

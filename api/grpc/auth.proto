@@ -87,6 +87,7 @@ message GetConfig {
 
 message Permissions {
   bool is_administrator = 1;
+  bool has_emails = 2;
 }
 
 message GetMe {
@@ -96,5 +97,6 @@ message GetMe {
     string      username    = 2;
     string      email       = 3;
     Permissions permissions = 4;
+    string      photo_url   = 5;
   }
 }

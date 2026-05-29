@@ -6,7 +6,7 @@
       "name": "artel_ui",
       "dependencies": {
         "@types/node": "^24.0.5",
-        "@vervstack/telegram-auth": "^0.3.0",
+        "@vervstack/chures": "0.0.2",
         "classnames": "^2.5.1",
         "framer-motion": "^12.23.24",
         "grpc-web": "^1.5.0",
@@ -257,7 +257,7 @@
 
     "@typescript-eslint/visitor-keys": ["@typescript-eslint/visitor-keys@8.59.2", "", { "dependencies": { "@typescript-eslint/types": "8.59.2", "eslint-visitor-keys": "^5.0.0" } }, "sha512-NwjLUnGy8/Zfx23fl50tRC8rYaYnM52xNRYFAXvmiil9yh1+K6aRVQMnzW6gQB/1DLgWt977lYQn7C+wtgXZiA=="],
 
-    "@vervstack/telegram-auth": ["@vervstack/telegram-auth@0.3.0", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-HRtSNKn9ZSejyya0S0AdJAPnzoNYxMwpFhemQZxZjnVUV4f1U2/5tQEP8LfDtFAJx2KH0+M0Ns14ZUtgScN/CA=="],
+    "@vervstack/chures": ["@vervstack/chures@0.0.2", "", { "dependencies": { "classnames": "^2.5.1" }, "peerDependencies": { "framer-motion": "^12.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0", "zustand": "^5.0.0" } }, "sha512-sR4CFYV0Fwqeu2C22fImNocrOEoo0RV3FEJ0u4YWpOa7K0mpKl8/UB6tt0Qy9XxY3xU1tn3+WZPhBAvVYtlqEQ=="],
 
     "@vitejs/plugin-react": ["@vitejs/plugin-react@4.7.0", "", { "dependencies": { "@babel/core": "^7.28.0", "@babel/plugin-transform-react-jsx-self": "^7.27.1", "@babel/plugin-transform-react-jsx-source": "^7.27.1", "@rolldown/pluginutils": "1.0.0-beta.27", "@types/babel__core": "^7.20.5", "react-refresh": "^0.17.0" }, "peerDependencies": { "vite": "^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0" } }, "sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA=="],
 

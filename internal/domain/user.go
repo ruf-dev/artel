@@ -10,6 +10,7 @@ type User struct {
 	Uuid         uuid.UUID
 	Email        string
 	Username     string
+	PhotoUrl     string
 	PasswordHash string
 	Roles        []string
 	Identities   UserIdentities
@@ -18,11 +19,9 @@ type User struct {
 }
 
 type TelegramIdentity struct {
-	Id         uuid.UUID
 	UserUuid   uuid.UUID
 	TelegramId string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	PhotoUrl   string
 }
 
 type ArtelIdentity struct {
@@ -38,6 +37,7 @@ type UserIdentities struct {
 type UserPermissions struct {
 	UserUuid        uuid.UUID
 	IsAdministrator bool
+	HasEmails       bool
 }
 
 type Subscription struct {

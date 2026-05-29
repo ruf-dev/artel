@@ -23,6 +23,7 @@ type KeyContext struct {
 	CouchDb   string
 	CouchUser string
 	CouchPass string
+	HasEmails bool
 }
 
 type contextKey string
@@ -54,6 +55,7 @@ func contextWithKeyCtx(ctx context.Context, keyCtx domain.McpKeyContext) context
 		CouchDb:   keyCtx.CouchDb,
 		CouchUser: keyCtx.CouchUser,
 		CouchPass: keyCtx.CouchPass,
+		HasEmails: keyCtx.HasEmails,
 	})
 }
 
@@ -86,8 +88,8 @@ func textResult(text string) ToolResult {
 	return ToolResult{Content: []ContentBlock{block}}
 }
 
-func getToolDefinitions() []ToolDef {
-	return []ToolDef{
+func getToolDefinitions(hasEmails bool) []ToolDef {
+	tools := []ToolDef{
 		{
 			Name:        toolListFiles,
 			Description: "List all files in the vault (notes and binary files)",
@@ -172,65 +174,72 @@ func getToolDefinitions() []ToolDef {
 				"required": []string{"path"},
 			},
 		},
-		{
-			Name:        toolListEmailFolders,
-			Description: "List IMAP folders available in an email account",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
-				},
-				"required": []string{"account_id"},
-			},
-		},
-		{
-			Name:        toolListEmailAccounts,
-			Description: "List the user's configured email accounts",
-			InputSchema: map[string]interface{}{
-				"type":       "object",
-				"properties": map[string]interface{}{},
-				"required":   []string{},
-			},
-		},
-		{
-			Name:        toolListEmails,
-			Description: "List recent emails from an account's inbox",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
-					"limit":      map[string]interface{}{"type": "integer", "description": "Max number of emails to return (default 20)"},
-				},
-				"required": []string{"account_id"},
-			},
-		},
-		{
-			Name:        toolReadEmail,
-			Description: "Read the full content of an email by its ID",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
-					"id":         map[string]string{"type": "string", "description": "Email UID from list_emails"},
-				},
-				"required": []string{"account_id", "id"},
-			},
-		},
-		{
-			Name:        toolSendEmail,
-			Description: "Send an email from one of the user's configured accounts",
-			InputSchema: map[string]interface{}{
-				"type": "object",
-				"properties": map[string]interface{}{
-					"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
-					"to":         map[string]string{"type": "string", "description": "Recipient email address"},
-					"subject":    map[string]string{"type": "string", "description": "Email subject"},
-					"body":       map[string]string{"type": "string", "description": "Email body (plain text)"},
-				},
-				"required": []string{"account_id", "to", "subject", "body"},
-			},
-		},
 	}
+
+	if hasEmails {
+		tools = append(tools,
+			ToolDef{
+				Name:        toolListEmailFolders,
+				Description: "List IMAP folders available in an email account",
+				InputSchema: map[string]interface{}{
+					"type": "object",
+					"properties": map[string]interface{}{
+						"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+					},
+					"required": []string{"account_id"},
+				},
+			},
+			ToolDef{
+				Name:        toolListEmailAccounts,
+				Description: "List the user's configured email accounts",
+				InputSchema: map[string]interface{}{
+					"type":       "object",
+					"properties": map[string]interface{}{},
+					"required":   []string{},
+				},
+			},
+			ToolDef{
+				Name:        toolListEmails,
+				Description: "List recent emails from an account's inbox",
+				InputSchema: map[string]interface{}{
+					"type": "object",
+					"properties": map[string]interface{}{
+						"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+						"limit":      map[string]interface{}{"type": "integer", "description": "Max number of emails to return (default 20)"},
+					},
+					"required": []string{"account_id"},
+				},
+			},
+			ToolDef{
+				Name:        toolReadEmail,
+				Description: "Read the full content of an email by its ID",
+				InputSchema: map[string]interface{}{
+					"type": "object",
+					"properties": map[string]interface{}{
+						"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+						"id":         map[string]string{"type": "string", "description": "Email UID from list_emails"},
+					},
+					"required": []string{"account_id", "id"},
+				},
+			},
+			ToolDef{
+				Name:        toolSendEmail,
+				Description: "Send an email from one of the user's configured accounts",
+				InputSchema: map[string]interface{}{
+					"type": "object",
+					"properties": map[string]interface{}{
+						"account_id": map[string]string{"type": "string", "description": "UUID of the email account"},
+						"to":         map[string]string{"type": "string", "description": "Recipient email address"},
+						"subject":    map[string]string{"type": "string", "description": "Email subject"},
+						"body":       map[string]string{"type": "string", "description": "Email body (plain text)"},
+					},
+					"required": []string{"account_id", "to", "subject", "body"},
+				},
+			},
+		)
+	}
+
+	return tools
 }
 
 func dispatchToolCall(ctx context.Context, toolName string, arguments map[string]interface{}, keyCtx KeyContext, emailSvc service.EmailService) (interface{}, error) {

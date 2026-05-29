@@ -7,10 +7,12 @@ export interface DialogManager {
     children: React.JSX.Element[] | null
 
     IsClickOffClosesDialog: boolean
+    closable: boolean
 
     LockClosing(): void
-
     UnlockClosing(): void
+
+    SetClosable(v: boolean): void
 
     OpenDialog(...children: React.JSX.Element[]): void
 
@@ -22,12 +24,16 @@ export const useDialog =
     create<DialogManager>((set, get) => ({
         children: null,
         IsClickOffClosesDialog: true,
+        closable: false,
 
         LockClosing() {
             set({IsClickOffClosesDialog: false})
         },
         UnlockClosing() {
             set({IsClickOffClosesDialog: true})
+        },
+        SetClosable(v: boolean) {
+            set({closable: v})
         },
 
         OpenDialog(...children: React.JSX.Element[] ) {
@@ -37,7 +43,7 @@ export const useDialog =
         CloseDialog() {
             const {IsClickOffClosesDialog} = get()
             if (IsClickOffClosesDialog) {
-                set({children: null})
+                set({children: null, closable: false})
             }
         }
     }))

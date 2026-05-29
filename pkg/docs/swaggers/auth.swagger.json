@@ -180,6 +180,9 @@
         },
         "permissions": {
           "$ref": "#/definitions/artel_authPermissions"
+        },
+        "photoUrl": {
+          "type": "string"
         }
       }
     },
@@ -227,6 +230,9 @@
       "type": "object",
       "properties": {
         "isAdministrator": {
+          "type": "boolean"
+        },
+        "hasEmails": {
           "type": "boolean"
         }
       }

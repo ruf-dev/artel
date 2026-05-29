@@ -33,13 +33,15 @@ func (r *Repo) Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissi
 	return domain.UserPermissions{
 		UserUuid:        row.UserID,
 		IsAdministrator: row.IsAdministrator,
+		HasEmails:       row.HasEmails,
 	}, nil
 }
 
-func (r *Repo) Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (domain.UserPermissions, error) {
+func (r *Repo) Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool) (domain.UserPermissions, error) {
 	row, err := r.q.UpsertUserPermissions(ctx, artel_q.UpsertUserPermissionsParams{
 		UserID:          userUuid,
 		IsAdministrator: isAdmin,
+		HasEmails:       hasEmails,
 	})
 	if err != nil {
 		return domain.UserPermissions{}, rerrors.Wrap(err, "upsert user permissions")
@@ -48,6 +50,7 @@ func (r *Repo) Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (do
 	return domain.UserPermissions{
 		UserUuid:        row.UserID,
 		IsAdministrator: row.IsAdministrator,
+		HasEmails:       row.HasEmails,
 	}, nil
 }
 

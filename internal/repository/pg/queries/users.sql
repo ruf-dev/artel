@@ -14,13 +14,17 @@ DELETE FROM users WHERE id = $1;
 SELECT u.id, u.email, u.username, u.password_hash, u.created_at, u.updated_at
 FROM users u
 JOIN identities_telegram i ON u.id = i.user_id
-WHERE i.telegram_id = $1;
+WHERE i.telegram_id = $1
+FOR UPDATE;
 
--- name: CreateTelegramUser :one
+-- name: CreateByUsername :one
 INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at;
 
--- name: InsertTelegramIdentity :exec
-INSERT INTO identities_telegram (user_id, telegram_id) VALUES ($1, $2);
+-- name: UpsertTelegramIdentity :exec
+INSERT INTO identities_telegram (user_id, telegram_id, photo_url)
+VALUES ($1, $2, $3)
+ON CONFLICT (telegram_id) DO UPDATE
+    SET photo_url = EXCLUDED.photo_url, updated_at = NOW();
 
--- name: TouchTelegramIdentity :exec
-UPDATE identities_telegram SET updated_at = NOW() WHERE telegram_id = $1;
+-- name: GetTelegramPhotoUrlByUserId :one
+SELECT photo_url FROM identities_telegram WHERE user_id = $1;

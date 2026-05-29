@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); f=$(echo \"$input\" | jq -r '.tool_input.file_path // \"\"'); if echo \"$f\" | grep -q '\\.go$'; then jq -n --arg c \"$(cat docs/go-style.md)\" '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":$c}}'; fi 2>/dev/null || true",
+            "statusMessage": "Loading Go style guide..."
+          }
+        ]
+      }
+    ]
+  }
+}

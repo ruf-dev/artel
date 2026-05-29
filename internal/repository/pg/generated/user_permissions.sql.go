@@ -12,8 +12,8 @@ import (
 )
 
 const createDefaultUserPermissions = `-- name: CreateDefaultUserPermissions :exec
-INSERT INTO user_permissions (user_id, is_administrator)
-VALUES ($1, FALSE)
+INSERT INTO user_permissions (user_id, is_administrator, has_emails)
+VALUES ($1, FALSE, FALSE)
 ON CONFLICT DO NOTHING
 `
 
@@ -23,7 +23,7 @@ func (q *Queries) CreateDefaultUserPermissions(ctx context.Context, userID uuid.
 }
 
 const getUserPermissions = `-- name: GetUserPermissions :one
-SELECT user_id, is_administrator
+SELECT user_id, is_administrator, has_emails
 FROM user_permissions
 WHERE user_id = $1
 `
@@ -31,26 +31,28 @@ WHERE user_id = $1
 func (q *Queries) GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error) {
 	row := q.db.QueryRowContext(ctx, getUserPermissions, userID)
 	var i UserPermission
-	err := row.Scan(&i.UserID, &i.IsAdministrator)
+	err := row.Scan(&i.UserID, &i.IsAdministrator, &i.HasEmails)
 	return i, err
 }
 
 const upsertUserPermissions = `-- name: UpsertUserPermissions :one
-INSERT INTO user_permissions (user_id, is_administrator)
-VALUES ($1, $2)
+INSERT INTO user_permissions (user_id, is_administrator, has_emails)
+VALUES ($1, $2, $3)
 ON CONFLICT (user_id) DO UPDATE
-    SET is_administrator = EXCLUDED.is_administrator
-RETURNING user_id, is_administrator
+    SET is_administrator = EXCLUDED.is_administrator,
+        has_emails = EXCLUDED.has_emails
+RETURNING user_id, is_administrator, has_emails
 `
 
 type UpsertUserPermissionsParams struct {
 	UserID          uuid.UUID
 	IsAdministrator bool
+	HasEmails       bool
 }
 
 func (q *Queries) UpsertUserPermissions(ctx context.Context, arg UpsertUserPermissionsParams) (UserPermission, error) {
-	row := q.db.QueryRowContext(ctx, upsertUserPermissions, arg.UserID, arg.IsAdministrator)
+	row := q.db.QueryRowContext(ctx, upsertUserPermissions, arg.UserID, arg.IsAdministrator, arg.HasEmails)
 	var i UserPermission
-	err := row.Scan(&i.UserID, &i.IsAdministrator)
+	err := row.Scan(&i.UserID, &i.IsAdministrator, &i.HasEmails)
 	return i, err
 }

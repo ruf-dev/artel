@@ -171,7 +171,13 @@ func (h *McpHandler) handleInitialize(w http.ResponseWriter, ctx context.Context
 }
 
 func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context, req rpcRequest) {
-	tools := getToolDefinitions()
+	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
+	if !ok {
+		writeErrorResponse(w, req.Id, -32603, "internal error")
+		return
+	}
+
+	tools := getToolDefinitions(keyCtx.HasEmails)
 
 	result := map[string]any{
 		"tools": tools,
@@ -205,6 +211,14 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	if !ok {
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 		return
+	}
+
+	switch callReq.Name {
+	case toolListEmailFolders, toolListEmailAccounts, toolListEmails, toolReadEmail, toolSendEmail:
+		if !keyCtx.HasEmails {
+			writeErrorResponse(w, req.Id, -32001, "permission denied")
+			return
+		}
 	}
 
 	result, err := dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)

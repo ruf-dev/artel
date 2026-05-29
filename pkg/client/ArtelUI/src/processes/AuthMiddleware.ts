@@ -6,6 +6,8 @@ export type UserInfo = {
     username: string
     email: string
     isAdministrator: boolean
+    hasEmails: boolean
+    photoUrl?: string
 }
 
 type StoredAuth = {
@@ -55,6 +57,14 @@ export class AuthMiddleware {
 
     isAdmin(): boolean {
         return this.userInfo?.isAdministrator === true
+    }
+
+    hasEmailsPermission(): boolean {
+        return this.userInfo?.hasEmails === true
+    }
+
+    getPhotoUrl(): string | undefined {
+        return this.userInfo?.photoUrl || undefined
     }
 
     getInitReq() {

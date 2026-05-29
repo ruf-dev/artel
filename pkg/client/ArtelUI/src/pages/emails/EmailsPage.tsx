@@ -15,9 +15,10 @@ import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 
 export default function EmailsPage() {
     const navigate = useNavigate()
-    const {auth} = useUser()
+    const {auth, isEmailsEnabled} = useUser()
     const {OpenDialog} = useDialog()
     const {fetch: fetchAccounts} = useEmailAccounts()
+    const [showNoPermission, setShowNoPermission] = useState(false)
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
@@ -26,10 +27,21 @@ export default function EmailsPage() {
     }, [auth, navigate])
 
     useEffect(() => {
+        if (auth.isAuthenticated() && !isEmailsEnabled) {
+            setShowNoPermission(true)
+            return
+        }
+    }, [auth, isEmailsEnabled])
+
+    useEffect(() => {
         if (auth.isAuthenticated()) {
             void fetchAccounts()
         }
     }, [auth, fetchAccounts])
+
+    if (showNoPermission) {
+        return <NoEmailPermissionDialog />
+    }
 
     return (
         <div className={cls.Root}>
@@ -116,6 +128,31 @@ function EmailAccountRow({account, onRemove}: {
             <button className={cls.BtnDanger} onClick={handleRemove} disabled={removing} type="button">
                 {removing ? "Removing…" : "Remove"}
             </button>
+        </div>
+    )
+}
+
+function NoEmailPermissionDialog() {
+    const navigate = useNavigate()
+
+    return (
+        <div className={cls.Overlay}>
+            <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
+                 aria-labelledby="noEmailPermissionTitle">
+                <div className={cls.ModalHead}>
+                    <h2 className={cls.ModalTitle} id="noEmailPermissionTitle">Emails access required</h2>
+                </div>
+                <p className={cls.ModalSub}>Your account does not have access to the Emails feature.</p>
+
+                <div className={cls.ModalActions}>
+                    <button
+                        className={cls.BtnPrimary}
+                        onClick={() => navigate(Path.HomePage)}
+                    >
+                        Go to my vaults
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

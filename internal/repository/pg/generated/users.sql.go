@@ -13,11 +13,11 @@ import (
 	"github.com/google/uuid"
 )
 
-const createTelegramUser = `-- name: CreateTelegramUser :one
+const createByUsername = `-- name: CreateByUsername :one
 INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at
 `
 
-type CreateTelegramUserRow struct {
+type CreateByUsernameRow struct {
 	ID           uuid.UUID
 	Email        sql.NullString
 	Username     string
@@ -26,9 +26,9 @@ type CreateTelegramUserRow struct {
 	UpdatedAt    time.Time
 }
 
-func (q *Queries) CreateTelegramUser(ctx context.Context, username string) (CreateTelegramUserRow, error) {
-	row := q.db.QueryRowContext(ctx, createTelegramUser, username)
-	var i CreateTelegramUserRow
+func (q *Queries) CreateByUsername(ctx context.Context, username string) (CreateByUsernameRow, error) {
+	row := q.db.QueryRowContext(ctx, createByUsername, username)
+	var i CreateByUsernameRow
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
@@ -77,6 +77,17 @@ DELETE FROM users WHERE id = $1
 func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, deleteUser, id)
 	return err
+}
+
+const getTelegramPhotoUrlByUserId = `-- name: GetTelegramPhotoUrlByUserId :one
+SELECT photo_url FROM identities_telegram WHERE user_id = $1
+`
+
+func (q *Queries) GetTelegramPhotoUrlByUserId(ctx context.Context, userID uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getTelegramPhotoUrlByUserId, userID)
+	var photo_url string
+	err := row.Scan(&photo_url)
+	return photo_url, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
@@ -134,6 +145,7 @@ SELECT u.id, u.email, u.username, u.password_hash, u.created_at, u.updated_at
 FROM users u
 JOIN identities_telegram i ON u.id = i.user_id
 WHERE i.telegram_id = $1
+FOR UPDATE
 `
 
 type GetUserByTelegramIdRow struct {
@@ -159,25 +171,20 @@ func (q *Queries) GetUserByTelegramId(ctx context.Context, telegramID string) (G
 	return i, err
 }
 
-const insertTelegramIdentity = `-- name: InsertTelegramIdentity :exec
-INSERT INTO identities_telegram (user_id, telegram_id) VALUES ($1, $2)
+const upsertTelegramIdentity = `-- name: UpsertTelegramIdentity :exec
+INSERT INTO identities_telegram (user_id, telegram_id, photo_url)
+VALUES ($1, $2, $3)
+ON CONFLICT (telegram_id) DO UPDATE
+    SET photo_url = EXCLUDED.photo_url, updated_at = NOW()
 `
 
-type InsertTelegramIdentityParams struct {
+type UpsertTelegramIdentityParams struct {
 	UserID     uuid.UUID
 	TelegramID string
+	PhotoUrl   string
 }
 
-func (q *Queries) InsertTelegramIdentity(ctx context.Context, arg InsertTelegramIdentityParams) error {
-	_, err := q.db.ExecContext(ctx, insertTelegramIdentity, arg.UserID, arg.TelegramID)
-	return err
-}
-
-const touchTelegramIdentity = `-- name: TouchTelegramIdentity :exec
-UPDATE identities_telegram SET updated_at = NOW() WHERE telegram_id = $1
-`
-
-func (q *Queries) TouchTelegramIdentity(ctx context.Context, telegramID string) error {
-	_, err := q.db.ExecContext(ctx, touchTelegramIdentity, telegramID)
+func (q *Queries) UpsertTelegramIdentity(ctx context.Context, arg UpsertTelegramIdentityParams) error {
+	_, err := q.db.ExecContext(ctx, upsertTelegramIdentity, arg.UserID, arg.TelegramID, arg.PhotoUrl)
 	return err
 }

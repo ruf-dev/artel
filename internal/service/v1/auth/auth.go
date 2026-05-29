@@ -20,12 +20,12 @@ import (
 )
 
 type Service struct {
-	usersRepo       repository.Users
-	sessionsRepo    repository.Sessions
-	permissionsRepo repository.UserPermissionsRepo
-	subsRepo        repository.Subscriptions
-	txManager       tx_manager.TxManager
-	jwksClient      keyfunc.Keyfunc
+	usersRepo        repository.Users
+	sessionsRepo     repository.Sessions
+	permissionsRepo  repository.UserPermissionsRepo
+	subsRepo         repository.Subscriptions
+	txManager        tx_manager.TxManager
+	jwksClient       keyfunc.Keyfunc
 	telegramClientId string
 }
 
@@ -135,25 +135,51 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	}
 
 	telegramId := claims.Subject
-
 	var user domain.User
 
-	err = s.txManager.Execute(func(tx *sql.Tx) error {
-		user, err = s.usersRepo.WithTx(tx).UpsertByTelegramId(ctx, telegramId, telegramId)
-		if err != nil {
-			return rerrors.Wrap(err, "upsert telegram user")
-		}
+	err = s.txManager.Execute(
+		func(tx *sql.Tx) error {
+			usersRepo := s.usersRepo.WithTx(tx)
+			permissionsRepo := s.permissionsRepo.WithTx(tx)
+			subsRepo := s.subsRepo.WithTx(tx)
 
-		if err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
-			return rerrors.Wrap(err, "create default permissions")
-		}
+			var userValue sql.Null[domain.User]
 
-		if err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
-			return rerrors.Wrap(err, "create default subscription")
-		}
+			userValue, err = usersRepo.GetByTelegramId(ctx, telegramId)
+			if err != nil {
+				return rerrors.Wrap(err, "get user by telegram id")
+			}
 
-		return nil
-	})
+			if !userValue.Valid {
+				userValue.V, err = usersRepo.CreateByUsername(ctx, telegramId)
+				if err != nil {
+					return rerrors.Wrap(err, "create user")
+				}
+			}
+
+			user = userValue.V
+
+			identity := domain.TelegramIdentity{
+				UserUuid:   user.Uuid,
+				TelegramId: telegramId,
+			}
+			err = usersRepo.UpsertTelegramIdentity(ctx, identity)
+			if err != nil {
+				return rerrors.Wrap(err, "upsert telegram identity")
+			}
+
+			err = permissionsRepo.CreateDefault(ctx, user.Uuid)
+			if err != nil {
+				return rerrors.Wrap(err, "create default permissions")
+			}
+
+			err = subsRepo.CreateDefault(ctx, user.Uuid)
+			if err != nil {
+				return rerrors.Wrap(err, "create default subscription")
+			}
+
+			return nil
+		})
 	if err != nil {
 		return domain.Session{}, err
 	}

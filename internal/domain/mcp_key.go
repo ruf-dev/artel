@@ -27,4 +27,5 @@ type McpKeyContext struct {
 	CouchDb   string
 	CouchUser string
 	CouchPass string
+	HasEmails bool
 }

@@ -46,6 +46,7 @@ type IdentitiesTelegram struct {
 	TelegramID string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	PhotoUrl   string
 }
 
 type McpKey struct {
@@ -93,6 +94,7 @@ type User struct {
 type UserPermission struct {
 	UserID          uuid.UUID
 	IsAdministrator bool
+	HasEmails       bool
 }
 
 type Vault struct {
