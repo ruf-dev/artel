@@ -24,8 +24,19 @@ type Repo interface {
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
 	EmailAccounts() EmailAccounts
+	Prompts() Prompts
 
 	TxManager() tx_manager.TxManager
+}
+
+type ListPromptsParams struct {
+	Ids    []string
+	Limit  uint32
+	Offset uint32
+}
+
+type Prompts interface {
+	List(ctx context.Context, params ListPromptsParams) ([]domain.Prompt, int64, error)
 }
 
 type Users interface {

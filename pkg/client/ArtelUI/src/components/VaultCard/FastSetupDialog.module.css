@@ -1,0 +1,79 @@
+.Overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Dialog {
+    position: relative;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.875rem;
+    padding: 1.25rem;
+    min-width: 18rem;
+    max-width: 36rem;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.OptionBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.625rem;
+    color: var(--color-fg-primary);
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 140ms ease;
+
+    &:hover {
+        border-color: var(--color-border-bright);
+        background: var(--color-bg-hover-mid);
+    }
+}
+
+.CopyBtn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    cursor: pointer;
+    border-radius: 0.375rem;
+    transition: color 140ms ease;
+
+    &:hover {
+        color: var(--color-fg-primary);
+    }
+}
+
+.CopyBtnCopied {
+    color: var(--status-online);
+}
+
+.PromptText {
+    margin: 0;
+    padding-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-fg-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.6;
+    overflow-y: auto;
+    flex: 1;
+}

@@ -6,7 +6,6 @@ import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import VaultCardHeader from "@/components/VaultCard/VaultCardHeader.tsx";
 import VaultCardStatus from "@/components/VaultCard/VaultCardStatus.tsx";
 import VaultCardConnBar from "@/components/VaultCard/VaultCardConnBar.tsx";
-import VaultCardQR from "@/components/VaultCard/VaultCardQR.tsx";
 import VaultCardLinks from "@/components/VaultCard/VaultCardLinks.tsx";
 
 interface Props {
@@ -41,7 +40,6 @@ function VaultCardFront({vault, onEdit}: Props) {
 function VaultCardBack() {
     return (
         <div className={cls.VaultCardBackContainer}>
-            <VaultCardQR/>
             <VaultCardLinks/>
         </div>
     )

@@ -17,3 +17,22 @@
   Safe to call outside a transaction — the lock is released immediately.
 - **Repository functions that operate on more than one field of a domain entity should accept the domain struct, not individual fields.**
   Use `UpsertTelegramIdentity(ctx, identity domain.TelegramIdentity)`, not `(ctx, userUuid, telegramId, photoUrl)`.
+
+## Naming
+- **Interface naming: no `I` prefix.** Use `AudioService`, not `IAudioService`.
+- **Receiver names: single letter.** Use the type's first letter: `s *Service`, `a *App`.
+- **Package names: lowercase, single word.** e.g. `authimpl`, `pg`.
+- **Type names: PascalCase; constants: SCREAMING_SNAKE_CASE.**
+
+## Functions
+- **Named declarations only.** No anonymous assignments: `var f = func(){}` is forbidden; use `func name() {}`.
+- **Context is always the first parameter** in any function that touches I/O.
+- **Constructor pattern: `func New(deps) *Type`.** Constructors accept interfaces, never concrete types.
+- **Deferred cleanup: `defer utils.CloseWithLog(resource, "description")`.** Use this helper, not bare `defer resource.Close()`.
+
+## Errors
+- **Error wrap messages must start with a verb:** `rerrors.Wrap(err, "error creating user")`, `"error upserting session"`.
+- **Attach gRPC codes at definition time:** `rerrors.New("unauthorized", codes.Unauthenticated)`. Never set codes at the call site.
+- **Attach HTTP status:** `rerrors.WithHttpStatus(http.StatusUnauthorized)`. Chain onto the error at definition.
+- **Never use naked `errors.New` or `fmt.Errorf`.** All errors go through `rerrors`.
+- **Call `rerrors.SetSeparator(':')` in `main()`.**

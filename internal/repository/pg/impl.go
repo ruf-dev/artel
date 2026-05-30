@@ -10,6 +10,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/emailaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
@@ -31,6 +32,7 @@ type Repos struct {
 	mcpKey           repository.McpKeyRepository
 	pendingAuthCodes repository.PendingAuthCodes
 	emailAccounts    repository.EmailAccounts
+	promptsRepo      repository.Prompts
 
 	txManager tx_manager.TxManager
 }
@@ -83,6 +85,10 @@ func (r Repos) UserPermissions() repository.UserPermissionsRepo {
 	return r.userPermissions
 }
 
+func (r Repos) Prompts() repository.Prompts {
+	return r.promptsRepo
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(db)
 
@@ -99,6 +105,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		mcpKey:           mcpkeys.New(q),
 		pendingAuthCodes: pendingauthcodes.New(q),
 		emailAccounts:    emailaccounts.New(q, encryptionKey),
+		promptsRepo:      prompts.New(db),
 
 		txManager: tx_manager.New(db),
 	}

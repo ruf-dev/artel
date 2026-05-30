@@ -26,4 +26,10 @@
             background: var(--color-bg-hover-mid);
         }
     }
+
+    .LinkBtn {
+        width: 100%;
+        font-family: var(--font-mono);
+        cursor: pointer;
+    }
 }

@@ -15,6 +15,7 @@ type Service interface {
 	McpService() McpService
 	EmailService() EmailService
 	SubscriptionService() SubscriptionService
+	PromptService() PromptService
 }
 
 type AuthService interface {
@@ -55,6 +56,16 @@ type McpService interface {
 
 type SubscriptionService interface {
 	CheckActive(ctx context.Context, userUuid uuid.UUID) error
+}
+
+type ListPromptsParams struct {
+	Ids      []string
+	Page     uint32
+	PageSize uint32
+}
+
+type PromptService interface {
+	ListPrompts(ctx context.Context, params ListPromptsParams) ([]domain.Prompt, int64, error)
 }
 
 type EmailService interface {
