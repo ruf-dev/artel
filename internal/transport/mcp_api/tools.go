@@ -380,6 +380,7 @@ func handleMoveFile(ctx context.Context, client *couchdb.LiveSyncClient, argumen
 	if !ok {
 		return ToolResult{}, user_errors.McpOldPathRequired
 	}
+
 	newPath, ok := arguments["new_path"].(string)
 	if !ok {
 		return ToolResult{}, user_errors.McpNewPathRequired

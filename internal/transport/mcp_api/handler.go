@@ -283,7 +283,7 @@ func writeJsonResponse(w http.ResponseWriter, response rpcResponse) error {
 	return nil
 }
 
-func writeErrorResponse(w http.ResponseWriter, id any, code int, message string) error {
+func writeErrorResponse(w http.ResponseWriter, id any, code int, message string) {
 	resp := rpcResponse{
 		Jsonrpc: "2.0",
 		Id:      id,
@@ -293,7 +293,10 @@ func writeErrorResponse(w http.ResponseWriter, id any, code int, message string)
 		},
 	}
 
-	return writeJsonResponse(w, resp)
+	err := writeJsonResponse(w, resp)
+	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to write error response")
+	}
 }
 
 func (h *McpHandler) isNotification(req rpcRequest) bool {
