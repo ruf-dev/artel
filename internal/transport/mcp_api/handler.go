@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/service"
@@ -166,6 +167,7 @@ func (h *McpHandler) handleInitialize(w http.ResponseWriter, ctx context.Context
 
 	err := writeJsonResponse(w, resp)
 	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to write initialize response")
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 	}
 }
@@ -173,6 +175,7 @@ func (h *McpHandler) handleInitialize(w http.ResponseWriter, ctx context.Context
 func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context, req rpcRequest) {
 	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
 	if !ok {
+		log.Error().Msg("mcp: keyContext missing from context in tools/list")
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 		return
 	}
@@ -191,6 +194,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 
 	err := writeJsonResponse(w, resp)
 	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to write tools/list response")
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 	}
 }
@@ -203,12 +207,14 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 
 	err := json.Unmarshal(req.Params, &callReq)
 	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to unmarshal tools/call params")
 		writeErrorResponse(w, req.Id, -32602, "invalid params")
 		return
 	}
 
 	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
 	if !ok {
+		log.Error().Msg("mcp: keyContext missing from context in tools/call")
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 		return
 	}
@@ -223,6 +229,7 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 
 	result, err := dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)
 	if err != nil {
+		log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
 		writeErrorResponse(w, req.Id, -32603, "tool execution failed")
 		return
 	}
@@ -235,6 +242,7 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 
 	err = writeJsonResponse(w, resp)
 	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to write tools/call response")
 		writeErrorResponse(w, req.Id, -32603, "internal error")
 	}
 }
