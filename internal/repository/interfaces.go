@@ -9,6 +9,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 )
 
@@ -16,6 +17,7 @@ type Repo interface {
 	Users() Users
 	Vaults() Vaults
 	VaultMembers() VaultMembers
+	VaultInvites() VaultInvites
 	Sessions() Sessions
 	Subscriptions() Subscriptions
 	CouchAccounts() CouchAccounts
@@ -67,12 +69,22 @@ type Vaults interface {
 }
 
 type VaultMembers interface {
-	Add(ctx context.Context, vaultID, userID uuid.UUID, role string) error
+	Add(ctx context.Context, vaultID, userID uuid.UUID, role artel_q.VaultRole) error
 	Remove(ctx context.Context, vaultID, userID uuid.UUID) error
 	Get(ctx context.Context, vaultID, userID uuid.UUID) (domain.VaultMember, error)
 	ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMember, error)
+	ListByVaultWithUsers(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMemberInfo, error)
 
 	WithTx(tx sqldb.DB) VaultMembers
+}
+
+type VaultInvites interface {
+	Create(ctx context.Context, vaultID, createdBy uuid.UUID, role artel_q.VaultRole, token string) (domain.VaultInvite, error)
+	GetByToken(ctx context.Context, token string) (domain.VaultInvite, error)
+	ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error)
+	Revoke(ctx context.Context, id uuid.UUID) error
+
+	WithTx(tx sqldb.DB) VaultInvites
 }
 
 type Sessions interface {

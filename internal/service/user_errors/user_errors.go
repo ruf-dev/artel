@@ -30,6 +30,11 @@ var (
 	// admin
 	NotAdmin = rerrors.New("not an administrator", codes.PermissionDenied)
 
+	// vault
+	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)
+	InviteLinkRevoked  = rerrors.New("invite link has been revoked", codes.FailedPrecondition)
+	InvalidInviteToken = rerrors.New("invalid invite token", codes.NotFound)
+
 	// middleware
 	NoMetadataInContext = rerrors.New("error getting metadata from context", codes.FailedPrecondition)
 	NoAuthHeader        = rerrors.New("error getting auth header", codes.Unauthenticated)

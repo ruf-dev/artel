@@ -6,7 +6,7 @@ import cls from "@/pages/init/InitPage.module.css"
 import useUser from "@/hooks/user/User.ts"
 import {AuthService, Session} from "@/processes/Auth.ts"
 import {UserInfo} from "@/processes/AuthMiddleware.ts"
-import {Path} from "@/app/routing/Router.tsx"
+import {Path, REDIRECT_AFTER_LOGIN_KEY} from "@/app/routing/Router.tsx"
 import {AuthAPI} from "@/app/api/artel"
 import {apiPrefix} from "@/app/api/api.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
@@ -60,7 +60,13 @@ function LoginContent({login, navigate}: LoginContentProps) {
                 } catch {
                     // permissions unavailable — proceed without admin flag
                 }
-                navigate(Path.HomePage)
+                const redirect = localStorage.getItem(REDIRECT_AFTER_LOGIN_KEY)
+                if (redirect) {
+                    localStorage.removeItem(REDIRECT_AFTER_LOGIN_KEY)
+                    navigate(redirect)
+                } else {
+                    navigate(Path.HomePage)
+                }
             })
             .catch(function (err: unknown) {
                 bake({title: "Telegram login failed", description: err instanceof Error ? err.message : "Telegram login failed", level: "Error"})

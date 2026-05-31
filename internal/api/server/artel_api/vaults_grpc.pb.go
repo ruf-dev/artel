@@ -19,12 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VaultsAPI_CreateVault_FullMethodName  = "/artel_vaults.VaultsAPI/CreateVault"
-	VaultsAPI_GetVault_FullMethodName     = "/artel_vaults.VaultsAPI/GetVault"
-	VaultsAPI_ListVaults_FullMethodName   = "/artel_vaults.VaultsAPI/ListVaults"
-	VaultsAPI_DeleteVault_FullMethodName  = "/artel_vaults.VaultsAPI/DeleteVault"
-	VaultsAPI_AddMember_FullMethodName    = "/artel_vaults.VaultsAPI/AddMember"
-	VaultsAPI_RemoveMember_FullMethodName = "/artel_vaults.VaultsAPI/RemoveMember"
+	VaultsAPI_CreateVault_FullMethodName      = "/artel_vaults.VaultsAPI/CreateVault"
+	VaultsAPI_GetVault_FullMethodName         = "/artel_vaults.VaultsAPI/GetVault"
+	VaultsAPI_ListVaults_FullMethodName       = "/artel_vaults.VaultsAPI/ListVaults"
+	VaultsAPI_DeleteVault_FullMethodName      = "/artel_vaults.VaultsAPI/DeleteVault"
+	VaultsAPI_AddMember_FullMethodName        = "/artel_vaults.VaultsAPI/AddMember"
+	VaultsAPI_RemoveMember_FullMethodName     = "/artel_vaults.VaultsAPI/RemoveMember"
+	VaultsAPI_ListMembers_FullMethodName      = "/artel_vaults.VaultsAPI/ListMembers"
+	VaultsAPI_CreateInviteLink_FullMethodName = "/artel_vaults.VaultsAPI/CreateInviteLink"
+	VaultsAPI_ListInviteLinks_FullMethodName  = "/artel_vaults.VaultsAPI/ListInviteLinks"
+	VaultsAPI_RevokeInviteLink_FullMethodName = "/artel_vaults.VaultsAPI/RevokeInviteLink"
+	VaultsAPI_AcceptInvite_FullMethodName     = "/artel_vaults.VaultsAPI/AcceptInvite"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -37,6 +42,11 @@ type VaultsAPIClient interface {
 	DeleteVault(ctx context.Context, in *DeleteVault_Request, opts ...grpc.CallOption) (*DeleteVault_Response, error)
 	AddMember(ctx context.Context, in *AddMember_Request, opts ...grpc.CallOption) (*AddMember_Response, error)
 	RemoveMember(ctx context.Context, in *RemoveMember_Request, opts ...grpc.CallOption) (*RemoveMember_Response, error)
+	ListMembers(ctx context.Context, in *ListMembers_Request, opts ...grpc.CallOption) (*ListMembers_Response, error)
+	CreateInviteLink(ctx context.Context, in *CreateInviteLink_Request, opts ...grpc.CallOption) (*CreateInviteLink_Response, error)
+	ListInviteLinks(ctx context.Context, in *ListInviteLinks_Request, opts ...grpc.CallOption) (*ListInviteLinks_Response, error)
+	RevokeInviteLink(ctx context.Context, in *RevokeInviteLink_Request, opts ...grpc.CallOption) (*RevokeInviteLink_Response, error)
+	AcceptInvite(ctx context.Context, in *AcceptInvite_Request, opts ...grpc.CallOption) (*AcceptInvite_Response, error)
 }
 
 type vaultsAPIClient struct {
@@ -107,6 +117,56 @@ func (c *vaultsAPIClient) RemoveMember(ctx context.Context, in *RemoveMember_Req
 	return out, nil
 }
 
+func (c *vaultsAPIClient) ListMembers(ctx context.Context, in *ListMembers_Request, opts ...grpc.CallOption) (*ListMembers_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMembers_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_ListMembers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) CreateInviteLink(ctx context.Context, in *CreateInviteLink_Request, opts ...grpc.CallOption) (*CreateInviteLink_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateInviteLink_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_CreateInviteLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) ListInviteLinks(ctx context.Context, in *ListInviteLinks_Request, opts ...grpc.CallOption) (*ListInviteLinks_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListInviteLinks_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_ListInviteLinks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) RevokeInviteLink(ctx context.Context, in *RevokeInviteLink_Request, opts ...grpc.CallOption) (*RevokeInviteLink_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeInviteLink_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_RevokeInviteLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) AcceptInvite(ctx context.Context, in *AcceptInvite_Request, opts ...grpc.CallOption) (*AcceptInvite_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AcceptInvite_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_AcceptInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VaultsAPIServer is the server API for VaultsAPI service.
 // All implementations must embed UnimplementedVaultsAPIServer
 // for forward compatibility.
@@ -117,6 +177,11 @@ type VaultsAPIServer interface {
 	DeleteVault(context.Context, *DeleteVault_Request) (*DeleteVault_Response, error)
 	AddMember(context.Context, *AddMember_Request) (*AddMember_Response, error)
 	RemoveMember(context.Context, *RemoveMember_Request) (*RemoveMember_Response, error)
+	ListMembers(context.Context, *ListMembers_Request) (*ListMembers_Response, error)
+	CreateInviteLink(context.Context, *CreateInviteLink_Request) (*CreateInviteLink_Response, error)
+	ListInviteLinks(context.Context, *ListInviteLinks_Request) (*ListInviteLinks_Response, error)
+	RevokeInviteLink(context.Context, *RevokeInviteLink_Request) (*RevokeInviteLink_Response, error)
+	AcceptInvite(context.Context, *AcceptInvite_Request) (*AcceptInvite_Response, error)
 	mustEmbedUnimplementedVaultsAPIServer()
 }
 
@@ -144,6 +209,21 @@ func (UnimplementedVaultsAPIServer) AddMember(context.Context, *AddMember_Reques
 }
 func (UnimplementedVaultsAPIServer) RemoveMember(context.Context, *RemoveMember_Request) (*RemoveMember_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveMember not implemented")
+}
+func (UnimplementedVaultsAPIServer) ListMembers(context.Context, *ListMembers_Request) (*ListMembers_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListMembers not implemented")
+}
+func (UnimplementedVaultsAPIServer) CreateInviteLink(context.Context, *CreateInviteLink_Request) (*CreateInviteLink_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateInviteLink not implemented")
+}
+func (UnimplementedVaultsAPIServer) ListInviteLinks(context.Context, *ListInviteLinks_Request) (*ListInviteLinks_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListInviteLinks not implemented")
+}
+func (UnimplementedVaultsAPIServer) RevokeInviteLink(context.Context, *RevokeInviteLink_Request) (*RevokeInviteLink_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method RevokeInviteLink not implemented")
+}
+func (UnimplementedVaultsAPIServer) AcceptInvite(context.Context, *AcceptInvite_Request) (*AcceptInvite_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AcceptInvite not implemented")
 }
 func (UnimplementedVaultsAPIServer) mustEmbedUnimplementedVaultsAPIServer() {}
 func (UnimplementedVaultsAPIServer) testEmbeddedByValue()                   {}
@@ -274,6 +354,96 @@ func _VaultsAPI_RemoveMember_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_ListMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMembers_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).ListMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_ListMembers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).ListMembers(ctx, req.(*ListMembers_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_CreateInviteLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateInviteLink_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).CreateInviteLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_CreateInviteLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).CreateInviteLink(ctx, req.(*CreateInviteLink_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_ListInviteLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListInviteLinks_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).ListInviteLinks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_ListInviteLinks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).ListInviteLinks(ctx, req.(*ListInviteLinks_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_RevokeInviteLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeInviteLink_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).RevokeInviteLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_RevokeInviteLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).RevokeInviteLink(ctx, req.(*RevokeInviteLink_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_AcceptInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AcceptInvite_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).AcceptInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_AcceptInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).AcceptInvite(ctx, req.(*AcceptInvite_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VaultsAPI_ServiceDesc is the grpc.ServiceDesc for VaultsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +474,26 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveMember",
 			Handler:    _VaultsAPI_RemoveMember_Handler,
+		},
+		{
+			MethodName: "ListMembers",
+			Handler:    _VaultsAPI_ListMembers_Handler,
+		},
+		{
+			MethodName: "CreateInviteLink",
+			Handler:    _VaultsAPI_CreateInviteLink_Handler,
+		},
+		{
+			MethodName: "ListInviteLinks",
+			Handler:    _VaultsAPI_ListInviteLinks_Handler,
+		},
+		{
+			MethodName: "RevokeInviteLink",
+			Handler:    _VaultsAPI_RevokeInviteLink_Handler,
+		},
+		{
+			MethodName: "AcceptInvite",
+			Handler:    _VaultsAPI_AcceptInvite_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

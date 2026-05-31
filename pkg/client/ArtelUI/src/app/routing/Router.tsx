@@ -12,6 +12,7 @@ import ErrorPage from "@/pages/error/ErrorPage.tsx"
 import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
 import ClosedAlphaPage from "@/pages/closed-alpha/ClosedAlphaPage.tsx"
 import AdminPage from "@/pages/admin/AdminPage.tsx"
+import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import {AuthService} from "@/processes/Auth.ts"
@@ -28,7 +29,10 @@ export enum Path {
     McpAuth = "/authorize",
     ClosedAlpha = "/closed-alpha",
     Admin = "/admin",
+    JoinVault = "/join/:token",
 }
+
+export const REDIRECT_AFTER_LOGIN_KEY = "artel_post_login_redirect"
 
 export default function Router() {
     const {auth, setUserInfo} = useUser()
@@ -57,6 +61,7 @@ export default function Router() {
                     <Route path={Path.InitPage} element={<InitPage/>} errorElement={<ErrorPage/>}/>
                     <Route path={Path.McpAuth} element={<McpAuthPage/>} errorElement={<ErrorPage/>}/>
                     <Route path={Path.ClosedAlpha} element={<ClosedAlphaPage/>} errorElement={<ErrorPage/>}/>
+                    <Route path={Path.JoinVault} element={<JoinVaultPage/>} errorElement={<ErrorPage/>}/>
                 </Routes>
             </div>
             <Dialog/>

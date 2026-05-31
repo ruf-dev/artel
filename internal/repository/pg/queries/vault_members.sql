@@ -10,3 +10,10 @@ SELECT id, vault_id, user_id, role, created_at FROM vault_members WHERE vault_id
 
 -- name: ListVaultMembers :many
 SELECT id, vault_id, user_id, role, created_at FROM vault_members WHERE vault_id = $1;
+
+-- name: ListVaultMembersWithUsers :many
+SELECT vm.id, vm.vault_id, vm.user_id, vm.role, vm.created_at,
+       u.email, u.username
+FROM vault_members vm
+JOIN users u ON u.id = vm.user_id
+WHERE vm.vault_id = $1;

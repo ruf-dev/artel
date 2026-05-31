@@ -15,6 +15,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
@@ -22,6 +23,7 @@ import (
 type Service struct {
 	vaultsRepo         repository.Vaults
 	vaultMembersRepo   repository.VaultMembers
+	vaultInvitesRepo   repository.VaultInvites
 	couchAccountsRepo  repository.CouchAccounts
 	couchInstancesRepo repository.CouchInstances
 
@@ -34,6 +36,7 @@ func New(
 	return &Service{
 		vaultsRepo:         repo.Vaults(),
 		vaultMembersRepo:   repo.VaultMembers(),
+		vaultInvitesRepo:   repo.VaultInvites(),
 		couchAccountsRepo:  repo.CouchAccounts(),
 		couchInstancesRepo: repo.CouchInstances(),
 
@@ -86,7 +89,7 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 				return rerrors.Wrap(err, "error ensuring couch user exists")
 			}
 
-			err = vaultMembersRepo.Add(ctx, vault.Uuid, uc.UserUuid, "owner")
+			err = vaultMembersRepo.Add(ctx, vault.Uuid, uc.UserUuid, artel_q.VaultRoleOwner)
 			if err != nil {
 				return rerrors.Wrap(err, "add vault owner member")
 			}
@@ -116,10 +119,91 @@ func (s *Service) GetVault(ctx context.Context, vaultID uuid.UUID) (domain.Vault
 	return vault, nil
 }
 
-func (s *Service) AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error {
-	err := s.vaultMembersRepo.Add(ctx, vaultID, targetUserUuid, "member")
+func (s *Service) AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID, role artel_q.VaultRole) error {
+	err := s.vaultMembersRepo.Add(ctx, vaultID, targetUserUuid, role)
 	if err != nil {
 		return rerrors.Wrap(err, "add vault member")
+	}
+
+	return nil
+}
+
+func (s *Service) ListMembers(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMemberInfo, error) {
+	members, err := s.vaultMembersRepo.ListByVaultWithUsers(ctx, vaultID)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list vault members")
+	}
+
+	return members, nil
+}
+
+func (s *Service) CreateInviteLink(ctx context.Context, vaultID uuid.UUID, role artel_q.VaultRole) (domain.VaultInvite, error) {
+	if role == artel_q.VaultRoleOwner {
+		return domain.VaultInvite{}, rerrors.New("cannot create invite with owner role")
+	}
+
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.VaultInvite{}, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	membership, err := s.vaultMembersRepo.Get(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return domain.VaultInvite{}, rerrors.Wrap(err, "get vault membership")
+	}
+	if membership.Role != artel_q.VaultRoleOwner {
+		return domain.VaultInvite{}, rerrors.Wrap(user_errors.NotVaultOwner)
+	}
+
+	token, err := generatePassword()
+	if err != nil {
+		return domain.VaultInvite{}, rerrors.Wrap(err, "generate invite token")
+	}
+
+	invite, err := s.vaultInvitesRepo.Create(ctx, vaultID, uc.UserUuid, role, token)
+	if err != nil {
+		return domain.VaultInvite{}, rerrors.Wrap(err, "create invite link")
+	}
+
+	return invite, nil
+}
+
+func (s *Service) ListInviteLinks(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error) {
+	invites, err := s.vaultInvitesRepo.ListByVault(ctx, vaultID)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list invite links")
+	}
+
+	return invites, nil
+}
+
+func (s *Service) RevokeInviteLink(ctx context.Context, inviteID uuid.UUID) error {
+	err := s.vaultInvitesRepo.Revoke(ctx, inviteID)
+	if err != nil {
+		return rerrors.Wrap(err, "revoke invite link")
+	}
+
+	return nil
+}
+
+func (s *Service) AcceptInvite(ctx context.Context, token string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	invite, err := s.vaultInvitesRepo.GetByToken(ctx, token)
+	if err != nil {
+		return rerrors.Wrap(err, "get invite by token")
+	}
+
+	if invite.RevokedAt != nil {
+		return rerrors.Wrap(user_errors.InviteLinkRevoked)
+	}
+
+	err = s.vaultMembersRepo.Add(ctx, invite.VaultUuid, uc.UserUuid, invite.Role)
+	if err != nil {
+		return rerrors.Wrap(err, "add vault member via invite")
 	}
 
 	return nil

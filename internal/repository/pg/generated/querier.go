@@ -22,6 +22,7 @@ type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
+	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
 	DeleteEmailAccount(ctx context.Context, id uuid.UUID) error
@@ -45,6 +46,7 @@ type Querier interface {
 	GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error)
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
+	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	InsertEmailAccount(ctx context.Context, arg InsertEmailAccountParams) (EmailAccount, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
@@ -54,12 +56,15 @@ type Querier interface {
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
+	ListVaultInvites(ctx context.Context, vaultID uuid.UUID) ([]VaultInvite, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
+	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
+	RevokeVaultInvite(ctx context.Context, id uuid.UUID) error
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error

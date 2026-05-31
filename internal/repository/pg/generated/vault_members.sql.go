@@ -7,6 +7,8 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -19,7 +21,7 @@ ON CONFLICT (vault_id, user_id) DO NOTHING
 type AddVaultMemberParams struct {
 	VaultID uuid.UUID
 	UserID  uuid.UUID
-	Role    string
+	Role    VaultRole
 }
 
 func (q *Queries) AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error {
@@ -68,6 +70,55 @@ func (q *Queries) ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]Va
 			&i.UserID,
 			&i.Role,
 			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listVaultMembersWithUsers = `-- name: ListVaultMembersWithUsers :many
+SELECT vm.id, vm.vault_id, vm.user_id, vm.role, vm.created_at,
+       u.email, u.username
+FROM vault_members vm
+JOIN users u ON u.id = vm.user_id
+WHERE vm.vault_id = $1
+`
+
+type ListVaultMembersWithUsersRow struct {
+	ID        uuid.UUID
+	VaultID   uuid.UUID
+	UserID    uuid.UUID
+	Role      VaultRole
+	CreatedAt time.Time
+	Email     sql.NullString
+	Username  string
+}
+
+func (q *Queries) ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listVaultMembersWithUsers, vaultID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListVaultMembersWithUsersRow{}
+	for rows.Next() {
+		var i ListVaultMembersWithUsersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.VaultID,
+			&i.UserID,
+			&i.Role,
+			&i.CreatedAt,
+			&i.Email,
+			&i.Username,
 		); err != nil {
 			return nil, err
 		}

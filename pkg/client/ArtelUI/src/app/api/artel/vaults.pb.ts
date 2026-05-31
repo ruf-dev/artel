@@ -51,6 +51,7 @@ export type DeleteVault = Record<string, never>;
 export type AddMemberRequest = {
   vaultId?: string;
   userId?: string;
+  role?: string;
 };
 
 export type AddMemberResponse = Record<string, never>;
@@ -66,10 +67,77 @@ export type RemoveMemberResponse = Record<string, never>;
 
 export type RemoveMember = Record<string, never>;
 
+export type ListMembersRequest = {
+  vaultId?: string;
+};
+
+export type ListMembersResponse = {
+  members?: VaultMemberInfo[];
+};
+
+export type ListMembers = Record<string, never>;
+
+export type CreateInviteLinkRequest = {
+  vaultId?: string;
+  role?: string;
+};
+
+export type CreateInviteLinkResponse = {
+  invite?: VaultInviteItem;
+};
+
+export type CreateInviteLink = Record<string, never>;
+
+export type ListInviteLinksRequest = {
+  vaultId?: string;
+};
+
+export type ListInviteLinksResponse = {
+  invites?: VaultInviteItem[];
+};
+
+export type ListInviteLinks = Record<string, never>;
+
+export type RevokeInviteLinkRequest = {
+  vaultId?: string;
+  inviteId?: string;
+};
+
+export type RevokeInviteLinkResponse = Record<string, never>;
+
+export type RevokeInviteLink = Record<string, never>;
+
+export type AcceptInviteRequest = {
+  token?: string;
+};
+
+export type AcceptInviteResponse = {
+  vaultId?: string;
+};
+
+export type AcceptInvite = Record<string, never>;
+
 export type VaultItem = {
   id?: string;
   name?: string;
   dbUrl?: string;
+};
+
+export type VaultMemberInfo = {
+  id?: string;
+  userId?: string;
+  email?: string;
+  username?: string;
+  role?: string;
+};
+
+export type VaultInviteItem = {
+  id?: string;
+  vaultId?: string;
+  role?: string;
+  token?: string;
+  revoked?: boolean;
+  createdAt?: string;
 };
 
 export class VaultsAPI {
@@ -90,5 +158,20 @@ export class VaultsAPI {
   }
   static RemoveMember(this:void, req: RemoveMemberRequest, initReq?: fm.InitReq): Promise<RemoveMemberResponse> {
     return fm.fetchRequest<RemoveMemberResponse>(`/api/vaults/${req.vaultId}/members/${req.userId}?${fm.renderURLSearchParams(req, ["vaultId", "userId"])}`, {...initReq, method: "DELETE"});
+  }
+  static ListMembers(this:void, req: ListMembersRequest, initReq?: fm.InitReq): Promise<ListMembersResponse> {
+    return fm.fetchRequest<ListMembersResponse>(`/api/vaults/${req.vaultId}/members?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+  }
+  static CreateInviteLink(this:void, req: CreateInviteLinkRequest, initReq?: fm.InitReq): Promise<CreateInviteLinkResponse> {
+    return fm.fetchRequest<CreateInviteLinkResponse>(`/api/vaults/${req.vaultId}/invites`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListInviteLinks(this:void, req: ListInviteLinksRequest, initReq?: fm.InitReq): Promise<ListInviteLinksResponse> {
+    return fm.fetchRequest<ListInviteLinksResponse>(`/api/vaults/${req.vaultId}/invites?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+  }
+  static RevokeInviteLink(this:void, req: RevokeInviteLinkRequest, initReq?: fm.InitReq): Promise<RevokeInviteLinkResponse> {
+    return fm.fetchRequest<RevokeInviteLinkResponse>(`/api/vaults/${req.vaultId}/invites/${req.inviteId}/revoke`, {...initReq, method: "POST"});
+  }
+  static AcceptInvite(this:void, req: AcceptInviteRequest, initReq?: fm.InitReq): Promise<AcceptInviteResponse> {
+    return fm.fetchRequest<AcceptInviteResponse>(`/api/vaults/join`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

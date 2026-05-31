@@ -54,6 +54,49 @@ func (ns NullArtelPrompt) Value() (driver.Value, error) {
 	return string(ns.ArtelPrompt), nil
 }
 
+type VaultRole string
+
+const (
+	VaultRoleOwner      VaultRole = "owner"
+	VaultRoleReader     VaultRole = "reader"
+	VaultRoleMaintainer VaultRole = "maintainer"
+)
+
+func (e *VaultRole) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = VaultRole(s)
+	case string:
+		*e = VaultRole(s)
+	default:
+		return fmt.Errorf("unsupported scan type for VaultRole: %T", src)
+	}
+	return nil
+}
+
+type NullVaultRole struct {
+	VaultRole VaultRole
+	Valid     bool // Valid is true if VaultRole is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullVaultRole) Scan(value interface{}) error {
+	if value == nil {
+		ns.VaultRole, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.VaultRole.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullVaultRole) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.VaultRole), nil
+}
+
 type CouchAccount struct {
 	ID               uuid.UUID
 	UserID           uuid.UUID
@@ -165,10 +208,20 @@ type Vault struct {
 	Status          string
 }
 
+type VaultInvite struct {
+	ID        uuid.UUID
+	VaultID   uuid.UUID
+	CreatedBy uuid.UUID
+	Role      VaultRole
+	Token     string
+	RevokedAt sql.NullTime
+	CreatedAt time.Time
+}
+
 type VaultMember struct {
 	ID        uuid.UUID
 	VaultID   uuid.UUID
 	UserID    uuid.UUID
-	Role      string
+	Role      VaultRole
 	CreatedAt time.Time
 }

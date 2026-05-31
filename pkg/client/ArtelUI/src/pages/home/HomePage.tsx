@@ -3,7 +3,6 @@ import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/home/HomePage.module.css"
 
-import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useVaults} from "@/app/hooks/Vaults.ts"
@@ -13,6 +12,8 @@ import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
+import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
+
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -42,11 +43,13 @@ export default function HomePage() {
         const vault = vaults.find(v => v.id === vaultId)
         if (!vault) return
         const {CloseDialog} = useDialog.getState()
+        const {auth} = useUser.getState()
         OpenDialog(
-            <EditVaultDialog
+            <ManageVaultDialog
                 vault={vault}
+                currentUserId={auth.userInfo?.id ?? ""}
                 onClose={CloseDialog}
-                onDeleted={CloseDialog}
+                onDeleted={() => { void fetchVaults(); CloseDialog() }}
             />
         )
     }
@@ -168,64 +171,3 @@ function CreateVaultDialog() {
     )
 }
 
-function EditVaultDialog({vault, onClose, onDeleted}: {
-    vault: VaultItem
-    onClose: () => void
-    onDeleted: () => void
-}) {
-    const {remove} = useVaults()
-    const [deleting, setDeleting] = useState(false)
-
-    async function handleDelete() {
-        if (!vault.id) return
-        setDeleting(true)
-        try {
-            await remove(vault.id)
-            onDeleted()
-        } finally {
-            setDeleting(false)
-        }
-    }
-
-    return (
-        <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-             aria-labelledby="editModalTitle">
-            <div className={cls.ModalHead}>
-                <h2 className={cls.ModalTitle} id="editModalTitle">Edit vault</h2>
-                <ModalClose onClick={onClose} className={cls.ModalClose}/>
-            </div>
-            <p className={cls.ModalSub}>Rename or delete this vault.</p>
-
-            <div className={cls.FieldLabel} style={{marginBottom: 4}}>Vault name</div>
-            <div className={cls.VaultNameDisplay}>{vault.name}</div>
-
-            <div className={cls.DangerZone}>
-                <div className={cls.DangerZoneRow}>
-                    <div>
-                        <div className={cls.DangerZoneTitle}>Delete this vault</div>
-                        <div className={cls.DangerZoneSub}>Permanent. Connection string stops working immediately.</div>
-                    </div>
-                    <button
-                        className={cls.BtnDanger}
-                        type="button"
-                        onClick={handleDelete}
-                        disabled={deleting}
-                    >
-                        {deleting ? "Deleting…" : "Delete"}
-                    </button>
-                </div>
-            </div>
-
-            <ModalActions
-                containerClassName={cls.ModalActions}
-                buttons={[
-                    {
-                        label: "Close",
-                        onClick: onClose,
-                        className: cls.BtnGhost
-                    }
-                ]}
-            />
-        </div>
-    )
-}

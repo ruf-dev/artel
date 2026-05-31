@@ -7,6 +7,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
 func (v *VaultsImpl) AddMember(ctx context.Context, req *pb.AddMember_Request) (*pb.AddMember_Response, error) {
@@ -20,7 +21,12 @@ func (v *VaultsImpl) AddMember(ctx context.Context, req *pb.AddMember_Request) (
 		return nil, rerrors.Wrap(err, "parse user id")
 	}
 
-	err = v.vaultSvc.AddMember(ctx, vaultID, userID)
+	role := artel_q.VaultRole(req.Role)
+	if role != artel_q.VaultRoleReader && role != artel_q.VaultRoleMaintainer {
+		role = artel_q.VaultRoleReader
+	}
+
+	err = v.vaultSvc.AddMember(ctx, vaultID, userID, role)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "add member")
 	}

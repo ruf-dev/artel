@@ -42,6 +42,33 @@ service VaultsAPI {
       delete: "/api/vaults/{vault_id}/members/{user_id}"
     };
   };
+  rpc ListMembers(ListMembers.Request) returns (ListMembers.Response) {
+    option (google.api.http) = {
+      get: "/api/vaults/{vault_id}/members"
+    };
+  };
+  rpc CreateInviteLink(CreateInviteLink.Request) returns (CreateInviteLink.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/{vault_id}/invites"
+      body: "*"
+    };
+  };
+  rpc ListInviteLinks(ListInviteLinks.Request) returns (ListInviteLinks.Response) {
+    option (google.api.http) = {
+      get: "/api/vaults/{vault_id}/invites"
+    };
+  };
+  rpc RevokeInviteLink(RevokeInviteLink.Request) returns (RevokeInviteLink.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/{vault_id}/invites/{invite_id}/revoke"
+    };
+  };
+  rpc AcceptInvite(AcceptInvite.Request) returns (AcceptInvite.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/join"
+      body: "*"
+    };
+  };
 }
 
 message CreateVault {
@@ -84,6 +111,7 @@ message AddMember {
   message Request {
     string vault_id = 1;
     string user_id = 2;
+    string role = 3;
   }
   message Response {}
 }
@@ -96,8 +124,70 @@ message RemoveMember {
   message Response {}
 }
 
+message ListMembers {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated VaultMemberInfo members = 1;
+  }
+}
+
+message CreateInviteLink {
+  message Request {
+    string vault_id = 1;
+    string role = 2;
+  }
+  message Response {
+    VaultInviteItem invite = 1;
+  }
+}
+
+message ListInviteLinks {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated VaultInviteItem invites = 1;
+  }
+}
+
+message RevokeInviteLink {
+  message Request {
+    string vault_id = 1;
+    string invite_id = 2;
+  }
+  message Response {}
+}
+
+message AcceptInvite {
+  message Request {
+    string token = 1;
+  }
+  message Response {
+    string vault_id = 1;
+  }
+}
+
 message VaultItem {
   string id = 1;
   string name = 2;
   string db_url = 3;
+}
+
+message VaultMemberInfo {
+  string id = 1;
+  string user_id = 2;
+  string email = 3;
+  string username = 4;
+  string role = 5;
+}
+
+message VaultInviteItem {
+  string id = 1;
+  string vault_id = 2;
+  string role = 3;
+  string token = 4;
+  bool revoked = 5;
+  string created_at = 6;
 }

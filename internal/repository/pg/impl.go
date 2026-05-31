@@ -16,6 +16,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultinvites"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultmembers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaults"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
@@ -25,6 +26,7 @@ type Repos struct {
 	users                 repository.Users
 	vaults                repository.Vaults
 	vaultMembers          repository.VaultMembers
+	vaultInvitesRepo      repository.VaultInvites
 	sessions              repository.Sessions
 	subscriptions         repository.Subscriptions
 	couchAccounts         repository.CouchAccounts
@@ -45,6 +47,10 @@ func (r Repos) Vaults() repository.Vaults {
 
 func (r Repos) VaultMembers() repository.VaultMembers {
 	return r.vaultMembers
+}
+
+func (r Repos) VaultInvites() repository.VaultInvites {
+	return r.vaultInvitesRepo
 }
 
 func (r Repos) Sessions() repository.Sessions {
@@ -99,9 +105,10 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(db)
 
 	return &Repos{
-		vaults:         vaults.New(db),
-		vaultMembers:   vaultmembers.New(db),
-		couchInstances: couchinstances.New(db, encryptionKey),
+		vaults:           vaults.New(db),
+		vaultMembers:     vaultmembers.New(db),
+		vaultInvitesRepo: vaultinvites.New(db),
+		couchInstances:   couchinstances.New(db, encryptionKey),
 
 		users:                 users.New(q),
 		sessions:              sessions.New(q),

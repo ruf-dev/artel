@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
 type Service interface {
@@ -33,8 +34,13 @@ type VaultService interface {
 	GetVault(ctx context.Context, vaultID uuid.UUID) (domain.Vault, error)
 	ListVaults(ctx context.Context) ([]domain.Vault, error)
 	DeleteVault(ctx context.Context, vaultID uuid.UUID) error
-	AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error
+	AddMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID, role artel_q.VaultRole) error
 	RemoveMember(ctx context.Context, vaultID, targetUserUuid uuid.UUID) error
+	ListMembers(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMemberInfo, error)
+	CreateInviteLink(ctx context.Context, vaultID uuid.UUID, role artel_q.VaultRole) (domain.VaultInvite, error)
+	ListInviteLinks(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error)
+	RevokeInviteLink(ctx context.Context, inviteID uuid.UUID) error
+	AcceptInvite(ctx context.Context, token string) error
 }
 
 type CouchInstanceService interface {

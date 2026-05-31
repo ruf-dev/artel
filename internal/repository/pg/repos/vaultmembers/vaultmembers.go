@@ -22,7 +22,7 @@ func New(db sqldb.DB) *Repo {
 	}
 }
 
-func (r *Repo) Add(ctx context.Context, vaultUuid, userUuid uuid.UUID, role string) error {
+func (r *Repo) Add(ctx context.Context, vaultUuid, userUuid uuid.UUID, role artel_q.VaultRole) error {
 	params := artel_q.AddVaultMemberParams{
 		VaultID: vaultUuid,
 		UserID:  userUuid,
@@ -84,6 +84,29 @@ func (r *Repo) ListByVault(ctx context.Context, vaultUuid uuid.UUID) ([]domain.V
 			UserUuid:  m.UserID,
 			Role:      m.Role,
 			CreatedAt: m.CreatedAt,
+		}
+	}
+	return result, nil
+}
+
+func (r *Repo) ListByVaultWithUsers(ctx context.Context, vaultUuid uuid.UUID) ([]domain.VaultMemberInfo, error) {
+	rows, err := r.q.ListVaultMembersWithUsers(ctx, vaultUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list vault members with users")
+	}
+
+	result := make([]domain.VaultMemberInfo, len(rows))
+	for i, row := range rows {
+		result[i] = domain.VaultMemberInfo{
+			VaultMember: domain.VaultMember{
+				Uuid:      row.ID,
+				VaultUuid: row.VaultID,
+				UserUuid:  row.UserID,
+				Role:      row.Role,
+				CreatedAt: row.CreatedAt,
+			},
+			Email:    row.Email.String,
+			Username: row.Username,
 		}
 	}
 	return result, nil
