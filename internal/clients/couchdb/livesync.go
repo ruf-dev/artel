@@ -31,7 +31,7 @@ func NewLiveSyncClient(baseURL, dbName, username, password string) *LiveSyncClie
 		dbName:   dbName,
 		username: username,
 		password: password,
-		http:     &http.Client{},
+		http:     &http.Client{Transport: newLoggingTransport()},
 	}
 }
 

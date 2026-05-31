@@ -28,7 +28,7 @@ type Client struct {
 func New(cfg Config) *Client {
 	return &Client{
 		baseURL:  cfg.BaseURL,
-		http:     &http.Client{},
+		http:     &http.Client{Transport: newLoggingTransport()},
 		user:     cfg.User,
 		password: cfg.Password,
 	}
