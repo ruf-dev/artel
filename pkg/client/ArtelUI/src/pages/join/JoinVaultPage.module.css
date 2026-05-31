@@ -1,0 +1,77 @@
+.JoinContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background: var(--color-bg-primary);
+}
+
+.Card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2.5rem 3rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.25rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    min-width: 18rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.Spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--color-border-light);
+    border-top-color: var(--coral);
+    border-radius: 50%;
+    animation: spin 700ms linear infinite;
+}
+
+.SuccessIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgba(160, 220, 140, 0.15);
+    border: 1px solid rgba(160, 220, 140, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #a0dc8c;
+}
+
+.Message {
+    font-size: 0.9375rem;
+    color: var(--color-fg-secondary);
+}
+
+.ErrorMessage {
+    font-size: 0.875rem;
+    color: var(--color-error);
+    text-align: center;
+    max-width: 20rem;
+    line-height: 1.5;
+}
+
+.BtnHome {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-border-light);
+    background: transparent;
+    color: var(--color-fg-secondary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 160ms ease;
+}
+
+.BtnHome:hover {
+    color: var(--color-fg-primary);
+    border-color: var(--color-border-bright);
+}
