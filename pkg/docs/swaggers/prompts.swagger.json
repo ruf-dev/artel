@@ -1,0 +1,136 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "prompts.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PromptsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/prompts/list": {
+      "post": {
+        "operationId": "PromptsAPI_ListPrompts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListPromptsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListPromptsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PromptsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_apiListPromptsRequest": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/artel_apiPromptId"
+          }
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "artel_apiListPromptsResponse": {
+      "type": "object",
+      "properties": {
+        "prompts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiPromptItem"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "artel_apiPromptId": {
+      "type": "string",
+      "enum": [
+        "PROMPT_ID_UNSPECIFIED",
+        "PROMPT_ID_PERSONAL_VAULT_SETUP"
+      ],
+      "default": "PROMPT_ID_UNSPECIFIED"
+    },
+    "artel_apiPromptItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/artel_apiPromptId"
+        },
+        "prompt": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

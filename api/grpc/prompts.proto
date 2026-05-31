@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+enum PromptId {
+  PROMPT_ID_UNSPECIFIED = 0;
+  PROMPT_ID_PERSONAL_VAULT_SETUP = 1;
+}
+
+message PromptItem {
+  PromptId id = 1;
+  string prompt = 2;
+}
+
+service PromptsAPI {
+  rpc ListPrompts(ListPrompts.Request) returns (ListPrompts.Response) {
+    option (google.api.http) = {
+      post: "/api/prompts/list"
+      body: "*"
+    };
+  }
+}
+
+message ListPrompts {
+  message Request {
+    repeated PromptId ids = 1;
+    uint32 page = 2;
+    uint32 page_size = 3;
+  }
+
+  message Response {
+    repeated PromptItem prompts = 1;
+    uint32 total = 2;
+  }
+}

@@ -1,7 +1,6 @@
 import {create} from 'zustand'
 
 import {VaultItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
-import {VaultService} from "@/processes/Vaults.ts"
 import useUser from "@/hooks/user/User.ts"
 import {Errors, GrpcError} from "@/processes/Errors.ts"
 
@@ -14,8 +13,6 @@ interface VaultsState {
     remove: (id: string) => Promise<void>
 }
 
-const vaultService = new VaultService()
-
 export const useVaults = create<VaultsState>((set, get) => ({
     vaults: [],
     loading: false,
@@ -24,8 +21,9 @@ export const useVaults = create<VaultsState>((set, get) => ({
     fetch: async () => {
         set({loading: true})
         try {
-            const vaults = await vaultService.ListVaults()
-            set({vaults})
+            const {auth} = useUser.getState()
+            const res = await VaultsAPI.ListVaults({}, auth.getInitReq())
+            set({vaults: res.vaults ?? []})
         } catch (err) {
             if ((err as GrpcError)?.code === Errors.PERMISSION_DENIED) {
                 set({forbidden: true})
