@@ -25,6 +25,8 @@ const bcryptCost = 12
 type McpServiceImpl struct {
 	mcpKeys         repository.McpKeyRepository
 	vaults          repository.Vaults
+	vaultMembers    repository.VaultMembers
+	emailAccounts   repository.EmailAccounts
 	couchInstances  repository.CouchInstances
 	userPermissions repository.UserPermissionsRepo
 }
@@ -32,12 +34,16 @@ type McpServiceImpl struct {
 func New(
 	mcpKeys repository.McpKeyRepository,
 	vaults repository.Vaults,
+	vaultMembers repository.VaultMembers,
+	emailAccounts repository.EmailAccounts,
 	couchInstances repository.CouchInstances,
 	userPermissions repository.UserPermissionsRepo,
 ) *McpServiceImpl {
 	return &McpServiceImpl{
 		mcpKeys:         mcpKeys,
 		vaults:          vaults,
+		vaultMembers:    vaultMembers,
+		emailAccounts:   emailAccounts,
 		couchInstances:  couchInstances,
 		userPermissions: userPermissions,
 	}
@@ -84,10 +90,51 @@ func (s *McpServiceImpl) ListKeys(ctx context.Context, vaultID uuid.UUID) ([]dom
 	return keys, nil
 }
 
+func (s *McpServiceImpl) ListUserKeys(ctx context.Context) ([]domain.McpKey, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return nil, user_errors.Unauthenticated
+	}
+
+	keys, err := s.mcpKeys.ListMcpKeysByUser(ctx, uc.UserUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list user mcp keys")
+	}
+	return keys, nil
+}
+
 func (s *McpServiceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
 	err := s.mcpKeys.RevokeMcpKey(ctx, keyID)
 	if err != nil {
 		return rerrors.Wrap(err, "revoke mcp key")
+	}
+	return nil
+}
+
+func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID, emailAccountID *uuid.UUID) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	_, err := s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return rerrors.Wrap(user_errors.Unauthenticated, "user is not a member of target vault")
+	}
+
+	if emailAccountID != nil {
+		account, err := s.emailAccounts.GetByUuid(ctx, *emailAccountID)
+		if err != nil {
+			return rerrors.Wrap(err, "get email account")
+		}
+		if account.UserUuid != uc.UserUuid {
+			return user_errors.Unauthenticated
+		}
+	}
+
+	err = s.mcpKeys.SetMcpKeyAccess(ctx, keyID, uc.UserUuid, vaultID, emailAccountID)
+	if err != nil {
+		return rerrors.Wrap(err, "set mcp key access")
 	}
 	return nil
 }
@@ -153,6 +200,12 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 	} else {
 		result.HasEmails = perms.HasEmails
 	}
+
+	go func() {
+		if touchErr := s.mcpKeys.TouchLastAccessed(context.Background(), mcpKey.Uuid); touchErr != nil {
+			log.Error().Err(touchErr).Str("key_uuid", mcpKey.Uuid.String()).Msg("ResolveKey: touch last accessed failed")
+		}
+	}()
 
 	return result, nil
 }

@@ -16,6 +16,66 @@
     "application/json"
   ],
   "paths": {
+    "/api/mcp/keys": {
+      "get": {
+        "operationId": "McpKeysAPI_ListUserMcpKeys",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListUserMcpKeysResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
+    "/api/mcp/keys/{keyId}/access": {
+      "post": {
+        "operationId": "McpKeysAPI_SetMcpKeyAccess",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetMcpKeyAccessResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "keyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiMcpKeysAPISetMcpKeyAccessBody"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
     "/api/mcp/{vaultId}/mcp-keys": {
       "get": {
         "operationId": "McpKeysAPI_ListMcpKeys",
@@ -143,6 +203,18 @@
         }
       }
     },
+    "artel_apiListUserMcpKeysResponse": {
+      "type": "object",
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMcpKeyInfo"
+          }
+        }
+      }
+    },
     "artel_apiMcpKeyInfo": {
       "type": "object",
       "properties": {
@@ -160,6 +232,12 @@
         },
         "createdAt": {
           "type": "string"
+        },
+        "lastAccessedAt": {
+          "type": "string"
+        },
+        "emailAccountId": {
+          "type": "string"
         }
       }
     },
@@ -171,7 +249,21 @@
         }
       }
     },
+    "artel_apiMcpKeysAPISetMcpKeyAccessBody": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "emailAccountId": {
+          "type": "string"
+        }
+      }
+    },
     "artel_apiRevokeMcpKeyResponse": {
+      "type": "object"
+    },
+    "artel_apiSetMcpKeyAccessResponse": {
       "type": "object"
     },
     "protobufAny": {

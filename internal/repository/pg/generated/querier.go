@@ -52,6 +52,7 @@ type Querier interface {
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
 	ListEmailAccountsByUser(ctx context.Context, userID uuid.UUID) ([]EmailAccount, error)
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
+	ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
@@ -59,6 +60,8 @@ type Querier interface {
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
+	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
+	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)

@@ -61,6 +61,18 @@ function AdminPanelItem({onClick}: AdminPanelItemProps) {
     )
 }
 
+function ApiKeysItem({onClick}: {onClick: () => void}) {
+    return (
+        <button className={cls.MenuItem} role="menuitem" type="button" onClick={onClick}>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                 strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
+            <span>API Keys</span>
+        </button>
+    )
+}
+
 interface LogoutItemProps {
     onClick: () => void
 }
@@ -82,13 +94,15 @@ function LogoutItem({onClick}: LogoutItemProps) {
 interface UserMenuProps {
     isAdmin: boolean
     onAdmin: () => void
+    onApiKeys: () => void
     onLogout: () => void
 }
 
-function UserMenu({isAdmin, onAdmin, onLogout}: UserMenuProps) {
+function UserMenu({isAdmin, onAdmin, onApiKeys, onLogout}: UserMenuProps) {
     return (
         <div className={cls.Menu} role="menu">
             {isAdmin && <AdminPanelItem onClick={onAdmin}/>}
+            <ApiKeysItem onClick={onApiKeys}/>
             <LogoutItem onClick={onLogout}/>
         </div>
     )
@@ -109,7 +123,12 @@ export default function TopbarUserMenu() {
         setMenuOpen(false)
         navigate(Path.Admin)
     }
-    
+
+    function handleApiKeys() {
+        setMenuOpen(false)
+        navigate(Path.McpKeysPage)
+    }
+
     return (
         <div className={cls.UserWrap}>
             <UserPill menuOpen={menuOpen} photoUrl={photoUrl} onClick={e => {
@@ -117,7 +136,7 @@ export default function TopbarUserMenu() {
                 setMenuOpen(v => !v)
             }}/>
             {menuOpen && <div className={cls.Backdrop} onClick={() => setMenuOpen(false)}/>}
-            {menuOpen && <UserMenu isAdmin={isAdmin} onAdmin={handleAdmin} onLogout={handleLogout}/>}
+            {menuOpen && <UserMenu isAdmin={isAdmin} onAdmin={handleAdmin} onApiKeys={handleApiKeys} onLogout={handleLogout}/>}
         </div>
     )
 }

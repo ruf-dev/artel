@@ -7,6 +7,7 @@ import {Navigate, Route, Routes} from "react-router-dom"
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
 import EmailsPage from "@/pages/emails/EmailsPage.tsx"
+import McpKeysPage from "@/pages/mcp-keys/McpKeysPage.tsx"
 import ErrorPage from "@/pages/error/ErrorPage.tsx"
 import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
 import ClosedAlphaPage from "@/pages/closed-alpha/ClosedAlphaPage.tsx"
@@ -23,6 +24,7 @@ export enum Path {
     InitPage = "/init",
     HomePage = "/",
     EmailsPage = "/emails",
+    McpKeysPage = "/mcp_keys",
     McpAuth = "/authorize",
     ClosedAlpha = "/closed-alpha",
     Admin = "/admin",
@@ -47,6 +49,7 @@ export default function Router() {
                     <Route element={<HomeLayout/>}>
                         <Route path={Path.HomePage} element={<HomePage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.EmailsPage} element={<EmailsPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.McpKeysPage} element={<McpKeysPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.Admin} element={<AdminPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={"*"} element={<Navigate to={Path.HomePage} replace/>}/>
                     </Route>

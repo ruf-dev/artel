@@ -101,14 +101,16 @@ type MailServerSuggestion struct {
 }
 
 type McpKey struct {
-	ID         uuid.UUID
-	VaultID    uuid.UUID
-	UserID     uuid.UUID
-	Name       string
-	KeyHash    []byte
-	KeyPreview string
-	CreatedAt  time.Time
-	RevokedAt  sql.NullTime
+	ID             uuid.UUID
+	VaultID        uuid.UUID
+	UserID         uuid.UUID
+	Name           string
+	KeyHash        []byte
+	KeyPreview     string
+	CreatedAt      time.Time
+	RevokedAt      sql.NullTime
+	EmailAccountID uuid.NullUUID
+	LastAccessedAt sql.NullTime
 }
 
 type PendingAuthCode struct {

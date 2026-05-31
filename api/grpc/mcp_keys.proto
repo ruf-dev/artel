@@ -25,14 +25,29 @@ service McpKeysAPI {
             delete: "/api/mcp/{vault_id}/mcp-keys/{key_id}"
         };
     }
+
+    rpc ListUserMcpKeys(ListUserMcpKeys.Request) returns (ListUserMcpKeys.Response) {
+        option (google.api.http) = {
+            get: "/api/mcp/keys"
+        };
+    }
+
+    rpc SetMcpKeyAccess(SetMcpKeyAccess.Request) returns (SetMcpKeyAccess.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/keys/{key_id}/access"
+            body: "*"
+        };
+    }
 }
 
 message McpKeyInfo {
-    string id          = 1;
-    string vault_id    = 2;
-    string name        = 3;
-    string key_preview = 4;
-    string created_at  = 5;
+    string id               = 1;
+    string vault_id         = 2;
+    string name             = 3;
+    string key_preview      = 4;
+    string created_at       = 5;
+    string last_accessed_at = 6;
+    string email_account_id = 7;
 }
 
 message CreateMcpKey {
@@ -59,6 +74,22 @@ message RevokeMcpKey {
     message Request {
         string vault_id = 1;
         string key_id   = 2;
+    }
+    message Response {}
+}
+
+message ListUserMcpKeys {
+    message Request {}
+    message Response {
+        repeated McpKeyInfo keys = 1;
+    }
+}
+
+message SetMcpKeyAccess {
+    message Request {
+        string key_id           = 1;
+        string vault_id         = 2;
+        string email_account_id = 3;
     }
     message Response {}
 }

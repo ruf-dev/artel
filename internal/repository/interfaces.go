@@ -120,9 +120,12 @@ type UserPermissionsRepo interface {
 type McpKeyRepository interface {
 	CreateMcpKey(ctx context.Context, vaultID, userID, keyID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
+	ListMcpKeysByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.McpKey, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
+	SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vaultUuid uuid.UUID, emailAccountUuid *uuid.UUID) error
+	TouchLastAccessed(ctx context.Context, keyUuid uuid.UUID) error
 }
 
 type PendingAuthCodes interface {

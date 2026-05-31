@@ -49,6 +49,19 @@ func (r *McpKeyRepo) ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) 
 	return keys, nil
 }
 
+func (r *McpKeyRepo) ListMcpKeysByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.McpKey, error) {
+	rows, err := r.q.ListMcpKeysByUser(ctx, userUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(pg_err.UnwrapPgErr(err), "list mcp keys by user")
+	}
+
+	keys := make([]domain.McpKey, 0, len(rows))
+	for _, row := range rows {
+		keys = append(keys, toMcpKey(row))
+	}
+	return keys, nil
+}
+
 func (r *McpKeyRepo) GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error) {
 	row, err := r.q.GetMcpKeyByID(ctx, id)
 	if err != nil {
@@ -79,6 +92,32 @@ func (r *McpKeyRepo) RevokeMcpKey(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
+func (r *McpKeyRepo) SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vaultUuid uuid.UUID, emailAccountUuid *uuid.UUID) error {
+	var nullEmailID uuid.NullUUID
+	if emailAccountUuid != nil {
+		nullEmailID = uuid.NullUUID{UUID: *emailAccountUuid, Valid: true}
+	}
+
+	err := r.q.SetMcpKeyAccess(ctx, artel_q.SetMcpKeyAccessParams{
+		ID:             keyUuid,
+		UserID:         userUuid,
+		VaultID:        vaultUuid,
+		EmailAccountID: nullEmailID,
+	})
+	if err != nil {
+		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "set mcp key access")
+	}
+	return nil
+}
+
+func (r *McpKeyRepo) TouchLastAccessed(ctx context.Context, keyUuid uuid.UUID) error {
+	err := r.q.TouchMcpKeyLastAccessed(ctx, keyUuid)
+	if err != nil {
+		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "touch mcp key last accessed")
+	}
+	return nil
+}
+
 func toMcpKey(row artel_q.McpKey) domain.McpKey {
 	key := domain.McpKey{
 		Uuid:       row.ID,
@@ -91,6 +130,13 @@ func toMcpKey(row artel_q.McpKey) domain.McpKey {
 	}
 	if row.RevokedAt.Valid {
 		key.RevokedAt = &row.RevokedAt.Time
+	}
+	if row.EmailAccountID.Valid {
+		id := row.EmailAccountID.UUID
+		key.EmailAccountUuid = &id
+	}
+	if row.LastAccessedAt.Valid {
+		key.LastAccessedAt = &row.LastAccessedAt.Time
 	}
 	return key
 }

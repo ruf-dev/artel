@@ -14,7 +14,7 @@ import (
 const createMcpKey = `-- name: CreateMcpKey :one
 INSERT INTO mcp_keys (id, vault_id, user_id, name, key_hash, key_preview)
 VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at
+RETURNING id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at, email_account_id, last_accessed_at
 `
 
 type CreateMcpKeyParams struct {
@@ -45,12 +45,14 @@ func (q *Queries) CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (Mcp
 		&i.KeyPreview,
 		&i.CreatedAt,
 		&i.RevokedAt,
+		&i.EmailAccountID,
+		&i.LastAccessedAt,
 	)
 	return i, err
 }
 
 const getMcpKeyByID = `-- name: GetMcpKeyByID :one
-SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at
+SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at, email_account_id, last_accessed_at
 FROM mcp_keys
 WHERE id = $1
 `
@@ -67,12 +69,14 @@ func (q *Queries) GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, erro
 		&i.KeyPreview,
 		&i.CreatedAt,
 		&i.RevokedAt,
+		&i.EmailAccountID,
+		&i.LastAccessedAt,
 	)
 	return i, err
 }
 
 const listActiveMcpKeys = `-- name: ListActiveMcpKeys :many
-SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at
+SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at, email_account_id, last_accessed_at
 FROM mcp_keys
 WHERE vault_id = $1
   AND revoked_at IS NULL
@@ -96,6 +100,50 @@ func (q *Queries) ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]M
 			&i.KeyPreview,
 			&i.CreatedAt,
 			&i.RevokedAt,
+			&i.EmailAccountID,
+			&i.LastAccessedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMcpKeysByUser = `-- name: ListMcpKeysByUser :many
+SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at, email_account_id, last_accessed_at
+FROM mcp_keys
+WHERE user_id = $1
+  AND revoked_at IS NULL
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error) {
+	rows, err := q.db.QueryContext(ctx, listMcpKeysByUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []McpKey{}
+	for rows.Next() {
+		var i McpKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.VaultID,
+			&i.UserID,
+			&i.Name,
+			&i.KeyHash,
+			&i.KeyPreview,
+			&i.CreatedAt,
+			&i.RevokedAt,
+			&i.EmailAccountID,
+			&i.LastAccessedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -111,7 +159,7 @@ func (q *Queries) ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]M
 }
 
 const listMcpKeysByVault = `-- name: ListMcpKeysByVault :many
-SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at
+SELECT id, vault_id, user_id, name, key_hash, key_preview, created_at, revoked_at, email_account_id, last_accessed_at
 FROM mcp_keys
 WHERE vault_id = $1
   AND revoked_at IS NULL
@@ -136,6 +184,8 @@ func (q *Queries) ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]
 			&i.KeyPreview,
 			&i.CreatedAt,
 			&i.RevokedAt,
+			&i.EmailAccountID,
+			&i.LastAccessedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -159,5 +209,40 @@ WHERE id = $1
 
 func (q *Queries) RevokeMcpKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, revokeMcpKey, id)
+	return err
+}
+
+const setMcpKeyAccess = `-- name: SetMcpKeyAccess :exec
+UPDATE mcp_keys
+SET vault_id = $2, email_account_id = $3
+WHERE id = $1
+  AND user_id = $4
+`
+
+type SetMcpKeyAccessParams struct {
+	ID             uuid.UUID
+	VaultID        uuid.UUID
+	EmailAccountID uuid.NullUUID
+	UserID         uuid.UUID
+}
+
+func (q *Queries) SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error {
+	_, err := q.db.ExecContext(ctx, setMcpKeyAccess,
+		arg.ID,
+		arg.VaultID,
+		arg.EmailAccountID,
+		arg.UserID,
+	)
+	return err
+}
+
+const touchMcpKeyLastAccessed = `-- name: TouchMcpKeyLastAccessed :exec
+UPDATE mcp_keys
+SET last_accessed_at = NOW()
+WHERE id = $1
+`
+
+func (q *Queries) TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, touchMcpKeyLastAccessed, id)
 	return err
 }
