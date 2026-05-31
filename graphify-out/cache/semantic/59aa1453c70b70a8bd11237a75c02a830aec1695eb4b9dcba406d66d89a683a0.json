@@ -1,0 +1,1 @@
+{"nodes": [], "edges": [{"source": "transport_email_accounts_api_emailaccountsimpl", "target": "service_email_emailserviceimpl", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "internal/transport/email_accounts_api/add.go", "source_location": "add.go:30", "weight": 1.0}], "hyperedges": []}

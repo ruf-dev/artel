@@ -1,0 +1,1 @@
+{"nodes": [{"id": "artelui_claude_settings_local_json_permissions", "label": ".claude/settings.local.json - Claude Code permissions", "file_type": "code", "source_file": "pkg/client/ArtelUI/.claude/settings.local.json", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

@@ -1,0 +1,1307 @@
+{
+  "/Users/alexbukov/ruf/artel/cmd/service/main.go": {
+    "mtime": 1778409136.4241369,
+    "ast_hash": "c0fb544e0cd30b28ec7499973fc3c641",
+    "semantic_hash": "c0fb544e0cd30b28ec7499973fc3c641"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/017_mcp_keys_access.sql": {
+    "mtime": 1780201802.8742943,
+    "ast_hash": "b6be9b4a3174956a76c3ddf080b54291",
+    "semantic_hash": "b6be9b4a3174956a76c3ddf080b54291"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/010_email_accounts.sql": {
+    "mtime": 1779092811.457746,
+    "ast_hash": "ad1de790dc8fe654ee357d65a2b4a0ba",
+    "semantic_hash": "ad1de790dc8fe654ee357d65a2b4a0ba"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/011_user_permissions.sql": {
+    "mtime": 1779871068.161384,
+    "ast_hash": "4e604d6b7d9bb4efa2891c143c39702c",
+    "semantic_hash": "4e604d6b7d9bb4efa2891c143c39702c"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/002_couch_instances.sql": {
+    "mtime": 1778410095.0591614,
+    "ast_hash": "488723f97e3ad5cfb2d7ddde854c24dd",
+    "semantic_hash": "488723f97e3ad5cfb2d7ddde854c24dd"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/013_emails_permission.sql": {
+    "mtime": 1780061524.8353548,
+    "ast_hash": "c76c10c7b9609bf36d00438920ea27c9",
+    "semantic_hash": "c76c10c7b9609bf36d00438920ea27c9"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/015_vault_setup_prompts.sql": {
+    "mtime": 1780122112.9131384,
+    "ast_hash": "1bcf127773fc31b11a4a75250b9a236c",
+    "semantic_hash": "1bcf127773fc31b11a4a75250b9a236c"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/006_vault_status.sql": {
+    "mtime": 1778446017.4628975,
+    "ast_hash": "9be488e3cfe510fde40f61a6e5118bbf",
+    "semantic_hash": "9be488e3cfe510fde40f61a6e5118bbf"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/005_vault_members.sql": {
+    "mtime": 1778417729.9021814,
+    "ast_hash": "e5ab4c2b3c9dd39c23f6d8dec9b8271f",
+    "semantic_hash": "e5ab4c2b3c9dd39c23f6d8dec9b8271f"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/004_couch_accounts.sql": {
+    "mtime": 1778417729.876633,
+    "ast_hash": "f6df6eea70c77cdc35bc6f10c578f0ff",
+    "semantic_hash": "f6df6eea70c77cdc35bc6f10c578f0ff"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/016_mail_server_suggestions.sql": {
+    "mtime": 1780198805.453001,
+    "ast_hash": "7ca05b15b1ea63728eeafc98edfb0759",
+    "semantic_hash": "7ca05b15b1ea63728eeafc98edfb0759"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/012_restructure_user_tables.sql": {
+    "mtime": 1779873246.9847696,
+    "ast_hash": "88e12939b574aab5a88520687eae0461",
+    "semantic_hash": "88e12939b574aab5a88520687eae0461"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/008_mcp_keys.sql": {
+    "mtime": 1778740196.4363801,
+    "ast_hash": "1ebf98380851fba5984d14b1ee5d4f11",
+    "semantic_hash": "1ebf98380851fba5984d14b1ee5d4f11"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/009_pending_auth_codes.sql": {
+    "mtime": 1778740196.4366164,
+    "ast_hash": "1f2852e0f692cf34618c7e463244f2d4",
+    "semantic_hash": "1f2852e0f692cf34618c7e463244f2d4"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/001_initial_schema.sql": {
+    "mtime": 1778409136.4440162,
+    "ast_hash": "6bb27e1d6d6ff344a1efa3fc05d0e3fd",
+    "semantic_hash": "6bb27e1d6d6ff344a1efa3fc05d0e3fd"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/007_telegram_auth.sql": {
+    "mtime": 1778740196.4361691,
+    "ast_hash": "331b626c0cc6faec4b6f189bc9dd16fb",
+    "semantic_hash": "331b626c0cc6faec4b6f189bc9dd16fb"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/014_telegram_photo_url.sql": {
+    "mtime": 1780061524.8354542,
+    "ast_hash": "82554ce0235556b9595d8b06ad2a1cff",
+    "semantic_hash": "82554ce0235556b9595d8b06ad2a1cff"
+  },
+  "/Users/alexbukov/ruf/artel/migrations/003_auth.sql": {
+    "mtime": 1778417729.811232,
+    "ast_hash": "986c46ce5e4b3e7642c41904045a79e7",
+    "semantic_hash": "986c46ce5e4b3e7642c41904045a79e7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/imap/client.go": {
+    "mtime": 1779825206.2077968,
+    "ast_hash": "05ed9aa86ca738073870392310a277ea",
+    "semantic_hash": "05ed9aa86ca738073870392310a277ea"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/users.go": {
+    "mtime": 1778501696.431642,
+    "ast_hash": "33937cce634105d3a46c39ef21ba6776",
+    "semantic_hash": "33937cce634105d3a46c39ef21ba6776"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/databases.go": {
+    "mtime": 1778409136.4298773,
+    "ast_hash": "88fb248453a6f526b019531a4d8c7648",
+    "semantic_hash": "88fb248453a6f526b019531a4d8c7648"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/errors_codes.go": {
+    "mtime": 1778501836.207096,
+    "ast_hash": "824174606821f33705e1c9abe19a56e5",
+    "semantic_hash": "824174606821f33705e1c9abe19a56e5"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/user_errors.go": {
+    "mtime": 1778501905.99743,
+    "ast_hash": "0872b4dbbb6d9d875c740612bca08e46",
+    "semantic_hash": "0872b4dbbb6d9d875c740612bca08e46"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/db_errors.go": {
+    "mtime": 1778501906.0120971,
+    "ast_hash": "fa23a76c3e0b847c448b9d133cd5bcd1",
+    "semantic_hash": "fa23a76c3e0b847c448b9d133cd5bcd1"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/client.go": {
+    "mtime": 1778501906.0034459,
+    "ast_hash": "687b4b767d0d2b28746ed6cbb834cadb",
+    "semantic_hash": "687b4b767d0d2b28746ed6cbb834cadb"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/db_create.go": {
+    "mtime": 1778501655.5904586,
+    "ast_hash": "e2d28f064ddbcdd1bbd38d905fe825d1",
+    "semantic_hash": "e2d28f064ddbcdd1bbd38d905fe825d1"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/user_create.go": {
+    "mtime": 1778501886.98644,
+    "ast_hash": "e067bee377c54bad4a50f138b34d07f2",
+    "semantic_hash": "e067bee377c54bad4a50f138b34d07f2"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/couchdb/livesync.go": {
+    "mtime": 1779868772.8035288,
+    "ast_hash": "f4540892a89abe573d6d76bfa49a8bd1",
+    "semantic_hash": "f4540892a89abe573d6d76bfa49a8bd1"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/smtp/client.go": {
+    "mtime": 1779092964.0772557,
+    "ast_hash": "7d84f855f8ce6dbd0160b12e7e54fbf4",
+    "semantic_hash": "7d84f855f8ce6dbd0160b12e7e54fbf4"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/sqldb/postgres.go": {
+    "mtime": 1778409136.4309475,
+    "ast_hash": "d1663ed1ee789245c452011daa836cc3",
+    "semantic_hash": "d1663ed1ee789245c452011daa836cc3"
+  },
+  "/Users/alexbukov/ruf/artel/internal/clients/sqldb/conn.go": {
+    "mtime": 1778409136.4306672,
+    "ast_hash": "3eb7e41a9427101647e9c55d703d924c",
+    "semantic_hash": "3eb7e41a9427101647e9c55d703d924c"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/log.go": {
+    "mtime": 1778740196.4228296,
+    "ast_hash": "ba06c24308ce1ffd5796d333df892b9e",
+    "semantic_hash": "ba06c24308ce1ffd5796d333df892b9e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/grpc_incoming_interceptor.go": {
+    "mtime": 1778409136.4348955,
+    "ast_hash": "e7622388a9f6e67f87c1d5a1bb87243b",
+    "semantic_hash": "e7622388a9f6e67f87c1d5a1bb87243b"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/admin_interceptor.go": {
+    "mtime": 1779871548.790577,
+    "ast_hash": "ae07300efb620bd11d426ea08b016ddc",
+    "semantic_hash": "ae07300efb620bd11d426ea08b016ddc"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/panic.go": {
+    "mtime": 1778409136.435991,
+    "ast_hash": "5de28404bb41b34c1130907bea6a35a3",
+    "semantic_hash": "5de28404bb41b34c1130907bea6a35a3"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/grpc_outgoing_interceptor.go": {
+    "mtime": 1778409136.435242,
+    "ast_hash": "54d0b1bd5cd32ca55a9a0b9d2e97daa3",
+    "semantic_hash": "54d0b1bd5cd32ca55a9a0b9d2e97daa3"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/auth_interceptor.go": {
+    "mtime": 1779825336.299407,
+    "ast_hash": "85547049ea490aeb417098a8f9efe2c7",
+    "semantic_hash": "85547049ea490aeb417098a8f9efe2c7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/middleware/user_context/context.go": {
+    "mtime": 1778489656.5655067,
+    "ast_hash": "5baa459575c094f6655208fc235b7695",
+    "semantic_hash": "5baa459575c094f6655208fc235b7695"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/interfaces.go": {
+    "mtime": 1780201908.725836,
+    "ast_hash": "5a9da14bd8379864f03aa4640b0e8371",
+    "semantic_hash": "5a9da14bd8379864f03aa4640b0e8371"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/impl.go": {
+    "mtime": 1780200772.8453586,
+    "ast_hash": "d4d57fb9fa95a1d77490b506b0115e31",
+    "semantic_hash": "d4d57fb9fa95a1d77490b506b0115e31"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/models.go": {
+    "mtime": 1780201828.4729776,
+    "ast_hash": "8f893746e84cd18385e69356228a28d2",
+    "semantic_hash": "8f893746e84cd18385e69356228a28d2"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/db.go": {
+    "mtime": 1780201828.472144,
+    "ast_hash": "9de76c60cbdd338abed02aaea64adea5",
+    "semantic_hash": "9de76c60cbdd338abed02aaea64adea5"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/couch_accounts.sql.go": {
+    "mtime": 1780201828.4729104,
+    "ast_hash": "fd3e8ebefbc3d2a1943dbca0b4055120",
+    "semantic_hash": "fd3e8ebefbc3d2a1943dbca0b4055120"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/sessions.sql.go": {
+    "mtime": 1780201828.47466,
+    "ast_hash": "352f6b7ce321edc0f730d56ba223d620",
+    "semantic_hash": "352f6b7ce321edc0f730d56ba223d620"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/mail_server_suggestions.sql.go": {
+    "mtime": 1780201828.4736378,
+    "ast_hash": "66e982577d83818000a6d8170c1f3d2e",
+    "semantic_hash": "66e982577d83818000a6d8170c1f3d2e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/vaults.sql.go": {
+    "mtime": 1780201828.4745085,
+    "ast_hash": "475d73741cb2468724f73112f7978b0d",
+    "semantic_hash": "475d73741cb2468724f73112f7978b0d"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/couch_instances.sql.go": {
+    "mtime": 1780201828.4738197,
+    "ast_hash": "391f77917d25be53e3ccedd24d5210c8",
+    "semantic_hash": "391f77917d25be53e3ccedd24d5210c8"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/vault_members.sql.go": {
+    "mtime": 1780201828.4744232,
+    "ast_hash": "3b0f5aa828c0bee5efa6cce2c3b6f00b",
+    "semantic_hash": "3b0f5aa828c0bee5efa6cce2c3b6f00b"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/subscriptions.sql.go": {
+    "mtime": 1780201828.4734309,
+    "ast_hash": "0f7f8b13c7e17aa86eb00e6b2ad825c4",
+    "semantic_hash": "0f7f8b13c7e17aa86eb00e6b2ad825c4"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/email_accounts.sql.go": {
+    "mtime": 1780201828.4724336,
+    "ast_hash": "dce984b5f8749d5cb1fc326251ae074e",
+    "semantic_hash": "dce984b5f8749d5cb1fc326251ae074e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/querier.go": {
+    "mtime": 1780201828.472625,
+    "ast_hash": "6ccc4ed3e017d368c94b87e72f3d08f0",
+    "semantic_hash": "6ccc4ed3e017d368c94b87e72f3d08f0"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/users.sql.go": {
+    "mtime": 1780201828.4747283,
+    "ast_hash": "27f468efe362e4eab1c351261a192a19",
+    "semantic_hash": "27f468efe362e4eab1c351261a192a19"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/user_permissions.sql.go": {
+    "mtime": 1780201828.4717612,
+    "ast_hash": "2c233d076b1646d58398a745fd141858",
+    "semantic_hash": "2c233d076b1646d58398a745fd141858"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/pending_auth_codes.sql.go": {
+    "mtime": 1780201828.4732537,
+    "ast_hash": "db138e65c0bd9793ab41270580a5c418",
+    "semantic_hash": "db138e65c0bd9793ab41270580a5c418"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/generated/mcp_keys.sql.go": {
+    "mtime": 1780201828.4748633,
+    "ast_hash": "8b61c1775b0497414a2b6b82a6b2375b",
+    "semantic_hash": "8b61c1775b0497414a2b6b82a6b2375b"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/mcpkeys/mcp_keys.go": {
+    "mtime": 1780201936.9031556,
+    "ast_hash": "c108ec2bd0f63a09c65d058a35fb3957",
+    "semantic_hash": "c108ec2bd0f63a09c65d058a35fb3957"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/vaultmembers/vaultmembers.go": {
+    "mtime": 1778740196.4287803,
+    "ast_hash": "ef50ef0bf78e811f817cd0221353e2f2",
+    "semantic_hash": "ef50ef0bf78e811f817cd0221353e2f2"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/couchinstances/couchinstances.go": {
+    "mtime": 1779871232.3958259,
+    "ast_hash": "9b0f7d3dca55025c787d89b992552a26",
+    "semantic_hash": "9b0f7d3dca55025c787d89b992552a26"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/emailaccounts/email_accounts.go": {
+    "mtime": 1779092880.2401006,
+    "ast_hash": "28c5ca0aa69018f514f23abb2f04d63b",
+    "semantic_hash": "28c5ca0aa69018f514f23abb2f04d63b"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/mailserversuggestions/suggestions.go": {
+    "mtime": 1780198898.8579025,
+    "ast_hash": "9ec4521ce7e42a57cf075a9787825ca6",
+    "semantic_hash": "9ec4521ce7e42a57cf075a9787825ca6"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/subscriptions/subscriptions.go": {
+    "mtime": 1779873355.7587469,
+    "ast_hash": "3de1c68c1c09f0610a4034a963fe6b54",
+    "semantic_hash": "3de1c68c1c09f0610a4034a963fe6b54"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/sessions/sessions.go": {
+    "mtime": 1778440651.084511,
+    "ast_hash": "68c1199a56c04b768ce5fb2b357b1d9c",
+    "semantic_hash": "68c1199a56c04b768ce5fb2b357b1d9c"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/vaults/vaults.go": {
+    "mtime": 1778740196.4290404,
+    "ast_hash": "c15648adc55f73c6e8a64efcbb232d17",
+    "semantic_hash": "c15648adc55f73c6e8a64efcbb232d17"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/users/users.go": {
+    "mtime": 1780061524.832869,
+    "ast_hash": "e05f46c42ea71666e6e7637c43b0abb8",
+    "semantic_hash": "e05f46c42ea71666e6e7637c43b0abb8"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/prompts/prompts.go": {
+    "mtime": 1780172693.7933695,
+    "ast_hash": "ffe194332355be18477a47bac1faf96d",
+    "semantic_hash": "ffe194332355be18477a47bac1faf96d"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/pendingauthcodes/pending_auth_codes.go": {
+    "mtime": 1778740196.4280372,
+    "ast_hash": "55b225c446d40bd3c0a8247578be3456",
+    "semantic_hash": "55b225c446d40bd3c0a8247578be3456"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/userpermissions/userpermissions.go": {
+    "mtime": 1780061524.8324313,
+    "ast_hash": "51bc2e49f592235c7c26133f2734ef34",
+    "semantic_hash": "51bc2e49f592235c7c26133f2734ef34"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/repos/couchaccounts/couchaccounts.go": {
+    "mtime": 1778740196.4273708,
+    "ast_hash": "3062da391ac485305c3c08de4e9b2894",
+    "semantic_hash": "3062da391ac485305c3c08de4e9b2894"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/pg_err/err.go": {
+    "mtime": 1778740196.4259589,
+    "ast_hash": "abddc7c5d4222d2f7c639a835b261c44",
+    "semantic_hash": "abddc7c5d4222d2f7c639a835b261c44"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/users.sql": {
+    "mtime": 1780061524.8321173,
+    "ast_hash": "a8790e30896fdda56b1b55cc3779efd4",
+    "semantic_hash": "a8790e30896fdda56b1b55cc3779efd4"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/mcp_keys.sql": {
+    "mtime": 1780201820.855697,
+    "ast_hash": "9ed0408fe68f8908049019ae34684d3a",
+    "semantic_hash": "9ed0408fe68f8908049019ae34684d3a"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/email_accounts.sql": {
+    "mtime": 1779092818.3014166,
+    "ast_hash": "0b5318d55329f2cf2861ee96462b1e54",
+    "semantic_hash": "0b5318d55329f2cf2861ee96462b1e54"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/couch_accounts.sql": {
+    "mtime": 1778740196.4262908,
+    "ast_hash": "1fd898ec72355abfec4f982ddd0dc042",
+    "semantic_hash": "1fd898ec72355abfec4f982ddd0dc042"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/vault_members.sql": {
+    "mtime": 1778417784.8693724,
+    "ast_hash": "4f93352fefb671a8b5f43899b73b51c1",
+    "semantic_hash": "4f93352fefb671a8b5f43899b73b51c1"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/pending_auth_codes.sql": {
+    "mtime": 1778740196.4268034,
+    "ast_hash": "0c0edb5933d5a054a2e055f7b47fb8a4",
+    "semantic_hash": "0c0edb5933d5a054a2e055f7b47fb8a4"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/subscriptions.sql": {
+    "mtime": 1779873268.228622,
+    "ast_hash": "5f9dc9d8d1a63f31d07f1da62980ea0a",
+    "semantic_hash": "5f9dc9d8d1a63f31d07f1da62980ea0a"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/couch_instances.sql": {
+    "mtime": 1779871091.8061695,
+    "ast_hash": "7615480b14822e990db79c4240420e5a",
+    "semantic_hash": "7615480b14822e990db79c4240420e5a"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/vaults.sql": {
+    "mtime": 1778497118.488073,
+    "ast_hash": "3169c24ea907860d7b82d67c316818aa",
+    "semantic_hash": "3169c24ea907860d7b82d67c316818aa"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/sessions.sql": {
+    "mtime": 1778417775.0239065,
+    "ast_hash": "4094bdba42ed18201172b645e27d9459",
+    "semantic_hash": "4094bdba42ed18201172b645e27d9459"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/mail_server_suggestions.sql": {
+    "mtime": 1780198813.8123407,
+    "ast_hash": "6d7f0e4701a1edbf6c2816884b1d6550",
+    "semantic_hash": "6d7f0e4701a1edbf6c2816884b1d6550"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/queries/user_permissions.sql": {
+    "mtime": 1780061524.8316178,
+    "ast_hash": "eeaa7a6fa9115ab04f4a2cef450b9bc3",
+    "semantic_hash": "eeaa7a6fa9115ab04f4a2cef450b9bc3"
+  },
+  "/Users/alexbukov/ruf/artel/internal/repository/pg/tx_manager/tx_manager.go": {
+    "mtime": 1778487307.8281076,
+    "ast_hash": "684cf4eeadd271b5c331aed037bdb1e5",
+    "semantic_hash": "684cf4eeadd271b5c331aed037bdb1e5"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/grpc.go": {
+    "mtime": 1778508324.2197282,
+    "ast_hash": "d76a7392c3fe182f6280a23353d475cb",
+    "semantic_hash": "d76a7392c3fe182f6280a23353d475cb"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/http.go": {
+    "mtime": 1778740196.4317923,
+    "ast_hash": "6b4dfefe2ef0d2242f1dcea5e8a66365",
+    "semantic_hash": "6b4dfefe2ef0d2242f1dcea5e8a66365"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/manager.go": {
+    "mtime": 1778508324.2199194,
+    "ast_hash": "e9396f1c0ab5c45ec93d1ec4f7347d58",
+    "semantic_hash": "e9396f1c0ab5c45ec93d1ec4f7347d58"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/ui/ui.go": {
+    "mtime": 1778753230.9676895,
+    "ast_hash": "51129c5a60ace2c3a04afffd8978fadc",
+    "semantic_hash": "51129c5a60ace2c3a04afffd8978fadc"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/create.go": {
+    "mtime": 1778740196.4344645,
+    "ast_hash": "3601de44ec83543df8569f847809fac8",
+    "semantic_hash": "3601de44ec83543df8569f847809fac8"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/vaults_impl.go": {
+    "mtime": 1778740196.4360125,
+    "ast_hash": "821510841aaa215e6bc0f90a048813ec",
+    "semantic_hash": "821510841aaa215e6bc0f90a048813ec"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/list.go": {
+    "mtime": 1778502108.7990525,
+    "ast_hash": "29782742ebba27dfc064763590f51e7d",
+    "semantic_hash": "29782742ebba27dfc064763590f51e7d"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/delete.go": {
+    "mtime": 1778740196.4346519,
+    "ast_hash": "f05557b5f25dfdde4306833c46039821",
+    "semantic_hash": "f05557b5f25dfdde4306833c46039821"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/member_remove.go": {
+    "mtime": 1778740196.4358263,
+    "ast_hash": "1d7fe38dda7392b664c470e242000a67",
+    "semantic_hash": "1d7fe38dda7392b664c470e242000a67"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/get.go": {
+    "mtime": 1778740196.4353473,
+    "ast_hash": "9dd557ecc86754c7dd009d5eec0fc651",
+    "semantic_hash": "9dd557ecc86754c7dd009d5eec0fc651"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/vaults_api/member_add.go": {
+    "mtime": 1778740196.4355876,
+    "ast_hash": "ee70ee7f74e1f4f3aa41ee130fb66fcb",
+    "semantic_hash": "ee70ee7f74e1f4f3aa41ee130fb66fcb"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/auth_api/auth_impl.go": {
+    "mtime": 1780061524.8343315,
+    "ast_hash": "b94d430337e4effd4720ad408b4283b0",
+    "semantic_hash": "b94d430337e4effd4720ad408b4283b0"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/couch_instances_api/couch_instances_impl.go": {
+    "mtime": 1779871584.7903643,
+    "ast_hash": "3093e47e904e4324ed26a0fe8376be0a",
+    "semantic_hash": "3093e47e904e4324ed26a0fe8376be0a"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/artel_api_impl/impl.go": {
+    "mtime": 1778740196.4313211,
+    "ast_hash": "e65b5eab3a0adabc502b253d76812b1f",
+    "semantic_hash": "e65b5eab3a0adabc502b253d76812b1f"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/prompts_api/impl.go": {
+    "mtime": 1780172875.441884,
+    "ast_hash": "02e2657e45d1fb623b9688d2114b0bcd",
+    "semantic_hash": "02e2657e45d1fb623b9688d2114b0bcd"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_keys_api/create.go": {
+    "mtime": 1778740196.4331188,
+    "ast_hash": "898f9db072d0b3cffa278e8dbcb76ae6",
+    "semantic_hash": "898f9db072d0b3cffa278e8dbcb76ae6"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_keys_api/list.go": {
+    "mtime": 1778740196.433348,
+    "ast_hash": "c3bbb8c841db57c529afb6fabcc8ff2e",
+    "semantic_hash": "c3bbb8c841db57c529afb6fabcc8ff2e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_keys_api/mcp_keys_impl.go": {
+    "mtime": 1778740196.4340491,
+    "ast_hash": "dba505676d8ec2fae5a76b4b349c9169",
+    "semantic_hash": "dba505676d8ec2fae5a76b4b349c9169"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_keys_api/set_access.go": {
+    "mtime": 1780202043.608398,
+    "ast_hash": "1ddd5e5bfc0951922d706c2b95b792b4",
+    "semantic_hash": "1ddd5e5bfc0951922d706c2b95b792b4"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_keys_api/list_user.go": {
+    "mtime": 1780202032.7678897,
+    "ast_hash": "3ed55d74ed1d7bfe9ac0091f70f055ad",
+    "semantic_hash": "3ed55d74ed1d7bfe9ac0091f70f055ad"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_keys_api/revoke.go": {
+    "mtime": 1778740196.4342177,
+    "ast_hash": "6addffb965514dd0469d84661c6e2227",
+    "semantic_hash": "6addffb965514dd0469d84661c6e2227"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_api/handler.go": {
+    "mtime": 1780061524.8349152,
+    "ast_hash": "12a8f08e05275350711a8b0cbd34b720",
+    "semantic_hash": "12a8f08e05275350711a8b0cbd34b720"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_api/auth.go": {
+    "mtime": 1778740196.4320674,
+    "ast_hash": "faecee0c094215c43d947810825f2d03",
+    "semantic_hash": "faecee0c094215c43d947810825f2d03"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_api/tools.go": {
+    "mtime": 1780061524.8352242,
+    "ast_hash": "9dddefee8d62bb112388f97992eaacae",
+    "semantic_hash": "9dddefee8d62bb112388f97992eaacae"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/mcp_api/oauth.go": {
+    "mtime": 1778740196.43259,
+    "ast_hash": "195d3a57652e35c51d56feba244ab7af",
+    "semantic_hash": "195d3a57652e35c51d56feba244ab7af"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/email_accounts_api/to_proto.go": {
+    "mtime": 1779093256.4734807,
+    "ast_hash": "af6892f5ba9ff38e9aa664bb34d87bbd",
+    "semantic_hash": "af6892f5ba9ff38e9aa664bb34d87bbd"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/email_accounts_api/add.go": {
+    "mtime": 1779093243.692592,
+    "ast_hash": "6a227088584445b04b177cd5b1bb3635",
+    "semantic_hash": "6a227088584445b04b177cd5b1bb3635"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/email_accounts_api/list.go": {
+    "mtime": 1779093248.6045187,
+    "ast_hash": "99d00c9e9fad562927355b046bd255ce",
+    "semantic_hash": "99d00c9e9fad562927355b046bd255ce"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/email_accounts_api/delete.go": {
+    "mtime": 1779093252.6084583,
+    "ast_hash": "49343da1075b65f8e33a81fcb364212a",
+    "semantic_hash": "49343da1075b65f8e33a81fcb364212a"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/email_accounts_api/list_suggestions.go": {
+    "mtime": 1780199096.1750503,
+    "ast_hash": "59cd613dee89393c2a84eace39e9d7ec",
+    "semantic_hash": "59cd613dee89393c2a84eace39e9d7ec"
+  },
+  "/Users/alexbukov/ruf/artel/internal/transport/email_accounts_api/impl.go": {
+    "mtime": 1780199844.9943583,
+    "ast_hash": "2eb83c0aee2908fe54c09d2ce84962aa",
+    "semantic_hash": "2eb83c0aee2908fe54c09d2ce84962aa"
+  },
+  "/Users/alexbukov/ruf/artel/internal/app/custom.go": {
+    "mtime": 1780200226.2003765,
+    "ast_hash": "32f84d4e0971c5d56448d7c79b67a2aa",
+    "semantic_hash": "32f84d4e0971c5d56448d7c79b67a2aa"
+  },
+  "/Users/alexbukov/ruf/artel/internal/app/config.go": {
+    "mtime": 1778398873.2982073,
+    "ast_hash": "d399af75446becd956ae682bcd0beec2",
+    "semantic_hash": "d399af75446becd956ae682bcd0beec2"
+  },
+  "/Users/alexbukov/ruf/artel/internal/app/server.go": {
+    "mtime": 1778409136.4293008,
+    "ast_hash": "a312b9d3b04a81623f30f45c70b509da",
+    "semantic_hash": "a312b9d3b04a81623f30f45c70b509da"
+  },
+  "/Users/alexbukov/ruf/artel/internal/app/data_sources.go": {
+    "mtime": 1778409136.4290562,
+    "ast_hash": "c2e069ea1c09e9643b1df29331952273",
+    "semantic_hash": "c2e069ea1c09e9643b1df29331952273"
+  },
+  "/Users/alexbukov/ruf/artel/internal/app/app.go": {
+    "mtime": 1778409136.4285398,
+    "ast_hash": "fb4ba2ac07173ce5b61ee1b3291fa4e7",
+    "semantic_hash": "fb4ba2ac07173ce5b61ee1b3291fa4e7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/config/servers.go": {
+    "mtime": 1778508568.2124958,
+    "ast_hash": "c623f6f3f349faf75b37e0bfa0887d25",
+    "semantic_hash": "c623f6f3f349faf75b37e0bfa0887d25"
+  },
+  "/Users/alexbukov/ruf/artel/internal/config/data_sources.go": {
+    "mtime": 1778740196.420494,
+    "ast_hash": "723a619b82aa96c55fd1a6e0fb57c2a5",
+    "semantic_hash": "723a619b82aa96c55fd1a6e0fb57c2a5"
+  },
+  "/Users/alexbukov/ruf/artel/internal/config/environment.go": {
+    "mtime": 1778740196.4207947,
+    "ast_hash": "77f0dd0972991fda2f6cce3a53d54ece",
+    "semantic_hash": "77f0dd0972991fda2f6cce3a53d54ece"
+  },
+  "/Users/alexbukov/ruf/artel/internal/config/load.go": {
+    "mtime": 1778740196.4213104,
+    "ast_hash": "a34fc353bc6a558a77da5ea663f4dd05",
+    "semantic_hash": "a34fc353bc6a558a77da5ea663f4dd05"
+  },
+  "/Users/alexbukov/ruf/artel/internal/livesync/builder.go": {
+    "mtime": 1778740196.4225051,
+    "ast_hash": "d412a41c7bbf2f902571b966770db57e",
+    "semantic_hash": "d412a41c7bbf2f902571b966770db57e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/cryptoutil/aes.go": {
+    "mtime": 1778409136.4333477,
+    "ast_hash": "6527a6d93cee454bf83ea0ddd91628e9",
+    "semantic_hash": "6527a6d93cee454bf83ea0ddd91628e9"
+  },
+  "/Users/alexbukov/ruf/artel/internal/cryptoutil/aes_test.go": {
+    "mtime": 1778409136.433591,
+    "ast_hash": "3715c729cac4c508aad33c2df775398d",
+    "semantic_hash": "3715c729cac4c508aad33c2df775398d"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/vaults.pb.go": {
+    "mtime": 1780201882.0405715,
+    "ast_hash": "2fb222854c4e015d631011e2be5631a3",
+    "semantic_hash": "2fb222854c4e015d631011e2be5631a3"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/artel_api.pb.go": {
+    "mtime": 1780201882.033094,
+    "ast_hash": "b3597c34367ee762fbd47fb87add9c48",
+    "semantic_hash": "b3597c34367ee762fbd47fb87add9c48"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/email_accounts.pb.go": {
+    "mtime": 1780201882.0356016,
+    "ast_hash": "bba2e0cccf97e728bdb44ee8b7a77fe7",
+    "semantic_hash": "bba2e0cccf97e728bdb44ee8b7a77fe7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/prompts.pb.gw.go": {
+    "mtime": 1780201882.0401032,
+    "ast_hash": "f94ec64b65003acc26eeb0ba76188792",
+    "semantic_hash": "f94ec64b65003acc26eeb0ba76188792"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/mcp_keys.pb.gw.go": {
+    "mtime": 1780201882.0382154,
+    "ast_hash": "460bf52b1eba18ee123be74f79761516",
+    "semantic_hash": "460bf52b1eba18ee123be74f79761516"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/prompts_grpc.pb.go": {
+    "mtime": 1780201882.0402412,
+    "ast_hash": "66cfaed910776b57b51ba6308c49f7d1",
+    "semantic_hash": "66cfaed910776b57b51ba6308c49f7d1"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/mcp_keys_grpc.pb.go": {
+    "mtime": 1780201882.038275,
+    "ast_hash": "d7c317bc689e6ee503b4269a91b9fe68",
+    "semantic_hash": "d7c317bc689e6ee503b4269a91b9fe68"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/vaults_grpc.pb.go": {
+    "mtime": 1780201882.0407746,
+    "ast_hash": "f127d4b246f3761a5d5fbd8de42bfc08",
+    "semantic_hash": "f127d4b246f3761a5d5fbd8de42bfc08"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/couch_instances.pb.go": {
+    "mtime": 1780201882.0348997,
+    "ast_hash": "751cd80d4b4663c9401ab848fb8191d0",
+    "semantic_hash": "751cd80d4b4663c9401ab848fb8191d0"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/prompts.pb.go": {
+    "mtime": 1780201882.039855,
+    "ast_hash": "135d3487c2ee2667e0763fd49f86c9e7",
+    "semantic_hash": "135d3487c2ee2667e0763fd49f86c9e7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/vaults.pb.gw.go": {
+    "mtime": 1780201882.0406377,
+    "ast_hash": "0aee2e24e9ea52b40a8b5604f1c36c9f",
+    "semantic_hash": "0aee2e24e9ea52b40a8b5604f1c36c9f"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/mcp_keys.pb.go": {
+    "mtime": 1780201882.0381525,
+    "ast_hash": "28741eeabb842871beabd063732314b2",
+    "semantic_hash": "28741eeabb842871beabd063732314b2"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/auth.pb.gw.go": {
+    "mtime": 1780201882.0343347,
+    "ast_hash": "ddc0fc0731f83270598d98e545260b21",
+    "semantic_hash": "ddc0fc0731f83270598d98e545260b21"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/email_accounts_grpc.pb.go": {
+    "mtime": 1780201882.0379224,
+    "ast_hash": "48a4b17ad2841b3b02f10820abeaed2b",
+    "semantic_hash": "48a4b17ad2841b3b02f10820abeaed2b"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/auth_grpc.pb.go": {
+    "mtime": 1780201882.0345054,
+    "ast_hash": "b58ce815bf41f45d87ecef181b6d604f",
+    "semantic_hash": "b58ce815bf41f45d87ecef181b6d604f"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/couch_instances_grpc.pb.go": {
+    "mtime": 1780201882.035058,
+    "ast_hash": "1c2e2ab24ac609c1f9a997bc200c22a1",
+    "semantic_hash": "1c2e2ab24ac609c1f9a997bc200c22a1"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/artel_api.pb.gw.go": {
+    "mtime": 1780201882.033371,
+    "ast_hash": "207510e43aac4c4091bcd51578f7b855",
+    "semantic_hash": "207510e43aac4c4091bcd51578f7b855"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/email_accounts.pb.gw.go": {
+    "mtime": 1780201882.0360854,
+    "ast_hash": "f2a30859a50a9c992a5a83e9138aa5a6",
+    "semantic_hash": "f2a30859a50a9c992a5a83e9138aa5a6"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/auth.pb.go": {
+    "mtime": 1780201882.034042,
+    "ast_hash": "454f941227b510a2bb7c438bfd366b07",
+    "semantic_hash": "454f941227b510a2bb7c438bfd366b07"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/artel_api_grpc.pb.go": {
+    "mtime": 1780201882.0335503,
+    "ast_hash": "959e85a15d79cd87e6270da71e920bc7",
+    "semantic_hash": "959e85a15d79cd87e6270da71e920bc7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/api/server/artel_api/couch_instances.pb.gw.go": {
+    "mtime": 1780201882.0349867,
+    "ast_hash": "483acf9bfa9782ae925c8fa91e7e1b23",
+    "semantic_hash": "483acf9bfa9782ae925c8fa91e7e1b23"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/interfaces.go": {
+    "mtime": 1780201964.5885942,
+    "ast_hash": "d113f7f6d51b5cb427d0dacb19175f11",
+    "semantic_hash": "d113f7f6d51b5cb427d0dacb19175f11"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/impl.go": {
+    "mtime": 1780202017.7062514,
+    "ast_hash": "c2fc0de22882e7ca7d6af8d43c23eb63",
+    "semantic_hash": "c2fc0de22882e7ca7d6af8d43c23eb63"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/couchinstances/couchinstances.go": {
+    "mtime": 1779871537.446509,
+    "ast_hash": "87e4336745813fab16cbd2602b0b5db7",
+    "semantic_hash": "87e4336745813fab16cbd2602b0b5db7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/auth/auth.go": {
+    "mtime": 1780061524.8332539,
+    "ast_hash": "a656cdc7f4422ca665216765616a86e9",
+    "semantic_hash": "a656cdc7f4422ca665216765616a86e9"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/mcp/mcp.go": {
+    "mtime": 1780202079.7718954,
+    "ast_hash": "c0d5e39632bb843cec5ce31a421a827e",
+    "semantic_hash": "c0d5e39632bb843cec5ce31a421a827e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/subscription/subscription.go": {
+    "mtime": 1779872835.8575385,
+    "ast_hash": "8f70c70f8f118625550650d8be7d9621",
+    "semantic_hash": "8f70c70f8f118625550650d8be7d9621"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/prompt/prompt.go": {
+    "mtime": 1780172782.2976465,
+    "ast_hash": "cccdb55166d7036da413727048fe34eb",
+    "semantic_hash": "cccdb55166d7036da413727048fe34eb"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/email/email.go": {
+    "mtime": 1780199068.788833,
+    "ast_hash": "57324d8d18bf586d9bb331650884bf29",
+    "semantic_hash": "57324d8d18bf586d9bb331650884bf29"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/vault/list.go": {
+    "mtime": 1778740196.4307287,
+    "ast_hash": "c81b9167d12890c9bd60490b25d6b5ec",
+    "semantic_hash": "c81b9167d12890c9bd60490b25d6b5ec"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/v1/vault/vault.go": {
+    "mtime": 1778740196.4310825,
+    "ast_hash": "118aea94d6fd770291ad6b3f2495b40f",
+    "semantic_hash": "118aea94d6fd770291ad6b3f2495b40f"
+  },
+  "/Users/alexbukov/ruf/artel/internal/service/user_errors/user_errors.go": {
+    "mtime": 1779871465.802733,
+    "ast_hash": "b64261e3c99ee2f09de2bc7bbc4ad65b",
+    "semantic_hash": "b64261e3c99ee2f09de2bc7bbc4ad65b"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/couch_account.go": {
+    "mtime": 1778417744.2268054,
+    "ast_hash": "71b4fc6b367deec762ad7644fdaf2f5c",
+    "semantic_hash": "71b4fc6b367deec762ad7644fdaf2f5c"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/user.go": {
+    "mtime": 1780061524.82821,
+    "ast_hash": "9adca0ac772b11ce654ea74aec7dfcb2",
+    "semantic_hash": "9adca0ac772b11ce654ea74aec7dfcb2"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/email_account.go": {
+    "mtime": 1780198858.5596843,
+    "ast_hash": "47333709ba1e48d5f4b9475e61873ad9",
+    "semantic_hash": "47333709ba1e48d5f4b9475e61873ad9"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/session.go": {
+    "mtime": 1778417744.2043405,
+    "ast_hash": "9b0e3aa215fc17960e27ab9628c9ada7",
+    "semantic_hash": "9b0e3aa215fc17960e27ab9628c9ada7"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/couch_instance.go": {
+    "mtime": 1778492696.2503445,
+    "ast_hash": "3dede154906c90a3167286fd78b6944e",
+    "semantic_hash": "3dede154906c90a3167286fd78b6944e"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/pending_auth_code.go": {
+    "mtime": 1778740196.421885,
+    "ast_hash": "29f370fab6abe959b2fde43ad4f795cf",
+    "semantic_hash": "29f370fab6abe959b2fde43ad4f795cf"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/vault.go": {
+    "mtime": 1778493817.8712192,
+    "ast_hash": "bab8e025a1ad2cf8a655fce9a0c851aa",
+    "semantic_hash": "bab8e025a1ad2cf8a655fce9a0c851aa"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/mcp_key.go": {
+    "mtime": 1780201852.070388,
+    "ast_hash": "b2c0f36efa57c87c1c47f25de4a09429",
+    "semantic_hash": "b2c0f36efa57c87c1c47f25de4a09429"
+  },
+  "/Users/alexbukov/ruf/artel/internal/domain/prompt.go": {
+    "mtime": 1780172667.9857383,
+    "ast_hash": "3297c45337b7008e2a9b6146ef82db86",
+    "semantic_hash": "3297c45337b7008e2a9b6146ef82db86"
+  },
+  "/Users/alexbukov/ruf/artel/.claude/settings.json": {
+    "mtime": 1780203031.6061733,
+    "ast_hash": "5de9c5b5f43dc29fc03242011c2d0f8e",
+    "semantic_hash": "5de9c5b5f43dc29fc03242011c2d0f8e"
+  },
+  "/Users/alexbukov/ruf/artel/.claude/settings.local.json": {
+    "mtime": 1780171920.1398647,
+    "ast_hash": "51aa81051583b356e8d8cf37fbd8e6ef",
+    "semantic_hash": "51aa81051583b356e8d8cf37fbd8e6ef"
+  },
+  "/Users/alexbukov/ruf/artel/examples/http-client.env.json": {
+    "mtime": 1779093558.484679,
+    "ast_hash": "f6debe3981db5c14eeabb1d69b199a1b",
+    "semantic_hash": "f6debe3981db5c14eeabb1d69b199a1b"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/docs.swagger_ui.go": {
+    "mtime": 1780202835.88337,
+    "ast_hash": "0d9e8112300ef0a96d966bedbe2a6c1d",
+    "semantic_hash": "0d9e8112300ef0a96d966bedbe2a6c1d"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/auth.swagger.json": {
+    "mtime": 1780201882.0411847,
+    "ast_hash": "ec7d4692aacf8673cc97902dabe3d9e2",
+    "semantic_hash": "ec7d4692aacf8673cc97902dabe3d9e2"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/email_accounts.swagger.json": {
+    "mtime": 1780201882.04166,
+    "ast_hash": "3e946005f50ab2bf5f5b3fe26a26a898",
+    "semantic_hash": "3e946005f50ab2bf5f5b3fe26a26a898"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/mcp_keys.swagger.json": {
+    "mtime": 1780201882.0418034,
+    "ast_hash": "e05c5d25d0e8cc09dcbd1f7a1018703a",
+    "semantic_hash": "e05c5d25d0e8cc09dcbd1f7a1018703a"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/artel_api.swagger.json": {
+    "mtime": 1780201882.0409544,
+    "ast_hash": "3a5a088fd6b63c804be784c4e796ce46",
+    "semantic_hash": "3a5a088fd6b63c804be784c4e796ce46"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/vaults.swagger.json": {
+    "mtime": 1780201882.0421731,
+    "ast_hash": "c479d88eb9081089e12b937331e8c23f",
+    "semantic_hash": "c479d88eb9081089e12b937331e8c23f"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/prompts.swagger.json": {
+    "mtime": 1780201882.0420153,
+    "ast_hash": "ef0a3da71765445393cfd1c92e62402a",
+    "semantic_hash": "ef0a3da71765445393cfd1c92e62402a"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/docs/swaggers/couch_instances.swagger.json": {
+    "mtime": 1780201882.0415235,
+    "ast_hash": "d4435bc6897f331d6046260ff17bcbdd",
+    "semantic_hash": "d4435bc6897f331d6046260ff17bcbdd"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/tsconfig.node.json": {
+    "mtime": 1778503419.595447,
+    "ast_hash": "fa43e0ad6d187f90154ac2233d26e9a1",
+    "semantic_hash": "fa43e0ad6d187f90154ac2233d26e9a1"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/vite.config.d.ts": {
+    "mtime": 1778503586.3398387,
+    "ast_hash": "9dbaee352953ed87ed2e78f6a210e908",
+    "semantic_hash": "9dbaee352953ed87ed2e78f6a210e908"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/vite.config.js": {
+    "mtime": 1778740196.4523757,
+    "ast_hash": "133aebdf94922d875592d9b804dbe0a0",
+    "semantic_hash": "133aebdf94922d875592d9b804dbe0a0"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/package.json": {
+    "mtime": 1780199799.0485003,
+    "ast_hash": "3b70157befd0a066763e1890d55a9ecc",
+    "semantic_hash": "3b70157befd0a066763e1890d55a9ecc"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/tsconfig.json": {
+    "mtime": 1778503416.9649947,
+    "ast_hash": "3074f1b1c6c8a6863ecafd2b288ab5d9",
+    "semantic_hash": "3074f1b1c6c8a6863ecafd2b288ab5d9"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/eslint.config.js": {
+    "mtime": 1778503427.8021345,
+    "ast_hash": "23406e527168dc34a915013f53715f58",
+    "semantic_hash": "23406e527168dc34a915013f53715f58"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/vite.config.ts": {
+    "mtime": 1778740196.452667,
+    "ast_hash": "406cabea4e17c63f2247bf2883030f20",
+    "semantic_hash": "406cabea4e17c63f2247bf2883030f20"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/.claude/settings.local.json": {
+    "mtime": 1779949983.4227376,
+    "ast_hash": "37b309a4f9e60ca75ce00021f306a72a",
+    "semantic_hash": "37b309a4f9e60ca75ce00021f306a72a"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/main.tsx": {
+    "mtime": 1778503546.426719,
+    "ast_hash": "4291dc131752e79219057436bbe619de",
+    "semantic_hash": "4291dc131752e79219057436bbe619de"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/vite-env.d.ts": {
+    "mtime": 1778740196.4506729,
+    "ast_hash": "8d854e48325d8f2bce94b1aaaff237af",
+    "semantic_hash": "8d854e48325d8f2bce94b1aaaff237af"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/hooks/EmailAccounts.ts": {
+    "mtime": 1779095431.7736247,
+    "ast_hash": "4abccdab38dc3038fb6ae609ac7faee5",
+    "semantic_hash": "4abccdab38dc3038fb6ae609ac7faee5"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/hooks/Dialog.ts": {
+    "mtime": 1780061524.8460958,
+    "ast_hash": "a22d774316410f8b48056154b7f9fa82",
+    "semantic_hash": "a22d774316410f8b48056154b7f9fa82"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/hooks/McpKeys.ts": {
+    "mtime": 1780202156.8440657,
+    "ast_hash": "8bf3864e167f18e3c45bbc2d0a1b6aed",
+    "semantic_hash": "8bf3864e167f18e3c45bbc2d0a1b6aed"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/hooks/Vaults.ts": {
+    "mtime": 1780173980.1835735,
+    "ast_hash": "f75761e29387b9dcdbdffee98d2bc212",
+    "semantic_hash": "f75761e29387b9dcdbdffee98d2bc212"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/api.ts": {
+    "mtime": 1778740196.4380484,
+    "ast_hash": "9afc0f3d322746915c0e1d97cfd55ec4",
+    "semantic_hash": "9afc0f3d322746915c0e1d97cfd55ec4"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/auth.pb.ts": {
+    "mtime": 1780202116.4716876,
+    "ast_hash": "cca37b0719cf6067eb21efde7c82c32c",
+    "semantic_hash": "cca37b0719cf6067eb21efde7c82c32c"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/couch_instances.pb.ts": {
+    "mtime": 1780202116.4717398,
+    "ast_hash": "50183e417429986417acd1b147b04249",
+    "semantic_hash": "50183e417429986417acd1b147b04249"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/prompts.pb.ts": {
+    "mtime": 1780202116.472476,
+    "ast_hash": "b6e69cd76667b8949344061bd673072b",
+    "semantic_hash": "b6e69cd76667b8949344061bd673072b"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/mcp_keys.pb.ts": {
+    "mtime": 1780202116.4724257,
+    "ast_hash": "9ed51d9aac5f5669d149f4003bc2cff8",
+    "semantic_hash": "9ed51d9aac5f5669d149f4003bc2cff8"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/artel_api.pb.ts": {
+    "mtime": 1780202116.471523,
+    "ast_hash": "32219109938c9fe8185d6c262945811e",
+    "semantic_hash": "32219109938c9fe8185d6c262945811e"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/email_accounts.pb.ts": {
+    "mtime": 1780202116.471935,
+    "ast_hash": "56515777adfbdef2b9992f03db9a9918",
+    "semantic_hash": "56515777adfbdef2b9992f03db9a9918"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/vaults.pb.ts": {
+    "mtime": 1780202116.4725237,
+    "ast_hash": "4f58c5455f500b8ea9881667a1f52878",
+    "semantic_hash": "4f58c5455f500b8ea9881667a1f52878"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/index.ts": {
+    "mtime": 1780202116.471157,
+    "ast_hash": "0a68011add8d098a483162c2b3ad22e9",
+    "semantic_hash": "0a68011add8d098a483162c2b3ad22e9"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/api/artel/fetch.pb.ts": {
+    "mtime": 1780202116.4719973,
+    "ast_hash": "611a00bd7dd14cbdfe7c5ea6170b6625",
+    "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/routing/Router.tsx": {
+    "mtime": 1780202202.658543,
+    "ast_hash": "de0dfa0369f58044c739d93b5486c02c",
+    "semantic_hash": "de0dfa0369f58044c739d93b5486c02c"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/app/routing/HomeLayout.tsx": {
+    "mtime": 1780061524.8464282,
+    "ast_hash": "521aa8ed16d5e0aa0c75a650e6f7af6f",
+    "semantic_hash": "521aa8ed16d5e0aa0c75a650e6f7af6f"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/processes/Errors.ts": {
+    "mtime": 1779868763.623783,
+    "ast_hash": "71aaccbbad539dfb3c564eb857a31046",
+    "semantic_hash": "71aaccbbad539dfb3c564eb857a31046"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/processes/AuthMiddleware.ts": {
+    "mtime": 1780061524.8525383,
+    "ast_hash": "d1892ccefbe38dacb43717ed7129a661",
+    "semantic_hash": "d1892ccefbe38dacb43717ed7129a661"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/processes/Auth.ts": {
+    "mtime": 1780061524.8516138,
+    "ast_hash": "ba504f50362a9364c225483d197ad324",
+    "semantic_hash": "ba504f50362a9364c225483d197ad324"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/processes/Vaults.ts": {
+    "mtime": 1778740196.4503937,
+    "ast_hash": "b7a24a4f86182f55baf0fa3c87942bce",
+    "semantic_hash": "b7a24a4f86182f55baf0fa3c87942bce"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultCard/VaultCardHeader.tsx": {
+    "mtime": 1778740196.446306,
+    "ast_hash": "2cd2913811f9b223d7d7579120b3fdfa",
+    "semantic_hash": "2cd2913811f9b223d7d7579120b3fdfa"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultCard/VaultCardStatus.tsx": {
+    "mtime": 1778740196.4477274,
+    "ast_hash": "ad50577d2e62c911c495b6086728eccc",
+    "semantic_hash": "ad50577d2e62c911c495b6086728eccc"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultCard/FastSetupDialog.tsx": {
+    "mtime": 1780172976.5677073,
+    "ast_hash": "8294b777e2546893f3c5f4d28949d70c",
+    "semantic_hash": "8294b777e2546893f3c5f4d28949d70c"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultCard/VaultCardQR.tsx": {
+    "mtime": 1778740196.44732,
+    "ast_hash": "eb52a3a83335f479b6ad79911e1e2122",
+    "semantic_hash": "eb52a3a83335f479b6ad79911e1e2122"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultCard/VaultCardLinks.tsx": {
+    "mtime": 1780082835.8880968,
+    "ast_hash": "c4a61047e701744d81f399d9a959029d",
+    "semantic_hash": "c4a61047e701744d81f399d9a959029d"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultCard/VaultCardConnBar.tsx": {
+    "mtime": 1778740196.445875,
+    "ast_hash": "4d8e7c80e86dca6bb088eac263afd235",
+    "semantic_hash": "4d8e7c80e86dca6bb088eac263afd235"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/FormField/FormField.tsx": {
+    "mtime": 1778740196.4443252,
+    "ast_hash": "beec06fe95ffa2519a1989991523a1fa",
+    "semantic_hash": "beec06fe95ffa2519a1989991523a1fa"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/EmptyState/EmptyState.tsx": {
+    "mtime": 1778740196.4440758,
+    "ast_hash": "66113d91dbcd5ed4dcf66bbf8ea449a8",
+    "semantic_hash": "66113d91dbcd5ed4dcf66bbf8ea449a8"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/ModalActions/ModalActions.tsx": {
+    "mtime": 1778740196.4445543,
+    "ast_hash": "1ce5a5db231c21e463bb8b7127febc8a",
+    "semantic_hash": "1ce5a5db231c21e463bb8b7127febc8a"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/ModalClose/ModalClose.tsx": {
+    "mtime": 1778740196.4448729,
+    "ast_hash": "3373a7a2876d96a3b2291b5bdaf362d2",
+    "semantic_hash": "3373a7a2876d96a3b2291b5bdaf362d2"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/hooks/user/User.ts": {
+    "mtime": 1780061524.8469987,
+    "ast_hash": "ea72d5ccbe169fffe620c6a4f0e79ef3",
+    "semantic_hash": "ea72d5ccbe169fffe620c6a4f0e79ef3"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/init/InitPage.tsx": {
+    "mtime": 1780061585.8957424,
+    "ast_hash": "7796e10721d48e234697ca9ae36ef4e5",
+    "semantic_hash": "7796e10721d48e234697ca9ae36ef4e5"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/home/HomePage.tsx": {
+    "mtime": 1779875057.9505756,
+    "ast_hash": "296400dd4e2f1e195af7692dc807664e",
+    "semantic_hash": "296400dd4e2f1e195af7692dc807664e"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/mcp-auth/McpAuthPage.tsx": {
+    "mtime": 1780061524.8502855,
+    "ast_hash": "f37dc65d32e1233a68368e72b78b5839",
+    "semantic_hash": "f37dc65d32e1233a68368e72b78b5839"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/closed-alpha/ClosedAlphaPage.tsx": {
+    "mtime": 1779872332.5682063,
+    "ast_hash": "6f42b58e777ee10229a9f772ee2a09ee",
+    "semantic_hash": "6f42b58e777ee10229a9f772ee2a09ee"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/emails/EmailsPage.tsx": {
+    "mtime": 1780200284.6618369,
+    "ast_hash": "d296a991d46d69a907a9d86dc69dcbc5",
+    "semantic_hash": "d296a991d46d69a907a9d86dc69dcbc5"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/admin/AdminPage.tsx": {
+    "mtime": 1779875068.5427542,
+    "ast_hash": "fc424f86fe6a72b463df7dc16ebaa349",
+    "semantic_hash": "fc424f86fe6a72b463df7dc16ebaa349"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/mcp-keys/McpKeysPage.tsx": {
+    "mtime": 1780202316.7295952,
+    "ast_hash": "b20dc17fa2311024cd7f1cfd922d2dd8",
+    "semantic_hash": "b20dc17fa2311024cd7f1cfd922d2dd8"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/error/ErrorPage.tsx": {
+    "mtime": 1778503512.993699,
+    "ast_hash": "c51f6909d7e2f68cb9c6773f19f9eb15",
+    "semantic_hash": "c51f6909d7e2f68cb9c6773f19f9eb15"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/segments/Dialog.tsx": {
+    "mtime": 1780061524.8511941,
+    "ast_hash": "d722d4fd4418e861f0c83ccc02e2ed65",
+    "semantic_hash": "d722d4fd4418e861f0c83ccc02e2ed65"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/widgets/VaultCard/VaultCard.tsx": {
+    "mtime": 1780082607.9510293,
+    "ast_hash": "1414c9e98da0ecf9cd9c3e3e7c374c7a",
+    "semantic_hash": "1414c9e98da0ecf9cd9c3e3e7c374c7a"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/segments/Topbar/TopbarNav.tsx": {
+    "mtime": 1780202570.2045429,
+    "ast_hash": "1f6ff4cf6018426b46924a4a61b6a247",
+    "semantic_hash": "1f6ff4cf6018426b46924a4a61b6a247"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/segments/Topbar/Topbar.tsx": {
+    "mtime": 1779874264.4572673,
+    "ast_hash": "c1b0302f3169e30af295d2193274b94f",
+    "semantic_hash": "c1b0302f3169e30af295d2193274b94f"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/segments/Topbar/TopbarUserMenu.tsx": {
+    "mtime": 1780202611.2727642,
+    "ast_hash": "0e2f2d40b8fa70273cf4e45eb2d60a3f",
+    "semantic_hash": "0e2f2d40b8fa70273cf4e45eb2d60a3f"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/segments/Topbar/TopbarBrand.tsx": {
+    "mtime": 1779875446.2262652,
+    "ast_hash": "86a7a3c4d54b805ed479603627ceb193",
+    "semantic_hash": "86a7a3c4d54b805ed479603627ceb193"
+  },
+  "/Users/alexbukov/ruf/artel/moti.yaml": {
+    "mtime": 1778409136.4445715,
+    "ast_hash": "4c70f2e4cc0c5a4805d27d719406cc2c",
+    "semantic_hash": "4c70f2e4cc0c5a4805d27d719406cc2c"
+  },
+  "/Users/alexbukov/ruf/artel/docker-compose.yaml": {
+    "mtime": 1779639691.4820933,
+    "ast_hash": "bbaf7a0f16d9047666ef413ae7ccd182",
+    "semantic_hash": "bbaf7a0f16d9047666ef413ae7ccd182"
+  },
+  "/Users/alexbukov/ruf/artel/sqlc.yaml": {
+    "mtime": 1778409136.446112,
+    "ast_hash": "efe69848f390f9e4ce49514adffda4dd",
+    "semantic_hash": "efe69848f390f9e4ce49514adffda4dd"
+  },
+  "/Users/alexbukov/ruf/artel/README.md": {
+    "mtime": 1778355021.542645,
+    "ast_hash": "b648cef873338d959f6472a00653d822",
+    "semantic_hash": "b648cef873338d959f6472a00653d822"
+  },
+  "/Users/alexbukov/ruf/artel/.golangci.yaml": {
+    "mtime": 1779825272.2940724,
+    "ast_hash": "2e4adef6c7bdefb3da5ffa07a8f262ec",
+    "semantic_hash": "2e4adef6c7bdefb3da5ffa07a8f262ec"
+  },
+  "/Users/alexbukov/ruf/artel/CLAUDE.md": {
+    "mtime": 1780203031.6055307,
+    "ast_hash": "9ce028aa7c22172898fe6345ed0959d8",
+    "semantic_hash": "9ce028aa7c22172898fe6345ed0959d8"
+  },
+  "/Users/alexbukov/ruf/artel/tasks/23-ui-empty-state.md": {
+    "mtime": 1778740196.4556253,
+    "ast_hash": "7c487e96ba378cd6e2c796a174c641fe",
+    "semantic_hash": "7c487e96ba378cd6e2c796a174c641fe"
+  },
+  "/Users/alexbukov/ruf/artel/tasks/25-ui-edit-delete-modal.md": {
+    "mtime": 1778740196.4560463,
+    "ast_hash": "08e9c9873c0f857b0f7b21f5f63e9a05",
+    "semantic_hash": "08e9c9873c0f857b0f7b21f5f63e9a05"
+  },
+  "/Users/alexbukov/ruf/artel/tasks/21-ui-topbar-hero.md": {
+    "mtime": 1778740196.4549892,
+    "ast_hash": "407932c4e383181594476aa7c808f198",
+    "semantic_hash": "407932c4e383181594476aa7c808f198"
+  },
+  "/Users/alexbukov/ruf/artel/tasks/24-ui-create-modal.md": {
+    "mtime": 1778740196.4558408,
+    "ast_hash": "79d6bb21cc83220d95782c07f9eec09c",
+    "semantic_hash": "79d6bb21cc83220d95782c07f9eec09c"
+  },
+  "/Users/alexbukov/ruf/artel/tasks/22-ui-vault-card-redesign.md": {
+    "mtime": 1778740196.455435,
+    "ast_hash": "dec85699721fb43c7e6cdcc9994ae4c9",
+    "semantic_hash": "dec85699721fb43c7e6cdcc9994ae4c9"
+  },
+  "/Users/alexbukov/ruf/artel/config/config.yaml": {
+    "mtime": 1780061524.825775,
+    "ast_hash": "d48ca6512598a7ce0dbcc9350f2d1dca",
+    "semantic_hash": "d48ca6512598a7ce0dbcc9350f2d1dca"
+  },
+  "/Users/alexbukov/ruf/artel/config/config_template.yaml": {
+    "mtime": 1778740196.4134564,
+    "ast_hash": "fcef8cb727b8791b0990bd100880c27f",
+    "semantic_hash": "fcef8cb727b8791b0990bd100880c27f"
+  },
+  "/Users/alexbukov/ruf/artel/.claude/CLAUDE.md": {
+    "mtime": 1780203031.605286,
+    "ast_hash": "db73b0edd7ffbc61ceac177130730865",
+    "semantic_hash": "db73b0edd7ffbc61ceac177130730865"
+  },
+  "/Users/alexbukov/ruf/artel/.claude/skills/graphify/SKILL.md": {
+    "mtime": 1780203031.6050239,
+    "ast_hash": "5ae00786ea53e4d944ab70abe11eedd1",
+    "semantic_hash": "5ae00786ea53e4d944ab70abe11eedd1"
+  },
+  "/Users/alexbukov/ruf/artel/docs/product_description.md": {
+    "mtime": 1780173379.7170355,
+    "ast_hash": "d95441d387ceba83601162e251ff959b",
+    "semantic_hash": "d95441d387ceba83601162e251ff959b"
+  },
+  "/Users/alexbukov/ruf/artel/docs/architecture.md": {
+    "mtime": 1778740196.4137342,
+    "ast_hash": "eef694547e08348de82629c3c317c602",
+    "semantic_hash": "eef694547e08348de82629c3c317c602"
+  },
+  "/Users/alexbukov/ruf/artel/docs/technical_description.md": {
+    "mtime": 1780173421.176311,
+    "ast_hash": "a55d27bcdf8a9f25ac84451216f5cccb",
+    "semantic_hash": "a55d27bcdf8a9f25ac84451216f5cccb"
+  },
+  "/Users/alexbukov/ruf/artel/docs/go-style.md": {
+    "mtime": 1780200751.6346292,
+    "ast_hash": "6822ea4152ea395675cdecabdadb7206",
+    "semantic_hash": "6822ea4152ea395675cdecabdadb7206"
+  },
+  "/Users/alexbukov/ruf/artel/docs/mcp/examples.md": {
+    "mtime": 1778740196.4144309,
+    "ast_hash": "bb04545ac1e8f104b172873f5ca92d2a",
+    "semantic_hash": "bb04545ac1e8f104b172873f5ca92d2a"
+  },
+  "/Users/alexbukov/ruf/artel/.github/workflows/branch-push.yaml": {
+    "mtime": 1779868772.8028948,
+    "ast_hash": "dbd61617fac530010d3c380705275ed5",
+    "semantic_hash": "dbd61617fac530010d3c380705275ed5"
+  },
+  "/Users/alexbukov/ruf/artel/.github/workflows/release.yaml": {
+    "mtime": 1779644214.9085474,
+    "ast_hash": "9fba2aba05ea3927ca6d8d47b26da50d",
+    "semantic_hash": "9fba2aba05ea3927ca6d8d47b26da50d"
+  },
+  "/Users/alexbukov/ruf/artel/.verv/resources.yaml": {
+    "mtime": 1780061524.8246918,
+    "ast_hash": "b2099c71a8a3160318ca010415dc99d3",
+    "semantic_hash": "b2099c71a8a3160318ca010415dc99d3"
+  },
+  "/Users/alexbukov/ruf/artel/.verv/vervonomicon.yaml": {
+    "mtime": 1778740196.4114344,
+    "ast_hash": "7cd46f86aa9ba2b0be1eb5d7f6b5ecb9",
+    "semantic_hash": "7cd46f86aa9ba2b0be1eb5d7f6b5ecb9"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/moti.yaml": {
+    "mtime": 1778503439.289823,
+    "ast_hash": "8f465f4a86177c3a0162178c63e15d89",
+    "semantic_hash": "8f465f4a86177c3a0162178c63e15d89"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/index.html": {
+    "mtime": 1780061524.8366482,
+    "ast_hash": "847dbfd218e695cfc4042a3d89820dbd",
+    "semantic_hash": "847dbfd218e695cfc4042a3d89820dbd"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/public/Artel_light.png": {
+    "mtime": 1780061524.8451145,
+    "ast_hash": "df85ab2091ecae6343783ba687e31e60",
+    "semantic_hash": "df85ab2091ecae6343783ba687e31e60"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/public/Artel_dark.png": {
+    "mtime": 1780061524.8394103,
+    "ast_hash": "f341cb9f7c8f37005df1a3dc50a76138",
+    "semantic_hash": "f341cb9f7c8f37005df1a3dc50a76138"
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/public/logo.svg": {
+    "mtime": 1778503549.9538991,
+    "ast_hash": "778a7aba27b9530c58bdbddbe3d61107",
+    "semantic_hash": "778a7aba27b9530c58bdbddbe3d61107"
+  }
+}

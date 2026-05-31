@@ -1,0 +1,1 @@
+{"nodes": [{"id": "transport_http_httpserver", "label": "transport.httpServer", "file_type": "code", "source_file": "internal/transport/http.go", "source_location": "http.go:15", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

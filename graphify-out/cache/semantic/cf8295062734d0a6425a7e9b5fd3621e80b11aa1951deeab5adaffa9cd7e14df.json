@@ -1,0 +1,1 @@
+{"nodes": [{"id": "service_subscription_service", "label": "subscription.Service", "file_type": "code", "source_file": "internal/service/v1/subscription/subscription.go", "source_location": "subscription.go:13", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}
