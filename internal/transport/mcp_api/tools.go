@@ -71,7 +71,7 @@ type ToolResult struct {
 
 type ContentBlock struct {
 	Type     string           `json:"type"`
-	Text     string           `json:"text,omitempty"`
+	Text     string           `json:"text"`
 	Data     string           `json:"data,omitempty"`
 	MimeType string           `json:"mimeType,omitempty"`
 	Resource *ResourceContent `json:"resource,omitempty"`

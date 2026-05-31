@@ -20,9 +20,9 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 	resp, err := t.next.RoundTrip(req)
 	elapsed := time.Since(start)
 	if err != nil {
-		log.Error().Err(err).Str("method", req.Method).Str("url", req.URL.String()).Dur("dur", elapsed).Msg("couch")
+		log.Error().Err(err).Str("method", req.Method).Str("url", req.URL.String()).Dur("dur", elapsed).Msg("couch db returned error")
 		return resp, err
 	}
-	log.Debug().Str("method", req.Method).Str("url", req.URL.String()).Int("status", resp.StatusCode).Dur("dur", elapsed).Msg("couch")
+	log.Debug().Str("method", req.Method).Str("url", req.URL.String()).Int("status", resp.StatusCode).Dur("dur", elapsed).Msg("couch db request")
 	return resp, nil
 }

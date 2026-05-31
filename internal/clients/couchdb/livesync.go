@@ -329,7 +329,7 @@ func (c *LiveSyncClient) MoveNote(ctx context.Context, oldPath, newPath string) 
 func (c *LiveSyncClient) ListFolders(ctx context.Context) ([]string, error) {
 	notes, err := c.ListNotes(ctx)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to list notes")
+		return nil, rerrors.Wrap(err, "failed to list notes for folders")
 	}
 
 	folderMap := make(map[string]bool)
@@ -354,7 +354,7 @@ func (c *LiveSyncClient) ListFolders(ctx context.Context) ([]string, error) {
 func (c *LiveSyncClient) ListTags(ctx context.Context) ([]string, error) {
 	notes, err := c.ListNotes(ctx)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to list notes")
+		return nil, rerrors.Wrap(err, "failed to list notes for tags")
 	}
 
 	tagMap := make(map[string]bool)
