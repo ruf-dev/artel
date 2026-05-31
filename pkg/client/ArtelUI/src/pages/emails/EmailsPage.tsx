@@ -1,9 +1,9 @@
-import {useState, useEffect} from "react"
+import {useState, useEffect, useRef} from "react"
 import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/emails/EmailsPage.module.css"
 
-import {EmailAccountInfo, AddEmailAccountRequest} from "@/app/api/artel/email_accounts.pb.ts"
+import {EmailAccountInfo, AddEmailAccountRequest, EmailAccountsAPI} from "@/app/api/artel/email_accounts.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useEmailAccounts} from "@/app/hooks/EmailAccounts.ts"
@@ -166,8 +166,33 @@ function AddAccountDialog() {
     const [smtpPort, setSmtpPort] = useState("")
     const [password, setPassword] = useState("")
 
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
     const {add} = useEmailAccounts()
     const {CloseDialog} = useDialog()
+    const {auth} = useUser()
+
+    function handleEmailChange(value: string) {
+        setEmail(value)
+        const domain = value.split("@")[1] ?? ""
+        if (!domain) return
+
+        if (debounceRef.current) clearTimeout(debounceRef.current)
+        debounceRef.current = setTimeout(async () => {
+            try {
+                const resp = await EmailAccountsAPI.ListMailServerSuggestions({domain}, auth.getInitReq())
+                if (resp.suggestions?.length === 1) {
+                    const s = resp.suggestions[0]
+                    setImapHost(s.imap ?? "")
+                    setImapPort(s.imapPort ? String(s.imapPort) : "")
+                    setSmtpHost(s.smtp ?? "")
+                    setSmtpPort(s.smtpPort ? String(s.smtpPort) : "")
+                }
+            } catch {
+                // suggestion lookup is best-effort
+            }
+        }, 300)
+    }
 
     async function handleAdd() {
         setAdding(true)
@@ -198,53 +223,61 @@ function AddAccountDialog() {
                 <FormField
                     label="Email address"
                     placeholder="you@example.com"
-                    onChange={setEmail}
+                    onChange={handleEmailChange}
                     disabled={adding}
                     fieldClassName={cls.Field}
                     labelClassName={cls.FieldLabel}
                     inputClassName={cls.Input}
                 />
                 <div className={cls.FieldRow}>
-                    <FormField
-                        label="IMAP host"
-                        placeholder="imap.example.com"
-                        onChange={setImapHost}
-                        disabled={adding}
-                        fieldClassName={cls.Field}
-                        labelClassName={cls.FieldLabel}
-                        inputClassName={cls.Input}
-                    />
-                    <FormField
-                        label="IMAP port"
-                        placeholder="993"
-                        onChange={setImapPort}
-                        disabled={adding}
-                        maxLength={5}
-                        fieldClassName={cls.FieldNarrow}
-                        labelClassName={cls.FieldLabel}
-                        inputClassName={cls.Input}
-                    />
+                    <label className={cls.Field}>
+                        <span className={cls.FieldLabel}>IMAP host</span>
+                        <input
+                            className={cls.Input}
+                            placeholder="imap.example.com"
+                            value={imapHost}
+                            onChange={e => setImapHost(e.target.value)}
+                            disabled={adding}
+                            autoComplete="off"
+                        />
+                    </label>
+                    <label className={cls.FieldNarrow}>
+                        <span className={cls.FieldLabel}>IMAP port</span>
+                        <input
+                            className={cls.Input}
+                            placeholder="993"
+                            value={imapPort}
+                            onChange={e => setImapPort(e.target.value)}
+                            disabled={adding}
+                            maxLength={5}
+                            autoComplete="off"
+                        />
+                    </label>
                 </div>
                 <div className={cls.FieldRow}>
-                    <FormField
-                        label="SMTP host"
-                        placeholder="smtp.example.com"
-                        onChange={setSmtpHost}
-                        disabled={adding}
-                        fieldClassName={cls.Field}
-                        labelClassName={cls.FieldLabel}
-                        inputClassName={cls.Input}
-                    />
-                    <FormField
-                        label="SMTP port"
-                        placeholder="587"
-                        onChange={setSmtpPort}
-                        disabled={adding}
-                        maxLength={5}
-                        fieldClassName={cls.FieldNarrow}
-                        labelClassName={cls.FieldLabel}
-                        inputClassName={cls.Input}
-                    />
+                    <label className={cls.Field}>
+                        <span className={cls.FieldLabel}>SMTP host</span>
+                        <input
+                            className={cls.Input}
+                            placeholder="smtp.example.com"
+                            value={smtpHost}
+                            onChange={e => setSmtpHost(e.target.value)}
+                            disabled={adding}
+                            autoComplete="off"
+                        />
+                    </label>
+                    <label className={cls.FieldNarrow}>
+                        <span className={cls.FieldLabel}>SMTP port</span>
+                        <input
+                            className={cls.Input}
+                            placeholder="587"
+                            value={smtpPort}
+                            onChange={e => setSmtpPort(e.target.value)}
+                            disabled={adding}
+                            maxLength={5}
+                            autoComplete="off"
+                        />
+                    </label>
                 </div>
                 <div className={cls.Field}>
                     <span className={cls.FieldLabel}>Password</span>

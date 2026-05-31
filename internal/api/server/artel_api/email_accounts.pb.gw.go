@@ -67,6 +67,9 @@ func request_EmailAccountsAPI_ListEmailAccounts_0(ctx context.Context, marshaler
 		protoReq ListEmailAccounts_Request
 		metadata runtime.ServerMetadata
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
@@ -79,6 +82,9 @@ func local_request_EmailAccountsAPI_ListEmailAccounts_0(ctx context.Context, mar
 		protoReq ListEmailAccounts_Request
 		metadata runtime.ServerMetadata
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	msg, err := server.ListEmailAccounts(ctx, &protoReq)
 	return msg, metadata, err
 }
@@ -122,6 +128,33 @@ func local_request_EmailAccountsAPI_DeleteEmailAccount_0(ctx context.Context, ma
 	return msg, metadata, err
 }
 
+func request_EmailAccountsAPI_ListMailServerSuggestions_0(ctx context.Context, marshaler runtime.Marshaler, client EmailAccountsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListMailServerSuggestions_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.ListMailServerSuggestions(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_EmailAccountsAPI_ListMailServerSuggestions_0(ctx context.Context, marshaler runtime.Marshaler, server EmailAccountsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListMailServerSuggestions_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ListMailServerSuggestions(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterEmailAccountsAPIHandlerServer registers the http handlers for service EmailAccountsAPI to "mux".
 // UnaryRPC     :call EmailAccountsAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -134,7 +167,7 @@ func RegisterEmailAccountsAPIHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/AddEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/AddEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -148,13 +181,13 @@ func RegisterEmailAccountsAPIHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 		forward_EmailAccountsAPI_AddEmailAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_EmailAccountsAPI_ListEmailAccounts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_EmailAccountsAPI_ListEmailAccounts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/ListEmailAccounts", runtime.WithHTTPPathPattern("/api/email-accounts"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/ListEmailAccounts", runtime.WithHTTPPathPattern("/api/email-accounts/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -187,6 +220,26 @@ func RegisterEmailAccountsAPIHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		forward_EmailAccountsAPI_DeleteEmailAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_EmailAccountsAPI_ListMailServerSuggestions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/ListMailServerSuggestions", runtime.WithHTTPPathPattern("/api/email-accounts/list_suggestions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_EmailAccountsAPI_ListMailServerSuggestions_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_EmailAccountsAPI_ListMailServerSuggestions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -232,7 +285,7 @@ func RegisterEmailAccountsAPIHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/AddEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/AddEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -245,11 +298,11 @@ func RegisterEmailAccountsAPIHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 		forward_EmailAccountsAPI_AddEmailAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_EmailAccountsAPI_ListEmailAccounts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_EmailAccountsAPI_ListEmailAccounts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/ListEmailAccounts", runtime.WithHTTPPathPattern("/api/email-accounts"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/ListEmailAccounts", runtime.WithHTTPPathPattern("/api/email-accounts/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -279,17 +332,36 @@ func RegisterEmailAccountsAPIHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 		forward_EmailAccountsAPI_DeleteEmailAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_EmailAccountsAPI_ListMailServerSuggestions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/ListMailServerSuggestions", runtime.WithHTTPPathPattern("/api/email-accounts/list_suggestions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_EmailAccountsAPI_ListMailServerSuggestions_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_EmailAccountsAPI_ListMailServerSuggestions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_EmailAccountsAPI_AddEmailAccount_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "email-accounts"}, ""))
-	pattern_EmailAccountsAPI_ListEmailAccounts_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "email-accounts"}, ""))
-	pattern_EmailAccountsAPI_DeleteEmailAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "email-accounts", "id"}, ""))
+	pattern_EmailAccountsAPI_AddEmailAccount_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "add"}, ""))
+	pattern_EmailAccountsAPI_ListEmailAccounts_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "list"}, ""))
+	pattern_EmailAccountsAPI_DeleteEmailAccount_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "email-accounts", "id"}, ""))
+	pattern_EmailAccountsAPI_ListMailServerSuggestions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "list_suggestions"}, ""))
 )
 
 var (
-	forward_EmailAccountsAPI_AddEmailAccount_0    = runtime.ForwardResponseMessage
-	forward_EmailAccountsAPI_ListEmailAccounts_0  = runtime.ForwardResponseMessage
-	forward_EmailAccountsAPI_DeleteEmailAccount_0 = runtime.ForwardResponseMessage
+	forward_EmailAccountsAPI_AddEmailAccount_0           = runtime.ForwardResponseMessage
+	forward_EmailAccountsAPI_ListEmailAccounts_0         = runtime.ForwardResponseMessage
+	forward_EmailAccountsAPI_DeleteEmailAccount_0        = runtime.ForwardResponseMessage
+	forward_EmailAccountsAPI_ListMailServerSuggestions_0 = runtime.ForwardResponseMessage
 )

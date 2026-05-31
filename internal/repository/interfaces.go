@@ -24,6 +24,7 @@ type Repo interface {
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
 	EmailAccounts() EmailAccounts
+	MailServerSuggestions() MailServerSuggestions
 	Prompts() Prompts
 
 	TxManager() tx_manager.TxManager
@@ -136,4 +137,8 @@ type EmailAccounts interface {
 	GetByUuid(ctx context.Context, id uuid.UUID) (domain.EmailAccount, error)
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.EmailAccount, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+}
+
+type MailServerSuggestions interface {
+	ListByDomain(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error)
 }

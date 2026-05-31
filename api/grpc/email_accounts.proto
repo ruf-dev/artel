@@ -9,20 +9,28 @@ option go_package = "/artel_api";
 service EmailAccountsAPI {
     rpc AddEmailAccount(AddEmailAccount.Request) returns (AddEmailAccount.Response) {
         option (google.api.http) = {
-            post: "/api/email-accounts"
+            post: "/api/email-accounts/add"
             body: "*"
         };
     }
 
     rpc ListEmailAccounts(ListEmailAccounts.Request) returns (ListEmailAccounts.Response) {
         option (google.api.http) = {
-            get: "/api/email-accounts"
+            post: "/api/email-accounts/list"
+            body: "*"
         };
     }
 
     rpc DeleteEmailAccount(DeleteEmailAccount.Request) returns (DeleteEmailAccount.Response) {
         option (google.api.http) = {
             delete: "/api/email-accounts/{id}"
+        };
+    }
+
+    rpc ListMailServerSuggestions(ListMailServerSuggestions.Request) returns (ListMailServerSuggestions.Response) {
+        option (google.api.http) = {
+            post: "/api/email-accounts/list_suggestions"
+            body: "*"
         };
     }
 }
@@ -63,4 +71,17 @@ message DeleteEmailAccount {
         string id = 1;
     }
     message Response {}
+}
+
+message MailServerSuggestionInfo {
+    string domain    = 1;
+    string smtp      = 2;
+    int32  smtp_port = 3;
+    string imap      = 4;
+    int32  imap_port = 5;
+}
+
+message ListMailServerSuggestions {
+    message Request  { string domain = 1; }
+    message Response { repeated MailServerSuggestionInfo suggestions = 1; }
 }

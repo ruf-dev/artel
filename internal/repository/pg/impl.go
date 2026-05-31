@@ -8,6 +8,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchinstances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/emailaccounts"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/mailserversuggestions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
@@ -21,18 +22,19 @@ import (
 )
 
 type Repos struct {
-	users            repository.Users
-	vaults           repository.Vaults
-	vaultMembers     repository.VaultMembers
-	sessions         repository.Sessions
-	subscriptions    repository.Subscriptions
-	couchAccounts    repository.CouchAccounts
-	couchInstances   repository.CouchInstances
-	userPermissions  repository.UserPermissionsRepo
-	mcpKey           repository.McpKeyRepository
-	pendingAuthCodes repository.PendingAuthCodes
-	emailAccounts    repository.EmailAccounts
-	promptsRepo      repository.Prompts
+	users                 repository.Users
+	vaults                repository.Vaults
+	vaultMembers          repository.VaultMembers
+	sessions              repository.Sessions
+	subscriptions         repository.Subscriptions
+	couchAccounts         repository.CouchAccounts
+	couchInstances        repository.CouchInstances
+	userPermissions       repository.UserPermissionsRepo
+	mcpKey                repository.McpKeyRepository
+	pendingAuthCodes      repository.PendingAuthCodes
+	emailAccounts         repository.EmailAccounts
+	mailServerSuggestions repository.MailServerSuggestions
+	promptsRepo           repository.Prompts
 
 	txManager tx_manager.TxManager
 }
@@ -81,6 +83,10 @@ func (r Repos) EmailAccounts() repository.EmailAccounts {
 	return r.emailAccounts
 }
 
+func (r Repos) MailServerSuggestions() repository.MailServerSuggestions {
+	return r.mailServerSuggestions
+}
+
 func (r Repos) UserPermissions() repository.UserPermissionsRepo {
 	return r.userPermissions
 }
@@ -97,15 +103,16 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		vaultMembers:   vaultmembers.New(db),
 		couchInstances: couchinstances.New(db, encryptionKey),
 
-		users:            users.New(q),
-		sessions:         sessions.New(q),
-		subscriptions:    subscriptions.New(q),
-		couchAccounts:    couchaccounts.New(db, encryptionKey),
-		userPermissions:  userpermissions.New(q),
-		mcpKey:           mcpkeys.New(q),
-		pendingAuthCodes: pendingauthcodes.New(q),
-		emailAccounts:    emailaccounts.New(q, encryptionKey),
-		promptsRepo:      prompts.New(db),
+		users:                 users.New(q),
+		sessions:              sessions.New(q),
+		subscriptions:         subscriptions.New(q),
+		couchAccounts:         couchaccounts.New(db, encryptionKey),
+		userPermissions:       userpermissions.New(q),
+		mcpKey:                mcpkeys.New(q),
+		pendingAuthCodes:      pendingauthcodes.New(q),
+		emailAccounts:         emailaccounts.New(q, encryptionKey),
+		mailServerSuggestions: mailserversuggestions.New(q),
+		promptsRepo:           prompts.New(db),
 
 		txManager: tx_manager.New(db),
 	}

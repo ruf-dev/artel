@@ -15,11 +15,20 @@ import (
 const defaultListLimit = 20
 
 type EmailServiceImpl struct {
-	accounts repository.EmailAccounts
+	accounts    repository.EmailAccounts
+	suggestions repository.MailServerSuggestions
 }
 
-func New(accounts repository.EmailAccounts) *EmailServiceImpl {
-	return &EmailServiceImpl{accounts: accounts}
+func New(accounts repository.EmailAccounts, suggestions repository.MailServerSuggestions) *EmailServiceImpl {
+	return &EmailServiceImpl{accounts: accounts, suggestions: suggestions}
+}
+
+func (s *EmailServiceImpl) ListMailServerSuggestions(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error) {
+	result, err := s.suggestions.ListByDomain(ctx, domainPrefix)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list mail server suggestions")
+	}
+	return result, nil
 }
 
 func (s *EmailServiceImpl) AddAccount(ctx context.Context, account domain.EmailAccount) (domain.EmailAccount, error) {

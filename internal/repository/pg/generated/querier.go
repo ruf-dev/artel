@@ -51,6 +51,7 @@ type Querier interface {
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
 	ListEmailAccountsByUser(ctx context.Context, userID uuid.UUID) ([]EmailAccount, error)
+	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)

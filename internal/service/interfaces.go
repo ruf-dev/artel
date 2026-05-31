@@ -73,6 +73,7 @@ type EmailService interface {
 	AddAccount(ctx context.Context, account domain.EmailAccount) (domain.EmailAccount, error)
 	ListAccounts(ctx context.Context, userUuid uuid.UUID) ([]domain.EmailAccount, error)
 	DeleteAccount(ctx context.Context, accountUuid uuid.UUID) error
+	ListMailServerSuggestions(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error)
 
 	// Email operations — called from MCP tools.
 	ListFolders(ctx context.Context, accountUuid uuid.UUID) ([]string, error)

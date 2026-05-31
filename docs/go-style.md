@@ -36,3 +36,13 @@
 - **Attach HTTP status:** `rerrors.WithHttpStatus(http.StatusUnauthorized)`. Chain onto the error at definition.
 - **Never use naked `errors.New` or `fmt.Errorf`.** All errors go through `rerrors`.
 - **Call `rerrors.SetSeparator(':')` in `main()`.**
+
+## Proto / gRPC Rules
+
+- All RPCs must use `POST` with `body: "*"` in the HTTP gateway annotation:
+  ```proto
+  option (google.api.http) = {
+      post: "/api/your-service/method"
+      body: "*"
+  };
+  ```

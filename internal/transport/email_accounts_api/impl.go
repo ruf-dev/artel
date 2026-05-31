@@ -33,5 +33,5 @@ func (e *EmailAccountsImpl) Gateway(ctx context.Context, endpoint string, opts .
 		log.Error().Err(err).Msg("error registering email accounts grpc-gateway handler")
 	}
 
-	return "/api/email-accounts", gwMux
+	return "/api/email-accounts/", gwMux
 }

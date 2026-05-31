@@ -222,6 +222,118 @@ func (*DeleteEmailAccount) Descriptor() ([]byte, []int) {
 	return file_email_accounts_proto_rawDescGZIP(), []int{3}
 }
 
+type MailServerSuggestionInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
+	Smtp          string                 `protobuf:"bytes,2,opt,name=smtp,proto3" json:"smtp,omitempty"`
+	SmtpPort      int32                  `protobuf:"varint,3,opt,name=smtp_port,json=smtpPort,proto3" json:"smtp_port,omitempty"`
+	Imap          string                 `protobuf:"bytes,4,opt,name=imap,proto3" json:"imap,omitempty"`
+	ImapPort      int32                  `protobuf:"varint,5,opt,name=imap_port,json=imapPort,proto3" json:"imap_port,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MailServerSuggestionInfo) Reset() {
+	*x = MailServerSuggestionInfo{}
+	mi := &file_email_accounts_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MailServerSuggestionInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MailServerSuggestionInfo) ProtoMessage() {}
+
+func (x *MailServerSuggestionInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_email_accounts_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MailServerSuggestionInfo.ProtoReflect.Descriptor instead.
+func (*MailServerSuggestionInfo) Descriptor() ([]byte, []int) {
+	return file_email_accounts_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *MailServerSuggestionInfo) GetDomain() string {
+	if x != nil {
+		return x.Domain
+	}
+	return ""
+}
+
+func (x *MailServerSuggestionInfo) GetSmtp() string {
+	if x != nil {
+		return x.Smtp
+	}
+	return ""
+}
+
+func (x *MailServerSuggestionInfo) GetSmtpPort() int32 {
+	if x != nil {
+		return x.SmtpPort
+	}
+	return 0
+}
+
+func (x *MailServerSuggestionInfo) GetImap() string {
+	if x != nil {
+		return x.Imap
+	}
+	return ""
+}
+
+func (x *MailServerSuggestionInfo) GetImapPort() int32 {
+	if x != nil {
+		return x.ImapPort
+	}
+	return 0
+}
+
+type ListMailServerSuggestions struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMailServerSuggestions) Reset() {
+	*x = ListMailServerSuggestions{}
+	mi := &file_email_accounts_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMailServerSuggestions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMailServerSuggestions) ProtoMessage() {}
+
+func (x *ListMailServerSuggestions) ProtoReflect() protoreflect.Message {
+	mi := &file_email_accounts_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMailServerSuggestions.ProtoReflect.Descriptor instead.
+func (*ListMailServerSuggestions) Descriptor() ([]byte, []int) {
+	return file_email_accounts_proto_rawDescGZIP(), []int{5}
+}
+
 type AddEmailAccount_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
@@ -236,7 +348,7 @@ type AddEmailAccount_Request struct {
 
 func (x *AddEmailAccount_Request) Reset() {
 	*x = AddEmailAccount_Request{}
-	mi := &file_email_accounts_proto_msgTypes[4]
+	mi := &file_email_accounts_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -248,7 +360,7 @@ func (x *AddEmailAccount_Request) String() string {
 func (*AddEmailAccount_Request) ProtoMessage() {}
 
 func (x *AddEmailAccount_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_email_accounts_proto_msgTypes[4]
+	mi := &file_email_accounts_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -315,7 +427,7 @@ type AddEmailAccount_Response struct {
 
 func (x *AddEmailAccount_Response) Reset() {
 	*x = AddEmailAccount_Response{}
-	mi := &file_email_accounts_proto_msgTypes[5]
+	mi := &file_email_accounts_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -327,7 +439,7 @@ func (x *AddEmailAccount_Response) String() string {
 func (*AddEmailAccount_Response) ProtoMessage() {}
 
 func (x *AddEmailAccount_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_email_accounts_proto_msgTypes[5]
+	mi := &file_email_accounts_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -358,7 +470,7 @@ type ListEmailAccounts_Request struct {
 
 func (x *ListEmailAccounts_Request) Reset() {
 	*x = ListEmailAccounts_Request{}
-	mi := &file_email_accounts_proto_msgTypes[6]
+	mi := &file_email_accounts_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -370,7 +482,7 @@ func (x *ListEmailAccounts_Request) String() string {
 func (*ListEmailAccounts_Request) ProtoMessage() {}
 
 func (x *ListEmailAccounts_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_email_accounts_proto_msgTypes[6]
+	mi := &file_email_accounts_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -395,7 +507,7 @@ type ListEmailAccounts_Response struct {
 
 func (x *ListEmailAccounts_Response) Reset() {
 	*x = ListEmailAccounts_Response{}
-	mi := &file_email_accounts_proto_msgTypes[7]
+	mi := &file_email_accounts_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -407,7 +519,7 @@ func (x *ListEmailAccounts_Response) String() string {
 func (*ListEmailAccounts_Response) ProtoMessage() {}
 
 func (x *ListEmailAccounts_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_email_accounts_proto_msgTypes[7]
+	mi := &file_email_accounts_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -439,7 +551,7 @@ type DeleteEmailAccount_Request struct {
 
 func (x *DeleteEmailAccount_Request) Reset() {
 	*x = DeleteEmailAccount_Request{}
-	mi := &file_email_accounts_proto_msgTypes[8]
+	mi := &file_email_accounts_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -451,7 +563,7 @@ func (x *DeleteEmailAccount_Request) String() string {
 func (*DeleteEmailAccount_Request) ProtoMessage() {}
 
 func (x *DeleteEmailAccount_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_email_accounts_proto_msgTypes[8]
+	mi := &file_email_accounts_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -482,7 +594,7 @@ type DeleteEmailAccount_Response struct {
 
 func (x *DeleteEmailAccount_Response) Reset() {
 	*x = DeleteEmailAccount_Response{}
-	mi := &file_email_accounts_proto_msgTypes[9]
+	mi := &file_email_accounts_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -494,7 +606,7 @@ func (x *DeleteEmailAccount_Response) String() string {
 func (*DeleteEmailAccount_Response) ProtoMessage() {}
 
 func (x *DeleteEmailAccount_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_email_accounts_proto_msgTypes[9]
+	mi := &file_email_accounts_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -508,6 +620,94 @@ func (x *DeleteEmailAccount_Response) ProtoReflect() protoreflect.Message {
 // Deprecated: Use DeleteEmailAccount_Response.ProtoReflect.Descriptor instead.
 func (*DeleteEmailAccount_Response) Descriptor() ([]byte, []int) {
 	return file_email_accounts_proto_rawDescGZIP(), []int{3, 1}
+}
+
+type ListMailServerSuggestions_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMailServerSuggestions_Request) Reset() {
+	*x = ListMailServerSuggestions_Request{}
+	mi := &file_email_accounts_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMailServerSuggestions_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMailServerSuggestions_Request) ProtoMessage() {}
+
+func (x *ListMailServerSuggestions_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_email_accounts_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMailServerSuggestions_Request.ProtoReflect.Descriptor instead.
+func (*ListMailServerSuggestions_Request) Descriptor() ([]byte, []int) {
+	return file_email_accounts_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *ListMailServerSuggestions_Request) GetDomain() string {
+	if x != nil {
+		return x.Domain
+	}
+	return ""
+}
+
+type ListMailServerSuggestions_Response struct {
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Suggestions   []*MailServerSuggestionInfo `protobuf:"bytes,1,rep,name=suggestions,proto3" json:"suggestions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMailServerSuggestions_Response) Reset() {
+	*x = ListMailServerSuggestions_Response{}
+	mi := &file_email_accounts_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMailServerSuggestions_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMailServerSuggestions_Response) ProtoMessage() {}
+
+func (x *ListMailServerSuggestions_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_email_accounts_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMailServerSuggestions_Response.ProtoReflect.Descriptor instead.
+func (*ListMailServerSuggestions_Response) Descriptor() ([]byte, []int) {
+	return file_email_accounts_proto_rawDescGZIP(), []int{5, 1}
+}
+
+func (x *ListMailServerSuggestions_Response) GetSuggestions() []*MailServerSuggestionInfo {
+	if x != nil {
+		return x.Suggestions
+	}
+	return nil
 }
 
 var File_email_accounts_proto protoreflect.FileDescriptor
@@ -542,11 +742,23 @@ const file_email_accounts_proto_rawDesc = "" +
 	"\aRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\n" +
 	"\n" +
-	"\bResponse2\x95\x03\n" +
-	"\x10EmailAccountsAPI\x12z\n" +
-	"\x0fAddEmailAccount\x12\".artel_api.AddEmailAccount.Request\x1a#.artel_api.AddEmailAccount.Response\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/api/email-accounts\x12}\n" +
-	"\x11ListEmailAccounts\x12$.artel_api.ListEmailAccounts.Request\x1a%.artel_api.ListEmailAccounts.Response\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/api/email-accounts\x12\x85\x01\n" +
-	"\x12DeleteEmailAccount\x12%.artel_api.DeleteEmailAccount.Request\x1a&.artel_api.DeleteEmailAccount.Response\" \x82\xd3\xe4\x93\x02\x1a*\x18/api/email-accounts/{id}B\fZ\n" +
+	"\bResponse\"\x94\x01\n" +
+	"\x18MailServerSuggestionInfo\x12\x16\n" +
+	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x12\n" +
+	"\x04smtp\x18\x02 \x01(\tR\x04smtp\x12\x1b\n" +
+	"\tsmtp_port\x18\x03 \x01(\x05R\bsmtpPort\x12\x12\n" +
+	"\x04imap\x18\x04 \x01(\tR\x04imap\x12\x1b\n" +
+	"\timap_port\x18\x05 \x01(\x05R\bimapPort\"\x91\x01\n" +
+	"\x19ListMailServerSuggestions\x1a!\n" +
+	"\aRequest\x12\x16\n" +
+	"\x06domain\x18\x01 \x01(\tR\x06domain\x1aQ\n" +
+	"\bResponse\x12E\n" +
+	"\vsuggestions\x18\x01 \x03(\v2#.artel_api.MailServerSuggestionInfoR\vsuggestions2\xce\x04\n" +
+	"\x10EmailAccountsAPI\x12~\n" +
+	"\x0fAddEmailAccount\x12\".artel_api.AddEmailAccount.Request\x1a#.artel_api.AddEmailAccount.Response\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/email-accounts/add\x12\x85\x01\n" +
+	"\x11ListEmailAccounts\x12$.artel_api.ListEmailAccounts.Request\x1a%.artel_api.ListEmailAccounts.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/email-accounts/list\x12\x85\x01\n" +
+	"\x12DeleteEmailAccount\x12%.artel_api.DeleteEmailAccount.Request\x1a&.artel_api.DeleteEmailAccount.Response\" \x82\xd3\xe4\x93\x02\x1a*\x18/api/email-accounts/{id}\x12\xa9\x01\n" +
+	"\x19ListMailServerSuggestions\x12,.artel_api.ListMailServerSuggestions.Request\x1a-.artel_api.ListMailServerSuggestions.Response\"/\x82\xd3\xe4\x93\x02):\x01*\"$/api/email-accounts/list_suggestionsB\fZ\n" +
 	"/artel_apib\x06proto3"
 
 var (
@@ -561,33 +773,40 @@ func file_email_accounts_proto_rawDescGZIP() []byte {
 	return file_email_accounts_proto_rawDescData
 }
 
-var file_email_accounts_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_email_accounts_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_email_accounts_proto_goTypes = []any{
-	(*EmailAccountInfo)(nil),            // 0: artel_api.EmailAccountInfo
-	(*AddEmailAccount)(nil),             // 1: artel_api.AddEmailAccount
-	(*ListEmailAccounts)(nil),           // 2: artel_api.ListEmailAccounts
-	(*DeleteEmailAccount)(nil),          // 3: artel_api.DeleteEmailAccount
-	(*AddEmailAccount_Request)(nil),     // 4: artel_api.AddEmailAccount.Request
-	(*AddEmailAccount_Response)(nil),    // 5: artel_api.AddEmailAccount.Response
-	(*ListEmailAccounts_Request)(nil),   // 6: artel_api.ListEmailAccounts.Request
-	(*ListEmailAccounts_Response)(nil),  // 7: artel_api.ListEmailAccounts.Response
-	(*DeleteEmailAccount_Request)(nil),  // 8: artel_api.DeleteEmailAccount.Request
-	(*DeleteEmailAccount_Response)(nil), // 9: artel_api.DeleteEmailAccount.Response
+	(*EmailAccountInfo)(nil),                   // 0: artel_api.EmailAccountInfo
+	(*AddEmailAccount)(nil),                    // 1: artel_api.AddEmailAccount
+	(*ListEmailAccounts)(nil),                  // 2: artel_api.ListEmailAccounts
+	(*DeleteEmailAccount)(nil),                 // 3: artel_api.DeleteEmailAccount
+	(*MailServerSuggestionInfo)(nil),           // 4: artel_api.MailServerSuggestionInfo
+	(*ListMailServerSuggestions)(nil),          // 5: artel_api.ListMailServerSuggestions
+	(*AddEmailAccount_Request)(nil),            // 6: artel_api.AddEmailAccount.Request
+	(*AddEmailAccount_Response)(nil),           // 7: artel_api.AddEmailAccount.Response
+	(*ListEmailAccounts_Request)(nil),          // 8: artel_api.ListEmailAccounts.Request
+	(*ListEmailAccounts_Response)(nil),         // 9: artel_api.ListEmailAccounts.Response
+	(*DeleteEmailAccount_Request)(nil),         // 10: artel_api.DeleteEmailAccount.Request
+	(*DeleteEmailAccount_Response)(nil),        // 11: artel_api.DeleteEmailAccount.Response
+	(*ListMailServerSuggestions_Request)(nil),  // 12: artel_api.ListMailServerSuggestions.Request
+	(*ListMailServerSuggestions_Response)(nil), // 13: artel_api.ListMailServerSuggestions.Response
 }
 var file_email_accounts_proto_depIdxs = []int32{
-	0, // 0: artel_api.AddEmailAccount.Response.account:type_name -> artel_api.EmailAccountInfo
-	0, // 1: artel_api.ListEmailAccounts.Response.accounts:type_name -> artel_api.EmailAccountInfo
-	4, // 2: artel_api.EmailAccountsAPI.AddEmailAccount:input_type -> artel_api.AddEmailAccount.Request
-	6, // 3: artel_api.EmailAccountsAPI.ListEmailAccounts:input_type -> artel_api.ListEmailAccounts.Request
-	8, // 4: artel_api.EmailAccountsAPI.DeleteEmailAccount:input_type -> artel_api.DeleteEmailAccount.Request
-	5, // 5: artel_api.EmailAccountsAPI.AddEmailAccount:output_type -> artel_api.AddEmailAccount.Response
-	7, // 6: artel_api.EmailAccountsAPI.ListEmailAccounts:output_type -> artel_api.ListEmailAccounts.Response
-	9, // 7: artel_api.EmailAccountsAPI.DeleteEmailAccount:output_type -> artel_api.DeleteEmailAccount.Response
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0,  // 0: artel_api.AddEmailAccount.Response.account:type_name -> artel_api.EmailAccountInfo
+	0,  // 1: artel_api.ListEmailAccounts.Response.accounts:type_name -> artel_api.EmailAccountInfo
+	4,  // 2: artel_api.ListMailServerSuggestions.Response.suggestions:type_name -> artel_api.MailServerSuggestionInfo
+	6,  // 3: artel_api.EmailAccountsAPI.AddEmailAccount:input_type -> artel_api.AddEmailAccount.Request
+	8,  // 4: artel_api.EmailAccountsAPI.ListEmailAccounts:input_type -> artel_api.ListEmailAccounts.Request
+	10, // 5: artel_api.EmailAccountsAPI.DeleteEmailAccount:input_type -> artel_api.DeleteEmailAccount.Request
+	12, // 6: artel_api.EmailAccountsAPI.ListMailServerSuggestions:input_type -> artel_api.ListMailServerSuggestions.Request
+	7,  // 7: artel_api.EmailAccountsAPI.AddEmailAccount:output_type -> artel_api.AddEmailAccount.Response
+	9,  // 8: artel_api.EmailAccountsAPI.ListEmailAccounts:output_type -> artel_api.ListEmailAccounts.Response
+	11, // 9: artel_api.EmailAccountsAPI.DeleteEmailAccount:output_type -> artel_api.DeleteEmailAccount.Response
+	13, // 10: artel_api.EmailAccountsAPI.ListMailServerSuggestions:output_type -> artel_api.ListMailServerSuggestions.Response
+	7,  // [7:11] is the sub-list for method output_type
+	3,  // [3:7] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_email_accounts_proto_init() }
@@ -601,7 +820,7 @@ func file_email_accounts_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_email_accounts_proto_rawDesc), len(file_email_accounts_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

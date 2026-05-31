@@ -49,14 +49,35 @@ export type DeleteEmailAccountResponse = Record<string, never>;
 
 export type DeleteEmailAccount = Record<string, never>;
 
+export type MailServerSuggestionInfo = {
+  domain?: string;
+  smtp?: string;
+  smtpPort?: number;
+  imap?: string;
+  imapPort?: number;
+};
+
+export type ListMailServerSuggestionsRequest = {
+  domain?: string;
+};
+
+export type ListMailServerSuggestionsResponse = {
+  suggestions?: MailServerSuggestionInfo[];
+};
+
+export type ListMailServerSuggestions = Record<string, never>;
+
 export class EmailAccountsAPI {
   static AddEmailAccount(this:void, req: AddEmailAccountRequest, initReq?: fm.InitReq): Promise<AddEmailAccountResponse> {
-    return fm.fetchRequest<AddEmailAccountResponse>(`/api/email-accounts`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<AddEmailAccountResponse>(`/api/email-accounts/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListEmailAccounts(this:void, req: ListEmailAccountsRequest, initReq?: fm.InitReq): Promise<ListEmailAccountsResponse> {
-    return fm.fetchRequest<ListEmailAccountsResponse>(`/api/email-accounts?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListEmailAccountsResponse>(`/api/email-accounts/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static DeleteEmailAccount(this:void, req: DeleteEmailAccountRequest, initReq?: fm.InitReq): Promise<DeleteEmailAccountResponse> {
     return fm.fetchRequest<DeleteEmailAccountResponse>(`/api/email-accounts/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "DELETE"});
+  }
+  static ListMailServerSuggestions(this:void, req: ListMailServerSuggestionsRequest, initReq?: fm.InitReq): Promise<ListMailServerSuggestionsResponse> {
+    return fm.fetchRequest<ListMailServerSuggestionsResponse>(`/api/email-accounts/list_suggestions`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

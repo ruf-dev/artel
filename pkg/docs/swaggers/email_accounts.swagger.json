@@ -16,27 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/api/email-accounts": {
-      "get": {
-        "operationId": "EmailAccountsAPI_ListEmailAccounts",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_apiListEmailAccountsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "EmailAccountsAPI"
-        ]
-      },
+    "/api/email-accounts/add": {
       "post": {
         "operationId": "EmailAccountsAPI_AddEmailAccount",
         "responses": {
@@ -60,6 +40,70 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/artel_apiAddEmailAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "EmailAccountsAPI"
+        ]
+      }
+    },
+    "/api/email-accounts/list": {
+      "post": {
+        "operationId": "EmailAccountsAPI_ListEmailAccounts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListEmailAccountsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListEmailAccountsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "EmailAccountsAPI"
+        ]
+      }
+    },
+    "/api/email-accounts/list_suggestions": {
+      "post": {
+        "operationId": "EmailAccountsAPI_ListMailServerSuggestions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMailServerSuggestionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMailServerSuggestionsRequest"
             }
           }
         ],
@@ -164,6 +208,9 @@
         }
       }
     },
+    "artel_apiListEmailAccountsRequest": {
+      "type": "object"
+    },
     "artel_apiListEmailAccountsResponse": {
       "type": "object",
       "properties": {
@@ -173,6 +220,48 @@
             "type": "object",
             "$ref": "#/definitions/artel_apiEmailAccountInfo"
           }
+        }
+      }
+    },
+    "artel_apiListMailServerSuggestionsRequest": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListMailServerSuggestionsResponse": {
+      "type": "object",
+      "properties": {
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMailServerSuggestionInfo"
+          }
+        }
+      }
+    },
+    "artel_apiMailServerSuggestionInfo": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "smtp": {
+          "type": "string"
+        },
+        "smtpPort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "imap": {
+          "type": "string"
+        },
+        "imapPort": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

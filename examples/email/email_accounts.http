@@ -1,5 +1,5 @@
 ### Add email account
-POST {{artel_url}}/api/email-accounts
+POST {{artel_url}}/api/email-accounts/add
 Content-Type: application/json
 Authorization: {{auth_token}}
 
@@ -13,9 +13,23 @@ Authorization: {{auth_token}}
 }
 
 ### List email accounts
-GET {{artel_url}}/api/email-accounts
+POST {{artel_url}}/api/email-accounts/list
 Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+
+}
 
 ### Delete email account
 DELETE {{artel_url}}/api/email-accounts/{{email_account_id}}
 Authorization: {{auth_token}}
+
+
+### Suggest email
+POST {{artel_url}}/api/email-accounts/list_suggestions
+Content-Type: application/json
+
+{
+
+}

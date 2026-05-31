@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	EmailAccountsAPI_AddEmailAccount_FullMethodName    = "/artel_api.EmailAccountsAPI/AddEmailAccount"
-	EmailAccountsAPI_ListEmailAccounts_FullMethodName  = "/artel_api.EmailAccountsAPI/ListEmailAccounts"
-	EmailAccountsAPI_DeleteEmailAccount_FullMethodName = "/artel_api.EmailAccountsAPI/DeleteEmailAccount"
+	EmailAccountsAPI_AddEmailAccount_FullMethodName           = "/artel_api.EmailAccountsAPI/AddEmailAccount"
+	EmailAccountsAPI_ListEmailAccounts_FullMethodName         = "/artel_api.EmailAccountsAPI/ListEmailAccounts"
+	EmailAccountsAPI_DeleteEmailAccount_FullMethodName        = "/artel_api.EmailAccountsAPI/DeleteEmailAccount"
+	EmailAccountsAPI_ListMailServerSuggestions_FullMethodName = "/artel_api.EmailAccountsAPI/ListMailServerSuggestions"
 )
 
 // EmailAccountsAPIClient is the client API for EmailAccountsAPI service.
@@ -31,6 +32,7 @@ type EmailAccountsAPIClient interface {
 	AddEmailAccount(ctx context.Context, in *AddEmailAccount_Request, opts ...grpc.CallOption) (*AddEmailAccount_Response, error)
 	ListEmailAccounts(ctx context.Context, in *ListEmailAccounts_Request, opts ...grpc.CallOption) (*ListEmailAccounts_Response, error)
 	DeleteEmailAccount(ctx context.Context, in *DeleteEmailAccount_Request, opts ...grpc.CallOption) (*DeleteEmailAccount_Response, error)
+	ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error)
 }
 
 type emailAccountsAPIClient struct {
@@ -71,6 +73,16 @@ func (c *emailAccountsAPIClient) DeleteEmailAccount(ctx context.Context, in *Del
 	return out, nil
 }
 
+func (c *emailAccountsAPIClient) ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMailServerSuggestions_Response)
+	err := c.cc.Invoke(ctx, EmailAccountsAPI_ListMailServerSuggestions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EmailAccountsAPIServer is the server API for EmailAccountsAPI service.
 // All implementations must embed UnimplementedEmailAccountsAPIServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type EmailAccountsAPIServer interface {
 	AddEmailAccount(context.Context, *AddEmailAccount_Request) (*AddEmailAccount_Response, error)
 	ListEmailAccounts(context.Context, *ListEmailAccounts_Request) (*ListEmailAccounts_Response, error)
 	DeleteEmailAccount(context.Context, *DeleteEmailAccount_Request) (*DeleteEmailAccount_Response, error)
+	ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error)
 	mustEmbedUnimplementedEmailAccountsAPIServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedEmailAccountsAPIServer) ListEmailAccounts(context.Context, *L
 }
 func (UnimplementedEmailAccountsAPIServer) DeleteEmailAccount(context.Context, *DeleteEmailAccount_Request) (*DeleteEmailAccount_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteEmailAccount not implemented")
+}
+func (UnimplementedEmailAccountsAPIServer) ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListMailServerSuggestions not implemented")
 }
 func (UnimplementedEmailAccountsAPIServer) mustEmbedUnimplementedEmailAccountsAPIServer() {}
 func (UnimplementedEmailAccountsAPIServer) testEmbeddedByValue()                          {}
@@ -172,6 +188,24 @@ func _EmailAccountsAPI_DeleteEmailAccount_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EmailAccountsAPI_ListMailServerSuggestions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMailServerSuggestions_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EmailAccountsAPIServer).ListMailServerSuggestions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EmailAccountsAPI_ListMailServerSuggestions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EmailAccountsAPIServer).ListMailServerSuggestions(ctx, req.(*ListMailServerSuggestions_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EmailAccountsAPI_ServiceDesc is the grpc.ServiceDesc for EmailAccountsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var EmailAccountsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteEmailAccount",
 			Handler:    _EmailAccountsAPI_DeleteEmailAccount_Handler,
+		},
+		{
+			MethodName: "ListMailServerSuggestions",
+			Handler:    _EmailAccountsAPI_ListMailServerSuggestions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

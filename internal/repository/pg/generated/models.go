@@ -6,10 +6,53 @@ package artel_q
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type ArtelPrompt string
+
+const (
+	ArtelPromptPersonalVaultSetup ArtelPrompt = "personal_vault_setup"
+)
+
+func (e *ArtelPrompt) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ArtelPrompt(s)
+	case string:
+		*e = ArtelPrompt(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ArtelPrompt: %T", src)
+	}
+	return nil
+}
+
+type NullArtelPrompt struct {
+	ArtelPrompt ArtelPrompt
+	Valid       bool // Valid is true if ArtelPrompt is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullArtelPrompt) Scan(value interface{}) error {
+	if value == nil {
+		ns.ArtelPrompt, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ArtelPrompt.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullArtelPrompt) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ArtelPrompt), nil
+}
 
 type CouchAccount struct {
 	ID               uuid.UUID
@@ -49,6 +92,14 @@ type IdentitiesTelegram struct {
 	PhotoUrl   string
 }
 
+type MailServerSuggestion struct {
+	Domain   string
+	Smtp     string
+	SmtpPort int32
+	Imap     string
+	ImapPort int32
+}
+
 type McpKey struct {
 	ID         uuid.UUID
 	VaultID    uuid.UUID
@@ -67,6 +118,11 @@ type PendingAuthCode struct {
 	RedirectUri   string
 	ClientID      string
 	ExpiresAt     time.Time
+}
+
+type Prompt struct {
+	ID     ArtelPrompt
+	Prompt string
 }
 
 type Session struct {

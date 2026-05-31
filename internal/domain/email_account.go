@@ -18,6 +18,14 @@ type EmailAccount struct {
 	CreatedAt time.Time
 }
 
+type MailServerSuggestion struct {
+	Domain   string
+	Smtp     string
+	SmtpPort int
+	Imap     string
+	ImapPort int
+}
+
 type EmailMeta struct {
 	Id      string
 	From    string
