@@ -1,5 +1,5 @@
 ### Create MCP Key
-POST {{artel_url}}/api/mcp/f5cf9ccf-947a-4347-8fa4-2ef12d120646/mcp-keys
+POST {{artel_url}}/api/mcp/bd962f5b-a8c5-48b3-b54d-9c0d9c9b47ca/mcp-keys
 Content-Type: application/json
 Authorization: {{auth_token}}
 

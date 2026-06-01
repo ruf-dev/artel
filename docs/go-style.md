@@ -24,6 +24,9 @@
 - **Package names: lowercase, single word.** e.g. `authimpl`, `pg`.
 - **Type names: PascalCase; constants: SCREAMING_SNAKE_CASE.**
 
+## Transport / Handlers
+- **Never check authentication in handlers.** Handlers must not call `user_context.GetUserContext` or return auth errors directly. Auth checks belong in the service layer.
+
 ## Functions
 - **Named declarations only.** No anonymous assignments: `var f = func(){}` is forbidden; use `func name() {}`.
 - **Context is always the first parameter** in any function that touches I/O.

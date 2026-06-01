@@ -45,6 +45,7 @@ export class AuthService extends AuthMiddleware implements IAuthService {
             email: res.email ?? "",
             isAdministrator: res.permissions?.isAdministrator === true,
             hasEmails: res.permissions?.hasEmails === true,
+            hasTaskTrackers: res.permissions?.hasTaskTrackers === true,
             photoUrl: res.photoUrl || undefined,
         }
     }

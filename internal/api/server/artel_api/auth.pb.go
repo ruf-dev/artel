@@ -268,6 +268,7 @@ type Permissions struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	IsAdministrator bool                   `protobuf:"varint,1,opt,name=is_administrator,json=isAdministrator,proto3" json:"is_administrator,omitempty"`
 	HasEmails       bool                   `protobuf:"varint,2,opt,name=has_emails,json=hasEmails,proto3" json:"has_emails,omitempty"`
+	HasTaskTrackers bool                   `protobuf:"varint,3,opt,name=has_task_trackers,json=hasTaskTrackers,proto3" json:"has_task_trackers,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -312,6 +313,13 @@ func (x *Permissions) GetIsAdministrator() bool {
 func (x *Permissions) GetHasEmails() bool {
 	if x != nil {
 		return x.HasEmails
+	}
+	return false
+}
+
+func (x *Permissions) GetHasTaskTrackers() bool {
+	if x != nil {
+		return x.HasTaskTrackers
 	}
 	return false
 }
@@ -889,11 +897,12 @@ const file_auth_proto_rawDesc = "" +
 	"\tGetConfig\x1a\t\n" +
 	"\aRequest\x1a8\n" +
 	"\bResponse\x12,\n" +
-	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\"W\n" +
+	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\"\x83\x01\n" +
 	"\vPermissions\x12)\n" +
 	"\x10is_administrator\x18\x01 \x01(\bR\x0fisAdministrator\x12\x1d\n" +
 	"\n" +
-	"has_emails\x18\x02 \x01(\bR\thasEmails\"\xb9\x01\n" +
+	"has_emails\x18\x02 \x01(\bR\thasEmails\x12*\n" +
+	"\x11has_task_trackers\x18\x03 \x01(\bR\x0fhasTaskTrackers\"\xb9\x01\n" +
 	"\x05GetMe\x1a\t\n" +
 	"\aRequest\x1a\xa4\x01\n" +
 	"\bResponse\x12\x0e\n" +

@@ -28,6 +28,7 @@ type Repo interface {
 	EmailAccounts() EmailAccounts
 	MailServerSuggestions() MailServerSuggestions
 	Prompts() Prompts
+	TaskTrackers() TaskTrackerRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -123,7 +124,7 @@ type CouchInstances interface {
 
 type UserPermissionsRepo interface {
 	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
-	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool) (domain.UserPermissions, error)
+	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool, hasTaskTrackers bool) (domain.UserPermissions, error)
 	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
 
 	WithTx(tx *sql.Tx) UserPermissionsRepo
@@ -156,4 +157,11 @@ type EmailAccounts interface {
 
 type MailServerSuggestions interface {
 	ListByDomain(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error)
+}
+
+type TaskTrackerRepo interface {
+	Insert(ctx context.Context, tracker domain.TaskTracker) (domain.TaskTracker, error)
+	GetByUuid(ctx context.Context, id uuid.UUID) (domain.TaskTracker, error)
+	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.TaskTracker, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }

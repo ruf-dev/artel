@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
@@ -17,6 +18,7 @@ type Service interface {
 	EmailService() EmailService
 	SubscriptionService() SubscriptionService
 	PromptService() PromptService
+	TaskTrackerService() TaskTrackerService
 }
 
 type AuthService interface {
@@ -88,4 +90,11 @@ type EmailService interface {
 	ListEmails(ctx context.Context, accountUuid uuid.UUID, limit int) ([]domain.EmailMeta, error)
 	ReadEmail(ctx context.Context, accountUuid uuid.UUID, id string) (domain.EmailMessage, error)
 	SendEmail(ctx context.Context, accountUuid uuid.UUID, to, subject, body string) error
+}
+
+type TaskTrackerService interface {
+	AddTracker(ctx context.Context, tracker domain.TaskTracker, creds trello.TaskTrackerCredentials) (domain.TaskTracker, []domain.TrelloBoard, error)
+	ListTrackers(ctx context.Context) ([]domain.TaskTracker, error)
+	DeleteTracker(ctx context.Context, trackerUuid uuid.UUID) error
+	ListTrelloBoards(ctx context.Context, trackerUuid uuid.UUID) ([]domain.TrelloBoard, error)
 }

@@ -151,6 +151,9 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 	}
 	uuidHex := parts[0]
 	secretHex := parts[1]
+	if len(uuidHex) < 32 {
+		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.McpInvalidToken, "invalid token format")
+	}
 
 	uuidFormatted := fmt.Sprintf("%s-%s-%s-%s-%s", uuidHex[0:8], uuidHex[8:12], uuidHex[12:16], uuidHex[16:20], uuidHex[20:32])
 	keyUUID, err := uuid.Parse(uuidFormatted)

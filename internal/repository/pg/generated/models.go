@@ -183,6 +183,16 @@ type Subscription struct {
 	Active bool
 }
 
+type TaskTracker struct {
+	ID          uuid.UUID
+	UserID      uuid.UUID
+	Type        string
+	Name        string
+	ApiKeyEnc   []byte
+	ApiTokenEnc []byte
+	CreatedAt   time.Time
+}
+
 type User struct {
 	ID           uuid.UUID
 	Email        sql.NullString
@@ -196,6 +206,7 @@ type UserPermission struct {
 	UserID          uuid.UUID
 	IsAdministrator bool
 	HasEmails       bool
+	HasTaskTrackers bool
 }
 
 type Vault struct {

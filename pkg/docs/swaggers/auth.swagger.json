@@ -234,6 +234,9 @@
         },
         "hasEmails": {
           "type": "boolean"
+        },
+        "hasTaskTrackers": {
+          "type": "boolean"
         }
       }
     },

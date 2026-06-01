@@ -14,6 +14,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/tasktrackers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultinvites"
@@ -37,6 +38,7 @@ type Repos struct {
 	emailAccounts         repository.EmailAccounts
 	mailServerSuggestions repository.MailServerSuggestions
 	promptsRepo           repository.Prompts
+	taskTrackersRepo      repository.TaskTrackerRepo
 
 	txManager tx_manager.TxManager
 }
@@ -101,6 +103,10 @@ func (r Repos) Prompts() repository.Prompts {
 	return r.promptsRepo
 }
 
+func (r Repos) TaskTrackers() repository.TaskTrackerRepo {
+	return r.taskTrackersRepo
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 
@@ -120,6 +126,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		emailAccounts:         emailaccounts.New(q, encryptionKey),
 		mailServerSuggestions: mailserversuggestions.New(q),
 		promptsRepo:           prompts.New(db),
+		taskTrackersRepo:      tasktrackers.New(q, encryptionKey),
 
 		txManager: tx_manager.New(db),
 	}

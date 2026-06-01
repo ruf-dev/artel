@@ -1,0 +1,30 @@
+### Reading file
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "method": "tools/call",
+  "params": {
+    "name": "list_files"
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+}
+
+### Reading file
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "method": "tools/call",
+  "params": {
+    "name": "read_file",
+    "arguments": {
+      "path": "CLAUDE.md"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+}

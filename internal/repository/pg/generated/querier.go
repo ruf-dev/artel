@@ -29,6 +29,7 @@ type Querier interface {
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteSession(ctx context.Context, token string) error
+	DeleteTaskTracker(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
@@ -39,6 +40,7 @@ type Querier interface {
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
+	GetTaskTrackerByUuid(ctx context.Context, id uuid.UUID) (TaskTracker, error)
 	GetTelegramPhotoUrlByUserId(ctx context.Context, userID uuid.UUID) (string, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
@@ -49,6 +51,7 @@ type Querier interface {
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	InsertEmailAccount(ctx context.Context, arg InsertEmailAccountParams) (EmailAccount, error)
+	InsertTaskTracker(ctx context.Context, arg InsertTaskTrackerParams) (TaskTracker, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
@@ -56,6 +59,7 @@ type Querier interface {
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
+	ListTaskTrackersByUser(ctx context.Context, userID uuid.UUID) ([]TaskTracker, error)
 	ListVaultInvites(ctx context.Context, vaultID uuid.UUID) ([]VaultInvite, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)

@@ -7,6 +7,7 @@ export type UserInfo = {
     email: string
     isAdministrator: boolean
     hasEmails: boolean
+    hasTaskTrackers: boolean
     photoUrl?: string
 }
 
@@ -61,6 +62,10 @@ export class AuthMiddleware {
 
     hasEmailsPermission(): boolean {
         return this.userInfo?.hasEmails === true
+    }
+
+    hasTaskTrackersPermission(): boolean {
+        return this.userInfo?.hasTaskTrackers === true
     }
 
     getPhotoUrl(): string | undefined {

@@ -24,6 +24,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
 	"github.com/ruf-dev/artel/internal/transport/prompts_api"
+	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/ui"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
@@ -64,6 +65,7 @@ func (c *Custom) Init(a *App) error {
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
 	emailAccountsImpl := email_accounts_api.NewEmailAccountsImpl(services.EmailService())
+	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.EmailService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
@@ -89,7 +91,7 @@ func (c *Custom) Init(a *App) error {
 		middleware.LogInterceptor(),
 		middleware.PanicInterceptor(),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl)
 
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
