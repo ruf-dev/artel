@@ -1,0 +1,48 @@
+### Write a markdown file
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "method": "tools/call",
+  "params": {
+    "name": "write_note",
+    "arguments": {
+      "path": "hello.md",
+      "content": "# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n# Hello\n\nThis is a test note.\n\n- item one\n- item two\n"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+}
+
+### List files (verify it appears)
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "method": "tools/call",
+  "params": {
+    "name": "list_files"
+  },
+  "jsonrpc": "2.0",
+  "id": 2
+}
+
+### Read the file back
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "method": "tools/call",
+  "params": {
+    "name": "read_file",
+    "arguments": {
+      "path": "hello.md"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 3
+}

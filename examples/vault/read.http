@@ -22,7 +22,7 @@ Authorization: Bearer {{mcp_token}}
   "params": {
     "name": "read_file",
     "arguments": {
-      "path": "CLAUDE.md"
+      "path": "hello.md"
     }
   },
   "jsonrpc": "2.0",

@@ -134,13 +134,14 @@ func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, er
 	}
 
 	var couchDoc struct {
-		Id      string `json:"_id"`
-		Rev     string `json:"_rev"`
-		Data    string `json:"data"`
-		Mtime   int64  `json:"mtime"`
-		Ctime   int64  `json:"ctime"`
-		Size    int64  `json:"size"`
-		Deleted bool   `json:"deleted"`
+		Id       string   `json:"_id"`
+		Rev      string   `json:"_rev"`
+		Data     string   `json:"data"`
+		Children []string `json:"children"`
+		Mtime    int64    `json:"mtime"`
+		Ctime    int64    `json:"ctime"`
+		Size     int64    `json:"size"`
+		Deleted  bool     `json:"deleted"`
 	}
 
 	err = json.Unmarshal(body, &couchDoc)
@@ -148,15 +149,29 @@ func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, er
 		return NoteDoc{}, rerrors.Wrap(err, "failed to unmarshal response")
 	}
 
-	decoded, err := base64.StdEncoding.DecodeString(couchDoc.Data)
-	if err != nil {
-		return NoteDoc{}, rerrors.Wrap(err, "failed to decode base64 data")
+	var content string
+	if len(couchDoc.Children) > 0 {
+		var sb strings.Builder
+		for _, hash := range couchDoc.Children {
+			chunk, err := c.fetchLeaf(ctx, hash)
+			if err != nil {
+				return NoteDoc{}, rerrors.Wrap(err, fmt.Sprintf("failed to fetch leaf %s", hash))
+			}
+			sb.Write(chunk)
+		}
+		content = sb.String()
+	} else {
+		decoded, err := base64.StdEncoding.DecodeString(couchDoc.Data)
+		if err != nil {
+			return NoteDoc{}, rerrors.Wrap(err, "failed to decode base64 data")
+		}
+		content = string(decoded)
 	}
 
 	result := NoteDoc{
 		Id:      couchDoc.Id,
 		Rev:     couchDoc.Rev,
-		Content: string(decoded),
+		Content: content,
 		Mtime:   couchDoc.Mtime,
 		Ctime:   couchDoc.Ctime,
 		Size:    couchDoc.Size,
