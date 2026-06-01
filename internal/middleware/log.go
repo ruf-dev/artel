@@ -29,23 +29,19 @@ func (w *capturingResponseWriter) Write(b []byte) (int, error) {
 
 func HttpLogMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := enrichCtxLogger(r.Context())
+		r = r.WithContext(ctx)
+
 		cw := &capturingResponseWriter{ResponseWriter: w, statusCode: http.StatusOK}
 
 		reqBody, _ := io.ReadAll(r.Body)
 		r.Body = io.NopCloser(bytes.NewReader(reqBody))
 
-		fields := log.Debug().
+		fields := log.Ctx(ctx).Debug().
 			Str("method", r.Method).
 			Str("path", r.URL.Path).
 			Any("req_headers", r.Header).
 			Str("req_body", string(reqBody))
-
-		if span := trace.SpanFromContext(r.Context()); span.SpanContext().IsValid() {
-			sc := span.SpanContext()
-			fields = fields.
-				Str("trace_id", sc.TraceID().String()).
-				Str("span_id", sc.SpanID().String())
-		}
 
 		defer func() {
 			fields.Msg("incoming HTTP request")
@@ -63,16 +59,11 @@ func HttpLogMiddleware(next http.Handler) http.Handler {
 func LogInterceptor() grpc.ServerOption {
 	return grpc.ChainUnaryInterceptor(
 		func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-			fields := log.Debug().
+			ctx = enrichCtxLogger(ctx)
+
+			fields := log.Ctx(ctx).Debug().
 				Str("method", info.FullMethod).
 				Any("request", req)
-
-			if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
-				sc := span.SpanContext()
-				fields = fields.
-					Str("trace_id", sc.TraceID().String()).
-					Str("span_id", sc.SpanID().String())
-			}
 
 			defer func() {
 				fields.Msg("incoming GRPC request")
@@ -86,4 +77,17 @@ func LogInterceptor() grpc.ServerOption {
 
 			return resp, err
 		})
+}
+
+func enrichCtxLogger(ctx context.Context) context.Context {
+	span := trace.SpanFromContext(ctx)
+	if !span.SpanContext().IsValid() {
+		return ctx
+	}
+	sc := span.SpanContext()
+	enriched := log.Logger.With().
+		Str("trace_id", sc.TraceID().String()).
+		Str("span_id", sc.SpanID().String()).
+		Logger()
+	return enriched.WithContext(ctx)
 }

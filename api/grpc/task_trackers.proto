@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+service TaskTrackersAPI {
+    rpc AddTaskTracker(AddTaskTracker.Request) returns (AddTaskTracker.Response) {
+        option (google.api.http) = {
+            post: "/api/task-trackers/add"
+            body: "*"
+        };
+    }
+
+    rpc ListTaskTrackers(ListTaskTrackers.Request) returns (ListTaskTrackers.Response) {
+        option (google.api.http) = {
+            post: "/api/task-trackers/list"
+            body: "*"
+        };
+    }
+
+    rpc DeleteTaskTracker(DeleteTaskTracker.Request) returns (DeleteTaskTracker.Response) {
+        option (google.api.http) = {
+            post: "/api/task-trackers/delete"
+            body: "*"
+        };
+    }
+
+    rpc ListTrelloBoards(ListTrelloBoards.Request) returns (ListTrelloBoards.Response) {
+        option (google.api.http) = {
+            post: "/api/task-trackers/trello/boards"
+            body: "*"
+        };
+    }
+}
+
+message TaskTrackerInfo {
+    string id         = 1;
+    string type       = 2;
+    string name       = 3;
+    string created_at = 4;
+}
+
+message TrelloBoardInfo {
+    string id   = 1;
+    string name = 2;
+}
+
+message AddTaskTracker {
+    message Request {
+        string type      = 1;
+        string api_key   = 2;
+        string api_token = 3;
+    }
+    message Response {
+        TaskTrackerInfo          tracker = 1;
+        repeated TrelloBoardInfo boards  = 2;
+    }
+}
+
+message ListTaskTrackers {
+    message Request {}
+    message Response {
+        repeated TaskTrackerInfo trackers = 1;
+    }
+}
+
+message DeleteTaskTracker {
+    message Request {
+        string id = 1;
+    }
+    message Response {}
+}
+
+message ListTrelloBoards {
+    message Request {
+        string tracker_id = 1;
+    }
+    message Response {
+        repeated TrelloBoardInfo boards = 1;
+    }
+}

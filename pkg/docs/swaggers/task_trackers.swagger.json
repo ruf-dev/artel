@@ -1,0 +1,281 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "task_trackers.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TaskTrackersAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/task-trackers/add": {
+      "post": {
+        "operationId": "TaskTrackersAPI_AddTaskTracker",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddTaskTrackerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddTaskTrackerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TaskTrackersAPI"
+        ]
+      }
+    },
+    "/api/task-trackers/delete": {
+      "post": {
+        "operationId": "TaskTrackersAPI_DeleteTaskTracker",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteTaskTrackerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteTaskTrackerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TaskTrackersAPI"
+        ]
+      }
+    },
+    "/api/task-trackers/list": {
+      "post": {
+        "operationId": "TaskTrackersAPI_ListTaskTrackers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTaskTrackersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTaskTrackersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TaskTrackersAPI"
+        ]
+      }
+    },
+    "/api/task-trackers/trello/boards": {
+      "post": {
+        "operationId": "TaskTrackersAPI_ListTrelloBoards",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTrelloBoardsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTrelloBoardsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TaskTrackersAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_apiAddTaskTrackerRequest": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "apiKey": {
+          "type": "string"
+        },
+        "apiToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddTaskTrackerResponse": {
+      "type": "object",
+      "properties": {
+        "tracker": {
+          "$ref": "#/definitions/artel_apiTaskTrackerInfo"
+        },
+        "boards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTrelloBoardInfo"
+          }
+        }
+      }
+    },
+    "artel_apiDeleteTaskTrackerRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDeleteTaskTrackerResponse": {
+      "type": "object"
+    },
+    "artel_apiListTaskTrackersRequest": {
+      "type": "object"
+    },
+    "artel_apiListTaskTrackersResponse": {
+      "type": "object",
+      "properties": {
+        "trackers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTaskTrackerInfo"
+          }
+        }
+      }
+    },
+    "artel_apiListTrelloBoardsRequest": {
+      "type": "object",
+      "properties": {
+        "trackerId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListTrelloBoardsResponse": {
+      "type": "object",
+      "properties": {
+        "boards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTrelloBoardInfo"
+          }
+        }
+      }
+    },
+    "artel_apiTaskTrackerInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiTrelloBoardInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
