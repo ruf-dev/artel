@@ -80,14 +80,13 @@ func LogInterceptor() grpc.ServerOption {
 }
 
 func enrichCtxLogger(ctx context.Context) context.Context {
-	span := trace.SpanFromContext(ctx)
-	if !span.SpanContext().IsValid() {
-		return ctx
+	logger := log.Logger
+	if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
+		sc := span.SpanContext()
+		logger = logger.With().
+			Str("trace_id", sc.TraceID().String()).
+			Str("span_id", sc.SpanID().String()).
+			Logger()
 	}
-	sc := span.SpanContext()
-	enriched := log.Logger.With().
-		Str("trace_id", sc.TraceID().String()).
-		Str("span_id", sc.SpanID().String()).
-		Logger()
-	return enriched.WithContext(ctx)
+	return logger.WithContext(ctx)
 }
