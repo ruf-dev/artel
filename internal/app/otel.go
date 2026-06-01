@@ -4,10 +4,7 @@ import (
 	"context"
 
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	otellogGlobal "go.opentelemetry.io/otel/log/global"
-	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.27.0"
@@ -23,7 +20,7 @@ func (a *App) initOTel() error {
 		return nil
 	}
 
-	res, err := resource.New(context.Background(),
+	res, err := resource.New(a.Ctx,
 		resource.WithAttributes(semconv.ServiceName("artel")),
 		resource.WithProcess(),
 		resource.WithHost(),
@@ -41,25 +38,15 @@ func (a *App) initOTel() error {
 	if err != nil {
 		return rerrors.Wrap(err, "create otlp trace exporter")
 	}
+
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(traceExp),
 		sdktrace.WithResource(res),
 	)
 	otel.SetTracerProvider(tp)
 
-	logExp, err := otlploggrpc.New(context.Background(), otlploggrpc.WithGRPCConn(conn))
-	if err != nil {
-		return rerrors.Wrap(err, "create otlp log exporter")
-	}
-	lp := sdklog.NewLoggerProvider(
-		sdklog.WithProcessor(sdklog.NewBatchProcessor(logExp)),
-		sdklog.WithResource(res),
-	)
-	otellogGlobal.SetLoggerProvider(lp)
-
 	closer.Add(func() error {
 		_ = tp.Shutdown(context.Background())
-		_ = lp.Shutdown(context.Background())
 		return conn.Close()
 	})
 
