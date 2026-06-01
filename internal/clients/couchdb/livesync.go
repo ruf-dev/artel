@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strings"
 
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/service/user_errors"
@@ -31,7 +32,7 @@ func NewLiveSyncClient(baseURL, dbName, username, password string) *LiveSyncClie
 		dbName:   dbName,
 		username: username,
 		password: password,
-		http:     &http.Client{Transport: newLoggingTransport()},
+		http:     &http.Client{Transport: otelhttp.NewTransport(newLoggingTransport())},
 	}
 }
 

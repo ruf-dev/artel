@@ -2,11 +2,21 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); f=$(echo \"$input\" | jq -r '.tool_input.file_path // \"\"'); if echo \"$f\" | grep -q '\\.go$'; then jq -n --arg c \"$(cat docs/go-style.md)\" '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":$c}}'; fi 2>/dev/null || true",
+            "command": "python3 -c \"import json,sys; d=json.load(sys.stdin); fp=d.get('tool_input',{}).get('file_path',''); c=open('docs/go-style.md').read() if fp.endswith('.go') else None; print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse','additionalContext':c}})) if c else None\" 2>/dev/null || true",
+            "statusMessage": "Loading Go style guide..."
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,sys; d=json.load(sys.stdin); fp=d.get('tool_input',{}).get('file_path',''); c=open('docs/go-style.md').read() if fp.endswith('.go') else None; print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse','additionalContext':c}})) if c else None\" 2>/dev/null || true",
             "statusMessage": "Loading Go style guide..."
           }
         ]

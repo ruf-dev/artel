@@ -2,25 +2,25 @@
 
 package config
 
-type EnvironmentConfig struct { 
-    CredsEncryptionKey string
-    LogFormat string
-    LogLevel string
-    TelegramClientID string
+type EnvironmentConfig struct {
+	CredsEncryptionKey string
+	LogFormat          string
+	LogLevel           string
+	TelegramClientID   string
+	OtelEndpoint       string
 }
 
-const ( 
-    LogFormat_Json = "JSON"
-    LogFormat_Text = "TEXT"
+const (
+	LogFormat_Json = "JSON"
+	LogFormat_Text = "TEXT"
 )
 
-const ( 
-    LogLevel_Trace = "Trace"
-    LogLevel_Debug = "Debug"
-    LogLevel_Info = "Info"
-    LogLevel_Warn = "Warn"
-    LogLevel_Error = "Error"
-    LogLevel_Fatal = "Fatal"
-    LogLevel_Panic = "Panic"
+const (
+	LogLevel_Trace = "Trace"
+	LogLevel_Debug = "Debug"
+	LogLevel_Info  = "Info"
+	LogLevel_Warn  = "Warn"
+	LogLevel_Error = "Error"
+	LogLevel_Fatal = "Fatal"
+	LogLevel_Panic = "Panic"
 )
-

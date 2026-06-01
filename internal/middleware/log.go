@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 )
 
@@ -39,6 +40,13 @@ func HttpLogMiddleware(next http.Handler) http.Handler {
 			Any("req_headers", r.Header).
 			Str("req_body", string(reqBody))
 
+		if span := trace.SpanFromContext(r.Context()); span.SpanContext().IsValid() {
+			sc := span.SpanContext()
+			fields = fields.
+				Str("trace_id", sc.TraceID().String()).
+				Str("span_id", sc.SpanID().String())
+		}
+
 		defer func() {
 			fields.Msg("incoming HTTP request")
 		}()
@@ -58,6 +66,13 @@ func LogInterceptor() grpc.ServerOption {
 			fields := log.Debug().
 				Str("method", info.FullMethod).
 				Any("request", req)
+
+			if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
+				sc := span.SpanContext()
+				fields = fields.
+					Str("trace_id", sc.TraceID().String()).
+					Str("span_id", sc.SpanID().String())
+			}
 
 			defer func() {
 				fields.Msg("incoming GRPC request")

@@ -31,3 +31,6 @@ environment:
     - name: telegram_client_id
       type: string
       value: "8719705888"
+    - name: otel_endpoint
+      type: string
+      value: ""

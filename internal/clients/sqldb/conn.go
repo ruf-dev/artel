@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/XSAM/otelsql"
 	"github.com/rs/zerolog/log"
+	semconv "go.opentelemetry.io/otel/semconv/v1.27.0"
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox/closer"
 	"go.vervstack.ru/matreshka/pkg/matreshka/resources"
@@ -16,7 +18,9 @@ func New(cfg resources.SqlResource) (*sql.DB, error) {
 	dialect := cfg.SqlDialect()
 	connStr := cfg.ConnectionString()
 
-	conn, err := sql.Open(dialect, connStr)
+	conn, err := otelsql.Open(dialect, connStr,
+		otelsql.WithAttributes(semconv.DBSystemPostgreSQL),
+	)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error checking connection to postgres")
 	}

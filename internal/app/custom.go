@@ -9,7 +9,9 @@ import (
 	"net/http"
 
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/middleware"
@@ -31,6 +33,14 @@ type Custom struct {
 }
 
 func (c *Custom) Init(a *App) error {
+	if err := a.initOTel(); err != nil {
+		return rerrors.Wrap(err, "init otel")
+	}
+	if a.Cfg.Environment.OtelEndpoint != "" {
+		hook := middleware.NewOtelLogHook("artel")
+		log.Logger = log.Logger.Hook(hook)
+	}
+
 	encKeyHex := a.Cfg.Environment.CredsEncryptionKey
 	encKey, err := hex.DecodeString(encKeyHex)
 	if err != nil {
@@ -58,7 +68,9 @@ func (c *Custom) Init(a *App) error {
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.EmailService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
+	otelServerHandler := otelgrpc.NewServerHandler()
 	c.Transport.AddServerOption(
+		grpc.StatsHandler(otelServerHandler),
 		middleware.GrpcAuthInterceptor(services,
 			middleware.WithIgnoredPathAuthOption(
 				pb.AuthAPI_Register_FullMethodName,
