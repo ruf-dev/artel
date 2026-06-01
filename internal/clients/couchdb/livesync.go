@@ -157,7 +157,7 @@ func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, er
 			if err != nil {
 				return NoteDoc{}, rerrors.Wrap(err, fmt.Sprintf("failed to fetch leaf %s", hash))
 			}
-			sb.Write(chunk)
+			sb.WriteString(chunk)
 		}
 		content = sb.String()
 	} else {
@@ -569,43 +569,40 @@ func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, er
 	return doc.Rev, nil
 }
 
-func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) ([]byte, error) {
+func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, error) {
 	encodedId := url.PathEscape(hash)
 	leafURL := fmt.Sprintf("%s/%s/%s", c.baseURL, c.dbName, encodedId)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, leafURL, nil)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to create leaf request")
+		return "", rerrors.Wrap(err, "failed to create leaf request")
 	}
 	req.SetBasicAuth(c.username, c.password)
 	req.Header.Set("Accept", "application/json")
 
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to execute leaf request")
+		return "", rerrors.Wrap(err, "failed to execute leaf request")
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to read leaf body")
+		return "", rerrors.Wrap(err, "failed to read leaf body")
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, rerrors.New(fmt.Sprintf("leaf fetch unexpected status %d: %s", resp.StatusCode, string(body)))
+		return "", rerrors.New(fmt.Sprintf("leaf fetch unexpected status %d: %s", resp.StatusCode, string(body)))
 	}
 
 	var leafDoc struct {
 		Data string `json:"data"`
 	}
-	if err := json.Unmarshal(body, &leafDoc); err != nil {
-		return nil, rerrors.Wrap(err, "failed to unmarshal leaf")
+	err = json.Unmarshal(body, &leafDoc)
+	if err != nil {
+		return "", rerrors.Wrap(err, "failed to unmarshal leaf")
 	}
 
-	decoded, err := base64.StdEncoding.DecodeString(leafDoc.Data)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "failed to decode leaf base64")
-	}
-	return decoded, nil
+	return leafDoc.Data, nil
 }
 
 func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
@@ -715,9 +712,13 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 	switch couchDoc.Type {
 	case "newnote":
 		for _, hash := range couchDoc.Children {
-			chunk, err := c.fetchLeaf(ctx, hash)
+			raw, err := c.fetchLeaf(ctx, hash)
 			if err != nil {
 				return FileDoc{}, rerrors.Wrap(err, fmt.Sprintf("failed to fetch leaf %s", hash))
+			}
+			chunk, err := base64.StdEncoding.DecodeString(raw)
+			if err != nil {
+				return FileDoc{}, rerrors.Wrap(err, fmt.Sprintf("failed to decode leaf %s", hash))
 			}
 			rawBytes = append(rawBytes, chunk...)
 		}
