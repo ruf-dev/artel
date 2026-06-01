@@ -1,2 +1,5 @@
+-- +goose Up
 ALTER TABLE user_permissions
     ADD COLUMN IF NOT EXISTS has_task_trackers BOOLEAN NOT NULL DEFAULT FALSE;
+-- +goose Down
+SELECT 1;
