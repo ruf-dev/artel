@@ -137,21 +137,23 @@ func (c *LiveSyncClient) WriteNote(ctx context.Context, path, content string) er
 
 	now := time.Now().UnixMilli()
 	doc := struct {
-		Id    string `json:"_id"`
-		Rev   string `json:"_rev,omitempty"`
-		Data  string `json:"data"`
-		Mtime int64  `json:"mtime"`
-		Ctime int64  `json:"ctime"`
-		Size  int64  `json:"size"`
-		Type  string `json:"type"`
+		Id       string   `json:"_id"`
+		Rev      string   `json:"_rev,omitempty"`
+		Data     string   `json:"data"`
+		Children []string `json:"children"`
+		Mtime    int64    `json:"mtime"`
+		Ctime    int64    `json:"ctime"`
+		Size     int64    `json:"size"`
+		Type     string   `json:"type"`
 	}{
-		Id:    path,
-		Rev:   rev,
-		Data:  base64.StdEncoding.EncodeToString([]byte(content)),
-		Mtime: now,
-		Ctime: now,
-		Size:  int64(len(content)),
-		Type:  "plain",
+		Id:       path,
+		Rev:      rev,
+		Data:     base64.StdEncoding.EncodeToString([]byte(content)),
+		Children: []string{},
+		Mtime:    now,
+		Ctime:    now,
+		Size:     int64(len(content)),
+		Type:     "plain",
 	}
 
 	_, err = c.db.Put(ctx, path, doc)
@@ -168,15 +170,17 @@ func (c *LiveSyncClient) DeleteNote(ctx context.Context, path string) error {
 	}
 
 	doc := struct {
-		Id      string `json:"_id"`
-		Rev     string `json:"_rev"`
-		Type    string `json:"type"`
-		Deleted bool   `json:"deleted"`
+		Id       string   `json:"_id"`
+		Rev      string   `json:"_rev"`
+		Children []string `json:"children"`
+		Type     string   `json:"type"`
+		Deleted  bool     `json:"deleted"`
 	}{
-		Id:      path,
-		Rev:     note.Rev,
-		Type:    "plain",
-		Deleted: true,
+		Id:       path,
+		Rev:      note.Rev,
+		Children: []string{},
+		Type:     "plain",
+		Deleted:  true,
 	}
 
 	_, err = c.db.Put(ctx, path, doc)
@@ -385,15 +389,17 @@ func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 	}
 
 	doc := struct {
-		Id      string `json:"_id"`
-		Rev     string `json:"_rev"`
-		Type    string `json:"type"`
-		Deleted bool   `json:"deleted"`
+		Id       string   `json:"_id"`
+		Rev      string   `json:"_rev"`
+		Children []string `json:"children"`
+		Type     string   `json:"type"`
+		Deleted  bool     `json:"deleted"`
 	}{
-		Id:      path,
-		Rev:     rev,
-		Type:    "plain",
-		Deleted: true,
+		Id:       path,
+		Rev:      rev,
+		Children: []string{},
+		Type:     "plain",
+		Deleted:  true,
 	}
 
 	_, err = c.db.Put(ctx, path, doc)
@@ -425,19 +431,21 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 	}
 
 	newDoc := struct {
-		Id    string `json:"_id"`
-		Data  string `json:"data"`
-		Mtime int64  `json:"mtime"`
-		Ctime int64  `json:"ctime"`
-		Size  int64  `json:"size"`
-		Type  string `json:"type"`
+		Id       string   `json:"_id"`
+		Data     string   `json:"data"`
+		Children []string `json:"children"`
+		Mtime    int64    `json:"mtime"`
+		Ctime    int64    `json:"ctime"`
+		Size     int64    `json:"size"`
+		Type     string   `json:"type"`
 	}{
-		Id:    newPath,
-		Data:  base64.StdEncoding.EncodeToString(file.RawBytes),
-		Mtime: file.Mtime,
-		Ctime: file.Ctime,
-		Size:  file.Size,
-		Type:  "plain",
+		Id:       newPath,
+		Data:     base64.StdEncoding.EncodeToString(file.RawBytes),
+		Children: []string{},
+		Mtime:    file.Mtime,
+		Ctime:    file.Ctime,
+		Size:     file.Size,
+		Type:     "plain",
 	}
 
 	_, err = c.db.Put(ctx, newPath, newDoc)

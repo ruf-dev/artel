@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	kivik "github.com/go-kivik/kivik/v4"
+	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
@@ -32,6 +34,7 @@ type VaultSuite struct {
 	suite.Suite
 	admin  *couchdb.Client
 	vault  *couchdb.LiveSyncClient
+	rawDB  *kivik.DB // direct kivik handle for verifying raw document structure
 	dbName string
 }
 
@@ -61,6 +64,10 @@ func (s *VaultSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	s.vault = couchdb.NewLiveSyncClient(couchURL, s.dbName, couchUser, couchPass)
+
+	kivikClient, err := kivik.New("couch", couchURL, kivikcouch.BasicAuth(couchUser, couchPass))
+	s.Require().NoError(err)
+	s.rawDB = kivikClient.DB(s.dbName)
 }
 
 func (s *VaultSuite) TeardownSuite() {
@@ -312,4 +319,90 @@ func (s *VaultSuite) TestDelete_NonExistent() {
 	err := s.vault.DeleteNote(ctx, path)
 	// DeleteNote calls ReadNote first; a non-existent path should return an error.
 	require.Error(t, err, "deleting a non-existent note should return an error")
+}
+
+// ── LiveSync plugin compatibility ─────────────────────────────────────────────
+//
+// The LiveSync Obsidian plugin iterates meta.children unconditionally:
+//   for (const child of meta.children) { ... }
+// If children is absent from the CouchDB document, meta.children is undefined
+// and this throws TypeError: meta.children is not iterable, breaking sync.
+// Every document artel writes must include children: [] for non-chunked content.
+
+func (s *VaultSuite) TestLiveSyncCompat_WriteNote_ChildrenIsEmptyArray() {
+	t := s.T()
+	ctx := context.Background()
+	path := noteID(t, "compat_write")
+
+	err := s.vault.WriteNote(ctx, path, "# Note\nContent.")
+	require.NoError(t, err)
+
+	d := s.rawDB.Get(ctx, path)
+	defer d.Close()
+
+	var raw struct {
+		Children []string `json:"children"`
+	}
+	err = d.ScanDoc(&raw)
+	require.NoError(t, err)
+	require.NotNil(t, raw.Children, "children field must be an empty array, not missing — LiveSync iterates it unconditionally")
+	require.Empty(t, raw.Children)
+}
+
+func (s *VaultSuite) TestLiveSyncCompat_DeleteNote_ChildrenIsEmptyArray() {
+	t := s.T()
+	ctx := context.Background()
+	path := noteID(t, "compat_delete")
+
+	err := s.vault.WriteNote(ctx, path, "will be deleted")
+	require.NoError(t, err)
+
+	err = s.vault.DeleteNote(ctx, path)
+	require.NoError(t, err)
+
+	d := s.rawDB.Get(ctx, path)
+	defer d.Close()
+
+	var raw struct {
+		Children []string `json:"children"`
+		Deleted  bool     `json:"deleted"`
+	}
+	err = d.ScanDoc(&raw)
+	require.NoError(t, err)
+	require.True(t, raw.Deleted)
+	require.NotNil(t, raw.Children, "children field must be present even on soft-deleted docs")
+	require.Empty(t, raw.Children)
+}
+
+func (s *VaultSuite) TestLiveSyncCompat_MoveFile_DestinationChildrenIsEmptyArray() {
+	t := s.T()
+	ctx := context.Background()
+	prefix := strings.ReplaceAll(t.Name(), "/", "_")
+	oldPath := prefix + "/source.bin"
+	newPath := prefix + "/dest.bin"
+
+	// Insert a plain binary doc directly — simulates a file written by the LiveSync plugin.
+	_, err := s.rawDB.Put(ctx, oldPath, map[string]interface{}{
+		"_id":   oldPath,
+		"data":  "aGVsbG8=", // base64("hello")
+		"type":  "plain",
+		"mtime": int64(0),
+		"ctime": int64(0),
+		"size":  int64(5),
+	})
+	require.NoError(t, err)
+
+	err = s.vault.MoveFile(ctx, oldPath, newPath)
+	require.NoError(t, err)
+
+	d := s.rawDB.Get(ctx, newPath)
+	defer d.Close()
+
+	var raw struct {
+		Children []string `json:"children"`
+	}
+	err = d.ScanDoc(&raw)
+	require.NoError(t, err)
+	require.NotNil(t, raw.Children, "children field must be present on move destination")
+	require.Empty(t, raw.Children)
 }
