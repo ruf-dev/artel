@@ -16,6 +16,7 @@ type Service struct {
 	vaults         repository.Vaults
 	vaultMembers   repository.VaultMembers
 	couchInstances repository.CouchInstances
+	userPerms      repository.UserPermissionsRepo
 }
 
 func New(repo repository.Repo) *Service {
@@ -23,7 +24,19 @@ func New(repo repository.Repo) *Service {
 		vaults:         repo.Vaults(),
 		vaultMembers:   repo.VaultMembers(),
 		couchInstances: repo.CouchInstances(),
+		userPerms:      repo.UserPermissions(),
 	}
+}
+
+func (s *Service) checkPermission(ctx context.Context, userUuid uuid.UUID) error {
+	perms, err := s.userPerms.Get(ctx, userUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting permissions")
+	}
+	if !perms.HasNotes {
+		return rerrors.Wrap(user_errors.NotesNotEnabled)
+	}
+	return nil
 }
 
 func (s *Service) ListFolders(ctx context.Context, vaultID uuid.UUID) ([]string, error) {
@@ -32,7 +45,12 @@ func (s *Service) ListFolders(ctx context.Context, vaultID uuid.UUID) ([]string,
 		return nil, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	_, err := s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
+	err := s.checkPermission(ctx, uc.UserUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.Unauthenticated, "not a vault member")
 	}
@@ -63,7 +81,12 @@ func (s *Service) ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.N
 		return nil, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	_, err := s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
+	err := s.checkPermission(ctx, uc.UserUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.Unauthenticated, "not a vault member")
 	}
@@ -94,7 +117,12 @@ func (s *Service) GetNote(ctx context.Context, vaultID uuid.UUID, path string) (
 		return couchdb.NoteDoc{}, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	_, err := s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
+	err := s.checkPermission(ctx, uc.UserUuid)
+	if err != nil {
+		return couchdb.NoteDoc{}, err
+	}
+
+	_, err = s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
 	if err != nil {
 		return couchdb.NoteDoc{}, rerrors.Wrap(user_errors.Unauthenticated, "not a vault member")
 	}
@@ -125,7 +153,12 @@ func (s *Service) ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, er
 		return nil, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	_, err := s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
+	err := s.checkPermission(ctx, uc.UserUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.Unauthenticated, "not a vault member")
 	}
