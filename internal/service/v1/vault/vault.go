@@ -215,7 +215,17 @@ func (s *Service) DeleteVault(ctx context.Context, vaultID uuid.UUID) error {
 		return rerrors.Wrap(err, "get vault by id")
 	}
 
-	_ = vault
+	instance, err := s.couchInstancesRepo.Get(ctx, vault.CouchInstanceUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get couch instance")
+	}
+
+	couchClient := newCouchClient(instance)
+
+	err = couchClient.DeleteDatabase(ctx, vault.CouchDBName)
+	if err != nil {
+		return rerrors.Wrap(err, "delete couch database")
+	}
 
 	err = s.vaultsRepo.Delete(ctx, vaultID)
 	if err != nil {
