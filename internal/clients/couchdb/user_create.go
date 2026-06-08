@@ -42,12 +42,11 @@ func (c *Client) CreateUser(ctx context.Context, username, password string, role
 
 	defer resp.Body.Close()
 
-	switch resp.StatusCode {
-	case http.StatusConflict:
-		return rerrors.Wrap(user_errors.UserAlreadyExistInCouchDb)
-	default:
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(reqBody)))
+	if resp.StatusCode == http.StatusCreated || resp.StatusCode == http.StatusOK {
+		return nil
 	}
-
-	return nil
+	if resp.StatusCode == http.StatusConflict {
+		return rerrors.Wrap(user_errors.UserAlreadyExistInCouchDb)
+	}
+	return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(reqBody)))
 }
