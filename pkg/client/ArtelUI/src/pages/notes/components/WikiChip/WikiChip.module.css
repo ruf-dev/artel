@@ -1,0 +1,22 @@
+.WikiChipContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--coral-dim);
+    border: 1px solid var(--coral-border);
+    border-radius: 5px;
+    padding: 1px 8px 1px 5px;
+    font-family: var(--font);
+    font-size: 12px;
+    color: var(--text-primary);
+    cursor: pointer;
+    vertical-align: middle;
+    line-height: 1.6;
+    white-space: nowrap;
+    user-select: none;
+    transition: background 150ms ease;
+}
+
+.WikiChipContainer:hover {
+    background: rgba(255, 75, 62, 0.14);
+}

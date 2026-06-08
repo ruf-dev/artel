@@ -10,6 +10,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
 	"github.com/ruf-dev/artel/internal/service/v1/email"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
+	"github.com/ruf-dev/artel/internal/service/v1/notes"
 	"github.com/ruf-dev/artel/internal/service/v1/prompt"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
@@ -25,6 +26,7 @@ type Services struct {
 	Subscription  service.SubscriptionService
 	Prompt        service.PromptService
 	TaskTracker   service.TaskTrackerService
+	Notes         service.NotesService
 }
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
@@ -42,6 +44,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Subscription:  subscription.New(repo.Subscriptions()),
 		Prompt:        prompt.New(repo.Prompts()),
 		TaskTracker:   tasktracker.New(repo.TaskTrackers()),
+		Notes:         notes.New(repo),
 	}, nil
 }
 
@@ -75,4 +78,8 @@ func (s *Services) PromptService() service.PromptService {
 
 func (s *Services) TaskTrackerService() service.TaskTrackerService {
 	return s.TaskTracker
+}
+
+func (s *Services) NotesService() service.NotesService {
+	return s.Notes
 }

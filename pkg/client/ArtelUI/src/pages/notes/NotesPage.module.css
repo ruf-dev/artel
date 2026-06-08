@@ -1,0 +1,22 @@
+.NotesPageContainer {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-base);
+    font-family: var(--font);
+    color: var(--text-primary);
+}
+
+.SidebarWrapper {
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.ViewerWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}

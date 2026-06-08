@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package artel_notes;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service NotesAPI {
+  rpc ListFolders(ListFolders.Request) returns (ListFolders.Response) {
+    option (google.api.http) = {
+      get: "/api/notes/{vault_id}/folders"
+    };
+  };
+  rpc ListNotes(ListNotes.Request) returns (ListNotes.Response) {
+    option (google.api.http) = {
+      get: "/api/notes/{vault_id}"
+    };
+  };
+  rpc GetNote(GetNote.Request) returns (GetNote.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/{vault_id}/note"
+      body: "*"
+    };
+  };
+  rpc ListTags(ListTags.Request) returns (ListTags.Response) {
+    option (google.api.http) = {
+      get: "/api/notes/{vault_id}/tags"
+    };
+  };
+}
+
+message NoteItem {
+  string path = 1;
+  int64 mtime = 2;
+}
+
+message ListFolders {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated string folders = 1;
+  }
+}
+
+message ListNotes {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated NoteItem notes = 1;
+  }
+}
+
+message GetNote {
+  message Request {
+    string vault_id = 1;
+    string path = 2;
+  }
+  message Response {
+    string content = 1;
+  }
+}
+
+message ListTags {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated string tags = 1;
+  }
+}

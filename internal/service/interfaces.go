@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -19,6 +20,7 @@ type Service interface {
 	SubscriptionService() SubscriptionService
 	PromptService() PromptService
 	TaskTrackerService() TaskTrackerService
+	NotesService() NotesService
 }
 
 type AuthService interface {
@@ -97,4 +99,11 @@ type TaskTrackerService interface {
 	ListTrackers(ctx context.Context) ([]domain.TaskTracker, error)
 	DeleteTracker(ctx context.Context, trackerUuid uuid.UUID) error
 	ListTrelloBoards(ctx context.Context, trackerUuid uuid.UUID) ([]domain.TrelloBoard, error)
+}
+
+type NotesService interface {
+	ListFolders(ctx context.Context, vaultID uuid.UUID) ([]string, error)
+	ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.NoteEntry, error)
+	GetNote(ctx context.Context, vaultID uuid.UUID, path string) (couchdb.NoteDoc, error)
+	ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error)
 }

@@ -46,6 +46,12 @@ export default function TopbarNav() {
                     className={cls.NavLinkDisabled}>Emails</span>
                 </div>
             )}
+            <NavLink
+                to={Path.NotesPage}
+                className={({isActive}) => isActive ? `${cls.NavLink} ${cls.NavLinkActive}` : cls.NavLink}
+            >
+                Notes
+            </NavLink>
         </nav>
     )
 }

@@ -23,6 +23,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/email_accounts_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
+	"github.com/ruf-dev/artel/internal/transport/notes_api"
 	"github.com/ruf-dev/artel/internal/transport/prompts_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/ui"
@@ -61,6 +62,7 @@ func (c *Custom) Init(a *App) error {
 	}
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
+	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
@@ -91,7 +93,7 @@ func (c *Custom) Init(a *App) error {
 		middleware.LogInterceptor(),
 		middleware.PanicInterceptor(),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl)
 
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
