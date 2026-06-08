@@ -48,11 +48,7 @@ func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
 		if strings.HasPrefix(id, "_design/") {
 			continue
 		}
-		var doc struct {
-			Type    string `json:"type"`
-			Deleted bool   `json:"deleted"`
-			Mtime   int64  `json:"mtime"`
-		}
+		var doc docScan
 		err = rows.ScanDoc(&doc)
 		if err != nil {
 			continue
@@ -73,16 +69,7 @@ func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, er
 	d := c.db.Get(ctx, path)
 	defer d.Close()
 
-	var couchDoc struct {
-		Id       string   `json:"_id"`
-		Rev      string   `json:"_rev"`
-		Data     string   `json:"data"`
-		Children []string `json:"children"`
-		Mtime    int64    `json:"mtime"`
-		Ctime    int64    `json:"ctime"`
-		Size     int64    `json:"size"`
-		Deleted  bool     `json:"deleted"`
-	}
+	var couchDoc docFull
 	err := d.ScanDoc(&couchDoc)
 	if err != nil {
 		return NoteDoc{}, rerrors.Wrap(err, "scan doc")
@@ -122,9 +109,7 @@ func (c *LiveSyncClient) WriteNote(ctx context.Context, path, content string) er
 	d := c.db.Get(ctx, path)
 	defer d.Close()
 
-	var existing struct {
-		Rev string `json:"_rev"`
-	}
+	var existing docRev
 	rev := ""
 	err := d.ScanDoc(&existing)
 	if err != nil {
@@ -136,16 +121,7 @@ func (c *LiveSyncClient) WriteNote(ctx context.Context, path, content string) er
 	}
 
 	now := time.Now().UnixMilli()
-	doc := struct {
-		Id       string   `json:"_id"`
-		Rev      string   `json:"_rev,omitempty"`
-		Data     string   `json:"data"`
-		Children []string `json:"children"`
-		Mtime    int64    `json:"mtime"`
-		Ctime    int64    `json:"ctime"`
-		Size     int64    `json:"size"`
-		Type     string   `json:"type"`
-	}{
+	doc := noteWrite{
 		Id:       path,
 		Rev:      rev,
 		Data:     base64.StdEncoding.EncodeToString([]byte(content)),
@@ -169,13 +145,7 @@ func (c *LiveSyncClient) DeleteNote(ctx context.Context, path string) error {
 		return rerrors.Wrap(err, "read note")
 	}
 
-	doc := struct {
-		Id       string   `json:"_id"`
-		Rev      string   `json:"_rev"`
-		Children []string `json:"children"`
-		Type     string   `json:"type"`
-		Deleted  bool     `json:"deleted"`
-	}{
+	doc := docDelete{
 		Id:       path,
 		Rev:      note.Rev,
 		Children: []string{},
@@ -266,23 +236,19 @@ func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, er
 	d := c.db.Get(ctx, hash)
 	defer d.Close()
 
-	var leafDoc struct {
-		Data string `json:"data"`
-	}
-	err := d.ScanDoc(&leafDoc)
+	var leaf leafDoc
+	err := d.ScanDoc(&leaf)
 	if err != nil {
 		return "", rerrors.Wrap(err, "scan leaf")
 	}
-	return leafDoc.Data, nil
+	return leaf.Data, nil
 }
 
 func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, error) {
 	d := c.db.Get(ctx, path)
 	defer d.Close()
 
-	var doc struct {
-		Rev string `json:"_rev"`
-	}
+	var doc docRev
 	err := d.ScanDoc(&doc)
 	if err != nil {
 		return "", rerrors.Wrap(err, "get doc rev")
@@ -303,11 +269,7 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 		if strings.HasPrefix(id, "_design/") {
 			continue
 		}
-		var doc struct {
-			Type    string `json:"type"`
-			Deleted bool   `json:"deleted"`
-			Mtime   int64  `json:"mtime"`
-		}
+		var doc docScan
 		err = rows.ScanDoc(&doc)
 		if err != nil {
 			continue
@@ -333,17 +295,7 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 	d := c.db.Get(ctx, path)
 	defer d.Close()
 
-	var couchDoc struct {
-		Id       string   `json:"_id"`
-		Rev      string   `json:"_rev"`
-		Type     string   `json:"type"`
-		Data     string   `json:"data"`
-		Children []string `json:"children"`
-		Mtime    int64    `json:"mtime"`
-		Ctime    int64    `json:"ctime"`
-		Size     int64    `json:"size"`
-		Deleted  bool     `json:"deleted"`
-	}
+	var couchDoc docFull
 	err := d.ScanDoc(&couchDoc)
 	if err != nil {
 		return FileDoc{}, rerrors.Wrap(err, "scan doc")
@@ -388,13 +340,7 @@ func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 		return rerrors.Wrap(err, "get doc rev")
 	}
 
-	doc := struct {
-		Id       string   `json:"_id"`
-		Rev      string   `json:"_rev"`
-		Children []string `json:"children"`
-		Type     string   `json:"type"`
-		Deleted  bool     `json:"deleted"`
-	}{
+	doc := docDelete{
 		Id:       path,
 		Rev:      rev,
 		Children: []string{},
@@ -413,9 +359,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 	d := c.db.Get(ctx, oldPath)
 	defer d.Close()
 
-	var couchDoc struct {
-		Type string `json:"type"`
-	}
+	var couchDoc docType
 	err := d.ScanDoc(&couchDoc)
 	if err != nil {
 		return rerrors.Wrap(err, "get existing doc type")
@@ -430,15 +374,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 		return rerrors.Wrap(err, "read file")
 	}
 
-	newDoc := struct {
-		Id       string   `json:"_id"`
-		Data     string   `json:"data"`
-		Children []string `json:"children"`
-		Mtime    int64    `json:"mtime"`
-		Ctime    int64    `json:"ctime"`
-		Size     int64    `json:"size"`
-		Type     string   `json:"type"`
-	}{
+	newDoc := fileWrite{
 		Id:       newPath,
 		Data:     base64.StdEncoding.EncodeToString(file.RawBytes),
 		Children: []string{},
@@ -530,38 +466,6 @@ func extractTags(content string) []string {
 	}
 
 	return tags
-}
-
-type NoteEntry struct {
-	Path  string
-	Mtime int64
-}
-
-type NoteDoc struct {
-	Id      string
-	Rev     string
-	Content string
-	Mtime   int64
-	Ctime   int64
-	Size    int64
-	Deleted bool
-}
-
-type FileEntry struct {
-	Path     string
-	Mtime    int64
-	MimeType string
-}
-
-type FileDoc struct {
-	Id       string
-	Rev      string
-	RawBytes []byte
-	MimeType string
-	Mtime    int64
-	Ctime    int64
-	Size     int64
-	Deleted  bool
 }
 
 func MimeTypeForPath(path string) string {
