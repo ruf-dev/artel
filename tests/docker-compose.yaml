@@ -1,0 +1,17 @@
+services:
+  test-couchdb:
+    image: apache/couchdb:3
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: admin
+    ports:
+      - "15985:5984"
+
+  test-postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: artel
+      POSTGRES_DB: artel_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "15434:5432"
