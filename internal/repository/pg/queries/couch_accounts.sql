@@ -1,16 +1,7 @@
--- name: CreateCouchAccount :one
-WITH _inserting AS (
-    INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
-        VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING)
-SELECT id,
-       user_id,
-       couch_instance_id,
-       couch_username,
-       couch_password_enc,
-       created_at
-FROM couch_accounts
-WHERE couch_accounts.user_id = $1
-  AND couch_accounts.couch_instance_id = $2;
+-- name: UpsertCouchAccount :exec
+INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT DO NOTHING;
 
 
 -- name: GetCouchAccountByUserAndInstance :one

@@ -44,15 +44,6 @@ func New(
 	}
 }
 
-func generatePassword() (string, error) {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", rerrors.Wrap(err, "generate random bytes")
-	}
-	return hex.EncodeToString(b), nil
-}
-
 func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vault, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
@@ -87,6 +78,11 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 			)
 			if err != nil {
 				return rerrors.Wrap(err, "error ensuring couch user exists")
+			}
+
+			err = couchClient.SetDatabaseSecurity(ctx, vault.CouchDBName, instanceWithAccount.Account.CouchUsername)
+			if err != nil {
+				return rerrors.Wrap(err, "error setting database security")
 			}
 
 			err = vaultMembersRepo.Add(ctx, vault.Uuid, uc.UserUuid, artel_q.VaultRoleOwner)
@@ -342,4 +338,13 @@ func sanitizeCouchDBName(name string) string {
 	name = strings.Replace(name, " ", "_", -1)
 
 	return name
+}
+
+func generatePassword() (string, error) {
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", rerrors.Wrap(err, "generate random bytes")
+	}
+	return hex.EncodeToString(b), nil
 }

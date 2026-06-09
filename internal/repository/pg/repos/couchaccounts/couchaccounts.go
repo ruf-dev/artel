@@ -32,13 +32,22 @@ func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, usernam
 		return domain.CouchAccount{}, rerrors.Wrap(err, "encrypt password")
 	}
 
-	params := artel_q.CreateCouchAccountParams{
+	upsertParams := artel_q.UpsertCouchAccountParams{
 		UserID:           userID,
 		CouchInstanceID:  instanceID,
 		CouchUsername:    username,
 		CouchPasswordEnc: passwordEnc,
 	}
-	row, err := r.q.CreateCouchAccount(ctx, params)
+	err = r.q.UpsertCouchAccount(ctx, upsertParams)
+	if err != nil {
+		return domain.CouchAccount{}, pg_err.UnwrapPgErr(err)
+	}
+
+	getParams := artel_q.GetCouchAccountByUserAndInstanceParams{
+		UserID:          userID,
+		CouchInstanceID: instanceID,
+	}
+	row, err := r.q.GetCouchAccountByUserAndInstance(ctx, getParams)
 	if err != nil {
 		return domain.CouchAccount{}, pg_err.UnwrapPgErr(err)
 	}

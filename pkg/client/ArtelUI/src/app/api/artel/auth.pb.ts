@@ -73,6 +73,7 @@ export type Permissions = {
   isAdministrator?: boolean;
   hasEmails?: boolean;
   hasTaskTrackers?: boolean;
+  hasNotes?: boolean;
 };
 
 export type GetMeRequest = Record<string, never>;

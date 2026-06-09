@@ -30,6 +30,9 @@ var (
 	// admin
 	NotAdmin = rerrors.New("not an administrator", codes.PermissionDenied)
 
+	// feature flags
+	NotesNotEnabled = rerrors.New("notes are not enabled for your account", codes.PermissionDenied)
+
 	// vault
 	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)
 	InviteLinkRevoked  = rerrors.New("invite link has been revoked", codes.FailedPrecondition)

@@ -207,6 +207,7 @@ type UserPermission struct {
 	IsAdministrator bool
 	HasEmails       bool
 	HasTaskTrackers bool
+	HasNotes        bool
 }
 
 type Vault struct {

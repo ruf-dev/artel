@@ -11,47 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const createCouchAccount = `-- name: CreateCouchAccount :one
-WITH _inserting AS (
-    INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
-        VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING)
-SELECT id,
-       user_id,
-       couch_instance_id,
-       couch_username,
-       couch_password_enc,
-       created_at
-FROM couch_accounts
-WHERE couch_accounts.user_id = $1
-  AND couch_accounts.couch_instance_id = $2
-`
-
-type CreateCouchAccountParams struct {
-	UserID           uuid.UUID
-	CouchInstanceID  uuid.UUID
-	CouchUsername    string
-	CouchPasswordEnc []byte
-}
-
-func (q *Queries) CreateCouchAccount(ctx context.Context, arg CreateCouchAccountParams) (CouchAccount, error) {
-	row := q.db.QueryRowContext(ctx, createCouchAccount,
-		arg.UserID,
-		arg.CouchInstanceID,
-		arg.CouchUsername,
-		arg.CouchPasswordEnc,
-	)
-	var i CouchAccount
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.CouchInstanceID,
-		&i.CouchUsername,
-		&i.CouchPasswordEnc,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const deleteCouchAccount = `-- name: DeleteCouchAccount :exec
 DELETE
 FROM couch_accounts
@@ -123,4 +82,27 @@ func (q *Queries) ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID)
 		return nil, err
 	}
 	return items, nil
+}
+
+const upsertCouchAccount = `-- name: UpsertCouchAccount :exec
+INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT DO NOTHING
+`
+
+type UpsertCouchAccountParams struct {
+	UserID           uuid.UUID
+	CouchInstanceID  uuid.UUID
+	CouchUsername    string
+	CouchPasswordEnc []byte
+}
+
+func (q *Queries) UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error {
+	_, err := q.db.ExecContext(ctx, upsertCouchAccount,
+		arg.UserID,
+		arg.CouchInstanceID,
+		arg.CouchUsername,
+		arg.CouchPasswordEnc,
+	)
+	return err
 }

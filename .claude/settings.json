@@ -30,6 +30,19 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(jq -r '.tool_input.file_path // \"\"'); echo \"$file\" | grep -qE 'migrations/[^/]+\\.sql$' && goose -dir ./migrations postgres \"host=localhost port=15433 user=artel dbname=artel_db sslmode=disable\" down && goose -dir ./migrations postgres \"host=localhost port=15433 user=artel dbname=artel_db sslmode=disable\" up || true",
+            "statusMessage": "Running goose down+up...",
+            "timeout": 60
+          }
+        ]
+      }
     ]
   }
 }
