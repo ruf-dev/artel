@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"go.redsock.ru/rerrors"
@@ -48,5 +49,16 @@ func (c *Client) CreateUser(ctx context.Context, username, password string, role
 	if resp.StatusCode == http.StatusConflict {
 		return rerrors.Wrap(user_errors.UserAlreadyExistInCouchDb)
 	}
-	return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(reqBody)))
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return rerrors.Wrap(err, "failed to read response body")
+	}
+
+	lockedErr := checkAccountLocked(resp.StatusCode, body)
+	if lockedErr != nil {
+		return lockedErr
+	}
+
+	return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
 }

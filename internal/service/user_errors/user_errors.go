@@ -15,6 +15,7 @@ var (
 	InvalidCouchDbDatabaseName   = rerrors.New("invalid database name", codes.InvalidArgument)
 	CouchDbDatabaseAlreadyExists = rerrors.New("database already exists", codes.FailedPrecondition)
 	UserAlreadyExistInCouchDb    = rerrors.New("user already exists in couch db", codes.AlreadyExists)
+	CouchDbAccountLocked         = rerrors.New("couch admin account is locked after authentication failures; update instance credentials", codes.FailedPrecondition)
 
 	McpKeyRevoked   = rerrors.New("mcp key revoked", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusBadRequest))
 	McpInvalidToken = rerrors.New("invalid mcp token", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusBadRequest))

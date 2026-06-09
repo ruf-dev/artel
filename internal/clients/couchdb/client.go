@@ -73,6 +73,10 @@ func (c *Client) DeleteDatabase(ctx context.Context, name string) error {
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		lockedErr := checkAccountLocked(resp.StatusCode, body)
+		if lockedErr != nil {
+			return lockedErr
+		}
 		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
 	}
 

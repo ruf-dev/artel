@@ -34,6 +34,11 @@ func (c *Client) CreateDatabase(ctx context.Context, name string) error {
 		return nil
 	}
 
+	lockedErr := checkAccountLocked(resp.StatusCode, body)
+	if lockedErr != nil {
+		return lockedErr
+	}
+
 	switch resp.StatusCode {
 	case http.StatusBadRequest,
 		http.StatusPreconditionFailed:
