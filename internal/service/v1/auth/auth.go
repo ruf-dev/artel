@@ -7,12 +7,11 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/MicahParks/keyfunc/v3"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/ruf-dev/artel/internal/client/telegram"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
@@ -20,30 +19,29 @@ import (
 )
 
 type Service struct {
-	usersRepo        repository.Users
-	sessionsRepo     repository.Sessions
-	permissionsRepo  repository.UserPermissionsRepo
-	subsRepo         repository.Subscriptions
-	txManager        tx_manager.TxManager
-	jwksClient       keyfunc.Keyfunc
-	telegramClientId string
+	usersRepo       repository.Users
+	sessionsRepo    repository.Sessions
+	permissionsRepo repository.UserPermissionsRepo
+	subsRepo        repository.Subscriptions
+	txManager       tx_manager.TxManager
+	tgParser        telegram.TokenParser
 }
 
-func New(repo repository.Repo, telegramClientId string) (*Service, error) {
-	jwks, err := keyfunc.NewDefaultCtx(context.Background(), []string{"https://oauth.telegram.org/.well-known/jwks.json"})
-	if err != nil {
-		return nil, rerrors.Wrap(err, "init telegram jwks client")
-	}
+func New(repo repository.Repo, telegramClientId string) *Service {
+	tgParser := telegram.NewTokenParser(
+		"https://oauth.telegram.org/.well-known/jwks.json",
+		"https://oauth.telegram.org",
+		telegramClientId,
+	)
 
 	return &Service{
-		usersRepo:        repo.Users(),
-		sessionsRepo:     repo.Sessions(),
-		permissionsRepo:  repo.UserPermissions(),
-		subsRepo:         repo.Subscriptions(),
-		txManager:        repo.TxManager(),
-		jwksClient:       jwks,
-		telegramClientId: telegramClientId,
-	}, nil
+		usersRepo:       repo.Users(),
+		sessionsRepo:    repo.Sessions(),
+		permissionsRepo: repo.UserPermissions(),
+		subsRepo:        repo.Subscriptions(),
+		txManager:       repo.TxManager(),
+		tgParser:        tgParser,
+	}
 }
 
 func (s *Service) Register(ctx context.Context, email, password string) (domain.User, error) {
@@ -123,15 +121,9 @@ func (s *Service) ValidateToken(ctx context.Context, token string) (uuid.UUID, e
 }
 
 func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {
-	claims := &jwt.RegisteredClaims{}
-	token, err := jwt.ParseWithClaims(idToken, claims, s.jwksClient.Keyfunc,
-		jwt.WithValidMethods([]string{"RS256", "ES256"}))
+	claims, err := s.tgParser.ParseAndVerifyIdToken(idToken)
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(err, "parse telegram id_token")
-	}
-
-	if !token.Valid {
-		return domain.Session{}, user_errors.InvalidTelegramToken
+		return domain.Session{}, rerrors.Wrap(user_errors.InvalidTelegramToken, "error validating telegram token", err.Error())
 	}
 
 	telegramId := claims.Subject
@@ -162,6 +154,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 			identity := domain.TelegramIdentity{
 				UserUuid:   user.Uuid,
 				TelegramId: telegramId,
+				PhotoUrl:   claims.Picture,
 			}
 			err = usersRepo.UpsertTelegramIdentity(ctx, identity)
 			if err != nil {
