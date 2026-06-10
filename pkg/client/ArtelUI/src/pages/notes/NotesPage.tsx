@@ -8,16 +8,12 @@ import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
 
 export default function NotesPage() {
     const { vaultId, noteContent, selectVault } = useNotes()
-    const { vaults, fetch: fetchVaults } = useVaults()
+    const { vaults } = useVaults()
 
     const vaultOptions = useMemo(
         () => vaults.filter(v => v.id && v.name).map(v => ({ id: v.id!, name: v.name! })),
         [vaults],
     )
-
-    useEffect(() => {
-        void fetchVaults()
-    }, [fetchVaults])
 
     useEffect(() => {
         const singleVault = vaultOptions.length === 1 ? vaultOptions[0] : null

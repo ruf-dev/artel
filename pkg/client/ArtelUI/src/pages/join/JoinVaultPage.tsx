@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom"
 
 import cls from "@/pages/join/JoinVaultPage.module.css"
 
-import {useVaults} from "@/app/hooks/Vaults.ts"
+import {useVaultMutations} from "@/app/hooks/Vaults.ts"
 import useUser from "@/hooks/user/User.ts"
 import {Path, REDIRECT_AFTER_LOGIN_KEY} from "@/app/routing/Router.tsx"
 
@@ -11,7 +11,7 @@ export default function JoinVaultPage() {
     const {token} = useParams<{token: string}>()
     const navigate = useNavigate()
     const {auth} = useUser()
-    const {acceptInvite} = useVaults()
+    const {acceptInvite} = useVaultMutations()
     const [status, setStatus] = useState<"joining" | "success" | "error">("joining")
     const [errorMsg, setErrorMsg] = useState("")
 

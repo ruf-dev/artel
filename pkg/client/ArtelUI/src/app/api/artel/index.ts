@@ -4,6 +4,7 @@ export * from './auth.pb';
 export * from './couch_instances.pb';
 export * from './notes.pb';
 export * from './prompts.pb';
+export * from './user_errors.pb';
 export * from './vaults.pb';
 
 export { AdminCouchAPI } from './admin_couch.pb';

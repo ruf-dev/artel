@@ -4,7 +4,6 @@ go 1.26.3
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
-	github.com/MicahParks/keyfunc/v3 v3.8.0
 	github.com/Red-Sock/go-swagger-ui v0.0.2
 	github.com/XSAM/otelsql v0.36.0
 	github.com/emersion/go-imap v1.2.1
@@ -27,7 +26,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.34.0
 	go.opentelemetry.io/otel/trace v1.35.0
 	go.redsock.ru/protoc-gen-npm v0.0.12
-	go.redsock.ru/rerrors v0.0.13
+	go.redsock.ru/rerrors v0.0.15
 	go.redsock.ru/toolbox v0.0.13
 	go.vervstack.ru/matreshka v1.0.95
 	golang.org/x/crypto v0.51.0
@@ -39,7 +38,6 @@ require (
 )
 
 require (
-	github.com/MicahParks/jwkset v0.11.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21 // indirect
@@ -61,7 +59,6 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.44.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
-	golang.org/x/time v0.9.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

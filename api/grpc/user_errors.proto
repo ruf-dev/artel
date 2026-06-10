@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+enum UserErrors {
+  UndefinedError = 0;
+
+  NoSubscription = 1;
+}

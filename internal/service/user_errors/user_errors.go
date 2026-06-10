@@ -5,6 +5,8 @@ import (
 
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc/codes"
+
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 )
 
 var (
@@ -26,7 +28,12 @@ var (
 	UnsupportedLoginMethod = rerrors.New("unsupported login method", codes.InvalidArgument)
 
 	// subscription
-	NoActiveSubscription = rerrors.New("no active subscription", codes.PermissionDenied)
+
+	NoActiveSubscription = rerrors.New("no active subscription",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+		rerrors.WithPreconditionFailure("SUB", "subscription", pb.UserErrors_NoSubscription.String()),
+	)
 
 	// admin
 	NotAdmin = rerrors.New("not an administrator", codes.PermissionDenied)

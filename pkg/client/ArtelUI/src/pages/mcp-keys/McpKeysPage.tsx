@@ -21,7 +21,6 @@ export default function McpKeysPage() {
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const {fetch: fetchKeys} = useMcpKeys()
-    const {fetch: fetchVaults} = useVaults()
     const {fetch: fetchEmails} = useEmailAccounts()
 
     useEffect(() => {
@@ -33,10 +32,9 @@ export default function McpKeysPage() {
     useEffect(() => {
         if (auth.isAuthenticated()) {
             void fetchKeys()
-            void fetchVaults()
             void fetchEmails()
         }
-    }, [auth, fetchKeys, fetchVaults, fetchEmails])
+    }, [auth, fetchKeys, fetchEmails])
 
     return (
         <div className={cls.Root}>

@@ -1,11 +1,10 @@
 import {useState, useEffect} from "react"
-import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/home/HomePage.module.css"
 
-import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
-import {useVaults} from "@/app/hooks/Vaults.ts"
+import {useVaults, useVaultMutations} from "@/app/hooks/Vaults.ts"
+import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
@@ -13,34 +12,34 @@ import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
-
+import InfoDialog from "@/components/InfoDialog/InfoDialog.tsx"
+import type {GrpcStatusError} from "@/processes/grpcErrors.ts";
+import {isMissingSubscription} from "@/processes/UserErrors.ts";
 
 export default function HomePage() {
-    const navigate = useNavigate()
-
-    const {auth} = useUser()
     const {OpenDialog} = useDialog()
-    const {vaults, fetch: fetchVaults, forbidden} = useVaults()
+    const vaultsQuery = useVaults()
+    const bakeError = useBakeError()
 
     useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
+        if (!vaultsQuery.isError) return
+
+        if (isMissingSubscription(vaultsQuery.error as GrpcStatusError)) {
+            OpenDialog(
+                <InfoDialog
+                    title="Subscriptions unavailable"
+                    message="Subscriptions are currently not available. Subscribe to Telegram channel @artel_ai"
+                />
+            )
+            return;
         }
-    }, [auth, navigate])
 
-    useEffect(() => {
-        if (auth.isAuthenticated()) {
-            void fetchVaults()
-        }
-    }, [auth, fetchVaults])
 
-    useEffect(() => {
-        if (forbidden) navigate(Path.ClosedAlpha)
-    }, [forbidden, navigate])
-
+        bakeError("Failed to load vaults", vaultsQuery.error)
+    }, [vaultsQuery.isError])
 
     function openEditDialog(vaultId: string) {
-        const vault = vaults.find(v => v.id === vaultId)
+        const vault = vaultsQuery.data?.find(v => v.id === vaultId)
         if (!vault) return
         const {CloseDialog} = useDialog.getState()
         const {auth} = useUser.getState()
@@ -49,7 +48,7 @@ export default function HomePage() {
                 vault={vault}
                 currentUserId={auth.userInfo?.id ?? ""}
                 onClose={CloseDialog}
-                onDeleted={() => { void fetchVaults(); CloseDialog() }}
+                onDeleted={CloseDialog}
             />
         )
     }
@@ -63,7 +62,7 @@ export default function HomePage() {
 }
 
 function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
-    const {vaults, loading} = useVaults()
+    const vaultsQuery = useVaults()
 
     return (
         <div className={cls.Hero}>
@@ -71,7 +70,7 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
                 <div className={cls.Eyebrow}>Workspace</div>
                 <h1 className={cls.HeroTitle}>Your vaults</h1>
                 <p className={cls.HeroSub}>
-                    <b>{loading ? "…" : `${vaults.length} ${vaults.length === 1 ? "vault" : "vaults"}`}</b>
+                    <b>{vaultsQuery.isLoading ? "…" : `${vaultsQuery.data?.length} ${vaultsQuery.data?.length === 1 ? "vault" : "vaults"}`}</b>
                     {" · "}<span>all systems operational</span>
                 </p>
             </div>
@@ -88,11 +87,11 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
 }
 
 function ContentSegment({onEditClick}: { onEditClick: (id: string) => void }) {
-    const {vaults, loading} = useVaults()
+    const vaultsQuery = useVaults()
 
     let loadingState = null
 
-    if (loading) {
+    if (vaultsQuery.isLoading) {
         loadingState = (
             <p className={cls.Empty}>Loading…</p>
         )
@@ -102,8 +101,8 @@ function ContentSegment({onEditClick}: { onEditClick: (id: string) => void }) {
         <div className={cls.Content}>
             {loadingState}
             {
-                !loading && <div className={cls.Grid}>
-                    {vaults.map(v => (
+                !vaultsQuery.isLoading && <div className={cls.Grid}>
+                    {vaultsQuery.data?.map(v => (
                         <VaultCard key={v.id} vault={v} onEdit={onEditClick}/>
                     ))}
 				</div>
@@ -117,7 +116,7 @@ function CreateVaultDialog() {
     const [isCreating, setIsCreating] = useState(false)
     const [vaultName, setVaultName] = useState("")
 
-    const {create} = useVaults()
+    const {create} = useVaultMutations()
     const {CloseDialog} = useDialog()
 
 

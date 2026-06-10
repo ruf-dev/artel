@@ -90,13 +90,12 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 
 	userUuid, err := am.authService.ValidateToken(ctx, auth[0])
 	if err != nil {
-		wrapped := rerrors.Wrap(err, "validate token")
-		return nil, status.Error(codes.Unauthenticated, wrapped.Error())
+		return nil, rerrors.Wrap(err)
 	}
 
 	err = am.subscriptionService.CheckActive(ctx, userUuid)
 	if err != nil {
-		return nil, status.Error(codes.PermissionDenied, user_errors.NoActiveSubscription.Error())
+		return nil, rerrors.Wrap(err)
 	}
 
 	uc := user_context.UserContext{

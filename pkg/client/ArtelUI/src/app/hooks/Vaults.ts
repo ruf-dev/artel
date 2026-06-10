@@ -1,89 +1,65 @@
-import {create} from 'zustand'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 
 import {VaultItem, VaultMemberInfo, VaultInviteItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
+import {VaultService} from "@/processes/Vaults.ts"
+import {retryOnStatus} from "@/processes/grpcErrors.ts"
 import useUser from "@/hooks/user/User.ts"
-import {Errors, GrpcError} from "@/processes/Errors.ts"
 
-export type {VaultMemberInfo, VaultInviteItem}
+export type {VaultItem, VaultMemberInfo, VaultInviteItem}
 
-interface VaultsState {
-    vaults: VaultItem[]
-    loading: boolean
-    forbidden: boolean
-    fetch: () => Promise<void>
-    create: (name: string) => Promise<void>
-    remove: (id: string) => Promise<void>
-    listMembers: (vaultId: string) => Promise<VaultMemberInfo[]>
-    removeMember: (vaultId: string, userId: string) => Promise<void>
-    listInvites: (vaultId: string) => Promise<VaultInviteItem[]>
-    createInvite: (vaultId: string, role: string) => Promise<VaultInviteItem>
-    revokeInvite: (vaultId: string, inviteId: string) => Promise<void>
-    acceptInvite: (token: string) => Promise<string>
+export const vaultsQueryKey = ['vaults'] as const
+
+
+export function useVaults() {
+    const {auth} = useUser()
+    const vaultService = new VaultService()
+
+    return useQuery({
+        queryKey: vaultsQueryKey,
+        queryFn: () => vaultService.ListVaults(),
+        enabled: auth.isAuthenticated(),
+        retry: retryOnStatus(),
+    })
 }
 
-export const useVaults = create<VaultsState>((set, get) => ({
-    vaults: [],
-    loading: false,
-    forbidden: false,
+export function useVaultMutations() {
+    const queryClient = useQueryClient()
+    const {auth} = useUser()
 
-    fetch: async () => {
-        set({loading: true})
-        try {
-            const {auth} = useUser.getState()
-            const res = await VaultsAPI.ListVaults({}, auth.getInitReq())
-            set({vaults: res.vaults ?? []})
-        } catch (err) {
-            if ((err as GrpcError)?.code === Errors.PERMISSION_DENIED) {
-                set({forbidden: true})
-            }
-        } finally {
-            set({loading: false})
-        }
-    },
+    const createMutation = useMutation({
+        mutationFn: (name: string) => VaultsAPI.CreateVault({name}, auth.getInitReq()),
+        onSuccess: () => queryClient.invalidateQueries({queryKey: vaultsQueryKey}),
+    })
 
-    create: async (name: string) => {
-        const {auth} = useUser.getState()
-        await VaultsAPI.CreateVault({name}, auth.getInitReq())
-        await get().fetch()
-    },
+    const removeMutation = useMutation({
+        mutationFn: (id: string) => VaultsAPI.DeleteVault({id}, auth.getInitReq()),
+        onSuccess: () => queryClient.invalidateQueries({queryKey: vaultsQueryKey}),
+    })
 
-    remove: async (id: string) => {
-        const {auth} = useUser.getState()
-        await VaultsAPI.DeleteVault({id}, auth.getInitReq())
-        await get().fetch()
-    },
-
-    listMembers: async (vaultId: string) => {
-        const {auth} = useUser.getState()
-        const res = await VaultsAPI.ListMembers({vaultId}, auth.getInitReq())
-        return res.members ?? []
-    },
-
-    removeMember: async (vaultId: string, userId: string) => {
-        const {auth} = useUser.getState()
-        await VaultsAPI.RemoveMember({vaultId, userId}, auth.getInitReq())
-    },
-
-    listInvites: async (vaultId: string) => {
-        const {auth} = useUser.getState()
-        const res = await VaultsAPI.ListInviteLinks({vaultId}, auth.getInitReq())
-        return res.invites ?? []
-    },
-
-    createInvite: async (vaultId: string, role: string) => {
-        const {auth} = useUser.getState()
-        const res = await VaultsAPI.CreateInviteLink({vaultId, role}, auth.getInitReq())
-        return res.invite!
-    },
-
-    revokeInvite: async (vaultId: string, inviteId: string) => {
-        const {auth} = useUser.getState()
-        await VaultsAPI.RevokeInviteLink({vaultId, inviteId}, auth.getInitReq())
-    },
-
-    acceptInvite: async (token: string) => {
-        const {auth} = useUser.getState()
-        const res = await VaultsAPI.AcceptInvite({token}, auth.getInitReq())
-        return res.vaultId ?? ""
-    },
-}))
+    return {
+        create: createMutation.mutateAsync,
+        remove: removeMutation.mutateAsync,
+        listMembers: async (vaultId: string): Promise<VaultMemberInfo[]> => {
+            const res = await VaultsAPI.ListMembers({vaultId}, auth.getInitReq())
+            return res.members ?? []
+        },
+        removeMember: async (vaultId: string, userId: string): Promise<void> => {
+            await VaultsAPI.RemoveMember({vaultId, userId}, auth.getInitReq())
+        },
+        listInvites: async (vaultId: string): Promise<VaultInviteItem[]> => {
+            const res = await VaultsAPI.ListInviteLinks({vaultId}, auth.getInitReq())
+            return res.invites ?? []
+        },
+        createInvite: async (vaultId: string, role: string): Promise<VaultInviteItem> => {
+            const res = await VaultsAPI.CreateInviteLink({vaultId, role}, auth.getInitReq())
+            return res.invite!
+        },
+        revokeInvite: async (vaultId: string, inviteId: string): Promise<void> => {
+            await VaultsAPI.RevokeInviteLink({vaultId, inviteId}, auth.getInitReq())
+        },
+        acceptInvite: async (token: string): Promise<string> => {
+            const res = await VaultsAPI.AcceptInvite({token}, auth.getInitReq())
+            return res.vaultId ?? ""
+        },
+    }
+}

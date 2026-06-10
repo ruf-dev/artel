@@ -3,7 +3,7 @@ import {useEffect, useState} from "react"
 import cls from "@/components/ManageVaultDialog/ManageVaultDialog.module.css"
 
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
-import {useVaults, VaultMemberInfo, VaultInviteItem} from "@/app/hooks/Vaults.ts"
+import {useVaultMutations, VaultMemberInfo, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function ManageVaultDialog({vault, currentUserId, onClose, onDeleted}: Props) {
-    const {listMembers, removeMember, listInvites, revokeInvite, remove} = useVaults()
+    const {listMembers, removeMember, listInvites, revokeInvite, remove} = useVaultMutations()
     const {OpenDialog} = useDialog()
 
     const [members, setMembers] = useState<VaultMemberInfo[]>([])
@@ -204,7 +204,7 @@ function CreateInviteLinkDialog({vaultId, onCreated}: {
     vaultId: string
     onCreated: (inv: VaultInviteItem) => void
 }) {
-    const {createInvite} = useVaults()
+    const {createInvite} = useVaultMutations()
     const {CloseDialog} = useDialog()
     const [role, setRole] = useState<"reader" | "maintainer">("reader")
     const [creating, setCreating] = useState(false)

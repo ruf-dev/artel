@@ -76,6 +76,8 @@ func (c *Custom) Init(a *App) error {
 
 	otelServerHandler := otelgrpc.NewServerHandler()
 	c.Transport.AddServerOption(
+		middleware.LogInterceptor(),
+		middleware.PanicInterceptor(),
 		grpc.StatsHandler(otelServerHandler),
 		middleware.GrpcAuthInterceptor(services,
 			middleware.WithIgnoredPathAuthOption(
@@ -98,8 +100,6 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminCouchAPI_GrantDatabaseAccess_FullMethodName,
 			pb.AdminCouchAPI_RevokeDatabaseAccess_FullMethodName,
 		),
-		middleware.LogInterceptor(),
-		middleware.PanicInterceptor(),
 	)
 	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl)
 

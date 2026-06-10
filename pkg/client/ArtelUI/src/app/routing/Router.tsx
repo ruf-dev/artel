@@ -2,7 +2,7 @@ import {useEffect} from "react"
 
 import cls from "@/app/routing/Router.module.css"
 
-import {Navigate, Route, Routes} from "react-router-dom"
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom"
 
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
@@ -21,7 +21,6 @@ import {AuthService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
 import { Tooltip } from "react-tooltip"
 import { Toaster } from "@vervstack/chures"
-
 // eslint-disable-next-line react-refresh/only-export-components
 export enum Path {
     InitPage = "/init",
@@ -39,15 +38,16 @@ export enum Path {
 export const REDIRECT_AFTER_LOGIN_KEY = "artel_post_login_redirect"
 
 export default function Router() {
+    const navigate = useNavigate()
+
     const {auth, setUserInfo} = useUser()
     const svc = new AuthService();
 
     useEffect(() => {
-        console.log(`Fetching user info`)
         if (!auth.isAuthenticated()) return
 
         svc.FetchUserInfo().then(setUserInfo).catch(() => {})
-
+        navigate(Path.HomePage)
     }, [])
 
     return (
