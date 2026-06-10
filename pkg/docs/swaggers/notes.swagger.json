@@ -16,38 +16,8 @@
     "application/json"
   ],
   "paths": {
-    "/api/notes/{vaultId}": {
-      "get": {
-        "operationId": "NotesAPI_ListNotes",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_notesListNotesResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "NotesAPI"
-        ]
-      }
-    },
-    "/api/notes/{vaultId}/folders": {
-      "get": {
+    "/api/notes/folders": {
+      "post": {
         "operationId": "NotesAPI_ListFolders",
         "responses": {
           "200": {
@@ -65,10 +35,12 @@
         },
         "parameters": [
           {
-            "name": "vaultId",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/artel_notesListFoldersRequest"
+            }
           }
         ],
         "tags": [
@@ -76,7 +48,7 @@
         ]
       }
     },
-    "/api/notes/{vaultId}/note": {
+    "/api/notes/get": {
       "post": {
         "operationId": "NotesAPI_GetNote",
         "responses": {
@@ -95,17 +67,11 @@
         },
         "parameters": [
           {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_notesNotesAPIGetNoteBody"
+              "$ref": "#/definitions/artel_notesGetNoteRequest"
             }
           }
         ],
@@ -114,8 +80,40 @@
         ]
       }
     },
-    "/api/notes/{vaultId}/tags": {
-      "get": {
+    "/api/notes/list": {
+      "post": {
+        "operationId": "NotesAPI_ListNotes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesListNotesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesListNotesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
+    "/api/notes/tags": {
+      "post": {
         "operationId": "NotesAPI_ListTags",
         "responses": {
           "200": {
@@ -133,10 +131,12 @@
         },
         "parameters": [
           {
-            "name": "vaultId",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/artel_notesListTagsRequest"
+            }
           }
         ],
         "tags": [
@@ -146,10 +146,29 @@
     }
   },
   "definitions": {
+    "artel_notesGetNoteRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
     "artel_notesGetNoteResponse": {
       "type": "object",
       "properties": {
         "content": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_notesListFoldersRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
           "type": "string"
         }
       }
@@ -165,6 +184,14 @@
         }
       }
     },
+    "artel_notesListNotesRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
     "artel_notesListNotesResponse": {
       "type": "object",
       "properties": {
@@ -174,6 +201,14 @@
             "type": "object",
             "$ref": "#/definitions/artel_notesNoteItem"
           }
+        }
+      }
+    },
+    "artel_notesListTagsRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
         }
       }
     },
@@ -197,14 +232,6 @@
         "mtime": {
           "type": "string",
           "format": "int64"
-        }
-      }
-    },
-    "artel_notesNotesAPIGetNoteBody": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string"
         }
       }
     },

@@ -75,7 +75,7 @@ export class EmailAccountsAPI {
     return fm.fetchRequest<ListEmailAccountsResponse>(`/api/email-accounts/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static DeleteEmailAccount(this:void, req: DeleteEmailAccountRequest, initReq?: fm.InitReq): Promise<DeleteEmailAccountResponse> {
-    return fm.fetchRequest<DeleteEmailAccountResponse>(`/api/email-accounts/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "DELETE"});
+    return fm.fetchRequest<DeleteEmailAccountResponse>(`/api/email-accounts/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListMailServerSuggestions(this:void, req: ListMailServerSuggestionsRequest, initReq?: fm.InitReq): Promise<ListMailServerSuggestionsResponse> {
     return fm.fetchRequest<ListMailServerSuggestionsResponse>(`/api/email-accounts/list_suggestions`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

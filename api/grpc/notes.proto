@@ -11,23 +11,26 @@ option (npm_package) = "@artel/api";
 service NotesAPI {
   rpc ListFolders(ListFolders.Request) returns (ListFolders.Response) {
     option (google.api.http) = {
-      get: "/api/notes/{vault_id}/folders"
+      post: "/api/notes/folders"
+      body: "*"
     };
   };
   rpc ListNotes(ListNotes.Request) returns (ListNotes.Response) {
     option (google.api.http) = {
-      get: "/api/notes/{vault_id}"
+      post: "/api/notes/list"
+      body: "*"
     };
   };
   rpc GetNote(GetNote.Request) returns (GetNote.Response) {
     option (google.api.http) = {
-      post: "/api/notes/{vault_id}/note"
+      post: "/api/notes/get"
       body: "*"
     };
   };
   rpc ListTags(ListTags.Request) returns (ListTags.Response) {
     option (google.api.http) = {
-      get: "/api/notes/{vault_id}/tags"
+      post: "/api/notes/tags"
+      body: "*"
     };
   };
 }

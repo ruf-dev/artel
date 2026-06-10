@@ -66,18 +66,12 @@ func request_VaultsAPI_GetVault_0(ctx context.Context, marshaler runtime.Marshal
 	var (
 		protoReq GetVault_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.GetVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -87,15 +81,9 @@ func local_request_VaultsAPI_GetVault_0(ctx context.Context, marshaler runtime.M
 	var (
 		protoReq GetVault_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.GetVault(ctx, &protoReq)
 	return msg, metadata, err
@@ -132,18 +120,12 @@ func request_VaultsAPI_DeleteVault_0(ctx context.Context, marshaler runtime.Mars
 	var (
 		protoReq DeleteVault_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.DeleteVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -153,15 +135,9 @@ func local_request_VaultsAPI_DeleteVault_0(ctx context.Context, marshaler runtim
 	var (
 		protoReq DeleteVault_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.DeleteVault(ctx, &protoReq)
 	return msg, metadata, err
@@ -171,21 +147,12 @@ func request_VaultsAPI_AddMember_0(ctx context.Context, marshaler runtime.Marsha
 	var (
 		protoReq AddMember_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.AddMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -195,18 +162,9 @@ func local_request_VaultsAPI_AddMember_0(ctx context.Context, marshaler runtime.
 	var (
 		protoReq AddMember_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := server.AddMember(ctx, &protoReq)
 	return msg, metadata, err
@@ -216,26 +174,12 @@ func request_VaultsAPI_RemoveMember_0(ctx context.Context, marshaler runtime.Mar
 	var (
 		protoReq RemoveMember_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
-	}
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
-	}
-	protoReq.UserId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
 	}
 	msg, err := client.RemoveMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -245,23 +189,9 @@ func local_request_VaultsAPI_RemoveMember_0(ctx context.Context, marshaler runti
 	var (
 		protoReq RemoveMember_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
-	}
-	val, ok = pathParams["user_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "user_id")
-	}
-	protoReq.UserId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "user_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.RemoveMember(ctx, &protoReq)
 	return msg, metadata, err
@@ -271,18 +201,12 @@ func request_VaultsAPI_ListMembers_0(ctx context.Context, marshaler runtime.Mars
 	var (
 		protoReq ListMembers_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.ListMembers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -292,15 +216,9 @@ func local_request_VaultsAPI_ListMembers_0(ctx context.Context, marshaler runtim
 	var (
 		protoReq ListMembers_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListMembers(ctx, &protoReq)
 	return msg, metadata, err
@@ -310,21 +228,12 @@ func request_VaultsAPI_CreateInviteLink_0(ctx context.Context, marshaler runtime
 	var (
 		protoReq CreateInviteLink_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.CreateInviteLink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -334,18 +243,9 @@ func local_request_VaultsAPI_CreateInviteLink_0(ctx context.Context, marshaler r
 	var (
 		protoReq CreateInviteLink_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := server.CreateInviteLink(ctx, &protoReq)
 	return msg, metadata, err
@@ -355,18 +255,12 @@ func request_VaultsAPI_ListInviteLinks_0(ctx context.Context, marshaler runtime.
 	var (
 		protoReq ListInviteLinks_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.ListInviteLinks(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -376,15 +270,9 @@ func local_request_VaultsAPI_ListInviteLinks_0(ctx context.Context, marshaler ru
 	var (
 		protoReq ListInviteLinks_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListInviteLinks(ctx, &protoReq)
 	return msg, metadata, err
@@ -394,26 +282,12 @@ func request_VaultsAPI_RevokeInviteLink_0(ctx context.Context, marshaler runtime
 	var (
 		protoReq RevokeInviteLink_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
-	}
-	val, ok = pathParams["invite_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "invite_id")
-	}
-	protoReq.InviteId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "invite_id", err)
 	}
 	msg, err := client.RevokeInviteLink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -423,23 +297,9 @@ func local_request_VaultsAPI_RevokeInviteLink_0(ctx context.Context, marshaler r
 	var (
 		protoReq RevokeInviteLink_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
-	}
-	val, ok = pathParams["invite_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "invite_id")
-	}
-	protoReq.InviteId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "invite_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.RevokeInviteLink(ctx, &protoReq)
 	return msg, metadata, err
@@ -498,13 +358,13 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_CreateVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -544,7 +404,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/{id}/delete"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -564,7 +424,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/members"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/members/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -578,13 +438,13 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_AddMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/members/{user_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/members/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -598,13 +458,13 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_RemoveMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/members"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/members/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -624,7 +484,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/invites"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -638,13 +498,13 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_CreateInviteLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/invites"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/invites/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -664,7 +524,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/invites/{invite_id}/revoke"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -755,11 +615,11 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_CreateVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -793,7 +653,7 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/{id}/delete"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -810,7 +670,7 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/members"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/members/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -823,11 +683,11 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_AddMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/members/{user_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/members/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -840,11 +700,11 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_RemoveMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/members"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/members/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -861,7 +721,7 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/invites"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -874,11 +734,11 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_CreateInviteLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/invites"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/invites/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -895,7 +755,7 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/invites/{invite_id}/revoke"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -930,15 +790,15 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 
 var (
 	pattern_VaultsAPI_CreateVault_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "create"}, ""))
-	pattern_VaultsAPI_GetVault_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "vaults", "id"}, ""))
+	pattern_VaultsAPI_GetVault_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "get"}, ""))
 	pattern_VaultsAPI_ListVaults_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "list"}, ""))
-	pattern_VaultsAPI_DeleteVault_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "id", "delete"}, ""))
-	pattern_VaultsAPI_AddMember_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "members"}, ""))
-	pattern_VaultsAPI_RemoveMember_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "vaults", "vault_id", "members", "user_id"}, ""))
-	pattern_VaultsAPI_ListMembers_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "members"}, ""))
-	pattern_VaultsAPI_CreateInviteLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "invites"}, ""))
-	pattern_VaultsAPI_ListInviteLinks_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "invites"}, ""))
-	pattern_VaultsAPI_RevokeInviteLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"api", "vaults", "vault_id", "invites", "invite_id", "revoke"}, ""))
+	pattern_VaultsAPI_DeleteVault_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "delete"}, ""))
+	pattern_VaultsAPI_AddMember_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "add"}, ""))
+	pattern_VaultsAPI_RemoveMember_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "remove"}, ""))
+	pattern_VaultsAPI_ListMembers_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "list"}, ""))
+	pattern_VaultsAPI_CreateInviteLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "create"}, ""))
+	pattern_VaultsAPI_ListInviteLinks_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "list"}, ""))
+	pattern_VaultsAPI_RevokeInviteLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "revoke"}, ""))
 	pattern_VaultsAPI_AcceptInvite_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "join"}, ""))
 )
 

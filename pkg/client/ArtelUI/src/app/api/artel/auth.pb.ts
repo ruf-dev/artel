@@ -99,9 +99,9 @@ export class AuthAPI {
     return fm.fetchRequest<LogoutResponse>(`/api/auth/logout`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetConfig(this:void, req: GetConfigRequest, initReq?: fm.InitReq): Promise<GetConfigResponse> {
-    return fm.fetchRequest<GetConfigResponse>(`/api/auth/config?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<GetConfigResponse>(`/api/auth/config`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetMe(this:void, req: GetMeRequest, initReq?: fm.InitReq): Promise<GetMeResponse> {
-    return fm.fetchRequest<GetMeResponse>(`/api/auth/me?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<GetMeResponse>(`/api/auth/me`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

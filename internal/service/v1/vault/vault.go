@@ -64,7 +64,10 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 				return rerrors.Wrap(err, "pick couch admin client")
 			}
 
-			couchClient := newCouchClient(instanceWithAccount.Instance)
+			couchClient, err := newCouchClient(instanceWithAccount.Instance)
+			if err != nil {
+				return rerrors.Wrap(err, "init couch client")
+			}
 
 			vault, err = s.ensureVaultExists(ctx, couchClient, uc, instanceWithAccount, vaultName, vaultsRepo)
 			if err != nil {
@@ -216,7 +219,10 @@ func (s *Service) DeleteVault(ctx context.Context, vaultID uuid.UUID) error {
 		return rerrors.Wrap(err, "get couch instance")
 	}
 
-	couchClient := newCouchClient(instance)
+	couchClient, err := newCouchClient(instance)
+	if err != nil {
+		return rerrors.Wrap(err, "init couch client")
+	}
 
 	err = couchClient.DeleteDatabase(ctx, vault.CouchDBName)
 	if err != nil {
@@ -320,16 +326,18 @@ func pickCouchInstance(
 	return instance, nil
 }
 
-func newCouchClient(instance domain.CouchInstance) *couchdb.Client {
+func newCouchClient(instance domain.CouchInstance) (*couchdb.Client, error) {
 	cfg := couchdb.Config{
 		BaseURL:  instance.Url,
 		User:     instance.Username,
 		Password: instance.Password,
 	}
 
-	adminClient := couchdb.New(cfg)
-
-	return adminClient
+	adminClient, err := couchdb.New(cfg)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "creating couch client")
+	}
+	return adminClient, nil
 }
 
 func sanitizeCouchDBName(name string) string {

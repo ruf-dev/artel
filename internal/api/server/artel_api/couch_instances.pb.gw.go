@@ -66,18 +66,12 @@ func request_CouchInstancesAPI_GetCouchInstance_0(ctx context.Context, marshaler
 	var (
 		protoReq GetCouchInstance_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.GetCouchInstance(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -87,15 +81,9 @@ func local_request_CouchInstancesAPI_GetCouchInstance_0(ctx context.Context, mar
 	var (
 		protoReq GetCouchInstance_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.GetCouchInstance(ctx, &protoReq)
 	return msg, metadata, err
@@ -132,21 +120,12 @@ func request_CouchInstancesAPI_UpdateCouchInstance_0(ctx context.Context, marsha
 	var (
 		protoReq UpdateCouchInstance_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.UpdateCouchInstance(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -156,18 +135,9 @@ func local_request_CouchInstancesAPI_UpdateCouchInstance_0(ctx context.Context, 
 	var (
 		protoReq UpdateCouchInstance_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := server.UpdateCouchInstance(ctx, &protoReq)
 	return msg, metadata, err
@@ -177,18 +147,12 @@ func request_CouchInstancesAPI_DeleteCouchInstance_0(ctx context.Context, marsha
 	var (
 		protoReq DeleteCouchInstance_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.DeleteCouchInstance(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -198,15 +162,9 @@ func local_request_CouchInstancesAPI_DeleteCouchInstance_0(ctx context.Context, 
 	var (
 		protoReq DeleteCouchInstance_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.DeleteCouchInstance(ctx, &protoReq)
 	return msg, metadata, err
@@ -238,13 +196,13 @@ func RegisterCouchInstancesAPIHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 		forward_CouchInstancesAPI_RegisterCouchInstance_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_CouchInstancesAPI_GetCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CouchInstancesAPI_GetCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/GetCouchInstance", runtime.WithHTTPPathPattern("/api/couch/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/GetCouchInstance", runtime.WithHTTPPathPattern("/api/couch/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -278,13 +236,13 @@ func RegisterCouchInstancesAPIHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 		forward_CouchInstancesAPI_ListCouchInstances_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPut, pattern_CouchInstancesAPI_UpdateCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CouchInstancesAPI_UpdateCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/UpdateCouchInstance", runtime.WithHTTPPathPattern("/api/couch/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/UpdateCouchInstance", runtime.WithHTTPPathPattern("/api/couch/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -298,13 +256,13 @@ func RegisterCouchInstancesAPIHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 		forward_CouchInstancesAPI_UpdateCouchInstance_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_CouchInstancesAPI_DeleteCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CouchInstancesAPI_DeleteCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/DeleteCouchInstance", runtime.WithHTTPPathPattern("/api/couch/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/DeleteCouchInstance", runtime.WithHTTPPathPattern("/api/couch/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -375,11 +333,11 @@ func RegisterCouchInstancesAPIHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 		forward_CouchInstancesAPI_RegisterCouchInstance_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_CouchInstancesAPI_GetCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CouchInstancesAPI_GetCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/GetCouchInstance", runtime.WithHTTPPathPattern("/api/couch/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/GetCouchInstance", runtime.WithHTTPPathPattern("/api/couch/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -409,11 +367,11 @@ func RegisterCouchInstancesAPIHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 		forward_CouchInstancesAPI_ListCouchInstances_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPut, pattern_CouchInstancesAPI_UpdateCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CouchInstancesAPI_UpdateCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/UpdateCouchInstance", runtime.WithHTTPPathPattern("/api/couch/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/UpdateCouchInstance", runtime.WithHTTPPathPattern("/api/couch/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -426,11 +384,11 @@ func RegisterCouchInstancesAPIHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 		forward_CouchInstancesAPI_UpdateCouchInstance_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_CouchInstancesAPI_DeleteCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CouchInstancesAPI_DeleteCouchInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/DeleteCouchInstance", runtime.WithHTTPPathPattern("/api/couch/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_couch.CouchInstancesAPI/DeleteCouchInstance", runtime.WithHTTPPathPattern("/api/couch/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -448,10 +406,10 @@ func RegisterCouchInstancesAPIHandlerClient(ctx context.Context, mux *runtime.Se
 
 var (
 	pattern_CouchInstancesAPI_RegisterCouchInstance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "couch", "add"}, ""))
-	pattern_CouchInstancesAPI_GetCouchInstance_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "couch", "id"}, ""))
+	pattern_CouchInstancesAPI_GetCouchInstance_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "couch", "get"}, ""))
 	pattern_CouchInstancesAPI_ListCouchInstances_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "couch", "list"}, ""))
-	pattern_CouchInstancesAPI_UpdateCouchInstance_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "couch", "id"}, ""))
-	pattern_CouchInstancesAPI_DeleteCouchInstance_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "couch", "id"}, ""))
+	pattern_CouchInstancesAPI_UpdateCouchInstance_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "couch", "update"}, ""))
+	pattern_CouchInstancesAPI_DeleteCouchInstance_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "couch", "delete"}, ""))
 )
 
 var (

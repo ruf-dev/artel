@@ -65,15 +65,15 @@ export class CouchInstancesAPI {
     return fm.fetchRequest<RegisterCouchInstanceResponse>(`/api/couch/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetCouchInstance(this:void, req: GetCouchInstanceRequest, initReq?: fm.InitReq): Promise<GetCouchInstanceResponse> {
-    return fm.fetchRequest<GetCouchInstanceResponse>(`/api/couch/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<GetCouchInstanceResponse>(`/api/couch/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListCouchInstances(this:void, req: ListCouchInstancesRequest, initReq?: fm.InitReq): Promise<ListCouchInstancesResponse> {
     return fm.fetchRequest<ListCouchInstancesResponse>(`/api/couch/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static UpdateCouchInstance(this:void, req: UpdateCouchInstanceRequest, initReq?: fm.InitReq): Promise<UpdateCouchInstanceResponse> {
-    return fm.fetchRequest<UpdateCouchInstanceResponse>(`/api/couch/${req.id}`, {...initReq, method: "PUT", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<UpdateCouchInstanceResponse>(`/api/couch/update`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static DeleteCouchInstance(this:void, req: DeleteCouchInstanceRequest, initReq?: fm.InitReq): Promise<DeleteCouchInstanceResponse> {
-    return fm.fetchRequest<DeleteCouchInstanceResponse>(`/api/couch/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "DELETE"});
+    return fm.fetchRequest<DeleteCouchInstanceResponse>(`/api/couch/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

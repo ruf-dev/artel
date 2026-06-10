@@ -48,6 +48,38 @@
         ]
       }
     },
+    "/api/email-accounts/delete": {
+      "post": {
+        "operationId": "EmailAccountsAPI_DeleteEmailAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteEmailAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteEmailAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "EmailAccountsAPI"
+        ]
+      }
+    },
     "/api/email-accounts/list": {
       "post": {
         "operationId": "EmailAccountsAPI_ListEmailAccounts",
@@ -111,36 +143,6 @@
           "EmailAccountsAPI"
         ]
       }
-    },
-    "/api/email-accounts/{id}": {
-      "delete": {
-        "operationId": "EmailAccountsAPI_DeleteEmailAccount",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_apiDeleteEmailAccountResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "EmailAccountsAPI"
-        ]
-      }
     }
   },
   "definitions": {
@@ -174,6 +176,14 @@
       "properties": {
         "account": {
           "$ref": "#/definitions/artel_apiEmailAccountInfo"
+        }
+      }
+    },
+    "artel_apiDeleteEmailAccountRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
         }
       }
     },

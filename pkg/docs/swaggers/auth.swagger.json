@@ -17,7 +17,7 @@
   ],
   "paths": {
     "/api/auth/config": {
-      "get": {
+      "post": {
         "operationId": "AuthAPI_GetConfig",
         "responses": {
           "200": {
@@ -33,6 +33,16 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_authGetConfigRequest"
+            }
+          }
+        ],
         "tags": [
           "AuthAPI"
         ]
@@ -103,7 +113,7 @@
       }
     },
     "/api/auth/me": {
-      "get": {
+      "post": {
         "operationId": "AuthAPI_GetMe",
         "responses": {
           "200": {
@@ -119,6 +129,16 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_authGetMeRequest"
+            }
+          }
+        ],
         "tags": [
           "AuthAPI"
         ]
@@ -158,6 +178,9 @@
     }
   },
   "definitions": {
+    "artel_authGetConfigRequest": {
+      "type": "object"
+    },
     "artel_authGetConfigResponse": {
       "type": "object",
       "properties": {
@@ -165,6 +188,9 @@
           "type": "string"
         }
       }
+    },
+    "artel_authGetMeRequest": {
+      "type": "object"
     },
     "artel_authGetMeResponse": {
       "type": "object",

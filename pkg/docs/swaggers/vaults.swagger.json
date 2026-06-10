@@ -48,6 +48,166 @@
         ]
       }
     },
+    "/api/vaults/delete": {
+      "post": {
+        "operationId": "VaultsAPI_DeleteVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsDeleteVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsDeleteVaultRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/get": {
+      "post": {
+        "operationId": "VaultsAPI_GetVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsGetVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsGetVaultRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/invites/create": {
+      "post": {
+        "operationId": "VaultsAPI_CreateInviteLink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateInviteLinkResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateInviteLinkRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/invites/list": {
+      "post": {
+        "operationId": "VaultsAPI_ListInviteLinks",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListInviteLinksResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListInviteLinksRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/invites/revoke": {
+      "post": {
+        "operationId": "VaultsAPI_RevokeInviteLink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsRevokeInviteLinkResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsRevokeInviteLinkRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
     "/api/vaults/join": {
       "post": {
         "operationId": "VaultsAPI_AcceptInvite",
@@ -112,197 +272,7 @@
         ]
       }
     },
-    "/api/vaults/{id}": {
-      "get": {
-        "operationId": "VaultsAPI_GetVault",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsGetVaultResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      }
-    },
-    "/api/vaults/{id}/delete": {
-      "post": {
-        "operationId": "VaultsAPI_DeleteVault",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsDeleteVaultResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      }
-    },
-    "/api/vaults/{vaultId}/invites": {
-      "get": {
-        "operationId": "VaultsAPI_ListInviteLinks",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsListInviteLinksResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      },
-      "post": {
-        "operationId": "VaultsAPI_CreateInviteLink",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsCreateInviteLinkResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsVaultsAPICreateInviteLinkBody"
-            }
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      }
-    },
-    "/api/vaults/{vaultId}/invites/{inviteId}/revoke": {
-      "post": {
-        "operationId": "VaultsAPI_RevokeInviteLink",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsRevokeInviteLinkResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "inviteId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      }
-    },
-    "/api/vaults/{vaultId}/members": {
-      "get": {
-        "operationId": "VaultsAPI_ListMembers",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsListMembersResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      },
+    "/api/vaults/members/add": {
       "post": {
         "operationId": "VaultsAPI_AddMember",
         "responses": {
@@ -321,17 +291,11 @@
         },
         "parameters": [
           {
-            "name": "vaultId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_vaultsVaultsAPIAddMemberBody"
+              "$ref": "#/definitions/artel_vaultsAddMemberRequest"
             }
           }
         ],
@@ -340,8 +304,40 @@
         ]
       }
     },
-    "/api/vaults/{vaultId}/members/{userId}": {
-      "delete": {
+    "/api/vaults/members/list": {
+      "post": {
+        "operationId": "VaultsAPI_ListMembers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListMembersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListMembersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/members/remove": {
+      "post": {
         "operationId": "VaultsAPI_RemoveMember",
         "responses": {
           "200": {
@@ -359,16 +355,12 @@
         },
         "parameters": [
           {
-            "name": "vaultId",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsRemoveMemberRequest"
+            }
           }
         ],
         "tags": [
@@ -394,8 +386,33 @@
         }
       }
     },
+    "artel_vaultsAddMemberRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
     "artel_vaultsAddMemberResponse": {
       "type": "object"
+    },
+    "artel_vaultsCreateInviteLinkRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
     },
     "artel_vaultsCreateInviteLinkResponse": {
       "type": "object",
@@ -427,8 +444,24 @@
         }
       }
     },
+    "artel_vaultsDeleteVaultRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
     "artel_vaultsDeleteVaultResponse": {
       "type": "object"
+    },
+    "artel_vaultsGetVaultRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
     },
     "artel_vaultsGetVaultResponse": {
       "type": "object",
@@ -444,6 +477,14 @@
         }
       }
     },
+    "artel_vaultsListInviteLinksRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
     "artel_vaultsListInviteLinksResponse": {
       "type": "object",
       "properties": {
@@ -453,6 +494,14 @@
             "type": "object",
             "$ref": "#/definitions/artel_vaultsVaultInviteItem"
           }
+        }
+      }
+    },
+    "artel_vaultsListMembersRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
         }
       }
     },
@@ -483,8 +532,30 @@
         }
       }
     },
+    "artel_vaultsRemoveMemberRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
     "artel_vaultsRemoveMemberResponse": {
       "type": "object"
+    },
+    "artel_vaultsRevokeInviteLinkRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "inviteId": {
+          "type": "string"
+        }
+      }
     },
     "artel_vaultsRevokeInviteLinkResponse": {
       "type": "object"
@@ -541,25 +612,6 @@
         "username": {
           "type": "string"
         },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "artel_vaultsVaultsAPIAddMemberBody": {
-      "type": "object",
-      "properties": {
-        "userId": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "artel_vaultsVaultsAPICreateInviteLinkBody": {
-      "type": "object",
-      "properties": {
         "role": {
           "type": "string"
         }

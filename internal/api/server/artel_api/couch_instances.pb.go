@@ -720,13 +720,13 @@ const file_couch_instances_proto_rawDesc = "" +
 	"\aRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\n" +
 	"\n" +
-	"\bResponse2\xb2\x05\n" +
+	"\bResponse2\xbb\x05\n" +
 	"\x11CouchInstancesAPI\x12\x8b\x01\n" +
-	"\x15RegisterCouchInstance\x12*.artel_couch.RegisterCouchInstance.Request\x1a+.artel_couch.RegisterCouchInstance.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/couch/add\x12z\n" +
-	"\x10GetCouchInstance\x12%.artel_couch.GetCouchInstance.Request\x1a&.artel_couch.GetCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/couch/{id}\x12\x83\x01\n" +
-	"\x12ListCouchInstances\x12'.artel_couch.ListCouchInstances.Request\x1a(.artel_couch.ListCouchInstances.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/couch/list\x12\x86\x01\n" +
-	"\x13UpdateCouchInstance\x12(.artel_couch.UpdateCouchInstance.Request\x1a).artel_couch.UpdateCouchInstance.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\x1a\x0f/api/couch/{id}\x12\x83\x01\n" +
-	"\x13DeleteCouchInstance\x12(.artel_couch.DeleteCouchInstance.Request\x1a).artel_couch.DeleteCouchInstance.Response\"\x17\x82\xd3\xe4\x93\x02\x11*\x0f/api/couch/{id}B\x1a\x92\x82\x19\n" +
+	"\x15RegisterCouchInstance\x12*.artel_couch.RegisterCouchInstance.Request\x1a+.artel_couch.RegisterCouchInstance.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/couch/add\x12|\n" +
+	"\x10GetCouchInstance\x12%.artel_couch.GetCouchInstance.Request\x1a&.artel_couch.GetCouchInstance.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/couch/get\x12\x83\x01\n" +
+	"\x12ListCouchInstances\x12'.artel_couch.ListCouchInstances.Request\x1a(.artel_couch.ListCouchInstances.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/couch/list\x12\x88\x01\n" +
+	"\x13UpdateCouchInstance\x12(.artel_couch.UpdateCouchInstance.Request\x1a).artel_couch.UpdateCouchInstance.Response\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/api/couch/update\x12\x88\x01\n" +
+	"\x13DeleteCouchInstance\x12(.artel_couch.DeleteCouchInstance.Request\x1a).artel_couch.DeleteCouchInstance.Response\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/api/couch/deleteB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 

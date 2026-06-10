@@ -1,18 +1,21 @@
 package couchdb
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
+	"strings"
 
+	kivik "github.com/go-kivik/kivik/v4"
 	"go.redsock.ru/rerrors"
+
+	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/utils"
 )
 
 type couchDBUser struct {
 	ID       string   `json:"_id"`
+	Rev      string   `json:"_rev,omitempty"`
 	Name     string   `json:"name"`
 	Password string   `json:"password,omitempty"`
 	Roles    []string `json:"roles"`
@@ -24,115 +27,113 @@ type UserInfo struct {
 	Roles []string
 }
 
-func (c *Client) GetUser(ctx context.Context, username string) (UserInfo, error) {
-	url := fmt.Sprintf("%s/_users/org.couchdb.user:%s", c.baseURL, username)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return UserInfo{}, rerrors.Wrap(err, "failed to create request")
-	}
+type UserListEntry struct {
+	Name  string
+	Roles []string
+}
 
-	req.SetBasicAuth(c.user, c.password)
+func (c *Client) getUserDoc(ctx context.Context, username string) (couchDBUser, error) {
+	db := c.kivik.DB("_users")
+	docID := fmt.Sprintf("org.couchdb.user:%s", username)
 
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return UserInfo{}, rerrors.Wrap(err, "failed to execute request")
-	}
-
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return UserInfo{}, rerrors.Wrap(err, "failed to read response body")
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return UserInfo{}, rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
-	}
+	row := db.Get(ctx, docID)
+	defer utils.CloseWithLog(row, "get user response")
 
 	var u couchDBUser
-	err = json.Unmarshal(body, &u)
+	err := row.ScanDoc(&u)
 	if err != nil {
-		return UserInfo{}, rerrors.Wrap(err, "failed to parse response")
+		if kivik.HTTPStatus(err) == http.StatusForbidden && strings.Contains(err.Error(), "locked") {
+			return couchDBUser{}, rerrors.Wrap(user_errors.CouchDbAccountLocked)
+		}
+		return couchDBUser{}, rerrors.Wrap(err, "scanning user doc")
+	}
+	return u, nil
+}
+
+func (c *Client) GetUser(ctx context.Context, username string) (UserInfo, error) {
+	u, err := c.getUserDoc(ctx, username)
+	if err != nil {
+		return UserInfo{}, err
+	}
+	return UserInfo{Name: u.Name, Roles: u.Roles}, nil
+}
+
+func (c *Client) ListUsers(ctx context.Context) ([]UserListEntry, error) {
+	db := c.kivik.DB("_users")
+
+	rows := db.AllDocs(ctx, kivik.Params(map[string]any{"include_docs": true}))
+	defer utils.CloseWithLog(rows, "list users response")
+
+	var users []UserListEntry
+	for rows.Next() {
+		id, err := rows.ID()
+		if err != nil {
+			continue
+		}
+		if !strings.HasPrefix(id, "org.couchdb.user:") {
+			continue
+		}
+
+		var doc couchDBUser
+		err = rows.ScanDoc(&doc)
+		if err != nil {
+			continue
+		}
+
+		entry := UserListEntry{Name: doc.Name, Roles: doc.Roles}
+		users = append(users, entry)
 	}
 
-	info := UserInfo{
-		Name:  u.Name,
-		Roles: u.Roles,
+	err := rows.Err()
+	if err != nil {
+		return nil, rerrors.Wrap(err, "iterating user rows")
 	}
-	return info, nil
+	return users, nil
 }
 
 func (c *Client) UpdateUser(ctx context.Context, username, password string, roles []string) error {
-	existing, err := c.GetUser(ctx, username)
+	existing, err := c.getUserDoc(ctx, username)
 	if err != nil {
-		return rerrors.Wrap(err, "get user for update")
+		return rerrors.Wrap(err, "getting user for update")
 	}
 
+	db := c.kivik.DB("_users")
+	docID := fmt.Sprintf("org.couchdb.user:%s", username)
+
 	u := couchDBUser{
-		ID:       fmt.Sprintf("org.couchdb.user:%s", username),
+		ID:       docID,
+		Rev:      existing.Rev,
 		Name:     existing.Name,
 		Password: password,
 		Roles:    roles,
 		Type:     "user",
 	}
 
-	body, err := json.Marshal(u)
+	_, err = db.Put(ctx, docID, u)
 	if err != nil {
-		return rerrors.Wrap(err, "failed to marshal user")
+		if kivik.HTTPStatus(err) == http.StatusForbidden && strings.Contains(err.Error(), "locked") {
+			return rerrors.Wrap(user_errors.CouchDbAccountLocked)
+		}
+		return rerrors.Wrap(err, "updating user")
 	}
-
-	url := fmt.Sprintf("%s/_users/org.couchdb.user:%s", c.baseURL, username)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, bytes.NewReader(body))
-	if err != nil {
-		return rerrors.Wrap(err, "failed to create request")
-	}
-
-	req.SetBasicAuth(c.user, c.password)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to execute request")
-	}
-
-	defer resp.Body.Close()
-
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to read response body")
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(respBody)))
-	}
-
 	return nil
 }
 
 func (c *Client) DeleteUser(ctx context.Context, username string) error {
-	url := fmt.Sprintf("%s/_users/org.couchdb.user:%s", c.baseURL, username)
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
+	existing, err := c.getUserDoc(ctx, username)
 	if err != nil {
-		return rerrors.Wrap(err, "failed to create request")
+		return rerrors.Wrap(err, "getting user for delete")
 	}
 
-	req.SetBasicAuth(c.user, c.password)
+	db := c.kivik.DB("_users")
+	docID := fmt.Sprintf("org.couchdb.user:%s", username)
 
-	resp, err := c.http.Do(req)
+	_, err = db.Delete(ctx, docID, existing.Rev)
 	if err != nil {
-		return rerrors.Wrap(err, "failed to execute request")
+		if kivik.HTTPStatus(err) == http.StatusForbidden && strings.Contains(err.Error(), "locked") {
+			return rerrors.Wrap(user_errors.CouchDbAccountLocked)
+		}
+		return rerrors.Wrap(err, "deleting user")
 	}
-
-	defer resp.Body.Close()
-
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to read response body")
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(respBody)))
-	}
-
 	return nil
 }

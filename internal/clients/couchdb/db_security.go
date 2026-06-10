@@ -1,69 +1,95 @@
 package couchdb
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
 
+	kivik "github.com/go-kivik/kivik/v4"
 	"go.redsock.ru/rerrors"
-
-	"github.com/ruf-dev/artel/internal/utils"
 )
 
-type securityNamesRoles struct {
-	Names []string `json:"names"`
-	Roles []string `json:"roles"`
-}
-
-type securityDoc struct {
-	Admins  securityNamesRoles `json:"admins"`
-	Members securityNamesRoles `json:"members"`
-}
-
 func (c *Client) SetDatabaseSecurity(ctx context.Context, dbName string, memberUsernames ...string) error {
-	doc := securityDoc{
-		Admins:  securityNamesRoles{Names: []string{}, Roles: []string{}},
-		Members: securityNamesRoles{Names: memberUsernames, Roles: []string{}},
+	db := c.kivik.DB(dbName)
+
+	sec := &kivik.Security{
+		Admins:  kivik.Members{Names: []string{}, Roles: []string{}},
+		Members: kivik.Members{Names: memberUsernames, Roles: []string{}},
 	}
 
-	reqBody, err := json.Marshal(doc)
+	err := db.SetSecurity(ctx, sec)
 	if err != nil {
-		return rerrors.Wrap(err, "marshal security doc")
+		return rerrors.Wrap(err, "setting database security")
 	}
+	return nil
+}
 
-	reqReader := bytes.NewReader(reqBody)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut,
-		fmt.Sprintf("%s/%s/_security", c.baseURL, dbName),
-		reqReader,
-	)
+func (c *Client) GrantDatabaseAccess(ctx context.Context, dbName, username string) error {
+	db := c.kivik.DB(dbName)
+
+	sec, err := db.Security(ctx)
 	if err != nil {
-		return rerrors.Wrap(err, "failed to create request")
+		return rerrors.Wrap(err, "getting database security")
 	}
 
-	req.SetBasicAuth(c.user, c.password)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to execute request")
-	}
-	defer utils.CloseWithLog(resp.Body, "security response body")
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to read response body")
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		lockedErr := checkAccountLocked(resp.StatusCode, body)
-		if lockedErr != nil {
-			return lockedErr
+	for _, name := range sec.Members.Names {
+		if name == username {
+			return nil
 		}
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
 	}
 
+	sec.Members.Names = append(sec.Members.Names, username)
+
+	err = db.SetSecurity(ctx, sec)
+	if err != nil {
+		return rerrors.Wrap(err, "setting database security")
+	}
+	return nil
+}
+
+func (c *Client) GetUserDatabaseAccess(ctx context.Context, username string) ([]string, error) {
+	allDBs, err := c.kivik.AllDBs(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "listing databases")
+	}
+
+	var granted []string
+	for _, dbName := range allDBs {
+		if len(dbName) > 0 && dbName[0] == '_' {
+			continue
+		}
+		sec, err := c.kivik.DB(dbName).Security(ctx)
+		if err != nil {
+			return nil, rerrors.Wrap(err, "getting security for "+dbName)
+		}
+		for _, name := range sec.Members.Names {
+			if name == username {
+				granted = append(granted, dbName)
+				break
+			}
+		}
+	}
+
+	return granted, nil
+}
+
+func (c *Client) RevokeDatabaseAccess(ctx context.Context, dbName, username string) error {
+	db := c.kivik.DB(dbName)
+
+	sec, err := db.Security(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "getting database security")
+	}
+
+	filtered := make([]string, 0, len(sec.Members.Names))
+	for _, name := range sec.Members.Names {
+		if name != username {
+			filtered = append(filtered, name)
+		}
+	}
+	sec.Members.Names = filtered
+
+	err = db.SetSecurity(ctx, sec)
+	if err != nil {
+		return rerrors.Wrap(err, "setting database security")
+	}
 	return nil
 }

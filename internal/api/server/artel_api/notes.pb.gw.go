@@ -39,18 +39,12 @@ func request_NotesAPI_ListFolders_0(ctx context.Context, marshaler runtime.Marsh
 	var (
 		protoReq ListFolders_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.ListFolders(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -60,15 +54,9 @@ func local_request_NotesAPI_ListFolders_0(ctx context.Context, marshaler runtime
 	var (
 		protoReq ListFolders_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListFolders(ctx, &protoReq)
 	return msg, metadata, err
@@ -78,18 +66,12 @@ func request_NotesAPI_ListNotes_0(ctx context.Context, marshaler runtime.Marshal
 	var (
 		protoReq ListNotes_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.ListNotes(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -99,15 +81,9 @@ func local_request_NotesAPI_ListNotes_0(ctx context.Context, marshaler runtime.M
 	var (
 		protoReq ListNotes_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListNotes(ctx, &protoReq)
 	return msg, metadata, err
@@ -117,21 +93,12 @@ func request_NotesAPI_GetNote_0(ctx context.Context, marshaler runtime.Marshaler
 	var (
 		protoReq GetNote_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.GetNote(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -141,18 +108,9 @@ func local_request_NotesAPI_GetNote_0(ctx context.Context, marshaler runtime.Mar
 	var (
 		protoReq GetNote_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := server.GetNote(ctx, &protoReq)
 	return msg, metadata, err
@@ -162,18 +120,12 @@ func request_NotesAPI_ListTags_0(ctx context.Context, marshaler runtime.Marshale
 	var (
 		protoReq ListTags_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.ListTags(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -183,15 +135,9 @@ func local_request_NotesAPI_ListTags_0(ctx context.Context, marshaler runtime.Ma
 	var (
 		protoReq ListTags_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListTags(ctx, &protoReq)
 	return msg, metadata, err
@@ -203,13 +149,13 @@ func local_request_NotesAPI_ListTags_0(ctx context.Context, marshaler runtime.Ma
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterNotesAPIHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterNotesAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NotesAPIServer) error {
-	mux.Handle(http.MethodGet, pattern_NotesAPI_ListFolders_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_NotesAPI_ListFolders_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/ListFolders", runtime.WithHTTPPathPattern("/api/notes/{vault_id}/folders"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/ListFolders", runtime.WithHTTPPathPattern("/api/notes/folders"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -223,13 +169,13 @@ func RegisterNotesAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		}
 		forward_NotesAPI_ListFolders_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_NotesAPI_ListNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_NotesAPI_ListNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/ListNotes", runtime.WithHTTPPathPattern("/api/notes/{vault_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/ListNotes", runtime.WithHTTPPathPattern("/api/notes/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -249,7 +195,7 @@ func RegisterNotesAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/GetNote", runtime.WithHTTPPathPattern("/api/notes/{vault_id}/note"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/GetNote", runtime.WithHTTPPathPattern("/api/notes/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -263,13 +209,13 @@ func RegisterNotesAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		}
 		forward_NotesAPI_GetNote_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_NotesAPI_ListTags_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_NotesAPI_ListTags_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/ListTags", runtime.WithHTTPPathPattern("/api/notes/{vault_id}/tags"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_notes.NotesAPI/ListTags", runtime.WithHTTPPathPattern("/api/notes/tags"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -323,11 +269,11 @@ func RegisterNotesAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *g
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "NotesAPIClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterNotesAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client NotesAPIClient) error {
-	mux.Handle(http.MethodGet, pattern_NotesAPI_ListFolders_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_NotesAPI_ListFolders_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/ListFolders", runtime.WithHTTPPathPattern("/api/notes/{vault_id}/folders"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/ListFolders", runtime.WithHTTPPathPattern("/api/notes/folders"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -340,11 +286,11 @@ func RegisterNotesAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		}
 		forward_NotesAPI_ListFolders_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_NotesAPI_ListNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_NotesAPI_ListNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/ListNotes", runtime.WithHTTPPathPattern("/api/notes/{vault_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/ListNotes", runtime.WithHTTPPathPattern("/api/notes/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -361,7 +307,7 @@ func RegisterNotesAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/GetNote", runtime.WithHTTPPathPattern("/api/notes/{vault_id}/note"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/GetNote", runtime.WithHTTPPathPattern("/api/notes/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -374,11 +320,11 @@ func RegisterNotesAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		}
 		forward_NotesAPI_GetNote_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_NotesAPI_ListTags_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_NotesAPI_ListTags_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/ListTags", runtime.WithHTTPPathPattern("/api/notes/{vault_id}/tags"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_notes.NotesAPI/ListTags", runtime.WithHTTPPathPattern("/api/notes/tags"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -395,10 +341,10 @@ func RegisterNotesAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_NotesAPI_ListFolders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "notes", "vault_id", "folders"}, ""))
-	pattern_NotesAPI_ListNotes_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "notes", "vault_id"}, ""))
-	pattern_NotesAPI_GetNote_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "notes", "vault_id", "note"}, ""))
-	pattern_NotesAPI_ListTags_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "notes", "vault_id", "tags"}, ""))
+	pattern_NotesAPI_ListFolders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "notes", "folders"}, ""))
+	pattern_NotesAPI_ListNotes_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "notes", "list"}, ""))
+	pattern_NotesAPI_GetNote_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "notes", "get"}, ""))
+	pattern_NotesAPI_ListTags_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "notes", "tags"}, ""))
 )
 
 var (

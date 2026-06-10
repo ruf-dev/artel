@@ -17,24 +17,26 @@ service CouchInstancesAPI {
   };
   rpc GetCouchInstance(GetCouchInstance.Request) returns (GetCouchInstance.Response) {
     option (google.api.http) = {
-      get: "/api/couch/{id}"
+      post: "/api/couch/get"
+      body: "*"
     };
   };
   rpc ListCouchInstances(ListCouchInstances.Request) returns (ListCouchInstances.Response) {
     option (google.api.http) = {
-      post: "/api/couch/list",
+      post: "/api/couch/list"
       body: "*"
     };
   };
   rpc UpdateCouchInstance(UpdateCouchInstance.Request) returns (UpdateCouchInstance.Response) {
     option (google.api.http) = {
-      put: "/api/couch/{id}"
+      post: "/api/couch/update"
       body: "*"
     };
   };
   rpc DeleteCouchInstance(DeleteCouchInstance.Request) returns (DeleteCouchInstance.Response) {
     option (google.api.http) = {
-      delete: "/api/couch/{id}"
+      post: "/api/couch/delete"
+      body: "*"
     };
   };
 }

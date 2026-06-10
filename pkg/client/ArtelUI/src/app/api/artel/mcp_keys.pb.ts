@@ -69,18 +69,18 @@ export type SetMcpKeyAccess = Record<string, never>;
 
 export class McpKeysAPI {
   static CreateMcpKey(this:void, req: CreateMcpKeyRequest, initReq?: fm.InitReq): Promise<CreateMcpKeyResponse> {
-    return fm.fetchRequest<CreateMcpKeyResponse>(`/api/mcp/${req.vaultId}/mcp-keys`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<CreateMcpKeyResponse>(`/api/mcp/keys/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListMcpKeys(this:void, req: ListMcpKeysRequest, initReq?: fm.InitReq): Promise<ListMcpKeysResponse> {
-    return fm.fetchRequest<ListMcpKeysResponse>(`/api/mcp/${req.vaultId}/mcp-keys?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListMcpKeysResponse>(`/api/mcp/keys/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static RevokeMcpKey(this:void, req: RevokeMcpKeyRequest, initReq?: fm.InitReq): Promise<RevokeMcpKeyResponse> {
-    return fm.fetchRequest<RevokeMcpKeyResponse>(`/api/mcp/${req.vaultId}/mcp-keys/${req.keyId}?${fm.renderURLSearchParams(req, ["vaultId", "keyId"])}`, {...initReq, method: "DELETE"});
+    return fm.fetchRequest<RevokeMcpKeyResponse>(`/api/mcp/keys/revoke`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListUserMcpKeys(this:void, req: ListUserMcpKeysRequest, initReq?: fm.InitReq): Promise<ListUserMcpKeysResponse> {
-    return fm.fetchRequest<ListUserMcpKeysResponse>(`/api/mcp/keys?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListUserMcpKeysResponse>(`/api/mcp/keys/list-user`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static SetMcpKeyAccess(this:void, req: SetMcpKeyAccessRequest, initReq?: fm.InitReq): Promise<SetMcpKeyAccessResponse> {
-    return fm.fetchRequest<SetMcpKeyAccessResponse>(`/api/mcp/keys/${req.keyId}/access`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<SetMcpKeyAccessResponse>(`/api/mcp/keys/access`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

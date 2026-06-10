@@ -30,12 +30,14 @@ service AuthAPI {
   };
   rpc GetConfig(GetConfig.Request) returns (GetConfig.Response) {
     option (google.api.http) = {
-      get: "/api/auth/config"
+      post: "/api/auth/config"
+      body: "*"
     };
   };
   rpc GetMe(GetMe.Request) returns (GetMe.Response) {
     option (google.api.http) = {
-      get: "/api/auth/me"
+      post: "/api/auth/me"
+      body: "*"
     };
   };
 }

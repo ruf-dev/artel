@@ -753,11 +753,11 @@ const file_email_accounts_proto_rawDesc = "" +
 	"\aRequest\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x1aQ\n" +
 	"\bResponse\x12E\n" +
-	"\vsuggestions\x18\x01 \x03(\v2#.artel_api.MailServerSuggestionInfoR\vsuggestions2\xce\x04\n" +
+	"\vsuggestions\x18\x01 \x03(\v2#.artel_api.MailServerSuggestionInfoR\vsuggestions2\xd3\x04\n" +
 	"\x10EmailAccountsAPI\x12~\n" +
 	"\x0fAddEmailAccount\x12\".artel_api.AddEmailAccount.Request\x1a#.artel_api.AddEmailAccount.Response\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/email-accounts/add\x12\x85\x01\n" +
-	"\x11ListEmailAccounts\x12$.artel_api.ListEmailAccounts.Request\x1a%.artel_api.ListEmailAccounts.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/email-accounts/list\x12\x85\x01\n" +
-	"\x12DeleteEmailAccount\x12%.artel_api.DeleteEmailAccount.Request\x1a&.artel_api.DeleteEmailAccount.Response\" \x82\xd3\xe4\x93\x02\x1a*\x18/api/email-accounts/{id}\x12\xa9\x01\n" +
+	"\x11ListEmailAccounts\x12$.artel_api.ListEmailAccounts.Request\x1a%.artel_api.ListEmailAccounts.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/email-accounts/list\x12\x8a\x01\n" +
+	"\x12DeleteEmailAccount\x12%.artel_api.DeleteEmailAccount.Request\x1a&.artel_api.DeleteEmailAccount.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/email-accounts/delete\x12\xa9\x01\n" +
 	"\x19ListMailServerSuggestions\x12,.artel_api.ListMailServerSuggestions.Request\x1a-.artel_api.ListMailServerSuggestions.Response\"/\x82\xd3\xe4\x93\x02):\x01*\"$/api/email-accounts/list_suggestionsB\fZ\n" +
 	"/artel_apib\x06proto3"
 

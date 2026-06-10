@@ -794,14 +794,14 @@ const file_mcp_keys_proto_rawDesc = "" +
 	"\bvault_id\x18\x02 \x01(\tR\avaultId\x12(\n" +
 	"\x10email_account_id\x18\x03 \x01(\tR\x0eemailAccountId\x1a\n" +
 	"\n" +
-	"\bResponse2\xfb\x04\n" +
+	"\bResponse2\xe0\x04\n" +
 	"\n" +
-	"McpKeysAPI\x12z\n" +
-	"\fCreateMcpKey\x12\x1f.artel_api.CreateMcpKey.Request\x1a .artel_api.CreateMcpKey.Response\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/mcp/{vault_id}/mcp-keys\x12t\n" +
-	"\vListMcpKeys\x12\x1e.artel_api.ListMcpKeys.Request\x1a\x1f.artel_api.ListMcpKeys.Response\"$\x82\xd3\xe4\x93\x02\x1e\x12\x1c/api/mcp/{vault_id}/mcp-keys\x12\x80\x01\n" +
-	"\fRevokeMcpKey\x12\x1f.artel_api.RevokeMcpKey.Request\x1a .artel_api.RevokeMcpKey.Response\"-\x82\xd3\xe4\x93\x02'*%/api/mcp/{vault_id}/mcp-keys/{key_id}\x12q\n" +
-	"\x0fListUserMcpKeys\x12\".artel_api.ListUserMcpKeys.Request\x1a#.artel_api.ListUserMcpKeys.Response\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/api/mcp/keys\x12\x84\x01\n" +
-	"\x0fSetMcpKeyAccess\x12\".artel_api.SetMcpKeyAccess.Request\x1a#.artel_api.SetMcpKeyAccess.Response\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/api/mcp/keys/{key_id}/accessB\fZ\n" +
+	"McpKeysAPI\x12r\n" +
+	"\fCreateMcpKey\x12\x1f.artel_api.CreateMcpKey.Request\x1a .artel_api.CreateMcpKey.Response\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/mcp/keys/create\x12m\n" +
+	"\vListMcpKeys\x12\x1e.artel_api.ListMcpKeys.Request\x1a\x1f.artel_api.ListMcpKeys.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/mcp/keys/list\x12r\n" +
+	"\fRevokeMcpKey\x12\x1f.artel_api.RevokeMcpKey.Request\x1a .artel_api.RevokeMcpKey.Response\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/mcp/keys/revoke\x12~\n" +
+	"\x0fListUserMcpKeys\x12\".artel_api.ListUserMcpKeys.Request\x1a#.artel_api.ListUserMcpKeys.Response\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/mcp/keys/list-user\x12{\n" +
+	"\x0fSetMcpKeyAccess\x12\".artel_api.SetMcpKeyAccess.Request\x1a#.artel_api.SetMcpKeyAccess.Response\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/mcp/keys/accessB\fZ\n" +
 	"/artel_apib\x06proto3"
 
 var (

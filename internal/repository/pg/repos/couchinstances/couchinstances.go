@@ -45,15 +45,21 @@ func (r *Repo) Register(ctx context.Context, url, username string, passwordPlain
 }
 
 func (r *Repo) Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, error) {
-	row, err := r.q.GetCouchInstance(ctx, id)
+	row, err := r.q.GetCouchInstanceWithCreds(ctx, id)
 	if err != nil {
 		return domain.CouchInstance{}, rerrors.Wrap(err, "get couch instance")
+	}
+
+	decrypted, err := cryptoutil.Decrypt(r.encryptionKey, row.PasswordEnc)
+	if err != nil {
+		return domain.CouchInstance{}, rerrors.Wrap(err, "decrypt password")
 	}
 
 	instance := domain.CouchInstance{
 		Uuid:      row.ID,
 		Url:       row.Url,
 		Username:  row.Username,
+		Password:  string(decrypted),
 		CreatedAt: row.CreatedAt,
 	}
 	return instance, nil
@@ -83,12 +89,13 @@ func (r *Repo) Update(ctx context.Context, id uuid.UUID, url, username string, p
 		return rerrors.Wrap(err, "encrypt password")
 	}
 
-	err = r.q.UpdateCouchInstance(ctx, artel_q.UpdateCouchInstanceParams{
+	params := artel_q.UpdateCouchInstanceParams{
 		ID:          id,
 		Url:         url,
 		Username:    username,
 		PasswordEnc: passwordEnc,
-	})
+	}
+	err = r.q.UpdateCouchInstance(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "update couch instance")
 	}

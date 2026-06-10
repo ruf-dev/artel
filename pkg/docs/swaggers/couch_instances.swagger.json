@@ -48,6 +48,70 @@
         ]
       }
     },
+    "/api/couch/delete": {
+      "post": {
+        "operationId": "CouchInstancesAPI_DeleteCouchInstance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_couchDeleteCouchInstanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_couchDeleteCouchInstanceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CouchInstancesAPI"
+        ]
+      }
+    },
+    "/api/couch/get": {
+      "post": {
+        "operationId": "CouchInstancesAPI_GetCouchInstance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_couchGetCouchInstanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_couchGetCouchInstanceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CouchInstancesAPI"
+        ]
+      }
+    },
     "/api/couch/list": {
       "post": {
         "operationId": "CouchInstancesAPI_ListCouchInstances",
@@ -80,64 +144,8 @@
         ]
       }
     },
-    "/api/couch/{id}": {
-      "get": {
-        "operationId": "CouchInstancesAPI_GetCouchInstance",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_couchGetCouchInstanceResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "CouchInstancesAPI"
-        ]
-      },
-      "delete": {
-        "operationId": "CouchInstancesAPI_DeleteCouchInstance",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/artel_couchDeleteCouchInstanceResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "CouchInstancesAPI"
-        ]
-      },
-      "put": {
+    "/api/couch/update": {
+      "post": {
         "operationId": "CouchInstancesAPI_UpdateCouchInstance",
         "responses": {
           "200": {
@@ -155,17 +163,11 @@
         },
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_couchCouchInstancesAPIUpdateCouchInstanceBody"
+              "$ref": "#/definitions/artel_couchUpdateCouchInstanceRequest"
             }
           }
         ],
@@ -176,22 +178,24 @@
     }
   },
   "definitions": {
-    "artel_couchCouchInstancesAPIUpdateCouchInstanceBody": {
+    "artel_couchDeleteCouchInstanceRequest": {
       "type": "object",
       "properties": {
-        "url": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "password": {
+        "id": {
           "type": "string"
         }
       }
     },
     "artel_couchDeleteCouchInstanceResponse": {
       "type": "object"
+    },
+    "artel_couchGetCouchInstanceRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
     },
     "artel_couchGetCouchInstanceResponse": {
       "type": "object",
@@ -243,6 +247,23 @@
       "type": "object",
       "properties": {
         "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_couchUpdateCouchInstanceRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
           "type": "string"
         }
       }

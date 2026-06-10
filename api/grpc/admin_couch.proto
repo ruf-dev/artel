@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package artel_admin_couch;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service AdminCouchAPI {
+  rpc ListCouchUsers(ListCouchUsers.Request) returns (ListCouchUsers.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/users/list"
+      body: "*"
+    };
+  };
+  rpc DeleteCouchUser(DeleteCouchUser.Request) returns (DeleteCouchUser.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/users/delete"
+      body: "*"
+    };
+  };
+  rpc ChangeCouchUserPassword(ChangeCouchUserPassword.Request) returns (ChangeCouchUserPassword.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/users/change-password"
+      body: "*"
+    };
+  };
+  rpc ListCouchDatabases(ListCouchDatabases.Request) returns (ListCouchDatabases.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/db/list"
+      body: "*"
+    };
+  };
+  rpc GrantDatabaseAccess(GrantDatabaseAccess.Request) returns (GrantDatabaseAccess.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/db/grant"
+      body: "*"
+    };
+  };
+  rpc RevokeDatabaseAccess(RevokeDatabaseAccess.Request) returns (RevokeDatabaseAccess.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/db/revoke"
+      body: "*"
+    };
+  };
+  rpc GetUserDatabaseAccess(GetUserDatabaseAccess.Request) returns (GetUserDatabaseAccess.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_couch/db/user-access"
+      body: "*"
+    };
+  };
+}
+
+message CouchUserEntry {
+  string name = 1;
+  repeated string roles = 2;
+}
+
+message ListCouchUsers {
+  message Request {
+    string instance_id = 1;
+  }
+  message Response {
+    repeated CouchUserEntry users = 1;
+  }
+}
+
+message DeleteCouchUser {
+  message Request {
+    string instance_id = 1;
+    string username = 2;
+  }
+  message Response {}
+}
+
+message ChangeCouchUserPassword {
+  message Request {
+    string instance_id = 1;
+    string username = 2;
+    string new_password = 3;
+  }
+  message Response {}
+}
+
+message ListCouchDatabases {
+  message Request {
+    string instance_id = 1;
+  }
+  message Response {
+    repeated string databases = 1;
+  }
+}
+
+message GrantDatabaseAccess {
+  message Request {
+    string instance_id = 1;
+    string db_name = 2;
+    string username = 3;
+  }
+  message Response {}
+}
+
+message RevokeDatabaseAccess {
+  message Request {
+    string instance_id = 1;
+    string db_name = 2;
+    string username = 3;
+  }
+  message Response {}
+}
+
+message GetUserDatabaseAccess {
+  message Request {
+    string instance_id = 1;
+    string username = 2;
+  }
+  message Response {
+    repeated string databases = 1;
+  }
+}

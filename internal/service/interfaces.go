@@ -15,6 +15,7 @@ type Service interface {
 	AuthService() AuthService
 	VaultService() VaultService
 	CouchInstanceService() CouchInstanceService
+	AdminCouchService() AdminCouchService
 	McpService() McpService
 	EmailService() EmailService
 	SubscriptionService() SubscriptionService
@@ -53,6 +54,16 @@ type CouchInstanceService interface {
 	ListCouchInstances(ctx context.Context) ([]domain.CouchInstance, error)
 	UpdateCouchInstance(ctx context.Context, id, url, username, password string) error
 	DeleteCouchInstance(ctx context.Context, id string) error
+}
+
+type AdminCouchService interface {
+	ListUsers(ctx context.Context, instanceId string) ([]couchdb.UserListEntry, error)
+	DeleteUser(ctx context.Context, instanceId, username string) error
+	ChangeUserPassword(ctx context.Context, instanceId, username, newPassword string) error
+	GrantDatabaseAccess(ctx context.Context, instanceId, dbName, username string) error
+	RevokeDatabaseAccess(ctx context.Context, instanceId, dbName, username string) error
+	ListDatabases(ctx context.Context, instanceId string) ([]string, error)
+	GetUserDatabaseAccess(ctx context.Context, instanceId, username string) ([]string, error)
 }
 
 type McpService interface {

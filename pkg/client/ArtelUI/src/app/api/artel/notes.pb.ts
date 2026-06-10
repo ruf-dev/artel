@@ -56,15 +56,15 @@ export type ListTags = Record<string, never>;
 
 export class NotesAPI {
   static ListFolders(this:void, req: ListFoldersRequest, initReq?: fm.InitReq): Promise<ListFoldersResponse> {
-    return fm.fetchRequest<ListFoldersResponse>(`/api/notes/${req.vaultId}/folders?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListFoldersResponse>(`/api/notes/folders`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListNotes(this:void, req: ListNotesRequest, initReq?: fm.InitReq): Promise<ListNotesResponse> {
-    return fm.fetchRequest<ListNotesResponse>(`/api/notes/${req.vaultId}?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListNotesResponse>(`/api/notes/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetNote(this:void, req: GetNoteRequest, initReq?: fm.InitReq): Promise<GetNoteResponse> {
-    return fm.fetchRequest<GetNoteResponse>(`/api/notes/${req.vaultId}/note`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<GetNoteResponse>(`/api/notes/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListTags(this:void, req: ListTagsRequest, initReq?: fm.InitReq): Promise<ListTagsResponse> {
-    return fm.fetchRequest<ListTagsResponse>(`/api/notes/${req.vaultId}/tags?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListTagsResponse>(`/api/notes/tags`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

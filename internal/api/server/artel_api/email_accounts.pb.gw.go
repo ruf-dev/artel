@@ -93,18 +93,12 @@ func request_EmailAccountsAPI_DeleteEmailAccount_0(ctx context.Context, marshale
 	var (
 		protoReq DeleteEmailAccount_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.DeleteEmailAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -114,15 +108,9 @@ func local_request_EmailAccountsAPI_DeleteEmailAccount_0(ctx context.Context, ma
 	var (
 		protoReq DeleteEmailAccount_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-	protoReq.Id, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.DeleteEmailAccount(ctx, &protoReq)
 	return msg, metadata, err
@@ -201,13 +189,13 @@ func RegisterEmailAccountsAPIHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 		forward_EmailAccountsAPI_ListEmailAccounts_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_EmailAccountsAPI_DeleteEmailAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_EmailAccountsAPI_DeleteEmailAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/DeleteEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/DeleteEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -315,11 +303,11 @@ func RegisterEmailAccountsAPIHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 		forward_EmailAccountsAPI_ListEmailAccounts_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_EmailAccountsAPI_DeleteEmailAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_EmailAccountsAPI_DeleteEmailAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/DeleteEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.EmailAccountsAPI/DeleteEmailAccount", runtime.WithHTTPPathPattern("/api/email-accounts/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -355,7 +343,7 @@ func RegisterEmailAccountsAPIHandlerClient(ctx context.Context, mux *runtime.Ser
 var (
 	pattern_EmailAccountsAPI_AddEmailAccount_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "add"}, ""))
 	pattern_EmailAccountsAPI_ListEmailAccounts_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "list"}, ""))
-	pattern_EmailAccountsAPI_DeleteEmailAccount_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "email-accounts", "id"}, ""))
+	pattern_EmailAccountsAPI_DeleteEmailAccount_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "delete"}, ""))
 	pattern_EmailAccountsAPI_ListMailServerSuggestions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "email-accounts", "list_suggestions"}, ""))
 )
 

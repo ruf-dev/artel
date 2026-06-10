@@ -6,6 +6,7 @@ import (
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/v1/admincouchsvc"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
 	"github.com/ruf-dev/artel/internal/service/v1/email"
@@ -21,6 +22,7 @@ type Services struct {
 	Auth          service.AuthService
 	Vault         service.VaultService
 	CouchInstance service.CouchInstanceService
+	AdminCouch    service.AdminCouchService
 	Mcp           service.McpService
 	Email         service.EmailService
 	Subscription  service.SubscriptionService
@@ -39,6 +41,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Auth:          authSvc,
 		Vault:         vault.New(repo),
 		CouchInstance: couchinstances.New(repo),
+		AdminCouch:    admincouchsvc.New(repo),
 		Mcp:           mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.EmailAccounts(), repo.CouchInstances(), repo.UserPermissions()),
 		Email:         email.New(repo.EmailAccounts(), repo.MailServerSuggestions()),
 		Subscription:  subscription.New(repo.Subscriptions()),
@@ -58,6 +61,10 @@ func (s *Services) VaultService() service.VaultService {
 
 func (s *Services) CouchInstanceService() service.CouchInstanceService {
 	return s.CouchInstance
+}
+
+func (s *Services) AdminCouchService() service.AdminCouchService {
+	return s.AdminCouch
 }
 
 func (s *Services) McpService() service.McpService {

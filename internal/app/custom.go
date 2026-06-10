@@ -18,6 +18,7 @@ import (
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport"
+	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/email_accounts_api"
@@ -65,6 +66,7 @@ func (c *Custom) Init(a *App) error {
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
+	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
 	emailAccountsImpl := email_accounts_api.NewEmailAccountsImpl(services.EmailService())
 	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
@@ -89,11 +91,17 @@ func (c *Custom) Init(a *App) error {
 			pb.CouchInstancesAPI_ListCouchInstances_FullMethodName,
 			pb.CouchInstancesAPI_UpdateCouchInstance_FullMethodName,
 			pb.CouchInstancesAPI_DeleteCouchInstance_FullMethodName,
+			pb.AdminCouchAPI_ListCouchUsers_FullMethodName,
+			pb.AdminCouchAPI_DeleteCouchUser_FullMethodName,
+			pb.AdminCouchAPI_ChangeCouchUserPassword_FullMethodName,
+			pb.AdminCouchAPI_ListCouchDatabases_FullMethodName,
+			pb.AdminCouchAPI_GrantDatabaseAccess_FullMethodName,
+			pb.AdminCouchAPI_RevokeDatabaseAccess_FullMethodName,
 		),
 		middleware.LogInterceptor(),
 		middleware.PanicInterceptor(),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl)
 
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))

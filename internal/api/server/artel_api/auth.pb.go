@@ -919,13 +919,13 @@ const file_auth_proto_rawDesc = "" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x129\n" +
 	"\vpermissions\x18\x04 \x01(\v2\x17.artel_auth.PermissionsR\vpermissions\x12\x1b\n" +
-	"\tphoto_url\x18\x05 \x01(\tR\bphotoUrl2\xe9\x03\n" +
+	"\tphoto_url\x18\x05 \x01(\tR\bphotoUrl2\xef\x03\n" +
 	"\aAuthAPI\x12f\n" +
 	"\bRegister\x12\x1c.artel_auth.Register.Request\x1a\x1d.artel_auth.Register.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/auth/register\x12Z\n" +
 	"\x05Login\x12\x19.artel_auth.Login.Request\x1a\x1a.artel_auth.Login.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/auth/login\x12^\n" +
-	"\x06Logout\x12\x1a.artel_auth.Logout.Request\x1a\x1b.artel_auth.Logout.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/auth/logout\x12d\n" +
-	"\tGetConfig\x12\x1d.artel_auth.GetConfig.Request\x1a\x1e.artel_auth.GetConfig.Response\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/auth/config\x12T\n" +
-	"\x05GetMe\x12\x19.artel_auth.GetMe.Request\x1a\x1a.artel_auth.GetMe.Response\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/api/auth/meB\x1a\x92\x82\x19\n" +
+	"\x06Logout\x12\x1a.artel_auth.Logout.Request\x1a\x1b.artel_auth.Logout.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/auth/logout\x12g\n" +
+	"\tGetConfig\x12\x1d.artel_auth.GetConfig.Request\x1a\x1e.artel_auth.GetConfig.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/auth/config\x12W\n" +
+	"\x05GetMe\x12\x19.artel_auth.GetMe.Request\x1a\x1a.artel_auth.GetMe.Response\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/api/auth/meB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 

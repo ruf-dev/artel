@@ -145,31 +145,31 @@ export class VaultsAPI {
     return fm.fetchRequest<CreateVaultResponse>(`/api/vaults/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetVault(this:void, req: GetVaultRequest, initReq?: fm.InitReq): Promise<GetVaultResponse> {
-    return fm.fetchRequest<GetVaultResponse>(`/api/vaults/${req.id}?${fm.renderURLSearchParams(req, ["id"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<GetVaultResponse>(`/api/vaults/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListVaults(this:void, req: ListVaultsRequest, initReq?: fm.InitReq): Promise<ListVaultsResponse> {
     return fm.fetchRequest<ListVaultsResponse>(`/api/vaults/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static DeleteVault(this:void, req: DeleteVaultRequest, initReq?: fm.InitReq): Promise<DeleteVaultResponse> {
-    return fm.fetchRequest<DeleteVaultResponse>(`/api/vaults/${req.id}/delete`, {...initReq, method: "POST"});
+    return fm.fetchRequest<DeleteVaultResponse>(`/api/vaults/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static AddMember(this:void, req: AddMemberRequest, initReq?: fm.InitReq): Promise<AddMemberResponse> {
-    return fm.fetchRequest<AddMemberResponse>(`/api/vaults/${req.vaultId}/members`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<AddMemberResponse>(`/api/vaults/members/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static RemoveMember(this:void, req: RemoveMemberRequest, initReq?: fm.InitReq): Promise<RemoveMemberResponse> {
-    return fm.fetchRequest<RemoveMemberResponse>(`/api/vaults/${req.vaultId}/members/${req.userId}?${fm.renderURLSearchParams(req, ["vaultId", "userId"])}`, {...initReq, method: "DELETE"});
+    return fm.fetchRequest<RemoveMemberResponse>(`/api/vaults/members/remove`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListMembers(this:void, req: ListMembersRequest, initReq?: fm.InitReq): Promise<ListMembersResponse> {
-    return fm.fetchRequest<ListMembersResponse>(`/api/vaults/${req.vaultId}/members?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListMembersResponse>(`/api/vaults/members/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static CreateInviteLink(this:void, req: CreateInviteLinkRequest, initReq?: fm.InitReq): Promise<CreateInviteLinkResponse> {
-    return fm.fetchRequest<CreateInviteLinkResponse>(`/api/vaults/${req.vaultId}/invites`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+    return fm.fetchRequest<CreateInviteLinkResponse>(`/api/vaults/invites/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListInviteLinks(this:void, req: ListInviteLinksRequest, initReq?: fm.InitReq): Promise<ListInviteLinksResponse> {
-    return fm.fetchRequest<ListInviteLinksResponse>(`/api/vaults/${req.vaultId}/invites?${fm.renderURLSearchParams(req, ["vaultId"])}`, {...initReq, method: "GET"});
+    return fm.fetchRequest<ListInviteLinksResponse>(`/api/vaults/invites/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static RevokeInviteLink(this:void, req: RevokeInviteLinkRequest, initReq?: fm.InitReq): Promise<RevokeInviteLinkResponse> {
-    return fm.fetchRequest<RevokeInviteLinkResponse>(`/api/vaults/${req.vaultId}/invites/${req.inviteId}/revoke`, {...initReq, method: "POST"});
+    return fm.fetchRequest<RevokeInviteLinkResponse>(`/api/vaults/invites/revoke`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static AcceptInvite(this:void, req: AcceptInviteRequest, initReq?: fm.InitReq): Promise<AcceptInviteResponse> {
     return fm.fetchRequest<AcceptInviteResponse>(`/api/vaults/join`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

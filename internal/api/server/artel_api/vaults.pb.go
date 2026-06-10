@@ -1725,19 +1725,20 @@ const file_vaults_proto_rawDesc = "" +
 	"\x05token\x18\x04 \x01(\tR\x05token\x12\x18\n" +
 	"\arevoked\x18\x05 \x01(\bR\arevoked\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\tR\tcreatedAt2\x86\v\n" +
-	"\tVaultsAPI\x12s\n" +
-	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/vaults/create\x12e\n" +
-	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/vaults/{id}\x12n\n" +
+	"created_at\x18\x06 \x01(\tR\tcreatedAt2\xd5\n" +
 	"\n" +
-	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/vaults/list\x12u\n" +
-	"\vDeleteVault\x12!.artel_vaults.DeleteVault.Request\x1a\".artel_vaults.DeleteVault.Response\"\x1f\x82\xd3\xe4\x93\x02\x19\"\x17/api/vaults/{id}/delete\x12y\n" +
-	"\tAddMember\x12\x1f.artel_vaults.AddMember.Request\x1a .artel_vaults.AddMember.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/vaults/{vault_id}/members\x12\x89\x01\n" +
-	"\fRemoveMember\x12\".artel_vaults.RemoveMember.Request\x1a#.artel_vaults.RemoveMember.Response\"0\x82\xd3\xe4\x93\x02**(/api/vaults/{vault_id}/members/{user_id}\x12|\n" +
-	"\vListMembers\x12!.artel_vaults.ListMembers.Request\x1a\".artel_vaults.ListMembers.Response\"&\x82\xd3\xe4\x93\x02 \x12\x1e/api/vaults/{vault_id}/members\x12\x8e\x01\n" +
-	"\x10CreateInviteLink\x12&.artel_vaults.CreateInviteLink.Request\x1a'.artel_vaults.CreateInviteLink.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/vaults/{vault_id}/invites\x12\x88\x01\n" +
-	"\x0fListInviteLinks\x12%.artel_vaults.ListInviteLinks.Request\x1a&.artel_vaults.ListInviteLinks.Response\"&\x82\xd3\xe4\x93\x02 \x12\x1e/api/vaults/{vault_id}/invites\x12\x9e\x01\n" +
-	"\x10RevokeInviteLink\x12&.artel_vaults.RevokeInviteLink.Request\x1a'.artel_vaults.RevokeInviteLink.Response\"9\x82\xd3\xe4\x93\x023\"1/api/vaults/{vault_id}/invites/{invite_id}/revoke\x12t\n" +
+	"\tVaultsAPI\x12s\n" +
+	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/vaults/create\x12g\n" +
+	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/vaults/get\x12n\n" +
+	"\n" +
+	"ListVaults\x12 .artel_vaults.ListVaults.Request\x1a!.artel_vaults.ListVaults.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/vaults/list\x12s\n" +
+	"\vDeleteVault\x12!.artel_vaults.DeleteVault.Request\x1a\".artel_vaults.DeleteVault.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/vaults/delete\x12r\n" +
+	"\tAddMember\x12\x1f.artel_vaults.AddMember.Request\x1a .artel_vaults.AddMember.Response\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/vaults/members/add\x12~\n" +
+	"\fRemoveMember\x12\".artel_vaults.RemoveMember.Request\x1a#.artel_vaults.RemoveMember.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/members/remove\x12y\n" +
+	"\vListMembers\x12!.artel_vaults.ListMembers.Request\x1a\".artel_vaults.ListMembers.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/vaults/members/list\x12\x8a\x01\n" +
+	"\x10CreateInviteLink\x12&.artel_vaults.CreateInviteLink.Request\x1a'.artel_vaults.CreateInviteLink.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/invites/create\x12\x85\x01\n" +
+	"\x0fListInviteLinks\x12%.artel_vaults.ListInviteLinks.Request\x1a&.artel_vaults.ListInviteLinks.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/vaults/invites/list\x12\x8a\x01\n" +
+	"\x10RevokeInviteLink\x12&.artel_vaults.RevokeInviteLink.Request\x1a'.artel_vaults.RevokeInviteLink.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/invites/revoke\x12t\n" +
 	"\fAcceptInvite\x12\".artel_vaults.AcceptInvite.Request\x1a#.artel_vaults.AcceptInvite.Response\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/vaults/joinB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"

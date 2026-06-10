@@ -9,32 +9,35 @@ option go_package = "/artel_api";
 service McpKeysAPI {
     rpc CreateMcpKey(CreateMcpKey.Request) returns (CreateMcpKey.Response) {
         option (google.api.http) = {
-            post: "/api/mcp/{vault_id}/mcp-keys"
+            post: "/api/mcp/keys/create"
             body: "*"
         };
     }
 
     rpc ListMcpKeys(ListMcpKeys.Request) returns (ListMcpKeys.Response) {
         option (google.api.http) = {
-            get: "/api/mcp/{vault_id}/mcp-keys"
+            post: "/api/mcp/keys/list"
+            body: "*"
         };
     }
 
     rpc RevokeMcpKey(RevokeMcpKey.Request) returns (RevokeMcpKey.Response) {
         option (google.api.http) = {
-            delete: "/api/mcp/{vault_id}/mcp-keys/{key_id}"
+            post: "/api/mcp/keys/revoke"
+            body: "*"
         };
     }
 
     rpc ListUserMcpKeys(ListUserMcpKeys.Request) returns (ListUserMcpKeys.Response) {
         option (google.api.http) = {
-            get: "/api/mcp/keys"
+            post: "/api/mcp/keys/list-user"
+            body: "*"
         };
     }
 
     rpc SetMcpKeyAccess(SetMcpKeyAccess.Request) returns (SetMcpKeyAccess.Response) {
         option (google.api.http) = {
-            post: "/api/mcp/keys/{key_id}/access"
+            post: "/api/mcp/keys/access"
             body: "*"
         };
     }

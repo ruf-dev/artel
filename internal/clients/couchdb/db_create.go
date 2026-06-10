@@ -2,54 +2,26 @@ package couchdb
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
+	kivik "github.com/go-kivik/kivik/v4"
 	"go.redsock.ru/rerrors"
+
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 func (c *Client) CreateDatabase(ctx context.Context, name string) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fmt.Sprintf("%s/%s", c.baseURL, name), nil)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to create request")
-	}
-
-	req.SetBasicAuth(c.user, c.password)
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to execute request")
-	}
-
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to read response body")
-	}
-
-	if resp.StatusCode == http.StatusCreated {
+	err := c.kivik.CreateDB(ctx, name)
+	if err == nil {
 		return nil
 	}
 
-	lockedErr := checkAccountLocked(resp.StatusCode, body)
-	if lockedErr != nil {
-		return lockedErr
-	}
-
-	switch resp.StatusCode {
-	case http.StatusBadRequest,
-		http.StatusPreconditionFailed:
-		var er CreateDbErrorResp
-		err = json.Unmarshal(body, &er)
-		if err != nil {
-			return rerrors.Wrap(err, "failed to unmarshal response body")
-		}
-
-		return rerrors.Wrap(er.Error())
+	switch kivik.HTTPStatus(err) {
+	case http.StatusPreconditionFailed:
+		return user_errors.CouchDbDatabaseAlreadyExists
+	case http.StatusBadRequest:
+		return user_errors.InvalidCouchDbDatabaseName
 	default:
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
+		return rerrors.Wrap(err, "creating database")
 	}
 }

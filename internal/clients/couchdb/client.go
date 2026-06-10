@@ -3,10 +3,10 @@ package couchdb
 import (
 	"context"
 	"errors"
-	"fmt"
-	"io"
 	"net/http"
 
+	kivik "github.com/go-kivik/kivik/v4"
+	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/service/user_errors"
@@ -19,19 +19,30 @@ type Config struct {
 }
 
 type Client struct {
+	kivik    *kivik.Client
 	baseURL  string
-	http     *http.Client
 	user     string
 	password string
 }
 
-func New(cfg Config) *Client {
-	return &Client{
+func New(cfg Config) (*Client, error) {
+	httpClient := &http.Client{Transport: newLoggingTransport()}
+
+	kc, err := kivik.New("couch", cfg.BaseURL,
+		kivikcouch.BasicAuth(cfg.User, cfg.Password),
+		kivikcouch.OptionHTTPClient(httpClient),
+	)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "creating kivik client")
+	}
+
+	c := &Client{
+		kivik:    kc,
 		baseURL:  cfg.BaseURL,
-		http:     &http.Client{Transport: newLoggingTransport()},
 		user:     cfg.User,
 		password: cfg.Password,
 	}
+	return c, nil
 }
 
 func (c *Client) Config() Config {
@@ -43,8 +54,13 @@ func (c *Client) Config() Config {
 }
 
 func (c *Client) Setup(ctx context.Context) error {
+	err := c.enableSingleNode(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "enabling single node")
+	}
+
 	for _, db := range []string{"_users", "_replicator"} {
-		err := c.CreateDatabase(ctx, db)
+		err = c.CreateDatabase(ctx, db)
 		if err != nil && !errors.Is(err, user_errors.CouchDbDatabaseAlreadyExists) {
 			return rerrors.Wrap(err, "create system db "+db)
 		}
@@ -52,33 +68,17 @@ func (c *Client) Setup(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) DeleteDatabase(ctx context.Context, name string) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fmt.Sprintf("%s/%s", c.baseURL, name), nil)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to create request")
+func (c *Client) enableSingleNode(ctx context.Context) error {
+	payload := map[string]interface{}{
+		"action":       "enable_single_node",
+		"bind_address": "0.0.0.0",
+		"username":     c.user,
+		"password":     c.password,
 	}
 
-	req.SetBasicAuth(c.user, c.password)
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to execute request")
+	err := c.kivik.ClusterSetup(ctx, payload)
+	if err != nil && kivik.HTTPStatus(err) != http.StatusBadRequest {
+		return rerrors.Wrap(err, "cluster setup")
 	}
-
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return rerrors.Wrap(err, "failed to read response body")
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		lockedErr := checkAccountLocked(resp.StatusCode, body)
-		if lockedErr != nil {
-			return lockedErr
-		}
-		return rerrors.New(fmt.Sprintf("unexpected status %d: %s", resp.StatusCode, string(body)))
-	}
-
 	return nil
 }

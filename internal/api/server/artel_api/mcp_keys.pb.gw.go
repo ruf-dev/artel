@@ -39,21 +39,12 @@ func request_McpKeysAPI_CreateMcpKey_0(ctx context.Context, marshaler runtime.Ma
 	var (
 		protoReq CreateMcpKey_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.CreateMcpKey(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -63,18 +54,9 @@ func local_request_McpKeysAPI_CreateMcpKey_0(ctx context.Context, marshaler runt
 	var (
 		protoReq CreateMcpKey_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := server.CreateMcpKey(ctx, &protoReq)
 	return msg, metadata, err
@@ -84,18 +66,12 @@ func request_McpKeysAPI_ListMcpKeys_0(ctx context.Context, marshaler runtime.Mar
 	var (
 		protoReq ListMcpKeys_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
 	msg, err := client.ListMcpKeys(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -105,15 +81,9 @@ func local_request_McpKeysAPI_ListMcpKeys_0(ctx context.Context, marshaler runti
 	var (
 		protoReq ListMcpKeys_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListMcpKeys(ctx, &protoReq)
 	return msg, metadata, err
@@ -123,26 +93,12 @@ func request_McpKeysAPI_RevokeMcpKey_0(ctx context.Context, marshaler runtime.Ma
 	var (
 		protoReq RevokeMcpKey_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
-	}
-	val, ok = pathParams["key_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key_id")
-	}
-	protoReq.KeyId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key_id", err)
 	}
 	msg, err := client.RevokeMcpKey(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -152,23 +108,9 @@ func local_request_McpKeysAPI_RevokeMcpKey_0(ctx context.Context, marshaler runt
 	var (
 		protoReq RevokeMcpKey_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
-	val, ok := pathParams["vault_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
-	}
-	protoReq.VaultId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
-	}
-	val, ok = pathParams["key_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key_id")
-	}
-	protoReq.KeyId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key_id", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.RevokeMcpKey(ctx, &protoReq)
 	return msg, metadata, err
@@ -179,6 +121,9 @@ func request_McpKeysAPI_ListUserMcpKeys_0(ctx context.Context, marshaler runtime
 		protoReq ListUserMcpKeys_Request
 		metadata runtime.ServerMetadata
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
@@ -191,6 +136,9 @@ func local_request_McpKeysAPI_ListUserMcpKeys_0(ctx context.Context, marshaler r
 		protoReq ListUserMcpKeys_Request
 		metadata runtime.ServerMetadata
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	msg, err := server.ListUserMcpKeys(ctx, &protoReq)
 	return msg, metadata, err
 }
@@ -199,21 +147,12 @@ func request_McpKeysAPI_SetMcpKeyAccess_0(ctx context.Context, marshaler runtime
 	var (
 		protoReq SetMcpKeyAccess_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
-	}
-	val, ok := pathParams["key_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key_id")
-	}
-	protoReq.KeyId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key_id", err)
 	}
 	msg, err := client.SetMcpKeyAccess(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -223,18 +162,9 @@ func local_request_McpKeysAPI_SetMcpKeyAccess_0(ctx context.Context, marshaler r
 	var (
 		protoReq SetMcpKeyAccess_Request
 		metadata runtime.ServerMetadata
-		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	val, ok := pathParams["key_id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key_id")
-	}
-	protoReq.KeyId, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key_id", err)
 	}
 	msg, err := server.SetMcpKeyAccess(ctx, &protoReq)
 	return msg, metadata, err
@@ -252,7 +182,7 @@ func RegisterMcpKeysAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/CreateMcpKey", runtime.WithHTTPPathPattern("/api/mcp/{vault_id}/mcp-keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/CreateMcpKey", runtime.WithHTTPPathPattern("/api/mcp/keys/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -266,13 +196,13 @@ func RegisterMcpKeysAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		}
 		forward_McpKeysAPI_CreateMcpKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_McpKeysAPI_ListMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_McpKeysAPI_ListMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/{vault_id}/mcp-keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/keys/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -286,13 +216,13 @@ func RegisterMcpKeysAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		}
 		forward_McpKeysAPI_ListMcpKeys_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_McpKeysAPI_RevokeMcpKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_McpKeysAPI_RevokeMcpKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/RevokeMcpKey", runtime.WithHTTPPathPattern("/api/mcp/{vault_id}/mcp-keys/{key_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/RevokeMcpKey", runtime.WithHTTPPathPattern("/api/mcp/keys/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -306,13 +236,13 @@ func RegisterMcpKeysAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		}
 		forward_McpKeysAPI_RevokeMcpKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_McpKeysAPI_ListUserMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_McpKeysAPI_ListUserMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListUserMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListUserMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/keys/list-user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -332,7 +262,7 @@ func RegisterMcpKeysAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/SetMcpKeyAccess", runtime.WithHTTPPathPattern("/api/mcp/keys/{key_id}/access"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.McpKeysAPI/SetMcpKeyAccess", runtime.WithHTTPPathPattern("/api/mcp/keys/access"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -390,7 +320,7 @@ func RegisterMcpKeysAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/CreateMcpKey", runtime.WithHTTPPathPattern("/api/mcp/{vault_id}/mcp-keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/CreateMcpKey", runtime.WithHTTPPathPattern("/api/mcp/keys/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -403,11 +333,11 @@ func RegisterMcpKeysAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		}
 		forward_McpKeysAPI_CreateMcpKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_McpKeysAPI_ListMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_McpKeysAPI_ListMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/{vault_id}/mcp-keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/keys/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -420,11 +350,11 @@ func RegisterMcpKeysAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		}
 		forward_McpKeysAPI_ListMcpKeys_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_McpKeysAPI_RevokeMcpKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_McpKeysAPI_RevokeMcpKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/RevokeMcpKey", runtime.WithHTTPPathPattern("/api/mcp/{vault_id}/mcp-keys/{key_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/RevokeMcpKey", runtime.WithHTTPPathPattern("/api/mcp/keys/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -437,11 +367,11 @@ func RegisterMcpKeysAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		}
 		forward_McpKeysAPI_RevokeMcpKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_McpKeysAPI_ListUserMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_McpKeysAPI_ListUserMcpKeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListUserMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/ListUserMcpKeys", runtime.WithHTTPPathPattern("/api/mcp/keys/list-user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -458,7 +388,7 @@ func RegisterMcpKeysAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/SetMcpKeyAccess", runtime.WithHTTPPathPattern("/api/mcp/keys/{key_id}/access"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.McpKeysAPI/SetMcpKeyAccess", runtime.WithHTTPPathPattern("/api/mcp/keys/access"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -475,11 +405,11 @@ func RegisterMcpKeysAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 }
 
 var (
-	pattern_McpKeysAPI_CreateMcpKey_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "mcp", "vault_id", "mcp-keys"}, ""))
-	pattern_McpKeysAPI_ListMcpKeys_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "mcp", "vault_id", "mcp-keys"}, ""))
-	pattern_McpKeysAPI_RevokeMcpKey_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "mcp", "vault_id", "mcp-keys", "key_id"}, ""))
-	pattern_McpKeysAPI_ListUserMcpKeys_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "mcp", "keys"}, ""))
-	pattern_McpKeysAPI_SetMcpKeyAccess_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "mcp", "keys", "key_id", "access"}, ""))
+	pattern_McpKeysAPI_CreateMcpKey_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "mcp", "keys", "create"}, ""))
+	pattern_McpKeysAPI_ListMcpKeys_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "mcp", "keys", "list"}, ""))
+	pattern_McpKeysAPI_RevokeMcpKey_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "mcp", "keys", "revoke"}, ""))
+	pattern_McpKeysAPI_ListUserMcpKeys_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "mcp", "keys", "list-user"}, ""))
+	pattern_McpKeysAPI_SetMcpKeyAccess_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "mcp", "keys", "access"}, ""))
 )
 
 var (

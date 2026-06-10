@@ -17,50 +17,56 @@ service VaultsAPI {
   };
   rpc GetVault(GetVault.Request) returns (GetVault.Response) {
     option (google.api.http) = {
-      get: "/api/vaults/{id}"
+      post: "/api/vaults/get"
+      body: "*"
     };
   };
   rpc ListVaults(ListVaults.Request) returns (ListVaults.Response) {
     option (google.api.http) = {
-      post: "/api/vaults/list",
+      post: "/api/vaults/list"
       body: "*"
     };
   };
   rpc DeleteVault(DeleteVault.Request) returns (DeleteVault.Response) {
     option (google.api.http) = {
-      post: "/api/vaults/{id}/delete"
+      post: "/api/vaults/delete"
+      body: "*"
     };
   };
   rpc AddMember(AddMember.Request) returns (AddMember.Response) {
     option (google.api.http) = {
-      post: "/api/vaults/{vault_id}/members"
+      post: "/api/vaults/members/add"
       body: "*"
     };
   };
   rpc RemoveMember(RemoveMember.Request) returns (RemoveMember.Response) {
     option (google.api.http) = {
-      delete: "/api/vaults/{vault_id}/members/{user_id}"
+      post: "/api/vaults/members/remove"
+      body: "*"
     };
   };
   rpc ListMembers(ListMembers.Request) returns (ListMembers.Response) {
     option (google.api.http) = {
-      get: "/api/vaults/{vault_id}/members"
+      post: "/api/vaults/members/list"
+      body: "*"
     };
   };
   rpc CreateInviteLink(CreateInviteLink.Request) returns (CreateInviteLink.Response) {
     option (google.api.http) = {
-      post: "/api/vaults/{vault_id}/invites"
+      post: "/api/vaults/invites/create"
       body: "*"
     };
   };
   rpc ListInviteLinks(ListInviteLinks.Request) returns (ListInviteLinks.Response) {
     option (google.api.http) = {
-      get: "/api/vaults/{vault_id}/invites"
+      post: "/api/vaults/invites/list"
+      body: "*"
     };
   };
   rpc RevokeInviteLink(RevokeInviteLink.Request) returns (RevokeInviteLink.Response) {
     option (google.api.http) = {
-      post: "/api/vaults/{vault_id}/invites/{invite_id}/revoke"
+      post: "/api/vaults/invites/revoke"
+      body: "*"
     };
   };
   rpc AcceptInvite(AcceptInvite.Request) returns (AcceptInvite.Response) {

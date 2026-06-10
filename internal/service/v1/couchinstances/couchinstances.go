@@ -32,7 +32,10 @@ func (s *Service) RegisterCouchInstance(ctx context.Context, url, username, pass
 		User:     username,
 		Password: password,
 	}
-	client := couchdb.New(cfg)
+	client, err := couchdb.New(cfg)
+	if err != nil {
+		return "", rerrors.Wrap(err, "creating couch client")
+	}
 
 	err = client.Setup(ctx)
 	if err != nil {

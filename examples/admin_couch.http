@@ -1,0 +1,60 @@
+### List CouchDB Users
+POST {{artel_url}}/api/admin_couch/users/list
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "instance_id": "fc119568-39d9-4a90-ae5e-b9431496e2ae"
+}
+
+### Delete CouchDB User
+POST {{artel_url}}/api/admin_couch/users/delete
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "instance_id": "{{couch_instance_id}}",
+  "username": "alice"
+}
+
+### Change CouchDB User Password
+POST {{artel_url}}/api/admin_couch/users/change-password
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "instance_id": "{{couch_instance_id}}",
+  "username": "alice",
+  "new_password": "newpassword123"
+}
+
+### List CouchDB Databases
+POST {{artel_url}}/api/admin_couch/db/list
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "instance_id": "{{couch_instance_id}}"
+}
+
+### Grant Database Access
+POST {{artel_url}}/api/admin_couch/db/grant
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "instance_id": "{{couch_instance_id}}",
+  "db_name": "my_database",
+  "username": "alice"
+}
+
+### Revoke Database Access
+POST {{artel_url}}/api/admin_couch/db/revoke
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "instance_id": "{{couch_instance_id}}",
+  "db_name": "my_database",
+  "username": "alice"
+}

@@ -38,6 +38,14 @@ If editing any `.go` files, read and follow [docs/go-style.md](docs/go-style.md)
 - When wrapping another component with a styled div, use `***Wrapper` for that div's style (e.g., `ButtonWrapper`)
 - Follow Feature Sliced Design: keep widgets modular with composable sub-components
 
+### Error and Confirmation Handling
+
+- **Never use `window.alert` or `window.confirm`** — use project-level primitives:
+  - **Errors**: `useBakeError()` from `@/app/hooks/useErrorToast` → call `bakeError(title, err)` inside `catch` blocks
+  - **Confirmations**: `OpenDialog(<ConfirmDialog ... />)` from `@/components/ConfirmDialog/ConfirmDialog`
+- `ConfirmDialog` props: `title`, `message`, `confirmLabel`, `cancelLabel`, `danger` (boolean), `onConfirm` (async callback)
+- The `onConfirm` callback is responsible for `try/catch/finally`; `ConfirmDialog` closes itself in `finally` after `onConfirm` resolves
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.

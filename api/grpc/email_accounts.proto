@@ -23,7 +23,8 @@ service EmailAccountsAPI {
 
     rpc DeleteEmailAccount(DeleteEmailAccount.Request) returns (DeleteEmailAccount.Response) {
         option (google.api.http) = {
-            delete: "/api/email-accounts/{id}"
+            post: "/api/email-accounts/delete"
+            body: "*"
         };
     }
 

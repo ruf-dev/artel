@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/admin/AdminPage.module.css"
 
+import {AdminCouchAPI, CouchUserEntry} from "@/app/api/artel/admin_couch.pb.ts"
 import {CouchInstancesAPI, GetCouchInstanceResponse} from "@/app/api/artel/couch_instances.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
@@ -11,10 +12,69 @@ import useUser from "@/hooks/user/User.ts"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
+import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
+import {useBakeError} from "@/app/hooks/useErrorToast"
+
+type Tab = "instances" | "users"
 
 export default function AdminPage() {
     const navigate = useNavigate()
     const {auth, isAdmin} = useUser()
+    const [tab, setTab] = useState<Tab>("instances")
+
+    useEffect(() => {
+        if (!auth.isAuthenticated()) {
+            navigate(Path.InitPage)
+            return
+        }
+        if (!isAdmin) {
+            navigate(Path.HomePage)
+        }
+    }, [auth, isAdmin, navigate])
+
+    return (
+        <div className={cls.AdminPageContainer}>
+            <AdminHero tab={tab} />
+            <TabBar tab={tab} onTabChange={setTab} />
+            {tab === "instances" && <InstancesTab />}
+            {tab === "users" && <UsersTab />}
+        </div>
+    )
+}
+
+// ── Shared header ────────────────────────────────────────────
+
+function AdminHero({tab}: {tab: Tab}) {
+    const title = tab === "instances" ? "CouchDB instances" : "CouchDB users"
+    return (
+        <div className={cls.HeroContainer}>
+            <div className={cls.HeroTitles}>
+                <div className={cls.Eyebrow}>Admin</div>
+                <h1 className={cls.HeroTitle}>{title}</h1>
+            </div>
+        </div>
+    )
+}
+
+function TabBar({tab, onTabChange}: {tab: Tab; onTabChange: (t: Tab) => void}) {
+    const instancesCls = tab === "instances" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
+    const usersCls = tab === "users" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
+    return (
+        <div className={cls.TabBar}>
+            <button type="button" className={instancesCls} onClick={() => onTabChange("instances")}>
+                Instances
+            </button>
+            <button type="button" className={usersCls} onClick={() => onTabChange("users")}>
+                Users
+            </button>
+        </div>
+    )
+}
+
+// ── Instances tab ─────────────────────────────────────────────
+
+function InstancesTab() {
+    const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const [instances, setInstances] = useState<GetCouchInstanceResponse[]>([])
     const [loading, setLoading] = useState(true)
@@ -29,17 +89,7 @@ export default function AdminPage() {
         }
     }, [auth])
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
-            return
-        }
-        if (!isAdmin) {
-            navigate(Path.HomePage)
-            return
-        }
-        void loadInstances()
-    }, [auth, isAdmin, navigate, loadInstances])
+    useEffect(() => { void loadInstances() }, [loadInstances])
 
     async function handleDelete(id: string) {
         await CouchInstancesAPI.DeleteCouchInstance({id}, auth.getInitReq())
@@ -73,29 +123,20 @@ export default function AdminPage() {
     }
 
     return (
-        <div className={cls.AdminPageContainer}>
-            <HeroSegment count={instances.length} onAddClick={openAddDialog}/>
-            <InstanceList
-                instances={instances}
-                loading={loading}
-                onEdit={openEditDialog}
-                onDelete={handleDelete}
-            />
+        <div className={cls.ContentContainer}>
+            <InstancesActionBar count={instances.length} onAddClick={openAddDialog} />
+            <InstanceList instances={instances} loading={loading} onEdit={openEditDialog} onDelete={handleDelete} />
         </div>
     )
 }
 
-function HeroSegment({count, onAddClick}: { count: number; onAddClick: () => void }) {
+function InstancesActionBar({count, onAddClick}: {count: number; onAddClick: () => void}) {
     return (
-        <div className={cls.HeroContainer}>
-            <div className={cls.HeroTitles}>
-                <div className={cls.Eyebrow}>Admin</div>
-                <h1 className={cls.HeroTitle}>CouchDB instances</h1>
-                <p className={cls.HeroSub}>
-                    <b>{count} {count === 1 ? "instance" : "instances"}</b>
-                    {" · "}<span>manage CouchDB cluster nodes</span>
-                </p>
-            </div>
+        <div className={cls.TabActionBar}>
+            <p className={cls.HeroSub}>
+                <b>{count} {count === 1 ? "instance" : "instances"}</b>
+                {" · "}<span>manage CouchDB cluster nodes</span>
+            </p>
             <button className={cls.AddBtn} onClick={onAddClick} type="button">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"
                      strokeLinecap="round" strokeLinejoin="round">
@@ -115,27 +156,17 @@ function InstanceList({instances, loading, onEdit, onDelete}: {
     onDelete: (id: string) => Promise<void>
 }) {
     if (loading) {
-        return (
-            <div className={cls.ContentContainer}>
-                <p className={cls.Empty}>Loading…</p>
-            </div>
-        )
+        return <p className={cls.Empty}>Loading…</p>
     }
-
+    if (instances.length === 0) {
+        return <p className={cls.Empty}>No CouchDB instances yet. Add one to get started.</p>
+    }
     return (
-        <div className={cls.ContentContainer}>
-            {instances.length === 0 && (
-                <p className={cls.Empty}>No CouchDB instances yet. Add one to get started.</p>
-            )}
+        <>
             {instances.map(instance => (
-                <InstanceRow
-                    key={instance.id}
-                    instance={instance}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                />
+                <InstanceRow key={instance.id} instance={instance} onEdit={onEdit} onDelete={onDelete} />
             ))}
-        </div>
+        </>
     )
 }
 
@@ -145,29 +176,40 @@ function InstanceRow({instance, onEdit, onDelete}: {
     onDelete: (id: string) => Promise<void>
 }) {
     const [deleting, setDeleting] = useState(false)
+    const {OpenDialog} = useDialog()
+    const bakeError = useBakeError()
 
-    async function handleDelete() {
-        if (!instance.id) return
-        setDeleting(true)
-        try {
-            await onDelete(instance.id)
-        } finally {
-            setDeleting(false)
-        }
+    function handleDelete() {
+        const id = instance.id
+        if (!id) return
+        OpenDialog(
+            <ConfirmDialog
+                title="Remove instance"
+                message={`Remove "${instance.url}"? This cannot be undone.`}
+                danger
+                confirmLabel="Remove"
+                onConfirm={async () => {
+                    setDeleting(true)
+                    try {
+                        await onDelete(id)
+                    } catch (err) {
+                        bakeError("Failed to remove instance", err)
+                    } finally {
+                        setDeleting(false)
+                    }
+                }}
+            />
+        )
     }
 
     return (
         <div className={cls.RowContainer}>
             <div className={cls.RowInfo}>
                 <span className={cls.RowUrl}>{instance.url}</span>
-                <span className={cls.RowMeta}>
-                    {instance.username} · added {instance.createdAt?.slice(0, 10)}
-                </span>
+                <span className={cls.RowMeta}>{instance.username} · added {instance.createdAt?.slice(0, 10)}</span>
             </div>
             <div className={cls.RowActions}>
-                <button className={cls.BtnSecondary} type="button" onClick={() => onEdit(instance)}>
-                    Edit
-                </button>
+                <button className={cls.BtnSecondary} type="button" onClick={() => onEdit(instance)}>Edit</button>
                 <button className={cls.BtnDanger} type="button" onClick={handleDelete} disabled={deleting}>
                     {deleting ? "Removing…" : "Remove"}
                 </button>
@@ -181,6 +223,7 @@ function InstanceFormDialog({initial, onSave}: {
     onSave: (url: string, username: string, password: string) => Promise<void>
 }) {
     const {CloseDialog} = useDialog()
+    const bakeError = useBakeError()
     const [saving, setSaving] = useState(false)
     const [url, setUrl] = useState(initial?.url ?? "")
     const [username, setUsername] = useState(initial?.username ?? "")
@@ -195,62 +238,389 @@ function InstanceFormDialog({initial, onSave}: {
             await onSave(url, username, password)
             CloseDialog()
         } catch (err) {
-            console.error(err)
+            bakeError(isEdit ? "Failed to update instance" : "Failed to add instance", err)
         } finally {
             setSaving(false)
         }
     }
 
     return (
-        <div className={cls.OverlayWrapper}>
-            <div className={cls.ModalContainer} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
-                <div className={cls.ModalHead}>
-                    <h2 className={cls.ModalTitle}>{title}</h2>
-                    <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
-                </div>
-                <FormField
-                    label="URL"
-                    placeholder="https://couch.example.com:5984"
-                    defaultValue={url}
-                    onChange={setUrl}
+        <div className={cls.ModalContainer} role="dialog" aria-modal="true">
+            <div className={cls.ModalHead}>
+                <h2 className={cls.ModalTitle}>{title}</h2>
+                <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
+            </div>
+            <FormField
+                label="URL"
+                placeholder="https://couch.example.com:5984"
+                defaultValue={url}
+                onChange={setUrl}
+                disabled={saving}
+                fieldClassName={cls.Field}
+                labelClassName={cls.FieldLabel}
+                inputClassName={cls.Input}
+            />
+            <FormField
+                label="Username"
+                placeholder="admin"
+                defaultValue={username}
+                onChange={setUsername}
+                disabled={saving}
+                fieldClassName={cls.Field}
+                labelClassName={cls.FieldLabel}
+                inputClassName={cls.Input}
+            />
+            <div className={cls.Field}>
+                <span className={cls.FieldLabel}>Password{isEdit ? " (leave blank to keep current)" : ""}</span>
+                <input
+                    type="password"
+                    placeholder={isEdit ? "••••••••" : "password"}
+                    className={cls.Input}
+                    onChange={e => setPassword(e.target.value)}
                     disabled={saving}
-                    fieldClassName={cls.Field}
-                    labelClassName={cls.FieldLabel}
-                    inputClassName={cls.Input}
-                />
-                <FormField
-                    label="Username"
-                    placeholder="admin"
-                    defaultValue={username}
-                    onChange={setUsername}
-                    disabled={saving}
-                    fieldClassName={cls.Field}
-                    labelClassName={cls.FieldLabel}
-                    inputClassName={cls.Input}
-                />
-                <div className={cls.Field}>
-                    <span className={cls.FieldLabel}>Password{isEdit ? " (leave blank to keep current)" : ""}</span>
-                    <input
-                        type="password"
-                        placeholder={isEdit ? "••••••••" : "password"}
-                        className={cls.Input}
-                        onChange={e => setPassword(e.target.value)}
-                        disabled={saving}
-                        autoComplete="new-password"
-                    />
-                </div>
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {
-                            label: saving ? "Saving…" : (isEdit ? "Save changes" : "Add instance"),
-                            onClick: handleSave,
-                            className: cls.BtnPrimary,
-                            disabled: saving,
-                        }
-                    ]}
+                    autoComplete="new-password"
                 />
             </div>
+            <ModalActions
+                containerClassName={cls.ModalActions}
+                buttons={[
+                    {
+                        label: saving ? "Saving…" : (isEdit ? "Save changes" : "Add instance"),
+                        onClick: handleSave,
+                        className: cls.BtnPrimary,
+                        disabled: saving,
+                    }
+                ]}
+            />
+        </div>
+    )
+}
+
+// ── Users tab ─────────────────────────────────────────────────
+
+function UsersTab() {
+    const {auth} = useUser()
+    const [instances, setInstances] = useState<GetCouchInstanceResponse[]>([])
+    const [selectedInstanceId, setSelectedInstanceId] = useState("")
+    const [users, setUsers] = useState<CouchUserEntry[]>([])
+    const [usersLoading, setUsersLoading] = useState(false)
+
+    useEffect(() => {
+        async function loadInstances() {
+            const res = await CouchInstancesAPI.ListCouchInstances({}, auth.getInitReq())
+            setInstances(res.instances ?? [])
+        }
+        void loadInstances()
+    }, [auth])
+
+    const loadUsers = useCallback(async () => {
+        if (!selectedInstanceId) {
+            setUsers([])
+            return
+        }
+        setUsersLoading(true)
+        try {
+            const res = await AdminCouchAPI.ListCouchUsers({instanceId: selectedInstanceId}, auth.getInitReq())
+            setUsers(res.users ?? [])
+        } finally {
+            setUsersLoading(false)
+        }
+    }, [auth, selectedInstanceId])
+
+    useEffect(() => { void loadUsers() }, [loadUsers])
+
+    return (
+        <div className={cls.ContentContainer}>
+            <InstanceSelector instances={instances} value={selectedInstanceId} onChange={setSelectedInstanceId} />
+            <UserList
+                instanceId={selectedInstanceId}
+                users={users}
+                loading={usersLoading}
+                onRefresh={loadUsers}
+            />
+        </div>
+    )
+}
+
+function InstanceSelector({instances, value, onChange}: {
+    instances: GetCouchInstanceResponse[]
+    value: string
+    onChange: (id: string) => void
+}) {
+    return (
+        <div className={cls.Field}>
+            <span className={cls.FieldLabel}>CouchDB instance</span>
+            <select
+                className={cls.InstanceSelector}
+                value={value}
+                onChange={e => onChange(e.target.value)}
+            >
+                <option value="">— select an instance —</option>
+                {instances.map(inst => (
+                    <option key={inst.id} value={inst.id ?? ""}>{inst.url}</option>
+                ))}
+            </select>
+        </div>
+    )
+}
+
+function UserList({instanceId, users, loading, onRefresh}: {
+    instanceId: string
+    users: CouchUserEntry[]
+    loading: boolean
+    onRefresh: () => Promise<void>
+}) {
+    if (!instanceId) {
+        return <p className={cls.Empty}>Select an instance above to view its users.</p>
+    }
+    if (loading) {
+        return <p className={cls.Empty}>Loading…</p>
+    }
+    if (users.length === 0) {
+        return <p className={cls.Empty}>No users found in this instance.</p>
+    }
+    return (
+        <>
+            {users.map(user => (
+                <UserRow key={user.name} instanceId={instanceId} user={user} onRefresh={onRefresh} />
+            ))}
+        </>
+    )
+}
+
+function UserRow({instanceId, user, onRefresh}: {
+    instanceId: string
+    user: CouchUserEntry
+    onRefresh: () => Promise<void>
+}) {
+    const {auth} = useUser()
+    const {OpenDialog} = useDialog()
+    const bakeError = useBakeError()
+    const [deleting, setDeleting] = useState(false)
+
+    function handleDelete() {
+        const name = user.name
+        if (!name) return
+        OpenDialog(
+            <ConfirmDialog
+                title="Delete user"
+                message={`Delete "${name}"? This cannot be undone.`}
+                danger
+                confirmLabel="Delete"
+                onConfirm={async () => {
+                    setDeleting(true)
+                    try {
+                        await AdminCouchAPI.DeleteCouchUser({instanceId, username: name}, auth.getInitReq())
+                        await onRefresh()
+                    } catch (err) {
+                        bakeError("Failed to delete user", err)
+                    } finally {
+                        setDeleting(false)
+                    }
+                }}
+            />
+        )
+    }
+
+    function openChangePassword() {
+        if (!user.name) return
+        OpenDialog(
+            <ChangePasswordDialog instanceId={instanceId} username={user.name} />
+        )
+    }
+
+    function openManageAccess() {
+        if (!user.name) return
+        OpenDialog(
+            <ManageAccessDialog instanceId={instanceId} username={user.name} />
+        )
+    }
+
+    return (
+        <div className={cls.RowContainer}>
+            <div className={cls.RowInfo}>
+                <span className={cls.RowUrl}>{user.name}</span>
+                <span className={cls.RowMeta}>{(user.roles ?? []).join(", ") || "no roles"}</span>
+            </div>
+            <div className={cls.RowActions}>
+                <button className={cls.BtnSecondary} type="button" onClick={openManageAccess}>
+                    DB Access
+                </button>
+                <button className={cls.BtnSecondary} type="button" onClick={openChangePassword}>
+                    Change Password
+                </button>
+                <button className={cls.BtnDanger} type="button" onClick={handleDelete} disabled={deleting}>
+                    {deleting ? "Deleting…" : "Delete"}
+                </button>
+            </div>
+        </div>
+    )
+}
+
+function ChangePasswordDialog({instanceId, username}: {instanceId: string; username: string}) {
+    const {auth} = useUser()
+    const {CloseDialog} = useDialog()
+    const bakeError = useBakeError()
+    const [saving, setSaving] = useState(false)
+    const [newPassword, setNewPassword] = useState("")
+
+    async function handleSave() {
+        if (!newPassword) return
+        setSaving(true)
+        try {
+            await AdminCouchAPI.ChangeCouchUserPassword({instanceId, username, newPassword}, auth.getInitReq())
+            CloseDialog()
+        } catch (err) {
+            bakeError("Failed to change password", err)
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    return (
+        <div className={cls.ModalContainer} role="dialog" aria-modal="true">
+            <div className={cls.ModalHead}>
+                <h2 className={cls.ModalTitle}>Change password</h2>
+                <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
+            </div>
+            <p className={cls.ModalSubtitle}>User: <b>{username}</b></p>
+            <div className={cls.Field}>
+                <span className={cls.FieldLabel}>New password</span>
+                <input
+                    type="password"
+                    placeholder="new password"
+                    className={cls.Input}
+                    onChange={e => setNewPassword(e.target.value)}
+                    disabled={saving}
+                    autoComplete="new-password"
+                />
+            </div>
+            <ModalActions
+                containerClassName={cls.ModalActions}
+                buttons={[
+                    {
+                        label: saving ? "Saving…" : "Save password",
+                        onClick: handleSave,
+                        className: cls.BtnPrimary,
+                        disabled: saving || !newPassword,
+                    }
+                ]}
+            />
+        </div>
+    )
+}
+
+function ManageAccessDialog({instanceId, username}: {instanceId: string; username: string}) {
+    const {auth} = useUser()
+    const {CloseDialog} = useDialog()
+    const bakeError = useBakeError()
+    const [databases, setDatabases] = useState<string[]>([])
+    const [grantedSet, setGrantedSet] = useState<Set<string>>(new Set())
+    const [loading, setLoading] = useState(true)
+    const [busyDb, setBusyDb] = useState<string | null>(null)
+
+    const loadAccess = useCallback(async () => {
+        setLoading(true)
+        try {
+            const [dbRes, accessRes] = await Promise.all([
+                AdminCouchAPI.ListCouchDatabases({instanceId}, auth.getInitReq()),
+                AdminCouchAPI.GetUserDatabaseAccess({instanceId, username}, auth.getInitReq()),
+            ])
+            const dbs = (dbRes.databases ?? []).filter(db => !db.startsWith("_"))
+            setDatabases(dbs)
+            setGrantedSet(new Set(accessRes.databases ?? []))
+        } finally {
+            setLoading(false)
+        }
+    }, [auth, instanceId, username])
+
+    useEffect(() => { void loadAccess() }, [loadAccess])
+
+    async function handleToggle(db: string, grant: boolean) {
+        setBusyDb(db)
+        try {
+            if (grant) {
+                await AdminCouchAPI.GrantDatabaseAccess({instanceId, dbName: db, username}, auth.getInitReq())
+            } else {
+                await AdminCouchAPI.RevokeDatabaseAccess({instanceId, dbName: db, username}, auth.getInitReq())
+            }
+            setGrantedSet(prev => {
+                const next = new Set(prev)
+                grant ? next.add(db) : next.delete(db)
+                return next
+            })
+        } catch (err) {
+            bakeError(grant ? "Failed to grant access" : "Failed to revoke access", err)
+        } finally {
+            setBusyDb(null)
+        }
+    }
+
+    return (
+        <div className={cls.ModalContainer} role="dialog" aria-modal="true">
+            <div className={cls.ModalHead}>
+                <h2 className={cls.ModalTitle}>Manage DB access</h2>
+                <ModalClose onClick={CloseDialog} className={cls.ModalClose}/>
+            </div>
+            <p className={cls.ModalSubtitle}>User: <b>{username}</b></p>
+            {loading ? (
+                <p className={cls.Empty}>Loading…</p>
+            ) : databases.length === 0 ? (
+                <p className={cls.Empty}>No databases found.</p>
+            ) : (
+                <DbAccessList
+                    databases={databases}
+                    grantedSet={grantedSet}
+                    busyDb={busyDb}
+                    onToggle={handleToggle}
+                />
+            )}
+            <ModalActions
+                containerClassName={cls.ModalActions}
+                buttons={[{label: "Done", onClick: CloseDialog, className: cls.BtnPrimary}]}
+            />
+        </div>
+    )
+}
+
+function DbAccessList({databases, grantedSet, busyDb, onToggle}: {
+    databases: string[]
+    grantedSet: Set<string>
+    busyDb: string | null
+    onToggle: (db: string, grant: boolean) => Promise<void>
+}) {
+    return (
+        <div className={cls.DbAccessList}>
+            {databases.map(db => (
+                <DbAccessRow
+                    key={db}
+                    db={db}
+                    granted={grantedSet.has(db)}
+                    busy={busyDb === db}
+                    onToggle={onToggle}
+                />
+            ))}
+        </div>
+    )
+}
+
+function DbAccessRow({db, granted, busy, onToggle}: {
+    db: string
+    granted: boolean
+    busy: boolean
+    onToggle: (db: string, grant: boolean) => Promise<void>
+}) {
+    return (
+        <div className={cls.DbAccessRow}>
+            <span className={cls.DbAccessName}>{db}</span>
+            <button
+                type="button"
+                className={granted ? cls.BtnDanger : cls.BtnPrimary}
+                disabled={busy}
+                onClick={() => onToggle(db, !granted)}
+            >
+                {busy ? "…" : granted ? "Revoke" : "Grant"}
+            </button>
         </div>
     )
 }

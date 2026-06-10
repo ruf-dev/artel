@@ -607,12 +607,12 @@ const file_notes_proto_rawDesc = "" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a\x1e\n" +
 	"\bResponse\x12\x12\n" +
-	"\x04tags\x18\x01 \x03(\tR\x04tags2\xd0\x03\n" +
-	"\bNotesAPI\x12y\n" +
-	"\vListFolders\x12 .artel_notes.ListFolders.Request\x1a!.artel_notes.ListFolders.Response\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/api/notes/{vault_id}/folders\x12k\n" +
-	"\tListNotes\x12\x1e.artel_notes.ListNotes.Request\x1a\x1f.artel_notes.ListNotes.Response\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/api/notes/{vault_id}\x12m\n" +
-	"\aGetNote\x12\x1c.artel_notes.GetNote.Request\x1a\x1d.artel_notes.GetNote.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/notes/{vault_id}/note\x12m\n" +
-	"\bListTags\x12\x1d.artel_notes.ListTags.Request\x1a\x1e.artel_notes.ListTags.Response\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/api/notes/{vault_id}/tagsB\x1a\x92\x82\x19\n" +
+	"\x04tags\x18\x01 \x03(\tR\x04tags2\xb1\x03\n" +
+	"\bNotesAPI\x12q\n" +
+	"\vListFolders\x12 .artel_notes.ListFolders.Request\x1a!.artel_notes.ListFolders.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/notes/folders\x12h\n" +
+	"\tListNotes\x12\x1e.artel_notes.ListNotes.Request\x1a\x1f.artel_notes.ListNotes.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/list\x12a\n" +
+	"\aGetNote\x12\x1c.artel_notes.GetNote.Request\x1a\x1d.artel_notes.GetNote.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/notes/get\x12e\n" +
+	"\bListTags\x12\x1d.artel_notes.ListTags.Request\x1a\x1e.artel_notes.ListTags.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/tagsB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
