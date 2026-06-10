@@ -7,10 +7,11 @@ import Topbar from '@/segments/Topbar/Topbar.tsx'
 export default function HomeLayout() {
     return (
         <div className={cls.HomeLayoutContainer}>
-            <Topbar/>
             <main className={cls.Content}>
                 <Outlet/>
             </main>
+            <Topbar/>
+
         </div>
     )
 }

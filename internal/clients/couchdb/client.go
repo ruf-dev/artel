@@ -2,6 +2,7 @@ package couchdb
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -19,10 +20,11 @@ type Config struct {
 }
 
 type Client struct {
-	kivik    *kivik.Client
-	baseURL  string
-	user     string
-	password string
+	kivik      *kivik.Client
+	httpClient *http.Client
+	baseURL    string
+	user       string
+	password   string
 }
 
 func New(cfg Config) (*Client, error) {
@@ -37,10 +39,11 @@ func New(cfg Config) (*Client, error) {
 	}
 
 	c := &Client{
-		kivik:    kc,
-		baseURL:  cfg.BaseURL,
-		user:     cfg.User,
-		password: cfg.Password,
+		kivik:      kc,
+		httpClient: httpClient,
+		baseURL:    cfg.BaseURL,
+		user:       cfg.User,
+		password:   cfg.Password,
 	}
 	return c, nil
 }
@@ -81,4 +84,52 @@ func (c *Client) enableSingleNode(ctx context.Context) error {
 		return rerrors.Wrap(err, "cluster setup")
 	}
 	return nil
+}
+
+func (c *Client) GetSetupStatus(ctx context.Context) (SetupStatus, error) {
+	clusterEnabled, err := c.isClusterModeEnabled(ctx)
+	if err != nil {
+		return SetupStatus{}, rerrors.Wrap(err, "checking cluster mode")
+	}
+
+	usersExists, err := c.kivik.DBExists(ctx, "_users")
+	if err != nil {
+		return SetupStatus{}, rerrors.Wrap(err, "checking _users db")
+	}
+
+	replicatorExists, err := c.kivik.DBExists(ctx, "_replicator")
+	if err != nil {
+		return SetupStatus{}, rerrors.Wrap(err, "checking _replicator db")
+	}
+
+	status := SetupStatus{
+		ClusterModeEnabled:      clusterEnabled,
+		UsersDbInitialized:      usersExists,
+		ReplicatorDbInitialized: replicatorExists,
+	}
+	return status, nil
+}
+
+func (c *Client) isClusterModeEnabled(ctx context.Context) (bool, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/_cluster_setup", nil)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error creating cluster status request")
+	}
+	req.SetBasicAuth(c.user, c.password)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error sending cluster status request")
+	}
+	defer resp.Body.Close()
+
+	var body struct {
+		State string `json:"state"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&body)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error decoding cluster status response")
+	}
+
+	return body.State != "setup_required", nil
 }

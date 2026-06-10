@@ -60,6 +60,26 @@ export type DeleteCouchInstanceResponse = Record<string, never>;
 
 export type DeleteCouchInstance = Record<string, never>;
 
+export type SetupCouchInstanceRequest = {
+  id?: string;
+};
+
+export type SetupCouchInstanceResponse = Record<string, never>;
+
+export type SetupCouchInstance = Record<string, never>;
+
+export type GetCouchInstanceStatusRequest = {
+  id?: string;
+};
+
+export type GetCouchInstanceStatusResponse = {
+  clusterModeEnabled?: boolean;
+  usersDbInitialized?: boolean;
+  replicatorDbInitialized?: boolean;
+};
+
+export type GetCouchInstanceStatus = Record<string, never>;
+
 export class CouchInstancesAPI {
   static RegisterCouchInstance(this:void, req: RegisterCouchInstanceRequest, initReq?: fm.InitReq): Promise<RegisterCouchInstanceResponse> {
     return fm.fetchRequest<RegisterCouchInstanceResponse>(`/api/couch/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -75,5 +95,11 @@ export class CouchInstancesAPI {
   }
   static DeleteCouchInstance(this:void, req: DeleteCouchInstanceRequest, initReq?: fm.InitReq): Promise<DeleteCouchInstanceResponse> {
     return fm.fetchRequest<DeleteCouchInstanceResponse>(`/api/couch/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static SetupCouchInstance(this:void, req: SetupCouchInstanceRequest, initReq?: fm.InitReq): Promise<SetupCouchInstanceResponse> {
+    return fm.fetchRequest<SetupCouchInstanceResponse>(`/api/couch/setup`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static GetCouchInstanceStatus(this:void, req: GetCouchInstanceStatusRequest, initReq?: fm.InitReq): Promise<GetCouchInstanceStatusResponse> {
+    return fm.fetchRequest<GetCouchInstanceStatusResponse>(`/api/couch/status`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

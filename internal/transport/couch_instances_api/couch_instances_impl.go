@@ -104,3 +104,27 @@ func (c *CouchInstancesImpl) DeleteCouchInstance(ctx context.Context, req *artel
 	resp := &artel_api.DeleteCouchInstance_Response{}
 	return resp, nil
 }
+
+func (c *CouchInstancesImpl) SetupCouchInstance(ctx context.Context, req *artel_api.SetupCouchInstance_Request) (*artel_api.SetupCouchInstance_Response, error) {
+	err := c.couchInstanceSvc.SetupCouchInstance(ctx, req.Id)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "setup couch instance")
+	}
+
+	resp := &artel_api.SetupCouchInstance_Response{}
+	return resp, nil
+}
+
+func (c *CouchInstancesImpl) GetCouchInstanceStatus(ctx context.Context, req *artel_api.GetCouchInstanceStatus_Request) (*artel_api.GetCouchInstanceStatus_Response, error) {
+	status, err := c.couchInstanceSvc.GetCouchInstanceStatus(ctx, req.Id)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "get couch instance status")
+	}
+
+	resp := &artel_api.GetCouchInstanceStatus_Response{
+		ClusterModeEnabled:      status.ClusterModeEnabled,
+		UsersDbInitialized:      status.UsersDbInitialized,
+		ReplicatorDbInitialized: status.ReplicatorDbInitialized,
+	}
+	return resp, nil
+}

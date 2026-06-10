@@ -95,3 +95,61 @@ func (s *Service) DeleteCouchInstance(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func (s *Service) SetupCouchInstance(ctx context.Context, id string) error {
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return rerrors.Wrap(err, "parse uuid")
+	}
+
+	instance, err := s.couchInstancesRepo.Get(ctx, uid)
+	if err != nil {
+		return rerrors.Wrap(err, "get couch instance")
+	}
+
+	cfg := couchdb.Config{
+		BaseURL:  instance.Url,
+		User:     instance.Username,
+		Password: instance.Password,
+	}
+	client, err := couchdb.New(cfg)
+	if err != nil {
+		return rerrors.Wrap(err, "creating couch client")
+	}
+
+	err = client.Setup(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "setup couch instance")
+	}
+
+	return nil
+}
+
+func (s *Service) GetCouchInstanceStatus(ctx context.Context, id string) (couchdb.SetupStatus, error) {
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return couchdb.SetupStatus{}, rerrors.Wrap(err, "parse uuid")
+	}
+
+	instance, err := s.couchInstancesRepo.Get(ctx, uid)
+	if err != nil {
+		return couchdb.SetupStatus{}, rerrors.Wrap(err, "get couch instance")
+	}
+
+	cfg := couchdb.Config{
+		BaseURL:  instance.Url,
+		User:     instance.Username,
+		Password: instance.Password,
+	}
+	client, err := couchdb.New(cfg)
+	if err != nil {
+		return couchdb.SetupStatus{}, rerrors.Wrap(err, "creating couch client")
+	}
+
+	status, err := client.GetSetupStatus(ctx)
+	if err != nil {
+		return couchdb.SetupStatus{}, rerrors.Wrap(err, "get setup status")
+	}
+
+	return status, nil
+}

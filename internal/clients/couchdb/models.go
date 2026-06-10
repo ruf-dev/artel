@@ -1,5 +1,12 @@
 package couchdb
 
+// SetupStatus reports which initial setup steps have been applied to a CouchDB instance.
+type SetupStatus struct {
+	ClusterModeEnabled      bool
+	UsersDbInitialized      bool
+	ReplicatorDbInitialized bool
+}
+
 // Public document models returned by LiveSyncClient methods.
 
 type NoteEntry struct {

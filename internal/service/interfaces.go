@@ -54,6 +54,8 @@ type CouchInstanceService interface {
 	ListCouchInstances(ctx context.Context) ([]domain.CouchInstance, error)
 	UpdateCouchInstance(ctx context.Context, id, url, username, password string) error
 	DeleteCouchInstance(ctx context.Context, id string) error
+	SetupCouchInstance(ctx context.Context, id string) error
+	GetCouchInstanceStatus(ctx context.Context, id string) (couchdb.SetupStatus, error)
 }
 
 type AdminCouchService interface {

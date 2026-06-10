@@ -19,11 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CouchInstancesAPI_RegisterCouchInstance_FullMethodName = "/artel_couch.CouchInstancesAPI/RegisterCouchInstance"
-	CouchInstancesAPI_GetCouchInstance_FullMethodName      = "/artel_couch.CouchInstancesAPI/GetCouchInstance"
-	CouchInstancesAPI_ListCouchInstances_FullMethodName    = "/artel_couch.CouchInstancesAPI/ListCouchInstances"
-	CouchInstancesAPI_UpdateCouchInstance_FullMethodName   = "/artel_couch.CouchInstancesAPI/UpdateCouchInstance"
-	CouchInstancesAPI_DeleteCouchInstance_FullMethodName   = "/artel_couch.CouchInstancesAPI/DeleteCouchInstance"
+	CouchInstancesAPI_RegisterCouchInstance_FullMethodName  = "/artel_couch.CouchInstancesAPI/RegisterCouchInstance"
+	CouchInstancesAPI_GetCouchInstance_FullMethodName       = "/artel_couch.CouchInstancesAPI/GetCouchInstance"
+	CouchInstancesAPI_ListCouchInstances_FullMethodName     = "/artel_couch.CouchInstancesAPI/ListCouchInstances"
+	CouchInstancesAPI_UpdateCouchInstance_FullMethodName    = "/artel_couch.CouchInstancesAPI/UpdateCouchInstance"
+	CouchInstancesAPI_DeleteCouchInstance_FullMethodName    = "/artel_couch.CouchInstancesAPI/DeleteCouchInstance"
+	CouchInstancesAPI_SetupCouchInstance_FullMethodName     = "/artel_couch.CouchInstancesAPI/SetupCouchInstance"
+	CouchInstancesAPI_GetCouchInstanceStatus_FullMethodName = "/artel_couch.CouchInstancesAPI/GetCouchInstanceStatus"
 )
 
 // CouchInstancesAPIClient is the client API for CouchInstancesAPI service.
@@ -35,6 +37,8 @@ type CouchInstancesAPIClient interface {
 	ListCouchInstances(ctx context.Context, in *ListCouchInstances_Request, opts ...grpc.CallOption) (*ListCouchInstances_Response, error)
 	UpdateCouchInstance(ctx context.Context, in *UpdateCouchInstance_Request, opts ...grpc.CallOption) (*UpdateCouchInstance_Response, error)
 	DeleteCouchInstance(ctx context.Context, in *DeleteCouchInstance_Request, opts ...grpc.CallOption) (*DeleteCouchInstance_Response, error)
+	SetupCouchInstance(ctx context.Context, in *SetupCouchInstance_Request, opts ...grpc.CallOption) (*SetupCouchInstance_Response, error)
+	GetCouchInstanceStatus(ctx context.Context, in *GetCouchInstanceStatus_Request, opts ...grpc.CallOption) (*GetCouchInstanceStatus_Response, error)
 }
 
 type couchInstancesAPIClient struct {
@@ -95,6 +99,26 @@ func (c *couchInstancesAPIClient) DeleteCouchInstance(ctx context.Context, in *D
 	return out, nil
 }
 
+func (c *couchInstancesAPIClient) SetupCouchInstance(ctx context.Context, in *SetupCouchInstance_Request, opts ...grpc.CallOption) (*SetupCouchInstance_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetupCouchInstance_Response)
+	err := c.cc.Invoke(ctx, CouchInstancesAPI_SetupCouchInstance_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *couchInstancesAPIClient) GetCouchInstanceStatus(ctx context.Context, in *GetCouchInstanceStatus_Request, opts ...grpc.CallOption) (*GetCouchInstanceStatus_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCouchInstanceStatus_Response)
+	err := c.cc.Invoke(ctx, CouchInstancesAPI_GetCouchInstanceStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CouchInstancesAPIServer is the server API for CouchInstancesAPI service.
 // All implementations must embed UnimplementedCouchInstancesAPIServer
 // for forward compatibility.
@@ -104,6 +128,8 @@ type CouchInstancesAPIServer interface {
 	ListCouchInstances(context.Context, *ListCouchInstances_Request) (*ListCouchInstances_Response, error)
 	UpdateCouchInstance(context.Context, *UpdateCouchInstance_Request) (*UpdateCouchInstance_Response, error)
 	DeleteCouchInstance(context.Context, *DeleteCouchInstance_Request) (*DeleteCouchInstance_Response, error)
+	SetupCouchInstance(context.Context, *SetupCouchInstance_Request) (*SetupCouchInstance_Response, error)
+	GetCouchInstanceStatus(context.Context, *GetCouchInstanceStatus_Request) (*GetCouchInstanceStatus_Response, error)
 	mustEmbedUnimplementedCouchInstancesAPIServer()
 }
 
@@ -128,6 +154,12 @@ func (UnimplementedCouchInstancesAPIServer) UpdateCouchInstance(context.Context,
 }
 func (UnimplementedCouchInstancesAPIServer) DeleteCouchInstance(context.Context, *DeleteCouchInstance_Request) (*DeleteCouchInstance_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteCouchInstance not implemented")
+}
+func (UnimplementedCouchInstancesAPIServer) SetupCouchInstance(context.Context, *SetupCouchInstance_Request) (*SetupCouchInstance_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetupCouchInstance not implemented")
+}
+func (UnimplementedCouchInstancesAPIServer) GetCouchInstanceStatus(context.Context, *GetCouchInstanceStatus_Request) (*GetCouchInstanceStatus_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCouchInstanceStatus not implemented")
 }
 func (UnimplementedCouchInstancesAPIServer) mustEmbedUnimplementedCouchInstancesAPIServer() {}
 func (UnimplementedCouchInstancesAPIServer) testEmbeddedByValue()                           {}
@@ -240,6 +272,42 @@ func _CouchInstancesAPI_DeleteCouchInstance_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CouchInstancesAPI_SetupCouchInstance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetupCouchInstance_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CouchInstancesAPIServer).SetupCouchInstance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CouchInstancesAPI_SetupCouchInstance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CouchInstancesAPIServer).SetupCouchInstance(ctx, req.(*SetupCouchInstance_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CouchInstancesAPI_GetCouchInstanceStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCouchInstanceStatus_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CouchInstancesAPIServer).GetCouchInstanceStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CouchInstancesAPI_GetCouchInstanceStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CouchInstancesAPIServer).GetCouchInstanceStatus(ctx, req.(*GetCouchInstanceStatus_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CouchInstancesAPI_ServiceDesc is the grpc.ServiceDesc for CouchInstancesAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +334,14 @@ var CouchInstancesAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCouchInstance",
 			Handler:    _CouchInstancesAPI_DeleteCouchInstance_Handler,
+		},
+		{
+			MethodName: "SetupCouchInstance",
+			Handler:    _CouchInstancesAPI_SetupCouchInstance_Handler,
+		},
+		{
+			MethodName: "GetCouchInstanceStatus",
+			Handler:    _CouchInstancesAPI_GetCouchInstanceStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

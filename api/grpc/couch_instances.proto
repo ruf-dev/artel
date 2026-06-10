@@ -39,6 +39,18 @@ service CouchInstancesAPI {
       body: "*"
     };
   };
+  rpc SetupCouchInstance(SetupCouchInstance.Request) returns (SetupCouchInstance.Response) {
+    option (google.api.http) = {
+      post: "/api/couch/setup"
+      body: "*"
+    };
+  };
+  rpc GetCouchInstanceStatus(GetCouchInstanceStatus.Request) returns (GetCouchInstanceStatus.Response) {
+    option (google.api.http) = {
+      post: "/api/couch/status"
+      body: "*"
+    };
+  };
 }
 
 message RegisterCouchInstance {
@@ -86,4 +98,22 @@ message DeleteCouchInstance {
     string id = 1;
   }
   message Response {}
+}
+
+message SetupCouchInstance {
+  message Request {
+    string id = 1;
+  }
+  message Response {}
+}
+
+message GetCouchInstanceStatus {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    bool cluster_mode_enabled      = 1;
+    bool users_db_initialized      = 2;
+    bool replicator_db_initialized = 3;
+  }
 }

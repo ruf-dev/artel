@@ -144,6 +144,70 @@
         ]
       }
     },
+    "/api/couch/setup": {
+      "post": {
+        "operationId": "CouchInstancesAPI_SetupCouchInstance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_couchSetupCouchInstanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_couchSetupCouchInstanceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CouchInstancesAPI"
+        ]
+      }
+    },
+    "/api/couch/status": {
+      "post": {
+        "operationId": "CouchInstancesAPI_GetCouchInstanceStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_couchGetCouchInstanceStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_couchGetCouchInstanceStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CouchInstancesAPI"
+        ]
+      }
+    },
     "/api/couch/update": {
       "post": {
         "operationId": "CouchInstancesAPI_UpdateCouchInstance",
@@ -214,6 +278,28 @@
         }
       }
     },
+    "artel_couchGetCouchInstanceStatusRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_couchGetCouchInstanceStatusResponse": {
+      "type": "object",
+      "properties": {
+        "clusterModeEnabled": {
+          "type": "boolean"
+        },
+        "usersDbInitialized": {
+          "type": "boolean"
+        },
+        "replicatorDbInitialized": {
+          "type": "boolean"
+        }
+      }
+    },
     "artel_couchListCouchInstancesRequest": {
       "type": "object"
     },
@@ -250,6 +336,17 @@
           "type": "string"
         }
       }
+    },
+    "artel_couchSetupCouchInstanceRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_couchSetupCouchInstanceResponse": {
+      "type": "object"
     },
     "artel_couchUpdateCouchInstanceRequest": {
       "type": "object",

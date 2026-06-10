@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom"
 import cls from "@/pages/admin/AdminPage.module.css"
 
 import {AdminCouchAPI, CouchUserEntry} from "@/app/api/artel/admin_couch.pb.ts"
-import {CouchInstancesAPI, GetCouchInstanceResponse} from "@/app/api/artel/couch_instances.pb.ts"
+import {CouchInstancesAPI, GetCouchInstanceResponse, GetCouchInstanceStatusResponse} from "@/app/api/artel/couch_instances.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
@@ -218,18 +218,60 @@ function InstanceRow({instance, onEdit, onDelete}: {
     )
 }
 
+function SetupStatusSection({instanceId, refreshKey}: {instanceId: string; refreshKey: number}) {
+    const {auth} = useUser()
+    const bakeError = useBakeError()
+    const [status, setStatus] = useState<GetCouchInstanceStatusResponse | null>(null)
+
+    useEffect(() => {
+        async function loadStatus() {
+            try {
+                const res = await CouchInstancesAPI.GetCouchInstanceStatus({id: instanceId}, auth.getInitReq())
+                setStatus(res)
+            } catch (err) {
+                bakeError("Failed to load instance status", err)
+            }
+        }
+        void loadStatus()
+    }, [instanceId, auth, refreshKey, bakeError])
+
+    const checks = [
+        {label: "Single-node cluster", ok: status?.clusterModeEnabled},
+        {label: "_users database", ok: status?.usersDbInitialized},
+        {label: "_replicator database", ok: status?.replicatorDbInitialized},
+    ]
+
+    return (
+        <div className={cls.StatusSection}>
+            <div className={cls.StatusSectionTitle}>Setup status</div>
+            {checks.map(check => (
+                <div key={check.label} className={cls.StatusRow}>
+                    <span className={cls.StatusLabel}>{check.label}</span>
+                    <span className={status === null ? cls.StatusLoading : check.ok ? cls.StatusOk : cls.StatusFail}>
+                        {status === null ? "…" : check.ok ? "✓" : "✗"}
+                    </span>
+                </div>
+            ))}
+        </div>
+    )
+}
+
 function InstanceFormDialog({initial, onSave}: {
     initial?: GetCouchInstanceResponse
     onSave: (url: string, username: string, password: string) => Promise<void>
 }) {
     const {CloseDialog} = useDialog()
+    const {auth} = useUser()
     const bakeError = useBakeError()
     const [saving, setSaving] = useState(false)
+    const [settingUp, setSettingUp] = useState(false)
+    const [setupRefresh, setSetupRefresh] = useState(0)
     const [url, setUrl] = useState(initial?.url ?? "")
     const [username, setUsername] = useState(initial?.username ?? "")
     const [password, setPassword] = useState("")
 
     const isEdit = !!initial
+    const busy = saving || settingUp
     const title = isEdit ? "Edit instance" : "Add CouchDB instance"
 
     async function handleSave() {
@@ -244,18 +286,41 @@ function InstanceFormDialog({initial, onSave}: {
         }
     }
 
+    async function handleSetup() {
+        if (!initial?.id) return
+        setSettingUp(true)
+        try {
+            await CouchInstancesAPI.SetupCouchInstance({id: initial.id}, auth.getInitReq())
+            setSetupRefresh(r => r + 1)
+        } catch (err) {
+            bakeError("Failed to setup instance", err)
+        } finally {
+            setSettingUp(false)
+        }
+    }
+
+    const buttons = isEdit
+        ? [
+            {label: settingUp ? "Setting up…" : "Setup", onClick: handleSetup, className: cls.BtnSecondary, disabled: busy},
+            {label: saving ? "Saving…" : "Save changes", onClick: handleSave, className: cls.BtnPrimary, disabled: busy},
+          ]
+        : [
+            {label: saving ? "Saving…" : "Add instance", onClick: handleSave, className: cls.BtnPrimary, disabled: busy},
+          ]
+
     return (
         <div className={cls.ModalContainer} role="dialog" aria-modal="true">
             <div className={cls.ModalHead}>
                 <h2 className={cls.ModalTitle}>{title}</h2>
-                <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
+                <ModalClose onClick={CloseDialog} disabled={busy} className={cls.ModalClose}/>
             </div>
+            {isEdit && initial?.id && <SetupStatusSection instanceId={initial.id} refreshKey={setupRefresh} />}
             <FormField
                 label="URL"
                 placeholder="https://couch.example.com:5984"
                 defaultValue={url}
                 onChange={setUrl}
-                disabled={saving}
+                disabled={busy}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
                 inputClassName={cls.Input}
@@ -265,7 +330,7 @@ function InstanceFormDialog({initial, onSave}: {
                 placeholder="admin"
                 defaultValue={username}
                 onChange={setUsername}
-                disabled={saving}
+                disabled={busy}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
                 inputClassName={cls.Input}
@@ -277,21 +342,11 @@ function InstanceFormDialog({initial, onSave}: {
                     placeholder={isEdit ? "••••••••" : "password"}
                     className={cls.Input}
                     onChange={e => setPassword(e.target.value)}
-                    disabled={saving}
+                    disabled={busy}
                     autoComplete="new-password"
                 />
             </div>
-            <ModalActions
-                containerClassName={cls.ModalActions}
-                buttons={[
-                    {
-                        label: saving ? "Saving…" : (isEdit ? "Save changes" : "Add instance"),
-                        onClick: handleSave,
-                        className: cls.BtnPrimary,
-                        disabled: saving,
-                    }
-                ]}
-            />
+            <ModalActions containerClassName={cls.ModalActions} buttons={buttons} />
         </div>
     )
 }
