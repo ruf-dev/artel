@@ -6,6 +6,7 @@ import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {useVaultMutations, VaultMemberInfo, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
+import {useBakeError} from "@/app/hooks/useErrorToast.ts";
 
 interface Props {
     vault: VaultItem
@@ -17,6 +18,7 @@ interface Props {
 export default function ManageVaultDialog({vault, currentUserId, onClose, onDeleted}: Props) {
     const {listMembers, removeMember, listInvites, revokeInvite, remove} = useVaultMutations()
     const {OpenDialog} = useDialog()
+    const bakeError = useBakeError()
 
     const [members, setMembers] = useState<VaultMemberInfo[]>([])
     const [invites, setInvites] = useState<VaultInviteItem[]>([])
@@ -24,8 +26,12 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
 
     useEffect(() => {
         if (!vault.id) return
-        listMembers(vault.id).then(setMembers).catch(console.error)
-        listInvites(vault.id).then(setInvites).catch(console.error)
+        listMembers(vault.id)
+            .then(setMembers)
+            .catch(e => bakeError('Error during vault members loading', e))
+        listInvites(vault.id)
+            .then(setInvites)
+            .catch(e => bakeError('Error during vault invites loading', e))
     }, [vault.id])
 
     async function handleRemoveMember(userId: string) {
@@ -210,15 +216,16 @@ function CreateInviteLinkDialog({vaultId, onCreated}: {
     const [creating, setCreating] = useState(false)
     const [created, setCreated] = useState<VaultInviteItem | null>(null)
     const [copied, setCopied] = useState(false)
+        const bakeError = useBakeError()
 
-    async function handleCreate() {
+    async function handleCreateInvite() {
         setCreating(true)
         try {
             const inv = await createInvite(vaultId, role)
             setCreated(inv)
             onCreated(inv)
-        } catch (err) {
-            console.error(err)
+        } catch (e) {
+            bakeError('Error creating invite', e)
         } finally {
             setCreating(false)
         }
@@ -258,7 +265,7 @@ function CreateInviteLinkDialog({vaultId, onCreated}: {
                     </div>
                     <div className={cls.ModalFooter}>
                         <button className={cls.BtnGhost} onClick={CloseDialog}>Cancel</button>
-                        <button className={cls.BtnPrimary} onClick={handleCreate} disabled={creating}>
+                        <button className={cls.BtnPrimary} onClick={handleCreateInvite} disabled={creating}>
                             {creating ? "Creating…" : "Create link"}
                         </button>
                     </div>

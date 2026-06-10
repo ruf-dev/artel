@@ -13,6 +13,8 @@ import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 
+import {useBakeError} from "@/app/hooks/useErrorToast.ts";
+
 export default function EmailsPage() {
     const navigate = useNavigate()
     const {auth, isEmailsEnabled} = useUser()
@@ -171,6 +173,7 @@ function AddAccountDialog() {
     const {add} = useEmailAccounts()
     const {CloseDialog} = useDialog()
     const {auth} = useUser()
+    const bakeError= useBakeError()
 
     function handleEmailChange(value: string) {
         setEmail(value)
@@ -206,7 +209,7 @@ function AddAccountDialog() {
         }
         add(req)
             .then(CloseDialog)
-            .catch(console.error)
+            .catch(e => bakeError('Error adding email', e))
             .finally(() => setAdding(false))
     }
 

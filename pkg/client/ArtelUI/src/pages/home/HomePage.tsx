@@ -118,16 +118,14 @@ function CreateVaultDialog() {
 
     const {create} = useVaultMutations()
     const {CloseDialog} = useDialog()
-
+    const bakeError = useBakeError()
 
     async function handleCreate() {
         setIsCreating(true)
         const name = vaultName.trim()
         create(name)
             .then(CloseDialog)
-            .catch(err => {
-                console.error(err)
-            })
+            .catch(e => bakeError('Error creating vault', e))
             .finally(() => {
                 setIsCreating(false)
             })
