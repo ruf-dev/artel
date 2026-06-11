@@ -1,0 +1,277 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "admin_users.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AdminUsersAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/admin_users/get": {
+      "post": {
+        "operationId": "AdminUsersAPI_GetArtelUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_usersGetArtelUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_usersGetArtelUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminUsersAPI"
+        ]
+      }
+    },
+    "/api/admin_users/list": {
+      "post": {
+        "operationId": "AdminUsersAPI_ListArtelUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_usersListArtelUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_usersListArtelUsersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminUsersAPI"
+        ]
+      }
+    },
+    "/api/admin_users/sessions": {
+      "post": {
+        "operationId": "AdminUsersAPI_GetUserSessions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_usersGetUserSessionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_usersGetUserSessionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminUsersAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_admin_usersArtelUserDetails": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "isAdministrator": {
+          "type": "boolean"
+        },
+        "hasEmails": {
+          "type": "boolean"
+        },
+        "hasTaskTrackers": {
+          "type": "boolean"
+        },
+        "hasNotes": {
+          "type": "boolean"
+        },
+        "subscriptionActive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_admin_usersArtelUserEntry": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "artel_admin_usersGetArtelUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_admin_usersGetArtelUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/artel_admin_usersArtelUserDetails"
+        }
+      }
+    },
+    "artel_admin_usersGetUserSessionsRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_admin_usersGetUserSessionsResponse": {
+      "type": "object",
+      "properties": {
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_admin_usersUserSession"
+          }
+        }
+      }
+    },
+    "artel_admin_usersListArtelUsersRequest": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "artel_admin_usersListArtelUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_admin_usersArtelUserEntry"
+          }
+        },
+        "total": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "artel_admin_usersUserSession": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

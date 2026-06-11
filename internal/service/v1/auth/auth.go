@@ -143,7 +143,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 			}
 
 			if !userValue.Valid {
-				userValue.V, err = usersRepo.CreateByUsername(ctx, telegramId)
+				userValue.V, err = usersRepo.CreateByUsername(ctx, claims.Login)
 				if err != nil {
 					return rerrors.Wrap(err, "create user")
 				}
