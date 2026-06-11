@@ -18,13 +18,13 @@ import {isMissingSubscription} from "@/processes/UserErrors.ts";
 
 export default function HomePage() {
     const {OpenDialog} = useDialog()
-    const vaultsQuery = useVaults()
+    const {error: vaultsErr, isLoading, vaults} = useVaults()
     const bakeError = useBakeError()
 
     useEffect(() => {
-        if (!vaultsQuery.isError) return
+        if (isLoading || !vaultsErr) return
 
-        if (isMissingSubscription(vaultsQuery.error as GrpcStatusError)) {
+        if (isMissingSubscription(vaultsErr as GrpcStatusError)) {
             OpenDialog(
                 <InfoDialog
                     title="Subscriptions unavailable"
@@ -35,11 +35,11 @@ export default function HomePage() {
         }
 
 
-        bakeError("Failed to load vaults", vaultsQuery.error)
-    }, [vaultsQuery.isError])
+        bakeError("Failed to load vaults", vaultsErr)
+    }, [isLoading, vaultsErr])
 
     function openEditDialog(vaultId: string) {
-        const vault = vaultsQuery.data?.find(v => v.id === vaultId)
+        const vault = vaults.find(v => v.id === vaultId)
         if (!vault) return
         const {CloseDialog} = useDialog.getState()
         const {auth} = useUser.getState()
@@ -62,7 +62,7 @@ export default function HomePage() {
 }
 
 function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
-    const vaultsQuery = useVaults()
+    const {isLoading, vaults} = useVaults()
 
     return (
         <div className={cls.Hero}>
@@ -70,7 +70,7 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
                 <div className={cls.Eyebrow}>Workspace</div>
                 <h1 className={cls.HeroTitle}>Your vaults</h1>
                 <p className={cls.HeroSub}>
-                    <b>{vaultsQuery.isLoading ? "…" : `${vaultsQuery.data?.length} ${vaultsQuery.data?.length === 1 ? "vault" : "vaults"}`}</b>
+                    <b>{isLoading ? "…" : `${vaults.length} ${vaults.length === 1 ? "vault" : "vaults"}`}</b>
                     {" · "}<span>all systems operational</span>
                 </p>
             </div>
@@ -87,11 +87,11 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
 }
 
 function ContentSegment({onEditClick}: { onEditClick: (id: string) => void }) {
-    const vaultsQuery = useVaults()
+    const {isLoading, vaults} = useVaults()
 
     let loadingState = null
 
-    if (vaultsQuery.isLoading) {
+    if (isLoading) {
         loadingState = (
             <p className={cls.Empty}>Loading…</p>
         )
@@ -101,8 +101,8 @@ function ContentSegment({onEditClick}: { onEditClick: (id: string) => void }) {
         <div className={cls.Content}>
             {loadingState}
             {
-                !vaultsQuery.isLoading && <div className={cls.Grid}>
-                    {vaultsQuery.data?.map(v => (
+                !isLoading && <div className={cls.Grid}>
+                    {vaults.map(v => (
                         <VaultCard key={v.id} vault={v} onEdit={onEditClick}/>
                     ))}
 				</div>

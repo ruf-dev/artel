@@ -44,7 +44,7 @@ export default function McpKeysPage() {
     )
 }
 
-function HeroSegment({onCreateClick}: {onCreateClick: () => void}) {
+function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
     const {keys, loading} = useMcpKeys()
 
     return (
@@ -149,7 +149,7 @@ function McpKeyCard({mcpKey, onRevoke, onManage}: {
     )
 }
 
-function RevokeKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
+function RevokeKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
     const [revoking, setRevoking] = useState(false)
     const {revoke} = useMcpKeys()
     const {CloseDialog} = useDialog()
@@ -174,7 +174,8 @@ function RevokeKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
                     <ModalClose onClick={CloseDialog} disabled={revoking} className={cls.ModalClose}/>
                 </div>
                 <p className={cls.ModalSub}>
-                    Revoke <b>"{mcpKey.name}"</b>? Any agents using this key will immediately lose access. This cannot be undone.
+                    Revoke <b>"{mcpKey.name}"</b>? Any agents using this key will immediately lose access. This cannot
+                    be undone.
                 </p>
                 <ModalActions
                     containerClassName={cls.ModalActions}
@@ -200,7 +201,7 @@ function RevokeKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
 
 type ManageStep = "choose" | "vault" | "email"
 
-function ManageKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
+function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
     const [step, setStep] = useState<ManageStep>("choose")
     const [saving, setSaving] = useState(false)
     const [selectedVaultId, setSelectedVaultId] = useState(mcpKey.vaultId ?? "")
@@ -233,7 +234,7 @@ function ManageKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
                     </div>
                     <p className={cls.ModalSub}>Choose which vault this key connects to.</p>
                     <div className={cls.OptionList}>
-                        {vaults.map(v => (
+                        {vaults?.map(v => (
                             <SelectOption
                                 key={v.id}
                                 label={v.name ?? ""}
@@ -248,8 +249,18 @@ function ManageKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
                     <ModalActions
                         containerClassName={cls.ModalActions}
                         buttons={[
-                            {label: "Back", onClick: () => setStep("choose"), className: cls.BtnGhost, disabled: saving},
-                            {label: saving ? "Saving…" : "Save", onClick: handleSave, className: cls.BtnPrimary, disabled: saving || !selectedVaultId},
+                            {
+                                label: "Back",
+                                onClick: () => setStep("choose"),
+                                className: cls.BtnGhost,
+                                disabled: saving
+                            },
+                            {
+                                label: saving ? "Saving…" : "Save",
+                                onClick: handleSave,
+                                className: cls.BtnPrimary,
+                                disabled: saving || !selectedVaultId
+                            },
                         ]}
                     />
                 </div>
@@ -285,8 +296,18 @@ function ManageKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
                     <ModalActions
                         containerClassName={cls.ModalActions}
                         buttons={[
-                            {label: "Back", onClick: () => setStep("choose"), className: cls.BtnGhost, disabled: saving},
-                            {label: saving ? "Saving…" : "Save", onClick: handleSave, className: cls.BtnPrimary, disabled: saving},
+                            {
+                                label: "Back",
+                                onClick: () => setStep("choose"),
+                                className: cls.BtnGhost,
+                                disabled: saving
+                            },
+                            {
+                                label: saving ? "Saving…" : "Save",
+                                onClick: handleSave,
+                                className: cls.BtnPrimary,
+                                disabled: saving
+                            },
                         ]}
                     />
                 </div>
@@ -326,7 +347,7 @@ function ManageKeyDialog({mcpKey}: {mcpKey: McpKeyInfo}) {
     )
 }
 
-function EntityCard({title, description, onClick}: {title: string; description: string; onClick: () => void}) {
+function EntityCard({title, description, onClick}: { title: string; description: string; onClick: () => void }) {
     return (
         <button className={cls.EntityCard} onClick={onClick} type="button">
             <span className={cls.EntityCardTitle}>{title}</span>
@@ -335,7 +356,7 @@ function EntityCard({title, description, onClick}: {title: string; description: 
     )
 }
 
-function SelectOption({label, selected, onSelect}: {label: string; selected: boolean; onSelect: () => void}) {
+function SelectOption({label, selected, onSelect}: { label: string; selected: boolean; onSelect: () => void }) {
     return (
         <button
             className={selected ? `${cls.OptionRow} ${cls.OptionRowSelected}` : cls.OptionRow}
@@ -379,8 +400,13 @@ function CreateKeyDialog() {
     if (rawToken) {
         return (
             <div className={cls.Overlay}>
-                <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                     aria-labelledby="createdKeyTitle">
+                <div
+                    className={cls.Modal}
+                    onClick={e =>
+                        e.stopPropagation()}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="createdKeyTitle">
                     <div className={cls.ModalHead}>
                         <h2 className={cls.ModalTitle} id="createdKeyTitle">Key created</h2>
                     </div>
@@ -396,7 +422,12 @@ function CreateKeyDialog() {
                     <ModalActions
                         containerClassName={cls.ModalActions}
                         buttons={[
-                            {label: "Done", onClick: CloseDialog, className: cls.BtnPrimary, disabled: false},
+                            {
+                                label: "Done",
+                                onClick: CloseDialog,
+                                className: cls.BtnPrimary,
+                                disabled: false,
+                            },
                         ]}
                     />
                 </div>
@@ -435,7 +466,7 @@ function CreateKeyDialog() {
                                 onSelect={() => setSelectedVaultId(v.id ?? "")}
                             />
                         ))}
-                        {vaults.length === 0 && (
+                        {vaults?.length === 0 && (
                             <p className={cls.Empty}>No vaults available. Create one first.</p>
                         )}
                     </div>

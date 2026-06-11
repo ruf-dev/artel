@@ -14,12 +14,18 @@ export function useVaults() {
     const {auth} = useUser()
     const vaultService = new VaultService()
 
-    return useQuery({
+    const q = useQuery({
         queryKey: vaultsQueryKey,
         queryFn: () => vaultService.ListVaults(),
         enabled: auth.isAuthenticated(),
         retry: retryOnStatus(),
     })
+
+    return {
+        vaults: q.data || [],
+        isLoading: q.isLoading,
+        error: q.error
+    }
 }
 
 export function useVaultMutations() {
