@@ -1,4 +1,5 @@
 export * from './admin_couch.pb';
+export * from './admin_users.pb';
 export * from './artel_api.pb';
 export * from './auth.pb';
 export * from './couch_instances.pb';
@@ -8,6 +9,7 @@ export * from './user_errors.pb';
 export * from './vaults.pb';
 
 export { AdminCouchAPI } from './admin_couch.pb';
+export { AdminUsersAPI } from './admin_users.pb';
 export { ArtelAPI } from './artel_api.pb';
 export { AuthAPI } from './auth.pb';
 export { CouchInstancesAPI } from './couch_instances.pb';

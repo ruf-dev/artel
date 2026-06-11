@@ -60,3 +60,36 @@ func (q *Queries) GetSessionByToken(ctx context.Context, token string) (Session,
 	)
 	return i, err
 }
+
+const getSessionsByUserID = `-- name: GetSessionsByUserID :many
+SELECT id, user_id, token, expires_at, created_at FROM sessions WHERE user_id = $1 ORDER BY created_at DESC
+`
+
+func (q *Queries) GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error) {
+	rows, err := q.db.QueryContext(ctx, getSessionsByUserID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Session{}
+	for rows.Next() {
+		var i Session
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Token,
+			&i.ExpiresAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

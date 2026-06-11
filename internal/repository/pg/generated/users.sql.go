@@ -173,6 +173,49 @@ func (q *Queries) GetUserByTelegramId(ctx context.Context, telegramID string) (G
 	return i, err
 }
 
+const getUserDetails = `-- name: GetUserDetails :one
+SELECT u.id, u.username, u.email, u.created_at, u.updated_at, u.password_hash,
+       up.is_administrator, up.has_emails, up.has_task_trackers, up.has_notes,
+       s.active AS subscription_active
+FROM users u
+LEFT JOIN user_permissions up ON up.user_id = u.id
+LEFT JOIN subscriptions s ON s.user_id = u.id
+WHERE u.id = $1
+`
+
+type GetUserDetailsRow struct {
+	ID                 uuid.UUID
+	Username           string
+	Email              sql.NullString
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	PasswordHash       string
+	IsAdministrator    sql.NullBool
+	HasEmails          sql.NullBool
+	HasTaskTrackers    sql.NullBool
+	HasNotes           sql.NullBool
+	SubscriptionActive sql.NullBool
+}
+
+func (q *Queries) GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDetailsRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserDetails, id)
+	var i GetUserDetailsRow
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.PasswordHash,
+		&i.IsAdministrator,
+		&i.HasEmails,
+		&i.HasTaskTrackers,
+		&i.HasNotes,
+		&i.SubscriptionActive,
+	)
+	return i, err
+}
+
 const upsertTelegramIdentity = `-- name: UpsertTelegramIdentity :exec
 INSERT INTO identities_telegram (user_id, telegram_id, photo_url)
 VALUES ($1, $2, $3)

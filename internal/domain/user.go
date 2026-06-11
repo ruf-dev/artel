@@ -46,3 +46,9 @@ type Subscription struct {
 	UserUuid uuid.UUID
 	Active   bool
 }
+
+type UserDetails struct {
+	User
+	Permissions  UserPermissions
+	Subscription Subscription
+}

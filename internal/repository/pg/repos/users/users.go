@@ -4,25 +4,29 @@ import (
 	"database/sql"
 	"errors"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 	"golang.org/x/net/context"
 
+	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/utils"
 )
 
 type UsersRepo struct {
-	q *artel_q.Queries
+	q  *artel_q.Queries
+	db sqldb.DB
 }
 
-func New(q *artel_q.Queries) *UsersRepo {
-	return &UsersRepo{q: q}
+func New(q *artel_q.Queries, db sqldb.DB) *UsersRepo {
+	return &UsersRepo{q: q, db: db}
 }
 
 func (r *UsersRepo) WithTx(tx *sql.Tx) repository.Users {
-	return &UsersRepo{q: r.q.WithTx(tx)}
+	return &UsersRepo{q: r.q.WithTx(tx), db: r.db}
 }
 
 func (r *UsersRepo) Create(ctx context.Context, email, passwordHash string) (domain.User, error) {
@@ -145,4 +149,97 @@ func (r *UsersRepo) GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID)
 		return "", rerrors.Wrap(err, "get telegram photo url by user id")
 	}
 	return photoUrl, nil
+}
+
+func (r *UsersRepo) ListAll(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error) {
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+
+	base := psql.Select("id::text", "username", "email", "created_at").From("users")
+	countBase := psql.Select("COUNT(*)").From("users")
+
+	if req.Search != "" {
+		like := "%" + req.Search + "%"
+		cond := sq.Or{sq.ILike{"username": like}, sq.ILike{"email": like}}
+		base = base.Where(cond)
+		countBase = countBase.Where(cond)
+	}
+
+	if req.Paging.Limit > 0 {
+		base = base.Limit(uint64(req.Paging.Limit))
+	}
+	base = base.Offset(uint64(req.Paging.Offset)).OrderBy("created_at DESC")
+
+	countSQL, countArgs, err := countBase.ToSql()
+	if err != nil {
+		return nil, 0, rerrors.Wrap(err, "error building count query")
+	}
+
+	var total int64
+	err = r.db.QueryRowContext(ctx, countSQL, countArgs...).Scan(&total)
+	if err != nil {
+		return nil, 0, rerrors.Wrap(err, "error counting users")
+	}
+
+	listSQL, listArgs, err := base.ToSql()
+	if err != nil {
+		return nil, 0, rerrors.Wrap(err, "error building list query")
+	}
+
+	rows, err := r.db.QueryContext(ctx, listSQL, listArgs...)
+	if err != nil {
+		return nil, 0, rerrors.Wrap(err, "error listing users")
+	}
+	defer utils.CloseWithLog(rows, "list users rows")
+
+	var result []domain.User
+	for rows.Next() {
+		var idStr string
+		var u domain.User
+		var email sql.NullString
+		err = rows.Scan(&idStr, &u.Username, &email, &u.CreatedAt)
+		if err != nil {
+			return nil, 0, rerrors.Wrap(err, "error scanning user row")
+		}
+		u.Uuid, err = uuid.Parse(idStr)
+		if err != nil {
+			return nil, 0, rerrors.Wrap(err, "error parsing user uuid")
+		}
+		u.Email = email.String
+		result = append(result, u)
+	}
+
+	return result, total, nil
+}
+
+func (r *UsersRepo) GetDetailsById(ctx context.Context, id uuid.UUID) (domain.UserDetails, error) {
+	row, err := r.q.GetUserDetails(ctx, id)
+	if err != nil {
+		return domain.UserDetails{}, rerrors.Wrap(err, "error getting user details")
+	}
+
+	u := domain.User{
+		Uuid:         row.ID,
+		Username:     row.Username,
+		Email:        row.Email.String,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
+	}
+	permissions := domain.UserPermissions{
+		UserUuid:        row.ID,
+		IsAdministrator: row.IsAdministrator.Bool,
+		HasEmails:       row.HasEmails.Bool,
+		HasTaskTrackers: row.HasTaskTrackers.Bool,
+		HasNotes:        row.HasNotes.Bool,
+	}
+	subscription := domain.Subscription{
+		UserUuid: row.ID,
+		Active:   row.SubscriptionActive.Bool,
+	}
+	details := domain.UserDetails{
+		User:         u,
+		Permissions:  permissions,
+		Subscription: subscription,
+	}
+	return details, nil
 }

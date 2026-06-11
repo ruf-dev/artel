@@ -22,6 +22,13 @@ type Service interface {
 	PromptService() PromptService
 	TaskTrackerService() TaskTrackerService
 	NotesService() NotesService
+	AdminUsersService() AdminUsersService
+}
+
+type AdminUsersService interface {
+	ListUsers(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error)
+	GetUser(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
+	GetUserSessions(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error)
 }
 
 type AuthService interface {

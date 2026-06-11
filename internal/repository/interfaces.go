@@ -53,6 +53,9 @@ type Users interface {
 	UpsertTelegramIdentity(ctx context.Context, identity domain.TelegramIdentity) error
 	GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error)
 
+	ListAll(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error)
+	GetDetailsById(ctx context.Context, id uuid.UUID) (domain.UserDetails, error)
+
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	WithTx(tx *sql.Tx) Users
@@ -92,6 +95,7 @@ type Sessions interface {
 	Create(ctx context.Context, userID uuid.UUID, token string, expiresAt time.Time) (domain.Session, error)
 	GetByToken(ctx context.Context, token string) (domain.Session, error)
 	Delete(ctx context.Context, token string) error
+	GetByUserID(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error)
 }
 
 type Subscriptions interface {

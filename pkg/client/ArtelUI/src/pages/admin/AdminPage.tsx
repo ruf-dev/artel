@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom"
 import cls from "@/pages/admin/AdminPage.module.css"
 
 import {AdminCouchAPI, CouchUserEntry} from "@/app/api/artel/admin_couch.pb.ts"
+import {AdminUsersAPI, ArtelUserEntry, ArtelUserDetails, UserSession} from "@/app/api/artel/admin_users.pb.ts"
 import {CouchInstancesAPI, GetCouchInstanceResponse, GetCouchInstanceStatusResponse} from "@/app/api/artel/couch_instances.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
@@ -15,7 +16,7 @@ import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 
-type Tab = "instances" | "users"
+type Tab = "instances" | "couch_users" | "users"
 
 export default function AdminPage() {
     const navigate = useNavigate()
@@ -37,7 +38,8 @@ export default function AdminPage() {
             <AdminHero tab={tab} />
             <TabBar tab={tab} onTabChange={setTab} />
             {tab === "instances" && <InstancesTab />}
-            {tab === "users" && <UsersTab />}
+            {tab === "couch_users" && <UsersTab />}
+            {tab === "users" && <ArtelUsersTab />}
         </div>
     )
 }
@@ -45,7 +47,12 @@ export default function AdminPage() {
 // ── Shared header ────────────────────────────────────────────
 
 function AdminHero({tab}: {tab: Tab}) {
-    const title = tab === "instances" ? "CouchDB instances" : "CouchDB users"
+    const titleMap: Record<Tab, string> = {
+        instances: "CouchDB instances",
+        couch_users: "CouchDB users",
+        users: "Artel users",
+    }
+    const title = titleMap[tab]
     return (
         <div className={cls.HeroContainer}>
             <div className={cls.HeroTitles}>
@@ -58,11 +65,15 @@ function AdminHero({tab}: {tab: Tab}) {
 
 function TabBar({tab, onTabChange}: {tab: Tab; onTabChange: (t: Tab) => void}) {
     const instancesCls = tab === "instances" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
+    const couchUsersCls = tab === "couch_users" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
     const usersCls = tab === "users" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
     return (
         <div className={cls.TabBar}>
             <button type="button" className={instancesCls} onClick={() => onTabChange("instances")}>
                 Instances
+            </button>
+            <button type="button" className={couchUsersCls} onClick={() => onTabChange("couch_users")}>
+                CouchUsers
             </button>
             <button type="button" className={usersCls} onClick={() => onTabChange("users")}>
                 Users
@@ -676,6 +687,202 @@ function DbAccessRow({db, granted, busy, onToggle}: {
             >
                 {busy ? "…" : granted ? "Revoke" : "Grant"}
             </button>
+        </div>
+    )
+}
+
+// ── Artel Users tab ───────────────────────────────────────────
+
+function ArtelUsersTab() {
+    const {auth} = useUser()
+    const [search, setSearch] = useState("")
+    const [users, setUsers] = useState<ArtelUserEntry[]>([])
+    const [total, setTotal] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const bakeError = useBakeError()
+    const LIMIT = 50
+
+    const loadUsers = useCallback(async () => {
+        setLoading(true)
+        try {
+            const res = await AdminUsersAPI.ListArtelUsers({search, limit: LIMIT, offset: 0}, auth.getInitReq())
+            setUsers(res.users ?? [])
+            setTotal(res.total ? Number(res.total) : 0)
+        } catch (err) {
+            bakeError("Failed to load users", err)
+        } finally {
+            setLoading(false)
+        }
+    }, [auth, search])
+
+    useEffect(() => { void loadUsers() }, [loadUsers])
+
+    return (
+        <div className={cls.ContentContainer}>
+            <div className={cls.Field}>
+                <input
+                    className={cls.Input}
+                    placeholder="Search by username or email…"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                />
+            </div>
+            <ArtelUserList users={users} loading={loading} total={total} />
+        </div>
+    )
+}
+
+function ArtelUserList({users, loading, total}: {users: ArtelUserEntry[]; loading: boolean; total: number}) {
+    if (loading) return <p className={cls.Empty}>Loading…</p>
+    if (users.length === 0) return <p className={cls.Empty}>No users found.</p>
+    return (
+        <>
+            <p className={cls.Empty}>{total} user{total !== 1 ? "s" : ""} total</p>
+            {users.map(u => (
+                <ArtelUserRow key={u.userId} user={u} />
+            ))}
+        </>
+    )
+}
+
+function ArtelUserRow({user}: {user: ArtelUserEntry}) {
+    const {OpenDialog} = useDialog()
+
+    function openDetail() {
+        if (!user.userId) return
+        OpenDialog(<ArtelUserDetailDialog userId={user.userId} />)
+    }
+
+    return (
+        <div className={cls.RowContainer}>
+            <div className={cls.RowInfo}>
+                <span className={cls.RowUrl}>{user.username || "—"}</span>
+                <span className={cls.RowMeta}>{user.email || "no email"}</span>
+            </div>
+            <div className={cls.RowActions}>
+                <button className={cls.BtnSecondary} type="button" onClick={openDetail}>
+                    Details
+                </button>
+            </div>
+        </div>
+    )
+}
+
+function ArtelUserDetailDialog({userId}: {userId: string}) {
+    const {auth} = useUser()
+    const {CloseDialog, OpenDialog} = useDialog()
+    const bakeError = useBakeError()
+    const [details, setDetails] = useState<ArtelUserDetails | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        async function load() {
+            try {
+                const res = await AdminUsersAPI.GetArtelUser({userId}, auth.getInitReq())
+                setDetails(res.user ?? null)
+            } catch (err) {
+                bakeError("Failed to load user details", err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        void load()
+    }, [auth, userId])
+
+    function openSessions() {
+        OpenDialog(<UserSessionsDialog userId={userId} />)
+    }
+
+    return (
+        <div className={cls.ModalContainer} role="dialog" aria-modal="true">
+            <div className={cls.ModalHead}>
+                <h2 className={cls.ModalTitle}>User details</h2>
+                <ModalClose onClick={CloseDialog} className={cls.ModalClose} />
+            </div>
+            {loading ? (
+                <p className={cls.Empty}>Loading…</p>
+            ) : details ? (
+                <>
+                    <p className={cls.ModalSubtitle}><b>{details.username || "—"}</b> · {details.email || "no email"}</p>
+                    <div className={cls.Field}>
+                        <span className={cls.FieldLabel}>Permissions</span>
+                        <span className={cls.RowMeta}>
+                            {details.isAdministrator ? "Admin " : ""}
+                            {details.hasEmails ? "Emails " : ""}
+                            {details.hasTaskTrackers ? "TaskTrackers " : ""}
+                            {details.hasNotes ? "Notes " : ""}
+                            {!details.isAdministrator && !details.hasEmails && !details.hasTaskTrackers && !details.hasNotes ? "none" : ""}
+                        </span>
+                    </div>
+                    <div className={cls.Field}>
+                        <span className={cls.FieldLabel}>Subscription</span>
+                        <span className={cls.RowMeta}>{details.subscriptionActive ? "Active" : "Inactive"}</span>
+                    </div>
+                </>
+            ) : (
+                <p className={cls.Empty}>User not found.</p>
+            )}
+            <ModalActions
+                containerClassName={cls.ModalActions}
+                buttons={[
+                    {label: "Sessions", onClick: openSessions, className: cls.BtnSecondary},
+                    {label: "Close", onClick: CloseDialog, className: cls.BtnPrimary},
+                ]}
+            />
+        </div>
+    )
+}
+
+function UserSessionsDialog({userId}: {userId: string}) {
+    const {auth} = useUser()
+    const {CloseDialog} = useDialog()
+    const bakeError = useBakeError()
+    const [sessions, setSessions] = useState<UserSession[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        async function load() {
+            try {
+                const res = await AdminUsersAPI.GetUserSessions({userId}, auth.getInitReq())
+                setSessions(res.sessions ?? [])
+            } catch (err) {
+                bakeError("Failed to load sessions", err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        void load()
+    }, [auth, userId])
+
+    function formatDate(iso?: string) {
+        if (!iso) return "—"
+        return new Date(iso).toLocaleString()
+    }
+
+    return (
+        <div className={cls.ModalContainer} role="dialog" aria-modal="true">
+            <div className={cls.ModalHead}>
+                <h2 className={cls.ModalTitle}>Sessions</h2>
+                <ModalClose onClick={CloseDialog} className={cls.ModalClose} />
+            </div>
+            {loading ? (
+                <p className={cls.Empty}>Loading…</p>
+            ) : sessions.length === 0 ? (
+                <p className={cls.Empty}>No active sessions.</p>
+            ) : (
+                sessions.map(s => (
+                    <div key={s.sessionId} className={cls.RowContainer}>
+                        <div className={cls.RowInfo}>
+                            <span className={cls.RowUrl}>Created: {formatDate(s.createdAt as unknown as string)}</span>
+                            <span className={cls.RowMeta}>Expires: {formatDate(s.expiresAt as unknown as string)}</span>
+                        </div>
+                    </div>
+                ))
+            )}
+            <ModalActions
+                containerClassName={cls.ModalActions}
+                buttons={[{label: "Close", onClick: CloseDialog, className: cls.BtnPrimary}]}
+            />
         </div>
     )
 }

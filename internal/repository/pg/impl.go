@@ -116,7 +116,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		vaultInvitesRepo: vaultinvites.New(db),
 		couchInstances:   couchinstances.New(db, encryptionKey),
 
-		users:                 users.New(q),
+		users:                 users.New(q, db),
 		sessions:              sessions.New(q),
 		subscriptions:         subscriptions.New(q),
 		couchAccounts:         couchaccounts.New(db, encryptionKey),

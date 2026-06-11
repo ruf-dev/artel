@@ -6,3 +6,6 @@ SELECT id, user_id, token, expires_at, created_at FROM sessions WHERE token = $1
 
 -- name: DeleteSession :exec
 DELETE FROM sessions WHERE token = $1;
+
+-- name: GetSessionsByUserID :many
+SELECT * FROM sessions WHERE user_id = $1 ORDER BY created_at DESC;

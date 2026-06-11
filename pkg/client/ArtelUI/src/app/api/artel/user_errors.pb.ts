@@ -9,4 +9,5 @@
 export enum UserErrors {
   UndefinedError = "UndefinedError",
   NoSubscription = "NoSubscription",
+  NoCouchDbInstance = "NoCouchDbInstance",
 }

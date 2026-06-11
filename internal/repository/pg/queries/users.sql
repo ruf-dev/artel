@@ -28,3 +28,12 @@ ON CONFLICT (telegram_id) DO UPDATE
 
 -- name: GetTelegramPhotoUrlByUserId :one
 SELECT photo_url FROM identities_telegram WHERE user_id = $1;
+
+-- name: GetUserDetails :one
+SELECT u.id, u.username, u.email, u.created_at, u.updated_at, u.password_hash,
+       up.is_administrator, up.has_emails, up.has_task_trackers, up.has_notes,
+       s.active AS subscription_active
+FROM users u
+LEFT JOIN user_permissions up ON up.user_id = u.id
+LEFT JOIN subscriptions s ON s.user_id = u.id
+WHERE u.id = $1;

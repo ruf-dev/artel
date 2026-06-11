@@ -63,3 +63,22 @@ func (r *SessionsRepo) Delete(ctx context.Context, token string) error {
 
 	return nil
 }
+
+func (r *SessionsRepo) GetByUserID(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error) {
+	rows, err := r.q.GetSessionsByUserID(ctx, userUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error getting sessions by user id")
+	}
+
+	result := make([]domain.Session, len(rows))
+	for i, row := range rows {
+		result[i] = domain.Session{
+			Uuid:      row.ID,
+			UserUuid:  row.UserID,
+			Token:     row.Token,
+			ExpiresAt: row.ExpiresAt,
+			CreatedAt: row.CreatedAt,
+		}
+	}
+	return result, nil
+}
