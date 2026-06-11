@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
 )
 
 type Repo struct {
@@ -38,7 +39,7 @@ func (r *Repo) Register(ctx context.Context, url, username string, passwordPlain
 	}
 	id, err := r.q.RegisterCouchInstance(ctx, params)
 	if err != nil {
-		return uuid.UUID{}, rerrors.Wrap(err, "insert couch instance")
+		return uuid.UUID{}, pg_err.UnwrapPgErr(err)
 	}
 
 	return id, nil
@@ -114,7 +115,7 @@ func (r *Repo) Pick(ctx context.Context, id uuid.UUID) (domain.CouchInstanceWith
 	//TODO
 	row, err := r.q.RandomPickCouchInstance(ctx)
 	if err != nil {
-		return domain.CouchInstanceWithAccount{}, rerrors.Wrap(err, "random pick couch instance")
+		return domain.CouchInstanceWithAccount{}, pg_err.UnwrapPgErr(err)
 	}
 
 	decrypted, err := cryptoutil.Decrypt(r.encryptionKey, row.PasswordEnc)

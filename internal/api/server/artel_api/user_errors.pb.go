@@ -25,8 +25,9 @@ const (
 type UserErrors int32
 
 const (
-	UserErrors_UndefinedError UserErrors = 0
-	UserErrors_NoSubscription UserErrors = 1
+	UserErrors_UndefinedError    UserErrors = 0
+	UserErrors_NoSubscription    UserErrors = 1
+	UserErrors_NoCouchDbInstance UserErrors = 2
 )
 
 // Enum value maps for UserErrors.
@@ -34,10 +35,12 @@ var (
 	UserErrors_name = map[int32]string{
 		0: "UndefinedError",
 		1: "NoSubscription",
+		2: "NoCouchDbInstance",
 	}
 	UserErrors_value = map[string]int32{
-		"UndefinedError": 0,
-		"NoSubscription": 1,
+		"UndefinedError":    0,
+		"NoSubscription":    1,
+		"NoCouchDbInstance": 2,
 	}
 )
 
@@ -72,11 +75,12 @@ var File_user_errors_proto protoreflect.FileDescriptor
 
 const file_user_errors_proto_rawDesc = "" +
 	"\n" +
-	"\x11user_errors.proto\x12\tartel_api\x1a\tnpm.proto*4\n" +
+	"\x11user_errors.proto\x12\tartel_api\x1a\tnpm.proto*K\n" +
 	"\n" +
 	"UserErrors\x12\x12\n" +
 	"\x0eUndefinedError\x10\x00\x12\x12\n" +
-	"\x0eNoSubscription\x10\x01B\x1a\x92\x82\x19\n" +
+	"\x0eNoSubscription\x10\x01\x12\x15\n" +
+	"\x11NoCouchDbInstance\x10\x02B\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 

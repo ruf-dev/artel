@@ -11,4 +11,5 @@ enum UserErrors {
   UndefinedError = 0;
 
   NoSubscription = 1;
+  NoCouchDbInstance = 2;
 }

@@ -181,6 +181,7 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get vault")
 	}
 
+	//TODO should use Get handle
 	couchWithAccount, err := s.couchInstances.Pick(ctx, vault.CouchInstanceUuid)
 	if err != nil {
 		log.Error().Err(err).Str("couch_instance_uuid", vault.CouchInstanceUuid.String()).Msg("ResolveKey: pick couch instance failed")

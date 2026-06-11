@@ -74,4 +74,9 @@ var (
 	// imap
 	InvalidEmailId       = rerrors.New("invalid email id", codes.InvalidArgument)
 	EmailMessageNotFound = rerrors.New("message not found", codes.NotFound)
+
+	NoCouchDbInstance = rerrors.New("no storage instance",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusFailedDependency),
+		rerrors.WithPreconditionFailure("COUCHDB", "instance", pb.UserErrors_NoCouchDbInstance.String()))
 )

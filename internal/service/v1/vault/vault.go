@@ -59,9 +59,13 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 			vaultsRepo := s.vaultsRepo.WithTx(tx)
 			vaultMembersRepo := s.vaultMembersRepo.WithTx(tx)
 
-			instanceWithAccount, err := pickCouchInstance(ctx, couchInstanceRepo, uc.UserUuid)
+			instanceWithAccount, err := couchInstanceRepo.Pick(ctx, uuid.UUID{})
 			if err != nil {
-				return rerrors.Wrap(err, "pick couch admin client")
+				if errors.Is(err, user_errors.NotFound) {
+					return rerrors.Wrap(user_errors.NoCouchDbInstance)
+				}
+
+				return rerrors.Wrap(err, "pick random couch instance")
 			}
 
 			couchClient, err := newCouchClient(instanceWithAccount.Instance)
@@ -311,19 +315,6 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 	}
 
 	return vault, nil
-}
-
-func pickCouchInstance(
-	ctx context.Context,
-	couchInstance repository.CouchInstances,
-	userUuid uuid.UUID,
-) (domain.CouchInstanceWithAccount, error) {
-	instance, err := couchInstance.Pick(ctx, userUuid)
-	if err != nil {
-		return domain.CouchInstanceWithAccount{}, rerrors.Wrap(err, "pick random couch instance")
-	}
-
-	return instance, nil
 }
 
 func newCouchClient(instance domain.CouchInstance) (*couchdb.Client, error) {

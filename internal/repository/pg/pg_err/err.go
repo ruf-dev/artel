@@ -19,7 +19,7 @@ func UnwrapPgErr(err error) error {
 	if errors.As(err, &pqErr) {
 		switch pqErr.Code {
 		case pqerror.UniqueViolation:
-			return errors.Wrap(user_errors.AlreadyExists)
+			return errors.Wrap(user_errors.AlreadyExists, err.Error())
 		}
 	}
 
