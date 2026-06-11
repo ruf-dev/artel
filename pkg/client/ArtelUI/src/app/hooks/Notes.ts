@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 
-import {NoteItem, NotesAPI} from "@/app/api/artel/notes.pb.ts"
-import useUser from "@/hooks/user/User.ts"
+import {NoteItem} from "@/app/api/artel/notes.pb.ts"
+import {notesService} from "@/processes/Notes.ts"
 
 export type {NoteItem}
 
@@ -31,16 +31,11 @@ export const useNotes = create<NotesState>((set) => ({
     selectVault: async (vaultId: string) => {
         set({loading: true, error: null})
         try {
-            const {auth} = useUser.getState()
-            const [foldersRes, notesRes] = await Promise.all([
-                NotesAPI.ListFolders({vaultId}, auth.getInitReq()),
-                NotesAPI.ListNotes({vaultId}, auth.getInitReq()),
+            const [folders, notes] = await Promise.all([
+                notesService.listFolders(vaultId),
+                notesService.listNotes(vaultId),
             ])
-            set({
-                vaultId,
-                folders: foldersRes.folders ?? [],
-                notes: notesRes.notes ?? [],
-            })
+            set({vaultId, folders, notes})
         } catch (err) {
             set({error: String(err)})
         } finally {
@@ -51,9 +46,8 @@ export const useNotes = create<NotesState>((set) => ({
     selectNote: async (vaultId: string, path: string) => {
         set({loading: true, error: null})
         try {
-            const {auth} = useUser.getState()
-            const res = await NotesAPI.GetNote({vaultId, path}, auth.getInitReq())
-            set({selectedPath: path, noteContent: res.content ?? null})
+            const noteContent = await notesService.getNote(vaultId, path)
+            set({selectedPath: path, noteContent})
         } catch (err) {
             set({error: String(err)})
         } finally {
@@ -61,11 +55,7 @@ export const useNotes = create<NotesState>((set) => ({
         }
     },
 
-    listTags: async (vaultId: string) => {
-        const {auth} = useUser.getState()
-        const res = await NotesAPI.ListTags({vaultId}, auth.getInitReq())
-        return res.tags ?? []
-    },
+    listTags: (vaultId: string) => notesService.listTags(vaultId),
 
     reset: () => {
         set({

@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 
-import {EmailAccountInfo, EmailAccountsAPI, AddEmailAccountRequest} from "@/app/api/artel/email_accounts.pb.ts"
-import useUser from "@/hooks/user/User.ts"
+import {EmailAccountInfo, AddEmailAccountRequest} from "@/app/api/artel/email_accounts.pb.ts"
+import {emailAccountsService} from "@/processes/EmailAccounts.ts"
 
 interface EmailAccountsState {
     accounts: EmailAccountInfo[]
@@ -18,23 +18,20 @@ export const useEmailAccounts = create<EmailAccountsState>((set, get) => ({
     fetch: async () => {
         set({loading: true})
         try {
-            const {auth} = useUser.getState()
-            const resp = await EmailAccountsAPI.ListEmailAccounts({}, auth.getInitReq())
-            set({accounts: resp.accounts ?? []})
+            const accounts = await emailAccountsService.list()
+            set({accounts})
         } finally {
             set({loading: false})
         }
     },
 
     add: async (req: AddEmailAccountRequest) => {
-        const {auth} = useUser.getState()
-        await EmailAccountsAPI.AddEmailAccount(req, auth.getInitReq())
+        await emailAccountsService.add(req)
         await get().fetch()
     },
 
     remove: async (id: string) => {
-        const {auth} = useUser.getState()
-        await EmailAccountsAPI.DeleteEmailAccount({id}, auth.getInitReq())
+        await emailAccountsService.remove(id)
         await get().fetch()
     },
 }))

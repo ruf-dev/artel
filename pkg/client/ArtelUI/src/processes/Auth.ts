@@ -1,8 +1,6 @@
-import {AuthMiddleware, UserInfo} from "@/processes/AuthMiddleware.ts";
-import {
-    LoginRequest,
-    AuthAPI
-} from "@/app/api/artel";
+import {UserInfo} from "@/processes/AuthMiddleware.ts";
+import {LoginRequest, AuthAPI} from "@/app/api/artel";
+import useUser from "@/hooks/user/User.ts"
 
 export interface Session {
     token: string
@@ -14,31 +12,20 @@ export interface IAuthService {
     FetchUserInfo: () => Promise<UserInfo>
 }
 
-export class AuthService extends AuthMiddleware implements IAuthService {
-    constructor() {
-        super();
-    }
-
+export class AuthService implements IAuthService {
     async LoginViaTelegram(idToken: string): Promise<Session> {
-        const initR = this.getInitReq()
-
         const r: LoginRequest = {
-            telegram: {
-                idToken: idToken,
-            },
+            telegram: {idToken},
         } as LoginRequest
 
-        return AuthAPI.Login(r, initR).then(res => {
-            return {
-                token: res.token,
-                expiresAt: res.expiresAt,
-            } as Session
-        })
+        return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({
+            token: res.token,
+            expiresAt: res.expiresAt,
+        } as Session))
     }
 
     async FetchUserInfo(): Promise<UserInfo> {
-        const initR = this.getInitReq()
-        const res = await AuthAPI.GetMe({}, initR)
+        const res = await AuthAPI.GetMe({}, useUser.getState().auth.getInitReq())
         return {
             id: res.id ?? "",
             username: res.username ?? "",
@@ -51,3 +38,5 @@ export class AuthService extends AuthMiddleware implements IAuthService {
         }
     }
 }
+
+export const authService = new AuthService()

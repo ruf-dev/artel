@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 
-import {McpKeyInfo, McpKeysAPI, CreateMcpKeyResponse} from "@/app/api/artel/mcp_keys.pb.ts"
-import useUser from "@/hooks/user/User.ts"
+import {McpKeyInfo, CreateMcpKeyResponse} from "@/app/api/artel/mcp_keys.pb.ts"
+import {mcpKeysService} from "@/processes/McpKeys.ts"
 
 interface McpKeysState {
     keys: McpKeyInfo[]
@@ -19,30 +19,26 @@ export const useMcpKeys = create<McpKeysState>((set, get) => ({
     fetch: async () => {
         set({loading: true})
         try {
-            const {auth} = useUser.getState()
-            const resp = await McpKeysAPI.ListUserMcpKeys({}, auth.getInitReq())
-            set({keys: resp.keys ?? []})
+            const keys = await mcpKeysService.list()
+            set({keys})
         } finally {
             set({loading: false})
         }
     },
 
     create: async (name: string, vaultId: string) => {
-        const {auth} = useUser.getState()
-        const resp = await McpKeysAPI.CreateMcpKey({name, vaultId}, auth.getInitReq())
+        const resp = await mcpKeysService.create(name, vaultId)
         await get().fetch()
         return resp
     },
 
     revoke: async (keyId: string, vaultId: string) => {
-        const {auth} = useUser.getState()
-        await McpKeysAPI.RevokeMcpKey({keyId, vaultId}, auth.getInitReq())
+        await mcpKeysService.revoke(keyId, vaultId)
         await get().fetch()
     },
 
     setAccess: async (keyId: string, vaultId: string, emailAccountId: string) => {
-        const {auth} = useUser.getState()
-        await McpKeysAPI.SetMcpKeyAccess({keyId, vaultId, emailAccountId}, auth.getInitReq())
+        await mcpKeysService.setAccess(keyId, vaultId, emailAccountId)
         await get().fetch()
     },
 }))

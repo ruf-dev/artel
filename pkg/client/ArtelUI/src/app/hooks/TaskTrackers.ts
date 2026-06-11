@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 
-import {TaskTrackerInfo, TaskTrackersAPI, AddTaskTrackerRequest, AddTaskTrackerResponse} from "@/app/api/artel/task_trackers.pb.ts"
-import useUser from "@/hooks/user/User.ts"
+import {TaskTrackerInfo, AddTaskTrackerRequest, AddTaskTrackerResponse} from "@/app/api/artel/task_trackers.pb.ts"
+import {taskTrackersService} from "@/processes/TaskTrackers.ts"
 
 interface TaskTrackersState {
     trackers: TaskTrackerInfo[]
@@ -18,24 +18,21 @@ export const useTaskTrackers = create<TaskTrackersState>((set, get) => ({
     fetch: async () => {
         set({loading: true})
         try {
-            const {auth} = useUser.getState()
-            const resp = await TaskTrackersAPI.ListTaskTrackers({}, auth.getInitReq())
-            set({trackers: resp.trackers ?? []})
+            const trackers = await taskTrackersService.list()
+            set({trackers})
         } finally {
             set({loading: false})
         }
     },
 
     add: async (req: AddTaskTrackerRequest) => {
-        const {auth} = useUser.getState()
-        const resp = await TaskTrackersAPI.AddTaskTracker(req, auth.getInitReq())
+        const resp = await taskTrackersService.add(req)
         await get().fetch()
         return resp
     },
 
     remove: async (id: string) => {
-        const {auth} = useUser.getState()
-        await TaskTrackersAPI.DeleteTaskTracker({id}, auth.getInitReq())
+        await taskTrackersService.remove(id)
         await get().fetch()
     },
 }))

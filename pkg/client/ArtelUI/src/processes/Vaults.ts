@@ -1,17 +1,15 @@
-import {AuthMiddleware} from "@/processes/AuthMiddleware.ts"
+import useUser from "@/hooks/user/User.ts"
 import {VaultItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
 
 export interface IVaultService {
     ListVaults: () => Promise<VaultItem[]>
 }
 
-export class VaultService extends AuthMiddleware implements IVaultService {
-    constructor() {
-        super()
-    }
-
+export class VaultService implements IVaultService {
     async ListVaults(): Promise<VaultItem[]> {
-        const initR = this.getInitReq()
+        const initR = useUser.getState().auth.getInitReq()
         return VaultsAPI.ListVaults({}, initR).then(res => res.vaults ?? [])
     }
 }
+
+export const vaultService = new VaultService()

@@ -17,7 +17,7 @@ import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
-import {AuthService} from "@/processes/Auth.ts"
+import {authService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
 import { Tooltip } from "react-tooltip"
 import { Toaster } from "@vervstack/chures"
@@ -41,12 +41,10 @@ export default function Router() {
     const navigate = useNavigate()
 
     const {auth, setUserInfo} = useUser()
-    const svc = new AuthService();
-
     useEffect(() => {
         if (!auth.isAuthenticated()) return
 
-        svc.FetchUserInfo().then(setUserInfo).catch(() => {})
+        authService.FetchUserInfo().then(setUserInfo).catch(() => {})
         navigate(Path.HomePage)
     }, [])
 

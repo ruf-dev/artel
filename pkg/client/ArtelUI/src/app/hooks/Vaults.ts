@@ -1,7 +1,7 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 
 import {VaultItem, VaultMemberInfo, VaultInviteItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
-import {VaultService} from "@/processes/Vaults.ts"
+import {vaultService} from "@/processes/Vaults.ts"
 import {retryOnStatus} from "@/processes/grpcErrors.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -12,7 +12,6 @@ export const vaultsQueryKey = ['vaults'] as const
 
 export function useVaults() {
     const {auth} = useUser()
-    const vaultService = new VaultService()
 
     const q = useQuery({
         queryKey: vaultsQueryKey,

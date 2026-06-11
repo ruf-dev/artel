@@ -4,7 +4,7 @@ import {NavigateFunction, useNavigate} from "react-router-dom"
 import cls from "@/pages/init/InitPage.module.css"
 
 import useUser from "@/hooks/user/User.ts"
-import {AuthService, Session} from "@/processes/Auth.ts"
+import {authService, Session} from "@/processes/Auth.ts"
 import {UserInfo} from "@/processes/AuthMiddleware.ts"
 import {Path, REDIRECT_AFTER_LOGIN_KEY} from "@/app/routing/Router.tsx"
 import {AuthAPI} from "@/app/api/artel"
@@ -35,7 +35,6 @@ interface LoginContentProps {
 }
 
 function LoginContent({login, navigate}: LoginContentProps) {
-    const svc = new AuthService()
     const {CloseDialog, UnlockClosing} = useDialog()
     const {bake} = useToaster()
 
@@ -49,12 +48,11 @@ function LoginContent({login, navigate}: LoginContentProps) {
     }, [])
 
     function onSuccessLoginTg(data: TelegramAuthData) {
-        svc.LoginViaTelegram(data.id_token)
+        authService.LoginViaTelegram(data.id_token)
             .then(async function (session) {
                 login(session)
                 try {
-                    svc.login(session)
-                    const userInfo = await svc.FetchUserInfo()
+                    const userInfo = await authService.FetchUserInfo()
                     login(session, userInfo)
                     UnlockClosing()
                 } catch {
