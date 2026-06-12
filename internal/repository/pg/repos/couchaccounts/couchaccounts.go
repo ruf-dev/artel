@@ -114,6 +114,24 @@ func (r *Repo) ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.Couch
 	return accounts, nil
 }
 
+func (r *Repo) UpdatePassword(ctx context.Context, username string, instanceID uuid.UUID, passwordPlain string) error {
+	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passwordPlain))
+	if err != nil {
+		return rerrors.Wrap(err, "error encrypting password")
+	}
+
+	params := artel_q.UpdateCouchAccountPasswordParams{
+		CouchUsername:    username,
+		CouchInstanceID:  instanceID,
+		CouchPasswordEnc: passwordEnc,
+	}
+	err = r.q.UpdateCouchAccountPassword(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error updating couch account password")
+	}
+	return nil
+}
+
 func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	err := r.q.DeleteCouchAccount(ctx, id)
 	if err != nil {

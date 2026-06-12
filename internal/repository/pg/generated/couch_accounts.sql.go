@@ -84,6 +84,24 @@ func (q *Queries) ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID)
 	return items, nil
 }
 
+const updateCouchAccountPassword = `-- name: UpdateCouchAccountPassword :exec
+UPDATE couch_accounts
+SET couch_password_enc = $3
+WHERE couch_username = $1
+  AND couch_instance_id = $2
+`
+
+type UpdateCouchAccountPasswordParams struct {
+	CouchUsername    string
+	CouchInstanceID  uuid.UUID
+	CouchPasswordEnc []byte
+}
+
+func (q *Queries) UpdateCouchAccountPassword(ctx context.Context, arg UpdateCouchAccountPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateCouchAccountPassword, arg.CouchUsername, arg.CouchInstanceID, arg.CouchPasswordEnc)
+	return err
+}
+
 const upsertCouchAccount = `-- name: UpsertCouchAccount :exec
 INSERT INTO couch_accounts (user_id, couch_instance_id, couch_username, couch_password_enc)
 VALUES ($1, $2, $3, $4)

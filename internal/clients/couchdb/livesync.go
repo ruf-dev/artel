@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	kivik "github.com/go-kivik/kivik/v4"
+	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
 	"go.redsock.ru/rerrors"
 
@@ -60,7 +60,7 @@ func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
 	}
 	err := rows.Err()
 	if err != nil {
-		return nil, rerrors.Wrap(err, "rows iteration")
+		return nil, rerrors.Wrap(err, "rows iteration failed during notes listing")
 	}
 	return notes, nil
 }
@@ -232,30 +232,6 @@ func (c *LiveSyncClient) GetNoteMetadata(ctx context.Context, path string) (Note
 	return note, nil
 }
 
-func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, error) {
-	d := c.db.Get(ctx, hash)
-	defer d.Close()
-
-	var leaf leafDoc
-	err := d.ScanDoc(&leaf)
-	if err != nil {
-		return "", rerrors.Wrap(err, "scan leaf")
-	}
-	return leaf.Data, nil
-}
-
-func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, error) {
-	d := c.db.Get(ctx, path)
-	defer d.Close()
-
-	var doc docRev
-	err := d.ScanDoc(&doc)
-	if err != nil {
-		return "", rerrors.Wrap(err, "get doc rev")
-	}
-	return doc.Rev, nil
-}
-
 func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 	rows := c.db.AllDocs(ctx, kivik.Params(map[string]any{"include_docs": true}))
 	defer rows.Close()
@@ -285,7 +261,7 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 	}
 	err := rows.Err()
 	if err != nil {
-		return nil, rerrors.Wrap(err, "rows iteration")
+		return nil, rerrors.Wrap(err, "rows iteration failed during files listing")
 	}
 	return files, nil
 }
@@ -394,6 +370,30 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 		return rerrors.Wrap(err, "delete old file")
 	}
 	return nil
+}
+
+func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, error) {
+	d := c.db.Get(ctx, hash)
+	defer d.Close()
+
+	var leaf leafDoc
+	err := d.ScanDoc(&leaf)
+	if err != nil {
+		return "", rerrors.Wrap(err, "scan leaf")
+	}
+	return leaf.Data, nil
+}
+
+func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, error) {
+	d := c.db.Get(ctx, path)
+	defer d.Close()
+
+	var doc docRev
+	err := d.ScanDoc(&doc)
+	if err != nil {
+		return "", rerrors.Wrap(err, "get doc rev")
+	}
+	return doc.Rev, nil
 }
 
 func extractTags(content string) []string {

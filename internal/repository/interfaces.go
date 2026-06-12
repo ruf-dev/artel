@@ -112,6 +112,7 @@ type CouchAccounts interface {
 	Upsert(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error)
 	GetByUserAndInstance(ctx context.Context, userID, instanceID uuid.UUID) (domain.CouchAccount, error)
 	ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.CouchAccount, error)
+	UpdatePassword(ctx context.Context, username string, instanceID uuid.UUID, passwordPlain string) error
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	WithTx(tx sqldb.DB) CouchAccounts

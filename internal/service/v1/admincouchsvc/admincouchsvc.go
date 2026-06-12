@@ -12,11 +12,13 @@ import (
 
 type Service struct {
 	couchInstancesRepo repository.CouchInstances
+	couchAccounts      repository.CouchAccounts
 }
 
 func New(repo repository.Repo) *Service {
 	return &Service{
 		couchInstancesRepo: repo.CouchInstances(),
+		couchAccounts:      repo.CouchAccounts(),
 	}
 }
 
@@ -49,19 +51,29 @@ func (s *Service) DeleteUser(ctx context.Context, instanceId, username string) e
 }
 
 func (s *Service) ChangeUserPassword(ctx context.Context, instanceId, username, newPassword string) error {
+	uid, err := uuid.Parse(instanceId)
+	if err != nil {
+		return rerrors.Wrap(err, "error parsing instance uuid")
+	}
+
 	client, err := s.resolveClient(ctx, instanceId)
 	if err != nil {
-		return rerrors.Wrap(err, "resolving couch client")
+		return rerrors.Wrap(err, "error resolving couch client")
 	}
 
 	existing, err := client.GetUser(ctx, username)
 	if err != nil {
-		return rerrors.Wrap(err, "getting couch user")
+		return rerrors.Wrap(err, "error getting couch user")
 	}
 
 	err = client.UpdateUser(ctx, username, newPassword, existing.Roles)
 	if err != nil {
-		return rerrors.Wrap(err, "updating couch user")
+		return rerrors.Wrap(err, "error updating couch user")
+	}
+
+	err = s.couchAccounts.UpdatePassword(ctx, username, uid, newPassword)
+	if err != nil {
+		return rerrors.Wrap(err, "error updating couch account password")
 	}
 
 	return nil

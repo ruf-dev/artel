@@ -15,6 +15,12 @@ SELECT id, user_id, couch_instance_id, couch_username, couch_password_enc, creat
 FROM couch_accounts
 WHERE user_id = $1;
 
+-- name: UpdateCouchAccountPassword :exec
+UPDATE couch_accounts
+SET couch_password_enc = $3
+WHERE couch_username = $1
+  AND couch_instance_id = $2;
+
 -- name: DeleteCouchAccount :exec
 DELETE
 FROM couch_accounts

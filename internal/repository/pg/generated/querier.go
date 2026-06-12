@@ -73,6 +73,7 @@ type Querier interface {
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
 	SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
+	UpdateCouchAccountPassword(ctx context.Context, arg UpdateCouchAccountPasswordParams) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
 	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
