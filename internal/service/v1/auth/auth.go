@@ -107,17 +107,22 @@ func (s *Service) Logout(ctx context.Context, token string) error {
 	return nil
 }
 
-func (s *Service) ValidateToken(ctx context.Context, token string) (uuid.UUID, error) {
+func (s *Service) ValidateToken(ctx context.Context, token string) (domain.User, error) {
 	session, err := s.sessionsRepo.GetByToken(ctx, token)
 	if err != nil {
-		return uuid.UUID{}, rerrors.Wrap(err, "get session by token")
+		return domain.User{}, rerrors.Wrap(err, "get session by token")
 	}
 
 	if time.Now().After(session.ExpiresAt) {
-		return uuid.UUID{}, user_errors.SessionExpired
+		return domain.User{}, user_errors.SessionExpired
 	}
 
-	return session.UserUuid, nil
+	user, err := s.usersRepo.GetByID(ctx, session.UserUuid)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "get user by id")
+	}
+
+	return user, nil
 }
 
 func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {

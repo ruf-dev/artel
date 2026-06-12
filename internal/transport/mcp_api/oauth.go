@@ -127,13 +127,14 @@ func (h *OAuthHandler) ServeOAuthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userUUID, err := h.authSvc.ValidateToken(r.Context(), session.Token)
+	user, err := h.authSvc.ValidateToken(r.Context(), session.Token)
 	if err != nil {
 		jsonErr(w, "authentication failed", http.StatusUnauthorized)
 		return
 	}
 
-	ctx := user_context.WithUserContext(r.Context(), user_context.UserContext{UserUuid: userUUID})
+	uc := user_context.UserContext{UserUuid: user.Uuid}
+	ctx := user_context.WithUserContext(r.Context(), uc)
 	vaults, err := h.vaultSvc.ListVaults(ctx)
 	if err != nil {
 		jsonErr(w, "failed to load vaults", http.StatusInternalServerError)
@@ -166,13 +167,14 @@ func (h *OAuthHandler) ServeOAuthVaults(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	userUUID, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
+	user, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
 	if err != nil {
 		jsonErr(w, "session expired", http.StatusUnauthorized)
 		return
 	}
 
-	ctx := user_context.WithUserContext(r.Context(), user_context.UserContext{UserUuid: userUUID})
+	uc := user_context.UserContext{UserUuid: user.Uuid}
+	ctx := user_context.WithUserContext(r.Context(), uc)
 	vaults, err := h.vaultSvc.ListVaults(ctx)
 	if err != nil {
 		jsonErr(w, "failed to load vaults", http.StatusInternalServerError)
@@ -213,13 +215,14 @@ func (h *OAuthHandler) ServeOAuthVault(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userUUID, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
+	user, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
 	if err != nil {
 		jsonErr(w, "session expired", http.StatusUnauthorized)
 		return
 	}
 
-	ctx := user_context.WithUserContext(r.Context(), user_context.UserContext{UserUuid: userUUID})
+	uc := user_context.UserContext{UserUuid: user.Uuid}
+	ctx := user_context.WithUserContext(r.Context(), uc)
 	rawToken, _, err := h.mcpSvc.CreateKey(ctx, vaultID, "Claude MCP")
 	if err != nil {
 		jsonErr(w, "failed to create access key", http.StatusInternalServerError)

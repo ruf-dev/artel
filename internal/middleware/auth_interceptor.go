@@ -88,20 +88,19 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 		return nil, status.Error(codes.Unauthenticated, user_errors.NoAuthHeader.Error())
 	}
 
-	userUuid, err := am.authService.ValidateToken(ctx, auth[0])
+	user, err := am.authService.ValidateToken(ctx, auth[0])
 	if err != nil {
 		return nil, rerrors.Wrap(err)
 	}
 
-	err = am.subscriptionService.CheckActive(ctx, userUuid)
+	err = am.subscriptionService.CheckActive(ctx, user.Uuid)
 	if err != nil {
 		return nil, rerrors.Wrap(err)
 	}
 
 	uc := user_context.UserContext{
-		UserUuid: userUuid,
-		//TODO remove onto real
-		UserName: "AlexSkilled",
+		UserUuid: user.Uuid,
+		UserName: user.Username,
 		Roles:    nil,
 	}
 

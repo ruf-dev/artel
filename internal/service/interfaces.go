@@ -35,7 +35,7 @@ type AuthService interface {
 	Register(ctx context.Context, email, password string) (domain.User, error)
 	Login(ctx context.Context, email, password string) (domain.Session, error)
 	Logout(ctx context.Context, token string) error
-	ValidateToken(ctx context.Context, token string) (uuid.UUID, error)
+	ValidateToken(ctx context.Context, token string) (domain.User, error)
 	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
 	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, domain.UserPermissions, error)
 	CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error

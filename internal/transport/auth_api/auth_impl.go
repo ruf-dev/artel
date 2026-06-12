@@ -97,12 +97,12 @@ func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*a
 		token = tokens[0]
 	}
 
-	userUuid, err := h.authSvc.ValidateToken(ctx, token)
+	validatedUser, err := h.authSvc.ValidateToken(ctx, token)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "validate token")
 	}
 
-	user, perms, err := h.authSvc.GetMe(ctx, userUuid)
+	user, perms, err := h.authSvc.GetMe(ctx, validatedUser.Uuid)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "get me")
 	}
