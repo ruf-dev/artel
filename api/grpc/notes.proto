@@ -33,6 +33,12 @@ service NotesAPI {
       body: "*"
     };
   };
+  rpc SaveNote(SaveNote.Request) returns (SaveNote.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/save"
+      body: "*"
+    };
+  };
 }
 
 message NoteItem {
@@ -75,4 +81,13 @@ message ListTags {
   message Response {
     repeated string tags = 1;
   }
+}
+
+message SaveNote {
+  message Request {
+    string vault_id = 1;
+    string path = 2;
+    string content = 3;
+  }
+  message Response {}
 }

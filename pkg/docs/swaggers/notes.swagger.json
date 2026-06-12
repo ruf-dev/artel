@@ -112,6 +112,38 @@
         ]
       }
     },
+    "/api/notes/save": {
+      "post": {
+        "operationId": "NotesAPI_SaveNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesSaveNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesSaveNoteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
     "/api/notes/tags": {
       "post": {
         "operationId": "NotesAPI_ListTags",
@@ -234,6 +266,23 @@
           "format": "int64"
         }
       }
+    },
+    "artel_notesSaveNoteRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_notesSaveNoteResponse": {
+      "type": "object"
     },
     "protobufAny": {
       "type": "object",

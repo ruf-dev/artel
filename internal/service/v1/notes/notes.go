@@ -109,3 +109,16 @@ func (s *Service) ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, er
 
 	return client.ListTags(ctx)
 }
+
+func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error {
+	client, err := s.liveSyncClient(ctx, vaultID)
+	if err != nil {
+		return err
+	}
+
+	err = client.WriteNote(ctx, path, content)
+	if err != nil {
+		return rerrors.Wrap(err, "error writing note")
+	}
+	return nil
+}

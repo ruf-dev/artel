@@ -54,6 +54,16 @@ export type ListTagsResponse = {
 
 export type ListTags = Record<string, never>;
 
+export type SaveNoteRequest = {
+  vaultId?: string;
+  path?: string;
+  content?: string;
+};
+
+export type SaveNoteResponse = Record<string, never>;
+
+export type SaveNote = Record<string, never>;
+
 export class NotesAPI {
   static ListFolders(this:void, req: ListFoldersRequest, initReq?: fm.InitReq): Promise<ListFoldersResponse> {
     return fm.fetchRequest<ListFoldersResponse>(`/api/notes/folders`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -66,5 +76,8 @@ export class NotesAPI {
   }
   static ListTags(this:void, req: ListTagsRequest, initReq?: fm.InitReq): Promise<ListTagsResponse> {
     return fm.fetchRequest<ListTagsResponse>(`/api/notes/tags`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static SaveNote(this:void, req: SaveNoteRequest, initReq?: fm.InitReq): Promise<SaveNoteResponse> {
+    return fm.fetchRequest<SaveNoteResponse>(`/api/notes/save`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

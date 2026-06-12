@@ -219,6 +219,42 @@ func (*ListTags) Descriptor() ([]byte, []int) {
 	return file_notes_proto_rawDescGZIP(), []int{4}
 }
 
+type SaveNote struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveNote) Reset() {
+	*x = SaveNote{}
+	mi := &file_notes_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveNote) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveNote) ProtoMessage() {}
+
+func (x *SaveNote) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveNote.ProtoReflect.Descriptor instead.
+func (*SaveNote) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{5}
+}
+
 type ListFolders_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
@@ -228,7 +264,7 @@ type ListFolders_Request struct {
 
 func (x *ListFolders_Request) Reset() {
 	*x = ListFolders_Request{}
-	mi := &file_notes_proto_msgTypes[5]
+	mi := &file_notes_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -240,7 +276,7 @@ func (x *ListFolders_Request) String() string {
 func (*ListFolders_Request) ProtoMessage() {}
 
 func (x *ListFolders_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[5]
+	mi := &file_notes_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +308,7 @@ type ListFolders_Response struct {
 
 func (x *ListFolders_Response) Reset() {
 	*x = ListFolders_Response{}
-	mi := &file_notes_proto_msgTypes[6]
+	mi := &file_notes_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -284,7 +320,7 @@ func (x *ListFolders_Response) String() string {
 func (*ListFolders_Response) ProtoMessage() {}
 
 func (x *ListFolders_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[6]
+	mi := &file_notes_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -316,7 +352,7 @@ type ListNotes_Request struct {
 
 func (x *ListNotes_Request) Reset() {
 	*x = ListNotes_Request{}
-	mi := &file_notes_proto_msgTypes[7]
+	mi := &file_notes_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -328,7 +364,7 @@ func (x *ListNotes_Request) String() string {
 func (*ListNotes_Request) ProtoMessage() {}
 
 func (x *ListNotes_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[7]
+	mi := &file_notes_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -360,7 +396,7 @@ type ListNotes_Response struct {
 
 func (x *ListNotes_Response) Reset() {
 	*x = ListNotes_Response{}
-	mi := &file_notes_proto_msgTypes[8]
+	mi := &file_notes_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -372,7 +408,7 @@ func (x *ListNotes_Response) String() string {
 func (*ListNotes_Response) ProtoMessage() {}
 
 func (x *ListNotes_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[8]
+	mi := &file_notes_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -405,7 +441,7 @@ type GetNote_Request struct {
 
 func (x *GetNote_Request) Reset() {
 	*x = GetNote_Request{}
-	mi := &file_notes_proto_msgTypes[9]
+	mi := &file_notes_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -417,7 +453,7 @@ func (x *GetNote_Request) String() string {
 func (*GetNote_Request) ProtoMessage() {}
 
 func (x *GetNote_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[9]
+	mi := &file_notes_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -456,7 +492,7 @@ type GetNote_Response struct {
 
 func (x *GetNote_Response) Reset() {
 	*x = GetNote_Response{}
-	mi := &file_notes_proto_msgTypes[10]
+	mi := &file_notes_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -468,7 +504,7 @@ func (x *GetNote_Response) String() string {
 func (*GetNote_Response) ProtoMessage() {}
 
 func (x *GetNote_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[10]
+	mi := &file_notes_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,7 +536,7 @@ type ListTags_Request struct {
 
 func (x *ListTags_Request) Reset() {
 	*x = ListTags_Request{}
-	mi := &file_notes_proto_msgTypes[11]
+	mi := &file_notes_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -512,7 +548,7 @@ func (x *ListTags_Request) String() string {
 func (*ListTags_Request) ProtoMessage() {}
 
 func (x *ListTags_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[11]
+	mi := &file_notes_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -544,7 +580,7 @@ type ListTags_Response struct {
 
 func (x *ListTags_Response) Reset() {
 	*x = ListTags_Response{}
-	mi := &file_notes_proto_msgTypes[12]
+	mi := &file_notes_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -556,7 +592,7 @@ func (x *ListTags_Response) String() string {
 func (*ListTags_Response) ProtoMessage() {}
 
 func (x *ListTags_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[12]
+	mi := &file_notes_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -577,6 +613,102 @@ func (x *ListTags_Response) GetTags() []string {
 		return x.Tags
 	}
 	return nil
+}
+
+type SaveNote_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	Path          string                 `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveNote_Request) Reset() {
+	*x = SaveNote_Request{}
+	mi := &file_notes_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveNote_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveNote_Request) ProtoMessage() {}
+
+func (x *SaveNote_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveNote_Request.ProtoReflect.Descriptor instead.
+func (*SaveNote_Request) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *SaveNote_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *SaveNote_Request) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *SaveNote_Request) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type SaveNote_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveNote_Response) Reset() {
+	*x = SaveNote_Response{}
+	mi := &file_notes_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveNote_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveNote_Response) ProtoMessage() {}
+
+func (x *SaveNote_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveNote_Response.ProtoReflect.Descriptor instead.
+func (*SaveNote_Response) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{5, 1}
 }
 
 var File_notes_proto protoreflect.FileDescriptor
@@ -607,12 +739,20 @@ const file_notes_proto_rawDesc = "" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a\x1e\n" +
 	"\bResponse\x12\x12\n" +
-	"\x04tags\x18\x01 \x03(\tR\x04tags2\xb1\x03\n" +
+	"\x04tags\x18\x01 \x03(\tR\x04tags\"j\n" +
+	"\bSaveNote\x1aR\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x12\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\x12\x18\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\x1a\n" +
+	"\n" +
+	"\bResponse2\x98\x04\n" +
 	"\bNotesAPI\x12q\n" +
 	"\vListFolders\x12 .artel_notes.ListFolders.Request\x1a!.artel_notes.ListFolders.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/notes/folders\x12h\n" +
 	"\tListNotes\x12\x1e.artel_notes.ListNotes.Request\x1a\x1f.artel_notes.ListNotes.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/list\x12a\n" +
 	"\aGetNote\x12\x1c.artel_notes.GetNote.Request\x1a\x1d.artel_notes.GetNote.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/notes/get\x12e\n" +
-	"\bListTags\x12\x1d.artel_notes.ListTags.Request\x1a\x1e.artel_notes.ListTags.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/tagsB\x1a\x92\x82\x19\n" +
+	"\bListTags\x12\x1d.artel_notes.ListTags.Request\x1a\x1e.artel_notes.ListTags.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/tags\x12e\n" +
+	"\bSaveNote\x12\x1d.artel_notes.SaveNote.Request\x1a\x1e.artel_notes.SaveNote.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/saveB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
@@ -628,34 +768,39 @@ func file_notes_proto_rawDescGZIP() []byte {
 	return file_notes_proto_rawDescData
 }
 
-var file_notes_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_notes_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_notes_proto_goTypes = []any{
 	(*NoteItem)(nil),             // 0: artel_notes.NoteItem
 	(*ListFolders)(nil),          // 1: artel_notes.ListFolders
 	(*ListNotes)(nil),            // 2: artel_notes.ListNotes
 	(*GetNote)(nil),              // 3: artel_notes.GetNote
 	(*ListTags)(nil),             // 4: artel_notes.ListTags
-	(*ListFolders_Request)(nil),  // 5: artel_notes.ListFolders.Request
-	(*ListFolders_Response)(nil), // 6: artel_notes.ListFolders.Response
-	(*ListNotes_Request)(nil),    // 7: artel_notes.ListNotes.Request
-	(*ListNotes_Response)(nil),   // 8: artel_notes.ListNotes.Response
-	(*GetNote_Request)(nil),      // 9: artel_notes.GetNote.Request
-	(*GetNote_Response)(nil),     // 10: artel_notes.GetNote.Response
-	(*ListTags_Request)(nil),     // 11: artel_notes.ListTags.Request
-	(*ListTags_Response)(nil),    // 12: artel_notes.ListTags.Response
+	(*SaveNote)(nil),             // 5: artel_notes.SaveNote
+	(*ListFolders_Request)(nil),  // 6: artel_notes.ListFolders.Request
+	(*ListFolders_Response)(nil), // 7: artel_notes.ListFolders.Response
+	(*ListNotes_Request)(nil),    // 8: artel_notes.ListNotes.Request
+	(*ListNotes_Response)(nil),   // 9: artel_notes.ListNotes.Response
+	(*GetNote_Request)(nil),      // 10: artel_notes.GetNote.Request
+	(*GetNote_Response)(nil),     // 11: artel_notes.GetNote.Response
+	(*ListTags_Request)(nil),     // 12: artel_notes.ListTags.Request
+	(*ListTags_Response)(nil),    // 13: artel_notes.ListTags.Response
+	(*SaveNote_Request)(nil),     // 14: artel_notes.SaveNote.Request
+	(*SaveNote_Response)(nil),    // 15: artel_notes.SaveNote.Response
 }
 var file_notes_proto_depIdxs = []int32{
 	0,  // 0: artel_notes.ListNotes.Response.notes:type_name -> artel_notes.NoteItem
-	5,  // 1: artel_notes.NotesAPI.ListFolders:input_type -> artel_notes.ListFolders.Request
-	7,  // 2: artel_notes.NotesAPI.ListNotes:input_type -> artel_notes.ListNotes.Request
-	9,  // 3: artel_notes.NotesAPI.GetNote:input_type -> artel_notes.GetNote.Request
-	11, // 4: artel_notes.NotesAPI.ListTags:input_type -> artel_notes.ListTags.Request
-	6,  // 5: artel_notes.NotesAPI.ListFolders:output_type -> artel_notes.ListFolders.Response
-	8,  // 6: artel_notes.NotesAPI.ListNotes:output_type -> artel_notes.ListNotes.Response
-	10, // 7: artel_notes.NotesAPI.GetNote:output_type -> artel_notes.GetNote.Response
-	12, // 8: artel_notes.NotesAPI.ListTags:output_type -> artel_notes.ListTags.Response
-	5,  // [5:9] is the sub-list for method output_type
-	1,  // [1:5] is the sub-list for method input_type
+	6,  // 1: artel_notes.NotesAPI.ListFolders:input_type -> artel_notes.ListFolders.Request
+	8,  // 2: artel_notes.NotesAPI.ListNotes:input_type -> artel_notes.ListNotes.Request
+	10, // 3: artel_notes.NotesAPI.GetNote:input_type -> artel_notes.GetNote.Request
+	12, // 4: artel_notes.NotesAPI.ListTags:input_type -> artel_notes.ListTags.Request
+	14, // 5: artel_notes.NotesAPI.SaveNote:input_type -> artel_notes.SaveNote.Request
+	7,  // 6: artel_notes.NotesAPI.ListFolders:output_type -> artel_notes.ListFolders.Response
+	9,  // 7: artel_notes.NotesAPI.ListNotes:output_type -> artel_notes.ListNotes.Response
+	11, // 8: artel_notes.NotesAPI.GetNote:output_type -> artel_notes.GetNote.Response
+	13, // 9: artel_notes.NotesAPI.ListTags:output_type -> artel_notes.ListTags.Response
+	15, // 10: artel_notes.NotesAPI.SaveNote:output_type -> artel_notes.SaveNote.Response
+	6,  // [6:11] is the sub-list for method output_type
+	1,  // [1:6] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -672,7 +817,7 @@ func file_notes_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_notes_proto_rawDesc), len(file_notes_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

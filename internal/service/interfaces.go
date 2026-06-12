@@ -126,4 +126,5 @@ type NotesService interface {
 	ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.NoteEntry, error)
 	GetNote(ctx context.Context, vaultID uuid.UUID, path string) (couchdb.NoteDoc, error)
 	ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error)
+	SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error
 }
