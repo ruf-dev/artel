@@ -14,25 +14,32 @@ import (
 )
 
 const createByUsername = `-- name: CreateByUsername :one
-INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at
+INSERT INTO users (username, photo_url) VALUES ($1, $2) RETURNING id, email, username, photo_url, password_hash, created_at, updated_at
 `
+
+type CreateByUsernameParams struct {
+	Username string
+	PhotoUrl string
+}
 
 type CreateByUsernameRow struct {
 	ID           uuid.UUID
 	Email        sql.NullString
 	Username     string
+	PhotoUrl     string
 	PasswordHash string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
 
-func (q *Queries) CreateByUsername(ctx context.Context, username string) (CreateByUsernameRow, error) {
-	row := q.db.QueryRowContext(ctx, createByUsername, username)
+func (q *Queries) CreateByUsername(ctx context.Context, arg CreateByUsernameParams) (CreateByUsernameRow, error) {
+	row := q.db.QueryRowContext(ctx, createByUsername, arg.Username, arg.PhotoUrl)
 	var i CreateByUsernameRow
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.Username,
+		&i.PhotoUrl,
 		&i.PasswordHash,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -80,11 +87,11 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getTelegramPhotoUrlByUserId = `-- name: GetTelegramPhotoUrlByUserId :one
-SELECT photo_url FROM identities_telegram WHERE user_id = $1
+SELECT photo_url FROM users WHERE id = $1
 `
 
-func (q *Queries) GetTelegramPhotoUrlByUserId(ctx context.Context, userID uuid.UUID) (string, error) {
-	row := q.db.QueryRowContext(ctx, getTelegramPhotoUrlByUserId, userID)
+func (q *Queries) GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getTelegramPhotoUrlByUserId, id)
 	var photo_url string
 	err := row.Scan(&photo_url)
 	return photo_url, err
@@ -116,13 +123,14 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email sql.NullString) (Get
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, email, username, password_hash, created_at, updated_at FROM users WHERE id = $1
+SELECT id, email, username, photo_url, password_hash, created_at, updated_at FROM users WHERE id = $1
 `
 
 type GetUserByIDRow struct {
 	ID           uuid.UUID
 	Email        sql.NullString
 	Username     string
+	PhotoUrl     string
 	PasswordHash string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
@@ -135,6 +143,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow
 		&i.ID,
 		&i.Email,
 		&i.Username,
+		&i.PhotoUrl,
 		&i.PasswordHash,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -216,20 +225,32 @@ func (q *Queries) GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDeta
 	return i, err
 }
 
+const updateUserPhotoUrl = `-- name: UpdateUserPhotoUrl :exec
+UPDATE users SET photo_url = $2 WHERE id = $1
+`
+
+type UpdateUserPhotoUrlParams struct {
+	ID       uuid.UUID
+	PhotoUrl string
+}
+
+func (q *Queries) UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserPhotoUrl, arg.ID, arg.PhotoUrl)
+	return err
+}
+
 const upsertTelegramIdentity = `-- name: UpsertTelegramIdentity :exec
-INSERT INTO identities_telegram (user_id, telegram_id, photo_url)
-VALUES ($1, $2, $3)
-ON CONFLICT (telegram_id) DO UPDATE
-    SET photo_url = EXCLUDED.photo_url, updated_at = NOW()
+INSERT INTO identities_telegram (user_id, telegram_id)
+VALUES ($1, $2)
+ON CONFLICT (telegram_id) DO UPDATE SET updated_at = NOW()
 `
 
 type UpsertTelegramIdentityParams struct {
 	UserID     uuid.UUID
 	TelegramID string
-	PhotoUrl   string
 }
 
 func (q *Queries) UpsertTelegramIdentity(ctx context.Context, arg UpsertTelegramIdentityParams) error {
-	_, err := q.db.ExecContext(ctx, upsertTelegramIdentity, arg.UserID, arg.TelegramID, arg.PhotoUrl)
+	_, err := q.db.ExecContext(ctx, upsertTelegramIdentity, arg.UserID, arg.TelegramID)
 	return err
 }

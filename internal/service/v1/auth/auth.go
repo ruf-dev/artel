@@ -143,7 +143,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 			}
 
 			if !userValue.Valid {
-				userValue.V, err = usersRepo.CreateByUsername(ctx, claims.Login)
+				userValue.V, err = usersRepo.CreateByUsername(ctx, claims.Login, claims.Picture)
 				if err != nil {
 					return rerrors.Wrap(err, "create user")
 				}
@@ -154,11 +154,15 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 			identity := domain.TelegramIdentity{
 				UserUuid:   user.Uuid,
 				TelegramId: telegramId,
-				PhotoUrl:   claims.Picture,
 			}
 			err = usersRepo.UpsertTelegramIdentity(ctx, identity)
 			if err != nil {
 				return rerrors.Wrap(err, "upsert telegram identity")
+			}
+
+			err = usersRepo.UpdatePhotoUrl(ctx, user.Uuid, claims.Picture)
+			if err != nil {
+				return rerrors.Wrap(err, "update user photo url")
 			}
 
 			err = permissionsRepo.CreateDefault(ctx, user.Uuid)

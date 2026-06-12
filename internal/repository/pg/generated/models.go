@@ -132,7 +132,6 @@ type IdentitiesTelegram struct {
 	TelegramID string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	PhotoUrl   string
 }
 
 type MailServerSuggestion struct {
@@ -200,6 +199,7 @@ type User struct {
 	UpdatedAt    time.Time
 	PasswordHash string
 	Username     string
+	PhotoUrl     string
 }
 
 type UserPermission struct {

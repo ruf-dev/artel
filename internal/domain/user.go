@@ -21,7 +21,6 @@ type User struct {
 type TelegramIdentity struct {
 	UserUuid   uuid.UUID
 	TelegramId string
-	PhotoUrl   string
 }
 
 type ArtelIdentity struct {

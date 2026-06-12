@@ -13,7 +13,7 @@ import (
 
 type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
-	CreateByUsername(ctx context.Context, username string) (CreateByUsernameRow, error)
+	CreateByUsername(ctx context.Context, arg CreateByUsernameParams) (CreateByUsernameRow, error)
 	CreateDefaultSubscription(ctx context.Context, userID uuid.UUID) error
 	CreateDefaultUserPermissions(ctx context.Context, userID uuid.UUID) error
 	CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error)
@@ -41,7 +41,7 @@ type Querier interface {
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetTaskTrackerByUuid(ctx context.Context, id uuid.UUID) (TaskTracker, error)
-	GetTelegramPhotoUrlByUserId(ctx context.Context, userID uuid.UUID) (string, error)
+	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
@@ -73,6 +73,7 @@ type Querier interface {
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
+	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)

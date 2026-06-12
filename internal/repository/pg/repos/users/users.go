@@ -58,6 +58,8 @@ func (r *UsersRepo) GetByID(ctx context.Context, id uuid.UUID) (domain.User, err
 	u := domain.User{
 		Uuid:         row.ID,
 		Email:        row.Email.String,
+		Username:     row.Username,
+		PhotoUrl:     row.PhotoUrl,
 		PasswordHash: row.PasswordHash,
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,
@@ -111,8 +113,12 @@ func (r *UsersRepo) GetByTelegramId(ctx context.Context, telegramId string) (sql
 	return sql.Null[domain.User]{V: u, Valid: true}, nil
 }
 
-func (r *UsersRepo) CreateByUsername(ctx context.Context, username string) (domain.User, error) {
-	row, err := r.q.CreateByUsername(ctx, username)
+func (r *UsersRepo) CreateByUsername(ctx context.Context, username, photoUrl string) (domain.User, error) {
+	params := artel_q.CreateByUsernameParams{
+		Username: username,
+		PhotoUrl: photoUrl,
+	}
+	row, err := r.q.CreateByUsername(ctx, params)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "create user by username")
 	}
@@ -121,6 +127,7 @@ func (r *UsersRepo) CreateByUsername(ctx context.Context, username string) (doma
 		Uuid:         row.ID,
 		Email:        row.Email.String,
 		Username:     row.Username,
+		PhotoUrl:     row.PhotoUrl,
 		PasswordHash: row.PasswordHash,
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,
@@ -131,11 +138,22 @@ func (r *UsersRepo) UpsertTelegramIdentity(ctx context.Context, identity domain.
 	params := artel_q.UpsertTelegramIdentityParams{
 		UserID:     identity.UserUuid,
 		TelegramID: identity.TelegramId,
-		PhotoUrl:   identity.PhotoUrl,
 	}
 	err := r.q.UpsertTelegramIdentity(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "upsert telegram identity")
+	}
+	return nil
+}
+
+func (r *UsersRepo) UpdatePhotoUrl(ctx context.Context, userUuid uuid.UUID, photoUrl string) error {
+	params := artel_q.UpdateUserPhotoUrlParams{
+		ID:       userUuid,
+		PhotoUrl: photoUrl,
+	}
+	err := r.q.UpdateUserPhotoUrl(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "update user photo url")
 	}
 	return nil
 }

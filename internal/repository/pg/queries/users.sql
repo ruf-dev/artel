@@ -2,7 +2,7 @@
 INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, password_hash, created_at, updated_at;
 
 -- name: GetUserByID :one
-SELECT id, email, username, password_hash, created_at, updated_at FROM users WHERE id = $1;
+SELECT id, email, username, photo_url, password_hash, created_at, updated_at FROM users WHERE id = $1;
 
 -- name: GetUserByEmail :one
 SELECT id, email, password_hash, created_at, updated_at FROM users WHERE email = $1;
@@ -18,16 +18,18 @@ WHERE i.telegram_id = $1
 FOR UPDATE;
 
 -- name: CreateByUsername :one
-INSERT INTO users (username) VALUES ($1) RETURNING id, email, username, password_hash, created_at, updated_at;
+INSERT INTO users (username, photo_url) VALUES ($1, $2) RETURNING id, email, username, photo_url, password_hash, created_at, updated_at;
 
 -- name: UpsertTelegramIdentity :exec
-INSERT INTO identities_telegram (user_id, telegram_id, photo_url)
-VALUES ($1, $2, $3)
-ON CONFLICT (telegram_id) DO UPDATE
-    SET photo_url = EXCLUDED.photo_url, updated_at = NOW();
+INSERT INTO identities_telegram (user_id, telegram_id)
+VALUES ($1, $2)
+ON CONFLICT (telegram_id) DO UPDATE SET updated_at = NOW();
 
 -- name: GetTelegramPhotoUrlByUserId :one
-SELECT photo_url FROM identities_telegram WHERE user_id = $1;
+SELECT photo_url FROM users WHERE id = $1;
+
+-- name: UpdateUserPhotoUrl :exec
+UPDATE users SET photo_url = $2 WHERE id = $1;
 
 -- name: GetUserDetails :one
 SELECT u.id, u.username, u.email, u.created_at, u.updated_at, u.password_hash,
