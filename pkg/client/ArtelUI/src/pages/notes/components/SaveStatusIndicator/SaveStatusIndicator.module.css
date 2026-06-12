@@ -1,0 +1,33 @@
+.SaveStatusContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+}
+
+.TextDirty {
+    color: rgba(255, 255, 255, 0.22);
+}
+
+.TextSaving {
+    color: rgba(255, 255, 255, 0.32);
+}
+
+.TextSaved {
+    color: rgba(255, 255, 255, 0.32);
+}
+
+.TextError {
+    color: #c1253d;
+}
+
+.Spinner {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

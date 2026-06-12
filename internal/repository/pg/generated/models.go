@@ -211,13 +211,14 @@ type UserPermission struct {
 }
 
 type Vault struct {
-	ID              uuid.UUID
-	UserID          uuid.UUID
-	Name            string
-	CouchDbName     string
-	CreatedAt       time.Time
-	CouchInstanceID uuid.NullUUID
-	Status          string
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CreatedAt             time.Time
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
 }
 
 type VaultInvite struct {

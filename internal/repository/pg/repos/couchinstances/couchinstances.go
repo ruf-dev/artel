@@ -111,8 +111,7 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (r *Repo) Pick(ctx context.Context, id uuid.UUID) (domain.CouchInstanceWithAccount, error) {
-	//TODO
+func (r *Repo) RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount, error) {
 	row, err := r.q.RandomPickCouchInstance(ctx)
 	if err != nil {
 		return domain.CouchInstanceWithAccount{}, pg_err.UnwrapPgErr(err)

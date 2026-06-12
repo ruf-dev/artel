@@ -59,7 +59,7 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 			vaultsRepo := s.vaultsRepo.WithTx(tx)
 			vaultMembersRepo := s.vaultMembersRepo.WithTx(tx)
 
-			instanceWithAccount, err := couchInstanceRepo.Pick(ctx, uuid.UUID{})
+			instanceWithAccount, err := couchInstanceRepo.RandomPick(ctx)
 			if err != nil {
 				if errors.Is(err, user_errors.NotFound) {
 					return rerrors.Wrap(user_errors.NoCouchDbInstance)
@@ -73,7 +73,12 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 				return rerrors.Wrap(err, "init couch client")
 			}
 
-			vault, err = s.ensureVaultExists(ctx, couchClient, uc, instanceWithAccount, vaultName, vaultsRepo)
+			liveSyncPassphrase, err := generatePassword()
+			if err != nil {
+				return rerrors.Wrap(err, "generate livesync passphrase")
+			}
+
+			vault, err = s.ensureVaultExists(ctx, couchClient, uc, instanceWithAccount, vaultName, liveSyncPassphrase, vaultsRepo)
 			if err != nil {
 				return rerrors.Wrap(err, "create couch database")
 			}
@@ -292,6 +297,7 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 	uc user_context.UserContext,
 	instanceWithAccount domain.CouchInstanceWithAccount,
 	vaultName string,
+	liveSyncPassphrase string,
 	vaultsRepo repository.Vaults,
 ) (domain.Vault, error) {
 
@@ -309,7 +315,8 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 		instanceWithAccount.Instance.Uuid,
 		vaultName, databaseName,
 		//TODO move to sql
-		"ready")
+		"ready",
+		liveSyncPassphrase)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "create vault")
 	}

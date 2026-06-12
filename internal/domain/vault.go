@@ -9,14 +9,15 @@ import (
 )
 
 type Vault struct {
-	Uuid              uuid.UUID
-	UserUuid          uuid.UUID
-	CouchInstanceUuid uuid.UUID
-	Name              string
-	CouchDBName       string
-	CouchDBURL        string
-	Status            string
-	CreatedAt         time.Time
+	Uuid               uuid.UUID
+	UserUuid           uuid.UUID
+	CouchInstanceUuid  uuid.UUID
+	Name               string
+	CouchDBName        string
+	CouchDBURL         string
+	LiveSyncPassphrase string
+	Status             string
+	CreatedAt          time.Time
 }
 
 type VaultMember struct {

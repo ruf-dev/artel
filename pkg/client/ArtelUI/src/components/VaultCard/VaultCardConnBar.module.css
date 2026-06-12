@@ -1,12 +1,27 @@
 .VaultCardConnBarContainer {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.375rem;
     padding: 0.625rem 0.625rem 0.625rem 0.875rem;
     background: var(--color-bg-input);
     border: 1px solid var(--color-border);
     border-radius: 0.625rem;
     margin-top: auto;
+}
+
+.ConnBarRowWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ConnBarLabel {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-fg-muted, var(--color-fg-secondary));
+    opacity: 0.55;
+    user-select: none;
 }
 
 .ConnString {

@@ -121,6 +121,7 @@ export type VaultItem = {
   id?: string;
   name?: string;
   dbUrl?: string;
+  livesyncPassphrase?: string;
 };
 
 export type VaultMemberInfo = {

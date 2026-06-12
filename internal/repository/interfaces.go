@@ -63,10 +63,11 @@ type Users interface {
 }
 
 type Vaults interface {
-	Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status string) (domain.Vault, error)
+	Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status, passphrase string) (domain.Vault, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error)
 	GetByNameAndUser(ctx context.Context, userID uuid.UUID, name string) (domain.Vault, error)
 	UpdateStatus(ctx context.Context, vaultID uuid.UUID, status string) error
+	SetLiveSyncPassphrase(ctx context.Context, vaultID uuid.UUID, passphrase string) error
 	ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain.Vault, error)
 	Delete(ctx context.Context, vaultID uuid.UUID) error
 
@@ -119,7 +120,7 @@ type CouchAccounts interface {
 type CouchInstances interface {
 	Register(ctx context.Context, url, username string, passwordPlain []byte) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, error)
-	Pick(ctx context.Context, id uuid.UUID) (domain.CouchInstanceWithAccount, error)
+	RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount, error)
 	List(ctx context.Context) ([]domain.CouchInstance, error)
 	Update(ctx context.Context, id uuid.UUID, url, username string, passwordPlain []byte) error
 	Delete(ctx context.Context, id uuid.UUID) error

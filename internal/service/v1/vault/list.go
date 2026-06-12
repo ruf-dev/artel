@@ -34,13 +34,28 @@ func (s *Service) ListVaults(ctx context.Context) ([]domain.Vault, error) {
 			return nil, rerrors.Wrap(err, "get user and instance")
 		}
 
+		passphrase := vault.LiveSyncPassphrase
+		if passphrase == "" {
+			passphrase, err = generatePassword()
+			if err != nil {
+				return nil, rerrors.Wrap(err, "generate livesync passphrase")
+			}
+
+			err = s.vaultsRepo.SetLiveSyncPassphrase(ctx, vault.Uuid, passphrase)
+			if err != nil {
+				return nil, rerrors.Wrap(err, "persist livesync passphrase")
+			}
+
+			vaults[i].LiveSyncPassphrase = passphrase
+		}
+
 		livesyncConfig := livesync.DefaultConfig(instance.Url,
-			dbUser.CouchUsername, dbUser.CouchPassword, vault.CouchDBName, "1")
+			dbUser.CouchUsername, dbUser.CouchPassword, vault.CouchDBName, passphrase)
 
 		livesyncConfig.Encrypt = false
 		livesyncConfig.UsePathObfuscation = false
 
-		vaults[i].CouchDBURL, err = livesync.GenerateSetupURI(livesyncConfig, "1")
+		vaults[i].CouchDBURL, err = livesync.GenerateSetupURI(livesyncConfig, passphrase)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "generate setup uri")
 		}

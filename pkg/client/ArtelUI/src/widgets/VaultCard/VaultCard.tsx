@@ -1,12 +1,15 @@
-import {useState} from "react"
+import React, {useState} from "react"
 import cls from "@/widgets/VaultCard/VaultCard.module.css"
+import Button from "@/components/shared/Button/Button"
 
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 
 import VaultCardHeader from "@/components/VaultCard/VaultCardHeader.tsx";
 import VaultCardStatus from "@/components/VaultCard/VaultCardStatus.tsx";
 import VaultCardConnBar from "@/components/VaultCard/VaultCardConnBar.tsx";
-import VaultCardLinks from "@/components/VaultCard/VaultCardLinks.tsx";
+import FastSetupDialog from "@/components/VaultCard/FastSetupDialog.tsx";
+import {useDialog} from "@/app/hooks/Dialog.ts";
+import InfoDialog from "@/components/InfoDialog/InfoDialog.tsx";
 
 interface Props {
     vault: VaultItem
@@ -31,16 +34,45 @@ function VaultCardFront({vault, onEdit}: Props) {
         <div className={cls.VaultCardFrontContainer}>
             <VaultCardHeader vault={vault} onEdit={onEdit}/>
             <VaultCardStatus/>
-            <VaultCardConnBar dbUrl={vault.dbUrl ?? ""}/>
+            <VaultCardConnBar dbUrl={vault.dbUrl ?? ""} passphrase={vault.livesyncPassphrase ?? ""}/>
         </div>
     )
 }
 
 
 function VaultCardBack() {
+
+    const {OpenDialog, CloseDialog} = useDialog()
+
+    function openSetupDialog(e: React.MouseEvent<HTMLButtonElement>) {
+        e.stopPropagation()
+        OpenDialog(<FastSetupDialog onClose={CloseDialog}/>)
+    }
+
+    function openMcpSetupDialog(e: React.MouseEvent<HTMLButtonElement>) {
+        e.stopPropagation()
+        OpenDialog(<InfoDialog
+            title={'Not implemented yet'}
+            message={'Later there will be instructions on how to setup different AI agents'}
+        />)
+
+    }
+
     return (
         <div className={cls.VaultCardBackContainer}>
-            <VaultCardLinks/>
+            <div className={cls.VaultCardLinksContainer}>
+                <Button
+                    className={cls.Link}
+                    onClick={openMcpSetupDialog}>
+                    Connect to MCP
+                </Button>
+                <Button
+                    className={`${cls.Link} ${cls.LinkBtn}`}
+                    onClick={openSetupDialog}>
+                    Fast setup
+                </Button>
+
+            </div>
         </div>
     )
 }

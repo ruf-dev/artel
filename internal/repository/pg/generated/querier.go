@@ -71,6 +71,7 @@ type Querier interface {
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	RevokeVaultInvite(ctx context.Context, id uuid.UUID) error
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
+	SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
 	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error

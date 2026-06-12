@@ -17,9 +17,10 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 	items := make([]*pb.VaultItem, 0, len(vaults))
 	for _, vault := range vaults {
 		item := &pb.VaultItem{
-			Id:    vault.Uuid.String(),
-			Name:  vault.Name,
-			DbUrl: vault.CouchDBURL,
+			Id:                 vault.Uuid.String(),
+			Name:               vault.Name,
+			DbUrl:              vault.CouchDBURL,
+			LivesyncPassphrase: vault.LiveSyncPassphrase,
 		}
 		items = append(items, item)
 	}

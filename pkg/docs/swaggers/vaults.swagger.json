@@ -594,6 +594,9 @@
         },
         "dbUrl": {
           "type": "string"
+        },
+        "livesyncPassphrase": {
+          "type": "string"
         }
       }
     },

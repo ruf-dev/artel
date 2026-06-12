@@ -1,0 +1,41 @@
+.NoteEditorContainer {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.IconSidebar {
+    width: 44px;
+    flex-shrink: 0;
+    background: #0d0d0d;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.EditorArea {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.Textarea {
+    width: 100%;
+    height: 100%;
+    padding: 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.75;
+    background: #000;
+    color: rgba(255, 255, 255, 0.55);
+    caret-color: #FF4B3E;
+    outline: none;
+    border: none;
+    resize: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.Textarea::placeholder {
+    color: rgba(255, 255, 255, 0.18);
+}

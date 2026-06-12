@@ -179,6 +179,7 @@ message VaultItem {
   string id = 1;
   string name = 2;
   string db_url = 3;
+  string livesync_passphrase = 4;
 }
 
 message VaultMemberInfo {

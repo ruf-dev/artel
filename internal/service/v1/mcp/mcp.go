@@ -123,7 +123,8 @@ func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaul
 	}
 
 	if emailAccountID != nil {
-		account, err := s.emailAccounts.GetByUuid(ctx, *emailAccountID)
+		var account domain.EmailAccount
+		account, err = s.emailAccounts.GetByUuid(ctx, *emailAccountID)
 		if err != nil {
 			return rerrors.Wrap(err, "get email account")
 		}
@@ -177,25 +178,22 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 
 	vault, err := s.vaults.GetByID(ctx, mcpKey.VaultUuid)
 	if err != nil {
-		log.Error().Err(err).Str("vault_uuid", mcpKey.VaultUuid.String()).Msg("ResolveKey: get vault failed")
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get vault")
 	}
 
-	//TODO should use Get handle
-	couchWithAccount, err := s.couchInstances.Pick(ctx, vault.CouchInstanceUuid)
+	couchInstance, err := s.couchInstances.Get(ctx, vault.CouchInstanceUuid)
 	if err != nil {
-		log.Error().Err(err).Str("couch_instance_uuid", vault.CouchInstanceUuid.String()).Msg("ResolveKey: pick couch instance failed")
-		return domain.McpKeyContext{}, rerrors.Wrap(err, "pick couch instance")
+		return domain.McpKeyContext{}, rerrors.Wrap(err, "get couch instance")
 	}
 
 	result := domain.McpKeyContext{
 		KeyUuid:   mcpKey.Uuid,
 		VaultUuid: mcpKey.VaultUuid,
 		UserUuid:  mcpKey.UserUuid,
-		CouchURL:  couchWithAccount.Instance.Url,
+		CouchURL:  couchInstance.Url,
 		CouchDb:   vault.CouchDBName,
-		CouchUser: couchWithAccount.Instance.Username,
-		CouchPass: couchWithAccount.Instance.Password,
+		CouchUser: couchInstance.Username,
+		CouchPass: couchInstance.Password,
 	}
 
 	perms, permErr := s.userPermissions.Get(ctx, mcpKey.UserUuid)

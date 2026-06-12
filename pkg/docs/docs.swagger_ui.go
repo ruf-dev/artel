@@ -24,8 +24,16 @@ func Swagger() (p string, handler http.HandlerFunc) {
 	mux.Handle(BasePath, swaggerui.NewHandler(
 		swaggerui.WithBasePath(BasePath),
 		swaggerui.WithHTMLTitle("Swagger"),
-		swaggerui.WithSpecURLs("ArtelApi",
+		swaggerui.WithSpecURLs("AdminCouch",
 			[]swaggerui.SpecURL{
+				{
+					Name: "AdminCouch",
+					URL:  path.Join(swaggerPath, "admin_couch.swagger.json"),
+				},
+				{
+					Name: "AdminUsers",
+					URL:  path.Join(swaggerPath, "admin_users.swagger.json"),
+				},
 				{
 					Name: "ArtelApi",
 					URL:  path.Join(swaggerPath, "artel_api.swagger.json"),
@@ -47,12 +55,20 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "mcp_keys.swagger.json"),
 				},
 				{
+					Name: "Notes",
+					URL:  path.Join(swaggerPath, "notes.swagger.json"),
+				},
+				{
 					Name: "Prompts",
 					URL:  path.Join(swaggerPath, "prompts.swagger.json"),
 				},
 				{
 					Name: "TaskTrackers",
 					URL:  path.Join(swaggerPath, "task_trackers.swagger.json"),
+				},
+				{
+					Name: "UserErrors",
+					URL:  path.Join(swaggerPath, "user_errors.swagger.json"),
 				},
 				{
 					Name: "Vaults",

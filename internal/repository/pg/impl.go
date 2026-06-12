@@ -111,7 +111,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 
 	return &Repos{
-		vaults:           vaults.New(db),
+		vaults:           vaults.New(db, encryptionKey),
 		vaultMembers:     vaultmembers.New(db),
 		vaultInvitesRepo: vaultinvites.New(db),
 		couchInstances:   couchinstances.New(db, encryptionKey),

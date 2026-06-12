@@ -3,17 +3,34 @@ import cls from "@/components/VaultCard/VaultCardConnBar.module.css"
 
 interface Props {
     dbUrl: string
+    passphrase: string
 }
 
-export default function VaultCardConnBar({dbUrl}: Props) {
+export default function VaultCardConnBar({dbUrl, passphrase}: Props) {
+    return (
+        <div className={cls.VaultCardConnBarContainer}>
+            <ConnBarRow value={dbUrl} label="uri"/>
+            <ConnBarRow value={passphrase} label="key" hidden/>
+        </div>
+    )
+}
+
+interface RowProps {
+    value: string
+    label: string
+    hidden?: boolean
+}
+
+function ConnBarRow({value, label, hidden = false}: RowProps) {
     const [copied, setCopied] = useState(false)
+    const [revealed, setRevealed] = useState(false)
 
     async function handleCopy() {
         if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(dbUrl).catch(() => {})
+            await navigator.clipboard.writeText(value).catch(() => {})
         } else {
             const ta = document.createElement("textarea")
-            ta.value = dbUrl
+            ta.value = value
             document.body.appendChild(ta)
             ta.select()
             try { document.execCommand("copy") } catch {}
@@ -23,9 +40,35 @@ export default function VaultCardConnBar({dbUrl}: Props) {
         setTimeout(() => setCopied(false), 1500)
     }
 
+    const displayValue = hidden && !revealed ? "•".repeat(Math.min(value.length, 16)) : value
+
     return (
-        <div className={cls.VaultCardConnBarContainer}>
-            <code className={cls.ConnString} title={dbUrl}>{dbUrl}</code>
+        <div className={cls.ConnBarRowWrapper}>
+            <span className={cls.ConnBarLabel}>{label}</span>
+            <code className={cls.ConnString} title={revealed || !hidden ? value : undefined}>{displayValue}</code>
+            {hidden && (
+                <button
+                    className={cls.CopyBtn}
+                    type="button"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setRevealed(r => !r)
+                    }}
+                >
+                    {revealed ? (
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    ) : (
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    )}
+                </button>
+            )}
             <button
                 className={`${cls.CopyBtn} ${copied ? cls.CopyBtnCopied : ""}`}
                 type="button"

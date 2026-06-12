@@ -13,27 +13,29 @@ import (
 )
 
 const createVault = `-- name: CreateVault :one
-INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, created_at
+INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, created_at
 `
 
 type CreateVaultParams struct {
-	UserID          uuid.UUID
-	Name            string
-	CouchDbName     string
-	CouchInstanceID uuid.NullUUID
-	Status          string
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
 }
 
 type CreateVaultRow struct {
-	ID              uuid.UUID
-	UserID          uuid.UUID
-	Name            string
-	CouchDbName     string
-	CouchInstanceID uuid.NullUUID
-	Status          string
-	CreatedAt       time.Time
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
+	CreatedAt             time.Time
 }
 
 func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error) {
@@ -43,6 +45,7 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		arg.CouchDbName,
 		arg.CouchInstanceID,
 		arg.Status,
+		arg.LivesyncPassphraseEnc,
 	)
 	var i CreateVaultRow
 	err := row.Scan(
@@ -52,6 +55,7 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		&i.CouchDbName,
 		&i.CouchInstanceID,
 		&i.Status,
+		&i.LivesyncPassphraseEnc,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -69,19 +73,20 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 }
 
 const getVaultByID = `-- name: GetVaultByID :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, created_at
 FROM vaults
 WHERE id = $1
 `
 
 type GetVaultByIDRow struct {
-	ID              uuid.UUID
-	UserID          uuid.UUID
-	Name            string
-	CouchDbName     string
-	CouchInstanceID uuid.NullUUID
-	Status          string
-	CreatedAt       time.Time
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
+	CreatedAt             time.Time
 }
 
 func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error) {
@@ -94,13 +99,14 @@ func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDR
 		&i.CouchDbName,
 		&i.CouchInstanceID,
 		&i.Status,
+		&i.LivesyncPassphraseEnc,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getVaultByNameAndUser = `-- name: GetVaultByNameAndUser :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, created_at
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, created_at
 FROM vaults
 WHERE user_id = $1
   AND name = $2
@@ -112,13 +118,14 @@ type GetVaultByNameAndUserParams struct {
 }
 
 type GetVaultByNameAndUserRow struct {
-	ID              uuid.UUID
-	UserID          uuid.UUID
-	Name            string
-	CouchDbName     string
-	CouchInstanceID uuid.NullUUID
-	Status          string
-	CreatedAt       time.Time
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
+	CreatedAt             time.Time
 }
 
 func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error) {
@@ -131,26 +138,28 @@ func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameA
 		&i.CouchDbName,
 		&i.CouchInstanceID,
 		&i.Status,
+		&i.LivesyncPassphraseEnc,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listVaultsByMembership = `-- name: ListVaultsByMembership :many
-SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.created_at
+SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.created_at
 FROM vaults v
          JOIN vault_members vm ON vm.vault_id = v.id
 WHERE vm.user_id = $1
 `
 
 type ListVaultsByMembershipRow struct {
-	ID              uuid.UUID
-	UserID          uuid.UUID
-	Name            string
-	CouchDbName     string
-	CouchInstanceID uuid.NullUUID
-	Status          string
-	CreatedAt       time.Time
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
+	CreatedAt             time.Time
 }
 
 func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error) {
@@ -169,6 +178,7 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 			&i.CouchDbName,
 			&i.CouchInstanceID,
 			&i.Status,
+			&i.LivesyncPassphraseEnc,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -182,6 +192,22 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 		return nil, err
 	}
 	return items, nil
+}
+
+const setVaultLiveSyncPassphrase = `-- name: SetVaultLiveSyncPassphrase :exec
+UPDATE vaults
+SET livesync_passphrase_enc = $2
+WHERE id = $1
+`
+
+type SetVaultLiveSyncPassphraseParams struct {
+	ID                    uuid.UUID
+	LivesyncPassphraseEnc []byte
+}
+
+func (q *Queries) SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error {
+	_, err := q.db.ExecContext(ctx, setVaultLiveSyncPassphrase, arg.ID, arg.LivesyncPassphraseEnc)
+	return err
 }
 
 const updateVaultStatus = `-- name: UpdateVaultStatus :exec

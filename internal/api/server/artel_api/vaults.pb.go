@@ -420,12 +420,13 @@ func (*AcceptInvite) Descriptor() ([]byte, []int) {
 }
 
 type VaultItem struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	DbUrl         string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name               string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DbUrl              string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
+	LivesyncPassphrase string                 `protobuf:"bytes,4,opt,name=livesync_passphrase,json=livesyncPassphrase,proto3" json:"livesync_passphrase,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *VaultItem) Reset() {
@@ -475,6 +476,13 @@ func (x *VaultItem) GetName() string {
 func (x *VaultItem) GetDbUrl() string {
 	if x != nil {
 		return x.DbUrl
+	}
+	return ""
+}
+
+func (x *VaultItem) GetLivesyncPassphrase() string {
+	if x != nil {
+		return x.LivesyncPassphrase
 	}
 	return ""
 }
@@ -1707,11 +1715,12 @@ const file_vaults_proto_rawDesc = "" +
 	"\aRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x1a%\n" +
 	"\bResponse\x12\x19\n" +
-	"\bvault_id\x18\x01 \x01(\tR\avaultId\"F\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\"w\n" +
 	"\tVaultItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"\x80\x01\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\x12/\n" +
+	"\x13livesync_passphrase\x18\x04 \x01(\tR\x12livesyncPassphrase\"\x80\x01\n" +
 	"\x0fVaultMemberInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x14\n" +

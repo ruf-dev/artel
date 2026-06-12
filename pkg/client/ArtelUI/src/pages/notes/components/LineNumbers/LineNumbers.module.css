@@ -1,0 +1,27 @@
+.LineNumbersContainer {
+    width: 38px;
+    flex-shrink: 0;
+    background: #080808;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    position: relative;
+}
+
+.Inner {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    right: 0;
+}
+
+.LineNumber {
+    height: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.18);
+    user-select: none;
+}

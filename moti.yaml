@@ -25,6 +25,6 @@ generate:
           out: pkg/docs/swaggers
 
         - name: docs
-          out: pkg
+          out: pkg/docs
           opts:
             paths: source_relative
