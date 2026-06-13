@@ -39,6 +39,12 @@ service NotesAPI {
       body: "*"
     };
   };
+  rpc MoveNote(MoveNote.Request) returns (MoveNote.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/move"
+      body: "*"
+    };
+  };
 }
 
 message NoteItem {
@@ -88,6 +94,15 @@ message SaveNote {
     string vault_id = 1;
     string path = 2;
     string content = 3;
+  }
+  message Response {}
+}
+
+message MoveNote {
+  message Request {
+    string vault_id = 1;
+    string old_path = 2;
+    string new_path = 3;
   }
   message Response {}
 }

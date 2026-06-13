@@ -10,6 +10,7 @@ interface BreadcrumbBarProps {
     onModeChange: (mode: Mode) => void
     saveStatus: SaveStatus
     saveError?: string
+    onRename?: () => void
 }
 
 function BreadcrumbPath({ path }: { path: string }) {
@@ -28,11 +29,24 @@ function BreadcrumbPath({ path }: { path: string }) {
     )
 }
 
-export default function BreadcrumbBar({ path, mode, onModeChange, saveStatus, saveError }: BreadcrumbBarProps) {
+function PencilIcon() {
+    return (
+        <svg viewBox="0 0 14 14" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9.5 2L12 4.5l-7 7H2.5V9l7-7z" />
+        </svg>
+    )
+}
+
+export default function BreadcrumbBar({ path, mode, onModeChange, saveStatus, saveError, onRename }: BreadcrumbBarProps) {
     return (
         <div className={cls.BreadcrumbBarContainer}>
             <div className={cls.LeftSlot}>
                 {path && <BreadcrumbPath path={path} />}
+                {path && onRename && (
+                    <button className={cls.RenameBtn} type="button" onClick={onRename} title="Rename / Move">
+                        <PencilIcon />
+                    </button>
+                )}
             </div>
             <div className={cls.CenterSlot}>
                 <SaveStatusIndicator status={saveStatus} errorMessage={saveError} />

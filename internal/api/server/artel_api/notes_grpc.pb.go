@@ -24,6 +24,7 @@ const (
 	NotesAPI_GetNote_FullMethodName     = "/artel_notes.NotesAPI/GetNote"
 	NotesAPI_ListTags_FullMethodName    = "/artel_notes.NotesAPI/ListTags"
 	NotesAPI_SaveNote_FullMethodName    = "/artel_notes.NotesAPI/SaveNote"
+	NotesAPI_MoveNote_FullMethodName    = "/artel_notes.NotesAPI/MoveNote"
 )
 
 // NotesAPIClient is the client API for NotesAPI service.
@@ -35,6 +36,7 @@ type NotesAPIClient interface {
 	GetNote(ctx context.Context, in *GetNote_Request, opts ...grpc.CallOption) (*GetNote_Response, error)
 	ListTags(ctx context.Context, in *ListTags_Request, opts ...grpc.CallOption) (*ListTags_Response, error)
 	SaveNote(ctx context.Context, in *SaveNote_Request, opts ...grpc.CallOption) (*SaveNote_Response, error)
+	MoveNote(ctx context.Context, in *MoveNote_Request, opts ...grpc.CallOption) (*MoveNote_Response, error)
 }
 
 type notesAPIClient struct {
@@ -95,6 +97,16 @@ func (c *notesAPIClient) SaveNote(ctx context.Context, in *SaveNote_Request, opt
 	return out, nil
 }
 
+func (c *notesAPIClient) MoveNote(ctx context.Context, in *MoveNote_Request, opts ...grpc.CallOption) (*MoveNote_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MoveNote_Response)
+	err := c.cc.Invoke(ctx, NotesAPI_MoveNote_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotesAPIServer is the server API for NotesAPI service.
 // All implementations must embed UnimplementedNotesAPIServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type NotesAPIServer interface {
 	GetNote(context.Context, *GetNote_Request) (*GetNote_Response, error)
 	ListTags(context.Context, *ListTags_Request) (*ListTags_Response, error)
 	SaveNote(context.Context, *SaveNote_Request) (*SaveNote_Response, error)
+	MoveNote(context.Context, *MoveNote_Request) (*MoveNote_Response, error)
 	mustEmbedUnimplementedNotesAPIServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedNotesAPIServer) ListTags(context.Context, *ListTags_Request) 
 }
 func (UnimplementedNotesAPIServer) SaveNote(context.Context, *SaveNote_Request) (*SaveNote_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method SaveNote not implemented")
+}
+func (UnimplementedNotesAPIServer) MoveNote(context.Context, *MoveNote_Request) (*MoveNote_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method MoveNote not implemented")
 }
 func (UnimplementedNotesAPIServer) mustEmbedUnimplementedNotesAPIServer() {}
 func (UnimplementedNotesAPIServer) testEmbeddedByValue()                  {}
@@ -240,6 +256,24 @@ func _NotesAPI_SaveNote_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotesAPI_MoveNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MoveNote_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesAPIServer).MoveNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotesAPI_MoveNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesAPIServer).MoveNote(ctx, req.(*MoveNote_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotesAPI_ServiceDesc is the grpc.ServiceDesc for NotesAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var NotesAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SaveNote",
 			Handler:    _NotesAPI_SaveNote_Handler,
+		},
+		{
+			MethodName: "MoveNote",
+			Handler:    _NotesAPI_MoveNote_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

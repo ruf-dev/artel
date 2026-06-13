@@ -3,6 +3,7 @@ import cls from "./WikiChip.module.css"
 
 interface WikiChipProps {
     name: string
+    onClick?: () => void
 }
 
 function ArtelMark({ size = 11, maskId }: { size?: number; maskId: string }) {
@@ -19,11 +20,11 @@ function ArtelMark({ size = 11, maskId }: { size?: number; maskId: string }) {
     )
 }
 
-export default function WikiChip({ name }: WikiChipProps) {
+export default function WikiChip({ name, onClick }: WikiChipProps) {
     const maskId = useId()
 
     return (
-        <span className={cls.WikiChipContainer}>
+        <span className={cls.WikiChipContainer} onClick={onClick}>
             <ArtelMark size={11} maskId={maskId} />
             {name}
         </span>

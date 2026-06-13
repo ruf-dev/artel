@@ -4,6 +4,8 @@ import DOMPurify from "dompurify"
 
 import cls from "./NoteViewer.module.css"
 import WikiChip from "@/pages/notes/components/WikiChip/WikiChip.tsx"
+import { useNotes } from "@/app/hooks/Notes.ts"
+import type { NoteItem } from "@/app/hooks/Notes.ts"
 
 interface NoteViewerProps {
     content: string | null
@@ -35,14 +37,33 @@ function parseWikiLinks(html: string): ContentSegment[] {
     return parts
 }
 
+function resolveNote(notes: NoteItem[], name: string): NoteItem | undefined {
+    return notes.find(n =>
+        n.path === name ||
+        n.path === name + ".md" ||
+        n.path?.endsWith("/" + name) ||
+        n.path?.endsWith("/" + name + ".md")
+    )
+}
+
 function NoteContent({ rawHtml }: { rawHtml: string }) {
     const segments = useMemo(() => parseWikiLinks(rawHtml), [rawHtml])
+    const { vaultId, notes, selectNote } = useNotes()
 
     return (
         <div className={cls.NoteBody}>
             {segments.map((seg, i) => {
                 if (seg.type === "wiki") {
-                    return <WikiChip key={i} name={seg.value} />
+                    return (
+                        <WikiChip
+                            key={i}
+                            name={seg.value}
+                            onClick={() => {
+                                const note = resolveNote(notes, seg.value)
+                                if (note?.path && vaultId) void selectNote(vaultId, note.path)
+                            }}
+                        />
+                    )
                 }
                 return (
                     <span

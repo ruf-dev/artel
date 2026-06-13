@@ -7,8 +7,11 @@ import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx
 import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
 import NoteEditor from "@/pages/notes/components/NoteEditor/NoteEditor.tsx"
 import BreadcrumbBar from "@/pages/notes/components/BreadcrumbBar/BreadcrumbBar.tsx"
+import RenameDialog from "@/pages/notes/components/RenameDialog/RenameDialog.tsx"
 import {useAutosave} from "@/pages/notes/hooks/useAutosave.ts"
 import {NoteMode} from "@/app/hooks/Notes.ts"
+import {useDialog} from "@/app/hooks/Dialog.ts"
+import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
 export default function NotesPage() {
     const {
@@ -22,7 +25,10 @@ export default function NotesPage() {
         setContent,
         setSavedContent,
         saveNote,
+        moveNote,
     } = useNotes()
+    const { OpenDialog } = useDialog()
+    const bakeError = useBakeError()
     const {vaults} = useVaults()
     const scrollTopRef = useRef<number>(0)
 
@@ -56,6 +62,22 @@ export default function NotesPage() {
         setMode(newMode)
     }
 
+    function handleRename() {
+        if (!selectedPath) return
+        OpenDialog(
+            <RenameDialog
+                currentPath={selectedPath}
+                onConfirm={async (newPath: string) => {
+                    try {
+                        await moveNote(newPath)
+                    } catch (err) {
+                        bakeError("Failed to move note", err)
+                    }
+                }}
+            />
+        )
+    }
+
     const showEditor = mode === 'edit' && selectedPath !== null
 
     return (
@@ -71,6 +93,7 @@ export default function NotesPage() {
                         onModeChange={handleModeChange}
                         saveStatus={showEditor ? saveStatus : 'idle'}
                         saveError={saveError}
+                        onRename={handleRename}
                     />
                 )}
                 {showEditor ? (

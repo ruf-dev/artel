@@ -122,3 +122,16 @@ func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content
 	}
 	return nil
 }
+
+func (s *Service) MoveNote(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) error {
+	client, err := s.liveSyncClient(ctx, vaultID)
+	if err != nil {
+		return err
+	}
+
+	err = client.MoveNote(ctx, oldPath, newPath)
+	if err != nil {
+		return rerrors.Wrap(err, "error moving note")
+	}
+	return nil
+}

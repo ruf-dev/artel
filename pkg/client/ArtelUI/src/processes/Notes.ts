@@ -7,6 +7,7 @@ export interface INotesService {
     getNote: (vaultId: string, path: string) => Promise<string | null>
     listTags: (vaultId: string) => Promise<string[]>
     saveNote: (vaultId: string, path: string, content: string) => Promise<void>
+    moveNote: (vaultId: string, oldPath: string, newPath: string) => Promise<void>
 }
 
 export class NotesService implements INotesService {
@@ -32,6 +33,10 @@ export class NotesService implements INotesService {
 
     async saveNote(vaultId: string, path: string, content: string): Promise<void> {
         await NotesAPI.SaveNote({vaultId, path, content}, useUser.getState().auth.getInitReq())
+    }
+
+    async moveNote(vaultId: string, oldPath: string, newPath: string): Promise<void> {
+        await NotesAPI.MoveNote({vaultId, oldPath, newPath}, useUser.getState().auth.getInitReq())
     }
 }
 
