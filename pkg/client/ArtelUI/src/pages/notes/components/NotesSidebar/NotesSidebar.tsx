@@ -1,6 +1,9 @@
 import { useState } from "react"
 import cls from "./NotesSidebar.module.css"
 import { NoteItem, useNotes } from "@/app/hooks/Notes.ts"
+import { useDialog } from "@/app/hooks/Dialog.ts"
+import { useBakeError } from "@/app/hooks/useErrorToast.ts"
+import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 
 interface VaultOption {
     id: string
@@ -69,9 +72,10 @@ interface FolderSectionProps {
     selectedPath: string | null
     vaultId: string
     onSelectNote: (vaultId: string, path: string) => void
+    onCreateNote: () => void
 }
 
-function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote }: FolderSectionProps) {
+function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, onCreateNote }: FolderSectionProps) {
     const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
 
     function toggleFolder(folder: string) {
@@ -97,7 +101,14 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote }: 
 
     return (
         <>
-            <div className={cls.SectionLabel}>All Notes</div>
+            <div className={cls.SectionHeader}>
+                <span className={cls.SectionLabel}>All Notes</span>
+                <button className={cls.CreateNoteBtn} onClick={onCreateNote} title="New note">
+                    <svg viewBox="0 0 12 12" width={10} height={10} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                        <path d="M6 1v10M1 6h10" />
+                    </svg>
+                </button>
+            </div>
             {folders.map(folder => (
                 <div key={folder}>
                     <TreeItem
@@ -130,7 +141,9 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote }: 
 }
 
 export default function NotesSidebar({ vaults }: NotesSidebarProps) {
-    const { vaultId, folders, notes, selectedPath, selectVault, selectNote } = useNotes()
+    const { vaultId, folders, notes, selectedPath, selectVault, selectNote, createNote } = useNotes()
+    const { OpenDialog } = useDialog()
+    const bakeError = useBakeError()
 
     function handleVaultChange(e: React.ChangeEvent<HTMLSelectElement>) {
         void selectVault(e.target.value)
@@ -138,6 +151,20 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
 
     function handleSelectNote(vid: string, path: string) {
         void selectNote(vid, path)
+    }
+
+    function handleCreateNote() {
+        OpenDialog(
+            <CreateNoteDialog
+                onConfirm={async (path: string) => {
+                    try {
+                        await createNote(path)
+                    } catch (err) {
+                        bakeError("Failed to create note", err)
+                    }
+                }}
+            />
+        )
     }
 
     return (
@@ -176,6 +203,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
                         selectedPath={selectedPath}
                         vaultId={vaultId}
                         onSelectNote={handleSelectNote}
+                        onCreateNote={handleCreateNote}
                     />
                 )}
             </div>

@@ -23,6 +23,7 @@ interface NotesState {
     setSavedContent: (content: string) => void
     saveNote: (content: string) => Promise<void>
     moveNote: (newPath: string) => Promise<void>
+    createNote: (path: string) => Promise<void>
     listTags: (vaultId: string) => Promise<string[]>
     reset: () => void
 }
@@ -94,6 +95,15 @@ export const useNotes = create<NotesState>((set, get) => ({
         await notesService.moveNote(vaultId, selectedPath, newPath)
         await get().selectVault(vaultId)
         await get().selectNote(vaultId, newPath)
+    },
+
+    createNote: async (path: string) => {
+        const { vaultId } = get()
+        if (!vaultId) return
+        await notesService.saveNote(vaultId, path, '')
+        await get().selectVault(vaultId)
+        await get().selectNote(vaultId, path)
+        get().setMode('edit')
     },
 
     listTags: (vaultId: string) => notesService.listTags(vaultId),
