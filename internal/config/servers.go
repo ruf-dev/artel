@@ -7,5 +7,6 @@ import (
 )
 
 type ServersConfig struct {
-	Master *server.Server
+	MASTER *server.Server
+	MASTER *server.Server
 }

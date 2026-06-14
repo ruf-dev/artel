@@ -7,10 +7,7 @@ import (
 	"text/template"
 
 	"github.com/rs/cors"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.redsock.ru/rerrors"
-
-	"github.com/ruf-dev/artel/internal/middleware"
 )
 
 type httpServer struct {
@@ -35,7 +32,7 @@ func newHttpServer(listener net.Listener, httpMux *http.ServeMux) httpServer {
 
 func (s *httpServer) AddHttpHandler(path string, handler http.Handler) {
 	s.registeredPaths[path] = struct{}{}
-	s.serveMux.Handle(path, otelhttp.NewHandler(middleware.HttpLogMiddleware(handler), path))
+	s.serveMux.Handle(path, handler)
 }
 
 func (s *httpServer) start() error {

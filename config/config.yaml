@@ -12,12 +12,23 @@ data_sources:
       name: artel
       ssl_mode: ""
 servers:
+    80:
+        /{GRPC}:
+            module: github.com/ruf-dev/artel
+            gateway: /api
+        name: MASTER
     1551:
         /{GRPC}:
             module: github.com/ruf-dev/artel
             gateway: /api
 environment:
     - name: creds_encryption_key
+      type: string
+      value: ""
+    - name: google_client_id
+      type: string
+      value: ""
+    - name: google_client_secret
       type: string
       value: ""
     - name: log_format
@@ -28,15 +39,9 @@ environment:
       type: string
       enum: [Trace, Debug, Info, Warn, Error, Fatal, Panic]
       value: Info
-    - name: telegram_client_id
-      type: string
-      value: "8719705888"
-    - name: google_client_id
-      type: string
-      value: ""
-    - name: google_client_secret
-      type: string
-      value: ""
     - name: otel_endpoint
       type: string
       value: ""
+    - name: telegram_client_id
+      type: string
+      value: "8719705888"

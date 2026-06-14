@@ -18,8 +18,9 @@ CLAUDE.local.md
 # vendor/
 .idea
 proto_deps
-local_data/
+local_data
 proto_modules
+node_modules
 
 .verv/local
 .verv/notes.local.md
@@ -28,3 +29,4 @@ internal/transport/ui/dist/*
 !internal/transport/ui/dist/.gitkeep
 
 .deploy/
+.claude
