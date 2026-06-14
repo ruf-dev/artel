@@ -46,6 +46,7 @@ function FolderIcon() {
 
 interface TreeItemProps {
     name: string
+    subtitle?: string
     active?: boolean
     depth?: number
     isFolder?: boolean
@@ -53,7 +54,7 @@ interface TreeItemProps {
     onClick?: () => void
 }
 
-function TreeItem({ name, active, depth = 0, isFolder, isOpen, onClick }: TreeItemProps) {
+function TreeItem({ name, subtitle, active, depth = 0, isFolder, isOpen, onClick }: TreeItemProps) {
     const paddingLeft = 1.12 + depth * 0.84
     const rowClass = `${cls.TreeItemRow}${active ? ` ${cls.TreeItemRowActive}` : ""}`
 
@@ -61,7 +62,10 @@ function TreeItem({ name, active, depth = 0, isFolder, isOpen, onClick }: TreeIt
         <div className={rowClass} style={{ padding: `0.28rem 1.12rem 0.28rem ${paddingLeft}rem` }} onClick={onClick}>
             {isFolder ? <ArrowIcon open={!!isOpen} /> : <span className={cls.ArrowSpacer} />}
             {isFolder ? <FolderIcon /> : <FileIcon />}
-            <span className={cls.TreeItemLabel}>{name}</span>
+            <div className={cls.TreeItemMain}>
+                <span className={cls.TreeItemLabel}>{name}</span>
+                {subtitle && <span className={cls.TreeItemSubtitle}>{subtitle}</span>}
+            </div>
         </div>
     )
 }
@@ -293,14 +297,18 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
                 )}
                 {vaultId && searchQuery.trim() && notes
                     .filter(n => getNoteName(n).toLowerCase().includes(searchQuery.trim().toLowerCase()))
-                    .map(note => (
-                        <TreeItem
-                            key={note.path}
-                            name={getNoteName(note)}
-                            active={selectedPath === note.path}
-                            onClick={() => note.path && handleSelectNote(vaultId, note.path)}
-                        />
-                    ))
+                    .map(note => {
+                        const dir = note.path ? note.path.split("/").slice(0, -1).join("/") : undefined
+                        return (
+                            <TreeItem
+                                key={note.path}
+                                name={getNoteName(note)}
+                                subtitle={dir || undefined}
+                                active={selectedPath === note.path}
+                                onClick={() => note.path && handleSelectNote(vaultId, note.path)}
+                            />
+                        )
+                    })
                 }
                 {vaultId && !searchQuery.trim() && (
                     <FolderSection

@@ -4,11 +4,10 @@ import DOMPurify from "dompurify"
 
 import cls from "./NoteViewer.module.css"
 import WikiChip from "@/pages/notes/components/WikiChip/WikiChip.tsx"
-import { useNotes } from "@/app/hooks/Notes.ts"
-import type { NoteItem } from "@/app/hooks/Notes.ts"
 
 interface NoteViewerProps {
     content: string | null
+    fontScale?: number
 }
 
 interface ContentSegment {
@@ -37,33 +36,14 @@ function parseWikiLinks(html: string): ContentSegment[] {
     return parts
 }
 
-function resolveNote(notes: NoteItem[], name: string): NoteItem | undefined {
-    return notes.find(n =>
-        n.path === name ||
-        n.path === name + ".md" ||
-        n.path?.endsWith("/" + name) ||
-        n.path?.endsWith("/" + name + ".md")
-    )
-}
-
 function NoteContent({ rawHtml }: { rawHtml: string }) {
     const segments = useMemo(() => parseWikiLinks(rawHtml), [rawHtml])
-    const { vaultId, notes, selectNote } = useNotes()
 
     return (
         <div className={cls.NoteBody}>
             {segments.map((seg, i) => {
                 if (seg.type === "wiki") {
-                    return (
-                        <WikiChip
-                            key={i}
-                            name={seg.value}
-                            onClick={() => {
-                                const note = resolveNote(notes, seg.value)
-                                if (note?.path && vaultId) void selectNote(vaultId, note.path)
-                            }}
-                        />
-                    )
+                    return <WikiChip key={i} name={seg.value} />
                 }
                 return (
                     <span
@@ -76,7 +56,7 @@ function NoteContent({ rawHtml }: { rawHtml: string }) {
     )
 }
 
-export default function NoteViewer({ content }: NoteViewerProps) {
+export default function NoteViewer({ content, fontScale }: NoteViewerProps) {
     const sanitizedHtml = useMemo(() => {
         if (!content) return null
         const rawHtml = marked.parse(content) as string
@@ -84,7 +64,7 @@ export default function NoteViewer({ content }: NoteViewerProps) {
     }, [content])
 
     return (
-        <div className={cls.NoteViewerContainer}>
+        <div className={cls.NoteViewerContainer} style={{ zoom: fontScale ?? 1 }}>
             {sanitizedHtml === null ? (
                 <div className={cls.EmptyState}>Select a note</div>
             ) : (

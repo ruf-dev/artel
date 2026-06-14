@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from "react"
 import cls from "./NoteEditor.module.css"
 import LineNumbers from "@/pages/notes/components/LineNumbers/LineNumbers.tsx"
+import BoldIcon from "@/pages/notes/components/icons/BoldIcon.tsx"
+import ItalicIcon from "@/pages/notes/components/icons/ItalicIcon.tsx"
+import LinkIcon from "@/pages/notes/components/icons/LinkIcon.tsx"
+import HeadingIcon from "@/pages/notes/components/icons/HeadingIcon.tsx"
+import CodeIcon from "@/pages/notes/components/icons/CodeIcon.tsx"
 
 interface NoteEditorProps {
     content: string
     onChange: (content: string) => void
     scrollTopRef: React.MutableRefObject<number>
+    fontScale?: number
 }
 
-export default function NoteEditor({ content, onChange, scrollTopRef }: NoteEditorProps) {
+export default function NoteEditor({ content, onChange, scrollTopRef, fontScale = 1 }: NoteEditorProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const [scrollTop, setScrollTop] = useState(0)
 
@@ -99,19 +105,28 @@ export default function NoteEditor({ content, onChange, scrollTopRef }: NoteEdit
 
     return (
         <div className={cls.NoteEditorContainer}>
-            <div className={cls.IconSidebar} />
-            <LineNumbers lineCount={lineCount} scrollTop={scrollTop} />
-            <div className={cls.EditorArea}>
-                <textarea
-                    ref={textareaRef}
-                    className={cls.Textarea}
-                    value={content}
-                    onChange={e => onChange(e.target.value)}
-                    onScroll={handleScroll}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Start writing…"
-                    spellCheck={false}
-                />
+            <div className={cls.IconBar}>
+                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><BoldIcon /></div>
+                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><ItalicIcon /></div>
+                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><HeadingIcon /></div>
+                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><LinkIcon /></div>
+                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><CodeIcon /></div>
+            </div>
+            <div className={cls.EditorRow}>
+                <LineNumbers lineCount={lineCount} scrollTop={scrollTop} lineHeight={21 * fontScale} />
+                <div className={cls.EditorArea}>
+                    <textarea
+                        ref={textareaRef}
+                        className={cls.Textarea}
+                        style={{ fontSize: 12 * fontScale, lineHeight: 1.75 }}
+                        value={content}
+                        onChange={e => onChange(e.target.value)}
+                        onScroll={handleScroll}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Start writing…"
+                        spellCheck={false}
+                    />
+                </div>
             </div>
         </div>
     )

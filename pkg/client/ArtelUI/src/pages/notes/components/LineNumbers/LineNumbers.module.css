@@ -15,7 +15,6 @@
 }
 
 .LineNumber {
-    height: 21px;
     display: flex;
     align-items: center;
     justify-content: flex-end;

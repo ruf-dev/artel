@@ -165,11 +165,27 @@
     background: var(--coral-dim);
 }
 
+.TreeItemMain {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
 .TreeItemLabel {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
+}
+
+.TreeItemSubtitle {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.25);
+    margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .ArrowSpacer {

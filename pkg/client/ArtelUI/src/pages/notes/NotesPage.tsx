@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef} from "react"
+import {useEffect, useMemo, useRef, useState} from "react"
 
 import cls from "./NotesPage.module.css"
 import {useNotes} from "@/app/hooks/Notes.ts"
@@ -31,6 +31,10 @@ export default function NotesPage() {
     const bakeError = useBakeError()
     const {vaults} = useVaults()
     const scrollTopRef = useRef<number>(0)
+    const [fontScale, setFontScale] = useState(1)
+
+    function zoomIn()  { setFontScale(s => Math.min(2.5, +(s + 0.15).toFixed(2))) }
+    function zoomOut() { setFontScale(s => Math.max(0.5, +(s - 0.15).toFixed(2))) }
 
     const vaultOptions = useMemo(
         () => vaults
@@ -101,10 +105,16 @@ export default function NotesPage() {
                         content={noteContent ?? ''}
                         onChange={setContent}
                         scrollTopRef={scrollTopRef}
+                        fontScale={fontScale}
                     />
                 ) : (
-                    <NoteViewer content={noteContent}/>
+                    <NoteViewer content={noteContent} fontScale={fontScale}/>
                 )}
+                <div className={cls.ZoomControls}>
+                    <button className={cls.ZoomBtn} onClick={zoomOut}>−</button>
+                    <span className={cls.ZoomLabel}>{Math.round(fontScale * 100)}%</span>
+                    <button className={cls.ZoomBtn} onClick={zoomIn}>+</button>
+                </div>
             </div>
         </div>
     )
