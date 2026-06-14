@@ -8,7 +8,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/admincouchsvc"
-	adminusers "github.com/ruf-dev/artel/internal/service/v1/adminusers"
+	"github.com/ruf-dev/artel/internal/service/v1/adminusers"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
 	"github.com/ruf-dev/artel/internal/service/v1/email"
@@ -38,7 +38,7 @@ type Services struct {
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	oauthCfg := &oauth2.Config{
-		ClientID:     cfg.GoogleClientId,
+		ClientID:     cfg.GoogleClientID,
 		ClientSecret: cfg.GoogleClientSecret,
 		Scopes: []string{
 			"https://www.googleapis.com/auth/drive.file",

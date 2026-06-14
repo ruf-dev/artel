@@ -8,5 +8,4 @@ import (
 
 type ServersConfig struct {
 	MASTER *server.Server
-	MASTER *server.Server
 }
