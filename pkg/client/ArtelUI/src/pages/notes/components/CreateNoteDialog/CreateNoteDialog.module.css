@@ -1,0 +1,112 @@
+.CreateNoteContainer {
+    width: 100%;
+    max-width: 28rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: createNoteIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+@keyframes createNoteIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.CreateNoteTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+    margin-bottom: 1rem;
+}
+
+.CreateNoteLabel {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-fg-secondary);
+    margin-bottom: 0.375rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.CreateNoteInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-input, var(--color-bg-card));
+    color: var(--color-fg-primary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 160ms ease;
+}
+
+.CreateNoteInput:focus {
+    border-color: var(--coral);
+}
+
+.CreateNoteInput:disabled {
+    opacity: 0.5;
+}
+
+.CreateNoteInput::placeholder {
+    color: var(--color-fg-secondary);
+    opacity: 0.5;
+}
+
+.CreateNoteActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin-top: 1.5rem;
+}
+
+.BtnCancel {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.625rem 1.125rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-border-light);
+    background: transparent;
+    color: var(--color-fg-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.BtnCancel:hover:not(:disabled) {
+    background: var(--color-bg-hover);
+    color: var(--color-fg-primary);
+}
+
+.BtnConfirm {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.625rem 1.125rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--coral);
+    background: var(--coral);
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: filter 160ms ease, opacity 160ms ease;
+}
+
+.BtnConfirm:hover:not(:disabled) {
+    filter: brightness(1.06);
+}
+
+.BtnConfirm:disabled,
+.BtnCancel:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
