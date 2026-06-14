@@ -133,7 +133,7 @@ type NotesService interface {
 }
 
 type ExternalConnectionService interface {
-	InitiateGoogleOAuth(ctx context.Context) (authURL string, err error)
+	InitiateGoogleOAuth(ctx context.Context, origin string) (authURL string, err error)
 	HandleGoogleOAuthCallback(ctx context.Context, code string, state string) (domain.ExternalConnectionMeta, error)
 	DisconnectProvider(ctx context.Context, provider string) error
 	ListConnections(ctx context.Context) ([]domain.ExternalConnectionMeta, error)

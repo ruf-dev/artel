@@ -40,9 +40,8 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	oauthCfg := &oauth2.Config{
 		ClientID:     cfg.GoogleClientId,
 		ClientSecret: cfg.GoogleClientSecret,
-		RedirectURL:  cfg.GoogleRedirectUrl,
 		Scopes: []string{
-			"https://www.googleapis.com/auth/spreadsheets",
+			"https://www.googleapis.com/auth/drive.file",
 			"https://www.googleapis.com/auth/userinfo.email",
 		},
 		Endpoint: googleoauth.Endpoint,

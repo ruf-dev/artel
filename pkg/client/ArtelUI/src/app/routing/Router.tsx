@@ -15,6 +15,7 @@ import AdminPage from "@/pages/admin/AdminPage.tsx"
 import TaskTrackersPage from "@/pages/task-trackers/TaskTrackersPage.tsx"
 import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
+import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import {authService} from "@/processes/Auth.ts"
@@ -29,6 +30,7 @@ export enum Path {
     McpKeysPage = "/mcp_keys",
     TaskTrackersPage = "/task-trackers",
     NotesPage = "/notes",
+    ConnectionsPage = "/connections",
     McpAuth = "/authorize",
     ClosedAlpha = "/closed-alpha",
     Admin = "/admin",
@@ -59,6 +61,7 @@ export default function Router() {
                         <Route path={Path.Admin} element={<AdminPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.TaskTrackersPage} element={<TaskTrackersPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.NotesPage} element={<NotesPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.ConnectionsPage} element={<ConnectionsPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={"*"} element={<Navigate to={Path.HomePage} replace/>}/>
                     </Route>
 

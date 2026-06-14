@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	callbackSuccessRedirect = "/settings/integrations?status=connected"
-	callbackErrorRedirect   = "/settings/integrations?status=error"
+	callbackSuccessRedirect = "/connections?status=connected"
+	callbackErrorRedirect   = "/connections?status=error"
 )
 
 func (e *ExternalConnectionsImpl) HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {

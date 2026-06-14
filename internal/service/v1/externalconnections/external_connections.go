@@ -41,21 +41,24 @@ func New(connections repository.ExternalConnectionRepo, pendingCodes repository.
 	}
 }
 
-func (s *Service) InitiateGoogleOAuth(ctx context.Context) (string, error) {
+func (s *Service) InitiateGoogleOAuth(ctx context.Context, origin string) (string, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return "", user_errors.Unauthenticated
 	}
 
+	redirectURL := origin + "/api/external-connections/google/callback"
 	state := randomHex(16)
 	expiresAt := time.Now().Add(15 * time.Minute)
 
-	err := s.pendingCodes.Create(ctx, state, uc.UserUuid.String(), "", "", "", expiresAt)
+	err := s.pendingCodes.Create(ctx, state, uc.UserUuid.String(), "", redirectURL, "", expiresAt)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error storing oauth state")
 	}
 
-	authURL := s.oauthCfg.AuthCodeURL(state, oauth2.AccessTypeOffline)
+	cfgCopy := *s.oauthCfg
+	cfgCopy.RedirectURL = redirectURL
+	authURL := cfgCopy.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	return authURL, nil
 }
 
@@ -70,12 +73,15 @@ func (s *Service) HandleGoogleOAuthCallback(ctx context.Context, code string, st
 		return domain.ExternalConnectionMeta{}, user_errors.InvalidOAuthState
 	}
 
-	token, err := s.oauthCfg.Exchange(ctx, code)
+	cfgCopy := *s.oauthCfg
+	cfgCopy.RedirectURL = pendingCode.RedirectUri
+
+	token, err := cfgCopy.Exchange(ctx, code)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error exchanging oauth code")
 	}
 
-	httpClient := s.oauthCfg.Client(ctx, token)
+	httpClient := cfgCopy.Client(ctx, token)
 	resp, err := httpClient.Get(googleUserInfoURL)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error fetching google userinfo")

@@ -394,6 +394,7 @@ func (*DisconnectProvider) Descriptor() ([]byte, []int) {
 
 type InitiateGoogleOAuth_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Origin        string                 `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -426,6 +427,13 @@ func (x *InitiateGoogleOAuth_Request) ProtoReflect() protoreflect.Message {
 // Deprecated: Use InitiateGoogleOAuth_Request.ProtoReflect.Descriptor instead.
 func (*InitiateGoogleOAuth_Request) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *InitiateGoogleOAuth_Request) GetOrigin() string {
+	if x != nil {
+		return x.Origin
+	}
+	return ""
 }
 
 type InitiateGoogleOAuth_Response struct {
@@ -654,9 +662,10 @@ const file_external_connections_proto_rawDesc = "" +
 	"updated_at\x18\x04 \x01(\tR\tupdatedAt\x129\n" +
 	"\x06google\x18\x05 \x01(\v2\x1f.artel_api.GoogleConnectionInfoH\x00R\x06google\x128\n" +
 	"\ageneric\x18\x06 \x01(\v2\x1c.artel_api.GenericConnectionH\x00R\agenericB\t\n" +
-	"\adetails\"G\n" +
-	"\x13InitiateGoogleOAuth\x1a\t\n" +
-	"\aRequest\x1a%\n" +
+	"\adetails\"_\n" +
+	"\x13InitiateGoogleOAuth\x1a!\n" +
+	"\aRequest\x12\x16\n" +
+	"\x06origin\x18\x01 \x01(\tR\x06origin\x1a%\n" +
 	"\bResponse\x12\x19\n" +
 	"\bauth_url\x18\x01 \x01(\tR\aauthUrl\"m\n" +
 	"\x0fListConnections\x1a\t\n" +

@@ -181,7 +181,12 @@
       }
     },
     "artel_apiInitiateGoogleOAuthRequest": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "origin": {
+          "type": "string"
+        }
+      }
     },
     "artel_apiInitiateGoogleOAuthResponse": {
       "type": "object",

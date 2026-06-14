@@ -46,7 +46,9 @@ export type ExternalConnectionInfo = BaseExternalConnectionInfo &
     generic: GenericConnection;
   }>;
 
-export type InitiateGoogleOAuthRequest = Record<string, never>;
+export type InitiateGoogleOAuthRequest = {
+  origin?: string;
+};
 
 export type InitiateGoogleOAuthResponse = {
   authUrl?: string;

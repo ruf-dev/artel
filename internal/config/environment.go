@@ -11,7 +11,6 @@ type EnvironmentConfig struct {
 
 	GoogleClientId     string
 	GoogleClientSecret string
-	GoogleRedirectUrl  string
 }
 
 const (

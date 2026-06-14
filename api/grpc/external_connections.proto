@@ -57,7 +57,9 @@ message ExternalConnectionInfo {
 }
 
 message InitiateGoogleOAuth {
-  message Request {}
+  message Request {
+    string origin = 1;
+  }
   message Response {
     string auth_url = 1;
   }

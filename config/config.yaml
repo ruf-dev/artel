@@ -31,6 +31,12 @@ environment:
     - name: telegram_client_id
       type: string
       value: "8719705888"
+    - name: google_client_id
+      type: string
+      value: ""
+    - name: google_client_secret
+      type: string
+      value: ""
     - name: otel_endpoint
       type: string
       value: ""
