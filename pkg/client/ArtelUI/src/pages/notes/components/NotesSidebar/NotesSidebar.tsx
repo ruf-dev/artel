@@ -66,6 +66,108 @@ function TreeItem({ name, active, depth = 0, isFolder, isOpen, onClick }: TreeIt
     )
 }
 
+interface FolderNode {
+    name: string
+    path: string
+    children: FolderNode[]
+}
+
+function buildFolderTree(folders: string[]): FolderNode[] {
+    const nodeMap = new Map<string, FolderNode>()
+
+    const allPaths = new Set<string>()
+    for (const folder of folders) {
+        const parts = folder.split("/")
+        for (let i = 1; i <= parts.length; i++) {
+            allPaths.add(parts.slice(0, i).join("/"))
+        }
+    }
+
+    for (const path of allPaths) {
+        const parts = path.split("/")
+        nodeMap.set(path, { name: parts[parts.length - 1], path, children: [] })
+    }
+
+    const roots: FolderNode[] = []
+    for (const [path, node] of nodeMap) {
+        const lastSlash = path.lastIndexOf("/")
+        if (lastSlash === -1) {
+            roots.push(node)
+        } else {
+            nodeMap.get(path.slice(0, lastSlash))?.children.push(node)
+        }
+    }
+
+    return roots
+}
+
+function getNoteName(note: NoteItem): string {
+    if (!note.path) return "Untitled"
+    const parts = note.path.split("/")
+    const filename = parts[parts.length - 1] || note.path
+    return filename.endsWith(".md") ? filename.slice(0, -3) : filename
+}
+
+function getDirectNotes(folderPath: string, notes: NoteItem[]): NoteItem[] {
+    const prefix = folderPath + "/"
+    return notes.filter(n => {
+        if (!n.path || !n.path.startsWith(prefix)) return false
+        return !n.path.slice(prefix.length).includes("/")
+    })
+}
+
+interface FolderNodeItemProps {
+    node: FolderNode
+    notes: NoteItem[]
+    openFolders: Set<string>
+    selectedPath: string | null
+    depth: number
+    onToggle: (path: string) => void
+    onSelectNote: (path: string) => void
+}
+
+function FolderNodeItem({ node, notes, openFolders, selectedPath, depth, onToggle, onSelectNote }: FolderNodeItemProps) {
+    const isOpen = openFolders.has(node.path)
+    const directNotes = getDirectNotes(node.path, notes)
+
+    return (
+        <>
+            <TreeItem
+                name={node.name}
+                isFolder
+                isOpen={isOpen}
+                depth={depth}
+                onClick={() => onToggle(node.path)}
+            />
+            {isOpen && (
+                <>
+                    {node.children.map(child => (
+                        <FolderNodeItem
+                            key={child.path}
+                            node={child}
+                            notes={notes}
+                            openFolders={openFolders}
+                            selectedPath={selectedPath}
+                            depth={depth + 1}
+                            onToggle={onToggle}
+                            onSelectNote={onSelectNote}
+                        />
+                    ))}
+                    {directNotes.map(note => (
+                        <TreeItem
+                            key={note.path}
+                            name={getNoteName(note)}
+                            depth={depth + 1}
+                            active={selectedPath === note.path}
+                            onClick={() => note.path && onSelectNote(note.path)}
+                        />
+                    ))}
+                </>
+            )}
+        </>
+    )
+}
+
 interface FolderSectionProps {
     folders: string[]
     notes: NoteItem[]
@@ -78,26 +180,20 @@ interface FolderSectionProps {
 function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, onCreateNote }: FolderSectionProps) {
     const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
 
-    function toggleFolder(folder: string) {
+    function toggleFolder(path: string) {
         setOpenFolders(prev => {
             const next = new Set(prev)
-            if (next.has(folder)) {
-                next.delete(folder)
+            if (next.has(path)) {
+                next.delete(path)
             } else {
-                next.add(folder)
+                next.add(path)
             }
             return next
         })
     }
 
+    const tree = buildFolderTree(folders)
     const rootNotes = notes.filter(n => n.path && !n.path.includes("/"))
-    const folderNotes = (folder: string) => notes.filter(n => n.path && n.path.startsWith(folder + "/"))
-
-    function getNoteName(note: NoteItem): string {
-        if (!note.path) return "Untitled"
-        const parts = note.path.split("/")
-        return parts[parts.length - 1] || note.path
-    }
 
     return (
         <>
@@ -109,24 +205,17 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, on
                     </svg>
                 </button>
             </div>
-            {folders.map(folder => (
-                <div key={folder}>
-                    <TreeItem
-                        name={folder}
-                        isFolder
-                        isOpen={openFolders.has(folder)}
-                        onClick={() => toggleFolder(folder)}
-                    />
-                    {openFolders.has(folder) && folderNotes(folder).map(note => (
-                        <TreeItem
-                            key={note.path}
-                            name={getNoteName(note)}
-                            depth={1}
-                            active={selectedPath === note.path}
-                            onClick={() => note.path && onSelectNote(vaultId, note.path)}
-                        />
-                    ))}
-                </div>
+            {tree.map(node => (
+                <FolderNodeItem
+                    key={node.path}
+                    node={node}
+                    notes={notes}
+                    openFolders={openFolders}
+                    selectedPath={selectedPath}
+                    depth={0}
+                    onToggle={toggleFolder}
+                    onSelectNote={path => onSelectNote(vaultId, path)}
+                />
             ))}
             {rootNotes.map(note => (
                 <TreeItem

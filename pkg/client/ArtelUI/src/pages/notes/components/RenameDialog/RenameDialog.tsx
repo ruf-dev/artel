@@ -2,6 +2,11 @@ import { useState } from "react"
 import cls from "./RenameDialog.module.css"
 import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
 
+function ensureExtension(path: string): string {
+    const filename = path.split("/").pop() ?? path
+    return filename.includes(".") ? path : path + ".md"
+}
+
 interface Props {
     currentPath: string
     onConfirm: (newPath: string) => Promise<void>
@@ -16,7 +21,7 @@ export default function RenameDialog({ currentPath, onConfirm }: Props) {
         if (!newPath.trim() || newPath === currentPath) return
         setLoading(true)
         try {
-            await onConfirm(newPath.trim())
+            await onConfirm(ensureExtension(newPath.trim()))
         } finally {
             setLoading(false)
             CloseDialog()
