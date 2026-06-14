@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
+	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -23,6 +24,7 @@ type Service interface {
 	TaskTrackerService() TaskTrackerService
 	NotesService() NotesService
 	AdminUsersService() AdminUsersService
+	ExternalConnectionService() ExternalConnectionService
 }
 
 type AdminUsersService interface {
@@ -128,4 +130,12 @@ type NotesService interface {
 	ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error)
 	SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error
 	MoveNote(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) error
+}
+
+type ExternalConnectionService interface {
+	InitiateGoogleOAuth(ctx context.Context) (authURL string, err error)
+	HandleGoogleOAuthCallback(ctx context.Context, code string, state string) (domain.ExternalConnectionMeta, error)
+	DisconnectProvider(ctx context.Context, provider string) error
+	ListConnections(ctx context.Context) ([]domain.ExternalConnectionMeta, error)
+	GetGoogleClient(ctx context.Context) (*googleapi.Client, error)
 }

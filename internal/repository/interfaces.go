@@ -29,6 +29,7 @@ type Repo interface {
 	MailServerSuggestions() MailServerSuggestions
 	Prompts() Prompts
 	TaskTrackers() TaskTrackerRepo
+	ExternalConnections() ExternalConnectionRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -131,10 +132,17 @@ type CouchInstances interface {
 
 type UserPermissionsRepo interface {
 	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
-	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool, hasTaskTrackers bool, hasNotes bool) (domain.UserPermissions, error)
+	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool, hasTaskTrackers bool, hasNotes bool, hasSpreadsheets bool) (domain.UserPermissions, error)
 	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
 
 	WithTx(tx *sql.Tx) UserPermissionsRepo
+}
+
+type ExternalConnectionRepo interface {
+	Upsert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error)
+	GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, provider string) (sql.Null[domain.ExternalConnection], error)
+	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.ExternalConnection, error)
+	Delete(ctx context.Context, userUuid uuid.UUID, provider string) error
 }
 
 type McpKeyRepository interface {

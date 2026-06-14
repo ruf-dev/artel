@@ -138,6 +138,7 @@ type ArtelUserDetails struct {
 	HasTaskTrackers    bool                   `protobuf:"varint,6,opt,name=has_task_trackers,json=hasTaskTrackers,proto3" json:"has_task_trackers,omitempty"`
 	HasNotes           bool                   `protobuf:"varint,7,opt,name=has_notes,json=hasNotes,proto3" json:"has_notes,omitempty"`
 	SubscriptionActive bool                   `protobuf:"varint,8,opt,name=subscription_active,json=subscriptionActive,proto3" json:"subscription_active,omitempty"`
+	HasSpreadsheets    bool                   `protobuf:"varint,9,opt,name=has_spreadsheets,json=hasSpreadsheets,proto3" json:"has_spreadsheets,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -224,6 +225,13 @@ func (x *ArtelUserDetails) GetHasNotes() bool {
 func (x *ArtelUserDetails) GetSubscriptionActive() bool {
 	if x != nil {
 		return x.SubscriptionActive
+	}
+	return false
+}
+
+func (x *ArtelUserDetails) GetHasSpreadsheets() bool {
+	if x != nil {
+		return x.HasSpreadsheets
 	}
 	return false
 }
@@ -666,7 +674,7 @@ const file_admin_users_proto_rawDesc = "" +
 	"\x06offset\x18\x03 \x01(\rR\x06offset\x1aY\n" +
 	"\bResponse\x127\n" +
 	"\x05users\x18\x01 \x03(\v2!.artel_admin_users.ArtelUserEntryR\x05users\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x03R\x05total\"\xa1\x02\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"\xcc\x02\n" +
 	"\x10ArtelUserDetails\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x14\n" +
@@ -676,7 +684,8 @@ const file_admin_users_proto_rawDesc = "" +
 	"has_emails\x18\x05 \x01(\bR\thasEmails\x12*\n" +
 	"\x11has_task_trackers\x18\x06 \x01(\bR\x0fhasTaskTrackers\x12\x1b\n" +
 	"\thas_notes\x18\a \x01(\bR\bhasNotes\x12/\n" +
-	"\x13subscription_active\x18\b \x01(\bR\x12subscriptionActive\"w\n" +
+	"\x13subscription_active\x18\b \x01(\bR\x12subscriptionActive\x12)\n" +
+	"\x10has_spreadsheets\x18\t \x01(\bR\x0fhasSpreadsheets\"w\n" +
 	"\fGetArtelUser\x1a\"\n" +
 	"\aRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x1aC\n" +

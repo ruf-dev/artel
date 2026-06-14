@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "admin_users.proto",
+    "title": "external_connections.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "AdminUsersAPI"
+      "name": "ExternalConnectionsAPI"
     }
   ],
   "consumes": [
@@ -16,14 +16,14 @@
     "application/json"
   ],
   "paths": {
-    "/api/admin_users/get": {
+    "/api/external-connections/disconnect": {
       "post": {
-        "operationId": "AdminUsersAPI_GetArtelUser",
+        "operationId": "ExternalConnectionsAPI_DisconnectProvider",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/artel_admin_usersGetArtelUserResponse"
+              "$ref": "#/definitions/artel_apiDisconnectProviderResponse"
             }
           },
           "default": {
@@ -39,23 +39,23 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_admin_usersGetArtelUserRequest"
+              "$ref": "#/definitions/artel_apiDisconnectProviderRequest"
             }
           }
         ],
         "tags": [
-          "AdminUsersAPI"
+          "ExternalConnectionsAPI"
         ]
       }
     },
-    "/api/admin_users/list": {
+    "/api/external-connections/google/initiate": {
       "post": {
-        "operationId": "AdminUsersAPI_ListArtelUsers",
+        "operationId": "ExternalConnectionsAPI_InitiateGoogleOAuth",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/artel_admin_usersListArtelUsersResponse"
+              "$ref": "#/definitions/artel_apiInitiateGoogleOAuthResponse"
             }
           },
           "default": {
@@ -71,23 +71,23 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_admin_usersListArtelUsersRequest"
+              "$ref": "#/definitions/artel_apiInitiateGoogleOAuthRequest"
             }
           }
         ],
         "tags": [
-          "AdminUsersAPI"
+          "ExternalConnectionsAPI"
         ]
       }
     },
-    "/api/admin_users/sessions": {
+    "/api/external-connections/list": {
       "post": {
-        "operationId": "AdminUsersAPI_GetUserSessions",
+        "operationId": "ExternalConnectionsAPI_ListConnections",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/artel_admin_usersGetUserSessionsResponse"
+              "$ref": "#/definitions/artel_apiListConnectionsResponse"
             }
           },
           "default": {
@@ -103,148 +103,106 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_admin_usersGetUserSessionsRequest"
+              "$ref": "#/definitions/artel_apiListConnectionsRequest"
             }
           }
         ],
         "tags": [
-          "AdminUsersAPI"
+          "ExternalConnectionsAPI"
         ]
       }
     }
   },
   "definitions": {
-    "artel_admin_usersArtelUserDetails": {
+    "artel_apiDisconnectProviderRequest": {
       "type": "object",
       "properties": {
-        "userId": {
+        "provider": {
           "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "isAdministrator": {
-          "type": "boolean"
-        },
-        "hasEmails": {
-          "type": "boolean"
-        },
-        "hasTaskTrackers": {
-          "type": "boolean"
-        },
-        "hasNotes": {
-          "type": "boolean"
-        },
-        "subscriptionActive": {
-          "type": "boolean"
-        },
-        "hasSpreadsheets": {
-          "type": "boolean"
         }
       }
     },
-    "artel_admin_usersArtelUserEntry": {
+    "artel_apiDisconnectProviderResponse": {
+      "type": "object"
+    },
+    "artel_apiExternalConnectionInfo": {
       "type": "object",
       "properties": {
-        "userId": {
+        "id": {
           "type": "string"
         },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
+        "provider": {
+          "$ref": "#/definitions/artel_apiExternalProvider"
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "artel_admin_usersGetArtelUserRequest": {
-      "type": "object",
-      "properties": {
-        "userId": {
           "type": "string"
-        }
-      }
-    },
-    "artel_admin_usersGetArtelUserResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/artel_admin_usersArtelUserDetails"
-        }
-      }
-    },
-    "artel_admin_usersGetUserSessionsRequest": {
-      "type": "object",
-      "properties": {
-        "userId": {
+        },
+        "updatedAt": {
           "type": "string"
+        },
+        "google": {
+          "$ref": "#/definitions/artel_apiGoogleConnectionInfo"
+        },
+        "generic": {
+          "$ref": "#/definitions/artel_apiGenericConnection"
         }
       }
     },
-    "artel_admin_usersGetUserSessionsResponse": {
+    "artel_apiExternalProvider": {
+      "type": "string",
+      "enum": [
+        "EXTERNAL_PROVIDER_UNSPECIFIED",
+        "EXTERNAL_PROVIDER_GOOGLE_SHEETS",
+        "EXTERNAL_PROVIDER_TRELLO",
+        "EXTERNAL_PROVIDER_MIRO"
+      ],
+      "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
+    },
+    "artel_apiGenericConnection": {
       "type": "object",
       "properties": {
-        "sessions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/artel_admin_usersUserSession"
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
           }
         }
       }
     },
-    "artel_admin_usersListArtelUsersRequest": {
+    "artel_apiGoogleConnectionInfo": {
       "type": "object",
       "properties": {
-        "search": {
+        "email": {
           "type": "string"
         },
-        "limit": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "offset": {
-          "type": "integer",
-          "format": "int64"
+        "scopes": {
+          "type": "string"
         }
       }
     },
-    "artel_admin_usersListArtelUsersResponse": {
+    "artel_apiInitiateGoogleOAuthRequest": {
+      "type": "object"
+    },
+    "artel_apiInitiateGoogleOAuthResponse": {
       "type": "object",
       "properties": {
-        "users": {
+        "authUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListConnectionsRequest": {
+      "type": "object"
+    },
+    "artel_apiListConnectionsResponse": {
+      "type": "object",
+      "properties": {
+        "connections": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/artel_admin_usersArtelUserEntry"
+            "$ref": "#/definitions/artel_apiExternalConnectionInfo"
           }
-        },
-        "total": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
-    "artel_admin_usersUserSession": {
-      "type": "object",
-      "properties": {
-        "sessionId": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "expiresAt": {
-          "type": "string",
-          "format": "date-time"
         }
       }
     },

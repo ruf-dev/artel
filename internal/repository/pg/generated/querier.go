@@ -26,6 +26,7 @@ type Querier interface {
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
 	DeleteEmailAccount(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
+	DeleteExternalConnection(ctx context.Context, arg DeleteExternalConnectionParams) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteTaskTracker(ctx context.Context, id uuid.UUID) error
@@ -35,6 +36,7 @@ type Querier interface {
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
 	GetEmailAccountByUuid(ctx context.Context, id uuid.UUID) (EmailAccount, error)
+	GetExternalConnectionByUserAndProvider(ctx context.Context, arg GetExternalConnectionByUserAndProviderParams) (ExternalConnection, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
@@ -57,6 +59,7 @@ type Querier interface {
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
 	ListEmailAccountsByUser(ctx context.Context, userID uuid.UUID) ([]EmailAccount, error)
+	ListExternalConnectionsByUser(ctx context.Context, userID uuid.UUID) ([]ExternalConnection, error)
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
@@ -78,6 +81,7 @@ type Querier interface {
 	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error
+	UpsertExternalConnection(ctx context.Context, arg UpsertExternalConnectionParams) (ExternalConnection, error)
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
 	UpsertTelegramIdentity(ctx context.Context, arg UpsertTelegramIdentityParams) error
 	UpsertUserPermissions(ctx context.Context, arg UpsertUserPermissionsParams) (UserPermission, error)

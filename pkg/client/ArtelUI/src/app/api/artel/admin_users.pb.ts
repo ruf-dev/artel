@@ -38,6 +38,7 @@ export type ArtelUserDetails = {
   hasTaskTrackers?: boolean;
   hasNotes?: boolean;
   subscriptionActive?: boolean;
+  hasSpreadsheets?: boolean;
 };
 
 export type GetArtelUserRequest = {

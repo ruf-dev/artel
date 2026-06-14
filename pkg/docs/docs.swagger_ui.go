@@ -51,6 +51,10 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "email_accounts.swagger.json"),
 				},
 				{
+					Name: "ExternalConnections",
+					URL:  path.Join(swaggerPath, "external_connections.swagger.json"),
+				},
+				{
 					Name: "McpKeys",
 					URL:  path.Join(swaggerPath, "mcp_keys.swagger.json"),
 				},

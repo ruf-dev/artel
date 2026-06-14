@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+service ExternalConnectionsAPI {
+  rpc InitiateGoogleOAuth(InitiateGoogleOAuth.Request) returns (InitiateGoogleOAuth.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/google/initiate"
+      body: "*"
+    };
+  }
+
+  rpc ListConnections(ListConnections.Request) returns (ListConnections.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/list"
+      body: "*"
+    };
+  }
+
+  rpc DisconnectProvider(DisconnectProvider.Request) returns (DisconnectProvider.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/disconnect"
+      body: "*"
+    };
+  }
+}
+
+enum ExternalProvider {
+  EXTERNAL_PROVIDER_UNSPECIFIED = 0;
+  EXTERNAL_PROVIDER_GOOGLE_SHEETS = 1;
+  EXTERNAL_PROVIDER_TRELLO = 2;
+  EXTERNAL_PROVIDER_MIRO = 3;
+}
+
+message GoogleConnectionInfo {
+  string email = 1;
+  string scopes = 2;
+}
+
+message GenericConnection {
+  map<string, string> fields = 1;
+}
+
+message ExternalConnectionInfo {
+  string id = 1;
+  ExternalProvider provider = 2;
+  string created_at = 3;
+  string updated_at = 4;
+  oneof details {
+    GoogleConnectionInfo google = 5;
+    GenericConnection generic = 6;
+  }
+}
+
+message InitiateGoogleOAuth {
+  message Request {}
+  message Response {
+    string auth_url = 1;
+  }
+}
+
+message ListConnections {
+  message Request {}
+  message Response {
+    repeated ExternalConnectionInfo connections = 1;
+  }
+}
+
+message DisconnectProvider {
+  message Request {
+    string provider = 1;
+  }
+  message Response {}
+}

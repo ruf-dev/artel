@@ -75,6 +75,10 @@ var (
 	InvalidEmailId       = rerrors.New("invalid email id", codes.InvalidArgument)
 	EmailMessageNotFound = rerrors.New("message not found", codes.NotFound)
 
+	// external connections
+	GoogleNotConnected = rerrors.New("google account not connected", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusPreconditionFailed))
+	InvalidOAuthState  = rerrors.New("invalid or expired oauth state", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
+
 	NoCouchDbInstance = rerrors.New("no storage instance",
 		codes.FailedPrecondition,
 		rerrors.WithHttpStatus(http.StatusFailedDependency),

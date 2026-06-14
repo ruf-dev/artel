@@ -39,6 +39,7 @@ type UserPermissions struct {
 	HasEmails       bool
 	HasTaskTrackers bool
 	HasNotes        bool
+	HasSpreadsheets bool
 }
 
 type Subscription struct {

@@ -58,6 +58,7 @@ message ArtelUserDetails {
   bool has_task_trackers = 6;
   bool has_notes = 7;
   bool subscription_active = 8;
+  bool has_spreadsheets = 9;
 }
 
 message GetArtelUser {

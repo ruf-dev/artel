@@ -23,6 +23,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/email_accounts_api"
+	"github.com/ruf-dev/artel/internal/transport/external_connections_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
 	"github.com/ruf-dev/artel/internal/transport/notes_api"
@@ -72,6 +73,7 @@ func (c *Custom) Init(a *App) error {
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
 	emailAccountsImpl := email_accounts_api.NewEmailAccountsImpl(services.EmailService())
 	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
+	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.EmailService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
@@ -106,8 +108,9 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminUsersAPI_GetUserSessions_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl)
 
+	c.Transport.AddHttpHandler("/api/external-connections/google/callback", http.HandlerFunc(externalConnectionsImpl.HandleGoogleCallback))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))

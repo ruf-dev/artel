@@ -80,6 +80,7 @@ func (a *AdminUsersImpl) GetArtelUser(ctx context.Context, req *artel_api.GetArt
 		HasEmails:          details.Permissions.HasEmails,
 		HasTaskTrackers:    details.Permissions.HasTaskTrackers,
 		HasNotes:           details.Permissions.HasNotes,
+		HasSpreadsheets:    details.Permissions.HasSpreadsheets,
 		SubscriptionActive: details.Subscription.Active,
 	}
 	resp := &artel_api.GetArtelUser_Response{User: userDetails}

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/sqlc-dev/pqtype"
 )
 
 type ArtelPrompt string
@@ -52,6 +53,49 @@ func (ns NullArtelPrompt) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return string(ns.ArtelPrompt), nil
+}
+
+type ExternalProviderType string
+
+const (
+	ExternalProviderTypeGoogleOauth ExternalProviderType = "google_oauth"
+	ExternalProviderTypeApiKey      ExternalProviderType = "api_key"
+	ExternalProviderTypePassword    ExternalProviderType = "password"
+)
+
+func (e *ExternalProviderType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ExternalProviderType(s)
+	case string:
+		*e = ExternalProviderType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ExternalProviderType: %T", src)
+	}
+	return nil
+}
+
+type NullExternalProviderType struct {
+	ExternalProviderType ExternalProviderType
+	Valid                bool // Valid is true if ExternalProviderType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullExternalProviderType) Scan(value interface{}) error {
+	if value == nil {
+		ns.ExternalProviderType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ExternalProviderType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullExternalProviderType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ExternalProviderType), nil
 }
 
 type VaultRole string
@@ -124,6 +168,17 @@ type EmailAccount struct {
 	SmtpPort    int32
 	PasswordEnc []byte
 	CreatedAt   time.Time
+}
+
+type ExternalConnection struct {
+	ID             uuid.UUID
+	UserID         uuid.UUID
+	Provider       string
+	ProviderType   ExternalProviderType
+	CredentialsEnc []byte
+	Metadata       pqtype.NullRawMessage
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 type IdentitiesTelegram struct {
@@ -208,6 +263,7 @@ type UserPermission struct {
 	HasEmails       bool
 	HasTaskTrackers bool
 	HasNotes        bool
+	HasSpreadsheets bool
 }
 
 type Vault struct {

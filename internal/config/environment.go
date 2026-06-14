@@ -8,6 +8,10 @@ type EnvironmentConfig struct {
 	LogLevel           string
 	TelegramClientID   string
 	OtelEndpoint       string
+
+	GoogleClientId     string
+	GoogleClientSecret string
+	GoogleRedirectUrl  string
 }
 
 const (
