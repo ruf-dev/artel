@@ -18,8 +18,8 @@ function ArrowIcon({ open }: { open: boolean }) {
     return (
         <svg
             viewBox="0 0 8 8"
-            width={8}
-            height={8}
+            width={11}
+            height={11}
             style={{ flexShrink: 0, opacity: 0.35, transform: open ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}
         >
             <path d="M2 1.5l4 2.5-4 2.5z" fill="currentColor" />
@@ -29,7 +29,7 @@ function ArrowIcon({ open }: { open: boolean }) {
 
 function FileIcon() {
     return (
-        <svg viewBox="0 0 14 14" width={10} height={10} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" style={{ flexShrink: 0, opacity: 0.35 }}>
+        <svg viewBox="0 0 14 14" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" style={{ flexShrink: 0, opacity: 0.35 }}>
             <rect x="2" y="1" width="10" height="12" rx="1.5" />
             <path d="M5 4.5h4M5 7h4M5 9.5h2" />
         </svg>
@@ -38,7 +38,7 @@ function FileIcon() {
 
 function FolderIcon() {
     return (
-        <svg viewBox="0 0 14 14" width={10} height={10} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" style={{ flexShrink: 0, opacity: 0.45 }}>
+        <svg viewBox="0 0 14 14" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" style={{ flexShrink: 0, opacity: 0.45 }}>
             <path d="M1 3.5h4l1.5 1.5H13v7H1z" />
         </svg>
     )
@@ -54,11 +54,11 @@ interface TreeItemProps {
 }
 
 function TreeItem({ name, active, depth = 0, isFolder, isOpen, onClick }: TreeItemProps) {
-    const paddingLeft = 16 + depth * 12
+    const paddingLeft = 1.12 + depth * 0.84
     const rowClass = `${cls.TreeItemRow}${active ? ` ${cls.TreeItemRowActive}` : ""}`
 
     return (
-        <div className={rowClass} style={{ padding: `4px 16px 4px ${paddingLeft}px` }} onClick={onClick}>
+        <div className={rowClass} style={{ padding: `0.28rem 1.12rem 0.28rem ${paddingLeft}rem` }} onClick={onClick}>
             {isFolder ? <ArrowIcon open={!!isOpen} /> : <span className={cls.ArrowSpacer} />}
             {isFolder ? <FolderIcon /> : <FileIcon />}
             <span className={cls.TreeItemLabel}>{name}</span>
@@ -200,7 +200,7 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, on
             <div className={cls.SectionHeader}>
                 <span className={cls.SectionLabel}>All Notes</span>
                 <button className={cls.CreateNoteBtn} onClick={onCreateNote} title="New note">
-                    <svg viewBox="0 0 12 12" width={10} height={10} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                    <svg viewBox="0 0 12 12" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
                         <path d="M6 1v10M1 6h10" />
                     </svg>
                 </button>
@@ -233,6 +233,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
     const { vaultId, folders, notes, selectedPath, selectVault, selectNote, createNote } = useNotes()
     const { OpenDialog } = useDialog()
     const bakeError = useBakeError()
+    const [searchQuery, setSearchQuery] = useState("")
 
     function handleVaultChange(e: React.ChangeEvent<HTMLSelectElement>) {
         void selectVault(e.target.value)
@@ -274,18 +275,34 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
             </div>
             <div className={cls.SearchWrapper}>
                 <div className={cls.SearchBar}>
-                    <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className={cls.SearchIcon}>
+                    <svg viewBox="0 0 16 16" width={17} height={17} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className={cls.SearchIcon}>
                         <circle cx="6.5" cy="6.5" r="4.5" />
                         <path d="M10.5 10.5l3 3" />
                     </svg>
-                    <span className={cls.SearchPlaceholder}>Search notes…</span>
+                    <input
+                        className={cls.SearchInput}
+                        placeholder="Search notes…"
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                    />
                 </div>
             </div>
             <div className={cls.ScrollArea}>
                 {!vaultId && (
                     <div className={cls.EmptyVaultHint}>Select a vault to browse notes</div>
                 )}
-                {vaultId && (
+                {vaultId && searchQuery.trim() && notes
+                    .filter(n => getNoteName(n).toLowerCase().includes(searchQuery.trim().toLowerCase()))
+                    .map(note => (
+                        <TreeItem
+                            key={note.path}
+                            name={getNoteName(note)}
+                            active={selectedPath === note.path}
+                            onClick={() => note.path && handleSelectNote(vaultId, note.path)}
+                        />
+                    ))
+                }
+                {vaultId && !searchQuery.trim() && (
                     <FolderSection
                         folders={folders}
                         notes={notes}

@@ -24,8 +24,8 @@
 }
 
 .Avatar {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: min(1.75rem, 35px);
+    height: min(1.75rem, 35px);
     border-radius: 50%;
     background: linear-gradient(135deg, #FF4B3E 0%, #ff8266 100%);
     display: inline-flex;
