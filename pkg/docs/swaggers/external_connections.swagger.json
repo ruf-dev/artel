@@ -80,6 +80,38 @@
         ]
       }
     },
+    "/api/external-connections/email/suggestions": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_ListMailServerSuggestions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMailServerSuggestionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMailServerSuggestionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/google/initiate": {
       "post": {
         "operationId": "ExternalConnectionsAPI_InitiateGoogleOAuth",
@@ -435,6 +467,26 @@
         }
       }
     },
+    "artel_apiListMailServerSuggestionsRequest": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListMailServerSuggestionsResponse": {
+      "type": "object",
+      "properties": {
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMailServerSuggestion"
+          }
+        }
+      }
+    },
     "artel_apiListSpreadsheetsRequest": {
       "type": "object"
     },
@@ -447,6 +499,28 @@
             "type": "object",
             "$ref": "#/definitions/artel_apiSpreadsheet"
           }
+        }
+      }
+    },
+    "artel_apiMailServerSuggestion": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "smtp": {
+          "type": "string"
+        },
+        "smtpPort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "imap": {
+          "type": "string"
+        },
+        "imapPort": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

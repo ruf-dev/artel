@@ -19,14 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName  = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
-	ExternalConnectionsAPI_ListConnections_FullMethodName      = "/artel_api.ExternalConnectionsAPI/ListConnections"
-	ExternalConnectionsAPI_DisconnectProvider_FullMethodName   = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
-	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
-	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
-	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName     = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
-	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName    = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
-	ExternalConnectionsAPI_AddEmailConnection_FullMethodName   = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
+	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName       = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
+	ExternalConnectionsAPI_ListConnections_FullMethodName           = "/artel_api.ExternalConnectionsAPI/ListConnections"
+	ExternalConnectionsAPI_DisconnectProvider_FullMethodName        = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
+	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName      = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
+	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName            = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
+	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName          = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
+	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName         = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
+	ExternalConnectionsAPI_AddEmailConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
+	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -41,6 +42,7 @@ type ExternalConnectionsAPIClient interface {
 	ListSpreadsheets(ctx context.Context, in *ListSpreadsheets_Request, opts ...grpc.CallOption) (*ListSpreadsheets_Response, error)
 	RemoveSpreadsheet(ctx context.Context, in *RemoveSpreadsheet_Request, opts ...grpc.CallOption) (*RemoveSpreadsheet_Response, error)
 	AddEmailConnection(ctx context.Context, in *AddEmailConnection_Request, opts ...grpc.CallOption) (*AddEmailConnection_Response, error)
+	ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -131,6 +133,16 @@ func (c *externalConnectionsAPIClient) AddEmailConnection(ctx context.Context, i
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMailServerSuggestions_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility.
@@ -143,6 +155,7 @@ type ExternalConnectionsAPIServer interface {
 	ListSpreadsheets(context.Context, *ListSpreadsheets_Request) (*ListSpreadsheets_Response, error)
 	RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error)
 	AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error)
+	ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -176,6 +189,9 @@ func (UnimplementedExternalConnectionsAPIServer) RemoveSpreadsheet(context.Conte
 }
 func (UnimplementedExternalConnectionsAPIServer) AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddEmailConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListMailServerSuggestions not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -343,6 +359,24 @@ func _ExternalConnectionsAPI_AddEmailConnection_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_ListMailServerSuggestions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMailServerSuggestions_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).ListMailServerSuggestions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).ListMailServerSuggestions(ctx, req.(*ListMailServerSuggestions_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -381,6 +415,10 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddEmailConnection",
 			Handler:    _ExternalConnectionsAPI_AddEmailConnection_Handler,
+		},
+		{
+			MethodName: "ListMailServerSuggestions",
+			Handler:    _ExternalConnectionsAPI_ListMailServerSuggestions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

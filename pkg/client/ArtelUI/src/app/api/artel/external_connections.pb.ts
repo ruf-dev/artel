@@ -129,6 +129,24 @@ export type AddEmailConnectionResponse = {
 
 export type AddEmailConnection = Record<string, never>;
 
+export type MailServerSuggestion = {
+  domain?: string;
+  smtp?: string;
+  smtpPort?: number;
+  imap?: string;
+  imapPort?: number;
+};
+
+export type ListMailServerSuggestionsRequest = {
+  domain?: string;
+};
+
+export type ListMailServerSuggestionsResponse = {
+  suggestions?: MailServerSuggestion[];
+};
+
+export type ListMailServerSuggestions = Record<string, never>;
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -153,5 +171,8 @@ export class ExternalConnectionsAPI {
   }
   static AddEmailConnection(this:void, req: AddEmailConnectionRequest, initReq?: fm.InitReq): Promise<AddEmailConnectionResponse> {
     return fm.fetchRequest<AddEmailConnectionResponse>(`/api/external-connections/email/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListMailServerSuggestions(this:void, req: ListMailServerSuggestionsRequest, initReq?: fm.InitReq): Promise<ListMailServerSuggestionsResponse> {
+    return fm.fetchRequest<ListMailServerSuggestionsResponse>(`/api/external-connections/email/suggestions`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

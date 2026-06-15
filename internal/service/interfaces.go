@@ -134,4 +134,5 @@ type ExternalConnectionService interface {
 	ListSpreadsheets(ctx context.Context) ([]domain.McpSpreadsheet, error)
 	RemoveSpreadsheet(ctx context.Context, spreadsheetId string) error
 	AddEmailConnection(ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string) (domain.ExternalConnectionMeta, error)
+	ListMailServerSuggestions(ctx context.Context, domain string) ([]domain.MailServerSuggestion, error)
 }

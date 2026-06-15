@@ -3,7 +3,7 @@ import {useNavigate, useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/connections/ConnectionsPage.module.css"
 
-import {AddEmailConnectionRequest, ExternalConnectionInfo, ExternalProvider, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
+import {AddEmailConnectionRequest, ExternalConnectionInfo, ExternalConnectionsAPI, ExternalProvider, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
@@ -629,10 +629,34 @@ function EmailAddDialog() {
     const [smtpHost, setSmtpHost] = useState("")
     const [smtpPort, setSmtpPort] = useState("")
     const [password, setPassword] = useState("")
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const {addEmailConnection} = useExternalConnections()
     const {CloseDialog} = useDialog()
+    const {auth} = useUser()
     const bakeError = useBakeError()
+
+    function handleEmailChange(value: string) {
+        setEmail(value)
+        const domain = value.split("@")[1] ?? ""
+        if (!domain) return
+
+        if (debounceRef.current) clearTimeout(debounceRef.current)
+        debounceRef.current = setTimeout(async () => {
+            try {
+                const resp = await ExternalConnectionsAPI.ListMailServerSuggestions({domain}, auth.getInitReq())
+                if (resp.suggestions?.length === 1) {
+                    const s = resp.suggestions[0]
+                    setImapHost(s.imap ?? "")
+                    setImapPort(s.imapPort ? String(s.imapPort) : "")
+                    setSmtpHost(s.smtp ?? "")
+                    setSmtpPort(s.smtpPort ? String(s.smtpPort) : "")
+                }
+            } catch {
+                // suggestion lookup is best-effort
+            }
+        }, 300)
+    }
 
     async function handleAdd() {
         setAdding(true)
@@ -669,7 +693,7 @@ function EmailAddDialog() {
                         className={cls.Input}
                         placeholder="you@example.com"
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
+                        onChange={e => handleEmailChange(e.target.value)}
                         disabled={adding}
                         autoComplete="off"
                     />

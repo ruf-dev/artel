@@ -28,23 +28,26 @@ type googleUserInfo struct {
 }
 
 type Service struct {
-	connections     repository.ExternalConnectionRepo
-	pendingCodes    repository.PendingAuthCodes
-	mcpSpreadsheets repository.McpSpreadsheetsRepo
-	oauthCfg        *oauth2.Config
+	connections           repository.ExternalConnectionRepo
+	pendingCodes          repository.PendingAuthCodes
+	mcpSpreadsheets       repository.McpSpreadsheetsRepo
+	mailServerSuggestions repository.MailServerSuggestions
+	oauthCfg              *oauth2.Config
 }
 
 func New(
 	connections repository.ExternalConnectionRepo,
 	pendingCodes repository.PendingAuthCodes,
 	mcpSpreadsheets repository.McpSpreadsheetsRepo,
+	mailServerSuggestions repository.MailServerSuggestions,
 	oauthCfg *oauth2.Config,
 ) *Service {
 	return &Service{
-		connections:     connections,
-		pendingCodes:    pendingCodes,
-		mcpSpreadsheets: mcpSpreadsheets,
-		oauthCfg:        oauthCfg,
+		connections:           connections,
+		pendingCodes:          pendingCodes,
+		mcpSpreadsheets:       mcpSpreadsheets,
+		mailServerSuggestions: mailServerSuggestions,
+		oauthCfg:              oauthCfg,
 	}
 }
 
@@ -389,6 +392,14 @@ func extractDisplayName(conn domain.ExternalConnection) string {
 		return ""
 	}
 	return meta.Email
+}
+
+func (s *Service) ListMailServerSuggestions(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error) {
+	suggestions, err := s.mailServerSuggestions.ListByDomain(ctx, domainPrefix)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list mail server suggestions")
+	}
+	return suggestions, nil
 }
 
 func randomHex(n int) string {
