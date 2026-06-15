@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mom_schema.json",
+  "title": "MoM Definition",
+  "description": "Validates a MCP-of-MCPs plugin definition before saving to the mcps table",
+  "type": "object",
+  "required": ["name", "author", "description", "tools"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary key in mcps table — unique plugin identifier"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Plugin author, e.g. 'Artel' or 'community'"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what this plugin does"
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Tool" }
+    }
+  },
+  "$defs": {
+    "Tool": {
+      "type": "object",
+      "required": ["api_description", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "api_description": { "$ref": "#/$defs/ApiDescription" },
+        "action":          { "$ref": "#/$defs/Action" }
+      }
+    },
+    "ApiDescription": {
+      "type": "object",
+      "required": ["name", "description", "properties", "required"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tool name exposed to the LLM"
+        },
+        "description": {
+          "type": "string",
+          "description": "Tool description exposed to the LLM"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/ToolProperty" },
+          "description": "Input parameters — map directly to Go client function args"
+        },
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Names of required properties"
+        }
+      }
+    },
+    "ToolProperty": {
+      "type": "object",
+      "required": ["type", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "integer", "number", "boolean", "array", "object"]
+        },
+        "description": { "type": "string" }
+      }
+    },
+    "Action": {
+      "type": "object",
+      "description": "Exactly one key identifying the executor type",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "oneOf": [
+        {
+          "required": ["imap"],
+          "additionalProperties": false,
+          "properties": {
+            "imap": { "$ref": "#/$defs/ImapAction" }
+          }
+        },
+        {
+          "required": ["smtp"],
+          "additionalProperties": false,
+          "properties": {
+            "smtp": { "$ref": "#/$defs/SmtpAction" }
+          }
+        },
+        {
+          "required": ["http"],
+          "additionalProperties": false,
+          "properties": {
+            "http": { "$ref": "#/$defs/HttpAction" }
+          }
+        }
+      ]
+    },
+    "ImapAction": {
+      "type": "object",
+      "required": ["operation"],
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": ["list_folders", "list_messages", "fetch_message"]
+        }
+      }
+    },
+    "SmtpAction": {
+      "type": "object",
+      "required": ["operation"],
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": ["send"]
+        }
+      }
+    },
+    "HttpAction": {
+      "type": "object",
+      "required": ["method", "url", "credentials"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URL template — use ${{params.name}} for path interpolation"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Static or __secrets.* injected header key-values"
+        },
+        "query": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "URL query params — values may use __secrets.* or ${{params.*}}"
+        },
+        "credentials": {
+          "type": "string",
+          "minLength": 1,
+          "description": "external_connections.provider value to resolve __secrets.* from"
+        }
+      }
+    }
+  }
+}

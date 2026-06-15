@@ -102,7 +102,8 @@ func (s *EmailServiceImpl) SendEmail(ctx context.Context, accountUuid uuid.UUID,
 	}
 
 	c := smtp.New(account.SmtpHost, account.SmtpPort, account.Email, account.Password)
-	if err := c.Send(ctx, to, subject, body); err != nil {
+	err = c.Send(ctx, to, subject, body)
+	if err != nil {
 		return rerrors.Wrap(err, "send email")
 	}
 	return nil

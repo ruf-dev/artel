@@ -56,3 +56,13 @@ type APIKeyCredentials struct {
 	APIKey   string `json:"api_key"`
 	APIToken string `json:"api_token"`
 }
+
+// EmailCredentials is stored encrypted in credentials_enc for email (IMAP/SMTP) providers.
+type EmailCredentials struct {
+	ImapHost string `json:"imap_host"`
+	ImapPort int    `json:"imap_port"`
+	SmtpHost string `json:"smtp_host"`
+	SmtpPort int    `json:"smtp_port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
