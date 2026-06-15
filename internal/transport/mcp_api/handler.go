@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel/trace"
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/service"
@@ -31,6 +32,8 @@ type rpcResponse struct {
 type rpcError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+	TraceId string `json:"trace_id,omitempty"`
+	Details string `json:"details,omitempty"`
 }
 
 type McpHandler struct {
@@ -55,6 +58,8 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
+	ctx := r.Context()
+
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -69,7 +74,7 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		writeErrorResponse(w, nil, -32700, "parse error")
+		writeErrorResponse(ctx, w, nil, -32700, "parse error", err)
 		return
 	}
 	defer r.Body.Close()
@@ -77,11 +82,9 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var req rpcRequest
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		writeErrorResponse(w, nil, -32700, "parse error")
+		writeErrorResponse(ctx, w, nil, -32700, "parse error", err)
 		return
 	}
-
-	ctx := r.Context()
 
 	keyCtx, err := h.mcpSvc.ResolveKey(ctx, token)
 	if err != nil {
@@ -89,7 +92,7 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		writeErrorResponse(w, req.Id, -32001, "unauthorized")
+		writeErrorResponse(ctx, w, req.Id, -32001, "unauthorized", nil)
 		return
 	}
 
@@ -143,7 +146,7 @@ func (h *McpHandler) dispatchMethod(w http.ResponseWriter, ctx context.Context, 
 	case "tools/call":
 		h.handleToolsCall(w, ctx, req)
 	default:
-		writeErrorResponse(w, req.Id, -32601, "method not found")
+		writeErrorResponse(ctx, w, req.Id, -32601, "method not found", nil)
 	}
 }
 
@@ -170,7 +173,7 @@ func (h *McpHandler) handleInitialize(w http.ResponseWriter, ctx context.Context
 	err := writeJsonResponse(w, resp)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to write initialize response")
-		writeErrorResponse(w, req.Id, -32603, "internal error")
+		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
 	}
 }
 
@@ -178,7 +181,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
 	if !ok {
 		log.Error().Msg("mcp: keyContext missing from context in tools/list")
-		writeErrorResponse(w, req.Id, -32603, "internal error")
+		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", nil)
 		return
 	}
 
@@ -187,7 +190,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 	keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: invalid key uuid in tools/list")
-		writeErrorResponse(w, req.Id, -32603, "internal error")
+		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
 		return
 	}
 
@@ -213,7 +216,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 	err = writeJsonResponse(w, resp)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to write tools/list response")
-		writeErrorResponse(w, req.Id, -32603, "internal error")
+		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
 	}
 }
 
@@ -226,21 +229,21 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	err := json.Unmarshal(req.Params, &callReq)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to unmarshal tools/call params")
-		writeErrorResponse(w, req.Id, -32602, "invalid params")
+		writeErrorResponse(ctx, w, req.Id, -32602, "invalid params", err)
 		return
 	}
 
 	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
 	if !ok {
 		log.Error().Msg("mcp: keyContext missing from context in tools/call")
-		writeErrorResponse(w, req.Id, -32603, "internal error")
+		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", nil)
 		return
 	}
 
 	switch callReq.Name {
 	case toolListEmailFolders, toolListEmailAccounts, toolListEmails, toolReadEmail, toolSendEmail:
 		if !keyCtx.HasEmails {
-			writeErrorResponse(w, req.Id, -32001, "permission denied")
+			writeErrorResponse(ctx, w, req.Id, -32001, "permission denied", nil)
 			return
 		}
 	}
@@ -251,20 +254,20 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 		result, err = dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
-			writeErrorResponse(w, req.Id, -32603, "tool execution failed")
+			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)
 			return
 		}
 	} else {
 		keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
 		if err != nil {
 			log.Error().Err(err).Msg("mcp: invalid key uuid in tools/call")
-			writeErrorResponse(w, req.Id, -32603, "internal error")
+			writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
 			return
 		}
 		text, err := h.momSvc.ExecuteToolForKey(ctx, keyUuid, callReq.Name, callReq.Arguments)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: mom tool execution failed")
-			writeErrorResponse(w, req.Id, -32603, "tool execution failed")
+			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)
 			return
 		}
 		result = textResult(text)
@@ -279,7 +282,7 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	err = writeJsonResponse(w, resp)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to write tools/call response")
-		writeErrorResponse(w, req.Id, -32603, "internal error")
+		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
 	}
 }
 
@@ -319,18 +322,25 @@ func writeJsonResponse(w http.ResponseWriter, response rpcResponse) error {
 	return nil
 }
 
-func writeErrorResponse(w http.ResponseWriter, id any, code int, message string) {
+func writeErrorResponse(ctx context.Context, w http.ResponseWriter, id any, code int, message string, cause error) {
+	e := &rpcError{
+		Code:    code,
+		Message: message,
+	}
+	if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
+		e.TraceId = span.SpanContext().TraceID().String()
+	}
+	if cause != nil {
+		e.Details = cause.Error()
+	}
+
 	resp := rpcResponse{
 		Jsonrpc: "2.0",
 		Id:      id,
-		Error: &rpcError{
-			Code:    code,
-			Message: message,
-		},
+		Error:   e,
 	}
 
-	err := writeJsonResponse(w, resp)
-	if err != nil {
+	if err := writeJsonResponse(w, resp); err != nil {
 		log.Error().Err(err).Msg("mcp: failed to write error response")
 	}
 }
