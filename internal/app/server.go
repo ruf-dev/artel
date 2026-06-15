@@ -13,10 +13,5 @@ func (a *App) InitServers() (err error) {
 		return rerrors.Wrap(err, "error opening listener")
 	}
 
-	a.MASTER2, err = net.Listen("tcp", ":"+a.Cfg.Servers.MASTER2.Port)
-	if err != nil {
-		return rerrors.Wrap(err, "error opening listener")
-	}
-
 	return nil
 }
