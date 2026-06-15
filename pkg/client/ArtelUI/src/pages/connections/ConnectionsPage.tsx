@@ -3,12 +3,10 @@ import {useNavigate, useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/connections/ConnectionsPage.module.css"
 
-import {ExternalConnectionInfo, ExternalProvider, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
-import {EmailAccountInfo, AddEmailAccountRequest, EmailAccountsAPI} from "@/app/api/artel/email_accounts.pb.ts"
+import {AddEmailConnectionRequest, ExternalConnectionInfo, ExternalProvider, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
-import {useEmailAccounts} from "@/app/hooks/EmailAccounts.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -64,11 +62,11 @@ const PROVIDERS: ProviderDef[] = [
 ]
 
 function providerKey(p: ExternalProvider): string {
-    const map: Record<ExternalProvider, string> = {
-        [ExternalProvider.EXTERNAL_PROVIDER_UNSPECIFIED]: "",
+    const map: Partial<Record<ExternalProvider, string>> = {
         [ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS]: "google_sheets",
         [ExternalProvider.EXTERNAL_PROVIDER_TRELLO]: "trello",
         [ExternalProvider.EXTERNAL_PROVIDER_MIRO]: "miro",
+        [ExternalProvider.EXTERNAL_PROVIDER_EMAIL]: "email",
     }
     return map[p] ?? ""
 }
@@ -77,7 +75,6 @@ export default function ConnectionsPage() {
     const navigate = useNavigate()
     const {auth} = useUser()
     const {fetch: fetchConnections} = useExternalConnections()
-    const {fetch: fetchAccounts} = useEmailAccounts()
     const bakeError = useBakeError()
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -99,7 +96,6 @@ export default function ConnectionsPage() {
         }
 
         void fetchConnections()
-        void fetchAccounts()
     }, [auth])
 
     return (
@@ -130,8 +126,9 @@ function HeroSegment() {
 
 function ContentSegment() {
     const {connections, loading} = useExternalConnections()
-    const {accounts, loading: emailsLoading} = useEmailAccounts()
     const {OpenDialog} = useDialog()
+
+    const emailConnections = connections.filter(c => c.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL)
 
     if (loading) {
         return (
@@ -140,7 +137,7 @@ function ContentSegment() {
                     {PROVIDERS.map(def => (
                         <ProviderCard key={def.provider} def={def} connection={undefined} loading/>
                     ))}
-                    <EmailCard accounts={[]} loading/>
+                    <EmailCard connections={[]} loading/>
                 </div>
             </div>
         )
@@ -166,8 +163,8 @@ function ContentSegment() {
                     )
                 })}
                 <EmailCard
-                    accounts={accounts}
-                    loading={emailsLoading}
+                    connections={emailConnections}
+                    loading={false}
                     onClick={() => OpenDialog(<EmailDetailDialog/>)}
                 />
             </div>
@@ -503,15 +500,15 @@ function NotConnectedContent({def, connecting, onConnectGoogle}: {
 
 /* ── Email connector ────────────────────────────────────────── */
 
-function EmailCard({accounts, loading, onClick}: {
-    accounts: EmailAccountInfo[]
+function EmailCard({connections, loading, onClick}: {
+    connections: ExternalConnectionInfo[]
     loading: boolean
     onClick?: () => void
 }) {
-    const isConnected = accounts.length > 0
-    const accountLabel = accounts.length === 1
-        ? accounts[0].email
-        : accounts.length > 1 ? `${accounts.length} accounts` : undefined
+    const isConnected = connections.length > 0
+    const accountLabel = connections.length === 1
+        ? (connections[0].generic?.fields?.username ?? connections[0].generic?.fields?.email)
+        : connections.length > 1 ? `${connections.length} accounts` : undefined
 
     return (
         <div
@@ -540,21 +537,23 @@ function EmailCard({accounts, loading, onClick}: {
 
 function EmailDetailDialog() {
     const {CloseDialog, OpenDialog} = useDialog()
-    const {accounts, loading, remove} = useEmailAccounts()
-    const {isEmailsEnabled} = useUser()
+    const {connections, loading, disconnect} = useExternalConnections()
     const bakeError = useBakeError()
 
-    function handleRemove(account: EmailAccountInfo) {
+    const emailConnections = connections.filter(c => c.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL)
+
+    function handleRemove(conn: ExternalConnectionInfo) {
+        const email = conn.generic?.fields?.username ?? conn.generic?.fields?.email ?? ""
         OpenDialog(
             <ConfirmDialog
                 title="Remove email account"
-                message={`Remove "${account.email}"? You can re-add it at any time.`}
+                message={`Remove "${email}"? You can re-add it at any time.`}
                 confirmLabel="Remove"
                 cancelLabel="Cancel"
                 danger
                 onConfirm={async () => {
                     try {
-                        await remove(account.id ?? "")
+                        await disconnect("email")
                     } catch (e) {
                         bakeError("Failed to remove account", e)
                     }
@@ -580,47 +579,42 @@ function EmailDetailDialog() {
                     </button>
                 </div>
 
-                {!isEmailsEnabled ? (
-                    <p className={cls.ModalDesc}>Your account does not have access to the Emails feature.</p>
-                ) : (
-                    <div className={cls.EmailAccountSection}>
-                        <div className={cls.EmailAccountSectionHeader}>
-                            <span className={cls.EmailAccountSectionLabel}>Accounts</span>
-                            <button className={cls.BtnGhost} onClick={() => OpenDialog(<EmailAddDialog/>)}>
-                                + Add
-                            </button>
-                        </div>
-                        {loading ? (
-                            <p className={cls.EmptySpreadsheets}>Loading…</p>
-                        ) : accounts.length === 0 ? (
-                            <p className={cls.EmptySpreadsheets}>No email accounts added yet.</p>
-                        ) : (
-                            <div className={cls.EmailAccountList}>
-                                {accounts.map(account => (
-                                    <EmailAccountRow key={account.id} account={account} onRemove={handleRemove}/>
-                                ))}
-                            </div>
-                        )}
+                <div className={cls.EmailAccountSection}>
+                    <div className={cls.EmailAccountSectionHeader}>
+                        <span className={cls.EmailAccountSectionLabel}>Accounts</span>
+                        <button className={cls.BtnGhost} onClick={() => OpenDialog(<EmailAddDialog/>)}>
+                            + Add
+                        </button>
                     </div>
-                )}
+                    {loading ? (
+                        <p className={cls.EmptySpreadsheets}>Loading…</p>
+                    ) : emailConnections.length === 0 ? (
+                        <p className={cls.EmptySpreadsheets}>No email accounts added yet.</p>
+                    ) : (
+                        <div className={cls.EmailAccountList}>
+                            {emailConnections.map(conn => (
+                                <EmailConnectionRow key={conn.id} connection={conn} onRemove={handleRemove}/>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )
 }
 
-function EmailAccountRow({account, onRemove}: {
-    account: EmailAccountInfo
-    onRemove: (account: EmailAccountInfo) => void
+function EmailConnectionRow({connection, onRemove}: {
+    connection: ExternalConnectionInfo
+    onRemove: (conn: ExternalConnectionInfo) => void
 }) {
+    const email = connection.generic?.fields?.username ?? connection.generic?.fields?.email ?? "—"
+
     return (
         <div className={cls.EmailAccountRow}>
             <div className={cls.EmailAccountInfo}>
-                <span className={cls.EmailAccountEmail}>{account.email}</span>
-                <span className={cls.EmailAccountMeta}>
-                    IMAP {account.imapHost}:{account.imapPort} · SMTP {account.smtpHost}:{account.smtpPort}
-                </span>
+                <span className={cls.EmailAccountEmail}>{email}</span>
             </div>
-            <button className={cls.BtnIconRemove} onClick={() => onRemove(account)} aria-label="Remove">
+            <button className={cls.BtnIconRemove} onClick={() => onRemove(connection)} aria-label="Remove">
                 ×
             </button>
         </div>
@@ -635,38 +629,14 @@ function EmailAddDialog() {
     const [smtpHost, setSmtpHost] = useState("")
     const [smtpPort, setSmtpPort] = useState("")
     const [password, setPassword] = useState("")
-    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const {add} = useEmailAccounts()
+    const {addEmailConnection} = useExternalConnections()
     const {CloseDialog} = useDialog()
-    const {auth} = useUser()
     const bakeError = useBakeError()
-
-    function handleEmailChange(value: string) {
-        setEmail(value)
-        const domain = value.split("@")[1] ?? ""
-        if (!domain) return
-
-        if (debounceRef.current) clearTimeout(debounceRef.current)
-        debounceRef.current = setTimeout(async () => {
-            try {
-                const resp = await EmailAccountsAPI.ListMailServerSuggestions({domain}, auth.getInitReq())
-                if (resp.suggestions?.length === 1) {
-                    const s = resp.suggestions[0]
-                    setImapHost(s.imap ?? "")
-                    setImapPort(s.imapPort ? String(s.imapPort) : "")
-                    setSmtpHost(s.smtp ?? "")
-                    setSmtpPort(s.smtpPort ? String(s.smtpPort) : "")
-                }
-            } catch {
-                // suggestion lookup is best-effort
-            }
-        }, 300)
-    }
 
     async function handleAdd() {
         setAdding(true)
-        const req: AddEmailAccountRequest = {
+        const req: AddEmailConnectionRequest = {
             email,
             imapHost,
             imapPort: imapPort ? parseInt(imapPort, 10) : undefined,
@@ -674,7 +644,7 @@ function EmailAddDialog() {
             smtpPort: smtpPort ? parseInt(smtpPort, 10) : undefined,
             password,
         }
-        add(req)
+        addEmailConnection(req)
             .then(CloseDialog)
             .catch(e => bakeError("Error adding email", e))
             .finally(() => setAdding(false))
@@ -699,7 +669,7 @@ function EmailAddDialog() {
                         className={cls.Input}
                         placeholder="you@example.com"
                         value={email}
-                        onChange={e => handleEmailChange(e.target.value)}
+                        onChange={e => setEmail(e.target.value)}
                         disabled={adding}
                         autoComplete="off"
                     />

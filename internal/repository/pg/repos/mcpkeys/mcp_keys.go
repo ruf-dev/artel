@@ -92,17 +92,11 @@ func (r *McpKeyRepo) RevokeMcpKey(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (r *McpKeyRepo) SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vaultUuid uuid.UUID, emailAccountUuid *uuid.UUID) error {
-	var nullEmailID uuid.NullUUID
-	if emailAccountUuid != nil {
-		nullEmailID = uuid.NullUUID{UUID: *emailAccountUuid, Valid: true}
-	}
-
+func (r *McpKeyRepo) SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vaultUuid uuid.UUID) error {
 	err := r.q.SetMcpKeyAccess(ctx, artel_q.SetMcpKeyAccessParams{
-		ID:             keyUuid,
-		UserID:         userUuid,
-		VaultID:        vaultUuid,
-		EmailAccountID: nullEmailID,
+		ID:      keyUuid,
+		UserID:  userUuid,
+		VaultID: vaultUuid,
 	})
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "set mcp key access")
@@ -130,10 +124,6 @@ func toMcpKey(row artel_q.McpKey) domain.McpKey {
 	}
 	if row.RevokedAt.Valid {
 		key.RevokedAt = &row.RevokedAt.Time
-	}
-	if row.EmailAccountID.Valid {
-		id := row.EmailAccountID.UUID
-		key.EmailAccountUuid = &id
 	}
 	if row.LastAccessedAt.Valid {
 		key.LastAccessedAt = &row.LastAccessedAt.Time

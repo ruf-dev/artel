@@ -55,6 +55,13 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddEmailConnection(AddEmailConnection.Request) returns (AddEmailConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/email/add"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -62,6 +69,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_GOOGLE_SHEETS = 1;
   EXTERNAL_PROVIDER_TRELLO = 2;
   EXTERNAL_PROVIDER_MIRO = 3;
+  EXTERNAL_PROVIDER_EMAIL = 4;
 }
 
 message GoogleConnectionInfo {
@@ -142,4 +150,18 @@ message RemoveSpreadsheet {
     string spreadsheet_id = 1;
   }
   message Response {}
+}
+
+message AddEmailConnection {
+  message Request {
+    string email     = 1;
+    string imap_host = 2;
+    int32  imap_port = 3;
+    string smtp_host = 4;
+    int32  smtp_port = 5;
+    string password  = 6;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
 }

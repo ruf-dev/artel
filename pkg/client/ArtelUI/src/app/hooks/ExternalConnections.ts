@@ -1,6 +1,6 @@
 import {create} from 'zustand'
 
-import {ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
+import {AddEmailConnectionRequest, ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
 interface ExternalConnectionsState {
@@ -15,6 +15,7 @@ interface ExternalConnectionsState {
     fetchSpreadsheets: () => Promise<void>
     addSpreadsheet: (spreadsheetId: string, name: string) => Promise<void>
     removeSpreadsheet: (spreadsheetId: string) => Promise<void>
+    addEmailConnection: (req: AddEmailConnectionRequest) => Promise<void>
 }
 
 export const useExternalConnections = create<ExternalConnectionsState>((set, get) => ({
@@ -63,5 +64,10 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
     removeSpreadsheet: async (spreadsheetId: string) => {
         await externalConnectionsService.removeSpreadsheet(spreadsheetId)
         await get().fetchSpreadsheets()
+    },
+
+    addEmailConnection: async (req: AddEmailConnectionRequest) => {
+        await externalConnectionsService.addEmailConnection(req)
+        await get().fetch()
     },
 }))

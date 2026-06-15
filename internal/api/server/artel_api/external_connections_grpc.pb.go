@@ -26,6 +26,7 @@ const (
 	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
 	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName     = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
 	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName    = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
+	ExternalConnectionsAPI_AddEmailConnection_FullMethodName   = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -39,6 +40,7 @@ type ExternalConnectionsAPIClient interface {
 	AddSpreadsheet(ctx context.Context, in *AddSpreadsheet_Request, opts ...grpc.CallOption) (*AddSpreadsheet_Response, error)
 	ListSpreadsheets(ctx context.Context, in *ListSpreadsheets_Request, opts ...grpc.CallOption) (*ListSpreadsheets_Response, error)
 	RemoveSpreadsheet(ctx context.Context, in *RemoveSpreadsheet_Request, opts ...grpc.CallOption) (*RemoveSpreadsheet_Response, error)
+	AddEmailConnection(ctx context.Context, in *AddEmailConnection_Request, opts ...grpc.CallOption) (*AddEmailConnection_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -119,6 +121,16 @@ func (c *externalConnectionsAPIClient) RemoveSpreadsheet(ctx context.Context, in
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) AddEmailConnection(ctx context.Context, in *AddEmailConnection_Request, opts ...grpc.CallOption) (*AddEmailConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddEmailConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddEmailConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility.
@@ -130,6 +142,7 @@ type ExternalConnectionsAPIServer interface {
 	AddSpreadsheet(context.Context, *AddSpreadsheet_Request) (*AddSpreadsheet_Response, error)
 	ListSpreadsheets(context.Context, *ListSpreadsheets_Request) (*ListSpreadsheets_Response, error)
 	RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error)
+	AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -160,6 +173,9 @@ func (UnimplementedExternalConnectionsAPIServer) ListSpreadsheets(context.Contex
 }
 func (UnimplementedExternalConnectionsAPIServer) RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveSpreadsheet not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddEmailConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -309,6 +325,24 @@ func _ExternalConnectionsAPI_RemoveSpreadsheet_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_AddEmailConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddEmailConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddEmailConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddEmailConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddEmailConnection(ctx, req.(*AddEmailConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -343,6 +377,10 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveSpreadsheet",
 			Handler:    _ExternalConnectionsAPI_RemoveSpreadsheet_Handler,
+		},
+		{
+			MethodName: "AddEmailConnection",
+			Handler:    _ExternalConnectionsAPI_AddEmailConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -9,7 +9,7 @@ interface McpKeysState {
     fetch: () => Promise<void>
     create: (name: string, vaultId: string) => Promise<CreateMcpKeyResponse>
     revoke: (keyId: string, vaultId: string) => Promise<void>
-    setAccess: (keyId: string, vaultId: string, emailAccountId: string) => Promise<void>
+    setAccess: (keyId: string, vaultId: string) => Promise<void>
 }
 
 export const useMcpKeys = create<McpKeysState>((set, get) => ({
@@ -37,8 +37,8 @@ export const useMcpKeys = create<McpKeysState>((set, get) => ({
         await get().fetch()
     },
 
-    setAccess: async (keyId: string, vaultId: string, emailAccountId: string) => {
-        await mcpKeysService.setAccess(keyId, vaultId, emailAccountId)
+    setAccess: async (keyId: string, vaultId: string) => {
+        await mcpKeysService.setAccess(keyId, vaultId)
         await get().fetch()
     },
 }))

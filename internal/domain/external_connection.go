@@ -13,6 +13,7 @@ const (
 	ProviderGoogleSheets = "google_sheets"
 	ProviderTrello       = "trello"
 	ProviderMiro         = "miro"
+	ProviderEmail        = "email"
 )
 
 type ExternalConnection struct {

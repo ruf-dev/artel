@@ -159,18 +159,6 @@ type CouchInstance struct {
 	CreatedAt   time.Time
 }
 
-type EmailAccount struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	Email       string
-	ImapHost    string
-	ImapPort    int32
-	SmtpHost    string
-	SmtpPort    int32
-	PasswordEnc []byte
-	CreatedAt   time.Time
-}
-
 type ExternalConnection struct {
 	ID             uuid.UUID
 	UserID         uuid.UUID
@@ -223,7 +211,6 @@ type McpKey struct {
 	KeyPreview     string
 	CreatedAt      time.Time
 	RevokedAt      sql.NullTime
-	EmailAccountID uuid.NullUUID
 	LastAccessedAt sql.NullTime
 }
 

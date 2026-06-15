@@ -26,9 +26,6 @@ func (m *McpKeysImpl) ListUserMcpKeys(ctx context.Context, _ *pb.ListUserMcpKeys
 		if key.LastAccessedAt != nil {
 			keyInfo.LastAccessedAt = key.LastAccessedAt.String()
 		}
-		if key.EmailAccountUuid != nil {
-			keyInfo.EmailAccountId = key.EmailAccountUuid.String()
-		}
 		keyInfos = append(keyInfos, keyInfo)
 	}
 

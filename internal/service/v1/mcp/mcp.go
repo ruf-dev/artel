@@ -23,29 +23,23 @@ const tokenPrefix = "artel_vtk_"
 const bcryptCost = 12
 
 type McpServiceImpl struct {
-	mcpKeys         repository.McpKeyRepository
-	vaults          repository.Vaults
-	vaultMembers    repository.VaultMembers
-	emailAccounts   repository.EmailAccounts
-	couchInstances  repository.CouchInstances
-	userPermissions repository.UserPermissionsRepo
+	mcpKeys        repository.McpKeyRepository
+	vaults         repository.Vaults
+	vaultMembers   repository.VaultMembers
+	couchInstances repository.CouchInstances
 }
 
 func New(
 	mcpKeys repository.McpKeyRepository,
 	vaults repository.Vaults,
 	vaultMembers repository.VaultMembers,
-	emailAccounts repository.EmailAccounts,
 	couchInstances repository.CouchInstances,
-	userPermissions repository.UserPermissionsRepo,
 ) *McpServiceImpl {
 	return &McpServiceImpl{
-		mcpKeys:         mcpKeys,
-		vaults:          vaults,
-		vaultMembers:    vaultMembers,
-		emailAccounts:   emailAccounts,
-		couchInstances:  couchInstances,
-		userPermissions: userPermissions,
+		mcpKeys:        mcpKeys,
+		vaults:         vaults,
+		vaultMembers:   vaultMembers,
+		couchInstances: couchInstances,
 	}
 }
 
@@ -111,7 +105,7 @@ func (s *McpServiceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
 	return nil
 }
 
-func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID, emailAccountID *uuid.UUID) error {
+func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return user_errors.Unauthenticated
@@ -122,18 +116,7 @@ func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaul
 		return rerrors.Wrap(user_errors.Unauthenticated, "user is not a member of target vault")
 	}
 
-	if emailAccountID != nil {
-		var account domain.EmailAccount
-		account, err = s.emailAccounts.GetByUuid(ctx, *emailAccountID)
-		if err != nil {
-			return rerrors.Wrap(err, "get email account")
-		}
-		if account.UserUuid != uc.UserUuid {
-			return user_errors.Unauthenticated
-		}
-	}
-
-	err = s.mcpKeys.SetMcpKeyAccess(ctx, keyID, uc.UserUuid, vaultID, emailAccountID)
+	err = s.mcpKeys.SetMcpKeyAccess(ctx, keyID, uc.UserUuid, vaultID)
 	if err != nil {
 		return rerrors.Wrap(err, "set mcp key access")
 	}
@@ -194,13 +177,6 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 		CouchDb:   vault.CouchDBName,
 		CouchUser: couchInstance.Username,
 		CouchPass: couchInstance.Password,
-	}
-
-	perms, permErr := s.userPermissions.Get(ctx, mcpKey.UserUuid)
-	if permErr != nil {
-		log.Error().Err(permErr).Msg("ResolveKey: get user permissions failed")
-	} else {
-		result.HasEmails = perms.HasEmails
 	}
 
 	go func() {

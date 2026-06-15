@@ -20,16 +20,7 @@ func (m *McpKeysImpl) SetMcpKeyAccess(ctx context.Context, req *pb.SetMcpKeyAcce
 		return nil, rerrors.Wrap(err, "parse vault id")
 	}
 
-	var emailAccountID *uuid.UUID
-	if req.EmailAccountId != "" {
-		parsed, err := uuid.Parse(req.EmailAccountId)
-		if err != nil {
-			return nil, rerrors.Wrap(err, "parse email account id")
-		}
-		emailAccountID = &parsed
-	}
-
-	err = m.mcpSvc.SetKeyAccess(ctx, keyID, vaultID, emailAccountID)
+	err = m.mcpSvc.SetKeyAccess(ctx, keyID, vaultID)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "set mcp key access")
 	}

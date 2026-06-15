@@ -11,7 +11,6 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/adminusers"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
-	"github.com/ruf-dev/artel/internal/service/v1/email"
 	externalconns "github.com/ruf-dev/artel/internal/service/v1/externalconnections"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
 	"github.com/ruf-dev/artel/internal/service/v1/mom"
@@ -28,7 +27,6 @@ type Services struct {
 	CouchInstance       service.CouchInstanceService
 	AdminCouch          service.AdminCouchService
 	Mcp                 service.McpService
-	Email               service.EmailService
 	Subscription        service.SubscriptionService
 	Prompt              service.PromptService
 	TaskTracker         service.TaskTrackerService
@@ -55,8 +53,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Vault:               vault.New(repo),
 		CouchInstance:       couchinstances.New(repo),
 		AdminCouch:          admincouchsvc.New(repo),
-		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.EmailAccounts(), repo.CouchInstances(), repo.UserPermissions()),
-		Email:               email.New(repo.EmailAccounts(), repo.MailServerSuggestions()),
+		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.CouchInstances()),
 		Subscription:        subscription.New(repo.Subscriptions()),
 		Prompt:              prompt.New(repo.Prompts()),
 		TaskTracker:         tasktracker.New(repo.TaskTrackers()),
@@ -85,10 +82,6 @@ func (s *Services) AdminCouchService() service.AdminCouchService {
 
 func (s *Services) McpService() service.McpService {
 	return s.Mcp
-}
-
-func (s *Services) EmailService() service.EmailService {
-	return s.Email
 }
 
 func (s *Services) SubscriptionService() service.SubscriptionService {

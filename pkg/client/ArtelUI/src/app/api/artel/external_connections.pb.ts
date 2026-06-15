@@ -22,6 +22,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_GOOGLE_SHEETS = "EXTERNAL_PROVIDER_GOOGLE_SHEETS",
   EXTERNAL_PROVIDER_TRELLO = "EXTERNAL_PROVIDER_TRELLO",
   EXTERNAL_PROVIDER_MIRO = "EXTERNAL_PROVIDER_MIRO",
+  EXTERNAL_PROVIDER_EMAIL = "EXTERNAL_PROVIDER_EMAIL",
 }
 
 export type GoogleConnectionInfo = {
@@ -113,6 +114,21 @@ export type RemoveSpreadsheetResponse = Record<string, never>;
 
 export type RemoveSpreadsheet = Record<string, never>;
 
+export type AddEmailConnectionRequest = {
+  email?: string;
+  imapHost?: string;
+  imapPort?: number;
+  smtpHost?: string;
+  smtpPort?: number;
+  password?: string;
+};
+
+export type AddEmailConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddEmailConnection = Record<string, never>;
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -134,5 +150,8 @@ export class ExternalConnectionsAPI {
   }
   static RemoveSpreadsheet(this:void, req: RemoveSpreadsheetRequest, initReq?: fm.InitReq): Promise<RemoveSpreadsheetResponse> {
     return fm.fetchRequest<RemoveSpreadsheetResponse>(`/api/external-connections/google/spreadsheets/remove`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddEmailConnection(this:void, req: AddEmailConnectionRequest, initReq?: fm.InitReq): Promise<AddEmailConnectionResponse> {
+    return fm.fetchRequest<AddEmailConnectionResponse>(`/api/external-connections/email/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

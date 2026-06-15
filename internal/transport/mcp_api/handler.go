@@ -37,16 +37,14 @@ type rpcError struct {
 }
 
 type McpHandler struct {
-	mcpSvc   service.McpService
-	emailSvc service.EmailService
-	momSvc   service.MomService
+	mcpSvc service.McpService
+	momSvc service.MomService
 }
 
-func NewMcpHandler(mcpSvc service.McpService, emailSvc service.EmailService, momSvc service.MomService) *McpHandler {
+func NewMcpHandler(mcpSvc service.McpService, momSvc service.MomService) *McpHandler {
 	return &McpHandler{
-		mcpSvc:   mcpSvc,
-		emailSvc: emailSvc,
-		momSvc:   momSvc,
+		mcpSvc: mcpSvc,
+		momSvc: momSvc,
 	}
 }
 
@@ -185,7 +183,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 		return
 	}
 
-	tools := getToolDefinitions(keyCtx.HasEmails)
+	tools := getToolDefinitions()
 
 	keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
 	if err != nil {
@@ -240,18 +238,10 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 		return
 	}
 
-	switch callReq.Name {
-	case toolListEmailFolders, toolListEmailAccounts, toolListEmails, toolReadEmail, toolSendEmail:
-		if !keyCtx.HasEmails {
-			writeErrorResponse(ctx, w, req.Id, -32001, "permission denied", nil)
-			return
-		}
-	}
-
 	var result interface{}
 	if isKnownTool(callReq.Name) {
 		var err error
-		result, err = dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)
+		result, err = dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
 			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)

@@ -7,16 +7,15 @@ import (
 )
 
 type McpKey struct {
-	Uuid             uuid.UUID
-	VaultUuid        uuid.UUID
-	UserUuid         uuid.UUID
-	EmailAccountUuid *uuid.UUID
-	Name             string
-	KeyHash          []byte
-	KeyPreview       string
-	CreatedAt        time.Time
-	RevokedAt        *time.Time
-	LastAccessedAt   *time.Time
+	Uuid           uuid.UUID
+	VaultUuid      uuid.UUID
+	UserUuid       uuid.UUID
+	Name           string
+	KeyHash        []byte
+	KeyPreview     string
+	CreatedAt      time.Time
+	RevokedAt      *time.Time
+	LastAccessedAt *time.Time
 }
 
 // McpKeyContext is resolved from a raw bearer token; contains everything
@@ -29,5 +28,4 @@ type McpKeyContext struct {
 	CouchDb   string
 	CouchUser string
 	CouchPass string
-	HasEmails bool
 }

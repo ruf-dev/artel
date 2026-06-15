@@ -5,7 +5,7 @@ export interface IMcpKeysService {
     list: () => Promise<McpKeyInfo[]>
     create: (name: string, vaultId: string) => Promise<CreateMcpKeyResponse>
     revoke: (keyId: string, vaultId: string) => Promise<void>
-    setAccess: (keyId: string, vaultId: string, emailAccountId: string) => Promise<void>
+    setAccess: (keyId: string, vaultId: string) => Promise<void>
 }
 
 export class McpKeysService implements IMcpKeysService {
@@ -22,8 +22,8 @@ export class McpKeysService implements IMcpKeysService {
         await McpKeysAPI.RevokeMcpKey({keyId, vaultId}, useUser.getState().auth.getInitReq())
     }
 
-    async setAccess(keyId: string, vaultId: string, emailAccountId: string): Promise<void> {
-        await McpKeysAPI.SetMcpKeyAccess({keyId, vaultId, emailAccountId}, useUser.getState().auth.getInitReq())
+    async setAccess(keyId: string, vaultId: string): Promise<void> {
+        await McpKeysAPI.SetMcpKeyAccess({keyId, vaultId}, useUser.getState().auth.getInitReq())
     }
 }
 

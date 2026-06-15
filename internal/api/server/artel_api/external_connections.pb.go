@@ -29,6 +29,7 @@ const (
 	ExternalProvider_EXTERNAL_PROVIDER_GOOGLE_SHEETS ExternalProvider = 1
 	ExternalProvider_EXTERNAL_PROVIDER_TRELLO        ExternalProvider = 2
 	ExternalProvider_EXTERNAL_PROVIDER_MIRO          ExternalProvider = 3
+	ExternalProvider_EXTERNAL_PROVIDER_EMAIL         ExternalProvider = 4
 )
 
 // Enum value maps for ExternalProvider.
@@ -38,12 +39,14 @@ var (
 		1: "EXTERNAL_PROVIDER_GOOGLE_SHEETS",
 		2: "EXTERNAL_PROVIDER_TRELLO",
 		3: "EXTERNAL_PROVIDER_MIRO",
+		4: "EXTERNAL_PROVIDER_EMAIL",
 	}
 	ExternalProvider_value = map[string]int32{
 		"EXTERNAL_PROVIDER_UNSPECIFIED":   0,
 		"EXTERNAL_PROVIDER_GOOGLE_SHEETS": 1,
 		"EXTERNAL_PROVIDER_TRELLO":        2,
 		"EXTERNAL_PROVIDER_MIRO":          3,
+		"EXTERNAL_PROVIDER_EMAIL":         4,
 	}
 )
 
@@ -596,6 +599,42 @@ func (*RemoveSpreadsheet) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{10}
 }
 
+type AddEmailConnection struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddEmailConnection) Reset() {
+	*x = AddEmailConnection{}
+	mi := &file_external_connections_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddEmailConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddEmailConnection) ProtoMessage() {}
+
+func (x *AddEmailConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddEmailConnection.ProtoReflect.Descriptor instead.
+func (*AddEmailConnection) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{11}
+}
+
 type InitiateGoogleOAuth_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Origin        string                 `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
@@ -605,7 +644,7 @@ type InitiateGoogleOAuth_Request struct {
 
 func (x *InitiateGoogleOAuth_Request) Reset() {
 	*x = InitiateGoogleOAuth_Request{}
-	mi := &file_external_connections_proto_msgTypes[12]
+	mi := &file_external_connections_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -617,7 +656,7 @@ func (x *InitiateGoogleOAuth_Request) String() string {
 func (*InitiateGoogleOAuth_Request) ProtoMessage() {}
 
 func (x *InitiateGoogleOAuth_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[12]
+	mi := &file_external_connections_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -649,7 +688,7 @@ type InitiateGoogleOAuth_Response struct {
 
 func (x *InitiateGoogleOAuth_Response) Reset() {
 	*x = InitiateGoogleOAuth_Response{}
-	mi := &file_external_connections_proto_msgTypes[13]
+	mi := &file_external_connections_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -661,7 +700,7 @@ func (x *InitiateGoogleOAuth_Response) String() string {
 func (*InitiateGoogleOAuth_Response) ProtoMessage() {}
 
 func (x *InitiateGoogleOAuth_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[13]
+	mi := &file_external_connections_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -692,7 +731,7 @@ type ListConnections_Request struct {
 
 func (x *ListConnections_Request) Reset() {
 	*x = ListConnections_Request{}
-	mi := &file_external_connections_proto_msgTypes[14]
+	mi := &file_external_connections_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -704,7 +743,7 @@ func (x *ListConnections_Request) String() string {
 func (*ListConnections_Request) ProtoMessage() {}
 
 func (x *ListConnections_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[14]
+	mi := &file_external_connections_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -729,7 +768,7 @@ type ListConnections_Response struct {
 
 func (x *ListConnections_Response) Reset() {
 	*x = ListConnections_Response{}
-	mi := &file_external_connections_proto_msgTypes[15]
+	mi := &file_external_connections_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -741,7 +780,7 @@ func (x *ListConnections_Response) String() string {
 func (*ListConnections_Response) ProtoMessage() {}
 
 func (x *ListConnections_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[15]
+	mi := &file_external_connections_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -773,7 +812,7 @@ type DisconnectProvider_Request struct {
 
 func (x *DisconnectProvider_Request) Reset() {
 	*x = DisconnectProvider_Request{}
-	mi := &file_external_connections_proto_msgTypes[16]
+	mi := &file_external_connections_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -785,7 +824,7 @@ func (x *DisconnectProvider_Request) String() string {
 func (*DisconnectProvider_Request) ProtoMessage() {}
 
 func (x *DisconnectProvider_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[16]
+	mi := &file_external_connections_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -816,7 +855,7 @@ type DisconnectProvider_Response struct {
 
 func (x *DisconnectProvider_Response) Reset() {
 	*x = DisconnectProvider_Response{}
-	mi := &file_external_connections_proto_msgTypes[17]
+	mi := &file_external_connections_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -828,7 +867,7 @@ func (x *DisconnectProvider_Response) String() string {
 func (*DisconnectProvider_Response) ProtoMessage() {}
 
 func (x *DisconnectProvider_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[17]
+	mi := &file_external_connections_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -852,7 +891,7 @@ type GooglePickerToken_Request struct {
 
 func (x *GooglePickerToken_Request) Reset() {
 	*x = GooglePickerToken_Request{}
-	mi := &file_external_connections_proto_msgTypes[18]
+	mi := &file_external_connections_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -864,7 +903,7 @@ func (x *GooglePickerToken_Request) String() string {
 func (*GooglePickerToken_Request) ProtoMessage() {}
 
 func (x *GooglePickerToken_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[18]
+	mi := &file_external_connections_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -889,7 +928,7 @@ type GooglePickerToken_Response struct {
 
 func (x *GooglePickerToken_Response) Reset() {
 	*x = GooglePickerToken_Response{}
-	mi := &file_external_connections_proto_msgTypes[19]
+	mi := &file_external_connections_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -901,7 +940,7 @@ func (x *GooglePickerToken_Response) String() string {
 func (*GooglePickerToken_Response) ProtoMessage() {}
 
 func (x *GooglePickerToken_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[19]
+	mi := &file_external_connections_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -934,7 +973,7 @@ type AddSpreadsheet_Request struct {
 
 func (x *AddSpreadsheet_Request) Reset() {
 	*x = AddSpreadsheet_Request{}
-	mi := &file_external_connections_proto_msgTypes[20]
+	mi := &file_external_connections_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -946,7 +985,7 @@ func (x *AddSpreadsheet_Request) String() string {
 func (*AddSpreadsheet_Request) ProtoMessage() {}
 
 func (x *AddSpreadsheet_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[20]
+	mi := &file_external_connections_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -985,7 +1024,7 @@ type AddSpreadsheet_Response struct {
 
 func (x *AddSpreadsheet_Response) Reset() {
 	*x = AddSpreadsheet_Response{}
-	mi := &file_external_connections_proto_msgTypes[21]
+	mi := &file_external_connections_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -997,7 +1036,7 @@ func (x *AddSpreadsheet_Response) String() string {
 func (*AddSpreadsheet_Response) ProtoMessage() {}
 
 func (x *AddSpreadsheet_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[21]
+	mi := &file_external_connections_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1028,7 +1067,7 @@ type ListSpreadsheets_Request struct {
 
 func (x *ListSpreadsheets_Request) Reset() {
 	*x = ListSpreadsheets_Request{}
-	mi := &file_external_connections_proto_msgTypes[22]
+	mi := &file_external_connections_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1040,7 +1079,7 @@ func (x *ListSpreadsheets_Request) String() string {
 func (*ListSpreadsheets_Request) ProtoMessage() {}
 
 func (x *ListSpreadsheets_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[22]
+	mi := &file_external_connections_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1065,7 +1104,7 @@ type ListSpreadsheets_Response struct {
 
 func (x *ListSpreadsheets_Response) Reset() {
 	*x = ListSpreadsheets_Response{}
-	mi := &file_external_connections_proto_msgTypes[23]
+	mi := &file_external_connections_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1077,7 +1116,7 @@ func (x *ListSpreadsheets_Response) String() string {
 func (*ListSpreadsheets_Response) ProtoMessage() {}
 
 func (x *ListSpreadsheets_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[23]
+	mi := &file_external_connections_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1109,7 +1148,7 @@ type RemoveSpreadsheet_Request struct {
 
 func (x *RemoveSpreadsheet_Request) Reset() {
 	*x = RemoveSpreadsheet_Request{}
-	mi := &file_external_connections_proto_msgTypes[24]
+	mi := &file_external_connections_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1121,7 +1160,7 @@ func (x *RemoveSpreadsheet_Request) String() string {
 func (*RemoveSpreadsheet_Request) ProtoMessage() {}
 
 func (x *RemoveSpreadsheet_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[24]
+	mi := &file_external_connections_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1152,7 +1191,7 @@ type RemoveSpreadsheet_Response struct {
 
 func (x *RemoveSpreadsheet_Response) Reset() {
 	*x = RemoveSpreadsheet_Response{}
-	mi := &file_external_connections_proto_msgTypes[25]
+	mi := &file_external_connections_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1164,7 +1203,7 @@ func (x *RemoveSpreadsheet_Response) String() string {
 func (*RemoveSpreadsheet_Response) ProtoMessage() {}
 
 func (x *RemoveSpreadsheet_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[25]
+	mi := &file_external_connections_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1178,6 +1217,134 @@ func (x *RemoveSpreadsheet_Response) ProtoReflect() protoreflect.Message {
 // Deprecated: Use RemoveSpreadsheet_Response.ProtoReflect.Descriptor instead.
 func (*RemoveSpreadsheet_Response) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{10, 1}
+}
+
+type AddEmailConnection_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	ImapHost      string                 `protobuf:"bytes,2,opt,name=imap_host,json=imapHost,proto3" json:"imap_host,omitempty"`
+	ImapPort      int32                  `protobuf:"varint,3,opt,name=imap_port,json=imapPort,proto3" json:"imap_port,omitempty"`
+	SmtpHost      string                 `protobuf:"bytes,4,opt,name=smtp_host,json=smtpHost,proto3" json:"smtp_host,omitempty"`
+	SmtpPort      int32                  `protobuf:"varint,5,opt,name=smtp_port,json=smtpPort,proto3" json:"smtp_port,omitempty"`
+	Password      string                 `protobuf:"bytes,6,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddEmailConnection_Request) Reset() {
+	*x = AddEmailConnection_Request{}
+	mi := &file_external_connections_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddEmailConnection_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddEmailConnection_Request) ProtoMessage() {}
+
+func (x *AddEmailConnection_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddEmailConnection_Request.ProtoReflect.Descriptor instead.
+func (*AddEmailConnection_Request) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{11, 0}
+}
+
+func (x *AddEmailConnection_Request) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *AddEmailConnection_Request) GetImapHost() string {
+	if x != nil {
+		return x.ImapHost
+	}
+	return ""
+}
+
+func (x *AddEmailConnection_Request) GetImapPort() int32 {
+	if x != nil {
+		return x.ImapPort
+	}
+	return 0
+}
+
+func (x *AddEmailConnection_Request) GetSmtpHost() string {
+	if x != nil {
+		return x.SmtpHost
+	}
+	return ""
+}
+
+func (x *AddEmailConnection_Request) GetSmtpPort() int32 {
+	if x != nil {
+		return x.SmtpPort
+	}
+	return 0
+}
+
+func (x *AddEmailConnection_Request) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type AddEmailConnection_Response struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Connection    *ExternalConnectionInfo `protobuf:"bytes,1,opt,name=connection,proto3" json:"connection,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddEmailConnection_Response) Reset() {
+	*x = AddEmailConnection_Response{}
+	mi := &file_external_connections_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddEmailConnection_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddEmailConnection_Response) ProtoMessage() {}
+
+func (x *AddEmailConnection_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddEmailConnection_Response.ProtoReflect.Descriptor instead.
+func (*AddEmailConnection_Response) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{11, 1}
+}
+
+func (x *AddEmailConnection_Response) GetConnection() *ExternalConnectionInfo {
+	if x != nil {
+		return x.Connection
+	}
+	return nil
 }
 
 var File_external_connections_proto protoreflect.FileDescriptor
@@ -1240,12 +1407,25 @@ const file_external_connections_proto_rawDesc = "" +
 	"\aRequest\x12%\n" +
 	"\x0espreadsheet_id\x18\x01 \x01(\tR\rspreadsheetId\x1a\n" +
 	"\n" +
-	"\bResponse*\x94\x01\n" +
+	"\bResponse\"\x95\x02\n" +
+	"\x12AddEmailConnection\x1a\xaf\x01\n" +
+	"\aRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1b\n" +
+	"\timap_host\x18\x02 \x01(\tR\bimapHost\x12\x1b\n" +
+	"\timap_port\x18\x03 \x01(\x05R\bimapPort\x12\x1b\n" +
+	"\tsmtp_host\x18\x04 \x01(\tR\bsmtpHost\x12\x1b\n" +
+	"\tsmtp_port\x18\x05 \x01(\x05R\bsmtpPort\x12\x1a\n" +
+	"\bpassword\x18\x06 \x01(\tR\bpassword\x1aM\n" +
+	"\bResponse\x12A\n" +
+	"\n" +
+	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
+	"connection*\xb1\x01\n" +
 	"\x10ExternalProvider\x12!\n" +
 	"\x1dEXTERNAL_PROVIDER_UNSPECIFIED\x10\x00\x12#\n" +
 	"\x1fEXTERNAL_PROVIDER_GOOGLE_SHEETS\x10\x01\x12\x1c\n" +
 	"\x18EXTERNAL_PROVIDER_TRELLO\x10\x02\x12\x1a\n" +
-	"\x16EXTERNAL_PROVIDER_MIRO\x10\x032\xd1\b\n" +
+	"\x16EXTERNAL_PROVIDER_MIRO\x10\x03\x12\x1b\n" +
+	"\x17EXTERNAL_PROVIDER_EMAIL\x10\x042\xe7\t\n" +
 	"\x16ExternalConnectionsAPI\x12\x9c\x01\n" +
 	"\x13InitiateGoogleOAuth\x12&.artel_api.InitiateGoogleOAuth.Request\x1a'.artel_api.InitiateGoogleOAuth.Response\"4\x82\xd3\xe4\x93\x02.:\x01*\")/api/external-connections/google/initiate\x12\x85\x01\n" +
 	"\x0fListConnections\x12\".artel_api.ListConnections.Request\x1a#.artel_api.ListConnections.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/external-connections/list\x12\x94\x01\n" +
@@ -1253,7 +1433,8 @@ const file_external_connections_proto_rawDesc = "" +
 	"\x14GetGooglePickerToken\x12$.artel_api.GooglePickerToken.Request\x1a%.artel_api.GooglePickerToken.Response\"8\x82\xd3\xe4\x93\x022:\x01*\"-/api/external-connections/google/picker-token\x12\x95\x01\n" +
 	"\x0eAddSpreadsheet\x12!.artel_api.AddSpreadsheet.Request\x1a\".artel_api.AddSpreadsheet.Response\"<\x82\xd3\xe4\x93\x026:\x01*\"1/api/external-connections/google/spreadsheets/add\x12\x9c\x01\n" +
 	"\x10ListSpreadsheets\x12#.artel_api.ListSpreadsheets.Request\x1a$.artel_api.ListSpreadsheets.Response\"=\x82\xd3\xe4\x93\x027:\x01*\"2/api/external-connections/google/spreadsheets/list\x12\xa1\x01\n" +
-	"\x11RemoveSpreadsheet\x12$.artel_api.RemoveSpreadsheet.Request\x1a%.artel_api.RemoveSpreadsheet.Response\"?\x82\xd3\xe4\x93\x029:\x01*\"4/api/external-connections/google/spreadsheets/removeB\fZ\n" +
+	"\x11RemoveSpreadsheet\x12$.artel_api.RemoveSpreadsheet.Request\x1a%.artel_api.RemoveSpreadsheet.Response\"?\x82\xd3\xe4\x93\x029:\x01*\"4/api/external-connections/google/spreadsheets/remove\x12\x93\x01\n" +
+	"\x12AddEmailConnection\x12%.artel_api.AddEmailConnection.Request\x1a&.artel_api.AddEmailConnection.Response\".\x82\xd3\xe4\x93\x02(:\x01*\"#/api/external-connections/email/addB\fZ\n" +
 	"/artel_apib\x06proto3"
 
 var (
@@ -1269,7 +1450,7 @@ func file_external_connections_proto_rawDescGZIP() []byte {
 }
 
 var file_external_connections_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_external_connections_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
+var file_external_connections_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_external_connections_proto_goTypes = []any{
 	(ExternalProvider)(0),                // 0: artel_api.ExternalProvider
 	(*GoogleConnectionInfo)(nil),         // 1: artel_api.GoogleConnectionInfo
@@ -1283,49 +1464,55 @@ var file_external_connections_proto_goTypes = []any{
 	(*AddSpreadsheet)(nil),               // 9: artel_api.AddSpreadsheet
 	(*ListSpreadsheets)(nil),             // 10: artel_api.ListSpreadsheets
 	(*RemoveSpreadsheet)(nil),            // 11: artel_api.RemoveSpreadsheet
-	nil,                                  // 12: artel_api.GenericConnection.FieldsEntry
-	(*InitiateGoogleOAuth_Request)(nil),  // 13: artel_api.InitiateGoogleOAuth.Request
-	(*InitiateGoogleOAuth_Response)(nil), // 14: artel_api.InitiateGoogleOAuth.Response
-	(*ListConnections_Request)(nil),      // 15: artel_api.ListConnections.Request
-	(*ListConnections_Response)(nil),     // 16: artel_api.ListConnections.Response
-	(*DisconnectProvider_Request)(nil),   // 17: artel_api.DisconnectProvider.Request
-	(*DisconnectProvider_Response)(nil),  // 18: artel_api.DisconnectProvider.Response
-	(*GooglePickerToken_Request)(nil),    // 19: artel_api.GooglePickerToken.Request
-	(*GooglePickerToken_Response)(nil),   // 20: artel_api.GooglePickerToken.Response
-	(*AddSpreadsheet_Request)(nil),       // 21: artel_api.AddSpreadsheet.Request
-	(*AddSpreadsheet_Response)(nil),      // 22: artel_api.AddSpreadsheet.Response
-	(*ListSpreadsheets_Request)(nil),     // 23: artel_api.ListSpreadsheets.Request
-	(*ListSpreadsheets_Response)(nil),    // 24: artel_api.ListSpreadsheets.Response
-	(*RemoveSpreadsheet_Request)(nil),    // 25: artel_api.RemoveSpreadsheet.Request
-	(*RemoveSpreadsheet_Response)(nil),   // 26: artel_api.RemoveSpreadsheet.Response
+	(*AddEmailConnection)(nil),           // 12: artel_api.AddEmailConnection
+	nil,                                  // 13: artel_api.GenericConnection.FieldsEntry
+	(*InitiateGoogleOAuth_Request)(nil),  // 14: artel_api.InitiateGoogleOAuth.Request
+	(*InitiateGoogleOAuth_Response)(nil), // 15: artel_api.InitiateGoogleOAuth.Response
+	(*ListConnections_Request)(nil),      // 16: artel_api.ListConnections.Request
+	(*ListConnections_Response)(nil),     // 17: artel_api.ListConnections.Response
+	(*DisconnectProvider_Request)(nil),   // 18: artel_api.DisconnectProvider.Request
+	(*DisconnectProvider_Response)(nil),  // 19: artel_api.DisconnectProvider.Response
+	(*GooglePickerToken_Request)(nil),    // 20: artel_api.GooglePickerToken.Request
+	(*GooglePickerToken_Response)(nil),   // 21: artel_api.GooglePickerToken.Response
+	(*AddSpreadsheet_Request)(nil),       // 22: artel_api.AddSpreadsheet.Request
+	(*AddSpreadsheet_Response)(nil),      // 23: artel_api.AddSpreadsheet.Response
+	(*ListSpreadsheets_Request)(nil),     // 24: artel_api.ListSpreadsheets.Request
+	(*ListSpreadsheets_Response)(nil),    // 25: artel_api.ListSpreadsheets.Response
+	(*RemoveSpreadsheet_Request)(nil),    // 26: artel_api.RemoveSpreadsheet.Request
+	(*RemoveSpreadsheet_Response)(nil),   // 27: artel_api.RemoveSpreadsheet.Response
+	(*AddEmailConnection_Request)(nil),   // 28: artel_api.AddEmailConnection.Request
+	(*AddEmailConnection_Response)(nil),  // 29: artel_api.AddEmailConnection.Response
 }
 var file_external_connections_proto_depIdxs = []int32{
-	12, // 0: artel_api.GenericConnection.fields:type_name -> artel_api.GenericConnection.FieldsEntry
+	13, // 0: artel_api.GenericConnection.fields:type_name -> artel_api.GenericConnection.FieldsEntry
 	0,  // 1: artel_api.ExternalConnectionInfo.provider:type_name -> artel_api.ExternalProvider
 	1,  // 2: artel_api.ExternalConnectionInfo.google:type_name -> artel_api.GoogleConnectionInfo
 	2,  // 3: artel_api.ExternalConnectionInfo.generic:type_name -> artel_api.GenericConnection
 	3,  // 4: artel_api.ListConnections.Response.connections:type_name -> artel_api.ExternalConnectionInfo
 	8,  // 5: artel_api.AddSpreadsheet.Response.spreadsheet:type_name -> artel_api.Spreadsheet
 	8,  // 6: artel_api.ListSpreadsheets.Response.spreadsheets:type_name -> artel_api.Spreadsheet
-	13, // 7: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
-	15, // 8: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
-	17, // 9: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
-	19, // 10: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:input_type -> artel_api.GooglePickerToken.Request
-	21, // 11: artel_api.ExternalConnectionsAPI.AddSpreadsheet:input_type -> artel_api.AddSpreadsheet.Request
-	23, // 12: artel_api.ExternalConnectionsAPI.ListSpreadsheets:input_type -> artel_api.ListSpreadsheets.Request
-	25, // 13: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:input_type -> artel_api.RemoveSpreadsheet.Request
-	14, // 14: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
-	16, // 15: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
-	18, // 16: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
-	20, // 17: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:output_type -> artel_api.GooglePickerToken.Response
-	22, // 18: artel_api.ExternalConnectionsAPI.AddSpreadsheet:output_type -> artel_api.AddSpreadsheet.Response
-	24, // 19: artel_api.ExternalConnectionsAPI.ListSpreadsheets:output_type -> artel_api.ListSpreadsheets.Response
-	26, // 20: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:output_type -> artel_api.RemoveSpreadsheet.Response
-	14, // [14:21] is the sub-list for method output_type
-	7,  // [7:14] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	3,  // 7: artel_api.AddEmailConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	14, // 8: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
+	16, // 9: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
+	18, // 10: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
+	20, // 11: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:input_type -> artel_api.GooglePickerToken.Request
+	22, // 12: artel_api.ExternalConnectionsAPI.AddSpreadsheet:input_type -> artel_api.AddSpreadsheet.Request
+	24, // 13: artel_api.ExternalConnectionsAPI.ListSpreadsheets:input_type -> artel_api.ListSpreadsheets.Request
+	26, // 14: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:input_type -> artel_api.RemoveSpreadsheet.Request
+	28, // 15: artel_api.ExternalConnectionsAPI.AddEmailConnection:input_type -> artel_api.AddEmailConnection.Request
+	15, // 16: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
+	17, // 17: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
+	19, // 18: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
+	21, // 19: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:output_type -> artel_api.GooglePickerToken.Response
+	23, // 20: artel_api.ExternalConnectionsAPI.AddSpreadsheet:output_type -> artel_api.AddSpreadsheet.Response
+	25, // 21: artel_api.ExternalConnectionsAPI.ListSpreadsheets:output_type -> artel_api.ListSpreadsheets.Response
+	27, // 22: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:output_type -> artel_api.RemoveSpreadsheet.Response
+	29, // 23: artel_api.ExternalConnectionsAPI.AddEmailConnection:output_type -> artel_api.AddEmailConnection.Response
+	16, // [16:24] is the sub-list for method output_type
+	8,  // [8:16] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_external_connections_proto_init() }
@@ -1343,7 +1530,7 @@ func file_external_connections_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_external_connections_proto_rawDesc), len(file_external_connections_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   26,
+			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

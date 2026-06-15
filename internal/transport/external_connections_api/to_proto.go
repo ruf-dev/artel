@@ -12,6 +12,7 @@ var providerToProto = map[string]pb.ExternalProvider{
 	domain.ProviderGoogleSheets: pb.ExternalProvider_EXTERNAL_PROVIDER_GOOGLE_SHEETS,
 	domain.ProviderTrello:       pb.ExternalProvider_EXTERNAL_PROVIDER_TRELLO,
 	domain.ProviderMiro:         pb.ExternalProvider_EXTERNAL_PROVIDER_MIRO,
+	domain.ProviderEmail:        pb.ExternalProvider_EXTERNAL_PROVIDER_EMAIL,
 }
 
 func connectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {

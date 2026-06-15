@@ -1,4 +1,4 @@
-import {ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
+import {AddEmailConnectionRequest, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -11,6 +11,7 @@ export interface IExternalConnectionsService {
     addSpreadsheet: (spreadsheetId: string, name: string) => Promise<Spreadsheet>
     listSpreadsheets: () => Promise<Spreadsheet[]>
     removeSpreadsheet: (spreadsheetId: string) => Promise<void>
+    addEmailConnection: (req: AddEmailConnectionRequest) => Promise<ExternalConnectionInfo>
 }
 
 export class ExternalConnectionsService implements IExternalConnectionsService {
@@ -54,6 +55,11 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async removeSpreadsheet(spreadsheetId: string): Promise<void> {
         await ExternalConnectionsAPI.RemoveSpreadsheet({spreadsheetId}, useUser.getState().auth.getInitReq())
+    }
+
+    async addEmailConnection(req: AddEmailConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddEmailConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
     }
 }
 

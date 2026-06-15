@@ -7,7 +7,6 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchinstances"
-	"github.com/ruf-dev/artel/internal/repository/pg/repos/emailaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/externalconnections"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mailserversuggestions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpconnectors"
@@ -39,7 +38,6 @@ type Repos struct {
 	userPermissions       repository.UserPermissionsRepo
 	mcpKey                repository.McpKeyRepository
 	pendingAuthCodes      repository.PendingAuthCodes
-	emailAccounts         repository.EmailAccounts
 	mailServerSuggestions repository.MailServerSuggestions
 	promptsRepo           repository.Prompts
 	taskTrackersRepo      repository.TaskTrackerRepo
@@ -95,10 +93,6 @@ func (r Repos) PendingAuthCodes() repository.PendingAuthCodes {
 	return r.pendingAuthCodes
 }
 
-func (r Repos) EmailAccounts() repository.EmailAccounts {
-	return r.emailAccounts
-}
-
 func (r Repos) MailServerSuggestions() repository.MailServerSuggestions {
 	return r.mailServerSuggestions
 }
@@ -147,7 +141,6 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		userPermissions:       userpermissions.New(q),
 		mcpKey:                mcpkeys.New(q),
 		pendingAuthCodes:      pendingauthcodes.New(q),
-		emailAccounts:         emailaccounts.New(q, encryptionKey),
 		mailServerSuggestions: mailserversuggestions.New(q),
 		promptsRepo:           prompts.New(db),
 		taskTrackersRepo:      tasktrackers.New(q, encryptionKey),

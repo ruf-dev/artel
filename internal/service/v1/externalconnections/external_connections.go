@@ -266,6 +266,49 @@ func (s *Service) RemoveSpreadsheet(ctx context.Context, spreadsheetId string) e
 	return nil
 }
 
+func (s *Service) AddEmailConnection(ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	creds := domain.EmailCredentials{
+		ImapHost: imapHost,
+		ImapPort: imapPort,
+		SmtpHost: smtpHost,
+		SmtpPort: smtpPort,
+		Username: email,
+		Password: password,
+	}
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal email credentials")
+	}
+
+	type emailMeta struct {
+		Username string `json:"username"`
+	}
+	metaJSON, err := json.Marshal(emailMeta{Username: email})
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal email meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderEmail,
+		ProviderType:    artel_q.ExternalProviderTypePassword,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save email connection")
+	}
+
+	return toMeta(saved, email), nil
+}
+
 // freshGoogleCreds loads the stored Google credentials for the given user, refreshes the
 // access token if it is within 5 minutes of expiry, persists any refreshed token, and
 // returns the up-to-date credentials together with the connection row.

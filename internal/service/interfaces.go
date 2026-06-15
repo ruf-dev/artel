@@ -18,7 +18,6 @@ type Service interface {
 	CouchInstanceService() CouchInstanceService
 	AdminCouchService() AdminCouchService
 	McpService() McpService
-	EmailService() EmailService
 	SubscriptionService() SubscriptionService
 	PromptService() PromptService
 	TaskTrackerService() TaskTrackerService
@@ -84,7 +83,7 @@ type McpService interface {
 	ListKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
 	ListUserKeys(ctx context.Context) ([]domain.McpKey, error)
 	RevokeKey(ctx context.Context, keyID uuid.UUID) error
-	SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID, emailAccountID *uuid.UUID) error
+	SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
 }
@@ -101,20 +100,6 @@ type ListPromptsParams struct {
 
 type PromptService interface {
 	ListPrompts(ctx context.Context, params ListPromptsParams) ([]domain.Prompt, int64, error)
-}
-
-type EmailService interface {
-	// Account management — called from gRPC transport only.
-	AddAccount(ctx context.Context, account domain.EmailAccount) (domain.EmailAccount, error)
-	ListAccounts(ctx context.Context, userUuid uuid.UUID) ([]domain.EmailAccount, error)
-	DeleteAccount(ctx context.Context, accountUuid uuid.UUID) error
-	ListMailServerSuggestions(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error)
-
-	// Email operations — called from MCP tools.
-	ListFolders(ctx context.Context, accountUuid uuid.UUID) ([]string, error)
-	ListEmails(ctx context.Context, accountUuid uuid.UUID, limit int) ([]domain.EmailMeta, error)
-	ReadEmail(ctx context.Context, accountUuid uuid.UUID, id string) (domain.EmailMessage, error)
-	SendEmail(ctx context.Context, accountUuid uuid.UUID, to, subject, body string) error
 }
 
 type TaskTrackerService interface {
@@ -148,4 +133,5 @@ type ExternalConnectionService interface {
 	AddSpreadsheet(ctx context.Context, spreadsheetId string, name string) (domain.McpSpreadsheet, error)
 	ListSpreadsheets(ctx context.Context) ([]domain.McpSpreadsheet, error)
 	RemoveSpreadsheet(ctx context.Context, spreadsheetId string) error
+	AddEmailConnection(ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string) (domain.ExternalConnectionMeta, error)
 }

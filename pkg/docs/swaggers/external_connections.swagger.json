@@ -48,6 +48,38 @@
         ]
       }
     },
+    "/api/external-connections/email/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddEmailConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddEmailConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddEmailConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/google/initiate": {
       "post": {
         "operationId": "ExternalConnectionsAPI_InitiateGoogleOAuth",
@@ -242,6 +274,39 @@
     }
   },
   "definitions": {
+    "artel_apiAddEmailConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "imapHost": {
+          "type": "string"
+        },
+        "imapPort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "smtpHost": {
+          "type": "string"
+        },
+        "smtpPort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddEmailConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddSpreadsheetRequest": {
       "type": "object",
       "properties": {
@@ -301,7 +366,8 @@
         "EXTERNAL_PROVIDER_UNSPECIFIED",
         "EXTERNAL_PROVIDER_GOOGLE_SHEETS",
         "EXTERNAL_PROVIDER_TRELLO",
-        "EXTERNAL_PROVIDER_MIRO"
+        "EXTERNAL_PROVIDER_MIRO",
+        "EXTERNAL_PROVIDER_EMAIL"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },

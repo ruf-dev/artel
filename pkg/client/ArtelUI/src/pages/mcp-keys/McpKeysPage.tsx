@@ -9,7 +9,6 @@ import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
-import {useEmailAccounts} from "@/app/hooks/EmailAccounts.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
@@ -21,7 +20,6 @@ export default function McpKeysPage() {
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const {fetch: fetchKeys} = useMcpKeys()
-    const {fetch: fetchEmails} = useEmailAccounts()
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
@@ -32,9 +30,8 @@ export default function McpKeysPage() {
     useEffect(() => {
         if (auth.isAuthenticated()) {
             void fetchKeys()
-            void fetchEmails()
         }
-    }, [auth, fetchKeys, fetchEmails])
+    }, [auth, fetchKeys])
 
     return (
         <div className={cls.Root}>
@@ -106,10 +103,8 @@ function McpKeyCard({mcpKey, onRevoke, onManage}: {
     onManage: () => void
 }) {
     const {vaults} = useVaults()
-    const {accounts} = useEmailAccounts()
 
     const vault = vaults.find(v => v.id === mcpKey.vaultId)
-    const email = accounts.find(a => a.id === mcpKey.emailAccountId)
 
     function formatDate(iso: string | undefined): string {
         if (!iso) return "Never"
@@ -130,11 +125,6 @@ function McpKeyCard({mcpKey, onRevoke, onManage}: {
                         <span className={cls.Chip}>{vault.name}</span>
                     ) : (
                         <span className={`${cls.Chip} ${cls.ChipMuted}`}>No vault</span>
-                    )}
-                    {email ? (
-                        <span className={cls.Chip}>{email.email}</span>
-                    ) : (
-                        <span className={`${cls.Chip} ${cls.ChipMuted}`}>No email</span>
                     )}
                 </div>
                 <div className={cls.CardMeta}>
@@ -199,24 +189,22 @@ function RevokeKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
     )
 }
 
-type ManageStep = "choose" | "vault" | "email"
+type ManageStep = "choose" | "vault"
 
 function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
     const [step, setStep] = useState<ManageStep>("choose")
     const [saving, setSaving] = useState(false)
     const [selectedVaultId, setSelectedVaultId] = useState(mcpKey.vaultId ?? "")
-    const [selectedEmailId, setSelectedEmailId] = useState(mcpKey.emailAccountId ?? "")
 
     const {setAccess} = useMcpKeys()
     const {CloseDialog} = useDialog()
     const {vaults} = useVaults()
-    const {accounts} = useEmailAccounts()
 
     async function handleSave() {
         if (!mcpKey.id) return
         setSaving(true)
         try {
-            await setAccess(mcpKey.id, selectedVaultId, selectedEmailId)
+            await setAccess(mcpKey.id, selectedVaultId)
             CloseDialog()
         } finally {
             setSaving(false)
@@ -268,53 +256,6 @@ function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
         )
     }
 
-    if (step === "email") {
-        return (
-            <div className={cls.Overlay}>
-                <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                     aria-labelledby="manageEmailTitle">
-                    <div className={cls.ModalHead}>
-                        <h2 className={cls.ModalTitle} id="manageEmailTitle">Select email</h2>
-                        <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
-                    </div>
-                    <p className={cls.ModalSub}>Choose which email account this key can access.</p>
-                    <div className={cls.OptionList}>
-                        <SelectOption
-                            label="None"
-                            selected={selectedEmailId === ""}
-                            onSelect={() => setSelectedEmailId("")}
-                        />
-                        {accounts.map(a => (
-                            <SelectOption
-                                key={a.id}
-                                label={a.email ?? ""}
-                                selected={selectedEmailId === a.id}
-                                onSelect={() => setSelectedEmailId(a.id ?? "")}
-                            />
-                        ))}
-                    </div>
-                    <ModalActions
-                        containerClassName={cls.ModalActions}
-                        buttons={[
-                            {
-                                label: "Back",
-                                onClick: () => setStep("choose"),
-                                className: cls.BtnGhost,
-                                disabled: saving
-                            },
-                            {
-                                label: saving ? "Saving…" : "Save",
-                                onClick: handleSave,
-                                className: cls.BtnPrimary,
-                                disabled: saving
-                            },
-                        ]}
-                    />
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className={cls.Overlay}>
             <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
@@ -329,11 +270,6 @@ function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                         title="Vault"
                         description="Change which vault this key connects to"
                         onClick={() => setStep("vault")}
-                    />
-                    <EntityCard
-                        title="Email"
-                        description="Set which email account this key can access"
-                        onClick={() => setStep("email")}
                     />
                 </div>
                 <ModalActions

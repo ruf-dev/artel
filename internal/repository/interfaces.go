@@ -25,7 +25,6 @@ type Repo interface {
 	UserPermissions() UserPermissionsRepo
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
-	EmailAccounts() EmailAccounts
 	MailServerSuggestions() MailServerSuggestions
 	Prompts() Prompts
 	TaskTrackers() TaskTrackerRepo
@@ -162,7 +161,7 @@ type McpKeyRepository interface {
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
-	SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vaultUuid uuid.UUID, emailAccountUuid *uuid.UUID) error
+	SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vaultUuid uuid.UUID) error
 	TouchLastAccessed(ctx context.Context, keyUuid uuid.UUID) error
 }
 
@@ -171,13 +170,6 @@ type PendingAuthCodes interface {
 	Get(ctx context.Context, code string) (domain.PendingAuthCode, error)
 	Delete(ctx context.Context, code string) error
 	DeleteExpired(ctx context.Context) error
-}
-
-type EmailAccounts interface {
-	Insert(ctx context.Context, account domain.EmailAccount) (domain.EmailAccount, error)
-	GetByUuid(ctx context.Context, id uuid.UUID) (domain.EmailAccount, error)
-	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.EmailAccount, error)
-	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type MailServerSuggestions interface {

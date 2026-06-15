@@ -24,7 +24,6 @@ type Querier interface {
 	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
-	DeleteEmailAccount(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
 	DeleteExternalConnection(ctx context.Context, arg DeleteExternalConnectionParams) error
 	DeleteMcpConnector(ctx context.Context, arg DeleteMcpConnectorParams) error
@@ -38,7 +37,6 @@ type Querier interface {
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
-	GetEmailAccountByUuid(ctx context.Context, id uuid.UUID) (EmailAccount, error)
 	GetExternalConnectionByID(ctx context.Context, id uuid.UUID) (ExternalConnection, error)
 	GetExternalConnectionByUserAndProvider(ctx context.Context, arg GetExternalConnectionByUserAndProviderParams) (ExternalConnection, error)
 	GetMcpConnector(ctx context.Context, arg GetMcpConnectorParams) (McpConnector, error)
@@ -59,14 +57,12 @@ type Querier interface {
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
-	InsertEmailAccount(ctx context.Context, arg InsertEmailAccountParams) (EmailAccount, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
 	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
 	InsertTaskTracker(ctx context.Context, arg InsertTaskTrackerParams) (TaskTracker, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
-	ListEmailAccountsByUser(ctx context.Context, userID uuid.UUID) ([]EmailAccount, error)
 	ListExternalConnectionsByUser(ctx context.Context, userID uuid.UUID) ([]ExternalConnection, error)
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpConnectorsByKey(ctx context.Context, mcpKeyID uuid.UUID) ([]McpConnector, error)
