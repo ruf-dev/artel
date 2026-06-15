@@ -1,4 +1,4 @@
-import {ExternalConnectionInfo, ExternalConnectionsAPI} from "@/app/api/artel/external_connections.pb.ts"
+import {ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -7,6 +7,10 @@ export interface IExternalConnectionsService {
     initiateGoogleOAuth: () => Promise<string>
     exchangeGoogleOAuth: (code: string, state: string) => Promise<void>
     disconnect: (provider: string) => Promise<void>
+    getPickerToken: () => Promise<string>
+    addSpreadsheet: (spreadsheetId: string, name: string) => Promise<Spreadsheet>
+    listSpreadsheets: () => Promise<Spreadsheet[]>
+    removeSpreadsheet: (spreadsheetId: string) => Promise<void>
 }
 
 export class ExternalConnectionsService implements IExternalConnectionsService {
@@ -31,6 +35,25 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async disconnect(provider: string): Promise<void> {
         await ExternalConnectionsAPI.DisconnectProvider({provider}, useUser.getState().auth.getInitReq())
+    }
+
+    async getPickerToken(): Promise<string> {
+        const res = await ExternalConnectionsAPI.GetGooglePickerToken({}, useUser.getState().auth.getInitReq())
+        return res.accessToken ?? ""
+    }
+
+    async addSpreadsheet(spreadsheetId: string, name: string): Promise<Spreadsheet> {
+        const res = await ExternalConnectionsAPI.AddSpreadsheet({spreadsheetId, name}, useUser.getState().auth.getInitReq())
+        return res.spreadsheet!
+    }
+
+    async listSpreadsheets(): Promise<Spreadsheet[]> {
+        const res = await ExternalConnectionsAPI.ListSpreadsheets({}, useUser.getState().auth.getInitReq())
+        return res.spreadsheets ?? []
+    }
+
+    async removeSpreadsheet(spreadsheetId: string): Promise<void> {
+        await ExternalConnectionsAPI.RemoveSpreadsheet({spreadsheetId}, useUser.getState().auth.getInitReq())
     }
 }
 

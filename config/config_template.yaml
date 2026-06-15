@@ -16,11 +16,12 @@ servers:
         /{GRPC}:
             module: github.com/ruf-dev/artel
             gateway: /api
+        name: MASTER
     1551:
         /{GRPC}:
             module: github.com/ruf-dev/artel
             gateway: /api
-        name: MASTER2
+        name: MASTER
 environment:
     - name: creds_encryption_key
       type: string

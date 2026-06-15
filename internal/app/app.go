@@ -22,8 +22,8 @@ type App struct {
 	/* Data source connection */
 	Postgres *sql.DB
 	/* Servers network listeners */
-	MASTER net.Listener
-	GRPC   net.Listener
+	MASTER  net.Listener
+	MASTER2 net.Listener
 
 	Custom Custom
 }

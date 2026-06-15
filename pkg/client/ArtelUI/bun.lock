@@ -23,6 +23,7 @@
       "devDependencies": {
         "@eslint/js": "^9.29.0",
         "@types/dompurify": "^3.2.0",
+        "@types/google.picker": "^0.0.52",
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@vitejs/plugin-react": "^4.5.2",
@@ -238,6 +239,8 @@
     "@types/dompurify": ["@types/dompurify@3.2.0", "", { "dependencies": { "dompurify": "*" } }, "sha512-Fgg31wv9QbLDA0SpTOXO3MaxySc4DKGLi8sna4/Utjo4r3ZRPdCt4UQee8BWr+Q5z21yifghREPJGYaEOEIACg=="],
 
     "@types/estree": ["@types/estree@1.0.9", "", {}, "sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg=="],
+
+    "@types/google.picker": ["@types/google.picker@0.0.52", "", {}, "sha512-k0HyW8HxJePomM2r0JWq9nE9XG6qY93lVpoVnaV4WjQggDHrGwDKq3G8CGpcBWhQlJBTxX9jDIrI7RQnqjM63w=="],
 
     "@types/json-schema": ["@types/json-schema@7.0.15", "", {}, "sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA=="],
 

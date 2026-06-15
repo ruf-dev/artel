@@ -7,6 +7,6 @@ import (
 )
 
 type ServersConfig struct {
-	GRPC   *server.Server
-	MASTER *server.Server
+	MASTER  *server.Server
+	MASTER2 *server.Server
 }

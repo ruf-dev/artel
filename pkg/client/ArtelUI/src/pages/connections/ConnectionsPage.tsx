@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import {useNavigate, useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/connections/ConnectionsPage.module.css"
 
-import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
+import {ExternalConnectionInfo, ExternalProvider, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
@@ -11,6 +11,22 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
+
+type GapiWindow = Window & {gapi: {load: (lib: string, cb: () => void) => void}}
+
+let gapiPromise: Promise<void> | null = null
+
+function loadGapi(): Promise<void> {
+    if (gapiPromise) return gapiPromise
+    gapiPromise = new Promise<void>((resolve, reject) => {
+        const script = document.createElement("script")
+        script.src = "https://apis.google.com/js/api.js"
+        script.onload = () => (window as unknown as GapiWindow).gapi.load("picker", resolve)
+        script.onerror = reject
+        document.head.appendChild(script)
+    })
+    return gapiPromise
+}
 
 type ProviderDef = {
     provider: ExternalProvider
@@ -228,7 +244,9 @@ function ConnectionDetailDialog({def, connection}: {
                 </div>
 
                 {connection ? (
-                    <ConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
+                    def.provider === ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS
+                        ? <GoogleSheetsConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
+                        : <ConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
                 ) : (
                     <NotConnectedContent def={def} connecting={connecting} onConnectGoogle={handleConnectGoogle}/>
                 )}
@@ -304,6 +322,145 @@ function ConnectedContent({connection, onDisconnect}: {
                     <span className={cls.InfoValue}>{connectedAt}</span>
                 </div>
             </div>
+            <div className={cls.ModalActions}>
+                <button className={cls.BtnDanger} onClick={onDisconnect}>Disconnect</button>
+            </div>
+        </>
+    )
+}
+
+function GoogleSheetsConnectedContent({connection, onDisconnect}: {
+    connection: ExternalConnectionInfo
+    onDisconnect: () => void
+}) {
+    const {OpenDialog} = useDialog()
+    const bakeError = useBakeError()
+    const {spreadsheets, spreadsheetsLoading, fetchSpreadsheets, addSpreadsheet, removeSpreadsheet, getPickerToken} = useExternalConnections()
+    const pickerOpenRef = useRef(false)
+
+    const email = connection.google?.email
+    const scopes = connection.google?.scopes
+    const connectedAt = connection.createdAt
+        ? new Date(connection.createdAt).toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"})
+        : "—"
+
+    const scopeList = scopes ? parseScopeList(scopes) : []
+    const scopeTooltipHtml = scopeList
+        .map(s => {
+            const name = trimScope(s)
+            const desc = SCOPE_INFO[name]
+            return desc ? `<b>${name}</b>: ${desc}` : `<b>${name}</b>`
+        })
+        .join("<br/>")
+
+    useEffect(() => {
+        void fetchSpreadsheets()
+    }, [])
+
+    async function openPicker() {
+        if (pickerOpenRef.current) return
+        pickerOpenRef.current = true
+        try {
+            const token = await getPickerToken()
+            await loadGapi()
+            const picker = new google.picker.PickerBuilder()
+                .addView(new google.picker.DocsView(google.picker.ViewId.SPREADSHEETS))
+                .setOAuthToken(token)
+                .setDeveloperKey(import.meta.env.VITE_GOOGLE_API_KEY ?? "")
+                .setCallback(async (data: google.picker.ResponseObject) => {
+                    const action = data[google.picker.Response.ACTION]
+                    if (action === google.picker.Action.PICKED) {
+                        const docs = data[google.picker.Response.DOCUMENTS]
+                        const file = docs?.[0]
+                        if (file) {
+                            try {
+                                await addSpreadsheet(
+                                    file[google.picker.Document.ID],
+                                    file[google.picker.Document.NAME] ?? file[google.picker.Document.ID],
+                                )
+                            } catch (e) {
+                                bakeError("Failed to add spreadsheet", e)
+                            }
+                        }
+                    }
+                    if (action === google.picker.Action.PICKED || action === google.picker.Action.CANCEL) {
+                        pickerOpenRef.current = false
+                    }
+                })
+                .build()
+            picker.setVisible(true)
+        } catch (e) {
+            pickerOpenRef.current = false
+            bakeError("Failed to open picker", e)
+        }
+    }
+
+    function handleRemove(sheet: Spreadsheet) {
+        OpenDialog(
+            <ConfirmDialog
+                title="Remove spreadsheet"
+                message={`Remove "${sheet.name}" from MCP access? The file is not deleted from Google Drive.`}
+                confirmLabel="Remove"
+                cancelLabel="Cancel"
+                danger
+                onConfirm={async () => { await removeSpreadsheet(sheet.id ?? "") }}
+            />
+        )
+    }
+
+    return (
+        <>
+            <div className={cls.InfoRows}>
+                {email && (
+                    <div className={cls.InfoRow}>
+                        <span className={cls.InfoLabel}>Account</span>
+                        <span className={cls.InfoValue}>{email}</span>
+                    </div>
+                )}
+                {scopeList.length > 0 && (
+                    <div className={cls.InfoRow}>
+                        <span className={`${cls.InfoLabel} ${cls.ScopesLabel}`}>
+                            Scopes
+                            <button
+                                type="button"
+                                className={cls.ScopeHelp}
+                                data-tooltip-id="root-tooltip"
+                                data-tooltip-html={scopeTooltipHtml}
+                                aria-label="What are scopes?"
+                            >?</button>
+                        </span>
+                        <span className={cls.InfoValue}>{scopeList.map(trimScope).join(", ")}</span>
+                    </div>
+                )}
+                <div className={cls.InfoRow}>
+                    <span className={cls.InfoLabel}>Connected</span>
+                    <span className={cls.InfoValue}>{connectedAt}</span>
+                </div>
+            </div>
+
+            <div className={cls.SpreadsheetSection}>
+                <div className={cls.SpreadsheetSectionHeader}>
+                    <span className={cls.SpreadsheetSectionLabel}>Spreadsheets</span>
+                    <button className={cls.BtnGhost} onClick={openPicker}>+ Add</button>
+                </div>
+                {spreadsheetsLoading ? (
+                    <p className={cls.EmptySpreadsheets}>Loading…</p>
+                ) : spreadsheets.length === 0 ? (
+                    <p className={cls.EmptySpreadsheets}>No spreadsheets added yet.</p>
+                ) : (
+                    <div className={cls.SpreadsheetList}>
+                        {spreadsheets.map(sheet => (
+                            <div key={sheet.id} className={cls.SpreadsheetRow}>
+                                <span className={cls.SpreadsheetName}>{sheet.name}</span>
+                                <button className={cls.BtnIconRemove} onClick={() => handleRemove(sheet)} aria-label="Remove">
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <div className={cls.ModalActions}>
                 <button className={cls.BtnDanger} onClick={onDisconnect}>Disconnect</button>
             </div>

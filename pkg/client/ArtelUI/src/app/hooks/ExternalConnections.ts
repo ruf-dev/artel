@@ -1,19 +1,27 @@
 import {create} from 'zustand'
 
-import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
+import {ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
 interface ExternalConnectionsState {
     connections: ExternalConnectionInfo[]
     loading: boolean
+    spreadsheets: Spreadsheet[]
+    spreadsheetsLoading: boolean
     fetch: () => Promise<void>
     disconnect: (provider: string) => Promise<void>
     initiateGoogleOAuth: () => Promise<string>
+    getPickerToken: () => Promise<string>
+    fetchSpreadsheets: () => Promise<void>
+    addSpreadsheet: (spreadsheetId: string, name: string) => Promise<void>
+    removeSpreadsheet: (spreadsheetId: string) => Promise<void>
 }
 
 export const useExternalConnections = create<ExternalConnectionsState>((set, get) => ({
     connections: [],
     loading: false,
+    spreadsheets: [],
+    spreadsheetsLoading: false,
 
     fetch: async () => {
         set({loading: true})
@@ -27,10 +35,33 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
 
     disconnect: async (provider: string) => {
         await externalConnectionsService.disconnect(provider)
+        set({spreadsheets: []})
         await get().fetch()
     },
 
     initiateGoogleOAuth: async () => {
         return externalConnectionsService.initiateGoogleOAuth()
+    },
+
+    getPickerToken: () => externalConnectionsService.getPickerToken(),
+
+    fetchSpreadsheets: async () => {
+        set({spreadsheetsLoading: true})
+        try {
+            const spreadsheets = await externalConnectionsService.listSpreadsheets()
+            set({spreadsheets})
+        } finally {
+            set({spreadsheetsLoading: false})
+        }
+    },
+
+    addSpreadsheet: async (spreadsheetId: string, name: string) => {
+        await externalConnectionsService.addSpreadsheet(spreadsheetId, name)
+        await get().fetchSpreadsheets()
+    },
+
+    removeSpreadsheet: async (spreadsheetId: string) => {
+        await externalConnectionsService.removeSpreadsheet(spreadsheetId)
+        await get().fetchSpreadsheets()
     },
 }))
