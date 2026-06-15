@@ -55,6 +55,20 @@ func (r *Repo) Upsert(ctx context.Context, conn domain.ExternalConnection) (doma
 	return toDomain(row, credJSON), nil
 }
 
+func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnection, error) {
+	row, err := r.q.GetExternalConnectionByID(ctx, id)
+	if err != nil {
+		return domain.ExternalConnection{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting external connection by id")
+	}
+
+	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+	if err != nil {
+		return domain.ExternalConnection{}, rerrors.Wrap(err, "error decrypting credentials")
+	}
+
+	return toDomain(row, credJSON), nil
+}
+
 func (r *Repo) GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, provider string) (sql.Null[domain.ExternalConnection], error) {
 	params := artel_q.GetExternalConnectionByUserAndProviderParams{
 		UserID:   userUuid,

@@ -10,6 +10,8 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/emailaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/externalconnections"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mailserversuggestions"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpconnectors"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpdefinitions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpspreadsheets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
@@ -43,6 +45,8 @@ type Repos struct {
 	taskTrackersRepo      repository.TaskTrackerRepo
 	externalConnections   repository.ExternalConnectionRepo
 	mcpSpreadsheets       repository.McpSpreadsheetsRepo
+	mcpDefinitions        repository.McpDefinitionsRepo
+	mcpConnectors         repository.McpConnectorsRepo
 
 	txManager tx_manager.TxManager
 }
@@ -119,6 +123,14 @@ func (r Repos) McpSpreadsheets() repository.McpSpreadsheetsRepo {
 	return r.mcpSpreadsheets
 }
 
+func (r Repos) McpDefinitions() repository.McpDefinitionsRepo {
+	return r.mcpDefinitions
+}
+
+func (r Repos) McpConnectors() repository.McpConnectorsRepo {
+	return r.mcpConnectors
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 
@@ -141,6 +153,8 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		taskTrackersRepo:      tasktrackers.New(q, encryptionKey),
 		externalConnections:   externalconnections.New(q, encryptionKey),
 		mcpSpreadsheets:       mcpspreadsheets.New(q),
+		mcpDefinitions:        mcpdefinitions.New(q),
+		mcpConnectors:         mcpconnectors.New(q),
 
 		txManager: tx_manager.New(db),
 	}

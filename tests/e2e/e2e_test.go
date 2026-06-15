@@ -91,7 +91,7 @@ func (s *E2ESuite) SetupSuite() {
 	s.couchInstanceID, err = s.svcs.CouchInstance.RegisterCouchInstance(ctx, couchURL, couchUser, couchPass)
 	s.Require().NoError(err, "register couch instance")
 
-	s.mcpHdlr = mcp_api.NewMcpHandler(s.svcs.Mcp, s.svcs.Email)
+	s.mcpHdlr = mcp_api.NewMcpHandler(s.svcs.Mcp, s.svcs.Email, s.svcs.Mom)
 }
 
 func (s *E2ESuite) TearDownSuite() {

@@ -516,3 +516,128 @@
     font-style: italic;
     margin: 0;
 }
+
+/* ── Email account section (inside dialog) ──────────────────── */
+
+.EmailAccountSection {
+    border-top: 1px solid var(--color-border);
+    margin: 1rem 0 1.25rem;
+    padding-top: 0.875rem;
+}
+
+.EmailAccountSectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.625rem;
+}
+
+.EmailAccountSectionLabel {
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+}
+
+.EmailAccountList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.EmailAccountRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0.5rem;
+    border-radius: 0.5rem;
+    background: var(--color-bg-elevated);
+}
+
+.EmailAccountInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+.EmailAccountEmail {
+    font-size: 0.8125rem;
+    color: var(--color-fg-primary);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.EmailAccountMeta {
+    font-size: 0.6875rem;
+    color: var(--color-fg-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Form fields (for EmailAddDialog) ──────────────────────── */
+
+.ModalSub {
+    font-size: 0.8125rem;
+    color: var(--color-fg-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.55;
+}
+
+.Field {
+    display: block;
+    margin-bottom: 1rem;
+    min-width: 0;
+}
+
+.FieldNarrow {
+    display: block;
+    margin-bottom: 1rem;
+    width: 5.5rem;
+    flex-shrink: 0;
+}
+
+.FieldRow {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.FieldLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-fg-secondary);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.005em;
+}
+
+.Input {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.625rem;
+    color: var(--color-fg-primary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    letter-spacing: -0.005em;
+    transition: border-color 160ms ease, background 160ms ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.Input::placeholder {
+    color: var(--color-fg-disabled);
+}
+
+.Input:focus {
+    border-color: var(--color-border-bright);
+    background: #131313;
+}

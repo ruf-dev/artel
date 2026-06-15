@@ -1,0 +1,82 @@
+{
+  "name": "email",
+  "author": "Artel",
+  "description": "Email handler. List folders, list and read emails via IMAP, send emails via SMTP.",
+  "tools": [
+    {
+      "api_description": {
+        "name": "list_email_folders",
+        "description": "List IMAP folders available in the connected email account",
+        "properties": {},
+        "required": []
+      },
+      "action": {
+        "imap": {
+          "operation": "list_folders"
+        }
+      }
+    },
+    {
+      "api_description": {
+        "name": "list_emails",
+        "description": "List recent emails from the inbox",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of emails to return (default 20)"
+          }
+        },
+        "required": []
+      },
+      "action": {
+        "imap": {
+          "operation": "list_messages"
+        }
+      }
+    },
+    {
+      "api_description": {
+        "name": "read_email",
+        "description": "Read the full content of an email by its UID",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Email UID returned by list_emails"
+          }
+        },
+        "required": ["id"]
+      },
+      "action": {
+        "imap": {
+          "operation": "fetch_message"
+        }
+      }
+    },
+    {
+      "api_description": {
+        "name": "send_email",
+        "description": "Send an email from the connected account via SMTP",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Recipient email address"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line"
+          },
+          "body": {
+            "type": "string",
+            "description": "Email body (plain text)"
+          }
+        },
+        "required": ["to", "subject", "body"]
+      },
+      "action": {
+        "smtp": {
+          "operation": "send"
+        }
+      }
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/email"
 	externalconns "github.com/ruf-dev/artel/internal/service/v1/externalconnections"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
+	"github.com/ruf-dev/artel/internal/service/v1/mom"
 	"github.com/ruf-dev/artel/internal/service/v1/notes"
 	"github.com/ruf-dev/artel/internal/service/v1/prompt"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
@@ -34,6 +35,7 @@ type Services struct {
 	Notes               service.NotesService
 	AdminUsers          service.AdminUsersService
 	ExternalConnections service.ExternalConnectionService
+	Mom                 service.MomService
 }
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
@@ -61,6 +63,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Notes:               notes.New(repo),
 		AdminUsers:          adminusers.New(repo.Users(), repo.Sessions()),
 		ExternalConnections: externalconns.New(repo.ExternalConnections(), repo.PendingAuthCodes(), repo.McpSpreadsheets(), oauthCfg),
+		Mom:                 mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections()),
 	}, nil
 }
 
@@ -110,4 +113,8 @@ func (s *Services) AdminUsersService() service.AdminUsersService {
 
 func (s *Services) ExternalConnectionService() service.ExternalConnectionService {
 	return s.ExternalConnections
+}
+
+func (s *Services) MomService() service.MomService {
+	return s.Mom
 }

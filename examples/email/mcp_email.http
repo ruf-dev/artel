@@ -1,0 +1,87 @@
+### List Email Accounts
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "list_email_accounts",
+    "arguments": {}
+  }
+}
+
+### List IMAP Folders
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "list_email_folders",
+    "arguments": {
+      "account_id": "b1b7b053-d3ac-46df-99c2-204409cb6aa9"
+    }
+  }
+}
+
+### List Emails (inbox, last 20)
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "list_emails",
+    "arguments": {
+      "account_id": "b1b7b053-d3ac-46df-99c2-204409cb6aa9",
+      "limit": 20
+    }
+  }
+}
+
+### Read Email
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "read_email",
+    "arguments": {
+      "account_id": "b1b7b053-d3ac-46df-99c2-204409cb6aa9",
+      "id": "6939"
+    }
+  }
+}
+
+### Send Email
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "send_email",
+    "arguments": {
+      "account_id": "{{email_account_id}}",
+      "to": "recipient@example.com",
+      "subject": "Hello from Artel MCP",
+      "body": "This email was sent via the Artel MCP API."
+    }
+  }
+}

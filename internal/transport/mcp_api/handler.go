@@ -36,12 +36,14 @@ type rpcError struct {
 type McpHandler struct {
 	mcpSvc   service.McpService
 	emailSvc service.EmailService
+	momSvc   service.MomService
 }
 
-func NewMcpHandler(mcpSvc service.McpService, emailSvc service.EmailService) *McpHandler {
+func NewMcpHandler(mcpSvc service.McpService, emailSvc service.EmailService, momSvc service.MomService) *McpHandler {
 	return &McpHandler{
 		mcpSvc:   mcpSvc,
 		emailSvc: emailSvc,
+		momSvc:   momSvc,
 	}
 }
 
@@ -182,6 +184,22 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 
 	tools := getToolDefinitions(keyCtx.HasEmails)
 
+	keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
+	if err != nil {
+		log.Error().Err(err).Msg("mcp: invalid key uuid in tools/list")
+		writeErrorResponse(w, req.Id, -32603, "internal error")
+		return
+	}
+
+	momTools, err := h.momSvc.ListToolsForKey(ctx, keyUuid)
+	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to list mom tools")
+	} else {
+		for _, t := range momTools {
+			tools = append(tools, momToolToToolDef(t))
+		}
+	}
+
 	result := map[string]any{
 		"tools": tools,
 	}
@@ -192,7 +210,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 		Result:  result,
 	}
 
-	err := writeJsonResponse(w, resp)
+	err = writeJsonResponse(w, resp)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to write tools/list response")
 		writeErrorResponse(w, req.Id, -32603, "internal error")
@@ -227,11 +245,29 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 		}
 	}
 
-	result, err := dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)
-	if err != nil {
-		log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
-		writeErrorResponse(w, req.Id, -32603, "tool execution failed")
-		return
+	var result interface{}
+	if isKnownTool(callReq.Name) {
+		var err error
+		result, err = dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx, h.emailSvc)
+		if err != nil {
+			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
+			writeErrorResponse(w, req.Id, -32603, "tool execution failed")
+			return
+		}
+	} else {
+		keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
+		if err != nil {
+			log.Error().Err(err).Msg("mcp: invalid key uuid in tools/call")
+			writeErrorResponse(w, req.Id, -32603, "internal error")
+			return
+		}
+		text, err := h.momSvc.ExecuteToolForKey(ctx, keyUuid, callReq.Name, callReq.Arguments)
+		if err != nil {
+			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: mom tool execution failed")
+			writeErrorResponse(w, req.Id, -32603, "tool execution failed")
+			return
+		}
+		result = textResult(text)
 	}
 
 	resp := rpcResponse{

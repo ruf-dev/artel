@@ -4,7 +4,7 @@ import {NavLink} from "react-router-dom"
 import useUser from "@/hooks/user/User.ts"
 
 export default function TopbarNav() {
-    const {isEmailsEnabled, isTaskTrackersEnabled, isNotesEnabled} = useUser()
+    const {isTaskTrackersEnabled, isNotesEnabled} = useUser()
 
     return (
         <nav className={cls.Nav}>
@@ -28,22 +28,6 @@ export default function TopbarNav() {
                     data-tooltip-content={"Task trackers are not enabled for your account"}
                 >
                     <span className={cls.NavLinkDisabled}>Tasks</span>
-                </div>
-            )}
-            {isEmailsEnabled ? (
-                <NavLink
-                    to={Path.EmailsPage}
-                    className={({isActive}) => isActive ? `${cls.NavLink} ${cls.NavLinkActive}` : cls.NavLink}
-                >
-                    Emails
-                </NavLink>
-            ) : (
-                <div
-                    data-tooltip-id={"root-tooltip"}
-                    data-tooltip-content={"Emails are not enabled for your account"}
-                >
-                <span
-                    className={cls.NavLinkDisabled}>Emails</span>
                 </div>
             )}
             {isNotesEnabled ? (

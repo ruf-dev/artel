@@ -17,6 +17,7 @@ import (
 )
 
 type KeyContext struct {
+	KeyUuid   string
 	VaultUuid string
 	UserUuid  string
 	CouchURL  string
@@ -48,7 +49,8 @@ const (
 )
 
 func contextWithKeyCtx(ctx context.Context, keyCtx domain.McpKeyContext) context.Context {
-	return context.WithValue(ctx, keyContextKey, KeyContext{
+	kc := KeyContext{
+		KeyUuid:   keyCtx.KeyUuid.String(),
 		VaultUuid: keyCtx.VaultUuid.String(),
 		UserUuid:  keyCtx.UserUuid.String(),
 		CouchURL:  keyCtx.CouchURL,
@@ -56,7 +58,8 @@ func contextWithKeyCtx(ctx context.Context, keyCtx domain.McpKeyContext) context
 		CouchUser: keyCtx.CouchUser,
 		CouchPass: keyCtx.CouchPass,
 		HasEmails: keyCtx.HasEmails,
-	})
+	}
+	return context.WithValue(ctx, keyContextKey, kc)
 }
 
 type ToolDef struct {
@@ -384,6 +387,33 @@ func handleSendEmail(ctx context.Context, arguments map[string]interface{}, emai
 	}
 
 	return textResult("Email sent successfully"), nil
+}
+
+func isKnownTool(name string) bool {
+	switch name {
+	case toolListFiles, toolReadFile, toolWriteNote, toolDeleteFile, toolMoveFile,
+		toolListFolders, toolListTags, toolGetNoteMetadata,
+		toolListEmailFolders, toolListEmailAccounts, toolListEmails, toolReadEmail, toolSendEmail:
+		return true
+	}
+	return false
+}
+
+func momToolToToolDef(t domain.McpToolDef) ToolDef {
+	props := make(map[string]interface{}, len(t.ApiDescription.Properties))
+	for name, p := range t.ApiDescription.Properties {
+		props[name] = map[string]string{"type": p.Type, "description": p.Description}
+	}
+	schema := map[string]interface{}{
+		"type":       "object",
+		"properties": props,
+		"required":   t.ApiDescription.Required,
+	}
+	return ToolDef{
+		Name:        t.ApiDescription.Name,
+		Description: t.ApiDescription.Description,
+		InputSchema: schema,
+	}
 }
 
 func buildContentBlock(data []byte, mimeType, path string) ContentBlock {

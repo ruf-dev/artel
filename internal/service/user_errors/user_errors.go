@@ -65,6 +65,13 @@ var (
 	McpSubjectRequired   = rerrors.New("subject is required and must be a string", codes.InvalidArgument)
 	McpBodyRequired      = rerrors.New("body is required and must be a string", codes.InvalidArgument)
 
+	// mcp executor
+	McpEmailActionMissing   = rerrors.New("email executor: action must have imap or smtp discriminator", codes.InvalidArgument)
+	McpUnknownImapOperation = rerrors.New("email executor: unknown imap operation", codes.InvalidArgument)
+	McpUnknownSmtpOperation = rerrors.New("email executor: unknown smtp operation", codes.InvalidArgument)
+	McpToolNotFound         = rerrors.New("tool not found in any connected mcp", codes.NotFound)
+	McpConnectorNotFound    = rerrors.New("no mcp connector configured for this key", codes.FailedPrecondition)
+
 	// livesync file-type constraints
 	UseReadNoteForTextFiles       = rerrors.New("use read_note for text files", codes.FailedPrecondition)
 	UseDeleteNoteForTextFiles     = rerrors.New("use delete_note for text files", codes.FailedPrecondition)

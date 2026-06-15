@@ -19,6 +19,11 @@ FROM external_connections
 WHERE user_id = $1
 ORDER BY created_at DESC;
 
+-- name: GetExternalConnectionByID :one
+SELECT id, user_id, provider, provider_type, credentials_enc, metadata, created_at, updated_at
+FROM external_connections
+WHERE id = $1;
+
 -- name: DeleteExternalConnection :exec
 DELETE FROM external_connections
 WHERE user_id = $1 AND provider = $2;

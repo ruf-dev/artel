@@ -25,6 +25,7 @@ type Service interface {
 	NotesService() NotesService
 	AdminUsersService() AdminUsersService
 	ExternalConnectionService() ExternalConnectionService
+	MomService() MomService
 }
 
 type AdminUsersService interface {
@@ -130,6 +131,11 @@ type NotesService interface {
 	ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error)
 	SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error
 	MoveNote(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) error
+}
+
+type MomService interface {
+	ListToolsForKey(ctx context.Context, keyId uuid.UUID) ([]domain.McpToolDef, error)
+	ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, toolName string, params map[string]interface{}) (string, error)
 }
 
 type ExternalConnectionService interface {

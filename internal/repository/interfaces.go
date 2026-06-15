@@ -31,6 +31,8 @@ type Repo interface {
 	TaskTrackers() TaskTrackerRepo
 	ExternalConnections() ExternalConnectionRepo
 	McpSpreadsheets() McpSpreadsheetsRepo
+	McpDefinitions() McpDefinitionsRepo
+	McpConnectors() McpConnectorsRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -141,6 +143,7 @@ type UserPermissionsRepo interface {
 
 type ExternalConnectionRepo interface {
 	Upsert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error)
+	GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnection, error)
 	GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, provider string) (sql.Null[domain.ExternalConnection], error)
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.ExternalConnection, error)
 	Delete(ctx context.Context, userUuid uuid.UUID, provider string) error
@@ -186,4 +189,18 @@ type TaskTrackerRepo interface {
 	GetByUuid(ctx context.Context, id uuid.UUID) (domain.TaskTracker, error)
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.TaskTracker, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+}
+
+type McpDefinitionsRepo interface {
+	Upsert(ctx context.Context, def domain.McpDefinition) (domain.McpDefinition, error)
+	Get(ctx context.Context, name string) (sql.Null[domain.McpDefinition], error)
+	List(ctx context.Context) ([]domain.McpDefinition, error)
+	Delete(ctx context.Context, name string) error
+}
+
+type McpConnectorsRepo interface {
+	Insert(ctx context.Context, connector domain.McpConnector) (domain.McpConnector, error)
+	Get(ctx context.Context, mcpKeyUuid uuid.UUID, mcpName string) (sql.Null[domain.McpConnector], error)
+	ListByKey(ctx context.Context, mcpKeyUuid uuid.UUID) ([]domain.McpConnector, error)
+	Delete(ctx context.Context, mcpKeyUuid uuid.UUID, mcpName string) error
 }

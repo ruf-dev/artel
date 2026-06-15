@@ -6,7 +6,6 @@ import {Navigate, Route, Routes, useNavigate} from "react-router-dom"
 
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
-import EmailsPage from "@/pages/emails/EmailsPage.tsx"
 import McpKeysPage from "@/pages/mcp-keys/McpKeysPage.tsx"
 import ErrorPage from "@/pages/error/ErrorPage.tsx"
 import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
@@ -29,7 +28,6 @@ import { Toaster } from "@vervstack/chures"
 export enum Path {
     InitPage = "/init",
     HomePage = "/",
-    EmailsPage = "/emails",
     McpKeysPage = "/mcp_keys",
     TaskTrackersPage = "/task-trackers",
     NotesPage = "/notes",
@@ -74,7 +72,6 @@ export default function Router() {
                 <Routes>
                     <Route element={<HomeLayout/>}>
                         <Route path={Path.HomePage} element={<HomePage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.EmailsPage} element={<EmailsPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.McpKeysPage} element={<McpKeysPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.Admin} element={<AdminPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.TaskTrackersPage} element={<TaskTrackersPage/>} errorElement={<ErrorPage/>}/>

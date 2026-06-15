@@ -75,7 +75,7 @@ func (c *Custom) Init(a *App) error {
 	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
 	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
-	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.EmailService())
+	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.EmailService(), services.MomService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
 	otelServerHandler := otelgrpc.NewServerHandler()

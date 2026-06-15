@@ -27,6 +27,28 @@ func (q *Queries) DeleteExternalConnection(ctx context.Context, arg DeleteExtern
 	return err
 }
 
+const getExternalConnectionByID = `-- name: GetExternalConnectionByID :one
+SELECT id, user_id, provider, provider_type, credentials_enc, metadata, created_at, updated_at
+FROM external_connections
+WHERE id = $1
+`
+
+func (q *Queries) GetExternalConnectionByID(ctx context.Context, id uuid.UUID) (ExternalConnection, error) {
+	row := q.db.QueryRowContext(ctx, getExternalConnectionByID, id)
+	var i ExternalConnection
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Provider,
+		&i.ProviderType,
+		&i.CredentialsEnc,
+		&i.Metadata,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getExternalConnectionByUserAndProvider = `-- name: GetExternalConnectionByUserAndProvider :one
 SELECT id, user_id, provider, provider_type, credentials_enc, metadata, created_at, updated_at
 FROM external_connections

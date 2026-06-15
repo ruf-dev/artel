@@ -7,6 +7,7 @@ package artel_q
 import (
 	"database/sql"
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -195,6 +196,22 @@ type MailServerSuggestion struct {
 	SmtpPort int32
 	Imap     string
 	ImapPort int32
+}
+
+type Mcp struct {
+	Name        string
+	Author      string
+	Description string
+	Tools       json.RawMessage
+	CreatedAt   time.Time
+}
+
+type McpConnector struct {
+	ID                   uuid.UUID
+	McpKeyID             uuid.UUID
+	McpName              string
+	ExternalConnectionID uuid.UUID
+	CreatedAt            time.Time
 }
 
 type McpKey struct {
