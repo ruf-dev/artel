@@ -30,6 +30,7 @@ type Repo interface {
 	Prompts() Prompts
 	TaskTrackers() TaskTrackerRepo
 	ExternalConnections() ExternalConnectionRepo
+	McpSpreadsheets() McpSpreadsheetsRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -143,6 +144,12 @@ type ExternalConnectionRepo interface {
 	GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, provider string) (sql.Null[domain.ExternalConnection], error)
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.ExternalConnection, error)
 	Delete(ctx context.Context, userUuid uuid.UUID, provider string) error
+}
+
+type McpSpreadsheetsRepo interface {
+	Insert(ctx context.Context, spreadsheet domain.McpSpreadsheet) (domain.McpSpreadsheet, error)
+	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.McpSpreadsheet, error)
+	Delete(ctx context.Context, userUuid uuid.UUID, spreadsheetId string) error
 }
 
 type McpKeyRepository interface {

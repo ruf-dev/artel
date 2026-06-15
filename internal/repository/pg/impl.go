@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/externalconnections"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mailserversuggestions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpspreadsheets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
@@ -41,6 +42,7 @@ type Repos struct {
 	promptsRepo           repository.Prompts
 	taskTrackersRepo      repository.TaskTrackerRepo
 	externalConnections   repository.ExternalConnectionRepo
+	mcpSpreadsheets       repository.McpSpreadsheetsRepo
 
 	txManager tx_manager.TxManager
 }
@@ -113,6 +115,10 @@ func (r Repos) ExternalConnections() repository.ExternalConnectionRepo {
 	return r.externalConnections
 }
 
+func (r Repos) McpSpreadsheets() repository.McpSpreadsheetsRepo {
+	return r.mcpSpreadsheets
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 
@@ -134,6 +140,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		promptsRepo:           prompts.New(db),
 		taskTrackersRepo:      tasktrackers.New(q, encryptionKey),
 		externalConnections:   externalconnections.New(q, encryptionKey),
+		mcpSpreadsheets:       mcpspreadsheets.New(q),
 
 		txManager: tx_manager.New(db),
 	}

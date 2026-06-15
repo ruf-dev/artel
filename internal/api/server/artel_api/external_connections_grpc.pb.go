@@ -19,9 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
-	ExternalConnectionsAPI_ListConnections_FullMethodName     = "/artel_api.ExternalConnectionsAPI/ListConnections"
-	ExternalConnectionsAPI_DisconnectProvider_FullMethodName  = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
+	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName  = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
+	ExternalConnectionsAPI_ListConnections_FullMethodName      = "/artel_api.ExternalConnectionsAPI/ListConnections"
+	ExternalConnectionsAPI_DisconnectProvider_FullMethodName   = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
+	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
+	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
+	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName     = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
+	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName    = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -31,6 +35,10 @@ type ExternalConnectionsAPIClient interface {
 	InitiateGoogleOAuth(ctx context.Context, in *InitiateGoogleOAuth_Request, opts ...grpc.CallOption) (*InitiateGoogleOAuth_Response, error)
 	ListConnections(ctx context.Context, in *ListConnections_Request, opts ...grpc.CallOption) (*ListConnections_Response, error)
 	DisconnectProvider(ctx context.Context, in *DisconnectProvider_Request, opts ...grpc.CallOption) (*DisconnectProvider_Response, error)
+	GetGooglePickerToken(ctx context.Context, in *GooglePickerToken_Request, opts ...grpc.CallOption) (*GooglePickerToken_Response, error)
+	AddSpreadsheet(ctx context.Context, in *AddSpreadsheet_Request, opts ...grpc.CallOption) (*AddSpreadsheet_Response, error)
+	ListSpreadsheets(ctx context.Context, in *ListSpreadsheets_Request, opts ...grpc.CallOption) (*ListSpreadsheets_Response, error)
+	RemoveSpreadsheet(ctx context.Context, in *RemoveSpreadsheet_Request, opts ...grpc.CallOption) (*RemoveSpreadsheet_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -71,6 +79,46 @@ func (c *externalConnectionsAPIClient) DisconnectProvider(ctx context.Context, i
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) GetGooglePickerToken(ctx context.Context, in *GooglePickerToken_Request, opts ...grpc.CallOption) (*GooglePickerToken_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GooglePickerToken_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) AddSpreadsheet(ctx context.Context, in *AddSpreadsheet_Request, opts ...grpc.CallOption) (*AddSpreadsheet_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddSpreadsheet_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddSpreadsheet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) ListSpreadsheets(ctx context.Context, in *ListSpreadsheets_Request, opts ...grpc.CallOption) (*ListSpreadsheets_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSpreadsheets_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_ListSpreadsheets_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) RemoveSpreadsheet(ctx context.Context, in *RemoveSpreadsheet_Request, opts ...grpc.CallOption) (*RemoveSpreadsheet_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveSpreadsheet_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility.
@@ -78,6 +126,10 @@ type ExternalConnectionsAPIServer interface {
 	InitiateGoogleOAuth(context.Context, *InitiateGoogleOAuth_Request) (*InitiateGoogleOAuth_Response, error)
 	ListConnections(context.Context, *ListConnections_Request) (*ListConnections_Response, error)
 	DisconnectProvider(context.Context, *DisconnectProvider_Request) (*DisconnectProvider_Response, error)
+	GetGooglePickerToken(context.Context, *GooglePickerToken_Request) (*GooglePickerToken_Response, error)
+	AddSpreadsheet(context.Context, *AddSpreadsheet_Request) (*AddSpreadsheet_Response, error)
+	ListSpreadsheets(context.Context, *ListSpreadsheets_Request) (*ListSpreadsheets_Response, error)
+	RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -96,6 +148,18 @@ func (UnimplementedExternalConnectionsAPIServer) ListConnections(context.Context
 }
 func (UnimplementedExternalConnectionsAPIServer) DisconnectProvider(context.Context, *DisconnectProvider_Request) (*DisconnectProvider_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method DisconnectProvider not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) GetGooglePickerToken(context.Context, *GooglePickerToken_Request) (*GooglePickerToken_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetGooglePickerToken not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddSpreadsheet(context.Context, *AddSpreadsheet_Request) (*AddSpreadsheet_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddSpreadsheet not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) ListSpreadsheets(context.Context, *ListSpreadsheets_Request) (*ListSpreadsheets_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListSpreadsheets not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method RemoveSpreadsheet not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -173,6 +237,78 @@ func _ExternalConnectionsAPI_DisconnectProvider_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_GetGooglePickerToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GooglePickerToken_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).GetGooglePickerToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).GetGooglePickerToken(ctx, req.(*GooglePickerToken_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_AddSpreadsheet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddSpreadsheet_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddSpreadsheet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddSpreadsheet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddSpreadsheet(ctx, req.(*AddSpreadsheet_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_ListSpreadsheets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSpreadsheets_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).ListSpreadsheets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_ListSpreadsheets_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).ListSpreadsheets(ctx, req.(*ListSpreadsheets_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_RemoveSpreadsheet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveSpreadsheet_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).RemoveSpreadsheet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).RemoveSpreadsheet(ctx, req.(*RemoveSpreadsheet_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -191,6 +327,22 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DisconnectProvider",
 			Handler:    _ExternalConnectionsAPI_DisconnectProvider_Handler,
+		},
+		{
+			MethodName: "GetGooglePickerToken",
+			Handler:    _ExternalConnectionsAPI_GetGooglePickerToken_Handler,
+		},
+		{
+			MethodName: "AddSpreadsheet",
+			Handler:    _ExternalConnectionsAPI_AddSpreadsheet_Handler,
+		},
+		{
+			MethodName: "ListSpreadsheets",
+			Handler:    _ExternalConnectionsAPI_ListSpreadsheets_Handler,
+		},
+		{
+			MethodName: "RemoveSpreadsheet",
+			Handler:    _ExternalConnectionsAPI_RemoveSpreadsheet_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

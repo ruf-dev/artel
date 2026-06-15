@@ -138,4 +138,8 @@ type ExternalConnectionService interface {
 	DisconnectProvider(ctx context.Context, provider string) error
 	ListConnections(ctx context.Context) ([]domain.ExternalConnectionMeta, error)
 	GetGoogleClient(ctx context.Context) (*googleapi.Client, error)
+	GetPickerToken(ctx context.Context) (string, error)
+	AddSpreadsheet(ctx context.Context, spreadsheetId string, name string) (domain.McpSpreadsheet, error)
+	ListSpreadsheets(ctx context.Context) ([]domain.McpSpreadsheet, error)
+	RemoveSpreadsheet(ctx context.Context, spreadsheetId string) error
 }

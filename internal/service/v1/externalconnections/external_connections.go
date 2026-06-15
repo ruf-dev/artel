@@ -28,16 +28,23 @@ type googleUserInfo struct {
 }
 
 type Service struct {
-	connections  repository.ExternalConnectionRepo
-	pendingCodes repository.PendingAuthCodes
-	oauthCfg     *oauth2.Config
+	connections     repository.ExternalConnectionRepo
+	pendingCodes    repository.PendingAuthCodes
+	mcpSpreadsheets repository.McpSpreadsheetsRepo
+	oauthCfg        *oauth2.Config
 }
 
-func New(connections repository.ExternalConnectionRepo, pendingCodes repository.PendingAuthCodes, oauthCfg *oauth2.Config) *Service {
+func New(
+	connections repository.ExternalConnectionRepo,
+	pendingCodes repository.PendingAuthCodes,
+	mcpSpreadsheets repository.McpSpreadsheetsRepo,
+	oauthCfg *oauth2.Config,
+) *Service {
 	return &Service{
-		connections:  connections,
-		pendingCodes: pendingCodes,
-		oauthCfg:     oauthCfg,
+		connections:     connections,
+		pendingCodes:    pendingCodes,
+		mcpSpreadsheets: mcpSpreadsheets,
+		oauthCfg:        oauthCfg,
 	}
 }
 
@@ -178,12 +185,97 @@ func (s *Service) GetGoogleClient(ctx context.Context) (*googleapi.Client, error
 		return nil, user_errors.Unauthenticated
 	}
 
+	creds, conn, err := s.freshGoogleCreds(ctx, uc.UserUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	_ = conn
+	client := googleapi.New(ctx, creds, s.oauthCfg)
+	return client, nil
+}
+
+func (s *Service) GetPickerToken(ctx context.Context) (string, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return "", user_errors.Unauthenticated
+	}
+
+	creds, _, err := s.freshGoogleCreds(ctx, uc.UserUuid)
+	if err != nil {
+		return "", err
+	}
+
+	return creds.AccessToken, nil
+}
+
+func (s *Service) AddSpreadsheet(ctx context.Context, spreadsheetId string, name string) (domain.McpSpreadsheet, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.McpSpreadsheet{}, user_errors.Unauthenticated
+	}
+
 	result, err := s.connections.GetByUserAndProvider(ctx, uc.UserUuid, domain.ProviderGoogleSheets)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "error getting google connection")
+		return domain.McpSpreadsheet{}, rerrors.Wrap(err, "error getting google connection")
 	}
 	if !result.Valid {
-		return nil, user_errors.GoogleNotConnected
+		return domain.McpSpreadsheet{}, user_errors.GoogleNotConnected
+	}
+
+	spreadsheet := domain.McpSpreadsheet{
+		UserUuid:             uc.UserUuid,
+		ExternalConnectionId: result.V.Uuid,
+		SpreadsheetId:        spreadsheetId,
+		Name:                 name,
+	}
+
+	saved, err := s.mcpSpreadsheets.Insert(ctx, spreadsheet)
+	if err != nil {
+		return domain.McpSpreadsheet{}, rerrors.Wrap(err, "error adding spreadsheet")
+	}
+
+	return saved, nil
+}
+
+func (s *Service) ListSpreadsheets(ctx context.Context) ([]domain.McpSpreadsheet, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return nil, user_errors.Unauthenticated
+	}
+
+	spreadsheets, err := s.mcpSpreadsheets.ListByUser(ctx, uc.UserUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error listing spreadsheets")
+	}
+
+	return spreadsheets, nil
+}
+
+func (s *Service) RemoveSpreadsheet(ctx context.Context, spreadsheetId string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	err := s.mcpSpreadsheets.Delete(ctx, uc.UserUuid, spreadsheetId)
+	if err != nil {
+		return rerrors.Wrap(err, "error removing spreadsheet")
+	}
+
+	return nil
+}
+
+// freshGoogleCreds loads the stored Google credentials for the given user, refreshes the
+// access token if it is within 5 minutes of expiry, persists any refreshed token, and
+// returns the up-to-date credentials together with the connection row.
+func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (domain.GoogleOAuthCredentials, domain.ExternalConnection, error) {
+	result, err := s.connections.GetByUserAndProvider(ctx, userUuid, domain.ProviderGoogleSheets)
+	if err != nil {
+		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error getting google connection")
+	}
+	if !result.Valid {
+		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, user_errors.GoogleNotConnected
 	}
 
 	conn := result.V
@@ -191,7 +283,7 @@ func (s *Service) GetGoogleClient(ctx context.Context) (*googleapi.Client, error
 	var creds domain.GoogleOAuthCredentials
 	err = json.Unmarshal(conn.CredentialsJSON, &creds)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "error parsing google credentials")
+		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error parsing google credentials")
 	}
 
 	if time.Until(creds.Expiry) < 5*time.Minute {
@@ -205,7 +297,7 @@ func (s *Service) GetGoogleClient(ctx context.Context) (*googleapi.Client, error
 		tokenSource := s.oauthCfg.TokenSource(ctx, existingToken)
 		freshToken, err := tokenSource.Token()
 		if err != nil {
-			return nil, rerrors.Wrap(err, "error refreshing google token")
+			return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error refreshing google token")
 		}
 
 		if freshToken.AccessToken != creds.AccessToken {
@@ -218,19 +310,18 @@ func (s *Service) GetGoogleClient(ctx context.Context) (*googleapi.Client, error
 
 			credJSON, err := json.Marshal(creds)
 			if err != nil {
-				return nil, rerrors.Wrap(err, "error marshaling refreshed credentials")
+				return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error marshaling refreshed credentials")
 			}
 
 			conn.CredentialsJSON = json.RawMessage(credJSON)
-			_, err = s.connections.Upsert(ctx, conn)
+			conn, err = s.connections.Upsert(ctx, conn)
 			if err != nil {
-				return nil, rerrors.Wrap(err, "error storing refreshed credentials")
+				return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error storing refreshed credentials")
 			}
 		}
 	}
 
-	client := googleapi.New(ctx, creds, s.oauthCfg)
-	return client, nil
+	return creds, conn, nil
 }
 
 func toMeta(conn domain.ExternalConnection, displayName string) domain.ExternalConnectionMeta {

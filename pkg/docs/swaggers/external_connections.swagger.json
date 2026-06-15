@@ -80,6 +80,134 @@
         ]
       }
     },
+    "/api/external-connections/google/picker-token": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_GetGooglePickerToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGooglePickerTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGooglePickerTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/google/spreadsheets/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddSpreadsheet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddSpreadsheetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddSpreadsheetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/google/spreadsheets/list": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_ListSpreadsheets",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListSpreadsheetsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListSpreadsheetsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/google/spreadsheets/remove": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_RemoveSpreadsheet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiRemoveSpreadsheetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiRemoveSpreadsheetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/list": {
       "post": {
         "operationId": "ExternalConnectionsAPI_ListConnections",
@@ -114,6 +242,25 @@
     }
   },
   "definitions": {
+    "artel_apiAddSpreadsheetRequest": {
+      "type": "object",
+      "properties": {
+        "spreadsheetId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddSpreadsheetResponse": {
+      "type": "object",
+      "properties": {
+        "spreadsheet": {
+          "$ref": "#/definitions/artel_apiSpreadsheet"
+        }
+      }
+    },
     "artel_apiDisconnectProviderRequest": {
       "type": "object",
       "properties": {
@@ -180,6 +327,17 @@
         }
       }
     },
+    "artel_apiGooglePickerTokenRequest": {
+      "type": "object"
+    },
+    "artel_apiGooglePickerTokenResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        }
+      }
+    },
     "artel_apiInitiateGoogleOAuthRequest": {
       "type": "object",
       "properties": {
@@ -208,6 +366,46 @@
             "type": "object",
             "$ref": "#/definitions/artel_apiExternalConnectionInfo"
           }
+        }
+      }
+    },
+    "artel_apiListSpreadsheetsRequest": {
+      "type": "object"
+    },
+    "artel_apiListSpreadsheetsResponse": {
+      "type": "object",
+      "properties": {
+        "spreadsheets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiSpreadsheet"
+          }
+        }
+      }
+    },
+    "artel_apiRemoveSpreadsheetRequest": {
+      "type": "object",
+      "properties": {
+        "spreadsheetId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiRemoveSpreadsheetResponse": {
+      "type": "object"
+    },
+    "artel_apiSpreadsheet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
         }
       }
     },

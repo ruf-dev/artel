@@ -60,7 +60,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		TaskTracker:         tasktracker.New(repo.TaskTrackers()),
 		Notes:               notes.New(repo),
 		AdminUsers:          adminusers.New(repo.Users(), repo.Sessions()),
-		ExternalConnections: externalconns.New(repo.ExternalConnections(), repo.PendingAuthCodes(), oauthCfg),
+		ExternalConnections: externalconns.New(repo.ExternalConnections(), repo.PendingAuthCodes(), repo.McpSpreadsheets(), oauthCfg),
 	}, nil
 }
 

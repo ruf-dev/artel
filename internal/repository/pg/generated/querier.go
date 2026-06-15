@@ -27,6 +27,7 @@ type Querier interface {
 	DeleteEmailAccount(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
 	DeleteExternalConnection(ctx context.Context, arg DeleteExternalConnectionParams) error
+	DeleteMcpSpreadsheet(ctx context.Context, arg DeleteMcpSpreadsheetParams) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteTaskTracker(ctx context.Context, id uuid.UUID) error
@@ -54,6 +55,7 @@ type Querier interface {
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	InsertEmailAccount(ctx context.Context, arg InsertEmailAccountParams) (EmailAccount, error)
+	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
 	InsertTaskTracker(ctx context.Context, arg InsertTaskTrackerParams) (TaskTracker, error)
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
@@ -63,6 +65,7 @@ type Querier interface {
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
+	ListMcpSpreadsheetsByUser(ctx context.Context, userID uuid.UUID) ([]McpSpreadsheet, error)
 	ListTaskTrackersByUser(ctx context.Context, userID uuid.UUID) ([]TaskTracker, error)
 	ListVaultInvites(ctx context.Context, vaultID uuid.UUID) ([]VaultInvite, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)

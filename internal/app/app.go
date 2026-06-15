@@ -23,7 +23,7 @@ type App struct {
 	Postgres *sql.DB
 	/* Servers network listeners */
 	MASTER net.Listener
-	MASTER net.Listener
+	GRPC   net.Listener
 
 	Custom Custom
 }

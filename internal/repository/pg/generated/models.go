@@ -210,6 +210,15 @@ type McpKey struct {
 	LastAccessedAt sql.NullTime
 }
 
+type McpSpreadsheet struct {
+	ID                   uuid.UUID
+	UserID               uuid.UUID
+	ExternalConnectionID uuid.UUID
+	SpreadsheetID        string
+	Name                 string
+	CreatedAt            time.Time
+}
+
 type PendingAuthCode struct {
 	Code          string
 	RawToken      string

@@ -21,6 +21,7 @@ servers:
         /{GRPC}:
             module: github.com/ruf-dev/artel
             gateway: /api
+        name: GRPC
 environment:
     - name: creds_encryption_key
       type: string
