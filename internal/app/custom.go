@@ -110,7 +110,7 @@ func (c *Custom) Init(a *App) error {
 	)
 	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, emailAccountsImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl)
 
-	c.Transport.AddHttpHandler("/api/external-connections/google/callback", http.HandlerFunc(externalConnectionsImpl.HandleGoogleCallback))
+	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))

@@ -16,10 +16,13 @@ import TaskTrackersPage from "@/pages/task-trackers/TaskTrackersPage.tsx"
 import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
+import GoogleOAuthCallbackPage from "@/pages/connections/GoogleOAuthCallbackPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import {authService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
+import {useServerStatus} from "@/app/hooks/ServerStatus.ts"
+import ServiceUnavailablePage from "@/pages/service-unavailable/ServiceUnavailablePage.tsx"
 import { Tooltip } from "react-tooltip"
 import { Toaster } from "@vervstack/chures"
 // eslint-disable-next-line react-refresh/only-export-components
@@ -31,6 +34,7 @@ export enum Path {
     TaskTrackersPage = "/task-trackers",
     NotesPage = "/notes",
     ConnectionsPage = "/connections",
+    GoogleOAuthCallback = "/connections/google/callback",
     McpAuth = "/authorize",
     ClosedAlpha = "/closed-alpha",
     Admin = "/admin",
@@ -43,12 +47,24 @@ export default function Router() {
     const navigate = useNavigate()
 
     const {auth, setUserInfo} = useUser()
+    const isServerAvailable = useServerStatus()
+
     useEffect(() => {
         if (!auth.isAuthenticated()) return
 
         authService.FetchUserInfo().then(setUserInfo).catch(() => {})
         navigate(Path.HomePage)
     }, [])
+
+    if (!isServerAvailable) {
+        return (
+            <div className={cls.Root}>
+                <div className={cls.Content}>
+                    <ServiceUnavailablePage/>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className={cls.Root}>
@@ -62,6 +78,7 @@ export default function Router() {
                         <Route path={Path.TaskTrackersPage} element={<TaskTrackersPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.NotesPage} element={<NotesPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.ConnectionsPage} element={<ConnectionsPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.GoogleOAuthCallback} element={<GoogleOAuthCallbackPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={"*"} element={<Navigate to={Path.HomePage} replace/>}/>
                     </Route>
 

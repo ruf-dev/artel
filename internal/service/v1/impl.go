@@ -41,8 +41,9 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		ClientID:     cfg.GoogleClientID,
 		ClientSecret: cfg.GoogleClientSecret,
 		Scopes: []string{
-			"https://www.googleapis.com/auth/drive.file",
 			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile",
+			"https://www.googleapis.com/auth/drive.file",
 		},
 		Endpoint: googleoauth.Endpoint,
 	}

@@ -9,6 +9,7 @@ export interface TelegramLoginResponse {
 export interface InitReq {
     pathPrefix: string,
     headers: {
+        "Content-Type"?: string,
         "Grpc-Metadata-Authorization": string,
     },
 }
@@ -21,6 +22,7 @@ export function apiPrefix(opts?: Options): InitReq {
     return {
         pathPrefix: import.meta.env.VITE_ARTEL_API,
         headers: {
+            "Content-Type": "application/json",
             "Grpc-Metadata-Authorization": opts ? opts.accessToken : "",
         }
     }

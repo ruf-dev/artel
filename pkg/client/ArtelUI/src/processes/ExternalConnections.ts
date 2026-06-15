@@ -1,9 +1,11 @@
 import {ExternalConnectionInfo, ExternalConnectionsAPI} from "@/app/api/artel/external_connections.pb.ts"
+import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
 
 export interface IExternalConnectionsService {
     list: () => Promise<ExternalConnectionInfo[]>
     initiateGoogleOAuth: () => Promise<string>
+    exchangeGoogleOAuth: (code: string, state: string) => Promise<void>
     disconnect: (provider: string) => Promise<void>
 }
 
@@ -14,8 +16,17 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     }
 
     async initiateGoogleOAuth(): Promise<string> {
-        const res = await ExternalConnectionsAPI.InitiateGoogleOAuth({}, useUser.getState().auth.getInitReq())
+        const res = await ExternalConnectionsAPI.InitiateGoogleOAuth({origin: window.location.origin}, useUser.getState().auth.getInitReq())
         return res.authUrl ?? ""
+    }
+
+    async exchangeGoogleOAuth(code: string, state: string): Promise<void> {
+        const initReq = useUser.getState().auth.getInitReq()
+        await fm.fetchRequest("/api/external-connections/google/exchange", {
+            ...initReq,
+            method: "POST",
+            body: JSON.stringify({code, state}),
+        })
     }
 
     async disconnect(provider: string): Promise<void> {

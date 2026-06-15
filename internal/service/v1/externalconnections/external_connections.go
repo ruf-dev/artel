@@ -47,7 +47,7 @@ func (s *Service) InitiateGoogleOAuth(ctx context.Context, origin string) (strin
 		return "", user_errors.Unauthenticated
 	}
 
-	redirectURL := origin + "/api/external-connections/google/callback"
+	redirectURL := origin + "/connections/google/callback"
 	state := randomHex(16)
 	expiresAt := time.Now().Add(15 * time.Minute)
 
