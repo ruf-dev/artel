@@ -31,6 +31,9 @@ environment:
     - name: google_client_secret
       type: string
       value: ""
+    - name: google_api_key
+      type: string
+      value: ""
     - name: log_format
       type: string
       enum: [JSON, TEXT]

@@ -27,6 +27,34 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc GetGooglePickerToken(GooglePickerToken.Request) returns (GooglePickerToken.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/google/picker-token"
+      body: "*"
+    };
+  }
+
+  rpc AddSpreadsheet(AddSpreadsheet.Request) returns (AddSpreadsheet.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/google/spreadsheets/add"
+      body: "*"
+    };
+  }
+
+  rpc ListSpreadsheets(ListSpreadsheets.Request) returns (ListSpreadsheets.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/google/spreadsheets/list"
+      body: "*"
+    };
+  }
+
+  rpc RemoveSpreadsheet(RemoveSpreadsheet.Request) returns (RemoveSpreadsheet.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/google/spreadsheets/remove"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -75,6 +103,43 @@ message ListConnections {
 message DisconnectProvider {
   message Request {
     string provider = 1;
+  }
+  message Response {}
+}
+
+message GooglePickerToken {
+  message Request {}
+  message Response {
+    string access_token = 1;
+  }
+}
+
+message Spreadsheet {
+  string id         = 1;
+  string name       = 2;
+  string created_at = 3;
+}
+
+message AddSpreadsheet {
+  message Request {
+    string spreadsheet_id = 1;
+    string name           = 2;
+  }
+  message Response {
+    Spreadsheet spreadsheet = 1;
+  }
+}
+
+message ListSpreadsheets {
+  message Request {}
+  message Response {
+    repeated Spreadsheet spreadsheets = 1;
+  }
+}
+
+message RemoveSpreadsheet {
+  message Request {
+    string spreadsheet_id = 1;
   }
   message Response {}
 }

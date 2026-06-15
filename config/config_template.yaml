@@ -25,6 +25,9 @@ environment:
     - name: creds_encryption_key
       type: string
       value: ""
+    - name: google_api_key
+      type: string
+      value: ""
     - name: google_client_id
       type: string
       value: ""

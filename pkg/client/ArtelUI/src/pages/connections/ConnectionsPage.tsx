@@ -237,6 +237,25 @@ function ConnectionDetailDialog({def, connection}: {
     )
 }
 
+const SCOPE_INFO: Record<string, string> = {
+    "spreadsheets": "Read and write your Google Sheets spreadsheets",
+    "spreadsheets.readonly": "Read-only access to your Google Sheets",
+    "drive.file": "Access files Artel creates or opens in Google Drive",
+    "drive.readonly": "Read-only access to your Google Drive files",
+    "gmail.readonly": "Read your Gmail messages",
+    "calendar.readonly": "Read your Google Calendar events",
+    "calendar": "Read and write your Google Calendar events",
+}
+
+function trimScope(s: string): string {
+    const idx = s.lastIndexOf("/")
+    return idx >= 0 ? s.slice(idx + 1) : s
+}
+
+function parseScopeList(scopes: string): string[] {
+    return scopes.split(/[ ,]+/).filter(Boolean)
+}
+
 function ConnectedContent({connection, onDisconnect}: {
     connection: ExternalConnectionInfo
     onDisconnect: () => void
@@ -247,6 +266,15 @@ function ConnectedContent({connection, onDisconnect}: {
         ? new Date(connection.createdAt).toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"})
         : "—"
 
+    const scopeList = scopes ? parseScopeList(scopes) : []
+    const scopeTooltipHtml = scopeList
+        .map(s => {
+            const name = trimScope(s)
+            const desc = SCOPE_INFO[name]
+            return desc ? `<b>${name}</b>: ${desc}` : `<b>${name}</b>`
+        })
+        .join("<br/>")
+
     return (
         <>
             <div className={cls.InfoRows}>
@@ -256,10 +284,19 @@ function ConnectedContent({connection, onDisconnect}: {
                         <span className={cls.InfoValue}>{email}</span>
                     </div>
                 )}
-                {scopes && (
+                {scopeList.length > 0 && (
                     <div className={cls.InfoRow}>
-                        <span className={cls.InfoLabel}>Scopes</span>
-                        <span className={cls.InfoValue}>{scopes}</span>
+                        <span className={`${cls.InfoLabel} ${cls.ScopesLabel}`}>
+                            Scopes
+                            <button
+                                type="button"
+                                className={cls.ScopeHelp}
+                                data-tooltip-id="root-tooltip"
+                                data-tooltip-html={scopeTooltipHtml}
+                                aria-label="What are scopes?"
+                            >?</button>
+                        </span>
+                        <span className={cls.InfoValue}>{scopeList.map(trimScope).join(", ")}</span>
                     </div>
                 )}
                 <div className={cls.InfoRow}>

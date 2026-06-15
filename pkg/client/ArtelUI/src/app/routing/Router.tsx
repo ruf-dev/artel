@@ -53,7 +53,9 @@ export default function Router() {
         if (!auth.isAuthenticated()) return
 
         authService.FetchUserInfo().then(setUserInfo).catch(() => {})
-        navigate(Path.HomePage)
+        if (location.pathname === Path.InitPage) {
+            navigate(Path.HomePage)
+        }
     }, [])
 
     if (!isServerAvailable) {
