@@ -1,0 +1,141 @@
+.Card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.125rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.Card:first-child { border-top: 1px solid var(--color-border); }
+
+.CardMain {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+}
+
+.CardHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+}
+
+.CardName {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-fg-primary);
+    letter-spacing: -0.01em;
+}
+
+.CardPreview {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+    letter-spacing: 0.01em;
+}
+
+.CardChips {
+    display: flex;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+.Chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.375rem;
+    background: var(--color-bg-hover);
+    border: 1px solid var(--color-border-light);
+    font-size: 0.75rem;
+    color: var(--color-fg-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+}
+
+.ChipMuted {
+    color: var(--color-fg-disabled);
+    border-color: transparent;
+    background: transparent;
+}
+
+.VaultChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.1875rem 0.5rem 0.1875rem 0.1875rem;
+    border-radius: 0.375rem;
+    background: var(--color-bg-hover);
+    border: 1px solid var(--color-border-light);
+    font-size: 0.75rem;
+    color: var(--color-fg-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+}
+
+.VaultBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.25rem;
+    background: var(--coral);
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.CardMeta {
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+    letter-spacing: -0.005em;
+}
+
+.CardActions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.BtnGhost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-border-light);
+    background: transparent;
+    color: var(--color-fg-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.BtnGhost:hover:not(:disabled) { background: var(--color-bg-hover); color: var(--color-fg-primary); }
+.BtnGhost:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.BtnDanger {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.625rem;
+    border: 1px solid rgba(193,37,61,0.4);
+    background: transparent;
+    color: var(--color-error);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease;
+}
+
+.BtnDanger:hover:not(:disabled) { background: rgba(193,37,61,0.10); border-color: var(--color-error); }
+.BtnDanger:disabled { opacity: 0.4; cursor: not-allowed; }

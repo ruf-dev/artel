@@ -1,0 +1,30 @@
+.OptionRow {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-fg-secondary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.OptionRow:hover { background: var(--color-bg-hover); color: var(--color-fg-primary); }
+
+.OptionRowSelected {
+    background: rgba(255,75,62,0.08);
+    border-color: rgba(255,75,62,0.3);
+    color: var(--color-fg-primary);
+}
+
+.OptionRadio {
+    font-size: 0.75rem;
+    color: var(--coral);
+    width: 0.875rem;
+    flex-shrink: 0;
+}

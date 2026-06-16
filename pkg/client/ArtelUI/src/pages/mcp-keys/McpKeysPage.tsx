@@ -3,9 +3,8 @@ import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/mcp-keys/McpKeysPage.module.css"
 
-import {McpKeyInfo, McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
+import {McpKeyInfo} from "@/app/api/artel/mcp_keys.pb.ts"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
-import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
@@ -16,6 +15,10 @@ import useUser from "@/hooks/user/User.ts"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
+import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
+import SelectOption from "@/components/SelectOption/SelectOption.tsx"
+import ManageKeyDialog from "@/components/ManageKeyDialog/ManageKeyDialog.tsx"
+import McpKeyCard from "@/widgets/McpKeyCard/McpKeyCard.tsx"
 
 export default function McpKeysPage() {
     const navigate = useNavigate()
@@ -71,9 +74,25 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
 }
 
 function ContentSegment() {
-    const {keys, loading} = useMcpKeys()
+    const {keys, loading, revoke} = useMcpKeys()
     const {OpenDialog} = useDialog()
 
+    function openRevokeDialog(mcpKey: McpKeyInfo) {
+        OpenDialog(
+            <ConfirmDialog
+                title="Revoke key"
+                message={`Revoke "${mcpKey.name}"? Any agents using this key will immediately lose access. This cannot be undone.`}
+                confirmLabel="Revoke"
+                danger
+                onConfirm={() => {
+                    if (!mcpKey.id || !mcpKey.vaultId) return
+                    return revoke(mcpKey.id, mcpKey.vaultId)
+                }}
+            />
+        )
+    }
+
+    // TODO add loader from chures
     if (loading) {
         return (
             <div className={cls.Content}>
@@ -89,7 +108,7 @@ function ContentSegment() {
                     <McpKeyCard
                         key={key.id}
                         mcpKey={key}
-                        onRevoke={() => OpenDialog(<RevokeKeyDialog mcpKey={key}/>)}
+                        onRevoke={() => openRevokeDialog(key)}
                         onManage={() => OpenDialog(<ManageKeyDialog mcpKey={key}/>)}
                     />
                 ))}
@@ -98,500 +117,6 @@ function ContentSegment() {
                 )}
             </div>
         </div>
-    )
-}
-
-function McpKeyCard({mcpKey, onRevoke, onManage}: {
-    mcpKey: McpKeyInfo
-    onRevoke: () => void
-    onManage: () => void
-}) {
-    const {vaults} = useVaults()
-    const {connectorsByKey, fetchConnectors} = useMcpKeys()
-    const {connections} = useExternalConnections()
-
-    const vault = vaults.find(v => v.id === mcpKey.vaultId)
-    const connectors = mcpKey.id ? connectorsByKey[mcpKey.id] ?? [] : []
-
-    useEffect(() => {
-        if (mcpKey.id) {
-            void fetchConnectors(mcpKey.id)
-        }
-    }, [mcpKey.id, fetchConnectors])
-
-    function formatDate(iso: string | undefined): string {
-        if (!iso) return "Never"
-        const d = new Date(iso)
-        if (isNaN(d.getTime())) return "Never"
-        return d.toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"})
-    }
-
-    return (
-        <div className={cls.Card}>
-            <div className={cls.CardMain}>
-                <div className={cls.CardHeader}>
-                    <span className={cls.CardName}>{mcpKey.name}</span>
-                    <span className={cls.CardPreview}>{mcpKey.keyPreview}…</span>
-                </div>
-                <div className={cls.CardChips}>
-                    {vault ? (
-                        <span className={cls.VaultChip} title={`Vault: ${vault.name}`}>
-                            <span className={cls.VaultBadge}>A</span>
-                            {vault.name}
-                        </span>
-                    ) : (
-                        <span className={`${cls.Chip} ${cls.ChipMuted}`} title="No vault assigned">No vault</span>
-                    )}
-                    {connectors.map(c => (
-                        <ConnectorChip key={c.mcpName} connector={c} connections={connections}/>
-                    ))}
-                </div>
-                <div className={cls.CardMeta}>
-                    Last accessed: {formatDate(mcpKey.lastAccessedAt)}
-                </div>
-            </div>
-            <div className={cls.CardActions}>
-                <button className={cls.BtnGhost} onClick={onManage} type="button">Manage</button>
-                <button className={cls.BtnDanger} onClick={onRevoke} type="button">Revoke</button>
-            </div>
-        </div>
-    )
-}
-
-function RevokeKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
-    const [revoking, setRevoking] = useState(false)
-    const {revoke} = useMcpKeys()
-    const {CloseDialog} = useDialog()
-
-    async function handleRevoke() {
-        if (!mcpKey.id || !mcpKey.vaultId) return
-        setRevoking(true)
-        try {
-            await revoke(mcpKey.id, mcpKey.vaultId)
-            CloseDialog()
-        } finally {
-            setRevoking(false)
-        }
-    }
-
-    return (
-        <div className={cls.Overlay}>
-            <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                 aria-labelledby="revokeKeyTitle">
-                <div className={cls.ModalHead}>
-                    <h2 className={cls.ModalTitle} id="revokeKeyTitle">Revoke key</h2>
-                    <ModalClose onClick={CloseDialog} disabled={revoking} className={cls.ModalClose}/>
-                </div>
-                <p className={cls.ModalSub}>
-                    Revoke <b>"{mcpKey.name}"</b>? Any agents using this key will immediately lose access. This cannot
-                    be undone.
-                </p>
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {
-                            label: "Cancel",
-                            onClick: CloseDialog,
-                            className: cls.BtnGhost,
-                            disabled: revoking,
-                        },
-                        {
-                            label: revoking ? "Revoking…" : "Revoke",
-                            onClick: handleRevoke,
-                            className: cls.BtnDanger,
-                            disabled: revoking,
-                        },
-                    ]}
-                />
-            </div>
-        </div>
-    )
-}
-
-type ManageStep = "main" | "vault" | "addConnection" | "selectConnection"
-
-function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
-    const [step, setStep] = useState<ManageStep>("main")
-    const [saving, setSaving] = useState(false)
-    const [selectedVaultId, setSelectedVaultId] = useState(mcpKey.vaultId ?? "")
-    const [selectedCandidate, setSelectedCandidate] = useState<MomCandidate | null>(null)
-    const [selectedExternalConnectionId, setSelectedExternalConnectionId] = useState("")
-
-    const {
-        setAccess,
-        connectorsByKey,
-        fetchConnectors,
-        addConnector,
-        removeConnector,
-        momCandidates,
-        fetchMomCandidates,
-    } = useMcpKeys()
-    const {CloseDialog} = useDialog()
-    const {vaults} = useVaults()
-    const navigate = useNavigate()
-
-    const connectors = mcpKey.id ? connectorsByKey[mcpKey.id] ?? [] : []
-    const vault = vaults.find(v => v.id === selectedVaultId)
-
-    useEffect(() => {
-        if (mcpKey.id) {
-            void fetchConnectors(mcpKey.id)
-        }
-    }, [mcpKey.id, fetchConnectors])
-
-    useEffect(() => {
-        if (step === "addConnection") {
-            void fetchMomCandidates()
-        }
-    }, [step, fetchMomCandidates])
-
-    async function handleSaveVault() {
-        if (!mcpKey.id) return
-        setSaving(true)
-        try {
-            await setAccess(mcpKey.id, selectedVaultId)
-            setStep("main")
-        } finally {
-            setSaving(false)
-        }
-    }
-
-    async function handleRemoveConnector(mcpName: string) {
-        if (!mcpKey.id) return
-        await removeConnector(mcpKey.id, mcpName)
-    }
-
-    function handleSelectCandidate(candidate: MomCandidate) {
-        setSelectedCandidate(candidate)
-        setSelectedExternalConnectionId("")
-        setStep("selectConnection")
-    }
-
-    async function handleAddConnector() {
-        if (!mcpKey.id || !selectedCandidate?.name || !selectedExternalConnectionId) return
-        setSaving(true)
-        try {
-            await addConnector(mcpKey.id, selectedCandidate.name, selectedExternalConnectionId)
-            setSelectedCandidate(null)
-            setSelectedExternalConnectionId("")
-            setStep("main")
-        } finally {
-            setSaving(false)
-        }
-    }
-
-    if (step === "vault") {
-        return (
-            <div className={cls.Overlay}>
-                <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                     aria-labelledby="manageVaultTitle">
-                    <div className={cls.ModalHead}>
-                        <h2 className={cls.ModalTitle} id="manageVaultTitle">Select vault</h2>
-                        <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
-                    </div>
-                    <p className={cls.ModalSub}>Choose which vault this key connects to.</p>
-                    <div className={cls.OptionList}>
-                        {vaults?.map(v => (
-                            <SelectOption
-                                key={v.id}
-                                label={v.name ?? ""}
-                                selected={selectedVaultId === v.id}
-                                onSelect={() => setSelectedVaultId(v.id ?? "")}
-                            />
-                        ))}
-                        {vaults.length === 0 && (
-                            <p className={cls.Empty}>No vaults found.</p>
-                        )}
-                    </div>
-                    <ModalActions
-                        containerClassName={cls.ModalActions}
-                        buttons={[
-                            {
-                                label: "Back",
-                                onClick: () => setStep("main"),
-                                className: cls.BtnGhost,
-                                disabled: saving
-                            },
-                            {
-                                label: saving ? "Saving…" : "Save",
-                                onClick: handleSaveVault,
-                                className: cls.BtnPrimary,
-                                disabled: saving || !selectedVaultId
-                            },
-                        ]}
-                    />
-                </div>
-            </div>
-        )
-    }
-
-    if (step === "addConnection") {
-        return (
-            <div className={cls.Overlay}>
-                <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                     aria-labelledby="addConnectionTitle">
-                    <div className={cls.ModalHead}>
-                        <h2 className={cls.ModalTitle} id="addConnectionTitle">Add connection</h2>
-                        <ModalClose onClick={CloseDialog} className={cls.ModalClose}/>
-                    </div>
-                    <p className={cls.ModalSub}>Pick a service to connect to this key.</p>
-                    <div className={cls.OptionList}>
-                        {momCandidates.map(c => (
-                            <MomCandidateCard
-                                key={c.name}
-                                candidate={c}
-                                connected={connectors.some(con => con.mcpName === c.name)}
-                                onSelect={() => handleSelectCandidate(c)}
-                            />
-                        ))}
-                        {momCandidates.length === 0 && (
-                            <p className={cls.Empty}>No services available yet.</p>
-                        )}
-                    </div>
-                    <ModalActions
-                        containerClassName={cls.ModalActions}
-                        buttons={[
-                            {label: "Back", onClick: () => setStep("main"), className: cls.BtnGhost, disabled: false},
-                        ]}
-                    />
-                </div>
-            </div>
-        )
-    }
-
-    if (step === "selectConnection" && selectedCandidate) {
-        const available = selectedCandidate.connections ?? []
-
-        return (
-            <div className={cls.Overlay}>
-                <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                     aria-labelledby="selectConnectionTitle">
-                    <div className={cls.ModalHead}>
-                        <h2 className={cls.ModalTitle} id="selectConnectionTitle">{selectedCandidate.name}</h2>
-                        <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
-                    </div>
-                    <p className={cls.ModalSub}>Pick the connection this key should use for it.</p>
-                    <div className={cls.OptionList}>
-                        {available.map(c => (
-                            <SelectOption
-                                key={c.id}
-                                label={connectionLabel(c)}
-                                selected={selectedExternalConnectionId === c.id}
-                                onSelect={() => setSelectedExternalConnectionId(c.id ?? "")}
-                            />
-                        ))}
-                        {available.length === 0 && (
-                            <p className={cls.Empty}>
-                                No connections yet.{" "}
-                                <button
-                                    className={cls.LinkBtn}
-                                    type="button"
-                                    onClick={() => {
-                                        CloseDialog()
-                                        navigate(Path.ConnectionsPage)
-                                    }}
-                                >
-                                    Set one up
-                                </button>
-                            </p>
-                        )}
-                    </div>
-                    <ModalActions
-                        containerClassName={cls.ModalActions}
-                        buttons={[
-                            {
-                                label: "Back",
-                                onClick: () => setStep("addConnection"),
-                                className: cls.BtnGhost,
-                                disabled: saving,
-                            },
-                            {
-                                label: saving ? "Adding…" : "Add",
-                                onClick: handleAddConnector,
-                                className: cls.BtnPrimary,
-                                disabled: saving || !selectedExternalConnectionId,
-                            },
-                        ]}
-                    />
-                </div>
-            </div>
-        )
-    }
-
-    return (
-        <div className={cls.Overlay}>
-            <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true"
-                 aria-labelledby="manageKeyTitle">
-                <div className={cls.ModalHead}>
-                    <h2 className={cls.ModalTitle} id="manageKeyTitle">Manage <b>"{mcpKey.name}"</b></h2>
-                    <ModalClose onClick={CloseDialog} className={cls.ModalClose}/>
-                </div>
-
-                <div className={cls.Field}>
-                    <span className={cls.FieldLabel}>Vault</span>
-                    <div className={cls.ConnectorRowWrapper}>
-                        <span
-                            className={vault ? cls.VaultChip : `${cls.Chip} ${cls.ChipMuted}`}
-                            title={vault ? `Vault: ${vault.name}` : "No vault assigned"}
-                        >
-                            {vault && <span className={cls.VaultBadge}>A</span>}
-                            {vault ? vault.name : "No vault"}
-                        </span>
-                        <button className={cls.BtnGhost} onClick={() => setStep("vault")} type="button">Change</button>
-                    </div>
-                </div>
-
-                <div className={cls.Field}>
-                    <span className={cls.FieldLabel}>Connections</span>
-                    <ConnectorList connectors={connectors} onRemove={handleRemoveConnector}/>
-                </div>
-
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {label: "Close", onClick: CloseDialog, className: cls.BtnGhost, disabled: false},
-                        {
-                            label: "Add connection",
-                            onClick: () => setStep("addConnection"),
-                            className: cls.BtnPrimary,
-                            disabled: false,
-                        },
-                    ]}
-                />
-            </div>
-        </div>
-    )
-}
-
-function MomCandidateCard({candidate, connected, onSelect}: {
-    candidate: MomCandidate
-    connected: boolean
-    onSelect: () => void
-}) {
-    const count = candidate.connections?.length ?? 0
-    return (
-        <button
-            className={cls.EntityCard}
-            onClick={onSelect}
-            disabled={connected}
-            title={connected ? "Already connected" : undefined}
-            type="button"
-        >
-            <div className={cls.MomCardHeader}>
-                <span className={cls.EntityCardTitle}>{candidate.name}</span>
-                <span className={count > 0 ? cls.Chip : `${cls.Chip} ${cls.ChipMuted}`}>
-                    {connected ? "Already connected" : count > 0 ? `${count} connection${count > 1 ? "s" : ""}` : "No connection"}
-                </span>
-            </div>
-            {candidate.description && <span className={cls.EntityCardDesc}>{candidate.description}</span>}
-        </button>
-    )
-}
-
-function ConnectorList({connectors, onRemove}: {
-    connectors: McpConnectorInfo[]
-    onRemove: (mcpName: string) => void
-}) {
-    if (connectors.length === 0) {
-        return <p className={cls.Empty}>No connections linked to this key yet.</p>
-    }
-    return (
-        <div className={cls.OptionList}>
-            {connectors.map(c => (
-                <ConnectorRow key={c.mcpName} connector={c} onRemove={() => onRemove(c.mcpName ?? "")}/>
-            ))}
-        </div>
-    )
-}
-
-function ConnectorRow({connector, onRemove}: { connector: McpConnectorInfo; onRemove: () => void }) {
-    const {connections} = useExternalConnections()
-    return (
-        <div className={cls.ConnectorRowWrapper}>
-            <ConnectorChip connector={connector} connections={connections}/>
-            <button className={cls.BtnGhostSmall} onClick={onRemove} type="button">Remove</button>
-        </div>
-    )
-}
-
-function connectionLabel(c: ExternalConnectionInfo): string {
-    if (c.google) return c.google.email ?? "Google account"
-    if (c.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL) {
-        return c.generic?.fields?.username ?? "Email account"
-    }
-    return c.provider?.replace("EXTERNAL_PROVIDER_", "").toLowerCase() ?? "Connection"
-}
-
-function ConnectorChip({connector, connections}: {
-    connector: McpConnectorInfo
-    connections: ExternalConnectionInfo[]
-}) {
-    const match = connections.find(c => c.id === connector.externalConnectionId)
-    const label = match ? connectionLabel(match) : undefined
-    const atIndex = label?.indexOf("@") ?? -1
-
-    if (!label || atIndex === -1) {
-        return (
-            <span className={cls.Chip} title={`${connector.mcpName} connection`}>
-                {connector.mcpName}
-            </span>
-        )
-    }
-
-    const color = mailDomainColor(label.slice(atIndex + 1))
-
-    return (
-        <span className={cls.MailChip} style={{borderColor: color}} title={`Email connection: ${label}`}>
-            <span className={cls.MailAtBadge} style={{background: color}}>@</span>
-            {label}
-        </span>
-    )
-}
-
-const KNOWN_MAIL_DOMAIN_COLORS: Record<string, string> = {
-    "yandex.ru": "#FFCC00",
-    "yandex.com": "#FFCC00",
-    "ya.ru": "#FFCC00",
-    "gmail.com": "#4285F4",
-    "google.com": "#4285F4",
-    "googlemail.com": "#4285F4",
-    "outlook.com": "#0078D4",
-    "hotmail.com": "#0078D4",
-    "live.com": "#0078D4",
-    "msn.com": "#0078D4",
-    "mail.ru": "#005FF9",
-    "inbox.ru": "#005FF9",
-    "list.ru": "#005FF9",
-    "bk.ru": "#005FF9",
-    "icloud.com": "#A2AAAD",
-    "me.com": "#A2AAAD",
-    "mac.com": "#A2AAAD",
-    "protonmail.com": "#6D4AFF",
-    "proton.me": "#6D4AFF",
-    "yahoo.com": "#6001D2",
-}
-
-function mailDomainColor(domain: string): string {
-    const known = KNOWN_MAIL_DOMAIN_COLORS[domain.toLowerCase()]
-    if (known) return known
-
-    let hash = 0
-    for (let i = 0; i < domain.length; i++) {
-        hash = (hash * 31 + domain.charCodeAt(i)) >>> 0
-    }
-    return `hsl(${hash % 360}, 65%, 45%)`
-}
-
-function SelectOption({label, selected, onSelect}: { label: string; selected: boolean; onSelect: () => void }) {
-    return (
-        <button
-            className={selected ? `${cls.OptionRow} ${cls.OptionRowSelected}` : cls.OptionRow}
-            onClick={onSelect}
-            type="button"
-        >
-            <span className={cls.OptionRadio}>{selected ? "●" : "○"}</span>
-            <span>{label}</span>
-        </button>
     )
 }
 
@@ -713,4 +238,3 @@ function CreateKeyDialog() {
         </div>
     )
 }
-
