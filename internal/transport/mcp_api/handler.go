@@ -12,6 +12,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.redsock.ru/rerrors"
 
+	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service"
 )
 
@@ -176,23 +177,26 @@ func (h *McpHandler) handleInitialize(w http.ResponseWriter, ctx context.Context
 }
 
 func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context, req rpcRequest) {
-	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
+	keyCtx, ok := ctx.Value(keyContextKey).(domain.McpKeyContext)
 	if !ok {
 		log.Error().Msg("mcp: keyContext missing from context in tools/list")
 		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", nil)
 		return
 	}
 
-	tools := getToolDefinitions()
-
-	keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
+	builtinTools, err := h.mcpSvc.ListTools(ctx)
 	if err != nil {
-		log.Error().Err(err).Msg("mcp: invalid key uuid in tools/list")
+		log.Error().Err(err).Msg("mcp: failed to list builtin tools")
 		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
 		return
 	}
 
-	momTools, err := h.momSvc.ListToolsForKey(ctx, keyUuid)
+	tools := make([]ToolDef, 0, len(builtinTools))
+	for _, t := range builtinTools {
+		tools = append(tools, momToolToToolDef(t))
+	}
+
+	momTools, err := h.momSvc.ListToolsForKey(ctx, keyCtx.KeyUuid)
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to list mom tools")
 	} else {
@@ -231,7 +235,7 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 		return
 	}
 
-	keyCtx, ok := ctx.Value(keyContextKey).(KeyContext)
+	keyCtx, ok := ctx.Value(keyContextKey).(domain.McpKeyContext)
 	if !ok {
 		log.Error().Msg("mcp: keyContext missing from context in tools/call")
 		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", nil)
@@ -239,22 +243,16 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	}
 
 	var result interface{}
-	if isKnownTool(callReq.Name) {
-		var err error
-		result, err = dispatchToolCall(ctx, callReq.Name, callReq.Arguments, keyCtx)
+	if h.mcpSvc.IsBuiltinTool(callReq.Name) {
+		execRes, err := h.mcpSvc.ExecuteTool(ctx, keyCtx, callReq.Name, callReq.Arguments)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
 			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)
 			return
 		}
+		result = toolResultFromExec(execRes)
 	} else {
-		keyUuid, err := uuid.Parse(keyCtx.KeyUuid)
-		if err != nil {
-			log.Error().Err(err).Msg("mcp: invalid key uuid in tools/call")
-			writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
-			return
-		}
-		text, err := h.momSvc.ExecuteToolForKey(ctx, keyUuid, callReq.Name, callReq.Arguments)
+		text, err := h.momSvc.ExecuteToolForKey(ctx, keyCtx.KeyUuid, callReq.Name, callReq.Arguments)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: mom tool execution failed")
 			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)

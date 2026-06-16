@@ -2,6 +2,7 @@ package mcp
 
 import (
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 )
 
 const tokenPrefix = "artel_vtk_"
@@ -13,6 +14,9 @@ type McpServiceImpl struct {
 	vaults         repository.Vaults
 	vaultMembers   repository.VaultMembers
 	couchInstances repository.CouchInstances
+	mcpConnectors  repository.McpConnectorsRepo
+	mcpDefinitions repository.McpDefinitionsRepo
+	vaultExecutor  *executors.VaultExecutor
 }
 
 func New(
@@ -20,11 +24,16 @@ func New(
 	vaults repository.Vaults,
 	vaultMembers repository.VaultMembers,
 	couchInstances repository.CouchInstances,
+	mcpConnectors repository.McpConnectorsRepo,
+	mcpDefinitions repository.McpDefinitionsRepo,
 ) *McpServiceImpl {
 	return &McpServiceImpl{
 		mcpKeys:        mcpKeys,
 		vaults:         vaults,
 		vaultMembers:   vaultMembers,
 		couchInstances: couchInstances,
+		mcpConnectors:  mcpConnectors,
+		mcpDefinitions: mcpDefinitions,
+		vaultExecutor:  executors.NewVaultExecutor(),
 	}
 }

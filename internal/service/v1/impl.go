@@ -53,7 +53,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Vault:               vault.New(repo),
 		CouchInstance:       couchinstances.New(repo),
 		AdminCouch:          admincouchsvc.New(repo),
-		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.CouchInstances()),
+		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.CouchInstances(), repo.McpConnectors(), repo.McpDefinitions()),
 		Subscription:        subscription.New(repo.Subscriptions()),
 		Prompt:              prompt.New(repo.Prompts()),
 		TaskTracker:         tasktracker.New(repo.TaskTrackers()),

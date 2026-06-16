@@ -123,13 +123,17 @@ rpc("tools/call", {
 
 | Tool | Description | Required args |
 |------|-------------|---------------|
-| `list_notes` | List all notes with paths and mtimes | — |
-| `read_note` | Read note content | `path` |
+| `list_files` | List all files in the vault (notes and binary files) | — |
+| `read_file` | Read any file by path (text or base64 binary) | `path` |
 | `write_note` | Create or update a note | `path`, `content` |
-| `delete_note` | Delete a note | `path` |
-| `move_note` | Move/rename a note | `old_path`, `new_path` |
+| `delete_file` | Delete any file by path | `path` |
+| `move_file` | Move/rename any file | `old_path`, `new_path` |
 | `list_folders` | List all folders | — |
 | `list_tags` | List all tags | — |
 | `get_note_metadata` | Get id, rev, mtime, ctime, size | `path` |
+| `connections` | List the MoMs (e.g. `email`) connected to this key | — |
 
-All tools return `{"content": [{"type": "text", "text": "..."}]}` per the MCP spec.
+Text tools return `{"content": [{"type": "text", "text": "..."}]}`; `read_file` on an image/PDF
+returns an `image`/`document` content block with base64 `data` instead. Beyond these built-in
+tools, a key may also expose extra tools from connected MoMs (e.g. `send_email`) — see
+[tools.md](tools.md) for exactly when those appear.

@@ -86,6 +86,12 @@ type McpService interface {
 	SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
+	// ListTools returns the built-in tool definitions (vault tools + connections).
+	ListTools(ctx context.Context) ([]domain.McpToolDef, error)
+	// IsBuiltinTool reports whether name is a built-in tool (vault tools + connections).
+	IsBuiltinTool(name string) bool
+	// ExecuteTool executes a built-in tool by name.
+	ExecuteTool(ctx context.Context, keyCtx domain.McpKeyContext, toolName string, params map[string]interface{}) (domain.ToolExecResult, error)
 }
 
 type SubscriptionService interface {
