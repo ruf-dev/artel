@@ -84,6 +84,15 @@ type McpService interface {
 	ListUserKeys(ctx context.Context) ([]domain.McpKey, error)
 	RevokeKey(ctx context.Context, keyID uuid.UUID) error
 	SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error
+	// ListConnectors returns the MCP connectors linked to keyID.
+	ListConnectors(ctx context.Context, keyID uuid.UUID) ([]domain.McpConnector, error)
+	// AddConnector links an MCP definition to keyID via an existing external connection.
+	AddConnector(ctx context.Context, keyID uuid.UUID, mcpName string, externalConnectionID uuid.UUID) (domain.McpConnector, error)
+	// RemoveConnector unlinks mcpName from keyID.
+	RemoveConnector(ctx context.Context, keyID uuid.UUID, mcpName string) error
+	// ListMomCandidates returns all available MCP definitions paired with the
+	// caller's external connections that can satisfy each one.
+	ListMomCandidates(ctx context.Context) ([]domain.MomCandidate, error)
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
 	// ListTools returns the built-in tool definitions (vault tools + connections).

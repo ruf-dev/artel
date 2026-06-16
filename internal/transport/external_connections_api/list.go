@@ -16,7 +16,7 @@ func (e *ExternalConnectionsImpl) ListConnections(ctx context.Context, _ *pb.Lis
 
 	connections := make([]*pb.ExternalConnectionInfo, len(metas))
 	for i, m := range metas {
-		connections[i] = connectionToProto(m)
+		connections[i] = ConnectionToProto(m)
 	}
 
 	resp := &pb.ListConnections_Response{

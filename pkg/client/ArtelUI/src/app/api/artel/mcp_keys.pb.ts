@@ -5,6 +5,7 @@
  * This file is a generated Typescript file for GRPC Gateway, DO NOT MODIFY
  */
 
+import * as ArtelApiExternalConnections from "./external_connections.pb";
 import * as fm from "./fetch.pb";
 
 
@@ -67,6 +68,59 @@ export type SetMcpKeyAccessResponse = Record<string, never>;
 
 export type SetMcpKeyAccess = Record<string, never>;
 
+export type McpConnectorInfo = {
+  mcpKeyId?: string;
+  mcpName?: string;
+  externalConnectionId?: string;
+  createdAt?: string;
+};
+
+export type MomCandidate = {
+  name?: string;
+  author?: string;
+  description?: string;
+  connections?: ArtelApiExternalConnections.ExternalConnectionInfo[];
+};
+
+export type ListMcpConnectorsRequest = {
+  keyId?: string;
+};
+
+export type ListMcpConnectorsResponse = {
+  connectors?: McpConnectorInfo[];
+};
+
+export type ListMcpConnectors = Record<string, never>;
+
+export type AddMcpConnectorRequest = {
+  keyId?: string;
+  mcpName?: string;
+  externalConnectionId?: string;
+};
+
+export type AddMcpConnectorResponse = {
+  connector?: McpConnectorInfo;
+};
+
+export type AddMcpConnector = Record<string, never>;
+
+export type RemoveMcpConnectorRequest = {
+  keyId?: string;
+  mcpName?: string;
+};
+
+export type RemoveMcpConnectorResponse = Record<string, never>;
+
+export type RemoveMcpConnector = Record<string, never>;
+
+export type ListMomCandidatesRequest = Record<string, never>;
+
+export type ListMomCandidatesResponse = {
+  candidates?: MomCandidate[];
+};
+
+export type ListMomCandidates = Record<string, never>;
+
 export class McpKeysAPI {
   static CreateMcpKey(this:void, req: CreateMcpKeyRequest, initReq?: fm.InitReq): Promise<CreateMcpKeyResponse> {
     return fm.fetchRequest<CreateMcpKeyResponse>(`/api/mcp/keys/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -82,5 +136,17 @@ export class McpKeysAPI {
   }
   static SetMcpKeyAccess(this:void, req: SetMcpKeyAccessRequest, initReq?: fm.InitReq): Promise<SetMcpKeyAccessResponse> {
     return fm.fetchRequest<SetMcpKeyAccessResponse>(`/api/mcp/keys/access`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListMcpConnectors(this:void, req: ListMcpConnectorsRequest, initReq?: fm.InitReq): Promise<ListMcpConnectorsResponse> {
+    return fm.fetchRequest<ListMcpConnectorsResponse>(`/api/mcp/keys/connectors/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddMcpConnector(this:void, req: AddMcpConnectorRequest, initReq?: fm.InitReq): Promise<AddMcpConnectorResponse> {
+    return fm.fetchRequest<AddMcpConnectorResponse>(`/api/mcp/keys/connectors/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static RemoveMcpConnector(this:void, req: RemoveMcpConnectorRequest, initReq?: fm.InitReq): Promise<RemoveMcpConnectorResponse> {
+    return fm.fetchRequest<RemoveMcpConnectorResponse>(`/api/mcp/keys/connectors/remove`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListMomCandidates(this:void, req: ListMomCandidatesRequest, initReq?: fm.InitReq): Promise<ListMomCandidatesResponse> {
+    return fm.fetchRequest<ListMomCandidatesResponse>(`/api/mcp/moms/candidates`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

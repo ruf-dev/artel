@@ -23,6 +23,6 @@ func (e *ExternalConnectionsImpl) AddEmailConnection(ctx context.Context, req *p
 	}
 
 	return &pb.AddEmailConnection_Response{
-		Connection: connectionToProto(conn),
+		Connection: ConnectionToProto(conn),
 	}, nil
 }

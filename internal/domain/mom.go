@@ -10,6 +10,15 @@ type McpDefinition struct {
 	CreatedAt   time.Time
 }
 
+// MomCandidate is an McpDefinition paired with the caller's external connections
+// that satisfy the providers its tools require.
+type MomCandidate struct {
+	Name        string
+	Author      string
+	Description string
+	Connections []ExternalConnectionMeta
+}
+
 type McpToolDef struct {
 	ApiDescription ToolApiDescription
 	Action         ToolAction

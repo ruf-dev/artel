@@ -10,13 +10,14 @@ const tokenPrefix = "artel_vtk_"
 const bcryptCost = 12
 
 type McpServiceImpl struct {
-	mcpKeys        repository.McpKeyRepository
-	vaults         repository.Vaults
-	vaultMembers   repository.VaultMembers
-	couchInstances repository.CouchInstances
-	mcpConnectors  repository.McpConnectorsRepo
-	mcpDefinitions repository.McpDefinitionsRepo
-	vaultExecutor  *executors.VaultExecutor
+	mcpKeys             repository.McpKeyRepository
+	vaults              repository.Vaults
+	vaultMembers        repository.VaultMembers
+	couchInstances      repository.CouchInstances
+	mcpConnectors       repository.McpConnectorsRepo
+	mcpDefinitions      repository.McpDefinitionsRepo
+	externalConnections repository.ExternalConnectionRepo
+	vaultExecutor       *executors.VaultExecutor
 }
 
 func New(
@@ -26,14 +27,16 @@ func New(
 	couchInstances repository.CouchInstances,
 	mcpConnectors repository.McpConnectorsRepo,
 	mcpDefinitions repository.McpDefinitionsRepo,
+	externalConnections repository.ExternalConnectionRepo,
 ) *McpServiceImpl {
 	return &McpServiceImpl{
-		mcpKeys:        mcpKeys,
-		vaults:         vaults,
-		vaultMembers:   vaultMembers,
-		couchInstances: couchInstances,
-		mcpConnectors:  mcpConnectors,
-		mcpDefinitions: mcpDefinitions,
-		vaultExecutor:  executors.NewVaultExecutor(),
+		mcpKeys:             mcpKeys,
+		vaults:              vaults,
+		vaultMembers:        vaultMembers,
+		couchInstances:      couchInstances,
+		mcpConnectors:       mcpConnectors,
+		mcpDefinitions:      mcpDefinitions,
+		externalConnections: externalConnections,
+		vaultExecutor:       executors.NewVaultExecutor(),
 	}
 }

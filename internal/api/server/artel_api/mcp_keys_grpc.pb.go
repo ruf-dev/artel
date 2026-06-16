@@ -19,11 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	McpKeysAPI_CreateMcpKey_FullMethodName    = "/artel_api.McpKeysAPI/CreateMcpKey"
-	McpKeysAPI_ListMcpKeys_FullMethodName     = "/artel_api.McpKeysAPI/ListMcpKeys"
-	McpKeysAPI_RevokeMcpKey_FullMethodName    = "/artel_api.McpKeysAPI/RevokeMcpKey"
-	McpKeysAPI_ListUserMcpKeys_FullMethodName = "/artel_api.McpKeysAPI/ListUserMcpKeys"
-	McpKeysAPI_SetMcpKeyAccess_FullMethodName = "/artel_api.McpKeysAPI/SetMcpKeyAccess"
+	McpKeysAPI_CreateMcpKey_FullMethodName       = "/artel_api.McpKeysAPI/CreateMcpKey"
+	McpKeysAPI_ListMcpKeys_FullMethodName        = "/artel_api.McpKeysAPI/ListMcpKeys"
+	McpKeysAPI_RevokeMcpKey_FullMethodName       = "/artel_api.McpKeysAPI/RevokeMcpKey"
+	McpKeysAPI_ListUserMcpKeys_FullMethodName    = "/artel_api.McpKeysAPI/ListUserMcpKeys"
+	McpKeysAPI_SetMcpKeyAccess_FullMethodName    = "/artel_api.McpKeysAPI/SetMcpKeyAccess"
+	McpKeysAPI_ListMcpConnectors_FullMethodName  = "/artel_api.McpKeysAPI/ListMcpConnectors"
+	McpKeysAPI_AddMcpConnector_FullMethodName    = "/artel_api.McpKeysAPI/AddMcpConnector"
+	McpKeysAPI_RemoveMcpConnector_FullMethodName = "/artel_api.McpKeysAPI/RemoveMcpConnector"
+	McpKeysAPI_ListMomCandidates_FullMethodName  = "/artel_api.McpKeysAPI/ListMomCandidates"
 )
 
 // McpKeysAPIClient is the client API for McpKeysAPI service.
@@ -35,6 +39,10 @@ type McpKeysAPIClient interface {
 	RevokeMcpKey(ctx context.Context, in *RevokeMcpKey_Request, opts ...grpc.CallOption) (*RevokeMcpKey_Response, error)
 	ListUserMcpKeys(ctx context.Context, in *ListUserMcpKeys_Request, opts ...grpc.CallOption) (*ListUserMcpKeys_Response, error)
 	SetMcpKeyAccess(ctx context.Context, in *SetMcpKeyAccess_Request, opts ...grpc.CallOption) (*SetMcpKeyAccess_Response, error)
+	ListMcpConnectors(ctx context.Context, in *ListMcpConnectors_Request, opts ...grpc.CallOption) (*ListMcpConnectors_Response, error)
+	AddMcpConnector(ctx context.Context, in *AddMcpConnector_Request, opts ...grpc.CallOption) (*AddMcpConnector_Response, error)
+	RemoveMcpConnector(ctx context.Context, in *RemoveMcpConnector_Request, opts ...grpc.CallOption) (*RemoveMcpConnector_Response, error)
+	ListMomCandidates(ctx context.Context, in *ListMomCandidates_Request, opts ...grpc.CallOption) (*ListMomCandidates_Response, error)
 }
 
 type mcpKeysAPIClient struct {
@@ -95,6 +103,46 @@ func (c *mcpKeysAPIClient) SetMcpKeyAccess(ctx context.Context, in *SetMcpKeyAcc
 	return out, nil
 }
 
+func (c *mcpKeysAPIClient) ListMcpConnectors(ctx context.Context, in *ListMcpConnectors_Request, opts ...grpc.CallOption) (*ListMcpConnectors_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMcpConnectors_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_ListMcpConnectors_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mcpKeysAPIClient) AddMcpConnector(ctx context.Context, in *AddMcpConnector_Request, opts ...grpc.CallOption) (*AddMcpConnector_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddMcpConnector_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_AddMcpConnector_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mcpKeysAPIClient) RemoveMcpConnector(ctx context.Context, in *RemoveMcpConnector_Request, opts ...grpc.CallOption) (*RemoveMcpConnector_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveMcpConnector_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_RemoveMcpConnector_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mcpKeysAPIClient) ListMomCandidates(ctx context.Context, in *ListMomCandidates_Request, opts ...grpc.CallOption) (*ListMomCandidates_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMomCandidates_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_ListMomCandidates_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // McpKeysAPIServer is the server API for McpKeysAPI service.
 // All implementations must embed UnimplementedMcpKeysAPIServer
 // for forward compatibility.
@@ -104,6 +152,10 @@ type McpKeysAPIServer interface {
 	RevokeMcpKey(context.Context, *RevokeMcpKey_Request) (*RevokeMcpKey_Response, error)
 	ListUserMcpKeys(context.Context, *ListUserMcpKeys_Request) (*ListUserMcpKeys_Response, error)
 	SetMcpKeyAccess(context.Context, *SetMcpKeyAccess_Request) (*SetMcpKeyAccess_Response, error)
+	ListMcpConnectors(context.Context, *ListMcpConnectors_Request) (*ListMcpConnectors_Response, error)
+	AddMcpConnector(context.Context, *AddMcpConnector_Request) (*AddMcpConnector_Response, error)
+	RemoveMcpConnector(context.Context, *RemoveMcpConnector_Request) (*RemoveMcpConnector_Response, error)
+	ListMomCandidates(context.Context, *ListMomCandidates_Request) (*ListMomCandidates_Response, error)
 	mustEmbedUnimplementedMcpKeysAPIServer()
 }
 
@@ -128,6 +180,18 @@ func (UnimplementedMcpKeysAPIServer) ListUserMcpKeys(context.Context, *ListUserM
 }
 func (UnimplementedMcpKeysAPIServer) SetMcpKeyAccess(context.Context, *SetMcpKeyAccess_Request) (*SetMcpKeyAccess_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetMcpKeyAccess not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) ListMcpConnectors(context.Context, *ListMcpConnectors_Request) (*ListMcpConnectors_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListMcpConnectors not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) AddMcpConnector(context.Context, *AddMcpConnector_Request) (*AddMcpConnector_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddMcpConnector not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) RemoveMcpConnector(context.Context, *RemoveMcpConnector_Request) (*RemoveMcpConnector_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method RemoveMcpConnector not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) ListMomCandidates(context.Context, *ListMomCandidates_Request) (*ListMomCandidates_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListMomCandidates not implemented")
 }
 func (UnimplementedMcpKeysAPIServer) mustEmbedUnimplementedMcpKeysAPIServer() {}
 func (UnimplementedMcpKeysAPIServer) testEmbeddedByValue()                    {}
@@ -240,6 +304,78 @@ func _McpKeysAPI_SetMcpKeyAccess_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _McpKeysAPI_ListMcpConnectors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMcpConnectors_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).ListMcpConnectors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_ListMcpConnectors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).ListMcpConnectors(ctx, req.(*ListMcpConnectors_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _McpKeysAPI_AddMcpConnector_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddMcpConnector_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).AddMcpConnector(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_AddMcpConnector_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).AddMcpConnector(ctx, req.(*AddMcpConnector_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _McpKeysAPI_RemoveMcpConnector_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveMcpConnector_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).RemoveMcpConnector(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_RemoveMcpConnector_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).RemoveMcpConnector(ctx, req.(*RemoveMcpConnector_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _McpKeysAPI_ListMomCandidates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMomCandidates_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).ListMomCandidates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_ListMomCandidates_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).ListMomCandidates(ctx, req.(*ListMomCandidates_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // McpKeysAPI_ServiceDesc is the grpc.ServiceDesc for McpKeysAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +402,22 @@ var McpKeysAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetMcpKeyAccess",
 			Handler:    _McpKeysAPI_SetMcpKeyAccess_Handler,
+		},
+		{
+			MethodName: "ListMcpConnectors",
+			Handler:    _McpKeysAPI_ListMcpConnectors_Handler,
+		},
+		{
+			MethodName: "AddMcpConnector",
+			Handler:    _McpKeysAPI_AddMcpConnector_Handler,
+		},
+		{
+			MethodName: "RemoveMcpConnector",
+			Handler:    _McpKeysAPI_RemoveMcpConnector_Handler,
+		},
+		{
+			MethodName: "ListMomCandidates",
+			Handler:    _McpKeysAPI_ListMomCandidates_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

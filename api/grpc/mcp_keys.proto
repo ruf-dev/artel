@@ -3,6 +3,7 @@ syntax = "proto3";
 package artel_api;
 
 import "google/api/annotations.proto";
+import "external_connections.proto";
 
 option go_package = "/artel_api";
 
@@ -38,6 +39,34 @@ service McpKeysAPI {
     rpc SetMcpKeyAccess(SetMcpKeyAccess.Request) returns (SetMcpKeyAccess.Response) {
         option (google.api.http) = {
             post: "/api/mcp/keys/access"
+            body: "*"
+        };
+    }
+
+    rpc ListMcpConnectors(ListMcpConnectors.Request) returns (ListMcpConnectors.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/keys/connectors/list"
+            body: "*"
+        };
+    }
+
+    rpc AddMcpConnector(AddMcpConnector.Request) returns (AddMcpConnector.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/keys/connectors/add"
+            body: "*"
+        };
+    }
+
+    rpc RemoveMcpConnector(RemoveMcpConnector.Request) returns (RemoveMcpConnector.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/keys/connectors/remove"
+            body: "*"
+        };
+    }
+
+    rpc ListMomCandidates(ListMomCandidates.Request) returns (ListMomCandidates.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/moms/candidates"
             body: "*"
         };
     }
@@ -95,4 +124,53 @@ message SetMcpKeyAccess {
         string email_account_id = 3;
     }
     message Response {}
+}
+
+message McpConnectorInfo {
+    string mcp_key_id             = 1;
+    string mcp_name               = 2;
+    string external_connection_id = 3;
+    string created_at             = 4;
+}
+
+message MomCandidate {
+    string name        = 1;
+    string author      = 2;
+    string description = 3;
+    repeated ExternalConnectionInfo connections = 4;
+}
+
+message ListMcpConnectors {
+    message Request {
+        string key_id = 1;
+    }
+    message Response {
+        repeated McpConnectorInfo connectors = 1;
+    }
+}
+
+message AddMcpConnector {
+    message Request {
+        string key_id                 = 1;
+        string mcp_name               = 2;
+        string external_connection_id = 3;
+    }
+    message Response {
+        McpConnectorInfo connector = 1;
+    }
+}
+
+message RemoveMcpConnector {
+    message Request {
+        string key_id   = 1;
+        string mcp_name = 2;
+    }
+    message Response {}
+}
+
+message ListMomCandidates {
+    message Request {}
+    message Response {
+        repeated MomCandidate candidates = 1;
+    }
 }

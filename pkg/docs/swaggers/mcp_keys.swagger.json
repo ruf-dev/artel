@@ -48,6 +48,102 @@
         ]
       }
     },
+    "/api/mcp/keys/connectors/add": {
+      "post": {
+        "operationId": "McpKeysAPI_AddMcpConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddMcpConnectorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddMcpConnectorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
+    "/api/mcp/keys/connectors/list": {
+      "post": {
+        "operationId": "McpKeysAPI_ListMcpConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMcpConnectorsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMcpConnectorsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
+    "/api/mcp/keys/connectors/remove": {
+      "post": {
+        "operationId": "McpKeysAPI_RemoveMcpConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiRemoveMcpConnectorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiRemoveMcpConnectorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
     "/api/mcp/keys/create": {
       "post": {
         "operationId": "McpKeysAPI_CreateMcpKey",
@@ -175,9 +271,63 @@
           "McpKeysAPI"
         ]
       }
+    },
+    "/api/mcp/moms/candidates": {
+      "post": {
+        "operationId": "McpKeysAPI_ListMomCandidates",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMomCandidatesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListMomCandidatesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
     }
   },
   "definitions": {
+    "artel_apiAddMcpConnectorRequest": {
+      "type": "object",
+      "properties": {
+        "keyId": {
+          "type": "string"
+        },
+        "mcpName": {
+          "type": "string"
+        },
+        "externalConnectionId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddMcpConnectorResponse": {
+      "type": "object",
+      "properties": {
+        "connector": {
+          "$ref": "#/definitions/artel_apiMcpConnectorInfo"
+        }
+      }
+    },
     "artel_apiCreateMcpKeyRequest": {
       "type": "object",
       "properties": {
@@ -197,6 +347,82 @@
         },
         "rawToken": {
           "type": "string"
+        }
+      }
+    },
+    "artel_apiExternalConnectionInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "provider": {
+          "$ref": "#/definitions/artel_apiExternalProvider"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "google": {
+          "$ref": "#/definitions/artel_apiGoogleConnectionInfo"
+        },
+        "generic": {
+          "$ref": "#/definitions/artel_apiGenericConnection"
+        }
+      }
+    },
+    "artel_apiExternalProvider": {
+      "type": "string",
+      "enum": [
+        "EXTERNAL_PROVIDER_UNSPECIFIED",
+        "EXTERNAL_PROVIDER_GOOGLE_SHEETS",
+        "EXTERNAL_PROVIDER_TRELLO",
+        "EXTERNAL_PROVIDER_MIRO",
+        "EXTERNAL_PROVIDER_EMAIL"
+      ],
+      "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
+    },
+    "artel_apiGenericConnection": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_apiGoogleConnectionInfo": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "scopes": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListMcpConnectorsRequest": {
+      "type": "object",
+      "properties": {
+        "keyId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListMcpConnectorsResponse": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMcpConnectorInfo"
+          }
         }
       }
     },
@@ -220,6 +446,21 @@
         }
       }
     },
+    "artel_apiListMomCandidatesRequest": {
+      "type": "object"
+    },
+    "artel_apiListMomCandidatesResponse": {
+      "type": "object",
+      "properties": {
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMomCandidate"
+          }
+        }
+      }
+    },
     "artel_apiListUserMcpKeysRequest": {
       "type": "object"
     },
@@ -232,6 +473,23 @@
             "type": "object",
             "$ref": "#/definitions/artel_apiMcpKeyInfo"
           }
+        }
+      }
+    },
+    "artel_apiMcpConnectorInfo": {
+      "type": "object",
+      "properties": {
+        "mcpKeyId": {
+          "type": "string"
+        },
+        "mcpName": {
+          "type": "string"
+        },
+        "externalConnectionId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
         }
       }
     },
@@ -260,6 +518,41 @@
           "type": "string"
         }
       }
+    },
+    "artel_apiMomCandidate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "connections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+          }
+        }
+      }
+    },
+    "artel_apiRemoveMcpConnectorRequest": {
+      "type": "object",
+      "properties": {
+        "keyId": {
+          "type": "string"
+        },
+        "mcpName": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiRemoveMcpConnectorResponse": {
+      "type": "object"
     },
     "artel_apiRevokeMcpKeyRequest": {
       "type": "object",

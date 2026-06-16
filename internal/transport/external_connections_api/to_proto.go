@@ -15,7 +15,7 @@ var providerToProto = map[string]pb.ExternalProvider{
 	domain.ProviderEmail:        pb.ExternalProvider_EXTERNAL_PROVIDER_EMAIL,
 }
 
-func connectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {
+func ConnectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {
 	info := &pb.ExternalConnectionInfo{
 		Id:        m.Uuid.String(),
 		Provider:  providerToProto[m.Provider],
