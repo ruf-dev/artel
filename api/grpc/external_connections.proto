@@ -62,6 +62,13 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc ListMailServerSuggestions(ListMailServerSuggestions.Request) returns (ListMailServerSuggestions.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/email/suggestions"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -163,5 +170,22 @@ message AddEmailConnection {
   }
   message Response {
     ExternalConnectionInfo connection = 1;
+  }
+}
+
+message MailServerSuggestion {
+  string domain    = 1;
+  string smtp      = 2;
+  int32  smtp_port = 3;
+  string imap      = 4;
+  int32  imap_port = 5;
+}
+
+message ListMailServerSuggestions {
+  message Request {
+    string domain = 1;
+  }
+  message Response {
+    repeated MailServerSuggestion suggestions = 1;
   }
 }
