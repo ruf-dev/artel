@@ -3,6 +3,8 @@ import cls from "@/components/ConnectorChip/ConnectorChip.module.css"
 import {McpConnectorInfo} from "@/app/api/artel/mcp_keys.pb.ts"
 import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 
+import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
+
 export function connectionLabel(c: ExternalConnectionInfo): string {
     if (c.google) return c.google.email ?? "Google account"
     if (c.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL) {
@@ -45,27 +47,84 @@ function mailDomainColor(domain: string): string {
     return `hsl(${hash % 360}, 65%, 45%)`
 }
 
+const PROVIDER_CHIP_CLASS: Partial<Record<ExternalProvider, string>> = {
+    [ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS]: cls.SheetsChip,
+    [ExternalProvider.EXTERNAL_PROVIDER_TRELLO]: cls.TrelloChip,
+    [ExternalProvider.EXTERNAL_PROVIDER_MIRO]: cls.MiroChip,
+}
+
 export default function ConnectorChip({connector, connections}: {
     connector: McpConnectorInfo
     connections: ExternalConnectionInfo[]
 }) {
     const match = connections.find(c => c.id === connector.externalConnectionId)
-    const label = match ? connectionLabel(match) : undefined
-    const atIndex = label?.indexOf("@") ?? -1
 
-    if (!label || atIndex === -1) {
+    if (!match) {
+        return <GenericChip mcpName={connector.mcpName}/>
+    }
+
+    if (match.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL) {
+        return <EmailChip label={connectionLabel(match)}/>
+    }
+
+    if (match.provider && PROVIDER_CHIP_CLASS[match.provider]) {
         return (
-            <span className={cls.Chip} title={`${connector.mcpName} connection`}>
-                {connector.mcpName}
-            </span>
+            <ProviderChip
+                provider={match.provider}
+                variantClass={PROVIDER_CHIP_CLASS[match.provider]!}
+                label={connectionLabel(match)}
+            />
         )
     }
 
-    const color = mailDomainColor(label.slice(atIndex + 1))
+    return <GenericChip mcpName={connector.mcpName}/>
+}
+
+function GenericChip({mcpName}: {mcpName?: string}) {
+    return (
+        <span
+            className={cls.Chip}
+            data-tooltip-id="root-tooltip"
+            data-tooltip-content={`${mcpName} connection`}
+        >
+            {mcpName}
+        </span>
+    )
+}
+
+function EmailChip({label}: {label: string}) {
+    const atIndex = label.indexOf("@")
+    if (atIndex === -1) {
+        return <GenericChip mcpName={label}/>
+    }
+
+    const accent = mailDomainColor(label.slice(atIndex + 1))
 
     return (
-        <span className={cls.MailChip} style={{borderColor: color}} title={`Email connection: ${label}`}>
-            <span className={cls.MailAtBadge} style={{background: color}}>@</span>
+        <span
+            className={cls.MailChip}
+            style={{"--chip-accent": accent} as React.CSSProperties}
+            data-tooltip-id="root-tooltip"
+            data-tooltip-content={`Email connection: ${label}`}
+        >
+            <span className={cls.MailAtBadge}>@</span>
+            {label}
+        </span>
+    )
+}
+
+function ProviderChip({provider, variantClass, label}: {
+    provider: ExternalProvider
+    variantClass: string
+    label: string
+}) {
+    return (
+        <span
+            className={`${cls.ProviderChip} ${variantClass}`}
+            data-tooltip-id="root-tooltip"
+            data-tooltip-content={`${label} connection`}
+        >
+            <span className={cls.ProviderChipIcon}><ProviderIcon provider={provider}/></span>
             {label}
         </span>
     )

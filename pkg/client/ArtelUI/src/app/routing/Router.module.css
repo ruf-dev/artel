@@ -12,3 +12,21 @@
     height: 100%;
     position: relative;
 }
+
+.Tooltip {
+    --rt-opacity: 1;
+    background-color: var(--color-bg-elevated);
+    color: var(--color-fg-primary);
+    border: 1px solid var(--accent-fg-color);
+    border-radius: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    max-width: 18rem;
+    box-shadow: 0 12px 28px -8px var(--color-shadow-deep);
+}
+
+.TooltipArrow {
+    border: 1px solid var(--color-border-bright);
+}

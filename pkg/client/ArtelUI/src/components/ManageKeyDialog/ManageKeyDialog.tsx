@@ -239,7 +239,8 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                     <div className={cls.ConnectorRowWrapper}>
                         <span
                             className={vault ? cls.VaultChip : `${cls.Chip} ${cls.ChipMuted}`}
-                            title={vault ? `Vault: ${vault.name}` : "No vault assigned"}
+                            data-tooltip-id="root-tooltip"
+                            data-tooltip-content={vault ? `Vault: ${vault.name}` : "No vault assigned"}
                         >
                             {vault && <span className={cls.VaultBadge}>A</span>}
                             {vault ? vault.name : "No vault"}

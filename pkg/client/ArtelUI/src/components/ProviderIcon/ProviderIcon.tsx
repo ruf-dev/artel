@@ -1,0 +1,69 @@
+import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
+
+export default function ProviderIcon({provider}: {provider?: ExternalProvider}) {
+    switch (provider) {
+        case ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS:
+            return <GoogleSheetsIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_TRELLO:
+            return <TrelloIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_MIRO:
+            return <MiroIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_EMAIL:
+            return <EmailIcon/>
+        default:
+            return <UnknownProviderIcon/>
+    }
+}
+
+function GoogleSheetsIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="2" width="28" height="44" rx="2" fill="#23A566"/>
+            <rect x="26" y="2" width="12" height="12" fill="#159C53"/>
+            <path d="M26 2L38 14H26V2Z" fill="#82C9A7"/>
+            <rect x="16" y="20" width="16" height="2" rx="1" fill="white" fillOpacity="0.9"/>
+            <rect x="16" y="25" width="16" height="2" rx="1" fill="white" fillOpacity="0.9"/>
+            <rect x="16" y="30" width="10" height="2" rx="1" fill="white" fillOpacity="0.9"/>
+        </svg>
+    )
+}
+
+function TrelloIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="48" height="48" rx="6" fill="#0052CC"/>
+            <rect x="7" y="9" width="14" height="20" rx="2" fill="white"/>
+            <rect x="27" y="9" width="14" height="13" rx="2" fill="white"/>
+        </svg>
+    )
+}
+
+function MiroIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="48" height="48" rx="6" fill="#FFD02F"/>
+            <path d="M32 10H26L30 24L22 10H16L20 24L12 10H6L16 38H22L18 24L26 38H32L28 24L36 38H42L32 10Z" fill="#050038"/>
+        </svg>
+    )
+}
+
+function EmailIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+             stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 7l10 7 10-7"/>
+        </svg>
+    )
+}
+
+function UnknownProviderIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+             stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.35-1 .85-1 1.7v.3"/>
+            <path d="M12 17h.01"/>
+        </svg>
+    )
+}

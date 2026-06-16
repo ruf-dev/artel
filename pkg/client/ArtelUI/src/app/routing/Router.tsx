@@ -91,7 +91,8 @@ export default function Router() {
             <Toaster/>
             <Tooltip
                 id="root-tooltip"
-                variant={"light"}
+                className={cls.Tooltip}
+                classNameArrow={cls.TooltipArrow}
             />
         </div>
     )

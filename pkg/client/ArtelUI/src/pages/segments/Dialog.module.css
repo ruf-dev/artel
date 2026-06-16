@@ -22,9 +22,8 @@
     position: absolute;
     top: -12px;
     right: -12px;
-    z-index: 1;
-    background: var(--color-surface, #fff);
-    border: 1px solid var(--color-border, #e0e0e0);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -32,9 +31,9 @@
     width: 28px;
     height: 28px;
     cursor: pointer;
-    color: var(--color-text-secondary, #666);
+    color: var(--color-fg-secondary);
 }
 
 .DialogCloseButton:hover {
-    color: var(--color-text, #222);
+    color: var(--color-fg-primary);
 }

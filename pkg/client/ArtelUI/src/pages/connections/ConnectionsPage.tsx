@@ -12,6 +12,7 @@ import useUser from "@/hooks/user/User.ts"
 
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
+import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 type GapiWindow = Window & {gapi: {load: (lib: string, cb: () => void) => void}}
 
@@ -32,7 +33,6 @@ function loadGapi(): Promise<void> {
 type ProviderDef = {
     provider: ExternalProvider
     name: string
-    icon: React.JSX.Element
     description: string
     canConnect: boolean
 }
@@ -41,21 +41,18 @@ const PROVIDERS: ProviderDef[] = [
     {
         provider: ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS,
         name: "Google Sheets",
-        icon: <GoogleSheetsIcon/>,
         description: "Read and write data from your Google Sheets spreadsheets.",
         canConnect: true,
     },
     {
         provider: ExternalProvider.EXTERNAL_PROVIDER_TRELLO,
         name: "Trello",
-        icon: <TrelloIcon/>,
         description: "Sync tasks and boards from your Trello workspace.",
         canConnect: false,
     },
     {
         provider: ExternalProvider.EXTERNAL_PROVIDER_MIRO,
         name: "Miro",
-        icon: <MiroIcon/>,
         description: "Access and embed your Miro boards.",
         canConnect: false,
     },
@@ -185,7 +182,7 @@ function ProviderCard({def, connection, loading, onClick}: {
         <div className={cls.Card} onClick={!loading ? onClick : undefined} role="button" tabIndex={0}
              onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onClick?.() }}>
             <div className={cls.CardHeader}>
-                <div className={cls.CardIcon}>{def.icon}</div>
+                <div className={cls.CardIcon}><ProviderIcon provider={def.provider}/></div>
                 <div className={cls.CardTitles}>
                     <div className={cls.CardName}>{def.name}</div>
                     {accountLabel && <div className={cls.CardAccount}>{accountLabel}</div>}
@@ -240,7 +237,7 @@ function ConnectionDetailDialog({def, connection}: {
             <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
                 <div className={cls.ModalHead}>
                     <div className={cls.ModalHeadLeft}>
-                        <div className={cls.ModalIcon}>{def.icon}</div>
+                        <div className={cls.ModalIcon}><ProviderIcon provider={def.provider}/></div>
                         <span className={cls.ModalTitle}>{def.name}</span>
                     </div>
                     <button className={cls.ModalClose} onClick={CloseDialog} aria-label="Close">
@@ -519,7 +516,7 @@ function EmailCard({connections, loading, onClick}: {
             onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onClick?.() }}
         >
             <div className={cls.CardHeader}>
-                <div className={cls.CardIcon}><EmailIcon/></div>
+                <div className={cls.CardIcon}><ProviderIcon provider={ExternalProvider.EXTERNAL_PROVIDER_EMAIL}/></div>
                 <div className={cls.CardTitles}>
                     <div className={cls.CardName}>Email</div>
                     {accountLabel && <div className={cls.CardAccount}>{accountLabel}</div>}
@@ -567,7 +564,7 @@ function EmailDetailDialog() {
             <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
                 <div className={cls.ModalHead}>
                     <div className={cls.ModalHeadLeft}>
-                        <div className={cls.ModalIcon}><EmailIcon/></div>
+                        <div className={cls.ModalIcon}><ProviderIcon provider={ExternalProvider.EXTERNAL_PROVIDER_EMAIL}/></div>
                         <span className={cls.ModalTitle}>Email</span>
                     </div>
                     <button className={cls.ModalClose} onClick={CloseDialog} aria-label="Close">
@@ -680,7 +677,7 @@ function EmailAddDialog() {
                  aria-labelledby="addEmailModalTitle">
                 <div className={cls.ModalHead}>
                     <div className={cls.ModalHeadLeft}>
-                        <div className={cls.ModalIcon}><EmailIcon/></div>
+                        <div className={cls.ModalIcon}><ProviderIcon provider={ExternalProvider.EXTERNAL_PROVIDER_EMAIL}/></div>
                         <span className={cls.ModalTitle} id="addEmailModalTitle">Add email account</span>
                     </div>
                     <ModalClose onClick={CloseDialog} disabled={adding} className={cls.ModalClose}/>
@@ -774,46 +771,4 @@ function EmailAddDialog() {
     )
 }
 
-/* ── Provider icons ─────────────────────────────────────────── */
-
-function GoogleSheetsIcon() {
-    return (
-        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="2" width="28" height="44" rx="2" fill="#23A566"/>
-            <rect x="26" y="2" width="12" height="12" fill="#159C53"/>
-            <path d="M26 2L38 14H26V2Z" fill="#82C9A7"/>
-            <rect x="16" y="20" width="16" height="2" rx="1" fill="white" fillOpacity="0.9"/>
-            <rect x="16" y="25" width="16" height="2" rx="1" fill="white" fillOpacity="0.9"/>
-            <rect x="16" y="30" width="10" height="2" rx="1" fill="white" fillOpacity="0.9"/>
-        </svg>
-    )
-}
-
-function TrelloIcon() {
-    return (
-        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="48" height="48" rx="6" fill="#0052CC"/>
-            <rect x="7" y="9" width="14" height="20" rx="2" fill="white"/>
-            <rect x="27" y="9" width="14" height="13" rx="2" fill="white"/>
-        </svg>
-    )
-}
-
-function MiroIcon() {
-    return (
-        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="48" height="48" rx="6" fill="#FFD02F"/>
-            <path d="M32 10H26L30 24L22 10H16L20 24L12 10H6L16 38H22L18 24L26 38H32L28 24L36 38H42L32 10Z" fill="#050038"/>
-        </svg>
-    )
-}
-
-function EmailIcon() {
-    return (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-             stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2"/>
-            <path d="M2 7l10 7 10-7"/>
-        </svg>
-    )
-}
+/* Provider icons now live in @/components/ProviderIcon/ProviderIcon.tsx */

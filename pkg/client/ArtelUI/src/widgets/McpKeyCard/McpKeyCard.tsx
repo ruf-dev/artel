@@ -2,12 +2,15 @@ import {useEffect} from "react"
 
 import cls from "@/widgets/McpKeyCard/McpKeyCard.module.css"
 
-import {McpKeyInfo} from "@/app/api/artel/mcp_keys.pb.ts"
+import {McpConnectorInfo, McpKeyInfo} from "@/app/api/artel/mcp_keys.pb.ts"
+import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
+import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 
 import ConnectorChip from "@/components/ConnectorChip/ConnectorChip.tsx"
+import Button from "@/components/shared/Button/Button.tsx"
 
 interface Props {
     mcpKey: McpKeyInfo
@@ -29,41 +32,80 @@ export default function McpKeyCard({mcpKey, onRevoke, onManage}: Props) {
         }
     }, [mcpKey.id, fetchConnectors])
 
-    function formatDate(iso: string | undefined): string {
-        if (!iso) return "Never"
-        const d = new Date(iso)
-        if (isNaN(d.getTime())) return "Never"
-        return d.toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"})
-    }
-
     return (
         <div className={cls.Card}>
             <div className={cls.CardMain}>
-                <div className={cls.CardHeader}>
-                    <span className={cls.CardName}>{mcpKey.name}</span>
-                    <span className={cls.CardPreview}>{mcpKey.keyPreview}…</span>
-                </div>
-                <div className={cls.CardChips}>
-                    {vault ? (
-                        <span className={cls.VaultChip} title={`Vault: ${vault.name}`}>
-                            <span className={cls.VaultBadge}>A</span>
-                            {vault.name}
-                        </span>
-                    ) : (
-                        <span className={`${cls.Chip} ${cls.ChipMuted}`} title="No vault assigned">No vault</span>
-                    )}
-                    {connectors.map(c => (
-                        <ConnectorChip key={c.mcpName} connector={c} connections={connections}/>
-                    ))}
-                </div>
-                <div className={cls.CardMeta}>
-                    Last accessed: {formatDate(mcpKey.lastAccessedAt)}
-                </div>
+                <CardHeader name={mcpKey.name} keyPreview={mcpKey.keyPreview}/>
+                <CardChips vault={vault} connectors={connectors} connections={connections}/>
+                <CardMeta lastAccessedAt={mcpKey.lastAccessedAt}/>
             </div>
-            <div className={cls.CardActions}>
-                <button className={cls.BtnGhost} onClick={onManage} type="button">Manage</button>
-                <button className={cls.BtnDanger} onClick={onRevoke} type="button">Revoke</button>
-            </div>
+            <CardActions onManage={onManage} onRevoke={onRevoke}/>
         </div>
     )
+}
+
+function CardHeader({name, keyPreview}: {name?: string, keyPreview?: string}) {
+    return (
+        <div className={cls.CardHeader}>
+            <span className={cls.CardName}>{name}</span>
+            <span className={cls.CardPreview}>{keyPreview}…</span>
+        </div>
+    )
+}
+
+function CardChips({vault, connectors, connections}: {
+    vault?: VaultItem
+    connectors: McpConnectorInfo[]
+    connections: ExternalConnectionInfo[]
+}) {
+    return (
+        <div className={cls.CardChips}>
+            {vault ? (
+                <span
+                    className={cls.VaultChip}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content={`Vault: ${vault.name}`}
+                >
+                    <span className={cls.VaultBadge}>A</span>
+                    {vault.name}
+                </span>
+            ) : (
+                <span
+                    className={`${cls.Chip} ${cls.ChipMuted}`}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content="No vault assigned"
+                >
+                    No vault
+                </span>
+            )}
+
+            {connectors.map(c => (
+                <ConnectorChip key={c.mcpName} connector={c} connections={connections}/>
+            ))}
+        </div>
+    )
+}
+
+function CardMeta({lastAccessedAt}: {lastAccessedAt?: string}) {
+    return (
+        <div className={cls.CardMeta}>
+            Last accessed: {formatDate(lastAccessedAt)}
+        </div>
+    )
+}
+
+function CardActions({onManage, onRevoke}: {onManage: () => void, onRevoke: () => void}) {
+    return (
+        <div className={cls.CardActions}>
+            <Button variant="ghost" onClick={onManage}>Manage</Button>
+            <Button variant="danger" onClick={onRevoke}>Revoke</Button>
+        </div>
+    )
+}
+
+function formatDate(iso: string | undefined): string {
+    if (!iso) return "Never"
+    const d = new Date(iso)
+    if (isNaN(d.getTime())) return "Never"
+    return d.toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"})
 }

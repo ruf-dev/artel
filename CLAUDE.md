@@ -29,22 +29,13 @@ planned layers, service layout, and key dependencies.
 
 If editing any `.go` files, read and follow [docs/go-style.md](docs/go-style.md).
 
-## Frontend Component Rules
+## Frontend Coding Rules
 
-### Component Structure
-
-- **Never create components with more than 3 levels of HTML nesting** — split into smaller components instead
-- Top-level container element's style class must be named `***Container` (e.g., `HeaderContainer`)
-- When wrapping another component with a styled div, use `***Wrapper` for that div's style (e.g., `ButtonWrapper`)
-- Follow Feature Sliced Design: keep widgets modular with composable sub-components
-
-### Error and Confirmation Handling
-
-- **Never use `window.alert` or `window.confirm`** — use project-level primitives:
-  - **Errors**: `useBakeError()` from `@/app/hooks/useErrorToast` → call `bakeError(title, err)` inside `catch` blocks
-  - **Confirmations**: `OpenDialog(<ConfirmDialog ... />)` from `@/components/ConfirmDialog/ConfirmDialog`
-- `ConfirmDialog` props: `title`, `message`, `confirmLabel`, `cancelLabel`, `danger` (boolean), `onConfirm` (async callback)
-- The `onConfirm` callback is responsible for `try/catch/finally`; `ConfirmDialog` closes itself in `finally` after `onConfirm` resolves
+If editing any files under `pkg/client/ArtelUI`, read and follow
+[pkg/client/ArtelUI/CLAUDE.md](pkg/client/ArtelUI/CLAUDE.md) — it covers the
+Feature-Sliced Design layering (pages/widgets/components), when to extract a
+component vs. keep it inline, CSS Modules conventions, component structure rules,
+and error/confirmation handling primitives.
 
 ## graphify
 
