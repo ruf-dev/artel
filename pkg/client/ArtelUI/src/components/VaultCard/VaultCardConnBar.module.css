@@ -60,6 +60,6 @@
 }
 
 .CopyBtnCopied {
-    color: var(--status-online) !important;
-    border-color: var(--status-online-glow) !important;
+    color: var(--status-online);
+    border-color: var(--status-online-glow);
 }

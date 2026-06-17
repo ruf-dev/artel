@@ -14,6 +14,7 @@ import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import ConnectorChip, {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
+import Button from "@/components/shared/Button/Button.tsx"
 
 type ManageStep = "main" | "vault" | "addConnection" | "selectConnection"
 
@@ -23,6 +24,7 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
     const [selectedVaultId, setSelectedVaultId] = useState(mcpKey.vaultId ?? "")
     const [selectedCandidate, setSelectedCandidate] = useState<MomCandidate | null>(null)
     const [selectedExternalConnectionId, setSelectedExternalConnectionId] = useState("")
+    const [editingConnectorName, setEditingConnectorName] = useState<string | null>(null)
 
     const {
         setAccess,
@@ -74,10 +76,25 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
         setStep("selectConnection")
     }
 
+    async function handleEditConnector(connector: McpConnectorInfo) {
+        setEditingConnectorName(connector.mcpName ?? "")
+        setSelectedExternalConnectionId(connector.externalConnectionId ?? "")
+        await fetchMomCandidates()
+        const {momCandidates: fresh} = useMcpKeys.getState()
+        const candidate = fresh.find(c => c.name === connector.mcpName)
+            ?? {name: connector.mcpName ?? "", connections: []}
+        setSelectedCandidate(candidate as MomCandidate)
+        setStep("selectConnection")
+    }
+
     async function handleAddConnector() {
         if (!mcpKey.id || !selectedCandidate?.name || !selectedExternalConnectionId) return
         setSaving(true)
         try {
+            if (editingConnectorName) {
+                await removeConnector(mcpKey.id, editingConnectorName)
+                setEditingConnectorName(null)
+            }
             await addConnector(mcpKey.id, selectedCandidate.name, selectedExternalConnectionId)
             setSelectedCandidate(null)
             setSelectedExternalConnectionId("")
@@ -208,12 +225,12 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                         buttons={[
                             {
                                 label: "Back",
-                                onClick: () => setStep("addConnection"),
+                                onClick: () => setStep(editingConnectorName ? "main" : "addConnection"),
                                 className: cls.BtnGhost,
                                 disabled: saving,
                             },
                             {
-                                label: saving ? "Adding…" : "Add",
+                                label: saving ? (editingConnectorName ? "Saving…" : "Adding…") : (editingConnectorName ? "Save" : "Add"),
                                 onClick: handleAddConnector,
                                 className: cls.BtnPrimary,
                                 disabled: saving || !selectedExternalConnectionId,
@@ -251,7 +268,7 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
 
                 <div className={cls.Field}>
                     <span className={cls.FieldLabel}>Connections</span>
-                    <ConnectorList connectors={connectors} onRemove={handleRemoveConnector}/>
+                    <ConnectorList connectors={connectors} onRemove={handleRemoveConnector} onEdit={handleEditConnector}/>
                 </div>
 
                 <ModalActions
@@ -296,9 +313,10 @@ function MomCandidateCard({candidate, connected, onSelect}: {
     )
 }
 
-function ConnectorList({connectors, onRemove}: {
+function ConnectorList({connectors, onRemove, onEdit}: {
     connectors: McpConnectorInfo[]
     onRemove: (mcpName: string) => void
+    onEdit: (connector: McpConnectorInfo) => void
 }) {
     if (connectors.length === 0) {
         return <p className={cls.Empty}>No connections linked to this key yet.</p>
@@ -306,18 +324,25 @@ function ConnectorList({connectors, onRemove}: {
     return (
         <div className={cls.OptionList}>
             {connectors.map(c => (
-                <ConnectorRow key={c.mcpName} connector={c} onRemove={() => onRemove(c.mcpName ?? "")}/>
+                <ConnectorRow key={c.mcpName} connector={c} onRemove={() => onRemove(c.mcpName ?? "")} onEdit={() => onEdit(c)}/>
             ))}
         </div>
     )
 }
 
-function ConnectorRow({connector, onRemove}: { connector: McpConnectorInfo; onRemove: () => void }) {
+function ConnectorRow({connector, onRemove, onEdit}: { connector: McpConnectorInfo; onRemove: () => void; onEdit: () => void }) {
     const {connections} = useExternalConnections()
     return (
         <div className={cls.ConnectorRowWrapper}>
             <ConnectorChip connector={connector} connections={connections}/>
-            <button className={cls.BtnGhostSmall} onClick={onRemove} type="button">Remove</button>
+            <div className={cls.ConnectorRowActions}>
+                <button className={cls.IconBtn} onClick={onEdit} type="button" title="Edit connector" aria-label="Edit connector">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>
+                    </svg>
+                </button>
+                <Button variant="ghost" className={cls.BtnSmall} onClick={onRemove}>Remove</Button>
+            </div>
         </div>
     )
 }

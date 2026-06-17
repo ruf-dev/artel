@@ -8,9 +8,12 @@ import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
+import {useDialog} from "@/app/hooks/Dialog"
+import useUser from "@/hooks/user/User.ts"
 
 import ConnectorChip from "@/components/ConnectorChip/ConnectorChip.tsx"
 import Button from "@/components/shared/Button/Button.tsx"
+import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
 
 interface Props {
     mcpKey: McpKeyInfo
@@ -58,11 +61,28 @@ function CardChips({vault, connectors, connections}: {
     connectors: McpConnectorInfo[]
     connections: ExternalConnectionInfo[]
 }) {
+    const {OpenDialog} = useDialog()
+
+    function openVaultManage() {
+        if (!vault) return
+        const {CloseDialog} = useDialog.getState()
+        const {auth} = useUser.getState()
+        OpenDialog(
+            <ManageVaultDialog
+                vault={vault}
+                currentUserId={auth.userInfo?.id ?? ""}
+                onClose={CloseDialog}
+                onDeleted={CloseDialog}
+            />
+        )
+    }
+
     return (
         <div className={cls.CardChips}>
             {vault ? (
                 <span
                     className={cls.VaultChip}
+                    onClick={openVaultManage}
                     data-tooltip-id="root-tooltip"
                     data-tooltip-content={`Vault: ${vault.name}`}
                 >
