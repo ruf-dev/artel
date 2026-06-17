@@ -406,6 +406,24 @@
         }
       }
     },
+    "artel_apiImapOperation": {
+      "type": "string",
+      "enum": [
+        "IMAP_OP_UNSPECIFIED",
+        "IMAP_OP_LIST_FOLDERS",
+        "IMAP_OP_LIST_MESSAGES",
+        "IMAP_OP_FETCH_MESSAGE"
+      ],
+      "default": "IMAP_OP_UNSPECIFIED"
+    },
+    "artel_apiImapToolAction": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "$ref": "#/definitions/artel_apiImapOperation"
+        }
+      }
+    },
     "artel_apiListMcpConnectorsRequest": {
       "type": "object",
       "properties": {
@@ -527,6 +545,12 @@
         },
         "description": {
           "type": "string"
+        },
+        "smtp": {
+          "$ref": "#/definitions/artel_apiSmtpToolAction"
+        },
+        "imap": {
+          "$ref": "#/definitions/artel_apiImapToolAction"
         }
       }
     },
@@ -602,6 +626,22 @@
     },
     "artel_apiSetMcpKeyAccessResponse": {
       "type": "object"
+    },
+    "artel_apiSmtpOperation": {
+      "type": "string",
+      "enum": [
+        "SMTP_OP_UNSPECIFIED",
+        "SMTP_OP_SEND"
+      ],
+      "default": "SMTP_OP_UNSPECIFIED"
+    },
+    "artel_apiSmtpToolAction": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "$ref": "#/definitions/artel_apiSmtpOperation"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",

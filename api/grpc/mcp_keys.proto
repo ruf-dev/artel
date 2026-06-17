@@ -133,9 +133,33 @@ message McpConnectorInfo {
     string created_at             = 4;
 }
 
+enum SmtpOperation {
+    SMTP_OP_UNSPECIFIED = 0;
+    SMTP_OP_SEND        = 1;
+}
+
+message SmtpToolAction {
+    SmtpOperation operation = 1;
+}
+
+enum ImapOperation {
+    IMAP_OP_UNSPECIFIED    = 0;
+    IMAP_OP_LIST_FOLDERS   = 1;
+    IMAP_OP_LIST_MESSAGES  = 2;
+    IMAP_OP_FETCH_MESSAGE  = 3;
+}
+
+message ImapToolAction {
+    ImapOperation operation = 1;
+}
+
 message McpToolInfo {
     string name        = 1;
     string description = 2;
+    oneof action {
+        SmtpToolAction smtp = 3;
+        ImapToolAction imap = 4;
+    }
 }
 
 message MomCandidate {

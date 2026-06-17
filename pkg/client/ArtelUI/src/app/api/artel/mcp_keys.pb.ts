@@ -8,6 +8,27 @@
 import * as ArtelApiExternalConnections from "./external_connections.pb";
 import * as fm from "./fetch.pb";
 
+type Absent<T, K extends keyof T> = { [k in Exclude<keyof T, K>]?: undefined };
+
+type OneOf<T> =
+  | { [k in keyof T]?: undefined }
+  | (keyof T extends infer K
+      ? K extends string & keyof T
+        ? { [k in K]: T[K] } & Absent<T, K>
+        : never
+      : never);
+
+export enum SmtpOperation {
+  SMTP_OP_UNSPECIFIED = "SMTP_OP_UNSPECIFIED",
+  SMTP_OP_SEND = "SMTP_OP_SEND",
+}
+
+export enum ImapOperation {
+  IMAP_OP_UNSPECIFIED = "IMAP_OP_UNSPECIFIED",
+  IMAP_OP_LIST_FOLDERS = "IMAP_OP_LIST_FOLDERS",
+  IMAP_OP_LIST_MESSAGES = "IMAP_OP_LIST_MESSAGES",
+  IMAP_OP_FETCH_MESSAGE = "IMAP_OP_FETCH_MESSAGE",
+}
 
 export type McpKeyInfo = {
   id?: string;
@@ -75,10 +96,24 @@ export type McpConnectorInfo = {
   createdAt?: string;
 };
 
-export type McpToolInfo = {
+export type SmtpToolAction = {
+  operation?: SmtpOperation;
+};
+
+export type ImapToolAction = {
+  operation?: ImapOperation;
+};
+
+type BaseMcpToolInfo = {
   name?: string;
   description?: string;
 };
+
+export type McpToolInfo = BaseMcpToolInfo &
+  OneOf<{
+    smtp: SmtpToolAction;
+    imap: ImapToolAction;
+  }>;
 
 export type MomCandidate = {
   name?: string;
