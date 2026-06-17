@@ -36,6 +36,12 @@ export default function TopbarNav() {
             >
                 Connections
             </NavLink>
+            <NavLink
+                to={Path.ToolboxPage}
+                className={({isActive}) => isActive ? `${cls.NavLink} ${cls.NavLinkActive}` : cls.NavLink}
+            >
+                Toolbox
+            </NavLink>
         </nav>
     )
 }
