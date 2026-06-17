@@ -153,6 +153,23 @@ message ImapToolAction {
     ImapOperation operation = 1;
 }
 
+message StringParam {}
+
+message IntegerParam {}
+
+message EnumParam {
+    repeated string values = 1;
+}
+
+message ToolParamDef {
+    string description = 1;
+    oneof kind {
+        StringParam  string_param  = 2;
+        IntegerParam integer_param = 3;
+        EnumParam    enum_param    = 4;
+    }
+}
+
 message McpToolInfo {
     string name        = 1;
     string description = 2;
@@ -160,6 +177,7 @@ message McpToolInfo {
         SmtpToolAction smtp = 3;
         ImapToolAction imap = 4;
     }
+    map<string, ToolParamDef> params = 5;
 }
 
 message MomCandidate {

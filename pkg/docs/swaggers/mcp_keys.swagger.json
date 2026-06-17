@@ -350,6 +350,17 @@
         }
       }
     },
+    "artel_apiEnumParam": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "artel_apiExternalConnectionInfo": {
       "type": "object",
       "properties": {
@@ -423,6 +434,9 @@
           "$ref": "#/definitions/artel_apiImapOperation"
         }
       }
+    },
+    "artel_apiIntegerParam": {
+      "type": "object"
     },
     "artel_apiListMcpConnectorsRequest": {
       "type": "object",
@@ -551,6 +565,12 @@
         },
         "imap": {
           "$ref": "#/definitions/artel_apiImapToolAction"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/artel_apiToolParamDef"
+          }
         }
       }
     },
@@ -640,6 +660,26 @@
       "properties": {
         "operation": {
           "$ref": "#/definitions/artel_apiSmtpOperation"
+        }
+      }
+    },
+    "artel_apiStringParam": {
+      "type": "object"
+    },
+    "artel_apiToolParamDef": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "stringParam": {
+          "$ref": "#/definitions/artel_apiStringParam"
+        },
+        "integerParam": {
+          "$ref": "#/definitions/artel_apiIntegerParam"
+        },
+        "enumParam": {
+          "$ref": "#/definitions/artel_apiEnumParam"
         }
       }
     },

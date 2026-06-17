@@ -104,9 +104,29 @@ export type ImapToolAction = {
   operation?: ImapOperation;
 };
 
+export type StringParam = Record<string, never>;
+
+export type IntegerParam = Record<string, never>;
+
+export type EnumParam = {
+  values?: string[];
+};
+
+type BaseToolParamDef = {
+  description?: string;
+};
+
+export type ToolParamDef = BaseToolParamDef &
+  OneOf<{
+    stringParam: StringParam;
+    integerParam: IntegerParam;
+    enumParam: EnumParam;
+  }>;
+
 type BaseMcpToolInfo = {
   name?: string;
   description?: string;
+  params?: Record<string, ToolParamDef>;
 };
 
 export type McpToolInfo = BaseMcpToolInfo &

@@ -37,6 +37,7 @@ type ToolApiDescription struct {
 type ToolProperty struct {
 	Type        string // "string" | "integer" | "number" | "boolean" | "array" | "object"
 	Description string
+	Enum        []string // non-empty when the param is constrained to a fixed set of values
 }
 
 // ToolAction is a discriminated union — exactly one field must be non-nil.

@@ -112,6 +112,7 @@ func toolDefToDomain(tr toolDefRow) domain.McpToolDef {
 		props[k] = domain.ToolProperty{
 			Type:        v.Type,
 			Description: v.Description,
+			Enum:        v.Enum,
 		}
 	}
 
@@ -165,7 +166,7 @@ func toolsToJSON(tools []domain.McpToolDef) (json.RawMessage, error) {
 func toolDefFromDomain(t domain.McpToolDef) toolDefRow {
 	props := make(map[string]toolPropertyRow, len(t.ApiDescription.Properties))
 	for k, v := range t.ApiDescription.Properties {
-		props[k] = toolPropertyRow{Type: v.Type, Description: v.Description}
+		props[k] = toolPropertyRow{Type: v.Type, Description: v.Description, Enum: v.Enum}
 	}
 
 	return toolDefRow{
@@ -214,8 +215,9 @@ type apiDescriptionRow struct {
 }
 
 type toolPropertyRow struct {
-	Type        string `json:"type"`
-	Description string `json:"description"`
+	Type        string   `json:"type"`
+	Description string   `json:"description"`
+	Enum        []string `json:"enum,omitempty"`
 }
 
 type toolActionRow struct {

@@ -44,6 +44,12 @@ func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandid
 				imapWrapper := &pb.McpToolInfo_Imap{Imap: imapAction}
 				tool.Action = imapWrapper
 			}
+			params := make(map[string]*pb.ToolParamDef, len(t.ApiDescription.Properties))
+			for name, prop := range t.ApiDescription.Properties {
+				paramDef := toolPropertyToProto(prop)
+				params[name] = paramDef
+			}
+			tool.Params = params
 			tools = append(tools, tool)
 		}
 
@@ -58,6 +64,26 @@ func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandid
 	}
 
 	return &pb.ListMomCandidates_Response{Candidates: out}, nil
+}
+
+func toolPropertyToProto(prop domain.ToolProperty) *pb.ToolParamDef {
+	paramDef := &pb.ToolParamDef{Description: prop.Description}
+	if len(prop.Enum) > 0 {
+		enumParam := &pb.EnumParam{Values: prop.Enum}
+		enumKind := &pb.ToolParamDef_EnumParam{EnumParam: enumParam}
+		paramDef.Kind = enumKind
+		return paramDef
+	}
+	if prop.Type == "integer" || prop.Type == "number" {
+		intParam := &pb.IntegerParam{}
+		intKind := &pb.ToolParamDef_IntegerParam{IntegerParam: intParam}
+		paramDef.Kind = intKind
+		return paramDef
+	}
+	strParam := &pb.StringParam{}
+	strKind := &pb.ToolParamDef_StringParam{StringParam: strParam}
+	paramDef.Kind = strKind
+	return paramDef
 }
 
 func imapOperationToProto(op domain.ImapOperation) pb.ImapOperation {
