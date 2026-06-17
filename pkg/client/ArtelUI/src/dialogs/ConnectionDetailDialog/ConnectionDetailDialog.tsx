@@ -88,11 +88,16 @@ function NotConnectedContent({description, canConnect, name, connecting, onConne
     )
 }
 
-function ConnectedContent({provider, connection, onDisconnect}: {
-    provider: ExternalProvider
-    connection: ExternalConnectionInfo
-    onDisconnect: () => void
-}) {
+function ConnectedContent(
+    {
+        provider,
+        connection,
+        onDisconnect
+    }: {
+        provider: ExternalProvider
+        connection: ExternalConnectionInfo
+        onDisconnect: () => void
+    }) {
     if (connection.google && provider === ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS) {
         return <GoogleSheetsConnectionContent connection={connection} onDisconnect={onDisconnect}/>
     }

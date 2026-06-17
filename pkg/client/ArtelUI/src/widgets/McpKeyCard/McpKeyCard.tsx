@@ -12,16 +12,14 @@ import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
 
 import ConnectorChip from "@/components/ConnectorChip/ConnectorChip.tsx"
-import Button from "@/components/shared/Button/Button.tsx"
 import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
 
 interface Props {
     mcpKey: McpKeyInfo
-    onRevoke: () => void
     onManage: () => void
 }
 
-export default function McpKeyCard({mcpKey, onRevoke, onManage}: Props) {
+export default function McpKeyCard({mcpKey, onManage}: Props) {
     const {vaults} = useVaults()
     const {connectorsByKey, fetchConnectors} = useMcpKeys()
     const {connections} = useExternalConnections()
@@ -36,13 +34,12 @@ export default function McpKeyCard({mcpKey, onRevoke, onManage}: Props) {
     }, [mcpKey.id, fetchConnectors])
 
     return (
-        <div className={cls.Card}>
+        <div className={cls.Card} onClick={onManage}>
             <div className={cls.CardMain}>
                 <CardHeader name={mcpKey.name} keyPreview={mcpKey.keyPreview}/>
                 <CardChips vault={vault} connectors={connectors} connections={connections}/>
                 <CardMeta lastAccessedAt={mcpKey.lastAccessedAt}/>
             </div>
-            <CardActions onManage={onManage} onRevoke={onRevoke}/>
         </div>
     )
 }
@@ -82,7 +79,7 @@ function CardChips({vault, connectors, connections}: {
             {vault ? (
                 <span
                     className={cls.VaultChip}
-                    onClick={openVaultManage}
+                    onClick={e => { e.stopPropagation(); openVaultManage() }}
                     data-tooltip-id="root-tooltip"
                     data-tooltip-content={`Vault: ${vault.name}`}
                 >
@@ -114,14 +111,6 @@ function CardMeta({lastAccessedAt}: {lastAccessedAt?: string}) {
     )
 }
 
-function CardActions({onManage, onRevoke}: {onManage: () => void, onRevoke: () => void}) {
-    return (
-        <div className={cls.CardActions}>
-            <Button variant="ghost" onClick={onManage}>Manage</Button>
-            <Button variant="danger" onClick={onRevoke}>Revoke</Button>
-        </div>
-    )
-}
 
 function formatDate(iso: string | undefined): string {
     if (!iso) return "Never"

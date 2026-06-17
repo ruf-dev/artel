@@ -83,6 +83,12 @@ splitting an existing fat page.
 - The `onConfirm` callback is responsible for error handling; `ConfirmDialog`
   closes itself in `finally` after `onConfirm` resolves
 
+## State ownership in components
+
+- **Private components** (file-local functions, not exported) that need to change **global state** (Zustand stores, `useDialog`, `useNavigate`, etc.) must call the relevant hook directly — do not thread the action down as a prop.
+- **Private components** that need to change **parent local state** (e.g. `useState` in the enclosing component) receive a callback prop for that change — local state belongs to whoever owns it.
+- **Public/exported components** that trigger state changes always receive a callback prop — they must not reach into a specific store themselves, because callers control which state is affected.
+
 ## Async style
 
 - **Prefer promise chains over `try/catch`** — use `.then().catch().finally()` instead

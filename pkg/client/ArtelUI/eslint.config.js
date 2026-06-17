@@ -25,6 +25,13 @@ export default tseslint.config([
         },
         rules: {
             'react/jsx-max-depth': ['error', {max: 3}],
+            'no-restricted-syntax': [
+                'warn',
+                {
+                    selector: 'JSXOpeningElement[name.name="div"]:not(:has(JSXAttribute[name.name="className"]))',
+                    message: '<div> must have a className (use a CSS module class).',
+                },
+            ],
         },
     },
 ])

@@ -23,20 +23,26 @@ export default function Dialog() {
                 if (e.target === e.currentTarget) CloseDialog()
             }}
         >
-            <div className={cls.DialogWrapper}>
+            <div
+                className={cls.DialogWrapper}>
                 {closable && (
                     <ModalClose className={cls.DialogCloseButton} onClick={CloseDialog}/>
                 )}
                 <div
+                    className={cls.DialogBackground}
                     onMouseDown={(e) => {
                         e.stopPropagation()
                     }}
                 >
                     {
                         children.map((v, idx) => {
-                            return (<div key={idx}>
-                                {v}
-                            </div>)
+                            return (
+                                <div
+                                    key={idx}
+                                    className={cls.DialogChildWrapper}
+                                >
+                                    {v}
+                                </div>)
                         })
                     }
                 </div>

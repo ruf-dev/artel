@@ -12,10 +12,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
 
-.DialogWrapper {
-    position: relative;
+    .DialogWrapper {
+        position: relative;
+
+        .DialogBackground {
+            .DialogChildWrapper {
+
+            }
+        }
+    }
 }
 
 .DialogCloseButton {

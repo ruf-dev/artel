@@ -3,7 +3,6 @@ import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/mcp-keys/McpKeysPage.module.css"
 
-import {McpKeyInfo} from "@/app/api/artel/mcp_keys.pb.ts"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
@@ -15,9 +14,8 @@ import useUser from "@/hooks/user/User.ts"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
-import ManageKeyDialog from "@/components/ManageKeyDialog/ManageKeyDialog.tsx"
+import ManageKeyDialog from "@/dialogs/ManageKeyDialog/ManageKeyDialog.tsx"
 import McpKeyCard from "@/widgets/McpKeyCard/McpKeyCard.tsx"
 
 export default function McpKeysPage() {
@@ -74,23 +72,8 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
 }
 
 function ContentSegment() {
-    const {keys, loading, revoke} = useMcpKeys()
+    const {keys, loading} = useMcpKeys()
     const {OpenDialog} = useDialog()
-
-    function openRevokeDialog(mcpKey: McpKeyInfo) {
-        OpenDialog(
-            <ConfirmDialog
-                title="Revoke key"
-                message={`Revoke "${mcpKey.name}"? Any agents using this key will immediately lose access. This cannot be undone.`}
-                confirmLabel="Revoke"
-                danger
-                onConfirm={() => {
-                    if (!mcpKey.id || !mcpKey.vaultId) return
-                    return revoke(mcpKey.id, mcpKey.vaultId)
-                }}
-            />
-        )
-    }
 
     // TODO add loader from chures
     if (loading) {
@@ -108,7 +91,6 @@ function ContentSegment() {
                     <McpKeyCard
                         key={key.id}
                         mcpKey={key}
-                        onRevoke={() => openRevokeDialog(key)}
                         onManage={() => OpenDialog(<ManageKeyDialog mcpKey={key}/>)}
                     />
                 ))}
