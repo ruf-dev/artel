@@ -1,0 +1,43 @@
+.InfoRows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1.5rem;
+}
+
+.InfoRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.InfoRow:first-child {
+    border-top: 1px solid var(--color-border);
+}
+
+.InfoLabel {
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+    flex-shrink: 0;
+}
+
+.InfoValue {
+    font-size: 0.8125rem;
+    color: var(--color-fg-primary);
+    font-weight: 500;
+    text-align: right;
+    min-width: 0;
+    word-break: break-all;
+}
+
+.Actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+}

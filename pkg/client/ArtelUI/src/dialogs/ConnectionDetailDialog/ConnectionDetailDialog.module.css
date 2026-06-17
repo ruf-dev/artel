@@ -68,75 +68,6 @@
     background: var(--color-bg-hover);
 }
 
-/* ── Info rows ─────────────────────────────────────────────── */
-
-.InfoRows {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: 1.5rem;
-}
-
-.InfoRow {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.625rem 0;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.InfoRow:first-child {
-    border-top: 1px solid var(--color-border);
-}
-
-.InfoLabel {
-    font-size: 0.75rem;
-    color: var(--color-fg-tertiary);
-    font-family: var(--font-mono);
-    letter-spacing: 0.01em;
-    flex-shrink: 0;
-}
-
-.ScopesLabel {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.ScopeHelp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 0.875rem;
-    height: 0.875rem;
-    border-radius: 50%;
-    border: 1px solid currentColor;
-    background: transparent;
-    color: var(--color-fg-tertiary);
-    font-size: 0.5rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    cursor: help;
-    padding: 0;
-    line-height: 1;
-    opacity: 0.6;
-    transition: opacity 140ms ease;
-}
-
-.ScopeHelp:hover {
-    opacity: 1;
-}
-
-.InfoValue {
-    font-size: 0.8125rem;
-    color: var(--color-fg-primary);
-    font-weight: 500;
-    text-align: right;
-    min-width: 0;
-    word-break: break-all;
-}
-
 /* ── Not-connected ─────────────────────────────────────────── */
 
 .ModalDesc {
@@ -153,66 +84,9 @@
     margin-bottom: 1.5rem;
 }
 
-/* ── Actions ───────────────────────────────────────────────── */
-
 .ModalActions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 0.625rem;
-}
-
-/* ── Spreadsheet section ───────────────────────────────────── */
-
-.SpreadsheetSection {
-    border-top: 1px solid var(--color-border);
-    margin: 1rem 0 1.25rem;
-    padding-top: 0.875rem;
-}
-
-.SpreadsheetSectionHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.625rem;
-}
-
-.SpreadsheetSectionLabel {
-    font-size: 0.75rem;
-    color: var(--color-fg-tertiary);
-    font-family: var(--font-mono);
-    letter-spacing: 0.01em;
-}
-
-.SpreadsheetList {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.SpreadsheetRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.375rem 0.5rem;
-    border-radius: 0.5rem;
-    background: var(--color-bg-elevated);
-}
-
-.SpreadsheetName {
-    font-size: 0.8125rem;
-    color: var(--color-fg-primary);
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-}
-
-.EmptySpreadsheets {
-    font-size: 0.8125rem;
-    color: var(--color-fg-tertiary);
-    font-style: italic;
-    margin: 0;
 }
