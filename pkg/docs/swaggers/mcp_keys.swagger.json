@@ -519,6 +519,17 @@
         }
       }
     },
+    "artel_apiMcpToolInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
     "artel_apiMomCandidate": {
       "type": "object",
       "properties": {
@@ -536,6 +547,13 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMcpToolInfo"
           }
         }
       }

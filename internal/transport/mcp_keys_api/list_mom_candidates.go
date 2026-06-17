@@ -22,12 +22,23 @@ func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandid
 			connections = append(connections, external_connections_api.ConnectionToProto(conn))
 		}
 
-		out = append(out, &pb.MomCandidate{
+		tools := make([]*pb.McpToolInfo, 0, len(c.Tools))
+		for _, t := range c.Tools {
+			tool := &pb.McpToolInfo{
+				Name:        t.ApiDescription.Name,
+				Description: t.ApiDescription.Description,
+			}
+			tools = append(tools, tool)
+		}
+
+		candidate := &pb.MomCandidate{
 			Name:        c.Name,
 			Author:      c.Author,
 			Description: c.Description,
 			Connections: connections,
-		})
+			Tools:       tools,
+		}
+		out = append(out, candidate)
 	}
 
 	return &pb.ListMomCandidates_Response{Candidates: out}, nil

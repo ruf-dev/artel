@@ -362,19 +362,72 @@ func (x *McpConnectorInfo) GetCreatedAt() string {
 	return ""
 }
 
+type McpToolInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *McpToolInfo) Reset() {
+	*x = McpToolInfo{}
+	mi := &file_mcp_keys_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *McpToolInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*McpToolInfo) ProtoMessage() {}
+
+func (x *McpToolInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_mcp_keys_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use McpToolInfo.ProtoReflect.Descriptor instead.
+func (*McpToolInfo) Descriptor() ([]byte, []int) {
+	return file_mcp_keys_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *McpToolInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *McpToolInfo) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 type MomCandidate struct {
 	state         protoimpl.MessageState    `protogen:"open.v1"`
 	Name          string                    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Author        string                    `protobuf:"bytes,2,opt,name=author,proto3" json:"author,omitempty"`
 	Description   string                    `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	Connections   []*ExternalConnectionInfo `protobuf:"bytes,4,rep,name=connections,proto3" json:"connections,omitempty"`
+	Tools         []*McpToolInfo            `protobuf:"bytes,5,rep,name=tools,proto3" json:"tools,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *MomCandidate) Reset() {
 	*x = MomCandidate{}
-	mi := &file_mcp_keys_proto_msgTypes[7]
+	mi := &file_mcp_keys_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -386,7 +439,7 @@ func (x *MomCandidate) String() string {
 func (*MomCandidate) ProtoMessage() {}
 
 func (x *MomCandidate) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[7]
+	mi := &file_mcp_keys_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +452,7 @@ func (x *MomCandidate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MomCandidate.ProtoReflect.Descriptor instead.
 func (*MomCandidate) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{7}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *MomCandidate) GetName() string {
@@ -430,6 +483,13 @@ func (x *MomCandidate) GetConnections() []*ExternalConnectionInfo {
 	return nil
 }
 
+func (x *MomCandidate) GetTools() []*McpToolInfo {
+	if x != nil {
+		return x.Tools
+	}
+	return nil
+}
+
 type ListMcpConnectors struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -438,7 +498,7 @@ type ListMcpConnectors struct {
 
 func (x *ListMcpConnectors) Reset() {
 	*x = ListMcpConnectors{}
-	mi := &file_mcp_keys_proto_msgTypes[8]
+	mi := &file_mcp_keys_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -450,7 +510,7 @@ func (x *ListMcpConnectors) String() string {
 func (*ListMcpConnectors) ProtoMessage() {}
 
 func (x *ListMcpConnectors) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[8]
+	mi := &file_mcp_keys_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -463,7 +523,7 @@ func (x *ListMcpConnectors) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMcpConnectors.ProtoReflect.Descriptor instead.
 func (*ListMcpConnectors) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{8}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{9}
 }
 
 type AddMcpConnector struct {
@@ -474,7 +534,7 @@ type AddMcpConnector struct {
 
 func (x *AddMcpConnector) Reset() {
 	*x = AddMcpConnector{}
-	mi := &file_mcp_keys_proto_msgTypes[9]
+	mi := &file_mcp_keys_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -486,7 +546,7 @@ func (x *AddMcpConnector) String() string {
 func (*AddMcpConnector) ProtoMessage() {}
 
 func (x *AddMcpConnector) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[9]
+	mi := &file_mcp_keys_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -499,7 +559,7 @@ func (x *AddMcpConnector) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddMcpConnector.ProtoReflect.Descriptor instead.
 func (*AddMcpConnector) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{9}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{10}
 }
 
 type RemoveMcpConnector struct {
@@ -510,7 +570,7 @@ type RemoveMcpConnector struct {
 
 func (x *RemoveMcpConnector) Reset() {
 	*x = RemoveMcpConnector{}
-	mi := &file_mcp_keys_proto_msgTypes[10]
+	mi := &file_mcp_keys_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -522,7 +582,7 @@ func (x *RemoveMcpConnector) String() string {
 func (*RemoveMcpConnector) ProtoMessage() {}
 
 func (x *RemoveMcpConnector) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[10]
+	mi := &file_mcp_keys_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -535,7 +595,7 @@ func (x *RemoveMcpConnector) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveMcpConnector.ProtoReflect.Descriptor instead.
 func (*RemoveMcpConnector) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{10}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{11}
 }
 
 type ListMomCandidates struct {
@@ -546,7 +606,7 @@ type ListMomCandidates struct {
 
 func (x *ListMomCandidates) Reset() {
 	*x = ListMomCandidates{}
-	mi := &file_mcp_keys_proto_msgTypes[11]
+	mi := &file_mcp_keys_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -558,7 +618,7 @@ func (x *ListMomCandidates) String() string {
 func (*ListMomCandidates) ProtoMessage() {}
 
 func (x *ListMomCandidates) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[11]
+	mi := &file_mcp_keys_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -571,7 +631,7 @@ func (x *ListMomCandidates) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMomCandidates.ProtoReflect.Descriptor instead.
 func (*ListMomCandidates) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{11}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{12}
 }
 
 type CreateMcpKey_Request struct {
@@ -584,7 +644,7 @@ type CreateMcpKey_Request struct {
 
 func (x *CreateMcpKey_Request) Reset() {
 	*x = CreateMcpKey_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[12]
+	mi := &file_mcp_keys_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -596,7 +656,7 @@ func (x *CreateMcpKey_Request) String() string {
 func (*CreateMcpKey_Request) ProtoMessage() {}
 
 func (x *CreateMcpKey_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[12]
+	mi := &file_mcp_keys_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -636,7 +696,7 @@ type CreateMcpKey_Response struct {
 
 func (x *CreateMcpKey_Response) Reset() {
 	*x = CreateMcpKey_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[13]
+	mi := &file_mcp_keys_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -648,7 +708,7 @@ func (x *CreateMcpKey_Response) String() string {
 func (*CreateMcpKey_Response) ProtoMessage() {}
 
 func (x *CreateMcpKey_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[13]
+	mi := &file_mcp_keys_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -687,7 +747,7 @@ type ListMcpKeys_Request struct {
 
 func (x *ListMcpKeys_Request) Reset() {
 	*x = ListMcpKeys_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[14]
+	mi := &file_mcp_keys_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -699,7 +759,7 @@ func (x *ListMcpKeys_Request) String() string {
 func (*ListMcpKeys_Request) ProtoMessage() {}
 
 func (x *ListMcpKeys_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[14]
+	mi := &file_mcp_keys_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -731,7 +791,7 @@ type ListMcpKeys_Response struct {
 
 func (x *ListMcpKeys_Response) Reset() {
 	*x = ListMcpKeys_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[15]
+	mi := &file_mcp_keys_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -743,7 +803,7 @@ func (x *ListMcpKeys_Response) String() string {
 func (*ListMcpKeys_Response) ProtoMessage() {}
 
 func (x *ListMcpKeys_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[15]
+	mi := &file_mcp_keys_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -776,7 +836,7 @@ type RevokeMcpKey_Request struct {
 
 func (x *RevokeMcpKey_Request) Reset() {
 	*x = RevokeMcpKey_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[16]
+	mi := &file_mcp_keys_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -788,7 +848,7 @@ func (x *RevokeMcpKey_Request) String() string {
 func (*RevokeMcpKey_Request) ProtoMessage() {}
 
 func (x *RevokeMcpKey_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[16]
+	mi := &file_mcp_keys_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -826,7 +886,7 @@ type RevokeMcpKey_Response struct {
 
 func (x *RevokeMcpKey_Response) Reset() {
 	*x = RevokeMcpKey_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[17]
+	mi := &file_mcp_keys_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -838,7 +898,7 @@ func (x *RevokeMcpKey_Response) String() string {
 func (*RevokeMcpKey_Response) ProtoMessage() {}
 
 func (x *RevokeMcpKey_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[17]
+	mi := &file_mcp_keys_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -862,7 +922,7 @@ type ListUserMcpKeys_Request struct {
 
 func (x *ListUserMcpKeys_Request) Reset() {
 	*x = ListUserMcpKeys_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[18]
+	mi := &file_mcp_keys_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -874,7 +934,7 @@ func (x *ListUserMcpKeys_Request) String() string {
 func (*ListUserMcpKeys_Request) ProtoMessage() {}
 
 func (x *ListUserMcpKeys_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[18]
+	mi := &file_mcp_keys_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -899,7 +959,7 @@ type ListUserMcpKeys_Response struct {
 
 func (x *ListUserMcpKeys_Response) Reset() {
 	*x = ListUserMcpKeys_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[19]
+	mi := &file_mcp_keys_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -911,7 +971,7 @@ func (x *ListUserMcpKeys_Response) String() string {
 func (*ListUserMcpKeys_Response) ProtoMessage() {}
 
 func (x *ListUserMcpKeys_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[19]
+	mi := &file_mcp_keys_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -945,7 +1005,7 @@ type SetMcpKeyAccess_Request struct {
 
 func (x *SetMcpKeyAccess_Request) Reset() {
 	*x = SetMcpKeyAccess_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[20]
+	mi := &file_mcp_keys_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -957,7 +1017,7 @@ func (x *SetMcpKeyAccess_Request) String() string {
 func (*SetMcpKeyAccess_Request) ProtoMessage() {}
 
 func (x *SetMcpKeyAccess_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[20]
+	mi := &file_mcp_keys_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1002,7 +1062,7 @@ type SetMcpKeyAccess_Response struct {
 
 func (x *SetMcpKeyAccess_Response) Reset() {
 	*x = SetMcpKeyAccess_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[21]
+	mi := &file_mcp_keys_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1014,7 +1074,7 @@ func (x *SetMcpKeyAccess_Response) String() string {
 func (*SetMcpKeyAccess_Response) ProtoMessage() {}
 
 func (x *SetMcpKeyAccess_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[21]
+	mi := &file_mcp_keys_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1039,7 +1099,7 @@ type ListMcpConnectors_Request struct {
 
 func (x *ListMcpConnectors_Request) Reset() {
 	*x = ListMcpConnectors_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[22]
+	mi := &file_mcp_keys_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1051,7 +1111,7 @@ func (x *ListMcpConnectors_Request) String() string {
 func (*ListMcpConnectors_Request) ProtoMessage() {}
 
 func (x *ListMcpConnectors_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[22]
+	mi := &file_mcp_keys_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1064,7 +1124,7 @@ func (x *ListMcpConnectors_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMcpConnectors_Request.ProtoReflect.Descriptor instead.
 func (*ListMcpConnectors_Request) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{8, 0}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{9, 0}
 }
 
 func (x *ListMcpConnectors_Request) GetKeyId() string {
@@ -1083,7 +1143,7 @@ type ListMcpConnectors_Response struct {
 
 func (x *ListMcpConnectors_Response) Reset() {
 	*x = ListMcpConnectors_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[23]
+	mi := &file_mcp_keys_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1095,7 +1155,7 @@ func (x *ListMcpConnectors_Response) String() string {
 func (*ListMcpConnectors_Response) ProtoMessage() {}
 
 func (x *ListMcpConnectors_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[23]
+	mi := &file_mcp_keys_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1108,7 +1168,7 @@ func (x *ListMcpConnectors_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMcpConnectors_Response.ProtoReflect.Descriptor instead.
 func (*ListMcpConnectors_Response) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{8, 1}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{9, 1}
 }
 
 func (x *ListMcpConnectors_Response) GetConnectors() []*McpConnectorInfo {
@@ -1129,7 +1189,7 @@ type AddMcpConnector_Request struct {
 
 func (x *AddMcpConnector_Request) Reset() {
 	*x = AddMcpConnector_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[24]
+	mi := &file_mcp_keys_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1141,7 +1201,7 @@ func (x *AddMcpConnector_Request) String() string {
 func (*AddMcpConnector_Request) ProtoMessage() {}
 
 func (x *AddMcpConnector_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[24]
+	mi := &file_mcp_keys_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1154,7 +1214,7 @@ func (x *AddMcpConnector_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddMcpConnector_Request.ProtoReflect.Descriptor instead.
 func (*AddMcpConnector_Request) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{9, 0}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{10, 0}
 }
 
 func (x *AddMcpConnector_Request) GetKeyId() string {
@@ -1187,7 +1247,7 @@ type AddMcpConnector_Response struct {
 
 func (x *AddMcpConnector_Response) Reset() {
 	*x = AddMcpConnector_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[25]
+	mi := &file_mcp_keys_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1199,7 +1259,7 @@ func (x *AddMcpConnector_Response) String() string {
 func (*AddMcpConnector_Response) ProtoMessage() {}
 
 func (x *AddMcpConnector_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[25]
+	mi := &file_mcp_keys_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1212,7 +1272,7 @@ func (x *AddMcpConnector_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddMcpConnector_Response.ProtoReflect.Descriptor instead.
 func (*AddMcpConnector_Response) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{9, 1}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{10, 1}
 }
 
 func (x *AddMcpConnector_Response) GetConnector() *McpConnectorInfo {
@@ -1232,7 +1292,7 @@ type RemoveMcpConnector_Request struct {
 
 func (x *RemoveMcpConnector_Request) Reset() {
 	*x = RemoveMcpConnector_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[26]
+	mi := &file_mcp_keys_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1244,7 +1304,7 @@ func (x *RemoveMcpConnector_Request) String() string {
 func (*RemoveMcpConnector_Request) ProtoMessage() {}
 
 func (x *RemoveMcpConnector_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[26]
+	mi := &file_mcp_keys_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1257,7 +1317,7 @@ func (x *RemoveMcpConnector_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveMcpConnector_Request.ProtoReflect.Descriptor instead.
 func (*RemoveMcpConnector_Request) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{10, 0}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{11, 0}
 }
 
 func (x *RemoveMcpConnector_Request) GetKeyId() string {
@@ -1282,7 +1342,7 @@ type RemoveMcpConnector_Response struct {
 
 func (x *RemoveMcpConnector_Response) Reset() {
 	*x = RemoveMcpConnector_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[27]
+	mi := &file_mcp_keys_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1294,7 +1354,7 @@ func (x *RemoveMcpConnector_Response) String() string {
 func (*RemoveMcpConnector_Response) ProtoMessage() {}
 
 func (x *RemoveMcpConnector_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[27]
+	mi := &file_mcp_keys_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1307,7 +1367,7 @@ func (x *RemoveMcpConnector_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveMcpConnector_Response.ProtoReflect.Descriptor instead.
 func (*RemoveMcpConnector_Response) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{10, 1}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{11, 1}
 }
 
 type ListMomCandidates_Request struct {
@@ -1318,7 +1378,7 @@ type ListMomCandidates_Request struct {
 
 func (x *ListMomCandidates_Request) Reset() {
 	*x = ListMomCandidates_Request{}
-	mi := &file_mcp_keys_proto_msgTypes[28]
+	mi := &file_mcp_keys_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1330,7 +1390,7 @@ func (x *ListMomCandidates_Request) String() string {
 func (*ListMomCandidates_Request) ProtoMessage() {}
 
 func (x *ListMomCandidates_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[28]
+	mi := &file_mcp_keys_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1343,7 +1403,7 @@ func (x *ListMomCandidates_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMomCandidates_Request.ProtoReflect.Descriptor instead.
 func (*ListMomCandidates_Request) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{11, 0}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{12, 0}
 }
 
 type ListMomCandidates_Response struct {
@@ -1355,7 +1415,7 @@ type ListMomCandidates_Response struct {
 
 func (x *ListMomCandidates_Response) Reset() {
 	*x = ListMomCandidates_Response{}
-	mi := &file_mcp_keys_proto_msgTypes[29]
+	mi := &file_mcp_keys_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1367,7 +1427,7 @@ func (x *ListMomCandidates_Response) String() string {
 func (*ListMomCandidates_Response) ProtoMessage() {}
 
 func (x *ListMomCandidates_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_mcp_keys_proto_msgTypes[29]
+	mi := &file_mcp_keys_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1380,7 +1440,7 @@ func (x *ListMomCandidates_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMomCandidates_Response.ProtoReflect.Descriptor instead.
 func (*ListMomCandidates_Response) Descriptor() ([]byte, []int) {
-	return file_mcp_keys_proto_rawDescGZIP(), []int{11, 1}
+	return file_mcp_keys_proto_rawDescGZIP(), []int{12, 1}
 }
 
 func (x *ListMomCandidates_Response) GetCandidates() []*MomCandidate {
@@ -1441,12 +1501,16 @@ const file_mcp_keys_proto_rawDesc = "" +
 	"\bmcp_name\x18\x02 \x01(\tR\amcpName\x124\n" +
 	"\x16external_connection_id\x18\x03 \x01(\tR\x14externalConnectionId\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\tR\tcreatedAt\"\xa1\x01\n" +
+	"created_at\x18\x04 \x01(\tR\tcreatedAt\"C\n" +
+	"\vMcpToolInfo\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"\xcf\x01\n" +
 	"\fMomCandidate\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
 	"\x06author\x18\x02 \x01(\tR\x06author\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12C\n" +
-	"\vconnections\x18\x04 \x03(\v2!.artel_api.ExternalConnectionInfoR\vconnections\"~\n" +
+	"\vconnections\x18\x04 \x03(\v2!.artel_api.ExternalConnectionInfoR\vconnections\x12,\n" +
+	"\x05tools\x18\x05 \x03(\v2\x16.artel_api.McpToolInfoR\x05tools\"~\n" +
 	"\x11ListMcpConnectors\x1a \n" +
 	"\aRequest\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x1aG\n" +
@@ -1498,7 +1562,7 @@ func file_mcp_keys_proto_rawDescGZIP() []byte {
 	return file_mcp_keys_proto_rawDescData
 }
 
-var file_mcp_keys_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
+var file_mcp_keys_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_mcp_keys_proto_goTypes = []any{
 	(*McpKeyInfo)(nil),                  // 0: artel_api.McpKeyInfo
 	(*CreateMcpKey)(nil),                // 1: artel_api.CreateMcpKey
@@ -1507,62 +1571,64 @@ var file_mcp_keys_proto_goTypes = []any{
 	(*ListUserMcpKeys)(nil),             // 4: artel_api.ListUserMcpKeys
 	(*SetMcpKeyAccess)(nil),             // 5: artel_api.SetMcpKeyAccess
 	(*McpConnectorInfo)(nil),            // 6: artel_api.McpConnectorInfo
-	(*MomCandidate)(nil),                // 7: artel_api.MomCandidate
-	(*ListMcpConnectors)(nil),           // 8: artel_api.ListMcpConnectors
-	(*AddMcpConnector)(nil),             // 9: artel_api.AddMcpConnector
-	(*RemoveMcpConnector)(nil),          // 10: artel_api.RemoveMcpConnector
-	(*ListMomCandidates)(nil),           // 11: artel_api.ListMomCandidates
-	(*CreateMcpKey_Request)(nil),        // 12: artel_api.CreateMcpKey.Request
-	(*CreateMcpKey_Response)(nil),       // 13: artel_api.CreateMcpKey.Response
-	(*ListMcpKeys_Request)(nil),         // 14: artel_api.ListMcpKeys.Request
-	(*ListMcpKeys_Response)(nil),        // 15: artel_api.ListMcpKeys.Response
-	(*RevokeMcpKey_Request)(nil),        // 16: artel_api.RevokeMcpKey.Request
-	(*RevokeMcpKey_Response)(nil),       // 17: artel_api.RevokeMcpKey.Response
-	(*ListUserMcpKeys_Request)(nil),     // 18: artel_api.ListUserMcpKeys.Request
-	(*ListUserMcpKeys_Response)(nil),    // 19: artel_api.ListUserMcpKeys.Response
-	(*SetMcpKeyAccess_Request)(nil),     // 20: artel_api.SetMcpKeyAccess.Request
-	(*SetMcpKeyAccess_Response)(nil),    // 21: artel_api.SetMcpKeyAccess.Response
-	(*ListMcpConnectors_Request)(nil),   // 22: artel_api.ListMcpConnectors.Request
-	(*ListMcpConnectors_Response)(nil),  // 23: artel_api.ListMcpConnectors.Response
-	(*AddMcpConnector_Request)(nil),     // 24: artel_api.AddMcpConnector.Request
-	(*AddMcpConnector_Response)(nil),    // 25: artel_api.AddMcpConnector.Response
-	(*RemoveMcpConnector_Request)(nil),  // 26: artel_api.RemoveMcpConnector.Request
-	(*RemoveMcpConnector_Response)(nil), // 27: artel_api.RemoveMcpConnector.Response
-	(*ListMomCandidates_Request)(nil),   // 28: artel_api.ListMomCandidates.Request
-	(*ListMomCandidates_Response)(nil),  // 29: artel_api.ListMomCandidates.Response
-	(*ExternalConnectionInfo)(nil),      // 30: artel_api.ExternalConnectionInfo
+	(*McpToolInfo)(nil),                 // 7: artel_api.McpToolInfo
+	(*MomCandidate)(nil),                // 8: artel_api.MomCandidate
+	(*ListMcpConnectors)(nil),           // 9: artel_api.ListMcpConnectors
+	(*AddMcpConnector)(nil),             // 10: artel_api.AddMcpConnector
+	(*RemoveMcpConnector)(nil),          // 11: artel_api.RemoveMcpConnector
+	(*ListMomCandidates)(nil),           // 12: artel_api.ListMomCandidates
+	(*CreateMcpKey_Request)(nil),        // 13: artel_api.CreateMcpKey.Request
+	(*CreateMcpKey_Response)(nil),       // 14: artel_api.CreateMcpKey.Response
+	(*ListMcpKeys_Request)(nil),         // 15: artel_api.ListMcpKeys.Request
+	(*ListMcpKeys_Response)(nil),        // 16: artel_api.ListMcpKeys.Response
+	(*RevokeMcpKey_Request)(nil),        // 17: artel_api.RevokeMcpKey.Request
+	(*RevokeMcpKey_Response)(nil),       // 18: artel_api.RevokeMcpKey.Response
+	(*ListUserMcpKeys_Request)(nil),     // 19: artel_api.ListUserMcpKeys.Request
+	(*ListUserMcpKeys_Response)(nil),    // 20: artel_api.ListUserMcpKeys.Response
+	(*SetMcpKeyAccess_Request)(nil),     // 21: artel_api.SetMcpKeyAccess.Request
+	(*SetMcpKeyAccess_Response)(nil),    // 22: artel_api.SetMcpKeyAccess.Response
+	(*ListMcpConnectors_Request)(nil),   // 23: artel_api.ListMcpConnectors.Request
+	(*ListMcpConnectors_Response)(nil),  // 24: artel_api.ListMcpConnectors.Response
+	(*AddMcpConnector_Request)(nil),     // 25: artel_api.AddMcpConnector.Request
+	(*AddMcpConnector_Response)(nil),    // 26: artel_api.AddMcpConnector.Response
+	(*RemoveMcpConnector_Request)(nil),  // 27: artel_api.RemoveMcpConnector.Request
+	(*RemoveMcpConnector_Response)(nil), // 28: artel_api.RemoveMcpConnector.Response
+	(*ListMomCandidates_Request)(nil),   // 29: artel_api.ListMomCandidates.Request
+	(*ListMomCandidates_Response)(nil),  // 30: artel_api.ListMomCandidates.Response
+	(*ExternalConnectionInfo)(nil),      // 31: artel_api.ExternalConnectionInfo
 }
 var file_mcp_keys_proto_depIdxs = []int32{
-	30, // 0: artel_api.MomCandidate.connections:type_name -> artel_api.ExternalConnectionInfo
-	0,  // 1: artel_api.CreateMcpKey.Response.key:type_name -> artel_api.McpKeyInfo
-	0,  // 2: artel_api.ListMcpKeys.Response.keys:type_name -> artel_api.McpKeyInfo
-	0,  // 3: artel_api.ListUserMcpKeys.Response.keys:type_name -> artel_api.McpKeyInfo
-	6,  // 4: artel_api.ListMcpConnectors.Response.connectors:type_name -> artel_api.McpConnectorInfo
-	6,  // 5: artel_api.AddMcpConnector.Response.connector:type_name -> artel_api.McpConnectorInfo
-	7,  // 6: artel_api.ListMomCandidates.Response.candidates:type_name -> artel_api.MomCandidate
-	12, // 7: artel_api.McpKeysAPI.CreateMcpKey:input_type -> artel_api.CreateMcpKey.Request
-	14, // 8: artel_api.McpKeysAPI.ListMcpKeys:input_type -> artel_api.ListMcpKeys.Request
-	16, // 9: artel_api.McpKeysAPI.RevokeMcpKey:input_type -> artel_api.RevokeMcpKey.Request
-	18, // 10: artel_api.McpKeysAPI.ListUserMcpKeys:input_type -> artel_api.ListUserMcpKeys.Request
-	20, // 11: artel_api.McpKeysAPI.SetMcpKeyAccess:input_type -> artel_api.SetMcpKeyAccess.Request
-	22, // 12: artel_api.McpKeysAPI.ListMcpConnectors:input_type -> artel_api.ListMcpConnectors.Request
-	24, // 13: artel_api.McpKeysAPI.AddMcpConnector:input_type -> artel_api.AddMcpConnector.Request
-	26, // 14: artel_api.McpKeysAPI.RemoveMcpConnector:input_type -> artel_api.RemoveMcpConnector.Request
-	28, // 15: artel_api.McpKeysAPI.ListMomCandidates:input_type -> artel_api.ListMomCandidates.Request
-	13, // 16: artel_api.McpKeysAPI.CreateMcpKey:output_type -> artel_api.CreateMcpKey.Response
-	15, // 17: artel_api.McpKeysAPI.ListMcpKeys:output_type -> artel_api.ListMcpKeys.Response
-	17, // 18: artel_api.McpKeysAPI.RevokeMcpKey:output_type -> artel_api.RevokeMcpKey.Response
-	19, // 19: artel_api.McpKeysAPI.ListUserMcpKeys:output_type -> artel_api.ListUserMcpKeys.Response
-	21, // 20: artel_api.McpKeysAPI.SetMcpKeyAccess:output_type -> artel_api.SetMcpKeyAccess.Response
-	23, // 21: artel_api.McpKeysAPI.ListMcpConnectors:output_type -> artel_api.ListMcpConnectors.Response
-	25, // 22: artel_api.McpKeysAPI.AddMcpConnector:output_type -> artel_api.AddMcpConnector.Response
-	27, // 23: artel_api.McpKeysAPI.RemoveMcpConnector:output_type -> artel_api.RemoveMcpConnector.Response
-	29, // 24: artel_api.McpKeysAPI.ListMomCandidates:output_type -> artel_api.ListMomCandidates.Response
-	16, // [16:25] is the sub-list for method output_type
-	7,  // [7:16] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	31, // 0: artel_api.MomCandidate.connections:type_name -> artel_api.ExternalConnectionInfo
+	7,  // 1: artel_api.MomCandidate.tools:type_name -> artel_api.McpToolInfo
+	0,  // 2: artel_api.CreateMcpKey.Response.key:type_name -> artel_api.McpKeyInfo
+	0,  // 3: artel_api.ListMcpKeys.Response.keys:type_name -> artel_api.McpKeyInfo
+	0,  // 4: artel_api.ListUserMcpKeys.Response.keys:type_name -> artel_api.McpKeyInfo
+	6,  // 5: artel_api.ListMcpConnectors.Response.connectors:type_name -> artel_api.McpConnectorInfo
+	6,  // 6: artel_api.AddMcpConnector.Response.connector:type_name -> artel_api.McpConnectorInfo
+	8,  // 7: artel_api.ListMomCandidates.Response.candidates:type_name -> artel_api.MomCandidate
+	13, // 8: artel_api.McpKeysAPI.CreateMcpKey:input_type -> artel_api.CreateMcpKey.Request
+	15, // 9: artel_api.McpKeysAPI.ListMcpKeys:input_type -> artel_api.ListMcpKeys.Request
+	17, // 10: artel_api.McpKeysAPI.RevokeMcpKey:input_type -> artel_api.RevokeMcpKey.Request
+	19, // 11: artel_api.McpKeysAPI.ListUserMcpKeys:input_type -> artel_api.ListUserMcpKeys.Request
+	21, // 12: artel_api.McpKeysAPI.SetMcpKeyAccess:input_type -> artel_api.SetMcpKeyAccess.Request
+	23, // 13: artel_api.McpKeysAPI.ListMcpConnectors:input_type -> artel_api.ListMcpConnectors.Request
+	25, // 14: artel_api.McpKeysAPI.AddMcpConnector:input_type -> artel_api.AddMcpConnector.Request
+	27, // 15: artel_api.McpKeysAPI.RemoveMcpConnector:input_type -> artel_api.RemoveMcpConnector.Request
+	29, // 16: artel_api.McpKeysAPI.ListMomCandidates:input_type -> artel_api.ListMomCandidates.Request
+	14, // 17: artel_api.McpKeysAPI.CreateMcpKey:output_type -> artel_api.CreateMcpKey.Response
+	16, // 18: artel_api.McpKeysAPI.ListMcpKeys:output_type -> artel_api.ListMcpKeys.Response
+	18, // 19: artel_api.McpKeysAPI.RevokeMcpKey:output_type -> artel_api.RevokeMcpKey.Response
+	20, // 20: artel_api.McpKeysAPI.ListUserMcpKeys:output_type -> artel_api.ListUserMcpKeys.Response
+	22, // 21: artel_api.McpKeysAPI.SetMcpKeyAccess:output_type -> artel_api.SetMcpKeyAccess.Response
+	24, // 22: artel_api.McpKeysAPI.ListMcpConnectors:output_type -> artel_api.ListMcpConnectors.Response
+	26, // 23: artel_api.McpKeysAPI.AddMcpConnector:output_type -> artel_api.AddMcpConnector.Response
+	28, // 24: artel_api.McpKeysAPI.RemoveMcpConnector:output_type -> artel_api.RemoveMcpConnector.Response
+	30, // 25: artel_api.McpKeysAPI.ListMomCandidates:output_type -> artel_api.ListMomCandidates.Response
+	17, // [17:26] is the sub-list for method output_type
+	8,  // [8:17] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_mcp_keys_proto_init() }
@@ -1577,7 +1643,7 @@ func file_mcp_keys_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mcp_keys_proto_rawDesc), len(file_mcp_keys_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   30,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

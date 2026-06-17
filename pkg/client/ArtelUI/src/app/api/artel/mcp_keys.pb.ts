@@ -75,11 +75,17 @@ export type McpConnectorInfo = {
   createdAt?: string;
 };
 
+export type McpToolInfo = {
+  name?: string;
+  description?: string;
+};
+
 export type MomCandidate = {
   name?: string;
   author?: string;
   description?: string;
   connections?: ArtelApiExternalConnections.ExternalConnectionInfo[];
+  tools?: McpToolInfo[];
 };
 
 export type ListMcpConnectorsRequest = {

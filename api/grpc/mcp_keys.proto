@@ -133,11 +133,17 @@ message McpConnectorInfo {
     string created_at             = 4;
 }
 
+message McpToolInfo {
+    string name        = 1;
+    string description = 2;
+}
+
 message MomCandidate {
     string name        = 1;
     string author      = 2;
     string description = 3;
     repeated ExternalConnectionInfo connections = 4;
+    repeated McpToolInfo tools                 = 5;
 }
 
 message ListMcpConnectors {

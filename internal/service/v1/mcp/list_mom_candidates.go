@@ -51,6 +51,7 @@ func (s *McpServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCan
 			Author:      def.Author,
 			Description: def.Description,
 			Connections: matched,
+			Tools:       def.Tools,
 		})
 	}
 

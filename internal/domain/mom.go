@@ -17,6 +17,7 @@ type MomCandidate struct {
 	Author      string
 	Description string
 	Connections []ExternalConnectionMeta
+	Tools       []McpToolDef
 }
 
 type McpToolDef struct {
