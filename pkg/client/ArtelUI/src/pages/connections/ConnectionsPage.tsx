@@ -13,12 +13,12 @@ import useUser from "@/hooks/user/User.ts"
 import ConnectionDetailDialog from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx"
 import ManageEmailDialog from "@/components/ManageEmailDialog/ManageEmailDialog.tsx"
 import ProviderCard from "@/widgets/ProviderCard/ProviderCard.tsx"
-import EmailCard from "@/widgets/EmailCard/EmailCard.tsx"
 
 const PROVIDERS: {provider: ExternalProvider; name: string}[] = [
+    {provider: ExternalProvider.EXTERNAL_PROVIDER_EMAIL, name: "Email"},
     {provider: ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS, name: "Google Sheets"},
-    {provider: ExternalProvider.EXTERNAL_PROVIDER_TRELLO, name: "Trello"},
     {provider: ExternalProvider.EXTERNAL_PROVIDER_MIRO, name: "Miro"},
+    {provider: ExternalProvider.EXTERNAL_PROVIDER_TRELLO, name: "Trello"},
 ]
 
 export default function ConnectionsPage() {
@@ -78,30 +78,37 @@ function ContentSegment() {
     const {connections, loading} = useExternalConnections()
     const {OpenDialog} = useDialog()
 
-    const emailConnections = connections.filter(c => c.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL)
-
-    function findConnection(p: ExternalProvider) {
-        return connections.find(c => c.provider === p)
+    function getConnections(p: ExternalProvider) {
+        return connections.filter(c => c.provider === p)
     }
+
+    function getDialog(provider: ExternalProvider) {
+        if (provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL) {
+            return <ManageEmailDialog/>
+        }
+        return <ConnectionDetailDialog provider={provider}/>
+    }
+
+    const sorted = [...PROVIDERS].sort((a, b) => {
+        const aConnected = getConnections(a.provider).length > 0
+        const bConnected = getConnections(b.provider).length > 0
+        if (aConnected !== bConnected) return aConnected ? -1 : 1
+        return a.name.localeCompare(b.name)
+    })
 
     return (
         <div className={cls.Content}>
             <div className={cls.Grid}>
-                {PROVIDERS.map(({provider, name}) => (
+                {sorted.map(({provider, name}) => (
                     <ProviderCard
                         key={provider}
                         provider={provider}
                         name={name}
-                        connection={findConnection(provider)}
+                        connections={getConnections(provider)}
                         loading={loading}
-                        onClick={() => OpenDialog(<ConnectionDetailDialog provider={provider}/>)}
+                        onClick={() => OpenDialog(getDialog(provider))}
                     />
                 ))}
-                <EmailCard
-                    connections={emailConnections}
-                    loading={loading}
-                    onClick={() => OpenDialog(<ManageEmailDialog/>)}
-                />
             </div>
         </div>
     )

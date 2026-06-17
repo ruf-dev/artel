@@ -56,11 +56,20 @@ splitting an existing fat page.
 ## Component Structure
 
 - **Never create components with more than 3 levels of HTML nesting** — split into
-  smaller components instead
+  smaller components instead. This is enforced by the `react/jsx-max-depth` ESLint rule
+  (`max: 3`).
 - Top-level container element's style class must be named `***Container` (e.g.,
   `HeaderContainer`)
 - When wrapping another component with a styled div, use `***Wrapper` for that div's
   style (e.g., `ButtonWrapper`)
+
+## Buttons
+
+- **Never use a raw `<button>` element** — always use `Button` from
+  `@/components/shared/Button/Button.tsx`.
+- Available variants: `primary`, `secondary`, `danger`, `ghost`, `iconDanger`.
+- Pass `variant`, `disabled`, `onClick`, `aria-label`, and any standard button
+  attributes via props — the component forwards them.
 
 ## Error and Confirmation Handling
 
@@ -71,5 +80,11 @@ splitting an existing fat page.
     `@/components/ConfirmDialog/ConfirmDialog`
 - `ConfirmDialog` props: `title`, `message`, `confirmLabel`, `cancelLabel`, `danger`
   (boolean), `onConfirm` (async callback)
-- The `onConfirm` callback is responsible for `try/catch/finally`; `ConfirmDialog`
+- The `onConfirm` callback is responsible for error handling; `ConfirmDialog`
   closes itself in `finally` after `onConfirm` resolves
+
+## Async style
+
+- **Prefer promise chains over `try/catch`** — use `.then().catch().finally()` instead
+  of `async/await` with `try/catch` blocks. Exception: best-effort fire-and-forget
+  where no error surface is needed (silent `catch {}` is fine there).

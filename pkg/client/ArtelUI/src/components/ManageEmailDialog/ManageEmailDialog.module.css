@@ -1,0 +1,196 @@
+@keyframes overlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ModalContainer {
+    width: 40vw;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: modalIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+.ModalHead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.ModalHeadLeft {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.ModalIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.625rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ModalTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+}
+
+.ModalClose {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0.5rem;
+    color: var(--color-fg-tertiary);
+    cursor: pointer;
+    transition: all 140ms ease;
+}
+
+.ModalClose:hover {
+    color: var(--color-fg-primary);
+    background: var(--color-bg-hover);
+}
+
+/* ── Account list section ───────────────────────────────────── */
+
+.AccountSection {
+    border-top: 1px solid var(--color-border);
+    margin: 1rem 0 1.25rem;
+    padding-top: 0.875rem;
+}
+
+.AccountSectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.625rem;
+}
+
+.AccountSectionLabel {
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+}
+
+.AccountList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.AccountRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: var(--color-bg-elevated);
+}
+
+.AccountEmail {
+    font-size: 0.8125rem;
+    color: var(--color-fg-primary);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.Empty {
+    font-size: 0.8125rem;
+    color: var(--color-fg-tertiary);
+    font-style: italic;
+    margin: 0;
+}
+
+.ModalActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+}
+
+/* ── Add account form ─────────────────────────────────────────── */
+
+.ModalSub {
+    font-size: 0.8125rem;
+    color: var(--color-fg-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.55;
+}
+
+.Field {
+    display: block;
+    margin-bottom: 1rem;
+    min-width: 0;
+}
+
+.FieldNarrow {
+    display: block;
+    margin-bottom: 1rem;
+    width: 5.5rem;
+    flex-shrink: 0;
+}
+
+.FieldRow {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.FieldLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-fg-secondary);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.005em;
+}
+
+.Input {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.625rem;
+    color: var(--color-fg-primary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    letter-spacing: -0.005em;
+    transition: border-color 160ms ease, background 160ms ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.Input::placeholder {
+    color: var(--color-fg-disabled);
+}
+
+.Input:focus {
+    border-color: var(--color-border-bright);
+    background: #131313;
+}

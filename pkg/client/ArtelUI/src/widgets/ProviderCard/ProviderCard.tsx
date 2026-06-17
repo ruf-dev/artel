@@ -1,0 +1,42 @@
+import cls from "@/widgets/ProviderCard/ProviderCard.module.css"
+
+import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
+import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
+
+export default function ProviderCard({provider, name, connections, loading, onClick}: {
+    provider: ExternalProvider
+    name: string
+    connections: ExternalConnectionInfo[]
+    loading: boolean
+    onClick?: () => void
+}) {
+    const isConnected = connections.length > 0
+    const single = connections.length === 1 ? connections[0] : undefined
+    const accountLabel = connections.length > 1
+        ? `${connections.length} accounts`
+        : single?.google?.email ?? single?.generic?.fields?.["username"] ?? single?.generic?.fields?.["email"]
+
+    return (
+        <div
+            className={cls.CardContainer}
+            onClick={!loading ? onClick : undefined}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onClick?.() }}
+        >
+            <div className={cls.CardHeader}>
+                <div className={cls.CardIcon}><ProviderIcon provider={provider}/></div>
+                <div className={cls.CardTitles}>
+                    <div className={cls.CardName}>{name}</div>
+                    {accountLabel && <div className={cls.CardAccount}>{accountLabel}</div>}
+                </div>
+            </div>
+            <div className={cls.CardFooter}>
+                <span className={`${cls.StatusDot} ${isConnected ? cls.StatusDotConnected : cls.StatusDotDisconnected}`}/>
+                <span className={`${cls.StatusLabel} ${isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected}`}>
+                    {loading ? "…" : isConnected ? "Connected" : "Not connected"}
+                </span>
+            </div>
+        </div>
+    )
+}
