@@ -6,7 +6,9 @@ import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external
 import {useDialog} from "@/app/hooks/Dialog"
 
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
-import ManageEmailDialog from "@/components/ManageEmailDialog/ManageEmailDialog.tsx"
+import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
+
+import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
 
 export function connectionLabel(c: ExternalConnectionInfo): string {
     if (c.google) return c.google.email ?? "Google account"
@@ -38,6 +40,7 @@ const KNOWN_MAIL_DOMAIN_CLASSES: Record<string, string> = {
     "proton.me": cls.AccentProton,
     "yahoo.com": cls.AccentYahoo,
 }
+
 
 function mailDomainAccent(domain: string): { cls: string; style?: React.CSSProperties } {
     const known = KNOWN_MAIL_DOMAIN_CLASSES[domain.toLowerCase()]
@@ -103,7 +106,9 @@ function EmailChip({label}: {label: string}) {
         return <GenericChip mcpName={label}/>
     }
 
-    const accent = mailDomainAccent(label.slice(atIndex + 1))
+    const domain = label.slice(atIndex + 1)
+    const accent = mailDomainAccent(domain)
+    const icon = mailProviderIcon(label)
 
     return (
         <span
@@ -113,7 +118,10 @@ function EmailChip({label}: {label: string}) {
             data-tooltip-id="root-tooltip"
             data-tooltip-content={`Email connection: ${label}`}
         >
-            <span className={cls.MailAtBadge}>@</span>
+            {icon
+                ? <img src={icon} className={cls.MailProviderIcon} alt={domain}/>
+                : <span className={cls.MailAtBadge}>@</span>
+            }
             {label}
         </span>
     )

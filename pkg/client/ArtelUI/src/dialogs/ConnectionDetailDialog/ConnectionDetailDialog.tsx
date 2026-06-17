@@ -95,62 +95,6 @@ function DialogHead({title, provider, onClose}: { title: string; provider: Exter
     )
 }
 
-export default function ConnectionDetailDialog({provider}: { provider: ExternalProvider }) {
-    const {CloseDialog, OpenDialog} = useDialog()
-    const {connections, disconnect, initiateGoogleOAuth} = useExternalConnections()
-    const bakeError = useBakeError()
-    const [connecting, setConnecting] = useState(false)
-
-    const config = PROVIDER_CONFIG[provider]
-    const connection = connections.find(c => c.provider === provider)
-
-    function handleConnectGoogle() {
-        setConnecting(true)
-        initiateGoogleOAuth()
-            .then(authUrl => {
-                window.location.href = authUrl
-            })
-            .catch(e => {
-                bakeError("Failed to start OAuth", e)
-                setConnecting(false)
-            })
-    }
-
-    function handleDisconnect() {
-        const key = providerKey(provider)
-        OpenDialog(
-            <ConfirmDialog
-                title={`Disconnect ${config?.name ?? ""}`}
-                message={`Remove the connection to ${config?.name ?? ""}? You can reconnect at any time.`}
-                confirmLabel="Disconnect"
-                cancelLabel="Cancel"
-                danger
-                onConfirm={() => disconnect(key).catch(e => bakeError("Failed to disconnect", e))}
-            />
-        )
-    }
-
-    return (
-        <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
-            <DialogHead title={config?.name ?? ""} provider={provider} onClose={CloseDialog}/>
-
-            {connection ? (
-                provider === ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS
-                    ? <GoogleSheetsConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
-                    : <ConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
-            ) : (
-                <NotConnectedContent
-                    description={config?.description ?? ""}
-                    canConnect={config?.canConnect ?? false}
-                    name={config?.name ?? ""}
-                    connecting={connecting}
-                    onConnectGoogle={handleConnectGoogle}
-                />
-            )}
-        </div>
-    )
-}
-
 function ConnectedContent({connection, onDisconnect}: {
     connection: ExternalConnectionInfo
     onDisconnect: () => void
@@ -377,5 +321,63 @@ function NotConnectedContent({description, canConnect, name, connecting, onConne
                 <p className={cls.ComingSoon}>Coming soon — this integration is not yet available.</p>
             )}
         </>
+    )
+}
+
+export default function ConnectionDetailDialog({provider}: { provider: ExternalProvider }) {
+    const {CloseDialog, OpenDialog} = useDialog()
+    const {connections, disconnect, initiateGoogleOAuth} = useExternalConnections()
+    const bakeError = useBakeError()
+    const [connecting, setConnecting] = useState(false)
+
+    const config = PROVIDER_CONFIG[provider]
+    const connection = connections.find(c => c.provider === provider)
+
+    function handleConnectGoogle() {
+        setConnecting(true)
+        initiateGoogleOAuth()
+            .then(authUrl => {
+                window.location.href = authUrl
+            })
+            .catch(e => {
+                bakeError("Failed to start OAuth", e)
+                setConnecting(false)
+            })
+    }
+
+    function handleDisconnect() {
+        const key = providerKey(provider)
+        OpenDialog(
+            <ConfirmDialog
+                title={`Disconnect ${config?.name ?? ""}`}
+                message={`Remove the connection to ${config?.name ?? ""}? You can reconnect at any time.`}
+                confirmLabel="Disconnect"
+                cancelLabel="Cancel"
+                danger
+                onConfirm={() =>
+                    disconnect(key).
+                    catch(e => bakeError("Failed to disconnect", e))}
+            />
+        )
+    }
+
+    return (
+        <div className={cls.Modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
+            <DialogHead title={config?.name ?? ""} provider={provider} onClose={CloseDialog}/>
+
+            {connection ? (
+                provider === ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS
+                    ? <GoogleSheetsConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
+                    : <ConnectedContent connection={connection} onDisconnect={handleDisconnect}/>
+            ) : (
+                <NotConnectedContent
+                    description={config?.description ?? ""}
+                    canConnect={config?.canConnect ?? false}
+                    name={config?.name ?? ""}
+                    connecting={connecting}
+                    onConnectGoogle={handleConnectGoogle}
+                />
+            )}
+        </div>
     )
 }

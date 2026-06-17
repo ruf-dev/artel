@@ -27,6 +27,15 @@
     cursor: pointer;
 }
 
+.MailProviderIcon {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.25rem;
+    object-fit: contain;
+}
+
 .MailAtBadge {
     display: inline-flex;
     align-items: center;

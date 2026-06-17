@@ -11,7 +11,7 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import ConnectionDetailDialog from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx"
-import ManageEmailDialog from "@/components/ManageEmailDialog/ManageEmailDialog.tsx"
+import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
 import ProviderCard from "@/widgets/ProviderCard/ProviderCard.tsx"
 
 const PROVIDERS: {provider: ExternalProvider; name: string}[] = [
