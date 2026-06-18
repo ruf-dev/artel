@@ -151,8 +151,6 @@
 /* ── Tools dialog ─────────────────────────────────────────── */
 
 .DialogContainer {
-    width: 100%;
-    max-width: 34rem;
     background: var(--color-bg-card);
     border: 1px solid var(--color-border-light);
     border-radius: 1.25rem;
@@ -242,6 +240,7 @@
 .DialogActions {
     display: flex;
     justify-content: flex-end;
+    gap: 0.5rem;
 }
 
 /* ── Tool action fields ────────────────────────────────────── */

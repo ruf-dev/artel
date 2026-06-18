@@ -78,12 +78,17 @@ function ContentSegment() {
 }
 
 function MomCandidateRow({candidate}: { candidate: MomCandidate }) {
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, SetClosable} = useDialog()
     const connCount = candidate.connections?.length ?? 0
     const toolCount = candidate.tools?.length ?? 0
 
+    function onToolboxClick() {
+        OpenDialog(<ToolsDialog candidate={candidate}/>)
+        SetClosable(true)
+    }
+
     return (
-        <div className={cls.Row} onClick={() => OpenDialog(<ToolsDialog candidate={candidate}/>)} role="button" tabIndex={0}>
+        <div className={cls.Row} onClick={onToolboxClick} role="button" tabIndex={0}>
             <div className={cls.RowHeader}>
                 <span className={cls.RowName}>{candidate.name}</span>
                 {toolCount > 0 && (
@@ -100,7 +105,6 @@ function MomCandidateRow({candidate}: { candidate: MomCandidate }) {
 }
 
 function ToolsDialog({candidate}: { candidate: MomCandidate }) {
-    const {CloseDialog} = useDialog()
     const tools = candidate.tools ?? []
     const [activeTool, setActiveTool] = useState<McpToolInfo | null>(null)
 
@@ -116,7 +120,6 @@ function ToolsDialog({candidate}: { candidate: MomCandidate }) {
                 </div>
                 <div className={cls.DialogActions}>
                     <Button variant="ghost" onClick={() => setActiveTool(null)}>Back</Button>
-                    <Button variant="secondary" onClick={CloseDialog}>Close</Button>
                 </div>
             </div>
         )
@@ -131,9 +134,6 @@ function ToolsDialog({candidate}: { candidate: MomCandidate }) {
                     <ToolRow key={t.name} tool={t} onClick={() => setActiveTool(t)}/>
                 ))}
                 {tools.length === 0 && <p className={cls.ToolEmpty}>No tools defined.</p>}
-            </div>
-            <div className={cls.DialogActions}>
-                <Button variant="secondary" onClick={CloseDialog}>Close</Button>
             </div>
         </div>
     )
