@@ -5,6 +5,8 @@ import cls from "@/pages/init/InitPage.module.css"
 
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import useUser from "@/hooks/user/User.ts"
+import {AuthAPI} from "@/app/api/artel"
+import {apiPrefix} from "@/app/api/api.ts"
 
 type Vault = {
     id: string
@@ -27,6 +29,9 @@ export default function McpAuthPage() {
         LockClosing()
 
         async function init() {
+            const cfg = await AuthAPI.GetConfig({}, apiPrefix()).catch(() => null)
+            const botId = cfg?.telegramClientId ?? ""
+
             // 1. Try main Artel session token
             if (auth.isAuthenticated()) {
                 const token = auth.getToken()
@@ -34,6 +39,7 @@ export default function McpAuthPage() {
                     const vaults = await fetchVaults(token)
                     OpenDialog(
                         <VaultSelect
+                            botId={botId}
                             vaults={vaults}
                             sessionToken={token}
                             clientId={clientId}
@@ -55,6 +61,7 @@ export default function McpAuthPage() {
                     const vaults = await fetchVaults(stored)
                     OpenDialog(
                         <VaultSelect
+                            botId={botId}
                             vaults={vaults}
                             sessionToken={stored}
                             clientId={clientId}
@@ -72,6 +79,7 @@ export default function McpAuthPage() {
             // 3. Show login dialog
             OpenDialog(
                 <McpLogin
+                    botId={botId}
                     clientId={clientId}
                     redirectUri={redirectUri}
                     codeChallenge={codeChallenge}
@@ -98,13 +106,14 @@ async function fetchVaults(sessionToken: string): Promise<Vault[]> {
 }
 
 interface McpLoginProps {
+    botId: string
     clientId: string
     redirectUri: string
     codeChallenge: string
     state: string
 }
 
-function McpLogin({clientId, redirectUri, codeChallenge, state}: McpLoginProps) {
+function McpLogin({botId, clientId, redirectUri, codeChallenge, state}: McpLoginProps) {
     const {OpenDialog} = useDialog()
     const telegramRef = useRef<HTMLDivElement>(null)
     const [error, setError] = useState("")
@@ -127,6 +136,7 @@ function McpLogin({clientId, redirectUri, codeChallenge, state}: McpLoginProps) 
                 localStorage.setItem(SESSION_KEY, body.session_token)
                 OpenDialog(
                     <VaultSelect
+                        botId={botId}
                         vaults={body.vaults ?? []}
                         sessionToken={body.session_token}
                         clientId={clientId}
@@ -144,7 +154,7 @@ function McpLogin({clientId, redirectUri, codeChallenge, state}: McpLoginProps) 
 
         const script = document.createElement("script")
         script.src = "https://oauth.telegram.org/js/telegram-login.js?3"
-        script.setAttribute("data-client-id", import.meta.env.VITE_TELEGRAM_BOT_ID ?? "")
+        script.setAttribute("data-client-id", botId)
         script.setAttribute("data-size", "large")
         script.setAttribute("data-onauth", "onMcpTelegramAuth(data)")
         script.setAttribute("data-request-access", "write phone")
@@ -170,6 +180,7 @@ function McpLogin({clientId, redirectUri, codeChallenge, state}: McpLoginProps) 
 }
 
 interface VaultSelectProps {
+    botId: string
     vaults: Vault[]
     sessionToken: string
     clientId: string
@@ -178,7 +189,7 @@ interface VaultSelectProps {
     state: string
 }
 
-function VaultSelect({vaults, sessionToken, clientId, redirectUri, codeChallenge, state}: VaultSelectProps) {
+function VaultSelect({botId, vaults, sessionToken, clientId, redirectUri, codeChallenge, state}: VaultSelectProps) {
     const {OpenDialog} = useDialog()
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
@@ -213,6 +224,7 @@ function VaultSelect({vaults, sessionToken, clientId, redirectUri, codeChallenge
         localStorage.removeItem(SESSION_KEY)
         OpenDialog(
             <McpLogin
+                botId={botId}
                 clientId={clientId}
                 redirectUri={redirectUri}
                 codeChallenge={codeChallenge}

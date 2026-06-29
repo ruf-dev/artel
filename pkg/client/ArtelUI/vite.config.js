@@ -25,13 +25,14 @@ export default (function (_a) {
         },
     });
     uc.server = {
+        port: 5175,
         host: true,
         allowedHosts: ['.loca.lt', 'localhost', '127.0.0.1', 'alexskilled.zpotify.ru'],
         hmr: {
             host: 'alexskilled.zpotify.ru',
             protocol: 'wss',
             clientPort: 443,
-        },
+        }
     };
     return uc;
 });

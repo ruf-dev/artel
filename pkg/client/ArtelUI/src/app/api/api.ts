@@ -20,7 +20,7 @@ export type Options = {
 
 export function apiPrefix(opts?: Options): InitReq {
     return {
-        pathPrefix: import.meta.env.VITE_ARTEL_API,
+        pathPrefix: "",
         headers: {
             "Content-Type": "application/json",
             "Grpc-Metadata-Authorization": opts ? opts.accessToken : "",
