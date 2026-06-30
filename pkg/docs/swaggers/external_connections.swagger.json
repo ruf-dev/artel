@@ -112,6 +112,70 @@
         ]
       }
     },
+    "/api/external-connections/gitlab/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddGitlabConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddGitlabConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddGitlabConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/gitlab/webhook-secret": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_SetGitlabWebhookSecret",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetGitlabWebhookSecretResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetGitlabWebhookSecretRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/google/initiate": {
       "post": {
         "operationId": "ExternalConnectionsAPI_InitiateGoogleOAuth",
@@ -339,6 +403,25 @@
         }
       }
     },
+    "artel_apiAddGitlabConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "personalAccessToken": {
+          "type": "string"
+        },
+        "instanceUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddGitlabConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddSpreadsheetRequest": {
       "type": "object",
       "properties": {
@@ -399,7 +482,8 @@
         "EXTERNAL_PROVIDER_GOOGLE_SHEETS",
         "EXTERNAL_PROVIDER_TRELLO",
         "EXTERNAL_PROVIDER_MIRO",
-        "EXTERNAL_PROVIDER_EMAIL"
+        "EXTERNAL_PROVIDER_EMAIL",
+        "EXTERNAL_PROVIDER_GITLAB"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },
@@ -534,6 +618,22 @@
     },
     "artel_apiRemoveSpreadsheetResponse": {
       "type": "object"
+    },
+    "artel_apiSetGitlabWebhookSecretRequest": {
+      "type": "object",
+      "properties": {
+        "webhookSecret": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiSetGitlabWebhookSecretResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
     },
     "artel_apiSpreadsheet": {
       "type": "object",

@@ -136,6 +136,7 @@ type NotesService interface {
 type MomService interface {
 	ListToolsForKey(ctx context.Context, keyId uuid.UUID) ([]domain.McpToolDef, error)
 	ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, toolName string, params map[string]interface{}) (string, error)
+	ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
 }
 
 type ExternalConnectionService interface {
@@ -150,4 +151,6 @@ type ExternalConnectionService interface {
 	RemoveSpreadsheet(ctx context.Context, spreadsheetId string) error
 	AddEmailConnection(ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string) (domain.ExternalConnectionMeta, error)
 	ListMailServerSuggestions(ctx context.Context, domain string) ([]domain.MailServerSuggestion, error)
+	AddGitlabConnection(ctx context.Context, personalAccessToken, instanceUrl string) (domain.ExternalConnectionMeta, error)
+	SetGitlabWebhookSecret(ctx context.Context, webhookSecret string) (domain.ExternalConnectionMeta, error)
 }

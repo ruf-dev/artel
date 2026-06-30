@@ -14,6 +14,7 @@ const (
 	ProviderTrello       = "trello"
 	ProviderMiro         = "miro"
 	ProviderEmail        = "email"
+	ProviderGitlab       = "gitlab"
 )
 
 type ExternalConnection struct {
@@ -66,4 +67,11 @@ type EmailCredentials struct {
 	SmtpPort int    `json:"smtp_port"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+// GitlabCredentials is stored encrypted in credentials_enc for the gitlab provider.
+type GitlabCredentials struct {
+	PersonalAccessToken string `json:"personal_access_token"`
+	InstanceUrl         string `json:"instance_url"`
+	WebhookSecret       string `json:"webhook_secret,omitempty"`
 }

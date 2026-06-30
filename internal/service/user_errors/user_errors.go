@@ -66,11 +66,15 @@ var (
 	McpBodyRequired      = rerrors.New("body is required and must be a string", codes.InvalidArgument)
 
 	// mcp executor
-	McpEmailActionMissing   = rerrors.New("email executor: action must have imap or smtp discriminator", codes.InvalidArgument)
-	McpUnknownImapOperation = rerrors.New("email executor: unknown imap operation", codes.InvalidArgument)
-	McpUnknownSmtpOperation = rerrors.New("email executor: unknown smtp operation", codes.InvalidArgument)
-	McpToolNotFound         = rerrors.New("tool not found in any connected mcp", codes.NotFound)
-	McpConnectorNotFound    = rerrors.New("no mcp connector configured for this key", codes.FailedPrecondition)
+	McpEmailActionMissing          = rerrors.New("email executor: action must have imap or smtp discriminator", codes.InvalidArgument)
+	McpUnknownImapOperation        = rerrors.New("email executor: unknown imap operation", codes.InvalidArgument)
+	McpUnknownSmtpOperation        = rerrors.New("email executor: unknown smtp operation", codes.InvalidArgument)
+	McpToolNotFound                = rerrors.New("tool not found in any connected mcp", codes.NotFound)
+	McpConnectorNotFound           = rerrors.New("no mcp connector configured for this key", codes.FailedPrecondition)
+	McpActionMissing               = rerrors.New("tool action has no imap, smtp, or http discriminator set", codes.InvalidArgument)
+	McpSecretFieldMissing          = rerrors.New("http executor: referenced __secrets field not found in connected credentials", codes.FailedPrecondition)
+	McpCredentialsProviderMismatch = rerrors.New("http executor: linked external connection provider does not match tool's declared credentials provider", codes.FailedPrecondition)
+	McpHttpRequestFailed           = rerrors.New("http executor: upstream request failed", codes.Unavailable)
 
 	// livesync file-type constraints
 	UseReadNoteForTextFiles       = rerrors.New("use read_note for text files", codes.FailedPrecondition)
@@ -90,4 +94,13 @@ var (
 		codes.FailedPrecondition,
 		rerrors.WithHttpStatus(http.StatusFailedDependency),
 		rerrors.WithPreconditionFailure("COUCHDB", "instance", pb.UserErrors_NoCouchDbInstance.String()))
+
+	// gitlab webhook
+	GitlabWebhookSecretMismatch     = rerrors.New("gitlab webhook: token does not match configured secret", codes.PermissionDenied, rerrors.WithHttpStatus(http.StatusUnauthorized))
+	GitlabWebhookConnectionNotFound = rerrors.New("gitlab webhook: no external connection found for this webhook id", codes.NotFound, rerrors.WithHttpStatus(http.StatusNotFound))
+
+	// gitlab connection
+	InvalidInstanceURL       = rerrors.New("invalid gitlab instance url", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
+	GitlabValidationFailed   = rerrors.New("could not verify gitlab token against instance", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusPreconditionFailed))
+	GitlabConnectionNotFound = rerrors.New("no gitlab connection found", codes.NotFound, rerrors.WithHttpStatus(http.StatusNotFound))
 )

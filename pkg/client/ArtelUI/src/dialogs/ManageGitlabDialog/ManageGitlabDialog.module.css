@@ -1,0 +1,98 @@
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ModalContainer {
+    width: 100%;
+    max-width: 30rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: modalIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+.ModalHead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.ModalHeadLeft {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.ModalIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.625rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ModalTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+}
+
+.ModalClose {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0.5rem;
+    color: var(--color-fg-tertiary);
+    cursor: pointer;
+    transition: all 140ms ease;
+}
+
+.ModalClose:hover {
+    color: var(--color-fg-primary);
+    background: var(--color-bg-hover);
+}
+
+.ModalSub {
+    font-size: 0.8125rem;
+    color: var(--color-fg-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.55;
+}
+
+.Field {
+    display: block;
+    margin-bottom: 1rem;
+    min-width: 0;
+}
+
+.FieldLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-fg-secondary);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.005em;
+}
+
+.ModalActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+}

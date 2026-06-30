@@ -12,6 +12,7 @@ import useUser from "@/hooks/user/User.ts"
 
 import ConnectionDetailDialog from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx"
 import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
+import ManageGitlabDialog from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx"
 import ProviderCard from "@/widgets/ProviderCard/ProviderCard.tsx"
 
 const PROVIDERS: {provider: ExternalProvider; name: string}[] = [
@@ -19,6 +20,7 @@ const PROVIDERS: {provider: ExternalProvider; name: string}[] = [
     {provider: ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS, name: "Google Sheets"},
     {provider: ExternalProvider.EXTERNAL_PROVIDER_MIRO, name: "Miro"},
     {provider: ExternalProvider.EXTERNAL_PROVIDER_TRELLO, name: "Trello"},
+    {provider: ExternalProvider.EXTERNAL_PROVIDER_GITLAB, name: "GitLab"},
 ]
 
 export default function ConnectionsPage() {
@@ -85,6 +87,9 @@ function ContentSegment() {
     function getDialog(provider: ExternalProvider) {
         if (provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL) {
             return <ManageEmailDialog/>
+        }
+        if (provider === ExternalProvider.EXTERNAL_PROVIDER_GITLAB) {
+            return <ManageGitlabDialog/>
         }
         return <ConnectionDetailDialog provider={provider}/>
     }

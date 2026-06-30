@@ -23,6 +23,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_TRELLO = "EXTERNAL_PROVIDER_TRELLO",
   EXTERNAL_PROVIDER_MIRO = "EXTERNAL_PROVIDER_MIRO",
   EXTERNAL_PROVIDER_EMAIL = "EXTERNAL_PROVIDER_EMAIL",
+  EXTERNAL_PROVIDER_GITLAB = "EXTERNAL_PROVIDER_GITLAB",
 }
 
 export type GoogleConnectionInfo = {
@@ -147,6 +148,27 @@ export type ListMailServerSuggestionsResponse = {
 
 export type ListMailServerSuggestions = Record<string, never>;
 
+export type AddGitlabConnectionRequest = {
+  personalAccessToken?: string;
+  instanceUrl?: string;
+};
+
+export type AddGitlabConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddGitlabConnection = Record<string, never>;
+
+export type SetGitlabWebhookSecretRequest = {
+  webhookSecret?: string;
+};
+
+export type SetGitlabWebhookSecretResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type SetGitlabWebhookSecret = Record<string, never>;
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -174,5 +196,11 @@ export class ExternalConnectionsAPI {
   }
   static ListMailServerSuggestions(this:void, req: ListMailServerSuggestionsRequest, initReq?: fm.InitReq): Promise<ListMailServerSuggestionsResponse> {
     return fm.fetchRequest<ListMailServerSuggestionsResponse>(`/api/external-connections/email/suggestions`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddGitlabConnection(this:void, req: AddGitlabConnectionRequest, initReq?: fm.InitReq): Promise<AddGitlabConnectionResponse> {
+    return fm.fetchRequest<AddGitlabConnectionResponse>(`/api/external-connections/gitlab/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static SetGitlabWebhookSecret(this:void, req: SetGitlabWebhookSecretRequest, initReq?: fm.InitReq): Promise<SetGitlabWebhookSecretResponse> {
+    return fm.fetchRequest<SetGitlabWebhookSecretResponse>(`/api/external-connections/gitlab/webhook-secret`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

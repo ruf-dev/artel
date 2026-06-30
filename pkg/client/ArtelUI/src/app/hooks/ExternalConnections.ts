@@ -1,6 +1,6 @@
 import {create} from 'zustand'
 
-import {AddEmailConnectionRequest, ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
+import {AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, SetGitlabWebhookSecretRequest, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
 interface ExternalConnectionsState {
@@ -16,6 +16,8 @@ interface ExternalConnectionsState {
     addSpreadsheet: (spreadsheetId: string, name: string) => Promise<void>
     removeSpreadsheet: (spreadsheetId: string) => Promise<void>
     addEmailConnection: (req: AddEmailConnectionRequest) => Promise<void>
+    addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<void>
+    setGitlabWebhookSecret: (req: SetGitlabWebhookSecretRequest) => Promise<void>
 }
 
 export const useExternalConnections = create<ExternalConnectionsState>((set, get) => ({
@@ -68,6 +70,16 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
 
     addEmailConnection: async (req: AddEmailConnectionRequest) => {
         await externalConnectionsService.addEmailConnection(req)
+        await get().fetch()
+    },
+
+    addGitlabConnection: async (req: AddGitlabConnectionRequest) => {
+        await externalConnectionsService.addGitlabConnection(req)
+        await get().fetch()
+    },
+
+    setGitlabWebhookSecret: async (req: SetGitlabWebhookSecretRequest) => {
+        await externalConnectionsService.setGitlabWebhookSecret(req)
         await get().fetch()
     },
 }))

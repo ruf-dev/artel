@@ -13,6 +13,7 @@ var providerToProto = map[string]pb.ExternalProvider{
 	domain.ProviderTrello:       pb.ExternalProvider_EXTERNAL_PROVIDER_TRELLO,
 	domain.ProviderMiro:         pb.ExternalProvider_EXTERNAL_PROVIDER_MIRO,
 	domain.ProviderEmail:        pb.ExternalProvider_EXTERNAL_PROVIDER_EMAIL,
+	domain.ProviderGitlab:       pb.ExternalProvider_EXTERNAL_PROVIDER_GITLAB,
 }
 
 func ConnectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {

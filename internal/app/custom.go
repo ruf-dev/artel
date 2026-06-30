@@ -23,6 +23,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/external_connections_api"
+	"github.com/ruf-dev/artel/internal/transport/gitlab_webhook"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
 	"github.com/ruf-dev/artel/internal/transport/notes_api"
@@ -74,6 +75,7 @@ func (c *Custom) Init(a *App) error {
 	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.MomService())
+	gitlabWebhookHandler := gitlab_webhook.New(repo.ExternalConnections(), services.MomService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
 	otelServerHandler := otelgrpc.NewServerHandler()
@@ -110,6 +112,7 @@ func (c *Custom) Init(a *App) error {
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
+	c.Transport.AddHttpHandler("/webhooks/gitlab/", gitlabWebhookHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource/mcp", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))

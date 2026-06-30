@@ -10,6 +10,8 @@ export default function ProviderIcon({provider}: {provider?: ExternalProvider}) 
             return <MiroIcon/>
         case ExternalProvider.EXTERNAL_PROVIDER_EMAIL:
             return <EmailIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_GITLAB:
+            return <GitlabIcon/>
         default:
             return <UnknownProviderIcon/>
     }
@@ -53,6 +55,18 @@ function EmailIcon() {
              stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M2 7l10 7 10-7"/>
+        </svg>
+    )
+}
+
+function GitlabIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 41L33 13H15L24 41Z" fill="#E24329"/>
+            <path d="M24 41L15 13H5L24 41Z" fill="#FC6D26"/>
+            <path d="M5 13L3 21.5L24 41L5 13Z" fill="#FCA326"/>
+            <path d="M24 41L33 13H43L24 41Z" fill="#FC6D26"/>
+            <path d="M43 13L45 21.5L24 41L43 13Z" fill="#FCA326"/>
         </svg>
     )
 }

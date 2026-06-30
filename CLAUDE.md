@@ -25,6 +25,40 @@ make lint       # golangci-lint run ./...
 If touching Go backend files, read [docs/architecture.md](docs/architecture.md) for rscli structure, configuration,
 planned layers, service layout, and key dependencies.
 
+## MoM (MCP of MCP) — third-party integrations
+
+Artel has a declarative integration framework internally called "MoM" (MCP of MCP — unrelated to
+"Mixture of Models"). Despite the name, it does NOT nest the MCP protocol or call out to other MCP
+servers — Artel is an MCP server only, never an MCP client. MoM is a DB-stored *tool definition*
+layer: each integration ("MoM record") is a JSON document of MCP-shaped tool schemas
+(`api_description`) paired with a declarative `action` (`imap` / `smtp` / `http`) that the
+backend compiles into a real client call at execution time.
+
+Full spec and worked examples (email via imap/smtp, Trello via http with secret interpolation):
+[pkg/mom_examples/README.md](pkg/mom_examples/README.md).
+
+Key pieces:
+- `internal/domain/mom.go` — `McpDefinition`, `McpToolDef`, `ToolAction` (imap/smtp/http discriminated union)
+- `mcps` table (migration 027) — one row per integration, `tools` JSONB
+- `mcp_connectors` table (migration 028) — links an `mcp_key` to an `external_connections` row per MoM; no secrets stored here, secrets always live in `external_connections.credentials_enc`
+- `internal/service/v1/mom/mom.go` — `ExecuteToolForKey` dispatches by action type to `internal/service/v1/mcp/executors/` (`EmailExecutor`, `HttpExecutor`)
+
+**Convention: default to MoM for new third-party integrations.** When adding a new external
+service (GitLab, Slack, Jira, etc.) that exposes a plain REST API, author it as a MoM `http`-action
+tool definition (seeded via migration, following the `gitlab` MoM in migration 030 or `trello` in
+the README) instead of writing a bespoke Go SDK client + service package. Use `${{params.*}}` for
+caller-supplied input and `__secrets.*` to pull credentials from the linked `external_connections`
+row — never hardcode or duplicate credential storage per integration.
+
+Reserve bespoke Go code (new client packages under `internal/clients/`, new transport handlers)
+for things that are genuinely **not** an outbound declarative HTTP call:
+- inbound webhook ingestion + signature/token verification (e.g. `internal/transport/gitlab_webhook/`)
+- multi-step orchestration / output-to-input chaining across tools (the "Workflow" layer — not yet
+  implemented; if you find yourself wanting to chain MoM tool calls, that's the intended future
+  extension point — extend MoM/add a Workflow layer on top of it, do not introduce a second
+  competing tool-execution framework)
+- protocols other than plain JSON/REST that don't fit `http`/`imap`/`smtp` (rare — discuss before adding a new action type)
+
 ## Go Coding Rules
 
 If editing any `.go` files, read and follow [docs/go-style.md](docs/go-style.md).

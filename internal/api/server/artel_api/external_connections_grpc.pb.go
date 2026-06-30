@@ -28,6 +28,8 @@ const (
 	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName         = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
 	ExternalConnectionsAPI_AddEmailConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
 	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
+	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
+	ExternalConnectionsAPI_SetGitlabWebhookSecret_FullMethodName    = "/artel_api.ExternalConnectionsAPI/SetGitlabWebhookSecret"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -43,6 +45,8 @@ type ExternalConnectionsAPIClient interface {
 	RemoveSpreadsheet(ctx context.Context, in *RemoveSpreadsheet_Request, opts ...grpc.CallOption) (*RemoveSpreadsheet_Response, error)
 	AddEmailConnection(ctx context.Context, in *AddEmailConnection_Request, opts ...grpc.CallOption) (*AddEmailConnection_Response, error)
 	ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error)
+	AddGitlabConnection(ctx context.Context, in *AddGitlabConnection_Request, opts ...grpc.CallOption) (*AddGitlabConnection_Response, error)
+	SetGitlabWebhookSecret(ctx context.Context, in *SetGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*SetGitlabWebhookSecret_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -143,6 +147,26 @@ func (c *externalConnectionsAPIClient) ListMailServerSuggestions(ctx context.Con
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) AddGitlabConnection(ctx context.Context, in *AddGitlabConnection_Request, opts ...grpc.CallOption) (*AddGitlabConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddGitlabConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddGitlabConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) SetGitlabWebhookSecret(ctx context.Context, in *SetGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*SetGitlabWebhookSecret_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetGitlabWebhookSecret_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_SetGitlabWebhookSecret_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility.
@@ -156,6 +180,8 @@ type ExternalConnectionsAPIServer interface {
 	RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error)
 	AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error)
 	ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error)
+	AddGitlabConnection(context.Context, *AddGitlabConnection_Request) (*AddGitlabConnection_Response, error)
+	SetGitlabWebhookSecret(context.Context, *SetGitlabWebhookSecret_Request) (*SetGitlabWebhookSecret_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -192,6 +218,12 @@ func (UnimplementedExternalConnectionsAPIServer) AddEmailConnection(context.Cont
 }
 func (UnimplementedExternalConnectionsAPIServer) ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListMailServerSuggestions not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddGitlabConnection(context.Context, *AddGitlabConnection_Request) (*AddGitlabConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddGitlabConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) SetGitlabWebhookSecret(context.Context, *SetGitlabWebhookSecret_Request) (*SetGitlabWebhookSecret_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetGitlabWebhookSecret not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -377,6 +409,42 @@ func _ExternalConnectionsAPI_ListMailServerSuggestions_Handler(srv interface{}, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_AddGitlabConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddGitlabConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddGitlabConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddGitlabConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddGitlabConnection(ctx, req.(*AddGitlabConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_SetGitlabWebhookSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetGitlabWebhookSecret_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).SetGitlabWebhookSecret(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_SetGitlabWebhookSecret_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).SetGitlabWebhookSecret(ctx, req.(*SetGitlabWebhookSecret_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -419,6 +487,14 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListMailServerSuggestions",
 			Handler:    _ExternalConnectionsAPI_ListMailServerSuggestions_Handler,
+		},
+		{
+			MethodName: "AddGitlabConnection",
+			Handler:    _ExternalConnectionsAPI_AddGitlabConnection_Handler,
+		},
+		{
+			MethodName: "SetGitlabWebhookSecret",
+			Handler:    _ExternalConnectionsAPI_SetGitlabWebhookSecret_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

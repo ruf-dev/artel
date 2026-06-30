@@ -69,6 +69,20 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddGitlabConnection(AddGitlabConnection.Request) returns (AddGitlabConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/gitlab/add"
+      body: "*"
+    };
+  }
+
+  rpc SetGitlabWebhookSecret(SetGitlabWebhookSecret.Request) returns (SetGitlabWebhookSecret.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/gitlab/webhook-secret"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -77,6 +91,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_TRELLO = 2;
   EXTERNAL_PROVIDER_MIRO = 3;
   EXTERNAL_PROVIDER_EMAIL = 4;
+  EXTERNAL_PROVIDER_GITLAB = 5;
 }
 
 message GoogleConnectionInfo {
@@ -187,5 +202,24 @@ message ListMailServerSuggestions {
   }
   message Response {
     repeated MailServerSuggestion suggestions = 1;
+  }
+}
+
+message AddGitlabConnection {
+  message Request {
+    string personal_access_token = 1;
+    string instance_url          = 2;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message SetGitlabWebhookSecret {
+  message Request {
+    string webhook_secret = 1;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
   }
 }

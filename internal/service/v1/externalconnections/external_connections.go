@@ -6,6 +6,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -25,6 +29,21 @@ const googleUserInfoURL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
 type googleUserInfo struct {
 	Email string `json:"email"`
+}
+
+const gitlabDefaultInstanceURL = "https://gitlab.com"
+
+var gitlabValidationClient = &http.Client{Timeout: 10 * time.Second}
+
+type gitlabUserInfo struct {
+	Username string `json:"username"`
+}
+
+// gitlabConnectionMeta is stored plaintext in metadata (non-sensitive display data).
+type gitlabConnectionMeta struct {
+	Username         string `json:"username"`
+	InstanceUrl      string `json:"instance_url"`
+	WebhookSecretSet string `json:"webhook_secret_set"`
 }
 
 type Service struct {
@@ -310,6 +329,180 @@ func (s *Service) AddEmailConnection(ctx context.Context, email, imapHost string
 	}
 
 	return toMeta(saved, email), nil
+}
+
+func (s *Service) AddGitlabConnection(ctx context.Context, personalAccessToken, instanceUrl string) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	normalizedInstanceUrl, err := normalizeGitlabInstanceURL(instanceUrl)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	username, err := s.validateGitlabToken(ctx, normalizedInstanceUrl, personalAccessToken)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	creds := domain.GitlabCredentials{
+		PersonalAccessToken: personalAccessToken,
+		InstanceUrl:         normalizedInstanceUrl,
+	}
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab credentials")
+	}
+
+	meta := gitlabConnectionMeta{
+		Username:         username,
+		InstanceUrl:      normalizedInstanceUrl,
+		WebhookSecretSet: "false",
+	}
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderGitlab,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save gitlab connection")
+	}
+
+	return toMeta(saved, username), nil
+}
+
+func (s *Service) SetGitlabWebhookSecret(ctx context.Context, webhookSecret string) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	result, err := s.connections.GetByUserAndProvider(ctx, uc.UserUuid, domain.ProviderGitlab)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error getting gitlab connection")
+	}
+	if !result.Valid {
+		return domain.ExternalConnectionMeta{}, user_errors.GitlabConnectionNotFound
+	}
+
+	conn := result.V
+
+	var creds domain.GitlabCredentials
+	err = json.Unmarshal(conn.CredentialsJSON, &creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing gitlab credentials")
+	}
+	creds.WebhookSecret = webhookSecret
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab credentials")
+	}
+
+	var meta gitlabConnectionMeta
+	err = json.Unmarshal(conn.Metadata, &meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing gitlab meta")
+	}
+	meta.WebhookSecretSet = "true"
+
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab meta")
+	}
+
+	conn.CredentialsJSON = json.RawMessage(credJSON)
+	conn.Metadata = json.RawMessage(metaJSON)
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save gitlab connection")
+	}
+
+	return toMeta(saved, meta.Username), nil
+}
+
+// normalizeGitlabInstanceURL defaults to gitlab.com when blank, strips a trailing slash,
+// and rejects schemes/hosts that would let the server be tricked into calling back into
+// its own internal network (the server makes outbound requests to this host both for the
+// validation ping below and for every later MoM tool call).
+func normalizeGitlabInstanceURL(instanceUrl string) (string, error) {
+	trimmed := strings.TrimRight(strings.TrimSpace(instanceUrl), "/")
+	if trimmed == "" {
+		trimmed = gitlabDefaultInstanceURL
+	}
+
+	parsed, err := url.Parse(trimmed)
+	if err != nil {
+		return "", rerrors.Wrap(user_errors.InvalidInstanceURL, "error parsing instance url")
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return "", user_errors.InvalidInstanceURL
+	}
+	if isLocalGitlabHost(parsed.Hostname()) {
+		return "", user_errors.InvalidInstanceURL
+	}
+
+	return trimmed, nil
+}
+
+func isLocalGitlabHost(host string) bool {
+	if host == "" || strings.EqualFold(host, "localhost") {
+		return true
+	}
+
+	ip := net.ParseIP(host)
+	if ip == nil {
+		return false
+	}
+
+	return ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || ip.IsPrivate() || ip.IsUnspecified()
+}
+
+// validateGitlabToken pings the instance's "who am I" endpoint to confirm the token and
+// instance URL actually work together before anything is persisted.
+func (s *Service) validateGitlabToken(ctx context.Context, instanceUrl, personalAccessToken string) (string, error) {
+	reqUrl := instanceUrl + "/api/v4/user"
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl, nil)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error building gitlab validation request")
+	}
+	req.Header.Set("PRIVATE-TOKEN", personalAccessToken)
+
+	resp, err := gitlabValidationClient.Do(req)
+	if err != nil {
+		return "", rerrors.Wrap(user_errors.GitlabValidationFailed, "error connecting to gitlab instance")
+	}
+	defer utils.CloseWithLog(resp.Body, "gitlab validation response")
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return "", rerrors.Wrap(user_errors.GitlabValidationFailed, "gitlab instance rejected the token")
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error reading gitlab validation response")
+	}
+
+	var userInfo gitlabUserInfo
+	err = json.Unmarshal(body, &userInfo)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error parsing gitlab validation response")
+	}
+
+	return userInfo.Username, nil
 }
 
 // freshGoogleCreds loads the stored Google credentials for the given user, refreshes the
