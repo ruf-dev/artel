@@ -3,11 +3,13 @@ import {useEffect, useMemo, useRef, useState} from "react"
 import cls from "./NotesPage.module.css"
 import {useNotes} from "@/app/hooks/Notes.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
+import {usePortrait} from "@/app/hooks/usePortrait.ts"
 import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
 import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
 import NoteEditor from "@/pages/notes/components/NoteEditor/NoteEditor.tsx"
 import BreadcrumbBar from "@/pages/notes/components/BreadcrumbBar/BreadcrumbBar.tsx"
 import RenameDialog from "@/pages/notes/components/RenameDialog/RenameDialog.tsx"
+import MobileNotesShell from "@/pages/notes/components/MobileNotesShell/MobileNotesShell.tsx"
 import {useAutosave} from "@/pages/notes/hooks/useAutosave.ts"
 import {NoteMode} from "@/app/hooks/Notes.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
@@ -33,6 +35,7 @@ export default function NotesPage() {
     const scrollTopRef = useRef<number>(0)
     const [fontScale, setFontScale] = useState(1)
     const [previewEditing, setPreviewEditing] = useState(false)
+    const isPortrait = usePortrait()
 
     function zoomIn()  { setFontScale(s => Math.min(2.5, +(s + 0.15).toFixed(2))) }
     function zoomOut() { setFontScale(s => Math.max(0.5, +(s - 0.15).toFixed(2))) }
@@ -93,6 +96,27 @@ export default function NotesPage() {
     }
 
     const showEditor = (mode === 'edit' || (mode === 'preview' && previewEditing)) && selectedPath !== null
+
+    if (isPortrait) {
+        return (
+            <MobileNotesShell
+                vaultOptions={vaultOptions}
+                noteContent={noteContent}
+                selectedPath={selectedPath}
+                mode={mode}
+                showEditor={showEditor}
+                saveStatus={showEditor ? saveStatus : 'idle'}
+                saveError={saveError}
+                scrollTopRef={scrollTopRef}
+                fontScale={fontScale}
+                onModeChange={handleModeChange}
+                onChange={setContent}
+                onContentClick={mode === 'preview' && selectedPath ? () => setPreviewEditing(true) : undefined}
+                onEscape={mode === 'preview' ? () => setPreviewEditing(false) : undefined}
+                onRename={handleRename}
+            />
+        )
+    }
 
     return (
         <div className={cls.NotesPageContainer}>
