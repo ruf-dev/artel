@@ -28,6 +28,7 @@ const (
 	McpKeysAPI_AddMcpConnector_FullMethodName    = "/artel_api.McpKeysAPI/AddMcpConnector"
 	McpKeysAPI_RemoveMcpConnector_FullMethodName = "/artel_api.McpKeysAPI/RemoveMcpConnector"
 	McpKeysAPI_ListMomCandidates_FullMethodName  = "/artel_api.McpKeysAPI/ListMomCandidates"
+	McpKeysAPI_ExecuteMomTool_FullMethodName     = "/artel_api.McpKeysAPI/ExecuteMomTool"
 )
 
 // McpKeysAPIClient is the client API for McpKeysAPI service.
@@ -43,6 +44,7 @@ type McpKeysAPIClient interface {
 	AddMcpConnector(ctx context.Context, in *AddMcpConnector_Request, opts ...grpc.CallOption) (*AddMcpConnector_Response, error)
 	RemoveMcpConnector(ctx context.Context, in *RemoveMcpConnector_Request, opts ...grpc.CallOption) (*RemoveMcpConnector_Response, error)
 	ListMomCandidates(ctx context.Context, in *ListMomCandidates_Request, opts ...grpc.CallOption) (*ListMomCandidates_Response, error)
+	ExecuteMomTool(ctx context.Context, in *ExecuteMomTool_Request, opts ...grpc.CallOption) (*ExecuteMomTool_Response, error)
 }
 
 type mcpKeysAPIClient struct {
@@ -143,6 +145,16 @@ func (c *mcpKeysAPIClient) ListMomCandidates(ctx context.Context, in *ListMomCan
 	return out, nil
 }
 
+func (c *mcpKeysAPIClient) ExecuteMomTool(ctx context.Context, in *ExecuteMomTool_Request, opts ...grpc.CallOption) (*ExecuteMomTool_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExecuteMomTool_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_ExecuteMomTool_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // McpKeysAPIServer is the server API for McpKeysAPI service.
 // All implementations must embed UnimplementedMcpKeysAPIServer
 // for forward compatibility.
@@ -156,6 +168,7 @@ type McpKeysAPIServer interface {
 	AddMcpConnector(context.Context, *AddMcpConnector_Request) (*AddMcpConnector_Response, error)
 	RemoveMcpConnector(context.Context, *RemoveMcpConnector_Request) (*RemoveMcpConnector_Response, error)
 	ListMomCandidates(context.Context, *ListMomCandidates_Request) (*ListMomCandidates_Response, error)
+	ExecuteMomTool(context.Context, *ExecuteMomTool_Request) (*ExecuteMomTool_Response, error)
 	mustEmbedUnimplementedMcpKeysAPIServer()
 }
 
@@ -192,6 +205,9 @@ func (UnimplementedMcpKeysAPIServer) RemoveMcpConnector(context.Context, *Remove
 }
 func (UnimplementedMcpKeysAPIServer) ListMomCandidates(context.Context, *ListMomCandidates_Request) (*ListMomCandidates_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListMomCandidates not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) ExecuteMomTool(context.Context, *ExecuteMomTool_Request) (*ExecuteMomTool_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ExecuteMomTool not implemented")
 }
 func (UnimplementedMcpKeysAPIServer) mustEmbedUnimplementedMcpKeysAPIServer() {}
 func (UnimplementedMcpKeysAPIServer) testEmbeddedByValue()                    {}
@@ -376,6 +392,24 @@ func _McpKeysAPI_ListMomCandidates_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _McpKeysAPI_ExecuteMomTool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExecuteMomTool_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).ExecuteMomTool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_ExecuteMomTool_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).ExecuteMomTool(ctx, req.(*ExecuteMomTool_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // McpKeysAPI_ServiceDesc is the grpc.ServiceDesc for McpKeysAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +452,10 @@ var McpKeysAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListMomCandidates",
 			Handler:    _McpKeysAPI_ListMomCandidates_Handler,
+		},
+		{
+			MethodName: "ExecuteMomTool",
+			Handler:    _McpKeysAPI_ExecuteMomTool_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

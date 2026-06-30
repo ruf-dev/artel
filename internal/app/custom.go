@@ -70,7 +70,7 @@ func (c *Custom) Init(a *App) error {
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
 	adminUsersImpl := admin_users_api.New(services.AdminUsersService())
-	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService())
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService())
 	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
 	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())

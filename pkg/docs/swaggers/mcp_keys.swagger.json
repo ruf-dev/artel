@@ -303,6 +303,38 @@
           "McpKeysAPI"
         ]
       }
+    },
+    "/api/mcp/moms/execute": {
+      "post": {
+        "operationId": "McpKeysAPI_ExecuteMomTool",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiExecuteMomToolResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiExecuteMomToolRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
     }
   },
   "definitions": {
@@ -358,6 +390,31 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "artel_apiExecuteMomToolRequest": {
+      "type": "object",
+      "properties": {
+        "mcpName": {
+          "type": "string"
+        },
+        "toolName": {
+          "type": "string"
+        },
+        "externalConnectionId": {
+          "type": "string"
+        },
+        "paramsJson": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiExecuteMomToolResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string"
         }
       }
     },

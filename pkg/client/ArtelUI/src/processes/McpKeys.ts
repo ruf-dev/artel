@@ -16,6 +16,7 @@ export interface IMcpKeysService {
     addConnector: (keyId: string, mcpName: string, externalConnectionId: string) => Promise<McpConnectorInfo>
     removeConnector: (keyId: string, mcpName: string) => Promise<void>
     listMomCandidates: () => Promise<MomCandidate[]>
+    executeMomTool: (mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>) => Promise<string>
 }
 
 export class McpKeysService implements IMcpKeysService {
@@ -53,6 +54,12 @@ export class McpKeysService implements IMcpKeysService {
     async listMomCandidates(): Promise<MomCandidate[]> {
         const res = await McpKeysAPI.ListMomCandidates({}, useUser.getState().auth.getInitReq())
         return res.candidates ?? []
+    }
+
+    async executeMomTool(mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>): Promise<string> {
+        const req = {mcpName, toolName, externalConnectionId, paramsJson: JSON.stringify(params)}
+        const res = await McpKeysAPI.ExecuteMomTool(req, useUser.getState().auth.getInitReq())
+        return res.result ?? ""
     }
 }
 

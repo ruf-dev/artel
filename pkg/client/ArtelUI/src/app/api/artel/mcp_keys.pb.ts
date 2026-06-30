@@ -182,6 +182,19 @@ export type ListMomCandidatesResponse = {
 
 export type ListMomCandidates = Record<string, never>;
 
+export type ExecuteMomToolRequest = {
+  mcpName?: string;
+  toolName?: string;
+  externalConnectionId?: string;
+  paramsJson?: string;
+};
+
+export type ExecuteMomToolResponse = {
+  result?: string;
+};
+
+export type ExecuteMomTool = Record<string, never>;
+
 export class McpKeysAPI {
   static CreateMcpKey(this:void, req: CreateMcpKeyRequest, initReq?: fm.InitReq): Promise<CreateMcpKeyResponse> {
     return fm.fetchRequest<CreateMcpKeyResponse>(`/api/mcp/keys/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -209,5 +222,8 @@ export class McpKeysAPI {
   }
   static ListMomCandidates(this:void, req: ListMomCandidatesRequest, initReq?: fm.InitReq): Promise<ListMomCandidatesResponse> {
     return fm.fetchRequest<ListMomCandidatesResponse>(`/api/mcp/moms/candidates`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ExecuteMomTool(this:void, req: ExecuteMomToolRequest, initReq?: fm.InitReq): Promise<ExecuteMomToolResponse> {
+    return fm.fetchRequest<ExecuteMomToolResponse>(`/api/mcp/moms/execute`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

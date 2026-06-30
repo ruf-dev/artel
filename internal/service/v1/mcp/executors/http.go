@@ -40,7 +40,8 @@ func NewHttpExecutor() *HttpExecutor {
 	}
 }
 
-func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction, secrets map[string]interface{}, params map[string]interface{}) (string, error) {
+func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
+	secrets map[string]interface{}, params map[string]interface{}) (string, error) {
 	if action.Http == nil {
 		return "", user_errors.McpActionMissing
 	}

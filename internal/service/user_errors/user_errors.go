@@ -70,6 +70,7 @@ var (
 	McpUnknownImapOperation        = rerrors.New("email executor: unknown imap operation", codes.InvalidArgument)
 	McpUnknownSmtpOperation        = rerrors.New("email executor: unknown smtp operation", codes.InvalidArgument)
 	McpToolNotFound                = rerrors.New("tool not found in any connected mcp", codes.NotFound)
+	McpConnectionNotOwned          = rerrors.New("external connection not found", codes.NotFound)
 	McpConnectorNotFound           = rerrors.New("no mcp connector configured for this key", codes.FailedPrecondition)
 	McpActionMissing               = rerrors.New("tool action has no imap, smtp, or http discriminator set", codes.InvalidArgument)
 	McpSecretFieldMissing          = rerrors.New("http executor: referenced __secrets field not found in connected credentials", codes.FailedPrecondition)

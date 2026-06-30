@@ -8,6 +8,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
@@ -83,10 +84,7 @@ func (s *ServiceImpl) ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, to
 	return "", user_errors.McpToolNotFound
 }
 
-// ExecuteToolForConnection executes a tool directly against an external connection,
-// bypassing the mcp_key/connector lookup. Used by callers that already hold the
-// external connection (e.g. webhook handlers).
-func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) executeToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
 	def, err := s.mcpDefinitions.Get(ctx, mcpName)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting mcp definition")
@@ -103,6 +101,28 @@ func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid u
 	}
 
 	return "", user_errors.McpToolNotFound
+}
+
+// ExecuteToolForUserConnection executes a tool against a client-supplied external
+// connection, but only after verifying that the connection belongs to the authenticated
+// caller. Used by the web UI Toolbox, where the external_connection_id is supplied by the
+// client and must not be trusted blindly.
+func (s *ServiceImpl) ExecuteToolForUserConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return "", user_errors.Unauthenticated
+	}
+
+	exConn, err := s.externalConns.GetByID(ctx, exConnUuid)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error getting external connection")
+	}
+
+	if exConn.UserUuid != uc.UserUuid {
+		return "", user_errors.McpConnectionNotOwned
+	}
+
+	return s.executeToolForConnection(ctx, exConnUuid, mcpName, toolName, params)
 }
 
 func (s *ServiceImpl) dispatch(ctx context.Context, exConnUuid uuid.UUID, action domain.ToolAction, params map[string]interface{}) (string, error) {

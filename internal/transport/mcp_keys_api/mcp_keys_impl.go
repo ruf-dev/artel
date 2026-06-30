@@ -15,10 +15,11 @@ import (
 type McpKeysImpl struct {
 	artel_api.UnimplementedMcpKeysAPIServer
 	mcpSvc service.McpService
+	momSvc service.MomService
 }
 
-func NewMcpKeysImpl(mcpSvc service.McpService) *McpKeysImpl {
-	return &McpKeysImpl{mcpSvc: mcpSvc}
+func NewMcpKeysImpl(mcpSvc service.McpService, momSvc service.MomService) *McpKeysImpl {
+	return &McpKeysImpl{mcpSvc: mcpSvc, momSvc: momSvc}
 }
 
 func (m *McpKeysImpl) Register(srv grpc.ServiceRegistrar) {

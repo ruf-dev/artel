@@ -70,6 +70,13 @@ service McpKeysAPI {
             body: "*"
         };
     }
+
+    rpc ExecuteMomTool(ExecuteMomTool.Request) returns (ExecuteMomTool.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/moms/execute"
+            body: "*"
+        };
+    }
 }
 
 message McpKeyInfo {
@@ -220,5 +227,17 @@ message ListMomCandidates {
     message Request {}
     message Response {
         repeated MomCandidate candidates = 1;
+    }
+}
+
+message ExecuteMomTool {
+    message Request {
+        string mcp_name               = 1;
+        string tool_name              = 2;
+        string external_connection_id = 3;
+        string params_json            = 4;
+    }
+    message Response {
+        string result = 1;
     }
 }
