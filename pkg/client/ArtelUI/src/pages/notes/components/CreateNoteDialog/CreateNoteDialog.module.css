@@ -1,6 +1,5 @@
 .CreateNoteContainer {
-    width: 100%;
-    max-width: 28rem;
+    width: clamp(480px, 40vw, 680px);
     background: var(--color-bg-card);
     border: 1px solid var(--color-border-light);
     border-radius: 1.25rem;
@@ -56,6 +55,45 @@
 .CreateNoteInput::placeholder {
     color: var(--color-fg-secondary);
     opacity: 0.5;
+}
+
+.PathWrapper {
+    position: relative;
+}
+
+.SuggestionsDropdown {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.625rem;
+    box-shadow: 0 8px 24px -8px rgba(0,0,0,0.5);
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.SuggestionItem {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.875rem;
+    text-align: left;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    color: var(--color-fg-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 100ms ease, color 100ms ease;
+    box-sizing: border-box;
+}
+
+.SuggestionItem:hover,
+.SuggestionItemHighlighted {
+    background: rgba(255, 255, 255, 0.055);
+    color: var(--color-fg-primary);
 }
 
 .CreateNoteActions {

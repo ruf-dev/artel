@@ -131,6 +131,34 @@
     color: var(--text-secondary);
 }
 
+.FolderAddBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: none;
+    background: transparent;
+    color: var(--text-disabled);
+    border-radius: 0.25rem;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 100ms ease, background 120ms ease, color 120ms ease;
+}
+
+.TreeItemRow:hover .FolderAddBtn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.FolderAddBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+}
+
 .Divider {
     margin: 0.35rem 1.12rem;
     height: 1px;

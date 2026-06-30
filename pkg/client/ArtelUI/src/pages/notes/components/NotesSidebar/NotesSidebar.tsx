@@ -52,9 +52,10 @@ interface TreeItemProps {
     isFolder?: boolean
     isOpen?: boolean
     onClick?: () => void
+    onAddInFolder?: () => void
 }
 
-function TreeItem({ name, subtitle, active, depth = 0, isFolder, isOpen, onClick }: TreeItemProps) {
+function TreeItem({ name, subtitle, active, depth = 0, isFolder, isOpen, onClick, onAddInFolder }: TreeItemProps) {
     const paddingLeft = 1.12 + depth * 0.84
     const rowClass = `${cls.TreeItemRow}${active ? ` ${cls.TreeItemRowActive}` : ""}`
 
@@ -66,6 +67,17 @@ function TreeItem({ name, subtitle, active, depth = 0, isFolder, isOpen, onClick
                 <span className={cls.TreeItemLabel}>{name}</span>
                 {subtitle && <span className={cls.TreeItemSubtitle}>{subtitle}</span>}
             </div>
+            {isFolder && (
+                <button
+                    className={cls.FolderAddBtn}
+                    onClick={e => { e.stopPropagation(); onAddInFolder?.() }}
+                    title="New note here"
+                >
+                    <svg viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                        <path d="M6 1v10M1 6h10" />
+                    </svg>
+                </button>
+            )}
         </div>
     )
 }
@@ -128,9 +140,10 @@ interface FolderNodeItemProps {
     depth: number
     onToggle: (path: string) => void
     onSelectNote: (path: string) => void
+    onCreateNoteInFolder: (path: string) => void
 }
 
-function FolderNodeItem({ node, notes, openFolders, selectedPath, depth, onToggle, onSelectNote }: FolderNodeItemProps) {
+function FolderNodeItem({ node, notes, openFolders, selectedPath, depth, onToggle, onSelectNote, onCreateNoteInFolder }: FolderNodeItemProps) {
     const isOpen = openFolders.has(node.path)
     const directNotes = getDirectNotes(node.path, notes)
 
@@ -142,6 +155,7 @@ function FolderNodeItem({ node, notes, openFolders, selectedPath, depth, onToggl
                 isOpen={isOpen}
                 depth={depth}
                 onClick={() => onToggle(node.path)}
+                onAddInFolder={() => onCreateNoteInFolder(node.path)}
             />
             {isOpen && (
                 <>
@@ -155,6 +169,7 @@ function FolderNodeItem({ node, notes, openFolders, selectedPath, depth, onToggl
                             depth={depth + 1}
                             onToggle={onToggle}
                             onSelectNote={onSelectNote}
+                            onCreateNoteInFolder={onCreateNoteInFolder}
                         />
                     ))}
                     {directNotes.map(note => (
@@ -178,7 +193,7 @@ interface FolderSectionProps {
     selectedPath: string | null
     vaultId: string
     onSelectNote: (vaultId: string, path: string) => void
-    onCreateNote: () => void
+    onCreateNote: (folderPath?: string) => void
 }
 
 function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, onCreateNote }: FolderSectionProps) {
@@ -203,7 +218,7 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, on
         <>
             <div className={cls.SectionHeader}>
                 <span className={cls.SectionLabel}>All Notes</span>
-                <button className={cls.CreateNoteBtn} onClick={onCreateNote} title="New note">
+                <button className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
                     <svg viewBox="0 0 12 12" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
                         <path d="M6 1v10M1 6h10" />
                     </svg>
@@ -219,6 +234,7 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, on
                     depth={0}
                     onToggle={toggleFolder}
                     onSelectNote={path => onSelectNote(vaultId, path)}
+                    onCreateNoteInFolder={onCreateNote}
                 />
             ))}
             {rootNotes.map(note => (
@@ -247,9 +263,11 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
         void selectNote(vid, path)
     }
 
-    function handleCreateNote() {
+    function handleCreateNote(folderPath?: string) {
         OpenDialog(
             <CreateNoteDialog
+                initialPath={folderPath ? folderPath + "/" : ""}
+                folders={folders}
                 onConfirm={async (path: string) => {
                     try {
                         await createNote(path)
@@ -317,7 +335,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
                         selectedPath={selectedPath}
                         vaultId={vaultId}
                         onSelectNote={handleSelectNote}
-                        onCreateNote={handleCreateNote}
+                        onCreateNote={folderPath => handleCreateNote(folderPath)}
                     />
                 )}
             </div>
