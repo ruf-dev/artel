@@ -24,7 +24,7 @@ export default function WikiChip({ name, onClick }: WikiChipProps) {
     const maskId = useId()
 
     return (
-        <span className={cls.WikiChipContainer} onClick={onClick}>
+        <span className={cls.WikiChipContainer} onClick={e => { e.stopPropagation(); onClick?.() }}>
             <ArtelMark size={11} maskId={maskId} />
             {name}
         </span>

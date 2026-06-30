@@ -32,6 +32,7 @@ export default function NotesPage() {
     const {vaults} = useVaults()
     const scrollTopRef = useRef<number>(0)
     const [fontScale, setFontScale] = useState(1)
+    const [previewEditing, setPreviewEditing] = useState(false)
 
     function zoomIn()  { setFontScale(s => Math.min(2.5, +(s + 0.15).toFixed(2))) }
     function zoomOut() { setFontScale(s => Math.max(0.5, +(s - 0.15).toFixed(2))) }
@@ -50,6 +51,8 @@ export default function NotesPage() {
         }
     }, [vaultOptions, vaultId, selectVault])
 
+    useEffect(() => { setPreviewEditing(false) }, [selectedPath])
+
     const { saveStatus, saveError, forceSave } = useAutosave({
         noteId: selectedPath,
         vaultId,
@@ -60,9 +63,10 @@ export default function NotesPage() {
     })
 
     function handleModeChange(newMode: NoteMode) {
-        if (mode === 'edit') {
+        if (mode === 'edit' || (mode === 'preview' && previewEditing)) {
             forceSave()
         }
+        setPreviewEditing(false)
         setMode(newMode)
     }
 
@@ -82,7 +86,7 @@ export default function NotesPage() {
         )
     }
 
-    const showEditor = mode === 'edit' && selectedPath !== null
+    const showEditor = (mode === 'edit' || (mode === 'preview' && previewEditing)) && selectedPath !== null
 
     return (
         <div className={cls.NotesPageContainer}>
@@ -106,9 +110,14 @@ export default function NotesPage() {
                         onChange={setContent}
                         scrollTopRef={scrollTopRef}
                         fontScale={fontScale}
+                        onEscape={mode === 'preview' ? () => setPreviewEditing(false) : undefined}
                     />
                 ) : (
-                    <NoteViewer content={noteContent} fontScale={fontScale}/>
+                    <NoteViewer
+                        content={noteContent}
+                        fontScale={fontScale}
+                        onContentClick={mode === 'preview' && selectedPath ? () => setPreviewEditing(true) : undefined}
+                    />
                 )}
                 <div className={cls.ZoomControls}>
                     <button className={cls.ZoomBtn} onClick={zoomOut}>−</button>

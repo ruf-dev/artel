@@ -12,9 +12,10 @@ interface NoteEditorProps {
     onChange: (content: string) => void
     scrollTopRef: React.MutableRefObject<number>
     fontScale?: number
+    onEscape?: () => void
 }
 
-export default function NoteEditor({ content, onChange, scrollTopRef, fontScale = 1 }: NoteEditorProps) {
+export default function NoteEditor({ content, onChange, scrollTopRef, fontScale = 1, onEscape }: NoteEditorProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const [scrollTop, setScrollTop] = useState(0)
 
@@ -37,6 +38,12 @@ export default function NoteEditor({ content, onChange, scrollTopRef, fontScale 
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         const el = e.currentTarget
         const meta = e.metaKey || e.ctrlKey
+
+        if (e.key === 'Escape' && onEscape) {
+            e.preventDefault()
+            onEscape()
+            return
+        }
 
         if (e.key === 'Tab') {
             e.preventDefault()

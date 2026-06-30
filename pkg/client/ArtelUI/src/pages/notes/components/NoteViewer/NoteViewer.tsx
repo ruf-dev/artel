@@ -8,6 +8,7 @@ import WikiChip from "@/pages/notes/components/WikiChip/WikiChip.tsx"
 interface NoteViewerProps {
     content: string | null
     fontScale?: number
+    onContentClick?: () => void
 }
 
 interface ContentSegment {
@@ -36,11 +37,11 @@ function parseWikiLinks(html: string): ContentSegment[] {
     return parts
 }
 
-function NoteContent({ rawHtml }: { rawHtml: string }) {
+function NoteContent({ rawHtml, onContentClick }: { rawHtml: string; onContentClick?: () => void }) {
     const segments = useMemo(() => parseWikiLinks(rawHtml), [rawHtml])
 
     return (
-        <div className={cls.NoteBody}>
+        <div className={cls.NoteBody} onClick={onContentClick}>
             {segments.map((seg, i) => {
                 if (seg.type === "wiki") {
                     return <WikiChip key={i} name={seg.value} />
@@ -56,7 +57,7 @@ function NoteContent({ rawHtml }: { rawHtml: string }) {
     )
 }
 
-export default function NoteViewer({ content, fontScale }: NoteViewerProps) {
+export default function NoteViewer({ content, fontScale, onContentClick }: NoteViewerProps) {
     const sanitizedHtml = useMemo(() => {
         if (!content) return null
         const rawHtml = marked.parse(content) as string
@@ -68,7 +69,7 @@ export default function NoteViewer({ content, fontScale }: NoteViewerProps) {
             {sanitizedHtml === null ? (
                 <div className={cls.EmptyState}>Select a note</div>
             ) : (
-                <NoteContent rawHtml={sanitizedHtml} />
+                <NoteContent rawHtml={sanitizedHtml} onContentClick={onContentClick} />
             )}
         </div>
     )
