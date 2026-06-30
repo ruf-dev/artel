@@ -59,17 +59,18 @@ function NoteContent({ rawHtml, onContentClick }: { rawHtml: string; onContentCl
 
 export default function NoteViewer({ content, fontScale, onContentClick }: NoteViewerProps) {
     const sanitizedHtml = useMemo(() => {
-        if (!content) return null
+        if (content === null) return null
+        if (content === '') return ''
         const rawHtml = marked.parse(content) as string
         return DOMPurify.sanitize(rawHtml)
     }, [content])
 
     return (
         <div className={cls.NoteViewerContainer} style={{ zoom: fontScale ?? 1 }}>
-            {sanitizedHtml === null ? (
+            {content === null ? (
                 <div className={cls.EmptyState}>Select a note</div>
             ) : (
-                <NoteContent rawHtml={sanitizedHtml} onContentClick={onContentClick} />
+                <NoteContent rawHtml={sanitizedHtml!} onContentClick={onContentClick} />
             )}
         </div>
     )

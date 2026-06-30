@@ -53,6 +53,12 @@ export default function NotesPage() {
 
     useEffect(() => { setPreviewEditing(false) }, [selectedPath])
 
+    useEffect(() => {
+        if (selectedPath && noteContent === '' && mode === 'preview') {
+            setPreviewEditing(true)
+        }
+    }, [selectedPath, noteContent])
+
     const { saveStatus, saveError, forceSave } = useAutosave({
         noteId: selectedPath,
         vaultId,
