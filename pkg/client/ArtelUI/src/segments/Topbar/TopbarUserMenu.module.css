@@ -85,3 +85,7 @@
     background: rgba(193,37,61,0.10);
     color: var(--color-error);
 }
+
+[data-theme="light"] .Menu {
+    background: #FFFFFF;
+}

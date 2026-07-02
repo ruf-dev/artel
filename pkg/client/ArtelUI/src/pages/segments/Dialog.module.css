@@ -43,3 +43,7 @@
 .DialogCloseButton:hover {
     color: var(--color-fg-primary);
 }
+
+[data-theme="light"] .DialogContainer {
+    background: rgba(0,0,0,0.16);
+}

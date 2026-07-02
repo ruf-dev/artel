@@ -2,6 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      if (localStorage.getItem('artel.theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
+    </script>
     <link rel="icon" href="/Artel_light.png" type="image/svg+xml"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Artel</title>

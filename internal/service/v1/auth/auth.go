@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -131,7 +132,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 		return domain.Session{}, rerrors.Wrap(user_errors.InvalidTelegramToken, "error validating telegram token", err.Error())
 	}
 
-	telegramId := claims.Subject
+	telegramId := strconv.FormatInt(claims.Id, 10)
 	var user domain.User
 
 	err = s.txManager.Execute(

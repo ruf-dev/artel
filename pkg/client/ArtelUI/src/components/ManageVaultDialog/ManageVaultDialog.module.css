@@ -428,3 +428,8 @@
     font-size: 0.75rem;
     color: var(--color-fg-secondary);
 }
+
+[data-theme="light"] .ModalContainer,
+[data-theme="light"] .SubModalContainer {
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.16);
+}

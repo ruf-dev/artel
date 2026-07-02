@@ -298,7 +298,7 @@
 
 .Input:focus {
     border-color: var(--color-border-bright);
-    background: #131313;
+    background: var(--color-bg-input-focus);
 }
 
 .ModalActions {

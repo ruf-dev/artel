@@ -94,6 +94,46 @@
   --ease-quick:   0.125s ease-in-out;
   --ease-default: 0.2s ease;
   --ease-slow:    0.3s ease-in-out;
+
+  /* ── Focus / empty-state (new, theme-aware) ─────────────── */
+  --color-bg-input-focus:    #131313;
+  --color-empty-icon-stroke: rgba(255,255,255,0.35);
+}
+
+/* ════════════ LIGHT THEME ════════════ */
+[data-theme="light"] {
+  /* Backgrounds */
+  --color-bg-base:      #F8F7F5;
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-accent:    #EFEDE9;
+  --color-bg-card:      #FFFFFF;
+  --color-bg-elevated:  #EFEDE9;
+  --color-bg-input:     #FAFAF9;
+  --color-bg-hover:     rgba(0,0,0,0.04);
+  --color-bg-hover-mid: rgba(0,0,0,0.06);
+
+  /* Foregrounds */
+  --color-fg-primary:   rgba(10,8,5,0.88);
+  --color-fg-secondary: rgba(10,8,5,0.52);
+  --color-fg-tertiary:  rgba(10,8,5,0.36);
+  --color-fg-disabled:  rgba(10,8,5,0.20);
+
+  /* Borders */
+  --color-border:        rgba(0,0,0,0.07);
+  --color-border-light:  rgba(0,0,0,0.12);
+  --color-border-bright: rgba(0,0,0,0.22);
+
+  /* Coral-derived — same hue, reduced alpha for light surfaces */
+  --coral-glow:   rgba(255,75,62,0.22);
+  --coral-dim:    rgba(255,75,62,0.08);
+  --coral-border: rgba(255,75,62,0.25);
+
+  /* Status */
+  --status-online-glow: rgba(22,163,74,0.22);
+
+  /* Focus / empty-state */
+  --color-bg-input-focus:    #F5F4F2;
+  --color-empty-icon-stroke: rgba(0,0,0,0.22);
 }
 
 /* ── Typography ──────────────────────────────────────────── */

@@ -16,3 +16,13 @@
 @media (max-width: 45rem) {
     .Topbar { padding: 0.875rem 1.125rem; }
 }
+
+.ActionsWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+[data-theme="light"] .Topbar {
+    background: rgba(248,247,245,0.9);
+}

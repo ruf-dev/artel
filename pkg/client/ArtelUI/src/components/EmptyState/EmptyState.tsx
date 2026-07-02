@@ -8,7 +8,7 @@ export default function EmptyState({onCreateClick}: Props) {
     return (
         <div className={cls.Root}>
             <div className={cls.Art} aria-hidden="true">
-                <svg viewBox="0 0 100 100" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 100 100" fill="none" stroke="var(--color-empty-icon-stroke)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="18" y="28" width="64" height="52" rx="8"/>
                     <path d="M30 28v-6a8 8 0 0 1 8-8h24a8 8 0 0 1 8 8v6"/>
                     <circle cx="50" cy="54" r="6" fill="rgba(255,75,62,0.18)" stroke="#FF4B3E"/>

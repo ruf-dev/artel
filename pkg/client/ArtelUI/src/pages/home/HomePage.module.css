@@ -232,7 +232,7 @@
 
 .Input:focus {
     border-color: var(--color-border-bright);
-    background: #131313;
+    background: var(--color-bg-input-focus);
 }
 
 .ModalActions {
@@ -351,4 +351,13 @@
 .BtnDanger:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* ── Light theme overrides ───────────────────────────────── */
+[data-theme="light"] .Overlay {
+    background: rgba(0,0,0,0.28);
+}
+
+[data-theme="light"] .Modal {
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.16);
 }

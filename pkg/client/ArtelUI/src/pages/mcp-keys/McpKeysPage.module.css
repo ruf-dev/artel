@@ -223,7 +223,7 @@
 }
 
 .Input::placeholder { color: var(--color-fg-disabled); }
-.Input:focus { border-color: var(--color-border-bright); background: #131313; }
+.Input:focus { border-color: var(--color-border-bright); background: var(--color-bg-input-focus); }
 
 .OptionList {
     display: flex;
