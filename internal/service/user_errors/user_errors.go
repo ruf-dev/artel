@@ -104,4 +104,41 @@ var (
 	InvalidInstanceURL       = rerrors.New("invalid gitlab instance url", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
 	GitlabValidationFailed   = rerrors.New("could not verify gitlab token against instance", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusPreconditionFailed))
 	GitlabConnectionNotFound = rerrors.New("no gitlab connection found", codes.NotFound, rerrors.WithHttpStatus(http.StatusNotFound))
+
+	// tract: builtin execution
+	NoVaultForBuiltinTool = rerrors.New("no vault available to run a builtin tool for this tract", codes.FailedPrecondition)
+
+	// tract: validation
+	TractStepIdInvalid         = rerrors.New("step id must match ^[a-z][a-z0-9_]*$ and not be 'trigger'", codes.InvalidArgument)
+	TractStepIdDuplicate       = rerrors.New("duplicate step id in tract definition", codes.InvalidArgument)
+	TractToolNotFound          = rerrors.New("action references a tool that does not exist", codes.InvalidArgument)
+	TractConnectionRequired    = rerrors.New("connection_id is required for MoM tool actions", codes.InvalidArgument)
+	TractConnectionForbidden   = rerrors.New("connection_id is not allowed for builtin tool actions", codes.InvalidArgument)
+	TractConnectionNotOwned    = rerrors.New("connection_id does not belong to the tract owner", codes.PermissionDenied)
+	TractInvalidTemplateRef    = rerrors.New("template reference is not visible from this step", codes.InvalidArgument)
+	TractMalformedTemplate     = rerrors.New("malformed template expression", codes.InvalidArgument)
+	TractUnknownTemplateVar    = rerrors.New("unknown $-variable in template expression", codes.InvalidArgument)
+	TractConditionsOnNonBranch = rerrors.New("only condition steps may declare conditions/then/else", codes.InvalidArgument)
+	TractParamsOnNonAction     = rerrors.New("only action steps may declare params", codes.InvalidArgument)
+	TractUnknownStepType       = rerrors.New("unknown step type", codes.InvalidArgument)
+	TractStepNotFound          = rerrors.New("referenced step not found in this run", codes.FailedPrecondition)
+
+	// tract: ownership
+	TriggerNotFound = rerrors.New("trigger not found", codes.NotFound)
+	TriggerNotOwned = rerrors.New("trigger does not belong to the caller", codes.PermissionDenied)
+	TractNotOwned   = rerrors.New("tract does not belong to the caller", codes.PermissionDenied)
+
+	// tract: transport (tracts_api request fields that carry JSON-encoded strings)
+	TractRequestFieldInvalidJSON = rerrors.New("request field is not valid JSON", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
+
+	// tract: mcp builtin tools
+	TractServiceNotConfigured  = rerrors.New("tract service is not available", codes.Unimplemented)
+	McpTractNameRequired       = rerrors.New("name is required and must be a string", codes.InvalidArgument)
+	McpTractDefinitionRequired = rerrors.New("definition is required and must be an object", codes.InvalidArgument)
+	McpTractUuidRequired       = rerrors.New("tract_uuid is required and must be a string", codes.InvalidArgument)
+	McpTriggerUuidRequired     = rerrors.New("trigger_uuid is required and must be a string", codes.InvalidArgument)
+	McpTriggerSourceRequired   = rerrors.New("source is required and must be a string", codes.InvalidArgument)
+	McpTractUuidInvalid        = rerrors.New("tract_uuid is not a valid uuid", codes.InvalidArgument)
+	McpTriggerUuidInvalid      = rerrors.New("trigger_uuid is not a valid uuid", codes.InvalidArgument)
+	McpTractUnknownToolName    = rerrors.New("unknown tract builtin tool", codes.InvalidArgument)
 )

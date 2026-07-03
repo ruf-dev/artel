@@ -1,7 +1,10 @@
 package mcp
 
 import (
+	"context"
+
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 )
 
@@ -18,6 +21,14 @@ type McpServiceImpl struct {
 	mcpDefinitions      repository.McpDefinitionsRepo
 	externalConnections repository.ExternalConnectionRepo
 	vaultExecutor       *executors.VaultExecutor
+	tractExecutor       *executors.TractExecutor
+
+	// tractSvc/tractBaseCtx are unset until SetTractService is called from
+	// internal/app/custom.go, after TractService is constructed (Tract composes Mcp's
+	// ToolExecutor, so Mcp must exist first). The tract-authoring builtin tools degrade with
+	// user_errors.TractServiceNotConfigured while tractSvc is nil.
+	tractSvc     service.TractService
+	tractBaseCtx context.Context
 }
 
 func New(
@@ -38,5 +49,13 @@ func New(
 		mcpDefinitions:      mcpDefinitions,
 		externalConnections: externalConnections,
 		vaultExecutor:       executors.NewVaultExecutor(),
+		tractExecutor:       executors.NewTractExecutor(),
 	}
+}
+
+// SetTractService wires the tract service dependency and the server-lifecycle context used to
+// spawn run_tract's async StartRun call. See the doc comment on service.McpService.
+func (s *McpServiceImpl) SetTractService(baseCtx context.Context, ts service.TractService) {
+	s.tractSvc = ts
+	s.tractBaseCtx = baseCtx
 }

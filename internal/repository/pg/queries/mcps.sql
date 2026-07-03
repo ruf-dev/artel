@@ -1,19 +1,18 @@
 -- name: GetMcpDefinition :one
-SELECT name, author, description, tools, created_at
+SELECT name, author, description, created_at
 FROM mcps
 WHERE name = $1;
 
 -- name: UpsertMcpDefinition :one
-INSERT INTO mcps (name, author, description, tools)
-VALUES ($1, $2, $3, $4)
+INSERT INTO mcps (name, author, description)
+VALUES ($1, $2, $3)
 ON CONFLICT (name) DO UPDATE
     SET author      = EXCLUDED.author,
-        description = EXCLUDED.description,
-        tools       = EXCLUDED.tools
-RETURNING name, author, description, tools, created_at;
+        description = EXCLUDED.description
+RETURNING name, author, description, created_at;
 
 -- name: ListMcpDefinitions :many
-SELECT name, author, description, tools, created_at
+SELECT name, author, description, created_at
 FROM mcps
 ORDER BY name;
 

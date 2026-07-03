@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/hex"
 	"net/http"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -17,6 +18,7 @@ import (
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
+	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
 	admin_users_api "github.com/ruf-dev/artel/internal/transport/admin_users_api"
@@ -29,6 +31,8 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/notes_api"
 	"github.com/ruf-dev/artel/internal/transport/prompts_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
+	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
+	"github.com/ruf-dev/artel/internal/transport/tracts_api"
 	"github.com/ruf-dev/artel/internal/transport/ui"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
@@ -59,6 +63,21 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "init services")
 	}
 
+	// Tract is constructed here (not in svcv1.New) because its ToolExecutor composes the
+	// already-built Mcp and Mom services — mcp must exist first, then tract.
+	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
+	services.Tract = tract.New(repo.Tracts(), repo.Triggers(), repo.ExternalConnections(), repo.McpDefinitions(), tractToolExecutor)
+
+	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that
+	// TractService exists — breaks the construction-order cycle without Mcp importing Tract.
+	services.McpService().SetTractService(a.Ctx, services.TractService())
+
+	sweepThreshold := time.Now()
+	err = services.Tract.SweepStaleRuns(a.Ctx, sweepThreshold)
+	if err != nil {
+		return rerrors.Wrap(err, "error sweeping stale tract runs at startup")
+	}
+
 	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
 	if err != nil {
 		return rerrors.Wrap(err, "error creating server manager")
@@ -76,6 +95,8 @@ func (c *Custom) Init(a *App) error {
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.MomService())
 	gitlabWebhookHandler := gitlab_webhook.New(repo.ExternalConnections(), services.MomService())
+	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
+	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
 	otelServerHandler := otelgrpc.NewServerHandler()
@@ -108,11 +129,12 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminUsersAPI_GetUserSessions_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/webhooks/gitlab/", gitlabWebhookHandler)
+	c.Transport.AddHttpHandler("/tract/hook/", tractWebhookHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource/mcp", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))

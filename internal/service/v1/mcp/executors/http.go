@@ -1,7 +1,9 @@
 package executors
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -57,6 +59,9 @@ func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
 		if err != nil {
 			return "", err
 		}
+		if resolved == "" {
+			continue
+		}
 		query.Set(key, resolved)
 	}
 
@@ -76,15 +81,31 @@ func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
 		reqUrl = parsedUrl.String()
 	}
 
-	req, err := http.NewRequestWithContext(ctx, httpAction.Method, reqUrl, nil)
+	var bodyReader io.Reader
+	if len(httpAction.Body) > 0 {
+		renderedBody, err := renderHttpBody(httpAction.Body, params, secrets)
+		if err != nil {
+			return "", err
+		}
+		bodyReader = bytes.NewReader(renderedBody)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, httpAction.Method, reqUrl, bodyReader)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error building http request")
+	}
+
+	if bodyReader != nil {
+		req.Header.Set("Content-Type", "application/json")
 	}
 
 	for key, value := range httpAction.Headers {
 		resolved, err := resolveActionValue(value, params, secrets)
 		if err != nil {
 			return "", err
+		}
+		if resolved == "" {
+			continue
 		}
 		req.Header.Set(key, resolved)
 	}
@@ -107,6 +128,68 @@ func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
 	}
 
 	return string(body), nil
+}
+
+// renderHttpBody walks the HttpAction.Body JSON template and interpolates every string leaf
+// via resolveActionValue (same ${{params.*}} / __secrets.* rules as headers and query values),
+// then re-marshals the result to send as the request body.
+func renderHttpBody(body json.RawMessage, params map[string]interface{}, secrets map[string]interface{}) (json.RawMessage, error) {
+	var parsed interface{}
+	err := json.Unmarshal(body, &parsed)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error parsing http action body template")
+	}
+
+	rendered, err := renderBodyValue(parsed, params, secrets)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := json.Marshal(rendered)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error marshaling rendered http body")
+	}
+
+	return data, nil
+}
+
+func renderBodyValue(value interface{}, params map[string]interface{}, secrets map[string]interface{}) (interface{}, error) {
+	switch v := value.(type) {
+	case string:
+		resolved, err := resolveActionValue(v, params, secrets)
+		if err != nil {
+			return nil, err
+		}
+		return resolved, nil
+
+	case map[string]interface{}:
+		rendered := make(map[string]interface{}, len(v))
+		for key, val := range v {
+			renderedVal, err := renderBodyValue(val, params, secrets)
+			if err != nil {
+				return nil, err
+			}
+			if renderedStr, ok := renderedVal.(string); ok && renderedStr == "" {
+				continue
+			}
+			rendered[key] = renderedVal
+		}
+		return rendered, nil
+
+	case []interface{}:
+		rendered := make([]interface{}, len(v))
+		for i, val := range v {
+			renderedVal, err := renderBodyValue(val, params, secrets)
+			if err != nil {
+				return nil, err
+			}
+			rendered[i] = renderedVal
+		}
+		return rendered, nil
+
+	default:
+		return v, nil
+	}
 }
 
 // resolveActionValue resolves a single header/query value. If the value is exactly

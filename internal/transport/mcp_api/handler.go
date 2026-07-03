@@ -13,6 +13,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/middleware/requesthost"
 	"github.com/ruf-dev/artel/internal/service"
 )
 
@@ -58,6 +59,7 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	ctx := r.Context()
+	ctx = requesthost.WithHost(ctx, publicHost(r))
 
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)

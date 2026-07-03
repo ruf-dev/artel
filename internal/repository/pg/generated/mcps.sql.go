@@ -7,7 +7,6 @@ package artel_q
 
 import (
 	"context"
-	"encoding/json"
 )
 
 const deleteMcpDefinition = `-- name: DeleteMcpDefinition :exec
@@ -20,7 +19,7 @@ func (q *Queries) DeleteMcpDefinition(ctx context.Context, name string) error {
 }
 
 const getMcpDefinition = `-- name: GetMcpDefinition :one
-SELECT name, author, description, tools, created_at
+SELECT name, author, description, created_at
 FROM mcps
 WHERE name = $1
 `
@@ -32,14 +31,13 @@ func (q *Queries) GetMcpDefinition(ctx context.Context, name string) (Mcp, error
 		&i.Name,
 		&i.Author,
 		&i.Description,
-		&i.Tools,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listMcpDefinitions = `-- name: ListMcpDefinitions :many
-SELECT name, author, description, tools, created_at
+SELECT name, author, description, created_at
 FROM mcps
 ORDER BY name
 `
@@ -57,7 +55,6 @@ func (q *Queries) ListMcpDefinitions(ctx context.Context) ([]Mcp, error) {
 			&i.Name,
 			&i.Author,
 			&i.Description,
-			&i.Tools,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -74,35 +71,27 @@ func (q *Queries) ListMcpDefinitions(ctx context.Context) ([]Mcp, error) {
 }
 
 const upsertMcpDefinition = `-- name: UpsertMcpDefinition :one
-INSERT INTO mcps (name, author, description, tools)
-VALUES ($1, $2, $3, $4)
+INSERT INTO mcps (name, author, description)
+VALUES ($1, $2, $3)
 ON CONFLICT (name) DO UPDATE
     SET author      = EXCLUDED.author,
-        description = EXCLUDED.description,
-        tools       = EXCLUDED.tools
-RETURNING name, author, description, tools, created_at
+        description = EXCLUDED.description
+RETURNING name, author, description, created_at
 `
 
 type UpsertMcpDefinitionParams struct {
 	Name        string
 	Author      string
 	Description string
-	Tools       json.RawMessage
 }
 
 func (q *Queries) UpsertMcpDefinition(ctx context.Context, arg UpsertMcpDefinitionParams) (Mcp, error) {
-	row := q.db.QueryRowContext(ctx, upsertMcpDefinition,
-		arg.Name,
-		arg.Author,
-		arg.Description,
-		arg.Tools,
-	)
+	row := q.db.QueryRowContext(ctx, upsertMcpDefinition, arg.Name, arg.Author, arg.Description)
 	var i Mcp
 	err := row.Scan(
 		&i.Name,
 		&i.Author,
 		&i.Description,
-		&i.Tools,
 		&i.CreatedAt,
 	)
 	return i, err

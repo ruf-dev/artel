@@ -221,67 +221,142 @@ func (e *VaultExecutor) getNoteMetadata(ctx context.Context, client *couchdb.Liv
 	return domain.ToolExecResult{Text: text}, nil
 }
 
+// Output schemas below are hints for tool-picker/port-chip UIs, not enforced at runtime.
+// list_files/list_folders/list_tags/connections marshal a JSON array as their text result;
+// since ToolSchema (unlike ToolProperty) has no array/root type of its own, Properties there
+// describes the shape of each array element rather than the response envelope itself.
+
 func VaultToolDefinitions() []domain.McpToolDef {
 	return []domain.McpToolDef{
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolListFiles,
-			Description: "List all files in the vault (notes and binary files)",
-			Properties:  map[string]domain.ToolProperty{},
-			Required:    []string{},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolReadFile,
-			Description: "Read any file by path. Returns text content for notes/text files, base64-encoded binary for images/PDFs.",
-			Properties: map[string]domain.ToolProperty{
-				"path": {Type: "string"},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolListFiles,
+				Description: "List all files in the vault (notes and binary files)",
+				Properties:  map[string]domain.ToolProperty{},
+				Required:    []string{},
 			},
-			Required: []string{"path"},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolWriteNote,
-			Description: "Create or update a note",
-			Properties: map[string]domain.ToolProperty{
-				"path":    {Type: "string"},
-				"content": {Type: "string"},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"path":     {Type: "string", Description: "Vault-relative file path (each array entry)"},
+					"mtime":    {Type: "integer", Description: "Last modified time, unix ms"},
+					"mimeType": {Type: "string", Description: "MIME type of the file"},
+				},
+				Required: []string{"path", "mtime", "mimeType"},
 			},
-			Required: []string{"path", "content"},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolDeleteFile,
-			Description: "Delete any file by path",
-			Properties: map[string]domain.ToolProperty{
-				"path": {Type: "string"},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolReadFile,
+				Description: "Read any file by path. Returns text content for notes/text files, base64-encoded binary for images/PDFs.",
+				Properties: map[string]domain.ToolProperty{
+					"path": {Type: "string"},
+				},
+				Required: []string{"path"},
 			},
-			Required: []string{"path"},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolMoveFile,
-			Description: "Move or rename any file. Not supported for large chunked binary files.",
-			Properties: map[string]domain.ToolProperty{
-				"old_path": {Type: "string"},
-				"new_path": {Type: "string"},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"content": {Type: "string", Description: "File content as text; binary files are returned as a resource/image content block instead"},
+				},
 			},
-			Required: []string{"old_path", "new_path"},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolListFolders,
-			Description: "List all folders in the vault",
-			Properties:  map[string]domain.ToolProperty{},
-			Required:    []string{},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolListTags,
-			Description: "List all tags in the vault",
-			Properties:  map[string]domain.ToolProperty{},
-			Required:    []string{},
-		}},
-		{ApiDescription: domain.ToolApiDescription{
-			Name:        ToolGetNoteMetadata,
-			Description: "Get metadata for a note",
-			Properties: map[string]domain.ToolProperty{
-				"path": {Type: "string"},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolWriteNote,
+				Description: "Create or update a note",
+				Properties: map[string]domain.ToolProperty{
+					"path":    {Type: "string"},
+					"content": {Type: "string"},
+				},
+				Required: []string{"path", "content"},
 			},
-			Required: []string{"path"},
-		}},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"message": {Type: "string", Description: "Confirmation message"},
+				},
+				Required: []string{"message"},
+			},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolDeleteFile,
+				Description: "Delete any file by path",
+				Properties: map[string]domain.ToolProperty{
+					"path": {Type: "string"},
+				},
+				Required: []string{"path"},
+			},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"message": {Type: "string", Description: "Confirmation message"},
+				},
+				Required: []string{"message"},
+			},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolMoveFile,
+				Description: "Move or rename any file. Not supported for large chunked binary files.",
+				Properties: map[string]domain.ToolProperty{
+					"old_path": {Type: "string"},
+					"new_path": {Type: "string"},
+				},
+				Required: []string{"old_path", "new_path"},
+			},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"message": {Type: "string", Description: "Confirmation message"},
+				},
+				Required: []string{"message"},
+			},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolListFolders,
+				Description: "List all folders in the vault",
+				Properties:  map[string]domain.ToolProperty{},
+				Required:    []string{},
+			},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"path": {Type: "string", Description: "Folder path (each array entry)"},
+				},
+				Required: []string{"path"},
+			},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolListTags,
+				Description: "List all tags in the vault",
+				Properties:  map[string]domain.ToolProperty{},
+				Required:    []string{},
+			},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"tag": {Type: "string", Description: "Tag name (each array entry)"},
+				},
+				Required: []string{"tag"},
+			},
+		},
+		{
+			ApiDescription: domain.ToolApiDescription{
+				Name:        ToolGetNoteMetadata,
+				Description: "Get metadata for a note",
+				Properties: map[string]domain.ToolProperty{
+					"path": {Type: "string"},
+				},
+				Required: []string{"path"},
+			},
+			OutputSchema: domain.ToolSchema{
+				Properties: map[string]domain.ToolProperty{
+					"id":      {Type: "string", Description: "CouchDB document id"},
+					"rev":     {Type: "string", Description: "CouchDB document revision"},
+					"mtime":   {Type: "integer", Description: "Last modified time, unix ms"},
+					"ctime":   {Type: "integer", Description: "Creation time, unix ms"},
+					"size":    {Type: "integer", Description: "Content size in bytes"},
+					"deleted": {Type: "boolean", Description: "Whether the note is tombstoned"},
+				},
+				Required: []string{"id", "rev", "mtime", "ctime", "size", "deleted"},
+			},
+		},
 	}
 }

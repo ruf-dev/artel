@@ -34,6 +34,10 @@ type Services struct {
 	AdminUsers          service.AdminUsersService
 	ExternalConnections service.ExternalConnectionService
 	Mom                 service.MomService
+	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
+	// which must already exist as service.McpService/service.MomService values to compose the
+	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
+	Tract service.TractService
 }
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
@@ -110,4 +114,8 @@ func (s *Services) ExternalConnectionService() service.ExternalConnectionService
 
 func (s *Services) MomService() service.MomService {
 	return s.Mom
+}
+
+func (s *Services) TractService() service.TractService {
+	return s.Tract
 }

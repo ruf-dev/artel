@@ -84,7 +84,10 @@ func (s *ServiceImpl) ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, to
 	return "", user_errors.McpToolNotFound
 }
 
-func (s *ServiceImpl) executeToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
+// ExecuteToolForConnection executes a tool against a specific external connection without an
+// ownership check — callers (e.g. the tract engine, which has no user_context for
+// webhook-triggered runs) must verify connection ownership themselves before calling this.
+func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
 	def, err := s.mcpDefinitions.Get(ctx, mcpName)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting mcp definition")
@@ -122,7 +125,7 @@ func (s *ServiceImpl) ExecuteToolForUserConnection(ctx context.Context, exConnUu
 		return "", user_errors.McpConnectionNotOwned
 	}
 
-	return s.executeToolForConnection(ctx, exConnUuid, mcpName, toolName, params)
+	return s.ExecuteToolForConnection(ctx, exConnUuid, mcpName, toolName, params)
 }
 
 func (s *ServiceImpl) dispatch(ctx context.Context, exConnUuid uuid.UUID, action domain.ToolAction, params map[string]interface{}) (string, error) {

@@ -17,9 +17,10 @@ func contextWithKeyCtx(ctx context.Context, keyCtx domain.McpKeyContext) context
 }
 
 type ToolDef struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	InputSchema map[string]interface{} `json:"inputSchema"`
+	Name         string                 `json:"name"`
+	Description  string                 `json:"description"`
+	InputSchema  map[string]interface{} `json:"inputSchema"`
+	OutputSchema map[string]interface{} `json:"outputSchema,omitempty"`
 }
 
 type ToolResult struct {
@@ -53,20 +54,59 @@ func toolResultFromExec(res domain.ToolExecResult) ToolResult {
 }
 
 func momToolToToolDef(t domain.McpToolDef) ToolDef {
-	props := make(map[string]interface{}, len(t.ApiDescription.Properties))
-	for name, p := range t.ApiDescription.Properties {
-		props[name] = map[string]string{"type": p.Type, "description": p.Description}
+	inputSchema := toolSchemaToWire(t.ApiDescription.Properties, t.ApiDescription.Required)
+
+	def := ToolDef{
+		Name:        t.ApiDescription.Name,
+		Description: t.ApiDescription.Description,
+		InputSchema: inputSchema,
+	}
+
+	// {} (no properties, no required) means the output shape is undeclared — omit the key
+	// entirely rather than sending an empty object.
+	if len(t.OutputSchema.Properties) > 0 || len(t.OutputSchema.Required) > 0 {
+		def.OutputSchema = toolSchemaToWire(t.OutputSchema.Properties, t.OutputSchema.Required)
+	}
+
+	return def
+}
+
+// toolSchemaToWire renders a {properties, required} pair into MCP's JSON-Schema wire shape,
+// recursing into nested object/array properties.
+func toolSchemaToWire(properties map[string]domain.ToolProperty, required []string) map[string]interface{} {
+	props := make(map[string]interface{}, len(properties))
+	for name, p := range properties {
+		props[name] = toolPropertyToWire(p)
 	}
 	schema := map[string]interface{}{
 		"type":       "object",
 		"properties": props,
-		"required":   t.ApiDescription.Required,
+		"required":   required,
 	}
-	return ToolDef{
-		Name:        t.ApiDescription.Name,
-		Description: t.ApiDescription.Description,
-		InputSchema: schema,
+	return schema
+}
+
+func toolPropertyToWire(p domain.ToolProperty) map[string]interface{} {
+	wire := map[string]interface{}{"type": p.Type, "description": p.Description}
+
+	if len(p.Enum) > 0 {
+		wire["enum"] = p.Enum
 	}
+
+	if len(p.Properties) > 0 {
+		nested := make(map[string]interface{}, len(p.Properties))
+		for name, sub := range p.Properties {
+			nested[name] = toolPropertyToWire(sub)
+		}
+		wire["properties"] = nested
+		wire["required"] = p.Required
+	}
+
+	if p.Items != nil {
+		wire["items"] = toolPropertyToWire(*p.Items)
+	}
+
+	return wire
 }
 
 func buildContentBlock(data []byte, mimeType, path string) ContentBlock {

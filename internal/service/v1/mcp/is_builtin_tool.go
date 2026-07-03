@@ -6,8 +6,8 @@ func (s *McpServiceImpl) IsBuiltinTool(name string) bool {
 	switch name {
 	case executors.ToolListFiles, executors.ToolReadFile, executors.ToolWriteNote, executors.ToolDeleteFile,
 		executors.ToolMoveFile, executors.ToolListFolders, executors.ToolListTags, executors.ToolGetNoteMetadata,
-		toolConnections:
+		toolConnections, toolConnectionsForTracts:
 		return true
 	}
-	return false
+	return executors.IsTractTool(name)
 }

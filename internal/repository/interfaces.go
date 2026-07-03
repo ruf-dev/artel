@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -32,6 +33,8 @@ type Repo interface {
 	McpSpreadsheets() McpSpreadsheetsRepo
 	McpDefinitions() McpDefinitionsRepo
 	McpConnectors() McpConnectorsRepo
+	Tracts() TractsRepo
+	Triggers() TriggersRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -188,6 +191,8 @@ type McpDefinitionsRepo interface {
 	Get(ctx context.Context, name string) (sql.Null[domain.McpDefinition], error)
 	List(ctx context.Context) ([]domain.McpDefinition, error)
 	Delete(ctx context.Context, name string) error
+	GetTool(ctx context.Context, mcpName string, toolName string) (sql.Null[domain.McpToolDef], error)
+	ListAllTools(ctx context.Context) ([]domain.McpToolRef, error)
 }
 
 type McpConnectorsRepo interface {
@@ -195,4 +200,69 @@ type McpConnectorsRepo interface {
 	Get(ctx context.Context, mcpKeyUuid uuid.UUID, mcpName string) (sql.Null[domain.McpConnector], error)
 	ListByKey(ctx context.Context, mcpKeyUuid uuid.UUID) ([]domain.McpConnector, error)
 	Delete(ctx context.Context, mcpKeyUuid uuid.UUID, mcpName string) error
+}
+
+// TractsRepo is the pure-DB layer for tracts + their runs/run-steps. The step tree itself is
+// NOT a separate table — Tract.Definition is persisted as one JSONB column.
+type TractsRepo interface {
+	Create(ctx context.Context, tract domain.Tract) (domain.Tract, error)
+	Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.Tract], error)
+	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Tract, error)
+	// Update overwrites name/description/definition.
+	Update(ctx context.Context, tract domain.Tract) (domain.Tract, error)
+	SetEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
+	Delete(ctx context.Context, id uuid.UUID) error
+
+	// InsertRun persists a tract_runs row before the engine walks the step tree
+	// (persist-before-apply).
+	InsertRun(ctx context.Context, run domain.TractRun) (domain.TractRun, error)
+	GetRun(ctx context.Context, id uuid.UUID) (sql.Null[domain.TractRun], error)
+	ListRunsByTract(ctx context.Context, tractUuid uuid.UUID, limit int32) ([]domain.TractRun, error)
+	UpdateRunStatus(ctx context.Context, id uuid.UUID, status domain.TractRunStatus, errMsg string) error
+
+	// InsertRunStep persists a running row for one executed step before it executes
+	// (persist-before-apply, append-only history).
+	InsertRunStep(ctx context.Context, step domain.TractRunStep) (domain.TractRunStep, error)
+	UpdateRunStepFinish(ctx context.Context, id uuid.UUID, status domain.TractRunStepStatus, output json.RawMessage, errMsg string) error
+	ListRunStepsByRun(ctx context.Context, runUuid uuid.UUID) ([]domain.TractRunStep, error)
+
+	// SweepStaleRuns/SweepStaleRunSteps mark stale 'running' rows 'failed' — call once at app init.
+	SweepStaleRuns(ctx context.Context, threshold time.Time) error
+	SweepStaleRunSteps(ctx context.Context, threshold time.Time) error
+}
+
+// TriggersRepo is the pure-DB layer for standalone triggers and their tract links.
+type TriggersRepo interface {
+	Create(ctx context.Context, trigger domain.Trigger) (domain.Trigger, error)
+	// Get looks up a trigger by its stable primary key (owner-facing CRUD).
+	Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.Trigger], error)
+	// GetByTriggerUuid looks up a trigger by its rotatable webhook routing id — used by the
+	// inbound webhook handler, which only knows the routing id embedded in the fired URL.
+	GetByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (sql.Null[domain.Trigger], error)
+	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Trigger, error)
+	SetEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
+	Delete(ctx context.Context, id uuid.UUID) error
+	// RotateSecret overwrites trigger_uuid and secret_hash in place, keyed by the trigger's stable
+	// primary key id — invalidates the trigger's current webhook URL/token without touching
+	// anything else about the trigger or its tract links.
+	RotateSecret(ctx context.Context, id uuid.UUID, newTriggerUuid uuid.UUID, secretHash []byte) (domain.Trigger, error)
+
+	Link(ctx context.Context, link domain.TriggerTractLink) error
+	Unlink(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid.UUID) error
+	// ListLinksByTract returns tractUuid's linked triggers with Trigger populated (Tract left
+	// zero) — the tract editor's "wired up triggers" view.
+	ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]TractTriggerLink, error)
+	// ListLinksByTrigger returns triggerUuid's linked tracts with Tract populated (Trigger left
+	// zero) — the webhook handler's fan-out: one delivery may start runs on several tracts.
+	ListLinksByTrigger(ctx context.Context, triggerUuid uuid.UUID) ([]TractTriggerLink, error)
+}
+
+// TractTriggerLink is a read-side join projection — see TriggersRepo doc comments above for
+// which field each List method populates.
+type TractTriggerLink struct {
+	TractUuid   uuid.UUID
+	TriggerUuid uuid.UUID
+	Trigger     domain.Trigger
+	Tract       domain.Tract
+	Filters     []domain.TractCondition
 }

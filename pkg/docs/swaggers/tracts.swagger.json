@@ -1,0 +1,1180 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "tracts.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TractsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/tracts/create": {
+      "post": {
+        "operationId": "TractsAPI_CreateTract",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCreateTractResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCreateTractRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/delete": {
+      "post": {
+        "operationId": "TractsAPI_DeleteTract",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteTractResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteTractRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/get": {
+      "post": {
+        "operationId": "TractsAPI_GetTract",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetTractResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetTractRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/list": {
+      "post": {
+        "operationId": "TractsAPI_ListTracts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTractsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTractsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/run": {
+      "post": {
+        "operationId": "TractsAPI_RunTract",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiRunTractResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiRunTractRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/runs/get": {
+      "post": {
+        "operationId": "TractsAPI_GetRun",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetRunResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetRunRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/runs/list": {
+      "post": {
+        "operationId": "TractsAPI_ListRuns",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListRunsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListRunsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/set-enabled": {
+      "post": {
+        "operationId": "TractsAPI_SetTractEnabled",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetTractEnabledResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetTractEnabledRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/tools/list": {
+      "post": {
+        "operationId": "TractsAPI_ListTractTools",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTractToolsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTractToolsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/trigger-sources/list": {
+      "post": {
+        "operationId": "TractsAPI_ListTriggerSources",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTriggerSourcesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTriggerSourcesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/create": {
+      "post": {
+        "operationId": "TractsAPI_CreateTrigger",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCreateTriggerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCreateTriggerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/delete": {
+      "post": {
+        "operationId": "TractsAPI_DeleteTrigger",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteTriggerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteTriggerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/link": {
+      "post": {
+        "operationId": "TractsAPI_LinkTrigger",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiLinkTriggerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiLinkTriggerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/list": {
+      "post": {
+        "operationId": "TractsAPI_ListTriggers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTriggersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTriggersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/set-enabled": {
+      "post": {
+        "operationId": "TractsAPI_SetTriggerEnabled",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetTriggerEnabledResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetTriggerEnabledRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/unlink": {
+      "post": {
+        "operationId": "TractsAPI_UnlinkTrigger",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiUnlinkTriggerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiUnlinkTriggerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/triggers/{uuid}/rotate_token": {
+      "post": {
+        "operationId": "TractsAPI_RotateTriggerToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiRotateTriggerTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiTractsAPIRotateTriggerTokenBody"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/update": {
+      "post": {
+        "operationId": "TractsAPI_UpdateTract",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiUpdateTractResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiUpdateTractRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_apiCreateTractRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "definition": {
+          "type": "string",
+          "title": "JSON-encoded TractDefinition"
+        }
+      }
+    },
+    "artel_apiCreateTractResponse": {
+      "type": "object",
+      "properties": {
+        "tract": {
+          "$ref": "#/definitions/artel_apiTractItem"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_apiCreateTriggerRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "config": {
+          "type": "string",
+          "title": "JSON-encoded, kind-specific"
+        },
+        "payloadSchema": {
+          "type": "string",
+          "title": "JSON-encoded {\"properties\": {...}, \"required\": [...]}"
+        }
+      }
+    },
+    "artel_apiCreateTriggerResponse": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "$ref": "#/definitions/artel_apiTriggerItem"
+        },
+        "webhookUrl": {
+          "type": "string"
+        },
+        "webhookToken": {
+          "type": "string",
+          "title": "one-time; never retrievable again after this response"
+        }
+      }
+    },
+    "artel_apiDeleteTractRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDeleteTractResponse": {
+      "type": "object"
+    },
+    "artel_apiDeleteTriggerRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDeleteTriggerResponse": {
+      "type": "object"
+    },
+    "artel_apiGetRunRequest": {
+      "type": "object",
+      "properties": {
+        "runUuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiGetRunResponse": {
+      "type": "object",
+      "properties": {
+        "run": {
+          "$ref": "#/definitions/artel_apiTractRunItem"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractRunStepItem"
+          }
+        }
+      }
+    },
+    "artel_apiGetTractRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiGetTractResponse": {
+      "type": "object",
+      "properties": {
+        "tract": {
+          "$ref": "#/definitions/artel_apiTractItem"
+        }
+      }
+    },
+    "artel_apiLinkTriggerRequest": {
+      "type": "object",
+      "properties": {
+        "triggerUuid": {
+          "type": "string"
+        },
+        "tractUuid": {
+          "type": "string"
+        },
+        "filters": {
+          "type": "string",
+          "title": "JSON-encoded [{\"left\",\"op\",\"right\"}, ...], AND semantics"
+        }
+      }
+    },
+    "artel_apiLinkTriggerResponse": {
+      "type": "object"
+    },
+    "artel_apiListRunsRequest": {
+      "type": "object",
+      "properties": {
+        "tractUuid": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "artel_apiListRunsResponse": {
+      "type": "object",
+      "properties": {
+        "runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractRunItem"
+          }
+        }
+      }
+    },
+    "artel_apiListTractToolsRequest": {
+      "type": "object"
+    },
+    "artel_apiListTractToolsResponse": {
+      "type": "object",
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractToolItem"
+          }
+        }
+      }
+    },
+    "artel_apiListTractsRequest": {
+      "type": "object"
+    },
+    "artel_apiListTractsResponse": {
+      "type": "object",
+      "properties": {
+        "tracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractItem"
+          }
+        }
+      }
+    },
+    "artel_apiListTriggerSourcesRequest": {
+      "type": "object"
+    },
+    "artel_apiListTriggerSourcesResponse": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTriggerSourceItem"
+          }
+        }
+      }
+    },
+    "artel_apiListTriggersRequest": {
+      "type": "object"
+    },
+    "artel_apiListTriggersResponse": {
+      "type": "object",
+      "properties": {
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTriggerItem"
+          }
+        }
+      }
+    },
+    "artel_apiRotateTriggerTokenResponse": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "$ref": "#/definitions/artel_apiTriggerItem"
+        },
+        "webhookUrl": {
+          "type": "string"
+        },
+        "webhookToken": {
+          "type": "string",
+          "title": "one-time; never retrievable again after this response"
+        }
+      }
+    },
+    "artel_apiRunTractRequest": {
+      "type": "object",
+      "properties": {
+        "tractUuid": {
+          "type": "string"
+        },
+        "params": {
+          "type": "string",
+          "title": "JSON-encoded; becomes the run's trigger_payload"
+        }
+      }
+    },
+    "artel_apiRunTractResponse": {
+      "type": "object"
+    },
+    "artel_apiSetTractEnabledRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_apiSetTractEnabledResponse": {
+      "type": "object"
+    },
+    "artel_apiSetTriggerEnabledRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_apiSetTriggerEnabledResponse": {
+      "type": "object"
+    },
+    "artel_apiTractItem": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "definition": {
+          "type": "string",
+          "title": "JSON-encoded TractDefinition ({\"steps\": [...]})"
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractTriggerSummary"
+          },
+          "title": "populated by ListTracts only"
+        },
+        "lastRun": {
+          "$ref": "#/definitions/artel_apiTractLastRun",
+          "title": "populated by ListTracts only"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiTractLastRun": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        }
+      },
+      "description": "TractLastRun is absent (nil) on a TractItem that has never run."
+    },
+    "artel_apiTractRunItem": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "tractUuid": {
+          "type": "string"
+        },
+        "triggerUuid": {
+          "type": "string",
+          "title": "empty for manual/mcp runs"
+        },
+        "status": {
+          "type": "string"
+        },
+        "startedBy": {
+          "type": "string",
+          "title": "\"webhook\" | \"manual\" | \"mcp\""
+        },
+        "triggerPayload": {
+          "type": "string",
+          "title": "JSON-encoded"
+        },
+        "error": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiTractRunStepItem": {
+      "type": "object",
+      "properties": {
+        "stepId": {
+          "type": "string"
+        },
+        "stepName": {
+          "type": "string"
+        },
+        "stepType": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "input": {
+          "type": "string",
+          "title": "JSON-encoded, empty if not recorded"
+        },
+        "output": {
+          "type": "string",
+          "title": "JSON-encoded, empty until the step finishes"
+        },
+        "error": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "string"
+        },
+        "finishedAt": {
+          "type": "string",
+          "title": "empty while the step is still running"
+        }
+      }
+    },
+    "artel_apiTractToolItem": {
+      "type": "object",
+      "properties": {
+        "mcp": {
+          "type": "string",
+          "title": "MoM name, or \"artel\" for builtins"
+        },
+        "tool": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "inputSchema": {
+          "type": "string",
+          "title": "JSON-encoded {\"properties\": {...}, \"required\": [...]}"
+        },
+        "outputSchema": {
+          "type": "string",
+          "title": "JSON-encoded, same shape; \"{}\" if undeclared"
+        }
+      }
+    },
+    "artel_apiTractTriggerSummary": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiTractsAPIRotateTriggerTokenBody": {
+      "type": "object"
+    },
+    "artel_apiTriggerItem": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "title": "\"webhook\" (v1)"
+        },
+        "source": {
+          "type": "string",
+          "title": "webhook preset: \"gitlab_push\" | \"generic\""
+        },
+        "config": {
+          "type": "string",
+          "title": "JSON-encoded, kind-specific"
+        },
+        "payloadSchema": {
+          "type": "string",
+          "title": "JSON-encoded {\"properties\": {...}, \"required\": [...]}"
+        },
+        "triggerUuid": {
+          "type": "string",
+          "title": "webhook routing key"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiTriggerSourceItem": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "payloadSchema": {
+          "type": "string",
+          "title": "JSON-encoded {\"properties\": {...}, \"required\": [...]}"
+        }
+      }
+    },
+    "artel_apiUnlinkTriggerRequest": {
+      "type": "object",
+      "properties": {
+        "triggerUuid": {
+          "type": "string"
+        },
+        "tractUuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiUnlinkTriggerResponse": {
+      "type": "object"
+    },
+    "artel_apiUpdateTractRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "definition": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiUpdateTractResponse": {
+      "type": "object",
+      "properties": {
+        "tract": {
+          "$ref": "#/definitions/artel_apiTractItem"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

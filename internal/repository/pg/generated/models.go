@@ -99,6 +99,92 @@ func (ns NullExternalProviderType) Value() (driver.Value, error) {
 	return string(ns.ExternalProviderType), nil
 }
 
+type TractRunStatus string
+
+const (
+	TractRunStatusRunning TractRunStatus = "running"
+	TractRunStatusDone    TractRunStatus = "done"
+	TractRunStatusFailed  TractRunStatus = "failed"
+)
+
+func (e *TractRunStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = TractRunStatus(s)
+	case string:
+		*e = TractRunStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for TractRunStatus: %T", src)
+	}
+	return nil
+}
+
+type NullTractRunStatus struct {
+	TractRunStatus TractRunStatus
+	Valid          bool // Valid is true if TractRunStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullTractRunStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.TractRunStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.TractRunStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullTractRunStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.TractRunStatus), nil
+}
+
+type TractRunStepStatus string
+
+const (
+	TractRunStepStatusRunning TractRunStepStatus = "running"
+	TractRunStepStatusDone    TractRunStepStatus = "done"
+	TractRunStepStatusFailed  TractRunStepStatus = "failed"
+)
+
+func (e *TractRunStepStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = TractRunStepStatus(s)
+	case string:
+		*e = TractRunStepStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for TractRunStepStatus: %T", src)
+	}
+	return nil
+}
+
+type NullTractRunStepStatus struct {
+	TractRunStepStatus TractRunStepStatus
+	Valid              bool // Valid is true if TractRunStepStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullTractRunStepStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.TractRunStepStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.TractRunStepStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullTractRunStepStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.TractRunStepStatus), nil
+}
+
 type VaultRole string
 
 const (
@@ -190,7 +276,6 @@ type Mcp struct {
 	Name        string
 	Author      string
 	Description string
-	Tools       json.RawMessage
 	CreatedAt   time.Time
 }
 
@@ -221,6 +306,17 @@ type McpSpreadsheet struct {
 	SpreadsheetID        string
 	Name                 string
 	CreatedAt            time.Time
+}
+
+type McpTool struct {
+	ID           uuid.UUID
+	McpName      string
+	Name         string
+	Description  string
+	InputSchema  json.RawMessage
+	OutputSchema json.RawMessage
+	Action       json.RawMessage
+	CreatedAt    time.Time
 }
 
 type PendingAuthCode struct {
@@ -258,6 +354,64 @@ type TaskTracker struct {
 	ApiKeyEnc   []byte
 	ApiTokenEnc []byte
 	CreatedAt   time.Time
+}
+
+type Tract struct {
+	ID          uuid.UUID
+	UserID      uuid.UUID
+	Name        string
+	Description string
+	Enabled     bool
+	Definition  json.RawMessage
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type TractRun struct {
+	ID            uuid.UUID
+	TractID       uuid.UUID
+	TriggerID     uuid.NullUUID
+	StartedBy     string
+	Status        TractRunStatus
+	TriggerOutput json.RawMessage
+	Error         sql.NullString
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+type TractRunStep struct {
+	ID         uuid.UUID
+	RunID      uuid.UUID
+	StepID     string
+	StepName   string
+	StepType   string
+	Input      pqtype.NullRawMessage
+	Output     pqtype.NullRawMessage
+	Status     TractRunStepStatus
+	Error      sql.NullString
+	StartedAt  time.Time
+	FinishedAt sql.NullTime
+}
+
+type TractTriggerLink struct {
+	TractID   uuid.UUID
+	TriggerID uuid.UUID
+	Filters   json.RawMessage
+	CreatedAt time.Time
+}
+
+type Trigger struct {
+	ID            uuid.UUID
+	TriggerUuid   uuid.UUID
+	UserID        uuid.UUID
+	Name          string
+	Kind          string
+	Source        string
+	Config        json.RawMessage
+	PayloadSchema json.RawMessage
+	SecretHash    []byte
+	Enabled       bool
+	CreatedAt     time.Time
 }
 
 type User struct {

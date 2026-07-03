@@ -1,0 +1,377 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+service TractsAPI {
+  rpc CreateTract(CreateTract.Request) returns (CreateTract.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/create"
+      body: "*"
+    };
+  }
+
+  rpc UpdateTract(UpdateTract.Request) returns (UpdateTract.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/update"
+      body: "*"
+    };
+  }
+
+  rpc GetTract(GetTract.Request) returns (GetTract.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/get"
+      body: "*"
+    };
+  }
+
+  rpc ListTracts(ListTracts.Request) returns (ListTracts.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/list"
+      body: "*"
+    };
+  }
+
+  rpc DeleteTract(DeleteTract.Request) returns (DeleteTract.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/delete"
+      body: "*"
+    };
+  }
+
+  rpc SetTractEnabled(SetTractEnabled.Request) returns (SetTractEnabled.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/set-enabled"
+      body: "*"
+    };
+  }
+
+  rpc RunTract(RunTract.Request) returns (RunTract.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/run"
+      body: "*"
+    };
+  }
+
+  rpc ListRuns(ListRuns.Request) returns (ListRuns.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/runs/list"
+      body: "*"
+    };
+  }
+
+  rpc GetRun(GetRun.Request) returns (GetRun.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/runs/get"
+      body: "*"
+    };
+  }
+
+  rpc ListTractTools(ListTractTools.Request) returns (ListTractTools.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/tools/list"
+      body: "*"
+    };
+  }
+
+  rpc ListTriggerSources(ListTriggerSources.Request) returns (ListTriggerSources.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/trigger-sources/list"
+      body: "*"
+    };
+  }
+
+  rpc CreateTrigger(CreateTrigger.Request) returns (CreateTrigger.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/create"
+      body: "*"
+    };
+  }
+
+  rpc ListTriggers(ListTriggers.Request) returns (ListTriggers.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/list"
+      body: "*"
+    };
+  }
+
+  rpc DeleteTrigger(DeleteTrigger.Request) returns (DeleteTrigger.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/delete"
+      body: "*"
+    };
+  }
+
+  rpc SetTriggerEnabled(SetTriggerEnabled.Request) returns (SetTriggerEnabled.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/set-enabled"
+      body: "*"
+    };
+  }
+
+  rpc RotateTriggerToken(RotateTriggerToken.Request) returns (RotateTriggerToken.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/{uuid}/rotate_token"
+      body: "*"
+    };
+  }
+
+  rpc LinkTrigger(LinkTrigger.Request) returns (LinkTrigger.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/link"
+      body: "*"
+    };
+  }
+
+  rpc UnlinkTrigger(UnlinkTrigger.Request) returns (UnlinkTrigger.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/triggers/unlink"
+      body: "*"
+    };
+  }
+}
+
+// -- shared item messages --
+
+message TractTriggerSummary {
+  string uuid   = 1;
+  string name   = 2;
+  string kind   = 3;
+  string source = 4;
+}
+
+// TractLastRun is absent (nil) on a TractItem that has never run.
+message TractLastRun {
+  string status = 1;
+  string at     = 2;
+}
+
+message TractItem {
+  string uuid                           = 1;
+  string name                           = 2;
+  string description                    = 3;
+  bool enabled                          = 4;
+  string definition                     = 5; // JSON-encoded TractDefinition ({"steps": [...]})
+  repeated TractTriggerSummary triggers = 6; // populated by ListTracts only
+  TractLastRun last_run                 = 7; // populated by ListTracts only
+  string created_at                     = 8;
+  string updated_at                     = 9;
+}
+
+message TractRunItem {
+  string uuid            = 1;
+  string tract_uuid      = 2;
+  string trigger_uuid    = 3; // empty for manual/mcp runs
+  string status          = 4;
+  string started_by      = 5; // "webhook" | "manual" | "mcp"
+  string trigger_payload = 6; // JSON-encoded
+  string error           = 7;
+  string created_at      = 8;
+  string updated_at      = 9;
+}
+
+message TractRunStepItem {
+  string step_id     = 1;
+  string step_name   = 2;
+  string step_type   = 3;
+  string status       = 4;
+  string input        = 5; // JSON-encoded, empty if not recorded
+  string output       = 6; // JSON-encoded, empty until the step finishes
+  string error         = 7;
+  string started_at    = 8;
+  string finished_at   = 9; // empty while the step is still running
+}
+
+message TractToolItem {
+  string mcp           = 1; // MoM name, or "artel" for builtins
+  string tool          = 2;
+  string description   = 3;
+  string input_schema  = 4; // JSON-encoded {"properties": {...}, "required": [...]}
+  string output_schema = 5; // JSON-encoded, same shape; "{}" if undeclared
+}
+
+message TriggerSourceItem {
+  string key            = 1;
+  string description    = 2;
+  string payload_schema = 3; // JSON-encoded {"properties": {...}, "required": [...]}
+}
+
+message TriggerItem {
+  string uuid           = 1;
+  string name           = 2;
+  string kind           = 3; // "webhook" (v1)
+  string source         = 4; // webhook preset: "gitlab_push" | "generic"
+  string config         = 5; // JSON-encoded, kind-specific
+  string payload_schema = 6; // JSON-encoded {"properties": {...}, "required": [...]}
+  string trigger_uuid   = 7; // webhook routing key
+  bool enabled          = 8;
+  string created_at     = 9;
+}
+
+// -- RPC request/response messages --
+
+message CreateTract {
+  message Request {
+    string name        = 1;
+    string description = 2;
+    string definition  = 3; // JSON-encoded TractDefinition
+  }
+  message Response {
+    TractItem tract          = 1;
+    repeated string warnings = 2;
+  }
+}
+
+message UpdateTract {
+  message Request {
+    string uuid        = 1;
+    string name        = 2;
+    string description = 3;
+    string definition  = 4;
+  }
+  message Response {
+    TractItem tract          = 1;
+    repeated string warnings = 2;
+  }
+}
+
+message GetTract {
+  message Request {
+    string uuid = 1;
+  }
+  message Response {
+    TractItem tract = 1;
+  }
+}
+
+message ListTracts {
+  message Request {}
+  message Response {
+    repeated TractItem tracts = 1;
+  }
+}
+
+message DeleteTract {
+  message Request {
+    string uuid = 1;
+  }
+  message Response {}
+}
+
+message SetTractEnabled {
+  message Request {
+    string uuid   = 1;
+    bool enabled  = 2;
+  }
+  message Response {}
+}
+
+message RunTract {
+  message Request {
+    string tract_uuid = 1;
+    string params     = 2; // JSON-encoded; becomes the run's trigger_payload
+  }
+  message Response {}
+}
+
+message ListRuns {
+  message Request {
+    string tract_uuid = 1;
+    int32 limit       = 2;
+  }
+  message Response {
+    repeated TractRunItem runs = 1;
+  }
+}
+
+message GetRun {
+  message Request {
+    string run_uuid = 1;
+  }
+  message Response {
+    TractRunItem run                = 1;
+    repeated TractRunStepItem steps = 2;
+  }
+}
+
+message ListTractTools {
+  message Request {}
+  message Response {
+    repeated TractToolItem tools = 1;
+  }
+}
+
+message ListTriggerSources {
+  message Request {}
+  message Response {
+    repeated TriggerSourceItem sources = 1;
+  }
+}
+
+message CreateTrigger {
+  message Request {
+    string name           = 1;
+    string kind           = 2;
+    string source         = 3;
+    string config         = 4; // JSON-encoded, kind-specific
+    string payload_schema = 5; // JSON-encoded {"properties": {...}, "required": [...]}
+  }
+  message Response {
+    TriggerItem trigger  = 1;
+    string webhook_url   = 2;
+    string webhook_token = 3; // one-time; never retrievable again after this response
+  }
+}
+
+message ListTriggers {
+  message Request {}
+  message Response {
+    repeated TriggerItem triggers = 1;
+  }
+}
+
+message DeleteTrigger {
+  message Request {
+    string uuid = 1;
+  }
+  message Response {}
+}
+
+message SetTriggerEnabled {
+  message Request {
+    string uuid  = 1;
+    bool enabled = 2;
+  }
+  message Response {}
+}
+
+message RotateTriggerToken {
+  message Request {
+    string uuid = 1;
+  }
+  message Response {
+    TriggerItem trigger  = 1;
+    string webhook_url   = 2;
+    string webhook_token = 3; // one-time; never retrievable again after this response
+  }
+}
+
+message LinkTrigger {
+  message Request {
+    string trigger_uuid = 1;
+    string tract_uuid   = 2;
+    string filters      = 3; // JSON-encoded [{"left","op","right"}, ...], AND semantics
+  }
+  message Response {}
+}
+
+message UnlinkTrigger {
+  message Request {
+    string trigger_uuid = 1;
+    string tract_uuid   = 2;
+  }
+  message Response {}
+}

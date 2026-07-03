@@ -7,6 +7,7 @@ package artel_q
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -32,6 +33,8 @@ type Querier interface {
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteTaskTracker(ctx context.Context, id uuid.UUID) error
+	DeleteTract(ctx context.Context, id uuid.UUID) error
+	DeleteTrigger(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
@@ -42,12 +45,18 @@ type Querier interface {
 	GetMcpConnector(ctx context.Context, arg GetMcpConnectorParams) (McpConnector, error)
 	GetMcpDefinition(ctx context.Context, name string) (Mcp, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
+	GetMcpTool(ctx context.Context, arg GetMcpToolParams) (McpTool, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetTaskTrackerByUuid(ctx context.Context, id uuid.UUID) (TaskTracker, error)
 	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
+	GetTract(ctx context.Context, id uuid.UUID) (Tract, error)
+	GetTractRun(ctx context.Context, id uuid.UUID) (TractRun, error)
+	GetTrigger(ctx context.Context, id uuid.UUID) (Trigger, error)
+	// Webhook routing lookup: the fired webhook only knows the trigger's rotatable routing id.
+	GetTriggerByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (Trigger, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
@@ -60,7 +69,13 @@ type Querier interface {
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
 	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
 	InsertTaskTracker(ctx context.Context, arg InsertTaskTrackerParams) (TaskTracker, error)
+	InsertTract(ctx context.Context, arg InsertTractParams) (Tract, error)
+	InsertTractRun(ctx context.Context, arg InsertTractRunParams) (TractRun, error)
+	InsertTractRunStep(ctx context.Context, arg InsertTractRunStepParams) (TractRunStep, error)
+	InsertTrigger(ctx context.Context, arg InsertTriggerParams) (Trigger, error)
+	LinkTriggerToTract(ctx context.Context, arg LinkTriggerToTractParams) error
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
+	ListAllMcpTools(ctx context.Context) ([]McpTool, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
 	ListExternalConnectionsByUser(ctx context.Context, userID uuid.UUID) ([]ExternalConnection, error)
@@ -70,7 +85,16 @@ type Querier interface {
 	ListMcpKeysByUser(ctx context.Context, userID uuid.UUID) ([]McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListMcpSpreadsheetsByUser(ctx context.Context, userID uuid.UUID) ([]McpSpreadsheet, error)
+	ListMcpToolsByMcpName(ctx context.Context, mcpName string) ([]McpTool, error)
 	ListTaskTrackersByUser(ctx context.Context, userID uuid.UUID) ([]TaskTracker, error)
+	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
+	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)
+	ListTractsByUser(ctx context.Context, userID uuid.UUID) ([]Tract, error)
+	// tractUuid's linked triggers, Trigger populated — the tract editor's "wired up triggers" view.
+	ListTriggerLinksByTract(ctx context.Context, tractID uuid.UUID) ([]ListTriggerLinksByTractRow, error)
+	// triggerUuid's linked tracts, Tract populated — the webhook handler's fan-out lookup.
+	ListTriggerLinksByTrigger(ctx context.Context, triggerID uuid.UUID) ([]ListTriggerLinksByTriggerRow, error)
+	ListTriggersByUser(ctx context.Context, userID uuid.UUID) ([]Trigger, error)
 	ListVaultInvites(ctx context.Context, vaultID uuid.UUID) ([]VaultInvite, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
@@ -80,16 +104,28 @@ type Querier interface {
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	RevokeVaultInvite(ctx context.Context, id uuid.UUID) error
+	// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid and
+	// secret_hash in place, keyed by the trigger's stable primary key id.
+	RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecretParams) (Trigger, error)
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
+	SetTractEnabled(ctx context.Context, arg SetTractEnabledParams) error
+	SetTriggerEnabled(ctx context.Context, arg SetTriggerEnabledParams) error
 	SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error
+	SweepStaleTractRunSteps(ctx context.Context, startedAt time.Time) error
+	SweepStaleTractRuns(ctx context.Context, createdAt time.Time) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
+	UnlinkTriggerFromTract(ctx context.Context, arg UnlinkTriggerFromTractParams) error
 	UpdateCouchAccountPassword(ctx context.Context, arg UpdateCouchAccountPasswordParams) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
+	UpdateTract(ctx context.Context, arg UpdateTractParams) (Tract, error)
+	UpdateTractRunStatus(ctx context.Context, arg UpdateTractRunStatusParams) error
+	UpdateTractRunStepFinish(ctx context.Context, arg UpdateTractRunStepFinishParams) error
 	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error
 	UpsertExternalConnection(ctx context.Context, arg UpsertExternalConnectionParams) (ExternalConnection, error)
 	UpsertMcpDefinition(ctx context.Context, arg UpsertMcpDefinitionParams) (Mcp, error)
+	UpsertMcpTool(ctx context.Context, arg UpsertMcpToolParams) (McpTool, error)
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
 	UpsertTelegramIdentity(ctx context.Context, arg UpsertTelegramIdentityParams) error
 	UpsertUserPermissions(ctx context.Context, arg UpsertUserPermissionsParams) (UserPermission, error)

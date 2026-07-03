@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -9,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
@@ -25,6 +28,7 @@ type Service interface {
 	AdminUsersService() AdminUsersService
 	ExternalConnectionService() ExternalConnectionService
 	MomService() MomService
+	TractService() TractService
 }
 
 type AdminUsersService interface {
@@ -101,6 +105,17 @@ type McpService interface {
 	IsBuiltinTool(name string) bool
 	// ExecuteTool executes a built-in tool by name.
 	ExecuteTool(ctx context.Context, keyCtx domain.McpKeyContext, toolName string, params map[string]interface{}) (domain.ToolExecResult, error)
+	// ExecuteBuiltinToolForUser executes a built-in tool as userUuid rather than through an
+	// MCP key context — used by the tract engine, which has no key.
+	ExecuteBuiltinToolForUser(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error)
+	// SetTractService wires the tract service dependency for the tract-authoring builtin tools
+	// (list_tract_actions, create_tract, ...). Called once from internal/app/custom.go after
+	// TractService is constructed — Tract composes Mcp's ToolExecutor, so Mcp must exist first;
+	// this setter breaks that construction-order cycle instead of Mcp importing Tract's package.
+	// baseCtx is the server-lifecycle context (App.Ctx) — run_tract spawns TractService.StartRun
+	// against it rather than the per-request ctx, which net/http cancels once the MCP handler's
+	// response is written (mirrors tracts_api.TractsImpl.baseCtx).
+	SetTractService(baseCtx context.Context, ts TractService)
 }
 
 type SubscriptionService interface {
@@ -137,6 +152,52 @@ type MomService interface {
 	ListToolsForKey(ctx context.Context, keyId uuid.UUID) ([]domain.McpToolDef, error)
 	ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, toolName string, params map[string]interface{}) (string, error)
 	ExecuteToolForUserConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
+	// ExecuteToolForConnection executes a tool against a specific external connection without
+	// an ownership check — used by the tract engine, which verifies ownership itself since it
+	// has no user_context for webhook-triggered runs.
+	ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
+}
+
+// TractService owns tract/trigger CRUD, trigger↔tract links, and run lifecycle (StartRun,
+// the startup sweep). CreateTract/UpdateTract return non-fatal warnings alongside the
+// persisted tract — e.g. a trigger.* ref not found in any linked trigger's payload schema.
+type TractService interface {
+	CreateTract(ctx context.Context, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
+	GetTract(ctx context.Context, id uuid.UUID) (domain.Tract, error)
+	ListTracts(ctx context.Context) ([]domain.Tract, error)
+	UpdateTract(ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
+	SetTractEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
+	DeleteTract(ctx context.Context, id uuid.UUID) error
+
+	// CreateTrigger returns the raw webhook token once — only its hash is persisted.
+	CreateTrigger(ctx context.Context, name string, kind string, source string, config json.RawMessage, payloadSchema domain.ToolSchema) (domain.Trigger, string, error)
+	GetTrigger(ctx context.Context, id uuid.UUID) (domain.Trigger, error)
+	ListTriggers(ctx context.Context) ([]domain.Trigger, error)
+	SetTriggerEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
+	DeleteTrigger(ctx context.Context, id uuid.UUID) error
+	// RotateTriggerToken invalidates triggerUuid's current webhook URL and mints a new one,
+	// returning the raw token once (only its hash is persisted) — same one-time-reveal contract as
+	// CreateTrigger.
+	RotateTriggerToken(ctx context.Context, id uuid.UUID) (domain.Trigger, string, error)
+	LinkTrigger(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid.UUID, filters []domain.TractCondition) error
+	UnlinkTrigger(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid.UUID) error
+	ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]repository.TractTriggerLink, error)
+
+	// StartRun persists the run then walks the definition; the caller decides whether to run
+	// it synchronously or as `go TractService.StartRun(...)` against a server-lifecycle ctx.
+	StartRun(ctx context.Context, tract domain.Tract, payload json.RawMessage, startedBy string, triggerUuid uuid.UUID) (domain.TractRun, error)
+	// SweepStaleRuns marks stale 'running' runs/steps 'failed' — call once at app init.
+	SweepStaleRuns(ctx context.Context, threshold time.Time) error
+	// ListRuns returns tractUuid's most recent runs (most recent first), capped at limit.
+	ListRuns(ctx context.Context, tractUuid uuid.UUID, limit int32) ([]domain.TractRun, error)
+	// GetRun returns one run plus its ordered step rows.
+	GetRun(ctx context.Context, id uuid.UUID) (domain.TractRun, []domain.TractRunStep, error)
+
+	// ListTractTools returns the action picker's tool catalog: builtins (Mcp == "artel") plus
+	// every mcp_tools row across every MoM.
+	ListTractTools(ctx context.Context) ([]domain.McpToolRef, error)
+	// ListTriggerSources returns the webhook preset catalog (gitlab_push, generic, ...).
+	ListTriggerSources(ctx context.Context) ([]domain.TriggerSourcePreset, error)
 }
 
 type ExternalConnectionService interface {

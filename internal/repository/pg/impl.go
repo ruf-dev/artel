@@ -18,6 +18,8 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tasktrackers"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/tracts"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultinvites"
@@ -45,6 +47,8 @@ type Repos struct {
 	mcpSpreadsheets       repository.McpSpreadsheetsRepo
 	mcpDefinitions        repository.McpDefinitionsRepo
 	mcpConnectors         repository.McpConnectorsRepo
+	tracts                repository.TractsRepo
+	triggers              repository.TriggersRepo
 
 	txManager tx_manager.TxManager
 }
@@ -125,8 +129,17 @@ func (r Repos) McpConnectors() repository.McpConnectorsRepo {
 	return r.mcpConnectors
 }
 
+func (r Repos) Tracts() repository.TractsRepo {
+	return r.tracts
+}
+
+func (r Repos) Triggers() repository.TriggersRepo {
+	return r.triggers
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(newLoggingDB(db))
+	txManager := tx_manager.New(db)
 
 	return &Repos{
 		vaults:           vaults.New(db, encryptionKey),
@@ -148,7 +161,9 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		mcpSpreadsheets:       mcpspreadsheets.New(q),
 		mcpDefinitions:        mcpdefinitions.New(q),
 		mcpConnectors:         mcpconnectors.New(q),
+		tracts:                tracts.New(q, txManager),
+		triggers:              triggers.New(q),
 
-		txManager: tx_manager.New(db),
+		txManager: txManager,
 	}
 }
