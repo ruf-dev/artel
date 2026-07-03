@@ -16,6 +16,8 @@ import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
 import ToolboxPage from "@/pages/toolbox/ToolboxPage.tsx"
+import TractsPage from "@/pages/tracts/TractsPage.tsx"
+import TractEditorPage from "@/pages/tracts/TractEditorPage.tsx"
 import GoogleOAuthCallbackPage from "@/pages/connections/GoogleOAuthCallbackPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
@@ -34,6 +36,8 @@ export enum Path {
     NotesPage = "/notes",
     ConnectionsPage = "/connections",
     ToolboxPage = "/toolbox",
+    TractsPage = "/tracts",
+    TractEditorPage = "/tracts/:tractUuid",
     GoogleOAuthCallback = "/connections/google/callback",
     McpAuth = "/authorize",
     ClosedAlpha = "/closed-alpha",
@@ -81,6 +85,8 @@ export default function Router() {
                         <Route path={Path.ConnectionsPage} element={<ConnectionsPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.GoogleOAuthCallback} element={<GoogleOAuthCallbackPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.ToolboxPage} element={<ToolboxPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.TractsPage} element={<TractsPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.TractEditorPage} element={<TractEditorPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={"*"} element={<Navigate to={Path.HomePage} replace/>}/>
                     </Route>
 

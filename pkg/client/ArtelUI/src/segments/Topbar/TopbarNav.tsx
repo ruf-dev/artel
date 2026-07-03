@@ -42,6 +42,12 @@ export default function TopbarNav() {
             >
                 Toolbox
             </NavLink>
+            <NavLink
+                to={Path.TractsPage}
+                className={({isActive}) => isActive ? `${cls.NavLink} ${cls.NavLinkActive}` : cls.NavLink}
+            >
+                Tracts
+            </NavLink>
         </nav>
     )
 }
