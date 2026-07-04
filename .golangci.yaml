@@ -48,7 +48,6 @@ linters:
     - forcetypeassert
     - gochecknoinits
     - noinlineerr
-    - goconst
     - goheader
     - gomoddirectives
     - gomodguard_v2
