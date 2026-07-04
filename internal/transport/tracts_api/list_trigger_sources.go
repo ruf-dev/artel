@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TractsImpl) ListTriggerSources(ctx context.Context, _ *pb.ListTriggerSources_Request) (*pb.ListTriggerSources_Response, error) {
+func (t *TractsImpl) ListTriggerSources(
+	ctx context.Context,
+	_ *pb.ListTriggerSources_Request,
+) (*pb.ListTriggerSources_Response, error) {
 	sources, err := t.tractSvc.ListTriggerSources(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing trigger sources")

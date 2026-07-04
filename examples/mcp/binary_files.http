@@ -1,0 +1,87 @@
+### Non-text file via MCP (write_file/read_file route non-.md paths to the vault's linked
+### S3 bucket; content must be base64-encoded, fails with "no linked S3 bucket" if none is
+### linked). test.png in ../test.png is an empty file, so its base64 content is just "".
+
+### Write binary file (test.png, saved under the "mcp" folder)
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "write_file",
+    "arguments": {
+      "path": "mcp/test.png",
+      "content": ""
+    }
+  }
+}
+
+### List files (verify mcp/test.png appears with mimeType image/png)
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "list_files",
+    "arguments": {}
+  }
+}
+
+### Read binary file back (returns an "image" content block with base64 data, not text)
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "read_file",
+    "arguments": {
+      "path": "mcp/test.png"
+    }
+  }
+}
+
+### Get file metadata
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "get_file_metadata",
+    "arguments": {
+      "path": "mcp/test.png"
+    }
+  }
+}
+
+### Delete binary file
+POST {{artel_url}}/mcp
+Content-Type: application/json
+Authorization: Bearer {{mcp_token}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "delete_file",
+    "arguments": {
+      "path": "mcp/test.png"
+    }
+  }
+}

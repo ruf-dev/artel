@@ -167,7 +167,11 @@ func TestExtractRefs(t *testing.T) {
 		want []string
 	}{
 		{"single ref", "{{ trigger.branch }}", []string{"trigger.branch"}},
-		{"embedded refs", "{{ trigger.branch }} and {{ list_prs[0].id }}", []string{"trigger.branch", "list_prs[0].id"}},
+		{
+			"embedded refs",
+			"{{ trigger.branch }} and {{ list_prs[0].id }}",
+			[]string{"trigger.branch", "list_prs[0].id"},
+		},
 		{"length unwrapped", "{{ length(trigger.commits) }}", []string{"trigger.commits"}},
 		{"dollar var omitted", "{{ $now }}", nil},
 		{"mom escape skipped", "${{params.x}} {{ trigger.branch }}", []string{"trigger.branch"}},

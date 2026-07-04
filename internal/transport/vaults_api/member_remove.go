@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (v *VaultsImpl) RemoveMember(ctx context.Context, req *pb.RemoveMember_Request) (*pb.RemoveMember_Response, error) {
+func (v *VaultsImpl) RemoveMember(
+	ctx context.Context,
+	req *pb.RemoveMember_Request,
+) (*pb.RemoveMember_Response, error) {
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse vault id")

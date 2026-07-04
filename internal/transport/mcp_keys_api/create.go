@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (m *McpKeysImpl) CreateMcpKey(ctx context.Context, req *pb.CreateMcpKey_Request) (*pb.CreateMcpKey_Response, error) {
+func (m *McpKeysImpl) CreateMcpKey(
+	ctx context.Context,
+	req *pb.CreateMcpKey_Request,
+) (*pb.CreateMcpKey_Response, error) {
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse vault id")

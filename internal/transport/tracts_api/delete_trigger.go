@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TractsImpl) DeleteTrigger(ctx context.Context, req *pb.DeleteTrigger_Request) (*pb.DeleteTrigger_Response, error) {
+func (t *TractsImpl) DeleteTrigger(
+	ctx context.Context,
+	req *pb.DeleteTrigger_Request,
+) (*pb.DeleteTrigger_Response, error) {
 	id, err := uuid.Parse(req.Uuid)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.NotFound, "error parsing trigger uuid")

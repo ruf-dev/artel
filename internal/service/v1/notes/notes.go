@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {

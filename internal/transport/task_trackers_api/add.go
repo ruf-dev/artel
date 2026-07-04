@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TaskTrackersImpl) AddTaskTracker(ctx context.Context, req *pb.AddTaskTracker_Request) (*pb.AddTaskTracker_Response, error) {
+func (t *TaskTrackersImpl) AddTaskTracker(
+	ctx context.Context,
+	req *pb.AddTaskTracker_Request,
+) (*pb.AddTaskTracker_Response, error) {
 	tracker := domain.TaskTracker{
 		Type: req.Type,
 	}

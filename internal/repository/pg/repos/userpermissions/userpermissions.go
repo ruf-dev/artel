@@ -39,7 +39,15 @@ func (r *Repo) Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissi
 	}, nil
 }
 
-func (r *Repo) Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool, hasTaskTrackers bool, hasNotes bool, hasSpreadsheets bool) (domain.UserPermissions, error) {
+func (r *Repo) Upsert(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	isAdmin bool,
+	hasEmails bool,
+	hasTaskTrackers bool,
+	hasNotes bool,
+	hasSpreadsheets bool,
+) (domain.UserPermissions, error) {
 	params := artel_q.UpsertUserPermissionsParams{
 		UserID:          userUuid,
 		IsAdministrator: isAdmin,

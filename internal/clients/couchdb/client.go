@@ -6,9 +6,12 @@ import (
 	"errors"
 	"net/http"
 
-	kivik "github.com/go-kivik/kivik/v4"
+	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
+
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/utils"
+
 	"go.redsock.ru/rerrors"
 )
 
@@ -125,7 +128,7 @@ func (c *Client) isClusterModeEnabled(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, rerrors.Wrap(err, "error sending cluster status request")
 	}
-	defer resp.Body.Close()
+	defer utils.CloseWithLog(resp.Body, "error closing cluster status request")
 
 	var body struct {
 		State string `json:"state"`

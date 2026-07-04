@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (m *McpKeysImpl) RemoveMcpConnector(ctx context.Context, req *pb.RemoveMcpConnector_Request) (*pb.RemoveMcpConnector_Response, error) {
+func (m *McpKeysImpl) RemoveMcpConnector(
+	ctx context.Context,
+	req *pb.RemoveMcpConnector_Request,
+) (*pb.RemoveMcpConnector_Response, error) {
 	keyID, err := uuid.Parse(req.KeyId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse key id")

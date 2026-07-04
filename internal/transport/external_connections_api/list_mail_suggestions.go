@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) ListMailServerSuggestions(ctx context.Context, req *pb.ListMailServerSuggestions_Request) (*pb.ListMailServerSuggestions_Response, error) {
+func (e *ExternalConnectionsImpl) ListMailServerSuggestions(
+	ctx context.Context,
+	req *pb.ListMailServerSuggestions_Request,
+) (*pb.ListMailServerSuggestions_Response, error) {
 	suggestions, err := e.svc.ListMailServerSuggestions(ctx, req.Domain)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mail server suggestions")

@@ -10,7 +10,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCandidate, error) {
+func (s *ServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCandidate, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return nil, user_errors.Unauthenticated

@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) SetGitlabWebhookSecret(ctx context.Context, req *pb.SetGitlabWebhookSecret_Request) (*pb.SetGitlabWebhookSecret_Response, error) {
+func (e *ExternalConnectionsImpl) SetGitlabWebhookSecret(
+	ctx context.Context,
+	req *pb.SetGitlabWebhookSecret_Request,
+) (*pb.SetGitlabWebhookSecret_Response, error) {
 	conn, err := e.svc.SetGitlabWebhookSecret(ctx, req.WebhookSecret)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "set gitlab webhook secret")

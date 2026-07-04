@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (v *VaultsImpl) AcceptInvite(ctx context.Context, req *pb.AcceptInvite_Request) (*pb.AcceptInvite_Response, error) {
+func (v *VaultsImpl) AcceptInvite(
+	ctx context.Context,
+	req *pb.AcceptInvite_Request,
+) (*pb.AcceptInvite_Response, error) {
 	err := v.vaultSvc.AcceptInvite(ctx, req.Token)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "accept invite")

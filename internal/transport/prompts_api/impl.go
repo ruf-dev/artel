@@ -6,11 +6,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"google.golang.org/grpc"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
 )
 
 var promptIdToString = map[pb.PromptId]string{

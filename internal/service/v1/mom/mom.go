@@ -59,7 +59,12 @@ func (s *ServiceImpl) ListToolsForKey(ctx context.Context, keyId uuid.UUID) ([]d
 	return tools, nil
 }
 
-func (s *ServiceImpl) ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, toolName string, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) ExecuteToolForKey(
+	ctx context.Context,
+	keyId uuid.UUID,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	connectors, err := s.mcpConnectors.ListByKey(ctx, keyId)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error listing mcp connectors")
@@ -90,7 +95,13 @@ func (s *ServiceImpl) ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, to
 // ExecuteToolForConnection executes a tool against a specific external connection without an
 // ownership check — callers (e.g. the tract engine, which has no user_context for
 // webhook-triggered runs) must verify connection ownership themselves before calling this.
-func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) ExecuteToolForConnection(
+	ctx context.Context,
+	exConnUuid uuid.UUID,
+	mcpName string,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	def, err := s.mcpDefinitions.Get(ctx, mcpName)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting mcp definition")
@@ -115,7 +126,13 @@ func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid u
 // connection, but only after verifying that the connection belongs to the authenticated
 // caller. Used by the web UI Toolbox, where the external_connection_id is supplied by the
 // client and must not be trusted blindly.
-func (s *ServiceImpl) ExecuteToolForUserConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) ExecuteToolForUserConnection(
+	ctx context.Context,
+	exConnUuid uuid.UUID,
+	mcpName string,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return "", user_errors.Unauthenticated
@@ -133,7 +150,12 @@ func (s *ServiceImpl) ExecuteToolForUserConnection(ctx context.Context, exConnUu
 	return s.ExecuteToolForConnection(ctx, exConnUuid, mcpName, toolName, params)
 }
 
-func (s *ServiceImpl) dispatch(ctx context.Context, exConnUuid uuid.UUID, action domain.ToolAction, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) dispatch(
+	ctx context.Context,
+	exConnUuid uuid.UUID,
+	action domain.ToolAction,
+	params map[string]interface{},
+) (string, error) {
 	exConn, err := s.externalConns.GetByID(ctx, exConnUuid)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting external connection")
@@ -149,7 +171,12 @@ func (s *ServiceImpl) dispatch(ctx context.Context, exConnUuid uuid.UUID, action
 	}
 }
 
-func (s *ServiceImpl) dispatchEmail(ctx context.Context, exConn domain.ExternalConnection, action domain.ToolAction, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) dispatchEmail(
+	ctx context.Context,
+	exConn domain.ExternalConnection,
+	action domain.ToolAction,
+	params map[string]interface{},
+) (string, error) {
 	var creds domain.EmailCredentials
 
 	err := json.Unmarshal(exConn.CredentialsJSON, &creds)
@@ -165,7 +192,12 @@ func (s *ServiceImpl) dispatchEmail(ctx context.Context, exConn domain.ExternalC
 	return result, nil
 }
 
-func (s *ServiceImpl) dispatchHttp(ctx context.Context, exConn domain.ExternalConnection, action domain.ToolAction, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) dispatchHttp(
+	ctx context.Context,
+	exConn domain.ExternalConnection,
+	action domain.ToolAction,
+	params map[string]interface{},
+) (string, error) {
 	if exConn.Provider != action.Http.Credentials {
 		return "", user_errors.McpCredentialsProviderMismatch
 	}

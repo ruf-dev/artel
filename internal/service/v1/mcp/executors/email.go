@@ -19,7 +19,12 @@ func NewEmailExecutor() *EmailExecutor {
 	return &EmailExecutor{}
 }
 
-func (e *EmailExecutor) Execute(ctx context.Context, action domain.ToolAction, creds domain.EmailCredentials, params map[string]interface{}) (string, error) {
+func (e *EmailExecutor) Execute(
+	ctx context.Context,
+	action domain.ToolAction,
+	creds domain.EmailCredentials,
+	params map[string]interface{},
+) (string, error) {
 	switch {
 	case action.Imap != nil:
 		return e.executeImap(ctx, action.Imap.Operation, creds, params)
@@ -30,12 +35,17 @@ func (e *EmailExecutor) Execute(ctx context.Context, action domain.ToolAction, c
 	}
 }
 
-func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation, creds domain.EmailCredentials, params map[string]interface{}) (string, error) {
-	c := imap.New(creds.ImapHost, creds.ImapPort, creds.Username, creds.Password)
+func (e *EmailExecutor) executeImap(
+	ctx context.Context,
+	op domain.ImapOperation,
+	creds domain.EmailCredentials,
+	params map[string]interface{},
+) (string, error) {
+	imapClient := imap.New(creds.ImapHost, creds.ImapPort, creds.Username, creds.Password)
 
 	switch op {
 	case domain.IMAP_OP_LIST_FOLDERS:
-		folders, err := c.ListFolders(ctx)
+		folders, err := imapClient.ListFolders(ctx)
 		if err != nil {
 			return "", rerrors.Wrap(err, "list imap folders")
 		}
@@ -54,7 +64,7 @@ func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation
 			}
 		}
 
-		emails, err := c.ListEmails(ctx, limit)
+		emails, err := imapClient.ListEmails(ctx, limit)
 		if err != nil {
 			return "", rerrors.Wrap(err, "list emails")
 		}
@@ -67,7 +77,7 @@ func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation
 			return "", user_errors.McpIdRequired
 		}
 
-		msg, err := c.ReadEmail(ctx, id)
+		msg, err := imapClient.ReadEmail(ctx, id)
 		if err != nil {
 			return "", rerrors.Wrap(err, "read email")
 		}
@@ -79,7 +89,12 @@ func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation
 	}
 }
 
-func (e *EmailExecutor) executeSmtp(ctx context.Context, op domain.SmtpOperation, creds domain.EmailCredentials, params map[string]interface{}) (string, error) {
+func (e *EmailExecutor) executeSmtp(
+	ctx context.Context,
+	op domain.SmtpOperation,
+	creds domain.EmailCredentials,
+	params map[string]interface{},
+) (string, error) {
 	switch op {
 	case domain.SMTP_OP_SEND:
 		to, ok := params["to"].(string)

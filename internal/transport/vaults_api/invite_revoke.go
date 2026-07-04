@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (v *VaultsImpl) RevokeInviteLink(ctx context.Context, req *pb.RevokeInviteLink_Request) (*pb.RevokeInviteLink_Response, error) {
+func (v *VaultsImpl) RevokeInviteLink(
+	ctx context.Context,
+	req *pb.RevokeInviteLink_Request,
+) (*pb.RevokeInviteLink_Response, error) {
 	inviteID, err := uuid.Parse(req.InviteId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse invite id")

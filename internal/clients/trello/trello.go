@@ -66,7 +66,10 @@ func (c *client) GetMember(ctx context.Context) (domain.TrelloMember, error) {
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
 
-		return domain.TrelloMember{}, rerrors.New(fmt.Sprintf("trello returned %d: %s", resp.StatusCode, string(body)), codes.Internal)
+		return domain.TrelloMember{}, rerrors.New(
+			fmt.Sprintf("trello returned %d: %s", resp.StatusCode, string(body)),
+			codes.Internal,
+		)
 	}
 
 	var m member
@@ -80,7 +83,12 @@ func (c *client) GetMember(ctx context.Context) (domain.TrelloMember, error) {
 }
 
 func (c *client) ListBoards(ctx context.Context) ([]domain.TrelloBoard, error) {
-	u := fmt.Sprintf("%s/members/me/boards?key=%s&token=%s&fields=id,name", baseURL, url.QueryEscape(c.apiKey), url.QueryEscape(c.apiToken))
+	u := fmt.Sprintf(
+		"%s/members/me/boards?key=%s&token=%s&fields=id,name",
+		baseURL,
+		url.QueryEscape(c.apiKey),
+		url.QueryEscape(c.apiToken),
+	)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {

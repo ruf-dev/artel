@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) AddEmailConnection(ctx context.Context, req *pb.AddEmailConnection_Request) (*pb.AddEmailConnection_Response, error) {
+func (e *ExternalConnectionsImpl) AddEmailConnection(
+	ctx context.Context,
+	req *pb.AddEmailConnection_Request,
+) (*pb.AddEmailConnection_Response, error) {
 	conn, err := e.svc.AddEmailConnection(
 		ctx,
 		req.Email,

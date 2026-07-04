@@ -14,11 +14,17 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
+)
+
+const (
+	randomHexLen               = 16
+	authCodeTTL                = 5 * time.Minute
+	oauthAccessTokenTTLSeconds = 86400 // 24h
+	grantTypeAuthorizationCode = "authorization_code"
 )
 
 type OAuthHandler struct {
@@ -29,12 +35,24 @@ type OAuthHandler struct {
 	pendingCodes repository.PendingAuthCodes
 }
 
-func NewOAuthHandler(authSvc service.AuthService, vaultSvc service.VaultService, mcpSvc service.McpService, pendingCodes repository.PendingAuthCodes) *OAuthHandler {
+func NewOAuthHandler(
+	authSvc service.AuthService,
+	vaultSvc service.VaultService,
+	mcpSvc service.McpService,
+	pendingCodes repository.PendingAuthCodes,
+) *OAuthHandler {
 	return &OAuthHandler{
 		authSvc:      authSvc,
 		vaultSvc:     vaultSvc,
 		mcpSvc:       mcpSvc,
 		pendingCodes: pendingCodes,
+	}
+}
+
+func writeJSON(w http.ResponseWriter, v any) {
+	err := json.NewEncoder(w).Encode(v)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to write json response")
 	}
 }
 
@@ -63,7 +81,7 @@ func (h *OAuthHandler) ServeProtectedResourceMeta(w http.ResponseWriter, r *http
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(meta)
+	writeJSON(w, meta)
 }
 
 // WellKnown serves GET /.well-known/oauth-authorization-server.
@@ -76,34 +94,36 @@ func (h *OAuthHandler) WellKnown(w http.ResponseWriter, r *http.Request) {
 		"registration_endpoint":                 base + "/register",
 		"response_types_supported":              []string{"code"},
 		"code_challenge_methods_supported":      []string{"S256"},
-		"grant_types_supported":                 []string{"authorization_code"},
+		"grant_types_supported":                 []string{grantTypeAuthorizationCode},
 		"token_endpoint_auth_methods_supported": []string{"none"},
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(meta)
+	writeJSON(w, meta)
 }
 
 // ServeRegistration handles POST /register (RFC 7591 dynamic client registration).
-func (h *OAuthHandler) ServeRegistration(w http.ResponseWriter, r *http.Request) {
+func (h *OAuthHandler) ServeRegistration(writer http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+		http.Error(writer, "bad request", http.StatusBadRequest)
 
 		return
 	}
 
 	var req map[string]any
-	if err := json.Unmarshal(body, &req); err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
+
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		http.Error(writer, "bad request", http.StatusBadRequest)
 
 		return
 	}
 
 	resp := map[string]any{
-		"client_id":                  randomHex(16),
+		"client_id":                  randomHex(randomHexLen),
 		"client_id_issued_at":        time.Now().Unix(),
-		"grant_types":                []string{"authorization_code"},
+		"grant_types":                []string{grantTypeAuthorizationCode},
 		"response_types":             []string{"code"},
 		"token_endpoint_auth_method": "none",
 	}
@@ -115,43 +135,44 @@ func (h *OAuthHandler) ServeRegistration(w http.ResponseWriter, r *http.Request)
 		resp["client_name"] = v
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(resp)
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusCreated)
+	writeJSON(writer, resp)
 }
 
 // ServeOAuthLogin handles POST /oauth/login — validates Telegram id_token, returns session + vaults.
-func (h *OAuthHandler) ServeOAuthLogin(w http.ResponseWriter, r *http.Request) {
+func (h *OAuthHandler) ServeOAuthLogin(writer http.ResponseWriter, request *http.Request) {
 	var req struct {
 		IdToken string `json:"id_token"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.IdToken == "" {
-		jsonErr(w, "invalid request", http.StatusBadRequest)
+	err := json.NewDecoder(request.Body).Decode(&req)
+	if err != nil || req.IdToken == "" {
+		jsonErr(writer, "invalid request", http.StatusBadRequest)
 
 		return
 	}
 
-	session, err := h.authSvc.LoginViaTelegram(r.Context(), req.IdToken)
+	session, err := h.authSvc.LoginViaTelegram(request.Context(), req.IdToken)
 	if err != nil {
-		jsonErr(w, "authentication failed", http.StatusUnauthorized)
+		jsonErr(writer, "authentication failed", http.StatusUnauthorized)
 
 		return
 	}
 
-	user, err := h.authSvc.ValidateToken(r.Context(), session.Token)
+	user, err := h.authSvc.ValidateToken(request.Context(), session.Token)
 	if err != nil {
-		jsonErr(w, "authentication failed", http.StatusUnauthorized)
+		jsonErr(writer, "authentication failed", http.StatusUnauthorized)
 
 		return
 	}
 
 	uc := user_context.UserContext{UserUuid: user.Uuid}
-	ctx := user_context.WithUserContext(r.Context(), uc)
+	ctx := user_context.WithUserContext(request.Context(), uc)
 
 	vaults, err := h.vaultSvc.ListVaults(ctx)
 	if err != nil {
-		jsonErr(w, "failed to load vaults", http.StatusInternalServerError)
+		jsonErr(writer, "failed to load vaults", http.StatusInternalServerError)
 
 		return
 	}
@@ -166,28 +187,29 @@ func (h *OAuthHandler) ServeOAuthLogin(w http.ResponseWriter, r *http.Request) {
 		items[i] = vaultItem{Id: v.Uuid.String(), Name: v.Name}
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
+	writer.Header().Set("Content-Type", "application/json")
+	writeJSON(writer, map[string]any{
 		"session_token": session.Token,
 		"vaults":        items,
 	})
 }
 
 // ServeOAuthVaults handles POST /oauth/vaults — validates existing session and returns vault list.
-func (h *OAuthHandler) ServeOAuthVaults(w http.ResponseWriter, r *http.Request) {
+func (h *OAuthHandler) ServeOAuthVaults(writer http.ResponseWriter, r *http.Request) {
 	var req struct {
 		SessionToken string `json:"session_token"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.SessionToken == "" {
-		jsonErr(w, "invalid request", http.StatusBadRequest)
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil || req.SessionToken == "" {
+		jsonErr(writer, "invalid request", http.StatusBadRequest)
 
 		return
 	}
 
 	user, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
 	if err != nil {
-		jsonErr(w, "session expired", http.StatusUnauthorized)
+		jsonErr(writer, "session expired", http.StatusUnauthorized)
 
 		return
 	}
@@ -197,7 +219,7 @@ func (h *OAuthHandler) ServeOAuthVaults(w http.ResponseWriter, r *http.Request) 
 
 	vaults, err := h.vaultSvc.ListVaults(ctx)
 	if err != nil {
-		jsonErr(w, "failed to load vaults", http.StatusInternalServerError)
+		jsonErr(writer, "failed to load vaults", http.StatusInternalServerError)
 
 		return
 	}
@@ -212,12 +234,12 @@ func (h *OAuthHandler) ServeOAuthVaults(w http.ResponseWriter, r *http.Request) 
 		items[i] = vaultItem{Id: v.Uuid.String(), Name: v.Name}
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"vaults": items})
+	writer.Header().Set("Content-Type", "application/json")
+	writeJSON(writer, map[string]any{"vaults": items})
 }
 
 // ServeOAuthVault handles POST /oauth/vault — creates MCP key and returns redirect URL.
-func (h *OAuthHandler) ServeOAuthVault(w http.ResponseWriter, r *http.Request) {
+func (h *OAuthHandler) ServeOAuthVault(writer http.ResponseWriter, request *http.Request) {
 	var req struct {
 		SessionToken  string `json:"session_token"`
 		VaultId       string `json:"vault_id"`
@@ -227,63 +249,67 @@ func (h *OAuthHandler) ServeOAuthVault(w http.ResponseWriter, r *http.Request) {
 		State         string `json:"state"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		jsonErr(w, "invalid request", http.StatusBadRequest)
+	err := json.NewDecoder(request.Body).Decode(&req)
+	if err != nil {
+		jsonErr(writer, "invalid request", http.StatusBadRequest)
 
 		return
 	}
 
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
-		jsonErr(w, "invalid vault_id", http.StatusBadRequest)
+		jsonErr(writer, "invalid vault_id", http.StatusBadRequest)
 
 		return
 	}
 
-	user, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
+	user, err := h.authSvc.ValidateToken(request.Context(), req.SessionToken)
 	if err != nil {
-		jsonErr(w, "session expired", http.StatusUnauthorized)
+		jsonErr(writer, "session expired", http.StatusUnauthorized)
 
 		return
 	}
 
 	uc := user_context.UserContext{UserUuid: user.Uuid}
-	ctx := user_context.WithUserContext(r.Context(), uc)
+	ctx := user_context.WithUserContext(request.Context(), uc)
 
 	rawToken, _, err := h.mcpSvc.CreateKey(ctx, vaultID, "Claude MCP")
 	if err != nil {
-		jsonErr(w, "failed to create access key", http.StatusInternalServerError)
+		jsonErr(writer, "failed to create access key", http.StatusInternalServerError)
 
 		return
 	}
 
-	authCode := randomHex(16)
-	expiresAt := time.Now().Add(5 * time.Minute)
+	authCode := randomHex(randomHexLen)
+	expiresAt := time.Now().Add(authCodeTTL)
 
-	if err := h.pendingCodes.Create(r.Context(), authCode, rawToken, req.CodeChallenge, req.RedirectUri, req.ClientId, expiresAt); err != nil {
+	err = h.pendingCodes.Create(
+		request.Context(), authCode, rawToken, req.CodeChallenge, req.RedirectUri, req.ClientId, expiresAt,
+	)
+	if err != nil {
 		log.Error().Err(err).Msg("failed to store pending auth code")
-		jsonErr(w, "internal error", http.StatusInternalServerError)
+		jsonErr(writer, "internal error", http.StatusInternalServerError)
 
 		return
 	}
 
 	redirectURL := fmt.Sprintf("%s?code=%s&state=%s", req.RedirectUri, authCode, req.State)
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"redirect_url": redirectURL})
+	writer.Header().Set("Content-Type", "application/json")
+	writeJSON(writer, map[string]string{"redirect_url": redirectURL})
 }
 
 // ServeToken handles POST /token — PKCE verification and returns access token.
-func (h *OAuthHandler) ServeToken(w http.ResponseWriter, r *http.Request) {
+func (h *OAuthHandler) ServeToken(writer http.ResponseWriter, r *http.Request) {
 	vals, err := parseTokenRequest(r)
 	if err != nil {
-		oauthTokenError(w, "invalid_request", "cannot parse request")
+		oauthTokenError(writer, "invalid_request", "cannot parse request")
 
 		return
 	}
 
-	if vals["grant_type"] != "authorization_code" {
-		oauthTokenError(w, "unsupported_grant_type", "only authorization_code is supported")
+	if vals["grant_type"] != grantTypeAuthorizationCode {
+		oauthTokenError(writer, "unsupported_grant_type", "only authorization_code is supported")
 
 		return
 	}
@@ -292,45 +318,40 @@ func (h *OAuthHandler) ServeToken(w http.ResponseWriter, r *http.Request) {
 
 	pending, err := h.pendingCodes.Get(r.Context(), code)
 	if err != nil {
-		oauthTokenError(w, "invalid_grant", "authorization code expired or not found")
+		oauthTokenError(writer, "invalid_grant", "authorization code expired or not found")
 
 		return
 	}
 
-	// err = h.pendingCodes.Delete(r.Context(), code);
-	//if  err != nil {
-	//	log.Error().Err(err).Msg("failed to delete pending auth code")
-	//}
-
 	if time.Now().After(pending.ExpiresAt) {
-		oauthTokenError(w, "invalid_grant", "authorization code expired")
+		oauthTokenError(writer, "invalid_grant", "authorization code expired")
 
 		return
 	}
 
 	if pending.ClientId != "" && pending.ClientId != vals["client_id"] {
-		oauthTokenError(w, "invalid_client", "client_id mismatch")
+		oauthTokenError(writer, "invalid_client", "client_id mismatch")
 
 		return
 	}
 
 	if pending.RedirectUri != "" && pending.RedirectUri != vals["redirect_uri"] {
-		oauthTokenError(w, "invalid_grant", "redirect_uri mismatch")
+		oauthTokenError(writer, "invalid_grant", "redirect_uri mismatch")
 
 		return
 	}
 
 	if pending.CodeChallenge != "" && !pkceVerify(vals["code_verifier"], pending.CodeChallenge) {
-		oauthTokenError(w, "invalid_grant", "PKCE verification failed")
+		oauthTokenError(writer, "invalid_grant", "PKCE verification failed")
 
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
+	writer.Header().Set("Content-Type", "application/json")
+	writeJSON(writer, map[string]any{
 		"access_token": pending.RawToken,
 		"token_type":   "Bearer",
-		"expires_in":   86400,
+		"expires_in":   oauthAccessTokenTTLSeconds,
 	})
 }
 
@@ -346,14 +367,15 @@ func parseTokenRequest(r *http.Request) (map[string]string, error) {
 
 		err = json.Unmarshal(body, &m)
 		if err != nil {
-			return nil, rerrors.Wrap(err)
+			return nil, rerrors.Wrap(err, "error unmarshaling request body")
 		}
 
 		return m, nil
 	}
 
-	if err := r.ParseForm(); err != nil {
-		return nil, rerrors.Wrap(err)
+	err := r.ParseForm()
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error parsing form")
 	}
 
 	m := make(map[string]string)
@@ -383,11 +405,11 @@ func randomHex(n int) string {
 func oauthTokenError(w http.ResponseWriter, code, desc string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(map[string]string{"error": code, "error_description": desc})
+	writeJSON(w, map[string]string{"error": code, "error_description": desc})
 }
 
 func jsonErr(w http.ResponseWriter, msg string, status int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]string{"error": msg})
+	writeJSON(w, map[string]string{"error": msg})
 }

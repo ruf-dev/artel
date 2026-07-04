@@ -3,14 +3,15 @@ package middleware
 import (
 	"context"
 
-	"github.com/ruf-dev/artel/internal/middleware/user_context"
-	"github.com/ruf-dev/artel/internal/service"
-	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+
+	"github.com/ruf-dev/artel/internal/middleware/user_context"
+	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 const authHeader = "authorization"
@@ -72,9 +73,9 @@ func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOpt
 			}
 
 			if ac.isDebugEnabled {
-				ctxWithDebug, debugErr := ac.authWithDebugHeaders(ctx, md)
+				debugErr := ac.authWithDebugHeaders(ctx, md)
 				if debugErr == nil {
-					return handler(ctxWithDebug, req)
+					return handler(ctx, req)
 				}
 			}
 
@@ -109,6 +110,6 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 	return ctxWithUser, nil
 }
 
-func (am *authMiddleware) authWithDebugHeaders(ctx context.Context, md metadata.MD) (context.Context, error) {
-	return nil, status.Error(codes.Unimplemented, user_errors.DebugNotSupported.Error())
+func (am *authMiddleware) authWithDebugHeaders(_ context.Context, _ metadata.MD) (err error) {
+	return status.Error(codes.Unimplemented, user_errors.DebugNotSupported.Error())
 }

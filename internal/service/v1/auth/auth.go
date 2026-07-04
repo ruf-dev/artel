@@ -9,13 +9,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/ruf-dev/artel/internal/client/telegram"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
@@ -58,11 +59,13 @@ func (s *Service) Register(ctx context.Context, email, password string) (domain.
 			return rerrors.Wrap(err, "create user")
 		}
 
-		if err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
+		err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid)
+		if err != nil {
 			return rerrors.Wrap(err, "create default permissions")
 		}
 
-		if err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid); err != nil {
+		err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid)
+		if err != nil {
 			return rerrors.Wrap(err, "create default subscription")
 		}
 
@@ -128,7 +131,11 @@ func (s *Service) ValidateToken(ctx context.Context, token string) (domain.User,
 func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {
 	claims, err := s.tgParser.ParseAndVerifyIdToken(idToken)
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(user_errors.InvalidTelegramToken, "error validating telegram token", err.Error())
+		return domain.Session{}, rerrors.Wrap(
+			user_errors.InvalidTelegramToken,
+			"error validating telegram token",
+			err.Error(),
+		)
 	}
 
 	telegramId := strconv.FormatInt(claims.Id, 10)

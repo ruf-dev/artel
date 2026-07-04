@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (m *McpKeysImpl) ListUserMcpKeys(ctx context.Context, _ *pb.ListUserMcpKeys_Request) (*pb.ListUserMcpKeys_Response, error) {
+func (m *McpKeysImpl) ListUserMcpKeys(
+	ctx context.Context,
+	_ *pb.ListUserMcpKeys_Request,
+) (*pb.ListUserMcpKeys_Response, error) {
 	keys, err := m.mcpSvc.ListUserKeys(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list user mcp keys")

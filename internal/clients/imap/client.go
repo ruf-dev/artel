@@ -7,8 +7,11 @@ import (
 
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
+
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/utils"
+
 	"go.redsock.ru/rerrors"
 )
 
@@ -33,7 +36,7 @@ func (c *Client) ListEmails(_ context.Context, limit int) ([]domain.EmailMeta, e
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Logout()
+	defer utils.CallWithLog(conn.Logout, "logout error during listing emails")
 
 	mbox, err := conn.Select("INBOX", true)
 	if err != nil {
@@ -89,14 +92,16 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 	if err != nil {
 		return domain.EmailMessage{}, err
 	}
-	defer conn.Logout()
+	defer utils.CallWithLog(conn.Logout, "logout error during reading emails")
 
-	if _, err := conn.Select("INBOX", true); err != nil {
+	_, err = conn.Select("INBOX", true)
+	if err != nil {
 		return domain.EmailMessage{}, rerrors.Wrap(err, "select inbox")
 	}
 
 	var uidNum uint32
-	if _, err := fmt.Sscanf(uid, "%d", &uidNum); err != nil {
+	_, err = fmt.Sscanf(uid, "%d", &uidNum)
+	if err != nil {
 		return domain.EmailMessage{}, user_errors.InvalidEmailId
 	}
 
@@ -166,7 +171,7 @@ func (c *Client) ListFolders(_ context.Context) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Logout()
+	defer utils.CallWithLog(conn.Logout, "logout error during listing folders")
 
 	mailboxes := make(chan *imap.MailboxInfo, 16)
 	done := make(chan error, 1)
@@ -180,7 +185,8 @@ func (c *Client) ListFolders(_ context.Context) ([]string, error) {
 		folders = append(folders, m.Name)
 	}
 
-	if err := <-done; err != nil {
+	err = <-done
+	if err != nil {
 		return nil, rerrors.Wrap(err, "list folders")
 	}
 
@@ -195,8 +201,9 @@ func (c *Client) connect() (*client.Client, error) {
 		return nil, rerrors.Wrap(err, "connect to imap server")
 	}
 
-	if err := conn.Login(c.email, c.password); err != nil {
-		conn.Logout()
+	err = conn.Login(c.email, c.password)
+	if err != nil {
+		utils.CallWithLog(conn.Logout, "logout error during connect")
 
 		return nil, rerrors.Wrap(err, "imap login failed")
 	}

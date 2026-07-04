@@ -22,7 +22,11 @@ func (impl *Impl) Register(server grpc.ServiceRegistrar) {
 	artel_api.RegisterVaultsAPIServer(server, impl)
 }
 
-func (impl *Impl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (route string, handler http.Handler) {
+func (impl *Impl) Gateway(
+	ctx context.Context,
+	endpoint string,
+	opts ...grpc.DialOption,
+) (route string, handler http.Handler) {
 	gwHttpMux := runtime.NewServeMux()
 
 	err := artel_api.RegisterVaultsAPIHandlerFromEndpoint(

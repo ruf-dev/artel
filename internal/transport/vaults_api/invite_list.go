@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (v *VaultsImpl) ListInviteLinks(ctx context.Context, req *pb.ListInviteLinks_Request) (*pb.ListInviteLinks_Response, error) {
+func (v *VaultsImpl) ListInviteLinks(
+	ctx context.Context,
+	req *pb.ListInviteLinks_Request,
+) (*pb.ListInviteLinks_Response, error) {
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse vault id")

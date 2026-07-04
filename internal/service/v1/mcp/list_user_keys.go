@@ -9,7 +9,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) ListUserKeys(ctx context.Context) ([]domain.McpKey, error) {
+func (s *ServiceImpl) ListUserKeys(ctx context.Context) ([]domain.McpKey, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return nil, user_errors.Unauthenticated

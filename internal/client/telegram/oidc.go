@@ -16,6 +16,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox"
+
+	"github.com/ruf-dev/artel/internal/utils"
 )
 
 type TgClaims struct {
@@ -139,7 +141,9 @@ func (tp *TokenParser) ParseAndVerifyIdToken(idToken string) (TgClaims, error) {
 	}
 
 	if tp.issuer != "" && claims.Issuer != tp.issuer {
-		return TgClaims{}, rerrors.New(fmt.Sprintf("error validating issuer: expected %s, got %s", tp.issuer, claims.Issuer))
+		return TgClaims{}, rerrors.New(
+			fmt.Sprintf("error validating issuer: expected %s, got %s", tp.issuer, claims.Issuer),
+		)
 	}
 
 	if tp.audience != "" && claims.Audience != nil {
@@ -223,7 +227,7 @@ func (tp *TokenParser) getJWKS() (*JWKSResponse, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error fetching JWKS")
 	}
-	defer resp.Body.Close()
+	defer utils.CloseWithLog(resp.Body, "error fetching JWKS")
 
 	var jwks JWKSResponse
 

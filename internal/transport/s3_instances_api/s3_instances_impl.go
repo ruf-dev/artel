@@ -25,7 +25,11 @@ func (s *S3InstancesImpl) Register(srv grpc.ServiceRegistrar) {
 	artel_api.RegisterS3InstancesAPIServer(srv, s)
 }
 
-func (s *S3InstancesImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
+func (s *S3InstancesImpl) Gateway(
+	ctx context.Context,
+	endpoint string,
+	opts ...grpc.DialOption,
+) (string, http.Handler) {
 	gwMux := runtime.NewServeMux()
 
 	err := artel_api.RegisterS3InstancesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
@@ -36,8 +40,19 @@ func (s *S3InstancesImpl) Gateway(ctx context.Context, endpoint string, opts ...
 	return "/api/s3/", gwMux
 }
 
-func (s *S3InstancesImpl) RegisterS3Instance(ctx context.Context, req *artel_api.RegisterS3Instance_Request) (*artel_api.RegisterS3Instance_Response, error) {
-	id, err := s.s3InstanceSvc.RegisterS3Instance(ctx, req.Endpoint, req.Region, req.AccessKey, req.SecretKey, req.UseSsl, req.PathStyle)
+func (s *S3InstancesImpl) RegisterS3Instance(
+	ctx context.Context,
+	req *artel_api.RegisterS3Instance_Request,
+) (*artel_api.RegisterS3Instance_Response, error) {
+	id, err := s.s3InstanceSvc.RegisterS3Instance(
+		ctx,
+		req.Endpoint,
+		req.Region,
+		req.AccessKey,
+		req.SecretKey,
+		req.UseSsl,
+		req.PathStyle,
+	)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "register s3 instance")
 	}
@@ -49,7 +64,10 @@ func (s *S3InstancesImpl) RegisterS3Instance(ctx context.Context, req *artel_api
 	return resp, nil
 }
 
-func (s *S3InstancesImpl) GetS3Instance(ctx context.Context, req *artel_api.GetS3Instance_Request) (*artel_api.GetS3Instance_Response, error) {
+func (s *S3InstancesImpl) GetS3Instance(
+	ctx context.Context,
+	req *artel_api.GetS3Instance_Request,
+) (*artel_api.GetS3Instance_Response, error) {
 	instance, err := s.s3InstanceSvc.GetS3Instance(ctx, req.Id)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "get s3 instance")
@@ -67,7 +85,10 @@ func (s *S3InstancesImpl) GetS3Instance(ctx context.Context, req *artel_api.GetS
 	return resp, nil
 }
 
-func (s *S3InstancesImpl) ListS3Instances(ctx context.Context, req *artel_api.ListS3Instances_Request) (*artel_api.ListS3Instances_Response, error) {
+func (s *S3InstancesImpl) ListS3Instances(
+	ctx context.Context,
+	req *artel_api.ListS3Instances_Request,
+) (*artel_api.ListS3Instances_Response, error) {
 	instances, err := s.s3InstanceSvc.ListS3Instances(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list s3 instances")
@@ -92,8 +113,20 @@ func (s *S3InstancesImpl) ListS3Instances(ctx context.Context, req *artel_api.Li
 	return resp, nil
 }
 
-func (s *S3InstancesImpl) UpdateS3Instance(ctx context.Context, req *artel_api.UpdateS3Instance_Request) (*artel_api.UpdateS3Instance_Response, error) {
-	err := s.s3InstanceSvc.UpdateS3Instance(ctx, req.Id, req.Endpoint, req.Region, req.AccessKey, req.SecretKey, req.UseSsl, req.PathStyle)
+func (s *S3InstancesImpl) UpdateS3Instance(
+	ctx context.Context,
+	req *artel_api.UpdateS3Instance_Request,
+) (*artel_api.UpdateS3Instance_Response, error) {
+	err := s.s3InstanceSvc.UpdateS3Instance(
+		ctx,
+		req.Id,
+		req.Endpoint,
+		req.Region,
+		req.AccessKey,
+		req.SecretKey,
+		req.UseSsl,
+		req.PathStyle,
+	)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "update s3 instance")
 	}
@@ -101,7 +134,10 @@ func (s *S3InstancesImpl) UpdateS3Instance(ctx context.Context, req *artel_api.U
 	return &artel_api.UpdateS3Instance_Response{}, nil
 }
 
-func (s *S3InstancesImpl) DeleteS3Instance(ctx context.Context, req *artel_api.DeleteS3Instance_Request) (*artel_api.DeleteS3Instance_Response, error) {
+func (s *S3InstancesImpl) DeleteS3Instance(
+	ctx context.Context,
+	req *artel_api.DeleteS3Instance_Request,
+) (*artel_api.DeleteS3Instance_Response, error) {
 	err := s.s3InstanceSvc.DeleteS3Instance(ctx, req.Id)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "delete s3 instance")
@@ -112,7 +148,10 @@ func (s *S3InstancesImpl) DeleteS3Instance(ctx context.Context, req *artel_api.D
 	return resp, nil
 }
 
-func (s *S3InstancesImpl) TestS3Instance(ctx context.Context, req *artel_api.TestS3Instance_Request) (*artel_api.TestS3Instance_Response, error) {
+func (s *S3InstancesImpl) TestS3Instance(
+	ctx context.Context,
+	req *artel_api.TestS3Instance_Request,
+) (*artel_api.TestS3Instance_Response, error) {
 	err := s.s3InstanceSvc.TestS3Instance(ctx, req.Id)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "test s3 instance")

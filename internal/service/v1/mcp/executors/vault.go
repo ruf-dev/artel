@@ -5,11 +5,12 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/storage"
-	"go.redsock.ru/rerrors"
 )
 
 const (
@@ -33,7 +34,13 @@ func NewVaultExecutor() *VaultExecutor {
 // livesync); bucket serves the non-markdown half (S3-compatible object storage) and may be nil
 // if the vault has no linked bucket — handlers that need it then return
 // user_errors.NoS3BucketLinked for non-markdown paths.
-func (e *VaultExecutor) Execute(ctx context.Context, toolName string, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) Execute(
+	ctx context.Context,
+	toolName string,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
 	switch toolName {
 	case ToolListFiles:
 		return e.listFiles(ctx, client, bucket)
@@ -56,7 +63,11 @@ func (e *VaultExecutor) Execute(ctx context.Context, toolName string, client *co
 	}
 }
 
-func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) listFiles(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+) (domain.ToolExecResult, error) {
 	notes, err := client.ListNotes(ctx)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list notes")
@@ -65,14 +76,15 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 	var entries []map[string]interface{}
 	for _, n := range notes {
 		entries = append(entries, map[string]interface{}{
-			"path":     n.Path,
-			"mtime":    n.Mtime,
-			"mimeType": couchdb.MimeTypeForPath(n.Path),
+			fieldPath:     n.Path,
+			fieldMtime:    n.Mtime,
+			fieldMimeType: couchdb.MimeTypeForPath(n.Path),
 		})
 	}
 
 	if bucket != nil {
-		objects, err := bucket.List(ctx)
+		var objects []storage.ObjectEntry
+		objects, err = bucket.List(ctx)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list bucket objects")
 		}
@@ -82,9 +94,9 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 			// HEAD/GetObject request, which Get/Stat use) — derive it from the extension instead
 			// of trusting o.MimeType, which is unreliable here.
 			entries = append(entries, map[string]interface{}{
-				"path":     o.Path,
-				"mtime":    o.Mtime,
-				"mimeType": couchdb.MimeTypeForPath(o.Path),
+				fieldPath:     o.Path,
+				fieldMtime:    o.Mtime,
+				fieldMimeType: couchdb.MimeTypeForPath(o.Path),
 			})
 		}
 	}
@@ -97,8 +109,13 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 	return domain.ToolExecResult{Text: text}, nil
 }
 
-func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
-	path, ok := params["path"].(string)
+func (e *VaultExecutor) readFile(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	path, ok := params[fieldPath].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
@@ -124,13 +141,18 @@ func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncCl
 	return domain.ToolExecResult{Data: obj.RawBytes, MimeType: obj.MimeType, ResourcePath: path}, nil
 }
 
-func (e *VaultExecutor) writeFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
-	path, ok := params["path"].(string)
+func (e *VaultExecutor) writeFile(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	path, ok := params[fieldPath].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
 
-	content, ok := params["content"].(string)
+	content, ok := params[fieldContent].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpContentRequired
 	}
@@ -161,8 +183,13 @@ func (e *VaultExecutor) writeFile(ctx context.Context, client *couchdb.LiveSyncC
 	return domain.ToolExecResult{Text: "File written successfully"}, nil
 }
 
-func (e *VaultExecutor) deleteFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
-	path, ok := params["path"].(string)
+func (e *VaultExecutor) deleteFile(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	path, ok := params[fieldPath].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
@@ -188,7 +215,12 @@ func (e *VaultExecutor) deleteFile(ctx context.Context, client *couchdb.LiveSync
 	return domain.ToolExecResult{Text: "File deleted successfully"}, nil
 }
 
-func (e *VaultExecutor) moveFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) moveFile(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
 	oldPath, ok := params["old_path"].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpOldPathRequired
@@ -227,7 +259,10 @@ func (e *VaultExecutor) moveFile(ctx context.Context, client *couchdb.LiveSyncCl
 	return domain.ToolExecResult{Text: "File moved successfully"}, nil
 }
 
-func (e *VaultExecutor) listFolders(ctx context.Context, client *couchdb.LiveSyncClient) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) listFolders(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+) (domain.ToolExecResult, error) {
 	folders, err := client.ListFolders(ctx)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list folders")
@@ -255,8 +290,13 @@ func (e *VaultExecutor) listTags(ctx context.Context, client *couchdb.LiveSyncCl
 	return domain.ToolExecResult{Text: text}, nil
 }
 
-func (e *VaultExecutor) getFileMetadata(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
-	path, ok := params["path"].(string)
+func (e *VaultExecutor) getFileMetadata(
+	ctx context.Context,
+	client *couchdb.LiveSyncClient,
+	bucket storage.BinaryStore,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	path, ok := params[fieldPath].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
@@ -268,12 +308,12 @@ func (e *VaultExecutor) getFileMetadata(ctx context.Context, client *couchdb.Liv
 		}
 
 		metadataMap := map[string]interface{}{
-			"id":      metadata.Id,
-			"rev":     metadata.Rev,
-			"mtime":   metadata.Mtime,
-			"ctime":   metadata.Ctime,
-			"size":    metadata.Size,
-			"deleted": metadata.Deleted,
+			"id":         metadata.Id,
+			fieldRev:     metadata.Rev,
+			fieldMtime:   metadata.Mtime,
+			fieldCtime:   metadata.Ctime,
+			fieldSize:    metadata.Size,
+			fieldDeleted: metadata.Deleted,
 		}
 
 		text, err := marshalResult(metadataMap)
@@ -296,12 +336,12 @@ func (e *VaultExecutor) getFileMetadata(ctx context.Context, client *couchdb.Liv
 	// S3 has no revision/separate-ctime/tombstone concept: reuse mtime for ctime, leave rev
 	// empty, and deleted is always false (a delete simply removes the key, no tombstone row).
 	metadataMap := map[string]interface{}{
-		"id":      path,
-		"rev":     "",
-		"mtime":   entry.Mtime,
-		"ctime":   entry.Mtime,
-		"size":    entry.Size,
-		"deleted": false,
+		"id":         path,
+		fieldRev:     "",
+		fieldMtime:   entry.Mtime,
+		fieldCtime:   entry.Mtime,
+		fieldSize:    entry.Size,
+		fieldDeleted: false,
 	}
 
 	text, err := marshalResult(metadataMap)
@@ -328,43 +368,49 @@ func VaultToolDefinitions() []domain.McpToolDef {
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"path":     {Type: "string", Description: "Vault-relative file path (each array entry)"},
-					"mtime":    {Type: "integer", Description: "Last modified time, unix ms"},
-					"mimeType": {Type: "string", Description: "MIME type of the file"},
+					fieldPath:     {Type: schemaTypeString, Description: "Vault-relative file path (each array entry)"},
+					fieldMtime:    {Type: schemaTypeInteger, Description: "Last modified time, unix ms"},
+					fieldMimeType: {Type: schemaTypeString, Description: "MIME type of the file"},
 				},
-				Required: []string{"path", "mtime", "mimeType"},
+				Required: []string{fieldPath, fieldMtime, fieldMimeType},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolReadFile,
-				Description: "Read any file by path. Returns text content for notes/text files, base64-encoded binary for images/PDFs.",
+				Name: ToolReadFile,
+				Description: "Read any file by path. Returns text content for notes/text files, base64-encoded " +
+					"binary for images/PDFs.",
 				Properties: map[string]domain.ToolProperty{
-					"path": {Type: "string"},
+					fieldPath: {Type: schemaTypeString},
 				},
-				Required: []string{"path"},
+				Required: []string{fieldPath},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"content": {Type: "string", Description: "File content as text; binary files are returned as a resource/image content block instead"},
+					fieldContent: {
+						Type:        schemaTypeString,
+						Description: "File content as text; binary files are returned as a resource/image content block instead",
+					},
 				},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolWriteFile,
-				Description: "Create or update a file. For .md/.markdown paths, content is plain text stored in CouchDB. For any other path, content must be base64-encoded and is stored in the vault's linked S3 bucket (fails if no bucket is linked).",
+				Name: ToolWriteFile,
+				Description: "Create or update a file. For .md/.markdown paths, content is plain text stored " +
+					"in CouchDB. For any other path, content must be base64-encoded and is stored in the vault's " +
+					"linked S3 bucket (fails if no bucket is linked).",
 				Properties: map[string]domain.ToolProperty{
-					"path":    {Type: "string"},
-					"content": {Type: "string"},
+					fieldPath:    {Type: schemaTypeString},
+					fieldContent: {Type: schemaTypeString},
 				},
-				Required: []string{"path", "content"},
+				Required: []string{fieldPath, fieldContent},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"message": {Type: "string", Description: "Confirmation message"},
+					fieldMessage: {Type: schemaTypeString, Description: msgConfirmation},
 				},
-				Required: []string{"message"},
+				Required: []string{fieldMessage},
 			},
 		},
 		{
@@ -372,32 +418,34 @@ func VaultToolDefinitions() []domain.McpToolDef {
 				Name:        ToolDeleteFile,
 				Description: "Delete any file by path",
 				Properties: map[string]domain.ToolProperty{
-					"path": {Type: "string"},
+					fieldPath: {Type: schemaTypeString},
 				},
-				Required: []string{"path"},
+				Required: []string{fieldPath},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"message": {Type: "string", Description: "Confirmation message"},
+					fieldMessage: {Type: schemaTypeString, Description: msgConfirmation},
 				},
-				Required: []string{"message"},
+				Required: []string{fieldMessage},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolMoveFile,
-				Description: "Move or rename a file. Both old_path and new_path must be on the same backend (both .md/.markdown or both non-markdown) — moving a file across the markdown/S3 boundary is not supported in one call.",
+				Name: ToolMoveFile,
+				Description: "Move or rename a file. Both old_path and new_path must be on the same backend " +
+					"(both .md/.markdown or both non-markdown) — moving a file across the markdown/S3 boundary " +
+					"is not supported in one call.",
 				Properties: map[string]domain.ToolProperty{
-					"old_path": {Type: "string"},
-					"new_path": {Type: "string"},
+					"old_path": {Type: schemaTypeString},
+					"new_path": {Type: schemaTypeString},
 				},
 				Required: []string{"old_path", "new_path"},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"message": {Type: "string", Description: "Confirmation message"},
+					fieldMessage: {Type: schemaTypeString, Description: msgConfirmation},
 				},
-				Required: []string{"message"},
+				Required: []string{fieldMessage},
 			},
 		},
 		{
@@ -409,9 +457,9 @@ func VaultToolDefinitions() []domain.McpToolDef {
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"path": {Type: "string", Description: "Folder path (each array entry)"},
+					fieldPath: {Type: schemaTypeString, Description: "Folder path (each array entry)"},
 				},
-				Required: []string{"path"},
+				Required: []string{fieldPath},
 			},
 		},
 		{
@@ -423,30 +471,40 @@ func VaultToolDefinitions() []domain.McpToolDef {
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"tag": {Type: "string", Description: "Tag name (each array entry)"},
+					"tag": {Type: schemaTypeString, Description: "Tag name (each array entry)"},
 				},
 				Required: []string{"tag"},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolGetFileMetadata,
-				Description: "Get metadata for a file. rev/ctime/deleted are CouchDB-specific and zero-valued (rev empty, ctime==mtime, deleted false) for S3-backed (non-markdown) files.",
+				Name: ToolGetFileMetadata,
+				Description: "Get metadata for a file. rev/ctime/deleted are CouchDB-specific and zero-valued " +
+					"(rev empty, ctime==mtime, deleted false) for S3-backed (non-markdown) files.",
 				Properties: map[string]domain.ToolProperty{
-					"path": {Type: "string"},
+					fieldPath: {Type: schemaTypeString},
 				},
-				Required: []string{"path"},
+				Required: []string{fieldPath},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"id":      {Type: "string", Description: "CouchDB document id, or the file path for S3-backed files"},
-					"rev":     {Type: "string", Description: "CouchDB document revision; empty for S3-backed files"},
-					"mtime":   {Type: "integer", Description: "Last modified time, unix ms"},
-					"ctime":   {Type: "integer", Description: "Creation time, unix ms; equals mtime for S3-backed files"},
-					"size":    {Type: "integer", Description: "Content size in bytes"},
-					"deleted": {Type: "boolean", Description: "Whether the note is tombstoned; always false for S3-backed files"},
+					"id": {
+						Type:        schemaTypeString,
+						Description: "CouchDB document id, or the file path for S3-backed files",
+					},
+					fieldRev:   {Type: schemaTypeString, Description: "CouchDB document revision; empty for S3-backed files"},
+					fieldMtime: {Type: schemaTypeInteger, Description: "Last modified time, unix ms"},
+					fieldCtime: {
+						Type:        schemaTypeInteger,
+						Description: "Creation time, unix ms; equals mtime for S3-backed files",
+					},
+					fieldSize: {Type: schemaTypeInteger, Description: "Content size in bytes"},
+					fieldDeleted: {
+						Type:        schemaTypeBoolean,
+						Description: "Whether the note is tombstoned; always false for S3-backed files",
+					},
 				},
-				Required: []string{"id", "rev", "mtime", "ctime", "size", "deleted"},
+				Required: []string{"id", fieldRev, fieldMtime, fieldCtime, fieldSize, fieldDeleted},
 			},
 		},
 	}

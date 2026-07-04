@@ -11,5 +11,3 @@ databases:
       memory_mb: 128
       disk_size_mb: 1024
       cpu_count: 1
-
-

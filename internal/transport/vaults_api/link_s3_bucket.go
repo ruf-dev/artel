@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (v *VaultsImpl) LinkS3Bucket(ctx context.Context, req *pb.LinkS3Bucket_Request) (*pb.LinkS3Bucket_Response, error) {
+func (v *VaultsImpl) LinkS3Bucket(
+	ctx context.Context,
+	req *pb.LinkS3Bucket_Request,
+) (*pb.LinkS3Bucket_Response, error) {
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse vault id")

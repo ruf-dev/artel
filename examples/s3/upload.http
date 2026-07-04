@@ -1,0 +1,31 @@
+### Non-text file via the S3 API directly (bypasses Artel entirely — talks straight to the
+### Garage/S3-compatible bucket linked to the vault, path-style per client.go's
+### BucketLookupPath requirement for Garage). Unlike CouchDB's Basic auth, S3 requires
+### AWS SigV4 request signing, which the IntelliJ HTTP Client cannot generate natively.
+### These requests are not runnable as-is from this file — sign them with an external
+### client (aws-cli, mc, Postman) using {{s3_access_key}}/{{s3_secret_key}}. They document
+### the wire-level request shape (method/path/headers) that Artel's minio-go client sends.
+### test.png in ../test.png is an empty file, used here as request body.
+
+### Upload binary file (test.png, saved under the "s3" folder)
+PUT {{garage_s3_url}}/{{s3_bucket}}/s3/test.png
+Content-Type: image/png
+Authorization: AWS4-HMAC-SHA256 Credential={{s3_access_key}}/..., SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=...
+
+< ../test.png
+
+### List objects in bucket (verify s3/test.png appears)
+GET {{garage_s3_url}}/{{s3_bucket}}?list-type=2
+Authorization: AWS4-HMAC-SHA256 Credential={{s3_access_key}}/..., SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=...
+
+### Read binary file back
+GET {{garage_s3_url}}/{{s3_bucket}}/s3/test.png
+Authorization: AWS4-HMAC-SHA256 Credential={{s3_access_key}}/..., SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=...
+
+### Get object metadata (HEAD)
+HEAD {{garage_s3_url}}/{{s3_bucket}}/s3/test.png
+Authorization: AWS4-HMAC-SHA256 Credential={{s3_access_key}}/..., SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=...
+
+### Delete binary file
+DELETE {{garage_s3_url}}/{{s3_bucket}}/s3/test.png
+Authorization: AWS4-HMAC-SHA256 Credential={{s3_access_key}}/..., SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=...

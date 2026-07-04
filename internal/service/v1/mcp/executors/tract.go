@@ -6,12 +6,13 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/requesthost"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
-	"go.redsock.ru/rerrors"
 )
 
 const (
@@ -38,14 +39,38 @@ const (
 // the top-level service interfaces package; internal/service/v1/mcp passes its concrete
 // service.TractService value in per call, which satisfies this interface structurally.
 type TractService interface {
-	CreateTract(ctx context.Context, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
-	UpdateTract(ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
+	CreateTract(
+		ctx context.Context,
+		name string,
+		description string,
+		def domain.TractDefinition,
+	) (domain.Tract, []string, error)
+	UpdateTract(
+		ctx context.Context,
+		id uuid.UUID,
+		name string,
+		description string,
+		def domain.TractDefinition,
+	) (domain.Tract, []string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (domain.Tract, error)
 	ListTracts(ctx context.Context) ([]domain.Tract, error)
-	CreateTrigger(ctx context.Context, name string, kind string, source string, config json.RawMessage, payloadSchema domain.ToolSchema) (domain.Trigger, string, error)
+	CreateTrigger(
+		ctx context.Context,
+		name string,
+		kind string,
+		source string,
+		config json.RawMessage,
+		payloadSchema domain.ToolSchema,
+	) (domain.Trigger, string, error)
 	LinkTrigger(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid.UUID, filters []domain.TractCondition) error
 	ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]repository.TractTriggerLink, error)
-	StartRun(ctx context.Context, tract domain.Tract, payload json.RawMessage, startedBy string, triggerUuid uuid.UUID) (domain.TractRun, error)
+	StartRun(
+		ctx context.Context,
+		tract domain.Tract,
+		payload json.RawMessage,
+		startedBy string,
+		triggerUuid uuid.UUID,
+	) (domain.TractRun, error)
 	ListRuns(ctx context.Context, tractUuid uuid.UUID, limit int32) ([]domain.TractRun, error)
 	GetRun(ctx context.Context, id uuid.UUID) (domain.TractRun, []domain.TractRunStep, error)
 	ListTractTools(ctx context.Context) ([]domain.McpToolRef, error)
@@ -78,7 +103,13 @@ func IsTractTool(name string) bool {
 // user_context (the tract service's CreateTract/GetTract/... all require it for ownership
 // checks). baseCtx is the server-lifecycle context run_tract spawns StartRun against, since the
 // per-request ctx is cancelled once the MCP handler's response is written.
-func (e *TractExecutor) Execute(ctx context.Context, baseCtx context.Context, ts TractService, toolName string, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *TractExecutor) Execute(
+	ctx context.Context,
+	baseCtx context.Context,
+	ts TractService,
+	toolName string,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
 	switch toolName {
 	case ToolListTractActions:
 		return e.listTractActions(ctx, ts)
@@ -138,7 +169,10 @@ func (e *TractExecutor) listTractActions(ctx context.Context, ts TractService) (
 	actions := make([]tractActionEntry, len(refs))
 
 	for i, ref := range refs {
-		inputSchema := domain.ToolSchema{Properties: ref.Tool.ApiDescription.Properties, Required: ref.Tool.ApiDescription.Required}
+		inputSchema := domain.ToolSchema{
+			Properties: ref.Tool.ApiDescription.Properties,
+			Required:   ref.Tool.ApiDescription.Required,
+		}
 		actions[i] = tractActionEntry{
 			Mcp:          ref.McpName,
 			Tool:         ref.Tool.ApiDescription.Name,
@@ -203,15 +237,19 @@ type webhookTriggerRow struct {
 	WebhookToken string `json:"webhook_token"`
 }
 
-func (e *TractExecutor) createTract(ctx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	name, ok := paramString(params, "name")
+func (e *TractExecutor) createTract(
+	ctx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	name, ok := paramString(params, fieldName)
 	if !ok || name == "" {
 		return domain.ToolExecResult{}, user_errors.McpTractNameRequired
 	}
 
-	description, _ := paramString(params, "description")
+	description, _ := paramString(params, fieldDescription)
 
-	defParam, ok := paramObject(params, "definition")
+	defParam, ok := paramObject(params, fieldDefinition)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpTractDefinitionRequired
 	}
@@ -229,13 +267,14 @@ func (e *TractExecutor) createTract(ctx context.Context, ts TractService, params
 	}
 
 	result := map[string]interface{}{
-		"tract":    tractToRow(created, true),
-		"warnings": warnings,
+		fieldTract:    tractToRow(created, true),
+		fieldWarnings: warnings,
 	}
 
 	webhookParam, ok := paramObject(params, "webhook_trigger")
 	if ok {
-		webhookResult, err := e.createLinkedWebhook(ctx, ts, created.Uuid, webhookParam)
+		var webhookResult webhookTriggerRow
+		webhookResult, err = e.createLinkedWebhook(ctx, ts, created.Uuid, webhookParam)
 		if err != nil {
 			return domain.ToolExecResult{}, err
 		}
@@ -251,20 +290,25 @@ func (e *TractExecutor) createTract(ctx context.Context, ts TractService, params
 	return domain.ToolExecResult{Text: text}, nil
 }
 
-func (e *TractExecutor) createLinkedWebhook(ctx context.Context, ts TractService, tractUuid uuid.UUID, wt map[string]interface{}) (webhookTriggerRow, error) {
-	name, ok := paramString(wt, "name")
+func (e *TractExecutor) createLinkedWebhook(
+	ctx context.Context,
+	ts TractService,
+	tractUuid uuid.UUID,
+	wt map[string]interface{},
+) (webhookTriggerRow, error) {
+	name, ok := paramString(wt, fieldName)
 	if !ok || name == "" {
 		return webhookTriggerRow{}, user_errors.McpTractNameRequired
 	}
 
-	source, ok := paramString(wt, "source")
+	source, ok := paramString(wt, fieldSource)
 	if !ok || source == "" {
 		return webhookTriggerRow{}, user_errors.McpTriggerSourceRequired
 	}
 
 	var filters []domain.TractCondition
 
-	rawFilters, ok := wt["filters"]
+	rawFilters, ok := wt[fieldFilters]
 	if ok {
 		err := decodeInto(rawFilters, &filters)
 		if err != nil {
@@ -305,20 +349,24 @@ func buildWebhookUrl(ctx context.Context, triggerUuid uuid.UUID) string {
 
 // -- update_tract --
 
-func (e *TractExecutor) updateTract(ctx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	id, err := paramUuid(params, "tract_uuid", user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
+func (e *TractExecutor) updateTract(
+	ctx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	id, err := paramUuid(params, fieldTractUuid, user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
 
-	name, ok := paramString(params, "name")
+	name, ok := paramString(params, fieldName)
 	if !ok || name == "" {
 		return domain.ToolExecResult{}, user_errors.McpTractNameRequired
 	}
 
-	description, _ := paramString(params, "description")
+	description, _ := paramString(params, fieldDescription)
 
-	defParam, ok := paramObject(params, "definition")
+	defParam, ok := paramObject(params, fieldDefinition)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpTractDefinitionRequired
 	}
@@ -336,8 +384,8 @@ func (e *TractExecutor) updateTract(ctx context.Context, ts TractService, params
 	}
 
 	result := map[string]interface{}{
-		"tract":    tractToRow(updated, true),
-		"warnings": warnings,
+		fieldTract:    tractToRow(updated, true),
+		fieldWarnings: warnings,
 	}
 
 	text, err := marshalResult(result)
@@ -350,13 +398,17 @@ func (e *TractExecutor) updateTract(ctx context.Context, ts TractService, params
 
 // -- create_trigger --
 
-func (e *TractExecutor) createTrigger(ctx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	name, ok := paramString(params, "name")
+func (e *TractExecutor) createTrigger(
+	ctx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	name, ok := paramString(params, fieldName)
 	if !ok || name == "" {
 		return domain.ToolExecResult{}, user_errors.McpTractNameRequired
 	}
 
-	source, ok := paramString(params, "source")
+	source, ok := paramString(params, fieldSource)
 	if !ok || source == "" {
 		return domain.ToolExecResult{}, user_errors.McpTriggerSourceRequired
 	}
@@ -389,20 +441,29 @@ func (e *TractExecutor) createTrigger(ctx context.Context, ts TractService, para
 
 // -- link_trigger --
 
-func (e *TractExecutor) linkTrigger(ctx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	triggerUuid, err := paramUuid(params, "trigger_uuid", user_errors.McpTriggerUuidRequired, user_errors.McpTriggerUuidInvalid)
+func (e *TractExecutor) linkTrigger(
+	ctx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	triggerUuid, err := paramUuid(
+		params,
+		fieldTriggerUuid,
+		user_errors.McpTriggerUuidRequired,
+		user_errors.McpTriggerUuidInvalid,
+	)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
 
-	tractUuid, err := paramUuid(params, "tract_uuid", user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
+	tractUuid, err := paramUuid(params, fieldTractUuid, user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
 
 	var filters []domain.TractCondition
 
-	rawFilters, ok := params["filters"]
+	rawFilters, ok := params[fieldFilters]
 	if ok {
 		err = decodeInto(rawFilters, &filters)
 		if err != nil {
@@ -415,7 +476,7 @@ func (e *TractExecutor) linkTrigger(ctx context.Context, ts TractService, params
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "error linking trigger to tract")
 	}
 
-	result := map[string]interface{}{"message": "trigger linked"}
+	result := map[string]interface{}{fieldMessage: "trigger linked"}
 
 	text, err := marshalResult(result)
 	if err != nil {
@@ -462,8 +523,12 @@ type tractDetailRow struct {
 	Triggers []triggerLinkRow `json:"triggers"`
 }
 
-func (e *TractExecutor) getTract(ctx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	id, err := paramUuid(params, "tract_uuid", user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
+func (e *TractExecutor) getTract(
+	ctx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	id, err := paramUuid(params, fieldTractUuid, user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
@@ -569,8 +634,12 @@ func stepToRow(s domain.TractRunStep) runStepRow {
 	return row
 }
 
-func (e *TractExecutor) getTractRuns(ctx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	id, err := paramUuid(params, "tract_uuid", user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
+func (e *TractExecutor) getTractRuns(
+	ctx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	id, err := paramUuid(params, fieldTractUuid, user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
@@ -585,7 +654,8 @@ func (e *TractExecutor) getTractRuns(ctx context.Context, ts TractService, param
 	rows := make([]runRow, len(runs))
 
 	for i, run := range runs {
-		_, steps, err := ts.GetRun(ctx, run.Uuid)
+		var steps []domain.TractRunStep
+		_, steps, err = ts.GetRun(ctx, run.Uuid)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "error getting tract run")
 		}
@@ -603,8 +673,13 @@ func (e *TractExecutor) getTractRuns(ctx context.Context, ts TractService, param
 
 // -- run_tract --
 
-func (e *TractExecutor) runTract(ctx context.Context, baseCtx context.Context, ts TractService, params map[string]interface{}) (domain.ToolExecResult, error) {
-	id, err := paramUuid(params, "tract_uuid", user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
+func (e *TractExecutor) runTract(
+	ctx context.Context,
+	baseCtx context.Context,
+	ts TractService,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	id, err := paramUuid(params, fieldTractUuid, user_errors.McpTractUuidRequired, user_errors.McpTractUuidInvalid)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
@@ -618,7 +693,8 @@ func (e *TractExecutor) runTract(ctx context.Context, baseCtx context.Context, t
 
 	runParams, ok := params["params"]
 	if ok {
-		encoded, err := json.Marshal(runParams)
+		var encoded []byte
+		encoded, err = json.Marshal(runParams)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "error marshaling run params")
 		}
@@ -628,7 +704,7 @@ func (e *TractExecutor) runTract(ctx context.Context, baseCtx context.Context, t
 
 	go e.runAsync(baseCtx, ts, tr, payload)
 
-	result := map[string]interface{}{"message": "tract run started", "tract_uuid": tr.Uuid.String()}
+	result := map[string]interface{}{fieldMessage: "tract run started", fieldTractUuid: tr.Uuid.String()}
 
 	text, err := marshalResult(result)
 	if err != nil {
@@ -646,7 +722,7 @@ func (e *TractExecutor) runAsync(baseCtx context.Context, ts TractService, tr do
 
 	_, err := ts.StartRun(baseCtx, tr, payload, tract.StartedByMcp, triggerUuid)
 	if err != nil {
-		log.Error().Err(err).Str("tract_uuid", tr.Uuid.String()).Msg("mcp tract run failed")
+		log.Error().Err(err).Str(fieldTractUuid, tr.Uuid.String()).Msg("mcp tract run failed")
 	}
 }
 
@@ -674,24 +750,40 @@ func paramObject(params map[string]interface{}, key string) (map[string]interfac
 	return m, ok
 }
 
+// paramMaxLimit bounds paramInt32's result so a caller-supplied "limit" can never request an
+// unreasonably large page, and so the narrowing conversion to int32 below is always in range.
+const paramMaxLimit = 1000
+
 func paramInt32(params map[string]interface{}, key string, fallback int32) int32 {
 	v, ok := params[key]
 	if !ok {
 		return fallback
 	}
 
-	switch n := v.(type) {
+	var n int64
+
+	switch t := v.(type) {
 	case float64:
-		return int32(n)
+		n = int64(t)
 	case int:
-		return int32(n)
+		n = int64(t)
 	case int32:
-		return n
+		n = int64(t)
 	case int64:
-		return int32(n)
+		n = t
+	default:
+		return fallback
 	}
 
-	return fallback
+	if n <= 0 {
+		return fallback
+	}
+
+	if n > paramMaxLimit {
+		return paramMaxLimit
+	}
+
+	return int32(n)
 }
 
 func paramUuid(params map[string]interface{}, key string, requiredErr error, invalidErr error) (uuid.UUID, error) {
@@ -759,7 +851,10 @@ func toolSchemaFromParam(v interface{}) (domain.ToolSchema, error) {
 		return domain.ToolSchema{}, err
 	}
 
-	schema := domain.ToolSchema{Properties: make(map[string]domain.ToolProperty, len(row.Properties)), Required: row.Required}
+	schema := domain.ToolSchema{
+		Properties: make(map[string]domain.ToolProperty, len(row.Properties)),
+		Required:   row.Required,
+	}
 	for k, pr := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(pr)
 	}
@@ -768,7 +863,10 @@ func toolSchemaFromParam(v interface{}) (domain.ToolSchema, error) {
 }
 
 func toolSchemaToRow(schema domain.ToolSchema) toolSchemaRow {
-	row := toolSchemaRow{Properties: make(map[string]toolPropertyRow, len(schema.Properties)), Required: schema.Required}
+	row := toolSchemaRow{
+		Properties: make(map[string]toolPropertyRow, len(schema.Properties)),
+		Required:   schema.Required,
+	}
 	for k, v := range schema.Properties {
 		row.Properties[k] = toolPropertyRowFromDomain(v)
 	}
@@ -831,11 +929,11 @@ func toolPropertyRowToDomain(p toolPropertyRow) domain.ToolProperty {
 
 func TractToolDefinitions() []domain.McpToolDef {
 	filterItemSchema := domain.ToolProperty{
-		Type: "object",
+		Type: schemaTypeObject,
 		Properties: map[string]domain.ToolProperty{
-			"left":  {Type: "string", Description: "Template string, e.g. \"${trigger.branch}\""},
-			"op":    {Type: "string", Description: "Comparison operator, e.g. \"==\", \"!=\", \"contains\""},
-			"right": {Type: "string", Description: "Template string"},
+			"left":  {Type: schemaTypeString, Description: "Template string, e.g. \"${trigger.branch}\""},
+			"op":    {Type: schemaTypeString, Description: "Comparison operator, e.g. \"==\", \"!=\", \"contains\""},
+			"right": {Type: schemaTypeString, Description: "Template string"},
 		},
 		Required: []string{"left", "op", "right"},
 	}
@@ -843,39 +941,40 @@ func TractToolDefinitions() []domain.McpToolDef {
 	return []domain.McpToolDef{
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolListTractActions,
-				Description: "List the action catalog available to tract steps (builtin tools + every connected MoM tool), plus available webhook trigger source presets",
-				Properties:  map[string]domain.ToolProperty{},
-				Required:    []string{},
+				Name: ToolListTractActions,
+				Description: "List the action catalog available to tract steps (builtin tools + every connected " +
+					"MoM tool), plus available webhook trigger source presets",
+				Properties: map[string]domain.ToolProperty{},
+				Required:   []string{},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
 					"actions": {
-						Type:        "array",
+						Type:        schemaTypeArray,
 						Description: "Available tract action tools",
 						Items: &domain.ToolProperty{
-							Type: "object",
+							Type: schemaTypeObject,
 							Properties: map[string]domain.ToolProperty{
-								"mcp":           {Type: "string", Description: "MoM name, or \"artel\" for builtins"},
-								"tool":          {Type: "string"},
-								"description":   {Type: "string"},
-								"input_schema":  {Type: "object", Description: "{properties, required} input schema"},
-								"output_schema": {Type: "object", Description: "{properties, required} output schema"},
+								fieldMcp:         {Type: schemaTypeString, Description: "MoM name, or \"artel\" for builtins"},
+								"tool":           {Type: schemaTypeString},
+								fieldDescription: {Type: schemaTypeString},
+								"input_schema":   {Type: schemaTypeObject, Description: "{properties, required} input schema"},
+								"output_schema":  {Type: schemaTypeObject, Description: "{properties, required} output schema"},
 							},
-							Required: []string{"mcp", "tool", "description"},
+							Required: []string{fieldMcp, "tool", fieldDescription},
 						},
 					},
 					"trigger_sources": {
-						Type:        "array",
+						Type:        schemaTypeArray,
 						Description: "Available webhook trigger source presets",
 						Items: &domain.ToolProperty{
-							Type: "object",
+							Type: schemaTypeObject,
 							Properties: map[string]domain.ToolProperty{
-								"key":            {Type: "string"},
-								"description":    {Type: "string"},
-								"payload_schema": {Type: "object"},
+								"key":            {Type: schemaTypeString},
+								fieldDescription: {Type: schemaTypeString},
+								"payload_schema": {Type: schemaTypeObject},
 							},
-							Required: []string{"key", "description"},
+							Required: []string{"key", fieldDescription},
 						},
 					},
 				},
@@ -884,105 +983,132 @@ func TractToolDefinitions() []domain.McpToolDef {
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolCreateTract,
-				Description: "Create a new tract (workflow automation). Optionally also create and link a webhook trigger in the same call. Use list_tract_actions first to see available action tools.",
+				Name: ToolCreateTract,
+				Description: "Create a new tract (workflow automation). Optionally also create and link a webhook " +
+					"trigger in the same call. Use list_tract_actions first to see available action tools.",
 				Properties: map[string]domain.ToolProperty{
-					"name":        {Type: "string", Description: "Tract display name"},
-					"description": {Type: "string", Description: "Tract description (optional)"},
-					"definition":  {Type: "object", Description: "Tract definition: {steps: [...]}"},
+					fieldName:        {Type: schemaTypeString, Description: "Tract display name"},
+					fieldDescription: {Type: schemaTypeString, Description: "Tract description (optional)"},
+					fieldDefinition:  {Type: schemaTypeObject, Description: "Tract definition: {steps: [...]}"},
 					"webhook_trigger": {
-						Type:        "object",
+						Type:        schemaTypeObject,
 						Description: "Optional: also create a webhook trigger and link it to this tract",
 						Properties: map[string]domain.ToolProperty{
-							"name":   {Type: "string"},
-							"source": {Type: "string", Description: "Trigger source preset key, e.g. gitlab_push or generic"},
-							"filters": {
-								Type:  "array",
+							fieldName: {Type: schemaTypeString},
+							fieldSource: {
+								Type:        schemaTypeString,
+								Description: "Trigger source preset key, e.g. gitlab_push or generic",
+							},
+							fieldFilters: {
+								Type:  schemaTypeArray,
 								Items: &filterItemSchema,
 							},
 						},
-						Required: []string{"name", "source"},
+						Required: []string{fieldName, fieldSource},
 					},
 				},
-				Required: []string{"name", "definition"},
+				Required: []string{fieldName, fieldDefinition},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"tract": {
-						Type: "object",
+					fieldTract: {
+						Type: schemaTypeObject,
 						Properties: map[string]domain.ToolProperty{
-							"uuid":        {Type: "string"},
-							"name":        {Type: "string"},
-							"description": {Type: "string"},
-							"enabled":     {Type: "boolean"},
-							"definition":  {Type: "object"},
-							"created_at":  {Type: "string"},
-							"updated_at":  {Type: "string"},
+							fieldUuid:        {Type: schemaTypeString},
+							fieldName:        {Type: schemaTypeString},
+							fieldDescription: {Type: schemaTypeString},
+							fieldEnabled:     {Type: schemaTypeBoolean},
+							fieldDefinition:  {Type: schemaTypeObject},
+							fieldCreatedAt:   {Type: schemaTypeString},
+							fieldUpdatedAt:   {Type: schemaTypeString},
 						},
 					},
-					"warnings": {Type: "array", Description: "Non-fatal validation warnings", Items: &domain.ToolProperty{Type: "string"}},
+					fieldWarnings: {
+						Type:        schemaTypeArray,
+						Description: "Non-fatal validation warnings",
+						Items:       &domain.ToolProperty{Type: schemaTypeString},
+					},
 					"webhook_trigger": {
-						Type:        "object",
+						Type:        schemaTypeObject,
 						Description: "Present only when webhook_trigger was requested",
 						Properties: map[string]domain.ToolProperty{
-							"trigger_uuid":  {Type: "string"},
-							"webhook_url":   {Type: "string"},
-							"webhook_token": {Type: "string", Description: "One-time secret — save it now, it is never shown again"},
+							fieldTriggerUuid: {Type: schemaTypeString},
+							fieldWebhookUrl:  {Type: schemaTypeString},
+							fieldWebhookToken: {
+								Type:        schemaTypeString,
+								Description: "One-time secret — save it now, it is never shown again",
+							},
 						},
 					},
 				},
-				Required: []string{"tract", "warnings"},
+				Required: []string{fieldTract, fieldWarnings},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolUpdateTract,
-				Description: "Replace an existing tract's name, description and whole definition. This is a wholesale overwrite, not a partial patch — pass the full desired definition, not just the changed steps. Use get_tract first to fetch the current definition to edit.",
+				Name: ToolUpdateTract,
+				Description: "Replace an existing tract's name, description and whole definition. This is a " +
+					"wholesale overwrite, not a partial patch — pass the full desired definition, not just the " +
+					"changed steps. Use get_tract first to fetch the current definition to edit.",
 				Properties: map[string]domain.ToolProperty{
-					"tract_uuid":  {Type: "string"},
-					"name":        {Type: "string", Description: "Tract display name"},
-					"description": {Type: "string", Description: "Tract description (optional)"},
-					"definition":  {Type: "object", Description: "Tract definition: {steps: [...]}"},
+					fieldTractUuid:   {Type: schemaTypeString},
+					fieldName:        {Type: schemaTypeString, Description: "Tract display name"},
+					fieldDescription: {Type: schemaTypeString, Description: "Tract description (optional)"},
+					fieldDefinition:  {Type: schemaTypeObject, Description: "Tract definition: {steps: [...]}"},
 				},
-				Required: []string{"tract_uuid", "name", "definition"},
+				Required: []string{fieldTractUuid, fieldName, fieldDefinition},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"tract": {
-						Type: "object",
+					fieldTract: {
+						Type: schemaTypeObject,
 						Properties: map[string]domain.ToolProperty{
-							"uuid":        {Type: "string"},
-							"name":        {Type: "string"},
-							"description": {Type: "string"},
-							"enabled":     {Type: "boolean"},
-							"definition":  {Type: "object"},
-							"created_at":  {Type: "string"},
-							"updated_at":  {Type: "string"},
+							fieldUuid:        {Type: schemaTypeString},
+							fieldName:        {Type: schemaTypeString},
+							fieldDescription: {Type: schemaTypeString},
+							fieldEnabled:     {Type: schemaTypeBoolean},
+							fieldDefinition:  {Type: schemaTypeObject},
+							fieldCreatedAt:   {Type: schemaTypeString},
+							fieldUpdatedAt:   {Type: schemaTypeString},
 						},
 					},
-					"warnings": {Type: "array", Description: "Non-fatal validation warnings", Items: &domain.ToolProperty{Type: "string"}},
+					fieldWarnings: {
+						Type:        schemaTypeArray,
+						Description: "Non-fatal validation warnings",
+						Items:       &domain.ToolProperty{Type: schemaTypeString},
+					},
 				},
-				Required: []string{"tract", "warnings"},
+				Required: []string{fieldTract, fieldWarnings},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolCreateTrigger,
-				Description: "Create a standalone webhook trigger, not yet linked to any tract. Use link_trigger to wire it up afterwards.",
+				Name: ToolCreateTrigger,
+				Description: "Create a standalone webhook trigger, not yet linked to any tract. Use link_trigger " +
+					"to wire it up afterwards.",
 				Properties: map[string]domain.ToolProperty{
-					"name":           {Type: "string"},
-					"source":         {Type: "string", Description: "Trigger source preset key, e.g. gitlab_push or generic"},
-					"payload_schema": {Type: "object", Description: "Optional {properties, required} schema describing the webhook payload shape"},
+					fieldName: {Type: schemaTypeString},
+					fieldSource: {
+						Type:        schemaTypeString,
+						Description: "Trigger source preset key, e.g. gitlab_push or generic",
+					},
+					"payload_schema": {
+						Type:        schemaTypeObject,
+						Description: "Optional {properties, required} schema describing the webhook payload shape",
+					},
 				},
-				Required: []string{"name", "source"},
+				Required: []string{fieldName, fieldSource},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"trigger_uuid":  {Type: "string"},
-					"webhook_url":   {Type: "string"},
-					"webhook_token": {Type: "string", Description: "One-time secret — save it now, it is never shown again"},
+					fieldTriggerUuid: {Type: schemaTypeString},
+					fieldWebhookUrl:  {Type: schemaTypeString},
+					fieldWebhookToken: {
+						Type:        schemaTypeString,
+						Description: "One-time secret — save it now, it is never shown again",
+					},
 				},
-				Required: []string{"trigger_uuid", "webhook_url", "webhook_token"},
+				Required: []string{fieldTriggerUuid, fieldWebhookUrl, fieldWebhookToken},
 			},
 		},
 		{
@@ -990,20 +1116,20 @@ func TractToolDefinitions() []domain.McpToolDef {
 				Name:        ToolLinkTrigger,
 				Description: "Link an existing trigger to an existing tract, with optional filters",
 				Properties: map[string]domain.ToolProperty{
-					"trigger_uuid": {Type: "string"},
-					"tract_uuid":   {Type: "string"},
-					"filters": {
-						Type:  "array",
+					fieldTriggerUuid: {Type: schemaTypeString},
+					fieldTractUuid:   {Type: schemaTypeString},
+					fieldFilters: {
+						Type:  schemaTypeArray,
 						Items: &filterItemSchema,
 					},
 				},
-				Required: []string{"trigger_uuid", "tract_uuid"},
+				Required: []string{fieldTriggerUuid, fieldTractUuid},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"message": {Type: "string"},
+					fieldMessage: {Type: schemaTypeString},
 				},
-				Required: []string{"message"},
+				Required: []string{fieldMessage},
 			},
 		},
 		{
@@ -1015,14 +1141,14 @@ func TractToolDefinitions() []domain.McpToolDef {
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"uuid":        {Type: "string", Description: "Tract uuid (each array entry)"},
-					"name":        {Type: "string"},
-					"description": {Type: "string"},
-					"enabled":     {Type: "boolean"},
-					"created_at":  {Type: "string"},
-					"updated_at":  {Type: "string"},
+					fieldUuid:        {Type: schemaTypeString, Description: "Tract uuid (each array entry)"},
+					fieldName:        {Type: schemaTypeString},
+					fieldDescription: {Type: schemaTypeString},
+					fieldEnabled:     {Type: schemaTypeBoolean},
+					fieldCreatedAt:   {Type: schemaTypeString},
+					fieldUpdatedAt:   {Type: schemaTypeString},
 				},
-				Required: []string{"uuid", "name", "enabled", "created_at", "updated_at"},
+				Required: []string{fieldUuid, fieldName, fieldEnabled, fieldCreatedAt, fieldUpdatedAt},
 			},
 		},
 		{
@@ -1030,80 +1156,81 @@ func TractToolDefinitions() []domain.McpToolDef {
 				Name:        ToolGetTract,
 				Description: "Get one tract's full definition plus its linked triggers",
 				Properties: map[string]domain.ToolProperty{
-					"tract_uuid": {Type: "string"},
+					fieldTractUuid: {Type: schemaTypeString},
 				},
-				Required: []string{"tract_uuid"},
+				Required: []string{fieldTractUuid},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"tract": {
-						Type: "object",
+					fieldTract: {
+						Type: schemaTypeObject,
 						Properties: map[string]domain.ToolProperty{
-							"uuid":        {Type: "string"},
-							"name":        {Type: "string"},
-							"description": {Type: "string"},
-							"enabled":     {Type: "boolean"},
-							"definition":  {Type: "object"},
-							"created_at":  {Type: "string"},
-							"updated_at":  {Type: "string"},
+							fieldUuid:        {Type: schemaTypeString},
+							fieldName:        {Type: schemaTypeString},
+							fieldDescription: {Type: schemaTypeString},
+							fieldEnabled:     {Type: schemaTypeBoolean},
+							fieldDefinition:  {Type: schemaTypeObject},
+							fieldCreatedAt:   {Type: schemaTypeString},
+							fieldUpdatedAt:   {Type: schemaTypeString},
 						},
 					},
 					"triggers": {
-						Type: "array",
+						Type: schemaTypeArray,
 						Items: &domain.ToolProperty{
-							Type: "object",
+							Type: schemaTypeObject,
 							Properties: map[string]domain.ToolProperty{
-								"trigger_uuid": {Type: "string"},
-								"name":         {Type: "string"},
-								"kind":         {Type: "string"},
-								"source":       {Type: "string"},
-								"enabled":      {Type: "boolean"},
-								"filters":      {Type: "array", Items: &filterItemSchema},
+								fieldTriggerUuid: {Type: schemaTypeString},
+								fieldName:        {Type: schemaTypeString},
+								"kind":           {Type: schemaTypeString},
+								fieldSource:      {Type: schemaTypeString},
+								fieldEnabled:     {Type: schemaTypeBoolean},
+								fieldFilters:     {Type: schemaTypeArray, Items: &filterItemSchema},
 							},
 						},
 					},
 				},
-				Required: []string{"tract", "triggers"},
+				Required: []string{fieldTract, "triggers"},
 			},
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolGetTractRuns,
-				Description: "Get a tract's most recent runs (most recent first), each with its ordered step rows, for debugging a run",
+				Name: ToolGetTractRuns,
+				Description: "Get a tract's most recent runs (most recent first), each with its ordered step " +
+					"rows, for debugging a run",
 				Properties: map[string]domain.ToolProperty{
-					"tract_uuid": {Type: "string"},
-					"limit":      {Type: "integer", Description: "Max runs to return (default 20)"},
+					fieldTractUuid: {Type: schemaTypeString},
+					"limit":        {Type: schemaTypeInteger, Description: "Max runs to return (default 20)"},
 				},
-				Required: []string{"tract_uuid"},
+				Required: []string{fieldTractUuid},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"uuid":            {Type: "string", Description: "Run uuid (each array entry)"},
-					"status":          {Type: "string", Enum: []string{"running", "done", "failed"}},
-					"started_by":      {Type: "string", Enum: []string{"webhook", "manual", "mcp"}},
-					"trigger_payload": {Type: "object"},
-					"error":           {Type: "string"},
-					"created_at":      {Type: "string"},
-					"updated_at":      {Type: "string"},
+					fieldUuid:         {Type: schemaTypeString, Description: "Run uuid (each array entry)"},
+					fieldStatus:       {Type: schemaTypeString, Enum: []string{"running", "done", "failed"}},
+					"started_by":      {Type: schemaTypeString, Enum: []string{"webhook", "manual", fieldMcp}},
+					"trigger_payload": {Type: schemaTypeObject},
+					"error":           {Type: schemaTypeString},
+					fieldCreatedAt:    {Type: schemaTypeString},
+					fieldUpdatedAt:    {Type: schemaTypeString},
 					"steps": {
-						Type: "array",
+						Type: schemaTypeArray,
 						Items: &domain.ToolProperty{
-							Type: "object",
+							Type: schemaTypeObject,
 							Properties: map[string]domain.ToolProperty{
-								"step_id":     {Type: "string"},
-								"step_name":   {Type: "string"},
-								"step_type":   {Type: "string"},
-								"status":      {Type: "string", Enum: []string{"running", "done", "failed"}},
-								"input":       {Type: "object"},
-								"output":      {Type: "object"},
-								"error":       {Type: "string"},
-								"started_at":  {Type: "string"},
-								"finished_at": {Type: "string"},
+								"step_id":     {Type: schemaTypeString},
+								"step_name":   {Type: schemaTypeString},
+								"step_type":   {Type: schemaTypeString},
+								fieldStatus:   {Type: schemaTypeString, Enum: []string{"running", "done", "failed"}},
+								"input":       {Type: schemaTypeObject},
+								"output":      {Type: schemaTypeObject},
+								"error":       {Type: schemaTypeString},
+								"started_at":  {Type: schemaTypeString},
+								"finished_at": {Type: schemaTypeString},
 							},
 						},
 					},
 				},
-				Required: []string{"uuid", "status", "started_by", "created_at", "updated_at", "steps"},
+				Required: []string{fieldUuid, fieldStatus, "started_by", fieldCreatedAt, fieldUpdatedAt, "steps"},
 			},
 		},
 		{
@@ -1111,17 +1238,17 @@ func TractToolDefinitions() []domain.McpToolDef {
 				Name:        ToolRunTract,
 				Description: "Manually start a run of a tract, optionally seeding it with trigger-payload-shaped params",
 				Properties: map[string]domain.ToolProperty{
-					"tract_uuid": {Type: "string"},
-					"params":     {Type: "object", Description: "Optional params, used as this run's trigger payload"},
+					fieldTractUuid: {Type: schemaTypeString},
+					"params":       {Type: schemaTypeObject, Description: "Optional params, used as this run's trigger payload"},
 				},
-				Required: []string{"tract_uuid"},
+				Required: []string{fieldTractUuid},
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"message":    {Type: "string"},
-					"tract_uuid": {Type: "string"},
+					fieldMessage:   {Type: schemaTypeString},
+					fieldTractUuid: {Type: schemaTypeString},
 				},
-				Required: []string{"message", "tract_uuid"},
+				Required: []string{fieldMessage, fieldTractUuid},
 			},
 		},
 	}

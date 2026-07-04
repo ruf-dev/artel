@@ -23,8 +23,6 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
@@ -32,6 +30,7 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
+	"github.com/stretchr/testify/suite"
 )
 
 func envOrDefault(key, def string) string {
@@ -129,7 +128,13 @@ func (s *TractE2ESuite) SetupSuite() {
 	// ToolExecutor composes the already-built Mcp/Mom services — mirror that wiring exactly
 	// since this test drives the service layer directly.
 	tractToolExecutor := tract.NewToolExecutor(s.svcs.McpService(), s.svcs.MomService())
-	s.svcs.Tract = tract.New(s.repos.Tracts(), s.repos.Triggers(), s.repos.ExternalConnections(), s.repos.McpDefinitions(), tractToolExecutor)
+	s.svcs.Tract = tract.New(
+		s.repos.Tracts(),
+		s.repos.Triggers(),
+		s.repos.ExternalConnections(),
+		s.repos.McpDefinitions(),
+		tractToolExecutor,
+	)
 	s.svcs.McpService().SetTractService(ctx, s.svcs.TractService())
 
 	s.couchURL = envOrDefault("COUCH_URL", "http://localhost:15985")
@@ -181,7 +186,8 @@ func (s *TractE2ESuite) TestTractBasicScenario() {
 
 	couchInstanceUuid, err := uuid.Parse(s.couchInstance)
 	s.Require().NoError(err)
-	testVault, err := s.repos.Vaults().Upsert(ctx, user.Uuid, couchInstanceUuid, "e2e_tract_vault", vaultDbName, "active", "")
+	testVault, err := s.repos.Vaults().
+		Upsert(ctx, user.Uuid, couchInstanceUuid, "e2e_tract_vault", vaultDbName, "active", "")
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
 		_ = s.repos.Vaults().Delete(context.Background(), testVault.Uuid)
@@ -212,7 +218,14 @@ func (s *TractE2ESuite) TestTractBasicScenario() {
 	// 2. Create and link a manual trigger — the same "Add trigger" flow the Trigger inspector
 	// panel drives.
 	payloadSchema := domain.ToolSchema{Properties: map[string]domain.ToolProperty{}}
-	trigger, _, err := s.svcs.Tract.CreateTrigger(userCtx, "e2e manual trigger", "manual", "generic", json.RawMessage(`{}`), payloadSchema)
+	trigger, _, err := s.svcs.Tract.CreateTrigger(
+		userCtx,
+		"e2e manual trigger",
+		"manual",
+		"generic",
+		json.RawMessage(`{}`),
+		payloadSchema,
+	)
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
 		_ = s.svcs.Tract.DeleteTrigger(context.Background(), trigger.Uuid)

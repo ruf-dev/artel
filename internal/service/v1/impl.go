@@ -54,19 +54,34 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	}
 
 	return &Services{
-		Auth:                auth.New(repo, cfg.TelegramClientID),
-		Vault:               vault.New(repo),
-		CouchInstance:       couchinstances.New(repo),
-		S3Instance:          s3instances.New(repo),
-		AdminCouch:          admincouchsvc.New(repo),
-		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.CouchInstances(), repo.S3Instances(), repo.McpConnectors(), repo.McpDefinitions(), repo.ExternalConnections()),
-		Subscription:        subscription.New(repo.Subscriptions()),
-		Prompt:              prompt.New(repo.Prompts()),
-		TaskTracker:         tasktracker.New(repo.TaskTrackers()),
-		Notes:               notes.New(repo),
-		AdminUsers:          adminusers.New(repo.Users(), repo.Sessions()),
-		ExternalConnections: externalconns.New(repo.ExternalConnections(), repo.PendingAuthCodes(), repo.McpSpreadsheets(), repo.MailServerSuggestions(), oauthCfg),
-		Mom:                 mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections()),
+		Auth:          auth.New(repo, cfg.TelegramClientID),
+		Vault:         vault.New(repo),
+		CouchInstance: couchinstances.New(repo),
+		S3Instance:    s3instances.New(repo),
+		AdminCouch:    admincouchsvc.New(repo),
+		Mcp: mcp.New(
+			repo.McpKeyRepository(),
+			repo.Vaults(),
+			repo.VaultMembers(),
+			repo.CouchInstances(),
+			repo.S3Instances(),
+			repo.McpConnectors(),
+			repo.McpDefinitions(),
+			repo.ExternalConnections(),
+		),
+		Subscription: subscription.New(repo.Subscriptions()),
+		Prompt:       prompt.New(repo.Prompts()),
+		TaskTracker:  tasktracker.New(repo.TaskTrackers()),
+		Notes:        notes.New(repo),
+		AdminUsers:   adminusers.New(repo.Users(), repo.Sessions()),
+		ExternalConnections: externalconns.New(
+			repo.ExternalConnections(),
+			repo.PendingAuthCodes(),
+			repo.McpSpreadsheets(),
+			repo.MailServerSuggestions(),
+			oauthCfg,
+		),
+		Mom: mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections()),
 	}, nil
 }
 

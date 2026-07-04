@@ -17,7 +17,11 @@ func New(q *artel_q.Queries) *PendingAuthCodesRepo {
 	return &PendingAuthCodesRepo{q: q}
 }
 
-func (r *PendingAuthCodesRepo) Create(ctx context.Context, code, rawToken, codeChallenge, redirectUri, clientId string, expiresAt time.Time) error {
+func (r *PendingAuthCodesRepo) Create(
+	ctx context.Context,
+	code, rawToken, codeChallenge, redirectUri, clientId string,
+	expiresAt time.Time,
+) error {
 	err := r.q.CreatePendingAuthCode(ctx, artel_q.CreatePendingAuthCodeParams{
 		Code:          code,
 		RawToken:      rawToken,

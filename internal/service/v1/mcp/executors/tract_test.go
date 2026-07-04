@@ -1,4 +1,4 @@
-package executors
+package executors_test
 
 import (
 	"context"
@@ -8,19 +8,39 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 )
 
-// fakeTractService implements TractService with just enough behavior for
+const (
+	testRenamedName    = "renamed"
+	testDefinitionKey  = "definition"
+	testNewDescription = "new description"
+)
+
+// fakeTractService implements executors.TractService with just enough behavior for
 // update_tract tests; every other method panics if called.
 type fakeTractService struct {
-	updateTractFn func(ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
+	updateTractFn func(
+		ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition,
+	) (domain.Tract, []string, error)
 }
 
-func (f *fakeTractService) CreateTract(_ context.Context, _ string, _ string, _ domain.TractDefinition) (domain.Tract, []string, error) {
+func (f *fakeTractService) CreateTract(
+	_ context.Context,
+	_ string,
+	_ string,
+	_ domain.TractDefinition,
+) (domain.Tract, []string, error) {
 	panic("not implemented")
 }
 
-func (f *fakeTractService) UpdateTract(ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error) {
+func (f *fakeTractService) UpdateTract(
+	ctx context.Context,
+	id uuid.UUID,
+	name string,
+	description string,
+	def domain.TractDefinition,
+) (domain.Tract, []string, error) {
 	return f.updateTractFn(ctx, id, name, description, def)
 }
 
@@ -32,7 +52,14 @@ func (f *fakeTractService) ListTracts(_ context.Context) ([]domain.Tract, error)
 	panic("not implemented")
 }
 
-func (f *fakeTractService) CreateTrigger(_ context.Context, _ string, _ string, _ string, _ json.RawMessage, _ domain.ToolSchema) (domain.Trigger, string, error) {
+func (f *fakeTractService) CreateTrigger(
+	_ context.Context,
+	_ string,
+	_ string,
+	_ string,
+	_ json.RawMessage,
+	_ domain.ToolSchema,
+) (domain.Trigger, string, error) {
 	panic("not implemented")
 }
 
@@ -44,7 +71,13 @@ func (f *fakeTractService) ListLinksByTract(_ context.Context, _ uuid.UUID) ([]r
 	panic("not implemented")
 }
 
-func (f *fakeTractService) StartRun(_ context.Context, _ domain.Tract, _ json.RawMessage, _ string, _ uuid.UUID) (domain.TractRun, error) {
+func (f *fakeTractService) StartRun(
+	_ context.Context,
+	_ domain.Tract,
+	_ json.RawMessage,
+	_ string,
+	_ uuid.UUID,
+) (domain.TractRun, error) {
 	panic("not implemented")
 }
 
@@ -70,8 +103,8 @@ func TestUpdateTract_Success(t *testing.T) {
 
 	updated := domain.Tract{
 		Uuid:        tractUuid,
-		Name:        "renamed",
-		Description: "new description",
+		Name:        testRenamedName,
+		Description: testNewDescription,
 		Enabled:     true,
 		Definition:  def,
 	}
@@ -85,7 +118,9 @@ func TestUpdateTract_Success(t *testing.T) {
 	var gotDef domain.TractDefinition
 
 	ts := &fakeTractService{
-		updateTractFn: func(_ context.Context, id uuid.UUID, name string, description string, d domain.TractDefinition) (domain.Tract, []string, error) {
+		updateTractFn: func(
+			_ context.Context, id uuid.UUID, name string, description string, d domain.TractDefinition,
+		) (domain.Tract, []string, error) {
 			gotId = id
 			gotName = name
 			gotDescription = description
@@ -95,7 +130,7 @@ func TestUpdateTract_Success(t *testing.T) {
 		},
 	}
 
-	e := NewTractExecutor()
+	e := executors.NewTractExecutor()
 
 	defRaw, err := json.Marshal(def)
 	if err != nil {
@@ -110,13 +145,13 @@ func TestUpdateTract_Success(t *testing.T) {
 	}
 
 	params := map[string]interface{}{
-		"tract_uuid":  tractUuid.String(),
-		"name":        "renamed",
-		"description": "new description",
-		"definition":  defParam,
+		"tract_uuid":      tractUuid.String(),
+		"name":            testRenamedName,
+		"description":     testNewDescription,
+		testDefinitionKey: defParam,
 	}
 
-	result, err := e.Execute(context.Background(), context.Background(), ts, ToolUpdateTract, params)
+	result, err := e.Execute(context.Background(), context.Background(), ts, executors.ToolUpdateTract, params)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -125,11 +160,11 @@ func TestUpdateTract_Success(t *testing.T) {
 		t.Fatalf("expected id %s, got %s", tractUuid, gotId)
 	}
 
-	if gotName != "renamed" {
+	if gotName != testRenamedName {
 		t.Fatalf("expected name 'renamed', got %q", gotName)
 	}
 
-	if gotDescription != "new description" {
+	if gotDescription != testNewDescription {
 		t.Fatalf("expected description 'new description', got %q", gotDescription)
 	}
 
@@ -156,14 +191,14 @@ func TestUpdateTract_Success(t *testing.T) {
 
 func TestUpdateTract_MissingTractUuid(t *testing.T) {
 	ts := &fakeTractService{}
-	e := NewTractExecutor()
+	e := executors.NewTractExecutor()
 
 	params := map[string]interface{}{
-		"name":       "renamed",
-		"definition": map[string]interface{}{},
+		"name":            testRenamedName,
+		testDefinitionKey: map[string]interface{}{},
 	}
 
-	_, err := e.Execute(context.Background(), context.Background(), ts, ToolUpdateTract, params)
+	_, err := e.Execute(context.Background(), context.Background(), ts, executors.ToolUpdateTract, params)
 	if err == nil {
 		t.Fatalf("expected error for missing tract_uuid, got nil")
 	}
@@ -171,14 +206,14 @@ func TestUpdateTract_MissingTractUuid(t *testing.T) {
 
 func TestUpdateTract_MissingName(t *testing.T) {
 	ts := &fakeTractService{}
-	e := NewTractExecutor()
+	e := executors.NewTractExecutor()
 
 	params := map[string]interface{}{
-		"tract_uuid": uuid.New().String(),
-		"definition": map[string]interface{}{},
+		"tract_uuid":      uuid.New().String(),
+		testDefinitionKey: map[string]interface{}{},
 	}
 
-	_, err := e.Execute(context.Background(), context.Background(), ts, ToolUpdateTract, params)
+	_, err := e.Execute(context.Background(), context.Background(), ts, executors.ToolUpdateTract, params)
 	if err == nil {
 		t.Fatalf("expected error for missing name, got nil")
 	}

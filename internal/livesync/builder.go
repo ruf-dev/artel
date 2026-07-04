@@ -9,9 +9,10 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
+
+	"go.redsock.ru/rerrors"
 )
 
 const (
@@ -19,11 +20,24 @@ const (
 	pbkdf2Iter = 100_000
 	saltSize   = 16 // bytes → 32 hex chars in output
 	ivSize     = 16 // bytes → 32 hex chars in output
+	aesKeyLen  = 32 // bytes, AES-256
+
+	defaultBatchSize                          = 50
+	defaultBatchesLimit                       = 50
+	defaultCustomChunkSize                    = 50
+	defaultConcurrencyOfReadChunksOnline      = 100
+	defaultMinimumIntervalOfReadChunksOnline  = 100
+	defaultSettingVersion                     = 10
+	defaultNotifyThresholdOfRemoteStorageSize = 800
+
+	byteShift3 = 24
+	byteShift2 = 16
+	byteShift1 = 8
 )
 
-// LiveSyncConfig is the configuration object embedded in the Setup URI.
+// Config is the configuration object embedded in the Setup URI.
 // Fields match exactly what the TypeScript generate_setupuri.ts produces.
-type LiveSyncConfig struct {
+type Config struct {
 	CouchDBURI      string `json:"couchDB_URI"`
 	CouchDBUser     string `json:"couchDB_USER"`
 	CouchDBPassword string `json:"couchDB_PASSWORD"`
@@ -52,10 +66,10 @@ type LiveSyncConfig struct {
 	NotifyThresholdOfRemoteStorageSize int    `json:"notifyThresholdOfRemoteStorageSize"`
 }
 
-// DefaultConfig returns a LiveSyncConfig pre-filled with the same defaults
+// DefaultConfig returns a Config pre-filled with the same defaults
 // as the official generate_setupuri.ts script.
-func DefaultConfig(couchURI, user, password, dbName, e2eePassphrase string) LiveSyncConfig {
-	return LiveSyncConfig{
+func DefaultConfig(couchURI, user, password, dbName, e2eePassphrase string) Config {
+	return Config{
 		CouchDBURI:      couchURI,
 		CouchDBUser:     user,
 		CouchDBPassword: password,
@@ -69,18 +83,18 @@ func DefaultConfig(couchURI, user, password, dbName, e2eePassphrase string) Live
 		Passphrase:                         e2eePassphrase,
 		UsePathObfuscation:                 true,
 		BatchSave:                          true,
-		BatchSize:                          50,
-		BatchesLimit:                       50,
+		BatchSize:                          defaultBatchSize,
+		BatchesLimit:                       defaultBatchesLimit,
 		UseHistory:                         true,
 		DisableRequestURI:                  true,
-		CustomChunkSize:                    50,
+		CustomChunkSize:                    defaultCustomChunkSize,
 		SyncAfterMerge:                     false,
-		ConcurrencyOfReadChunksOnline:      100,
-		MinimumIntervalOfReadChunksOnline:  100,
+		ConcurrencyOfReadChunksOnline:      defaultConcurrencyOfReadChunksOnline,
+		MinimumIntervalOfReadChunksOnline:  defaultMinimumIntervalOfReadChunksOnline,
 		HandleFilenameCaseSensitive:        false,
 		DoNotUseFixedRevisionForChunks:     false,
-		SettingVersion:                     10,
-		NotifyThresholdOfRemoteStorageSize: 800,
+		SettingVersion:                     defaultSettingVersion,
+		NotifyThresholdOfRemoteStorageSize: defaultNotifyThresholdOfRemoteStorageSize,
 	}
 }
 
@@ -90,15 +104,15 @@ func DefaultConfig(couchURI, user, password, dbName, e2eePassphrase string) Live
 // Use a different passphrase from the E2EE passphrase in the config.
 //
 // Returns the URI and any error.
-func GenerateSetupURI(cfg LiveSyncConfig, uriPassphrase string) (string, error) {
+func GenerateSetupURI(cfg Config, uriPassphrase string) (string, error) {
 	plaintext, err := json.Marshal(cfg)
 	if err != nil {
-		return "", fmt.Errorf("marshal config: %w", err)
+		return "", rerrors.Wrap(err, "error marshaling livesync config")
 	}
 
 	encrypted, err := encryptOctagonalWheels(string(plaintext), uriPassphrase)
 	if err != nil {
-		return "", fmt.Errorf("encrypt: %w", err)
+		return "", rerrors.Wrap(err, "error encrypting setup uri")
 	}
 
 	return uriBase + url.QueryEscape(encrypted), nil
@@ -120,9 +134,9 @@ func pbkdf2Key(password, salt []byte, iter, keyLen int) []byte {
 		prf.Reset()
 		prf.Write(salt)
 
-		buf[0] = byte(block >> 24)
-		buf[1] = byte(block >> 16)
-		buf[2] = byte(block >> 8)
+		buf[0] = byte(block >> byteShift3)
+		buf[1] = byte(block >> byteShift2)
+		buf[2] = byte(block >> byteShift1)
 		buf[3] = byte(block)
 		prf.Write(buf[:4])
 		dk = prf.Sum(dk)
@@ -160,30 +174,34 @@ func encryptOctagonalWheels(plaintext, passphrase string) (string, error) {
 
 	// 2. Random salt (16 bytes)
 	salt := make([]byte, saltSize)
-	if _, err := io.ReadFull(rand.Reader, salt); err != nil {
-		return "", err
+
+	_, err := io.ReadFull(rand.Reader, salt)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error generating salt")
 	}
 
 	// 3. PBKDF2 → AES-256 key (100_000 iterations, SHA-256)
-	key := pbkdf2Key(passphraseHash[:], salt, pbkdf2Iter, 32)
+	key := pbkdf2Key(passphraseHash[:], salt, pbkdf2Iter, aesKeyLen)
 
 	// 4. Random IV (16 bytes — matches the JS 12-byte semi-static + 4-byte nonce pattern,
 	//    but the output format just stores raw iv bytes; using 16 random bytes is equivalent
 	//    for Go's AES-GCM which accepts any IV size via NewGCMWithNonceSize)
 	iv := make([]byte, ivSize)
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		return "", err
+
+	_, err = io.ReadFull(rand.Reader, iv)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error generating iv")
 	}
 
 	// 5. AES-256-GCM encrypt
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return "", rerrors.Wrap(err, "error creating aes cipher")
 	}
 
 	gcm, err := cipher.NewGCMWithNonceSize(block, ivSize)
 	if err != nil {
-		return "", err
+		return "", rerrors.Wrap(err, "error creating gcm")
 	}
 
 	ciphertext := gcm.Seal(nil, iv, []byte(plaintext), nil)

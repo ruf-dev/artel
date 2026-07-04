@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 // ToolExecutor is the narrow slice of tool-execution capability the engine needs. Defined
@@ -17,11 +16,22 @@ type ToolExecutor interface {
 	IsBuiltinTool(toolName string) bool
 	// ExecuteBuiltinTool runs a builtin (vault) tool as userUuid. Builtin tools are
 	// vault-scoped but a tract step only carries a user, so the executor resolves the vault.
-	ExecuteBuiltinTool(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error)
+	ExecuteBuiltinTool(
+		ctx context.Context,
+		userUuid uuid.UUID,
+		toolName string,
+		params map[string]interface{},
+	) (string, error)
 	// ExecuteMomTool runs a MoM tool against a specific external connection. Callers (the
 	// engine) must verify connection ownership before calling this — it performs no
 	// ownership check of its own.
-	ExecuteMomTool(ctx context.Context, connectionUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
+	ExecuteMomTool(
+		ctx context.Context,
+		connectionUuid uuid.UUID,
+		mcpName string,
+		toolName string,
+		params map[string]interface{},
+	) (string, error)
 	// ListBuiltinTools returns the builtin (vault ops + connections) tool catalog — the
 	// "artel" half of ListTractTools.
 	ListBuiltinTools(ctx context.Context) ([]domain.McpToolDef, error)
@@ -32,14 +42,25 @@ type ToolExecutor interface {
 // tract importing that package.
 type McpBuiltinExecutor interface {
 	IsBuiltinTool(toolName string) bool
-	ExecuteBuiltinToolForUser(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error)
+	ExecuteBuiltinToolForUser(
+		ctx context.Context,
+		userUuid uuid.UUID,
+		toolName string,
+		params map[string]interface{},
+	) (string, error)
 	ListTools(ctx context.Context) ([]domain.McpToolDef, error)
 }
 
 // MomConnectionExecutor is the slice of the mom service the tract engine needs for MoM tool
 // dispatch. Satisfied structurally by service.MomService.
 type MomConnectionExecutor interface {
-	ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
+	ExecuteToolForConnection(
+		ctx context.Context,
+		exConnUuid uuid.UUID,
+		mcpName string,
+		toolName string,
+		params map[string]interface{},
+	) (string, error)
 }
 
 // toolExecutorAdapter composes the mcp and mom services into the single ToolExecutor the
@@ -64,7 +85,12 @@ func (a *toolExecutorAdapter) IsBuiltinTool(toolName string) bool {
 	return a.builtin.IsBuiltinTool(toolName)
 }
 
-func (a *toolExecutorAdapter) ExecuteBuiltinTool(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error) {
+func (a *toolExecutorAdapter) ExecuteBuiltinTool(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	res, err := a.builtin.ExecuteBuiltinToolForUser(ctx, userUuid, toolName, params)
 	if err != nil {
 		return "", rerrors.Wrap(err, "Error executing builtin tool")
@@ -74,7 +100,8 @@ func (a *toolExecutorAdapter) ExecuteBuiltinTool(ctx context.Context, userUuid u
 }
 
 func (a *toolExecutorAdapter) ExecuteMomTool(ctx context.Context, connectionUuid uuid.UUID,
-	mcpName string, toolName string, params map[string]interface{}) (string, error) {
+	mcpName string, toolName string, params map[string]interface{},
+) (string, error) {
 	res, err := a.mom.ExecuteToolForConnection(ctx, connectionUuid, mcpName, toolName, params)
 	if err != nil {
 		return "", rerrors.Wrap(err)

@@ -7,11 +7,10 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/sync/errgroup"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -61,7 +60,13 @@ func (rs *runState) setOutput(stepId string, value interface{}) {
 // triggerUuid is uuid.Nil for manual/mcp runs. The caller decides whether to run this
 // synchronously or as `go engine.StartRun(...)` against a server-lifecycle context — StartRun
 // itself does not spawn a goroutine.
-func (s *Service) StartRun(ctx context.Context, tract domain.Tract, payload json.RawMessage, startedBy string, triggerUuid uuid.UUID) (domain.TractRun, error) {
+func (s *Service) StartRun(
+	ctx context.Context,
+	tract domain.Tract,
+	payload json.RawMessage,
+	startedBy string,
+	triggerUuid uuid.UUID,
+) (domain.TractRun, error) {
 	if len(payload) == 0 {
 		payload = json.RawMessage(`{}`)
 	}
@@ -100,7 +105,11 @@ func (s *Service) StartRun(ctx context.Context, tract domain.Tract, payload json
 	if runErr != nil {
 		finalStatus = domain.TractRunFailed
 		errMsg = runErr.Error()
-		log.Error().Err(runErr).Str("run_uuid", run.Uuid.String()).Str("tract_uuid", tract.Uuid.String()).Msg("tract run failed")
+		log.Error().
+			Err(runErr).
+			Str("run_uuid", run.Uuid.String()).
+			Str("tract_uuid", tract.Uuid.String()).
+			Msg("tract run failed")
 	}
 
 	err = s.tracts.UpdateRunStatus(ctx, run.Uuid, finalStatus, errMsg)
@@ -218,7 +227,12 @@ func renderParams(rslv *resolver, params map[string]string) (map[string]interfac
 // executeTool dispatches to the builtin or MoM path. For MoM tools it re-verifies that the
 // connection belongs to the tract owner — the tract owner is the principal for
 // webhook-triggered runs, which have no user_context.
-func (s *Service) executeTool(ctx context.Context, tract domain.Tract, step domain.TractStep, params map[string]interface{}) (string, error) {
+func (s *Service) executeTool(
+	ctx context.Context,
+	tract domain.Tract,
+	step domain.TractStep,
+	params map[string]interface{},
+) (string, error) {
 	if step.Mcp == builtinMcpName {
 		res, err := s.toolExecutor.ExecuteBuiltinTool(ctx, tract.UserUuid, step.Tool, params)
 		if err != nil {
@@ -297,7 +311,7 @@ func (s *Service) executeCondition(ctx context.Context, state *runState, step do
 		branchSteps = step.Then
 	}
 
-	output := map[string]interface{}{"result": overallResult, "branch": branch}
+	output := map[string]interface{}{"result": overallResult, fieldBranch: branch}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {

@@ -19,7 +19,12 @@ func New(q *artel_q.Queries) *SessionsRepo {
 	return &SessionsRepo{q: q}
 }
 
-func (r *SessionsRepo) Create(ctx context.Context, userID uuid.UUID, token string, expiresAt time.Time) (domain.Session, error) {
+func (r *SessionsRepo) Create(
+	ctx context.Context,
+	userID uuid.UUID,
+	token string,
+	expiresAt time.Time,
+) (domain.Session, error) {
 	params := artel_q.CreateSessionParams{
 		UserID:    userID,
 		Token:     token,

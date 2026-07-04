@@ -53,7 +53,9 @@ func genericDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Generic {
 
 	if raw != nil {
 		var parsed map[string]any
-		if err := json.Unmarshal(raw, &parsed); err == nil {
+
+		err := json.Unmarshal(raw, &parsed)
+		if err == nil {
 			for k, v := range parsed {
 				if s, ok := v.(string); ok {
 					fields[k] = s

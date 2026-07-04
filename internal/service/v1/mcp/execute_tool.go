@@ -14,7 +14,12 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) ExecuteTool(ctx context.Context, keyCtx domain.McpKeyContext, toolName string, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (s *ServiceImpl) ExecuteTool(
+	ctx context.Context,
+	keyCtx domain.McpKeyContext,
+	toolName string,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
 	if toolName == toolConnections {
 		return s.listConnectedMoms(ctx, keyCtx.KeyUuid)
 	}
@@ -49,10 +54,20 @@ func (s *McpServiceImpl) ExecuteTool(ctx context.Context, keyCtx domain.McpKeyCo
 		bucket = s3cli
 	}
 
-	return s.vaultExecutor.Execute(ctx, toolName, client, bucket, params)
+	result, err := s.vaultExecutor.Execute(ctx, toolName, client, bucket, params)
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "error executing vault tool")
+	}
+
+	return result, nil
 }
 
-func (s *McpServiceImpl) executeTractTool(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (s *ServiceImpl) executeTractTool(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	toolName string,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
 	if s.tractSvc == nil {
 		return domain.ToolExecResult{}, user_errors.TractServiceNotConfigured
 	}
@@ -60,5 +75,10 @@ func (s *McpServiceImpl) executeTractTool(ctx context.Context, userUuid uuid.UUI
 	uc := user_context.UserContext{UserUuid: userUuid}
 	ctx = user_context.WithUserContext(ctx, uc)
 
-	return s.tractExecutor.Execute(ctx, s.tractBaseCtx, s.tractSvc, toolName, params)
+	result, err := s.tractExecutor.Execute(ctx, s.tractBaseCtx, s.tractSvc, toolName, params)
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "error executing tract tool")
+	}
+
+	return result, nil
 }

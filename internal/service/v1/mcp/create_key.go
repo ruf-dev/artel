@@ -15,7 +15,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name string) (rawToken string, key domain.McpKey, err error) {
+func (s *ServiceImpl) CreateKey(
+	ctx context.Context,
+	vaultID uuid.UUID,
+	name string,
+) (rawToken string, key domain.McpKey, err error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return "", domain.McpKey{}, user_errors.Unauthenticated
@@ -23,7 +27,7 @@ func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name 
 
 	keyID := uuid.New()
 
-	secretBytes := make([]byte, 16)
+	secretBytes := make([]byte, secretByteLen)
 
 	_, err = rand.Read(secretBytes)
 	if err != nil {

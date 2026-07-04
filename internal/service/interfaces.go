@@ -74,10 +74,14 @@ type CouchInstanceService interface {
 }
 
 type S3InstanceService interface {
-	RegisterS3Instance(ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool) (string, error)
+	RegisterS3Instance(
+		ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool,
+	) (string, error)
 	GetS3Instance(ctx context.Context, id string) (domain.S3Instance, error)
 	ListS3Instances(ctx context.Context) ([]domain.S3Instance, error)
-	UpdateS3Instance(ctx context.Context, id, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool) error
+	UpdateS3Instance(
+		ctx context.Context, id, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool,
+	) error
 	DeleteS3Instance(ctx context.Context, id string) error
 	TestS3Instance(ctx context.Context, id string) error
 }
@@ -102,7 +106,9 @@ type McpService interface {
 	// ListConnectors returns the MCP connectors linked to keyID.
 	ListConnectors(ctx context.Context, keyID uuid.UUID) ([]domain.McpConnector, error)
 	// AddConnector links an MCP definition to keyID via an existing external connection.
-	AddConnector(ctx context.Context, keyID uuid.UUID, mcpName string, externalConnectionID uuid.UUID) (domain.McpConnector, error)
+	AddConnector(
+		ctx context.Context, keyID uuid.UUID, mcpName string, externalConnectionID uuid.UUID,
+	) (domain.McpConnector, error)
 	// RemoveConnector unlinks mcpName from keyID.
 	RemoveConnector(ctx context.Context, keyID uuid.UUID, mcpName string) error
 	// ListMomCandidates returns all available MCP definitions paired with the
@@ -115,10 +121,14 @@ type McpService interface {
 	// IsBuiltinTool reports whether name is a built-in tool (vault tools + connections).
 	IsBuiltinTool(name string) bool
 	// ExecuteTool executes a built-in tool by name.
-	ExecuteTool(ctx context.Context, keyCtx domain.McpKeyContext, toolName string, params map[string]interface{}) (domain.ToolExecResult, error)
+	ExecuteTool(
+		ctx context.Context, keyCtx domain.McpKeyContext, toolName string, params map[string]interface{},
+	) (domain.ToolExecResult, error)
 	// ExecuteBuiltinToolForUser executes a built-in tool as userUuid rather than through an
 	// MCP key context — used by the tract engine, which has no key.
-	ExecuteBuiltinToolForUser(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error)
+	ExecuteBuiltinToolForUser(
+		ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{},
+	) (string, error)
 	// SetTractService wires the tract service dependency for the tract-authoring builtin tools
 	// (list_tract_actions, create_tract, ...). Called once from internal/app/custom.go after
 	// TractService is constructed — Tract composes Mcp's ToolExecutor, so Mcp must exist first;
@@ -144,7 +154,9 @@ type PromptService interface {
 }
 
 type TaskTrackerService interface {
-	AddTracker(ctx context.Context, tracker domain.TaskTracker, creds trello.TaskTrackerCredentials) (domain.TaskTracker, []domain.TrelloBoard, error)
+	AddTracker(
+		ctx context.Context, tracker domain.TaskTracker, creds trello.TaskTrackerCredentials,
+	) (domain.TaskTracker, []domain.TrelloBoard, error)
 	ListTrackers(ctx context.Context) ([]domain.TaskTracker, error)
 	DeleteTracker(ctx context.Context, trackerUuid uuid.UUID) error
 	ListTrelloBoards(ctx context.Context, trackerUuid uuid.UUID) ([]domain.TrelloBoard, error)
@@ -161,27 +173,40 @@ type NotesService interface {
 
 type MomService interface {
 	ListToolsForKey(ctx context.Context, keyId uuid.UUID) ([]domain.McpToolDef, error)
-	ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, toolName string, params map[string]interface{}) (string, error)
-	ExecuteToolForUserConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
+	ExecuteToolForKey(
+		ctx context.Context, keyId uuid.UUID, toolName string, params map[string]interface{},
+	) (string, error)
+	ExecuteToolForUserConnection(
+		ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{},
+	) (string, error)
 	// ExecuteToolForConnection executes a tool against a specific external connection without
 	// an ownership check — used by the tract engine, which verifies ownership itself since it
 	// has no user_context for webhook-triggered runs.
-	ExecuteToolForConnection(ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error)
+	ExecuteToolForConnection(
+		ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{},
+	) (string, error)
 }
 
 // TractService owns tract/trigger CRUD, trigger↔tract links, and run lifecycle (StartRun,
 // the startup sweep). CreateTract/UpdateTract return non-fatal warnings alongside the
 // persisted tract — e.g. a trigger.* ref not found in any linked trigger's payload schema.
 type TractService interface {
-	CreateTract(ctx context.Context, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
+	CreateTract(
+		ctx context.Context, name string, description string, def domain.TractDefinition,
+	) (domain.Tract, []string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (domain.Tract, error)
 	ListTracts(ctx context.Context) ([]domain.Tract, error)
-	UpdateTract(ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error)
+	UpdateTract(
+		ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition,
+	) (domain.Tract, []string, error)
 	SetTractEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
 
 	// CreateTrigger returns the raw webhook token once — only its hash is persisted.
-	CreateTrigger(ctx context.Context, name string, kind string, source string, config json.RawMessage, payloadSchema domain.ToolSchema) (domain.Trigger, string, error)
+	CreateTrigger(
+		ctx context.Context, name string, kind string, source string,
+		config json.RawMessage, payloadSchema domain.ToolSchema,
+	) (domain.Trigger, string, error)
 	GetTrigger(ctx context.Context, id uuid.UUID) (domain.Trigger, error)
 	ListTriggers(ctx context.Context) ([]domain.Trigger, error)
 	SetTriggerEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
@@ -196,7 +221,9 @@ type TractService interface {
 
 	// StartRun persists the run then walks the definition; the caller decides whether to run
 	// it synchronously or as `go TractService.StartRun(...)` against a server-lifecycle ctx.
-	StartRun(ctx context.Context, tract domain.Tract, payload json.RawMessage, startedBy string, triggerUuid uuid.UUID) (domain.TractRun, error)
+	StartRun(
+		ctx context.Context, tract domain.Tract, payload json.RawMessage, startedBy string, triggerUuid uuid.UUID,
+	) (domain.TractRun, error)
 	// SweepStaleRuns marks stale 'running' runs/steps 'failed' — call once at app init.
 	SweepStaleRuns(ctx context.Context, threshold time.Time) error
 	// ListRuns returns tractUuid's most recent runs (most recent first), capped at limit.
@@ -221,8 +248,12 @@ type ExternalConnectionService interface {
 	AddSpreadsheet(ctx context.Context, spreadsheetId string, name string) (domain.McpSpreadsheet, error)
 	ListSpreadsheets(ctx context.Context) ([]domain.McpSpreadsheet, error)
 	RemoveSpreadsheet(ctx context.Context, spreadsheetId string) error
-	AddEmailConnection(ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string) (domain.ExternalConnectionMeta, error)
+	AddEmailConnection(
+		ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string,
+	) (domain.ExternalConnectionMeta, error)
 	ListMailServerSuggestions(ctx context.Context, domain string) ([]domain.MailServerSuggestion, error)
-	AddGitlabConnection(ctx context.Context, personalAccessToken, instanceUrl string) (domain.ExternalConnectionMeta, error)
+	AddGitlabConnection(
+		ctx context.Context, personalAccessToken, instanceUrl string,
+	) (domain.ExternalConnectionMeta, error)
 	SetGitlabWebhookSecret(ctx context.Context, webhookSecret string) (domain.ExternalConnectionMeta, error)
 }

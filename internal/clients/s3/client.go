@@ -7,7 +7,10 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+
 	"github.com/ruf-dev/artel/internal/storage"
+	"github.com/ruf-dev/artel/internal/utils"
+
 	"go.redsock.ru/rerrors"
 )
 
@@ -126,7 +129,7 @@ func (c *Client) Get(ctx context.Context, path string) (storage.Object, error) {
 		return storage.Object{}, rerrors.Wrap(err, "getting object")
 	}
 
-	defer obj.Close()
+	defer utils.CloseWithLog(obj, "error closing object")
 
 	stat, err := obj.Stat()
 	if err != nil {

@@ -83,7 +83,10 @@ func (r *Repo) GetByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (sql
 			return sql.Null[domain.Trigger]{}, nil
 		}
 
-		return sql.Null[domain.Trigger]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting trigger by trigger uuid")
+		return sql.Null[domain.Trigger]{}, rerrors.Wrap(
+			pg_err.UnwrapPgErr(err),
+			"error getting trigger by trigger uuid",
+		)
 	}
 
 	trigger, err := triggerToDomain(row)
@@ -142,7 +145,12 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 // RotateSecret overwrites trigger_uuid and secret_hash in place, keyed by the trigger's stable
 // primary key id — invalidates the trigger's current webhook URL/token without touching
 // anything else about the trigger or its tract links.
-func (r *Repo) RotateSecret(ctx context.Context, id uuid.UUID, newTriggerUuid uuid.UUID, secretHash []byte) (domain.Trigger, error) {
+func (r *Repo) RotateSecret(
+	ctx context.Context,
+	id uuid.UUID,
+	newTriggerUuid uuid.UUID,
+	secretHash []byte,
+) (domain.Trigger, error) {
 	params := artel_q.RotateTriggerSecretParams{
 		ID:          id,
 		TriggerUuid: newTriggerUuid,
@@ -340,7 +348,10 @@ func unmarshalToolSchema(raw json.RawMessage) (domain.ToolSchema, error) {
 		return domain.ToolSchema{}, rerrors.Wrap(err, "error unmarshaling trigger payload schema")
 	}
 
-	schema := domain.ToolSchema{Properties: make(map[string]domain.ToolProperty, len(row.Properties)), Required: row.Required}
+	schema := domain.ToolSchema{
+		Properties: make(map[string]domain.ToolProperty, len(row.Properties)),
+		Required:   row.Required,
+	}
 	for k, v := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(v)
 	}

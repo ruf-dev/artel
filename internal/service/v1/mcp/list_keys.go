@@ -8,7 +8,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) ListKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error) {
+func (s *ServiceImpl) ListKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error) {
 	keys, err := s.mcpKeys.ListMcpKeysByVault(ctx, vaultID)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mcp keys")

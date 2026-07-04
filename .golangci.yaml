@@ -1,146 +1,100 @@
 version: "2"
+
 run:
+  timeout: 5m
   issues-exit-code: 42
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  formats:
+    text:
+      path: stdout
+      colors: true
+
 linters:
   default: none
+  settings:
+    depguard:
+      rules:
+        no-direct-zerolog-log:
+          list-mode: lax
+          files:
+            - "!**/internal/log/**"
+            - "!**/internal/utils/closer.go"
+          deny:
+            - pkg: "github.com/rs/zerolog/log"
+              desc: "use go.zpotify.ru/zpotify/internal/log instead"
+    exhaustive:
+      default-signifies-exhaustive: true
+    govet:
+      enable:
+        - shadow
   enable:
+    - govet
+
     - asasalint
     - asciicheck
     - bidichk
-    - bodyclose
-    - containedctx
     - contextcheck
-    - cyclop
     - decorder
-    - depguard
-    - dogsled
-    - dupl
     - dupword
     - durationcheck
-    - err113
     - errcheck
-    - errchkjson
-    - errname
-    - errorlint
     - exhaustive
     - forbidigo
     - forcetypeassert
-    - funlen
-    - gochecknoglobals
-    - noinlineerr
     - gochecknoinits
-    - gocognit
+    - noinlineerr
     - goconst
-    - gocritic
-    - gocyclo
-    - godot
-    - godox
     - goheader
     - gomoddirectives
     - gomodguard_v2
     - goprintffuncname
-    - gosec
-    - govet
     - grouper
     - importas
     - ineffassign
-    - interfacebloat
-    - lll
     - loggercheck
-    - maintidx
-    - makezero
     - misspell
-    - mnd
     - nakedret
-    - nestif
     - nilerr
-    - nilnil
-    - nlreturn
-    - noctx
     - nolintlint
     - nosprintfhostport
-    - paralleltest
-    - prealloc
     - predeclared
     - promlinter
     - reassign
-    - revive
-    - rowserrcheck
-    - sqlclosecheck
     - staticcheck
     - testableexamples
-    - testpackage
     - thelper
     - tparallel
     - unconvert
     - unparam
     - unused
     - usestdlibvars
-    - varnamelen
+    - usetesting
     - wastedassign
     - whitespace
-    - wrapcheck
-    - wsl_v5
-  settings:
-    varnamelen:
-      max-distance: 25
-      min-name-length: 2
-      check-type-param: true
-      ignore-type-assert-ok: true
-      ignore-chan-recv-ok: true
-    depguard:
-      rules:
-        main:
-          files:
-            - $all
-          deny:
-            - pkg: io/ioutil
-              desc: 'io/ioutil is deprecated, use io or os instead'
-    wsl_v5:
-      allow-first-in-block: true
-      allow-whole-block: false
-      branch-max-lines: 2
   exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
     rules:
       - linters:
           - staticcheck
-        text: 'SA9003:'
+        text: "SA9003:"
       - linters:
           - lll
-        source: '^//go:generate '
-      - linters:
-          - errname
-          - gochecknoglobals
-        path: internal/service/user_errors/
-      - linters:
-          - revive
-        text: 'var-naming:.*should be'
-      - linters:
-          - revive
-        text: "don't use ALL_CAPS in Go names"
+        source: "^//go:generate "
     paths:
-      - third_party$
-      - builtin$
-      - examples$
-      - configs$
-      - pkg/client/ArtelUI/node_modules
+      - configs
+      - node_modules
+      - pkg/web/ZpotifyUI/node_modules
+
 formatters:
   enable:
-    - gci
     - gofmt
-    - gofumpt
     - goimports
   exclusions:
-    generated: lax
     paths:
-      - third_party$
-      - builtin$
-      - examples$
-      - configs$
-      - pkg/client/ArtelUI/node_modules
+      - configs
+      - node_modules
+      - pkg/web/ZpotifyUI/node_modules

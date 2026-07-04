@@ -36,7 +36,11 @@ func tractToProto(t domain.Tract) (*pb.TractItem, error) {
 
 // tractToProtoWithSummary adds the linked-trigger summaries and last-run badge ListTracts
 // shows on each card. lastRun is nil when the tract has never run.
-func tractToProtoWithSummary(t domain.Tract, links []repository.TractTriggerLink, lastRun *domain.TractRun) (*pb.TractItem, error) {
+func tractToProtoWithSummary(
+	t domain.Tract,
+	links []repository.TractTriggerLink,
+	lastRun *domain.TractRun,
+) (*pb.TractItem, error) {
 	item, err := tractToProto(t)
 	if err != nil {
 		return nil, err
@@ -129,7 +133,10 @@ func runStepsToProto(steps []domain.TractRunStep) []*pb.TractRunStepItem {
 }
 
 func toolRefToProto(ref domain.McpToolRef) *pb.TractToolItem {
-	inputSchema := domain.ToolSchema{Properties: ref.Tool.ApiDescription.Properties, Required: ref.Tool.ApiDescription.Required}
+	inputSchema := domain.ToolSchema{
+		Properties: ref.Tool.ApiDescription.Properties,
+		Required:   ref.Tool.ApiDescription.Required,
+	}
 
 	item := &pb.TractToolItem{
 		Mcp:          ref.McpName,
@@ -218,7 +225,10 @@ type toolPropertyRow struct {
 }
 
 func schemaToJSON(schema domain.ToolSchema) string {
-	row := toolSchemaRow{Properties: make(map[string]toolPropertyRow, len(schema.Properties)), Required: schema.Required}
+	row := toolSchemaRow{
+		Properties: make(map[string]toolPropertyRow, len(schema.Properties)),
+		Required:   schema.Required,
+	}
 	for k, v := range schema.Properties {
 		row.Properties[k] = toolPropertyRowFromDomain(v)
 	}
@@ -240,10 +250,16 @@ func schemaFromJSON(raw string) (domain.ToolSchema, error) {
 
 	err := json.Unmarshal([]byte(raw), &row)
 	if err != nil {
-		return domain.ToolSchema{}, rerrors.Wrap(user_errors.TractRequestFieldInvalidJSON, "error unmarshaling payload_schema")
+		return domain.ToolSchema{}, rerrors.Wrap(
+			user_errors.TractRequestFieldInvalidJSON,
+			"error unmarshaling payload_schema",
+		)
 	}
 
-	schema := domain.ToolSchema{Properties: make(map[string]domain.ToolProperty, len(row.Properties)), Required: row.Required}
+	schema := domain.ToolSchema{
+		Properties: make(map[string]domain.ToolProperty, len(row.Properties)),
+		Required:   row.Required,
+	}
 	for k, v := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(v)
 	}
@@ -308,7 +324,10 @@ func definitionFromJSON(raw string) (domain.TractDefinition, error) {
 
 	err := json.Unmarshal([]byte(raw), &def)
 	if err != nil {
-		return domain.TractDefinition{}, rerrors.Wrap(user_errors.TractRequestFieldInvalidJSON, "error unmarshaling definition")
+		return domain.TractDefinition{}, rerrors.Wrap(
+			user_errors.TractRequestFieldInvalidJSON,
+			"error unmarshaling definition",
+		)
 	}
 
 	return def, nil

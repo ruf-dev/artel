@@ -21,7 +21,11 @@ func New(trackers repository.TaskTrackerRepo) *Service {
 	return &Service{trackers: trackers}
 }
 
-func (s *Service) AddTracker(ctx context.Context, tracker domain.TaskTracker, creds trello.TaskTrackerCredentials) (domain.TaskTracker, []domain.TrelloBoard, error) {
+func (s *Service) AddTracker(
+	ctx context.Context,
+	tracker domain.TaskTracker,
+	creds trello.TaskTrackerCredentials,
+) (domain.TaskTracker, []domain.TrelloBoard, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.TaskTracker{}, nil, user_errors.Unauthenticated

@@ -24,12 +24,24 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 	elapsed := time.Since(start)
 
 	if err != nil {
-		log.Ctx(req.Context()).Error().Err(err).Str("method", req.Method).Str("url", req.URL.String()).Dur("dur", elapsed).Msg("trello returned error")
+		log.Ctx(req.Context()).
+			Error().
+			Err(err).
+			Str("method", req.Method).
+			Str("url", req.URL.String()).
+			Dur("dur", elapsed).
+			Msg("trello returned error")
 
 		return resp, err
 	}
 
-	log.Ctx(req.Context()).Debug().Str("method", req.Method).Str("url", req.URL.String()).Int("status", resp.StatusCode).Dur("dur", elapsed).Msg("trello request")
+	log.Ctx(req.Context()).
+		Debug().
+		Str("method", req.Method).
+		Str("url", req.URL.String()).
+		Int("status", resp.StatusCode).
+		Dur("dur", elapsed).
+		Msg("trello request")
 
 	return resp, nil
 }

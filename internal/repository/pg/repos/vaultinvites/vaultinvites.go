@@ -21,7 +21,12 @@ func New(db sqldb.DB) *Repo {
 	}
 }
 
-func (r *Repo) Create(ctx context.Context, vaultID, createdBy uuid.UUID, role artel_q.VaultRole, token string) (domain.VaultInvite, error) {
+func (r *Repo) Create(
+	ctx context.Context,
+	vaultID, createdBy uuid.UUID,
+	role artel_q.VaultRole,
+	token string,
+) (domain.VaultInvite, error) {
 	params := artel_q.CreateVaultInviteParams{
 		VaultID:   vaultID,
 		CreatedBy: createdBy,

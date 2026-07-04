@@ -21,7 +21,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
-	admin_users_api "github.com/ruf-dev/artel/internal/transport/admin_users_api"
+	"github.com/ruf-dev/artel/internal/transport/admin_users_api"
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/external_connections_api"
@@ -43,7 +43,8 @@ type Custom struct {
 }
 
 func (c *Custom) Init(a *App) error {
-	if err := a.initOTel(); err != nil {
+	err := a.initOTel()
+	if err != nil {
 		return rerrors.Wrap(err, "init otel")
 	}
 	if a.Cfg.Environment.OtelEndpoint != "" {

@@ -266,7 +266,11 @@ func TestValidateShape_VisibilityRule(t *testing.T) {
 	})
 }
 
-func newTestService(mcpDefs *fakeMcpDefsRepo, externalConns *fakeExternalConnsRepo, executor *fakeToolExecutor) *Service {
+func newTestService(
+	mcpDefs *fakeMcpDefsRepo,
+	externalConns *fakeExternalConnsRepo,
+	executor *fakeToolExecutor,
+) *Service {
 	svc := New(nil, nil, externalConns, mcpDefs, executor)
 
 	return svc
@@ -319,7 +323,13 @@ func TestValidateActionTool_MomRules(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("unknown mom tool is rejected", func(t *testing.T) {
-		step := domain.TractStep{Id: "a", Type: stepTypeAction, Mcp: "gitlab", Tool: "does_not_exist", ConnectionUuid: connUuid}
+		step := domain.TractStep{
+			Id:             "a",
+			Type:           stepTypeAction,
+			Mcp:            "gitlab",
+			Tool:           "does_not_exist",
+			ConnectionUuid: connUuid,
+		}
 		err := svc.validateActionTool(ctx, ownerUuid, step)
 		assert.Error(t, err)
 	})
@@ -331,13 +341,25 @@ func TestValidateActionTool_MomRules(t *testing.T) {
 	})
 
 	t.Run("mom tool with owned connection is valid", func(t *testing.T) {
-		step := domain.TractStep{Id: "a", Type: stepTypeAction, Mcp: "gitlab", Tool: "create_merge_request", ConnectionUuid: connUuid}
+		step := domain.TractStep{
+			Id:             "a",
+			Type:           stepTypeAction,
+			Mcp:            "gitlab",
+			Tool:           "create_merge_request",
+			ConnectionUuid: connUuid,
+		}
 		err := svc.validateActionTool(ctx, ownerUuid, step)
 		assert.NoError(t, err)
 	})
 
 	t.Run("mom tool with connection owned by someone else is rejected", func(t *testing.T) {
-		step := domain.TractStep{Id: "a", Type: stepTypeAction, Mcp: "gitlab", Tool: "create_merge_request", ConnectionUuid: connUuid}
+		step := domain.TractStep{
+			Id:             "a",
+			Type:           stepTypeAction,
+			Mcp:            "gitlab",
+			Tool:           "create_merge_request",
+			ConnectionUuid: connUuid,
+		}
 		err := svc.validateActionTool(ctx, otherUserUuid, step)
 		assert.Error(t, err)
 	})

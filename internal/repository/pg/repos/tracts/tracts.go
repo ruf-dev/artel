@@ -279,7 +279,13 @@ func (r *Repo) InsertRunStep(ctx context.Context, step domain.TractRunStep) (dom
 	return runStepToDomain(row), nil
 }
 
-func (r *Repo) UpdateRunStepFinish(ctx context.Context, id uuid.UUID, status domain.TractRunStepStatus, output json.RawMessage, errMsg string) error {
+func (r *Repo) UpdateRunStepFinish(
+	ctx context.Context,
+	id uuid.UUID,
+	status domain.TractRunStepStatus,
+	output json.RawMessage,
+	errMsg string,
+) error {
 	params := artel_q.UpdateTractRunStepFinishParams{
 		ID:     id,
 		Output: pqtype.NullRawMessage{RawMessage: output, Valid: output != nil},

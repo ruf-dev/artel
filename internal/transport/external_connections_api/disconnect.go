@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) DisconnectProvider(ctx context.Context, req *pb.DisconnectProvider_Request) (*pb.DisconnectProvider_Response, error) {
+func (e *ExternalConnectionsImpl) DisconnectProvider(
+	ctx context.Context,
+	req *pb.DisconnectProvider_Request,
+) (*pb.DisconnectProvider_Response, error) {
 	err := e.svc.DisconnectProvider(ctx, req.Provider)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error disconnecting provider")

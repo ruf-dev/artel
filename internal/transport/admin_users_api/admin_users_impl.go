@@ -39,7 +39,10 @@ func (a *AdminUsersImpl) Gateway(ctx context.Context, endpoint string, opts ...g
 	return "/api/admin_users/", gwMux
 }
 
-func (a *AdminUsersImpl) ListArtelUsers(ctx context.Context, req *artel_api.ListArtelUsers_Request) (*artel_api.ListArtelUsers_Response, error) {
+func (a *AdminUsersImpl) ListArtelUsers(
+	ctx context.Context,
+	req *artel_api.ListArtelUsers_Request,
+) (*artel_api.ListArtelUsers_Response, error) {
 	paging := domain.Paging{Limit: req.Limit, Offset: req.Offset}
 	listReq := domain.ListUsersReq{Paging: paging, Search: req.Search}
 
@@ -65,7 +68,10 @@ func (a *AdminUsersImpl) ListArtelUsers(ctx context.Context, req *artel_api.List
 	return resp, nil
 }
 
-func (a *AdminUsersImpl) GetArtelUser(ctx context.Context, req *artel_api.GetArtelUser_Request) (*artel_api.GetArtelUser_Response, error) {
+func (a *AdminUsersImpl) GetArtelUser(
+	ctx context.Context,
+	req *artel_api.GetArtelUser_Request,
+) (*artel_api.GetArtelUser_Response, error) {
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error parsing user id")
@@ -92,7 +98,10 @@ func (a *AdminUsersImpl) GetArtelUser(ctx context.Context, req *artel_api.GetArt
 	return resp, nil
 }
 
-func (a *AdminUsersImpl) GetUserSessions(ctx context.Context, req *artel_api.GetUserSessions_Request) (*artel_api.GetUserSessions_Response, error) {
+func (a *AdminUsersImpl) GetUserSessions(
+	ctx context.Context,
+	req *artel_api.GetUserSessions_Request,
+) (*artel_api.GetUserSessions_Response, error) {
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error parsing user id")

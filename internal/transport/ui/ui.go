@@ -5,6 +5,8 @@ import (
 	"io/fs"
 	"net/http"
 	"strings"
+
+	"github.com/ruf-dev/artel/internal/utils"
 )
 
 //go:embed all:dist
@@ -29,7 +31,7 @@ func (h *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if path != "" {
 		f, err := h.fs.Open(path)
 		if err == nil {
-			f.Close()
+			utils.CloseWithLog(f, "error closing opened file")
 			http.FileServer(http.FS(h.fs)).ServeHTTP(w, r)
 
 			return

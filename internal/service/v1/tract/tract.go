@@ -57,7 +57,12 @@ func New(
 // warnings are non-fatal hints (e.g. a trigger.* ref not found in any linked trigger's
 // payload schema) — always empty on create, since a brand-new tract has no linked triggers
 // yet to check against.
-func (s *Service) CreateTract(ctx context.Context, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error) {
+func (s *Service) CreateTract(
+	ctx context.Context,
+	name string,
+	description string,
+	def domain.TractDefinition,
+) (domain.Tract, []string, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.Tract{}, nil, rerrors.Wrap(user_errors.Unauthenticated)
@@ -128,7 +133,13 @@ func (s *Service) ListTracts(ctx context.Context) ([]domain.Tract, error) {
 // UpdateTract overwrites name, description and the whole definition document — matching the
 // "UI/agents edit whole docs" JSONB convention. Trigger.* refs are checked against the
 // tract's currently linked triggers' payload schemas.
-func (s *Service) UpdateTract(ctx context.Context, id uuid.UUID, name string, description string, def domain.TractDefinition) (domain.Tract, []string, error) {
+func (s *Service) UpdateTract(
+	ctx context.Context,
+	id uuid.UUID,
+	name string,
+	description string,
+	def domain.TractDefinition,
+) (domain.Tract, []string, error) {
 	existing, err := s.GetTract(ctx, id)
 	if err != nil {
 		return domain.Tract{}, nil, err
@@ -272,12 +283,16 @@ func validateStepShape(step domain.TractStep) error {
 		return nil
 
 	case stepTypeCondition:
-		if len(step.Params) > 0 || step.Mcp != "" || step.Tool != "" || step.ConnectionUuid != uuid.Nil || len(step.Steps) > 0 {
+		if len(step.Params) > 0 || step.Mcp != "" || step.Tool != "" || step.ConnectionUuid != uuid.Nil ||
+			len(step.Steps) > 0 {
 			return rerrors.Wrap(user_errors.TractParamsOnNonAction, step.Id)
 		}
 
 		if len(step.Conditions) == 0 {
-			return rerrors.Wrap(user_errors.TractConditionsOnNonBranch, fmt.Sprintf("%s: condition step requires at least one condition", step.Id))
+			return rerrors.Wrap(
+				user_errors.TractConditionsOnNonBranch,
+				fmt.Sprintf("%s: condition step requires at least one condition", step.Id),
+			)
 		}
 
 		return nil
@@ -289,7 +304,10 @@ func validateStepShape(step domain.TractStep) error {
 		}
 
 		if len(step.Steps) == 0 {
-			return rerrors.Wrap(user_errors.TractUnknownStepType, fmt.Sprintf("%s: %s step requires at least one child step", step.Id, step.Type))
+			return rerrors.Wrap(
+				user_errors.TractUnknownStepType,
+				fmt.Sprintf("%s: %s step requires at least one child step", step.Id, step.Type),
+			)
 		}
 
 		return nil
@@ -404,7 +422,10 @@ func checkStepRefs(step domain.TractStep, visible map[string]struct{}) error {
 
 			_, ok := visible[base]
 			if !ok {
-				return rerrors.Wrap(user_errors.TractInvalidTemplateRef, fmt.Sprintf("step %q references %q", step.Id, ref))
+				return rerrors.Wrap(
+					user_errors.TractInvalidTemplateRef,
+					fmt.Sprintf("step %q references %q", step.Id, ref),
+				)
 			}
 		}
 	}
@@ -515,7 +536,13 @@ func checkTriggerFieldWarnings(def domain.TractDefinition, schemas []domain.Tool
 		seen[field] = struct{}{}
 
 		if !anySchemaDeclaresField(schemas, field) {
-			warnings = append(warnings, fmt.Sprintf("template references trigger.%s, which is not declared by any linked trigger's payload schema", field))
+			warnings = append(
+				warnings,
+				fmt.Sprintf(
+					"template references trigger.%s, which is not declared by any linked trigger's payload schema",
+					field,
+				),
+			)
 		}
 	}
 

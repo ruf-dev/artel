@@ -1,9 +1,10 @@
+import {useCallback} from "react"
 import {useToaster} from "@vervstack/chures"
 import {grpcErrorMessage, isGrpcError} from "@/processes/grpcErrors"
 
 export function useBakeError() {
     const {bake} = useToaster()
-    return function(title: string, err: unknown) {
+    return useCallback((title: string, err: unknown) => {
         let description: string
         if (isGrpcError(err)) {
             description = grpcErrorMessage(err)
@@ -17,5 +18,5 @@ export function useBakeError() {
             description,
             level: "Error",
         })
-    }
+    }, [bake])
 }

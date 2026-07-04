@@ -7,10 +7,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ruf-dev/artel/internal/domain"
 )
 
 func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo, *fakeExternalConnsRepo) {
@@ -43,7 +42,13 @@ func TestEngine_SimpleActionRun(t *testing.T) {
 	step := actionStep("write", map[string]string{"path": "note.md"})
 	tract := testTract(userUuid, []domain.TractStep{step})
 
-	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"branch":"main"}`), StartedByManual, uuid.Nil)
+	run, err := svc.StartRun(
+		context.Background(),
+		tract,
+		json.RawMessage(`{"branch":"main"}`),
+		StartedByManual,
+		uuid.Nil,
+	)
 	require.NoError(t, err)
 	assert.Equal(t, domain.TractRunDone, run.Status)
 
@@ -70,7 +75,13 @@ func TestEngine_ConditionThenElse(t *testing.T) {
 		}
 		tract := testTract(userUuid, []domain.TractStep{condStep})
 
-		run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"flag":true}`), StartedByManual, uuid.Nil)
+		run, err := svc.StartRun(
+			context.Background(),
+			tract,
+			json.RawMessage(`{"flag":true}`),
+			StartedByManual,
+			uuid.Nil,
+		)
 		require.NoError(t, err)
 		assert.Equal(t, domain.TractRunDone, run.Status)
 
@@ -101,7 +112,13 @@ func TestEngine_ConditionThenElse(t *testing.T) {
 		}
 		tract := testTract(userUuid, []domain.TractStep{condStep})
 
-		run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"flag":false}`), StartedByManual, uuid.Nil)
+		run, err := svc.StartRun(
+			context.Background(),
+			tract,
+			json.RawMessage(`{"flag":false}`),
+			StartedByManual,
+			uuid.Nil,
+		)
 		require.NoError(t, err)
 		assert.Equal(t, domain.TractRunDone, run.Status)
 
@@ -236,7 +253,13 @@ func TestEngine_MomToolOwnershipCheck(t *testing.T) {
 	conn := domain.ExternalConnection{Uuid: connUuid, UserUuid: otherUserUuid}
 	externalConns.conns[connUuid] = conn
 
-	step := domain.TractStep{Id: "mom_step", Type: stepTypeAction, Mcp: "gitlab", Tool: "create_merge_request", ConnectionUuid: connUuid}
+	step := domain.TractStep{
+		Id:             "mom_step",
+		Type:           stepTypeAction,
+		Mcp:            "gitlab",
+		Tool:           "create_merge_request",
+		ConnectionUuid: connUuid,
+	}
 	tract := testTract(ownerUuid, []domain.TractStep{step})
 
 	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{}`), StartedByManual, uuid.Nil)
@@ -256,7 +279,13 @@ func TestEngine_MomToolExecutesWhenOwned(t *testing.T) {
 	conn := domain.ExternalConnection{Uuid: connUuid, UserUuid: ownerUuid}
 	externalConns.conns[connUuid] = conn
 
-	step := domain.TractStep{Id: "mom_step", Type: stepTypeAction, Mcp: "gitlab", Tool: "create_merge_request", ConnectionUuid: connUuid}
+	step := domain.TractStep{
+		Id:             "mom_step",
+		Type:           stepTypeAction,
+		Mcp:            "gitlab",
+		Tool:           "create_merge_request",
+		ConnectionUuid: connUuid,
+	}
 	tract := testTract(ownerUuid, []domain.TractStep{step})
 
 	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{}`), StartedByManual, uuid.Nil)

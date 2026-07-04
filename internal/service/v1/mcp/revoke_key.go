@@ -7,7 +7,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
+func (s *ServiceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
 	err := s.mcpKeys.RevokeMcpKey(ctx, keyID)
 	if err != nil {
 		return rerrors.Wrap(err, "revoke mcp key")

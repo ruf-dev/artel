@@ -9,10 +9,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"go.redsock.ru/rerrors"
 )
 
 var (
@@ -71,7 +70,12 @@ func (f *fakeTractsRepo) InsertRun(_ context.Context, run domain.TractRun) (doma
 	return run, nil
 }
 
-func (f *fakeTractsRepo) UpdateRunStatus(_ context.Context, id uuid.UUID, status domain.TractRunStatus, errMsg string) error {
+func (f *fakeTractsRepo) UpdateRunStatus(
+	_ context.Context,
+	id uuid.UUID,
+	status domain.TractRunStatus,
+	errMsg string,
+) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
@@ -115,7 +119,13 @@ func (f *fakeTractsRepo) InsertRunStep(_ context.Context, step domain.TractRunSt
 	return step, nil
 }
 
-func (f *fakeTractsRepo) UpdateRunStepFinish(_ context.Context, id uuid.UUID, status domain.TractRunStepStatus, output json.RawMessage, errMsg string) error {
+func (f *fakeTractsRepo) UpdateRunStepFinish(
+	_ context.Context,
+	id uuid.UUID,
+	status domain.TractRunStepStatus,
+	output json.RawMessage,
+	errMsg string,
+) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
@@ -172,7 +182,10 @@ func newFakeExternalConnsRepo() *fakeExternalConnsRepo {
 	return repo
 }
 
-func (f *fakeExternalConnsRepo) Upsert(_ context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error) {
+func (f *fakeExternalConnsRepo) Upsert(
+	_ context.Context,
+	conn domain.ExternalConnection,
+) (domain.ExternalConnection, error) {
 	f.conns[conn.Uuid] = conn
 
 	return conn, nil
@@ -187,7 +200,11 @@ func (f *fakeExternalConnsRepo) GetByID(_ context.Context, id uuid.UUID) (domain
 	return conn, nil
 }
 
-func (f *fakeExternalConnsRepo) GetByUserAndProvider(_ context.Context, _ uuid.UUID, _ string) (sql.Null[domain.ExternalConnection], error) {
+func (f *fakeExternalConnsRepo) GetByUserAndProvider(
+	_ context.Context,
+	_ uuid.UUID,
+	_ string,
+) (sql.Null[domain.ExternalConnection], error) {
 	return sql.Null[domain.ExternalConnection]{}, nil
 }
 
@@ -235,7 +252,11 @@ func (f *fakeMcpDefsRepo) Delete(_ context.Context, _ string) error {
 	return nil
 }
 
-func (f *fakeMcpDefsRepo) GetTool(_ context.Context, mcpName string, toolName string) (sql.Null[domain.McpToolDef], error) {
+func (f *fakeMcpDefsRepo) GetTool(
+	_ context.Context,
+	mcpName string,
+	toolName string,
+) (sql.Null[domain.McpToolDef], error) {
 	if !f.tools[mcpName][toolName] {
 		return sql.Null[domain.McpToolDef]{}, nil
 	}
@@ -286,13 +307,24 @@ func (f *fakeToolExecutor) recordCall(name string) {
 	f.calls = append(f.calls, name)
 }
 
-func (f *fakeToolExecutor) ExecuteBuiltinTool(ctx context.Context, _ uuid.UUID, toolName string, params map[string]interface{}) (string, error) {
+func (f *fakeToolExecutor) ExecuteBuiltinTool(
+	ctx context.Context,
+	_ uuid.UUID,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	f.recordCall(toolName)
 
 	return dispatchFakeTool(ctx, toolName, params)
 }
 
-func (f *fakeToolExecutor) ExecuteMomTool(ctx context.Context, _ uuid.UUID, _ string, toolName string, params map[string]interface{}) (string, error) {
+func (f *fakeToolExecutor) ExecuteMomTool(
+	ctx context.Context,
+	_ uuid.UUID,
+	_ string,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	f.recordCall(toolName)
 
 	return dispatchFakeTool(ctx, toolName, params)

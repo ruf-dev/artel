@@ -24,7 +24,11 @@ func (e *ExternalConnectionsImpl) Register(srv grpc.ServiceRegistrar) {
 	pb.RegisterExternalConnectionsAPIServer(srv, e)
 }
 
-func (e *ExternalConnectionsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
+func (e *ExternalConnectionsImpl) Gateway(
+	ctx context.Context,
+	endpoint string,
+	opts ...grpc.DialOption,
+) (string, http.Handler) {
 	gwMux := runtime.NewServeMux()
 
 	err := pb.RegisterExternalConnectionsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)

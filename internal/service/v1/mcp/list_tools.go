@@ -12,7 +12,7 @@ const (
 	toolConnectionsForTracts = "list_connections_for_tracts"
 )
 
-func (s *McpServiceImpl) ListTools(ctx context.Context) ([]domain.McpToolDef, error) {
+func (s *ServiceImpl) ListTools(_ context.Context) ([]domain.McpToolDef, error) {
 	tools := executors.VaultToolDefinitions()
 	tools = append(tools, executors.TractToolDefinitions()...)
 	connectionsTool := domain.McpToolDef{
@@ -24,28 +24,29 @@ func (s *McpServiceImpl) ListTools(ctx context.Context) ([]domain.McpToolDef, er
 		},
 		OutputSchema: domain.ToolSchema{
 			Properties: map[string]domain.ToolProperty{
-				"name":        {Type: "string", Description: "MoM name (each array entry)"},
-				"author":      {Type: "string", Description: "MoM author"},
-				"description": {Type: "string", Description: "MoM description"},
+				fieldName:        {Type: schemaTypeString, Description: "MoM name (each array entry)"},
+				fieldAuthor:      {Type: schemaTypeString, Description: "MoM author"},
+				fieldDescription: {Type: schemaTypeString, Description: "MoM description"},
 			},
-			Required: []string{"name", "author", "description"},
+			Required: []string{fieldName, fieldAuthor, fieldDescription},
 		},
 	}
 	tools = append(tools, connectionsTool)
 
 	connectionsForTractsTool := domain.McpToolDef{
 		ApiDescription: domain.ToolApiDescription{
-			Name:        toolConnectionsForTracts,
-			Description: "List the caller's external connections (uuid + provider), for discovering connection_uuid values to pass into tract step params such as create_tract's connection_uuid",
-			Properties:  map[string]domain.ToolProperty{},
-			Required:    []string{},
+			Name: toolConnectionsForTracts,
+			Description: "List the caller's external connections (uuid + provider), for discovering " +
+				"connection_uuid values to pass into tract step params such as create_tract's connection_uuid",
+			Properties: map[string]domain.ToolProperty{},
+			Required:   []string{},
 		},
 		OutputSchema: domain.ToolSchema{
 			Properties: map[string]domain.ToolProperty{
-				"uuid":     {Type: "string", Description: "External connection uuid (each array entry)"},
-				"provider": {Type: "string", Description: "Provider key, e.g. gitlab, trello, email"},
+				fieldUuid:     {Type: schemaTypeString, Description: "External connection uuid (each array entry)"},
+				fieldProvider: {Type: schemaTypeString, Description: "Provider key, e.g. gitlab, trello, email"},
 			},
-			Required: []string{"uuid", "provider"},
+			Required: []string{fieldUuid, fieldProvider},
 		},
 	}
 	tools = append(tools, connectionsForTractsTool)

@@ -19,7 +19,14 @@ const triggerTokenBytes = 32
 
 // CreateTrigger creates a standalone trigger and returns the raw webhook token once — only
 // its sha256 (SecretHash) is persisted.
-func (s *Service) CreateTrigger(ctx context.Context, name string, kind string, source string, config json.RawMessage, payloadSchema domain.ToolSchema) (domain.Trigger, string, error) {
+func (s *Service) CreateTrigger(
+	ctx context.Context,
+	name string,
+	kind string,
+	source string,
+	config json.RawMessage,
+	payloadSchema domain.ToolSchema,
+) (domain.Trigger, string, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.Trigger{}, "", rerrors.Wrap(user_errors.Unauthenticated)
@@ -162,7 +169,12 @@ func (s *Service) RotateTriggerToken(ctx context.Context, id uuid.UUID) (domain.
 
 // LinkTrigger fans triggerUuid out to tractUuid with the given filters — both must belong to
 // the caller.
-func (s *Service) LinkTrigger(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid.UUID, filters []domain.TractCondition) error {
+func (s *Service) LinkTrigger(
+	ctx context.Context,
+	triggerUuid uuid.UUID,
+	tractUuid uuid.UUID,
+	filters []domain.TractCondition,
+) error {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return rerrors.Wrap(user_errors.Unauthenticated)

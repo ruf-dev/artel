@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TaskTrackersImpl) DeleteTaskTracker(ctx context.Context, req *pb.DeleteTaskTracker_Request) (*pb.DeleteTaskTracker_Response, error) {
+func (t *TaskTrackersImpl) DeleteTaskTracker(
+	ctx context.Context,
+	req *pb.DeleteTaskTracker_Request,
+) (*pb.DeleteTaskTracker_Response, error) {
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.NotFound, "error parsing tracker id")

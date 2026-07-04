@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) AddGitlabConnection(ctx context.Context, req *pb.AddGitlabConnection_Request) (*pb.AddGitlabConnection_Response, error) {
+func (e *ExternalConnectionsImpl) AddGitlabConnection(
+	ctx context.Context,
+	req *pb.AddGitlabConnection_Request,
+) (*pb.AddGitlabConnection_Response, error) {
 	conn, err := e.svc.AddGitlabConnection(ctx, req.PersonalAccessToken, req.InstanceUrl)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "add gitlab connection")

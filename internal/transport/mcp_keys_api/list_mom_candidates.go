@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandidates_Request) (*pb.ListMomCandidates_Response, error) {
+func (m *McpKeysImpl) ListMomCandidates(
+	ctx context.Context,
+	_ *pb.ListMomCandidates_Request,
+) (*pb.ListMomCandidates_Response, error) {
 	candidates, err := m.mcpSvc.ListMomCandidates(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mom candidates")

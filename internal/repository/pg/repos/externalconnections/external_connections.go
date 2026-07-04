@@ -7,12 +7,13 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
+	"github.com/sqlc-dev/pqtype"
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
-	"github.com/sqlc-dev/pqtype"
-	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -57,7 +58,10 @@ func (r *Repo) Upsert(ctx context.Context, conn domain.ExternalConnection) (doma
 func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnection, error) {
 	row, err := r.q.GetExternalConnectionByID(ctx, id)
 	if err != nil {
-		return domain.ExternalConnection{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting external connection by id")
+		return domain.ExternalConnection{}, rerrors.Wrap(
+			pg_err.UnwrapPgErr(err),
+			"error getting external connection by id",
+		)
 	}
 
 	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
@@ -68,7 +72,11 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnec
 	return toDomain(row, credJSON), nil
 }
 
-func (r *Repo) GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, provider string) (sql.Null[domain.ExternalConnection], error) {
+func (r *Repo) GetByUserAndProvider(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	provider string,
+) (sql.Null[domain.ExternalConnection], error) {
 	params := artel_q.GetExternalConnectionByUserAndProviderParams{
 		UserID:   userUuid,
 		Provider: provider,
@@ -80,7 +88,10 @@ func (r *Repo) GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, pro
 			return sql.Null[domain.ExternalConnection]{}, nil
 		}
 
-		return sql.Null[domain.ExternalConnection]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting external connection")
+		return sql.Null[domain.ExternalConnection]{}, rerrors.Wrap(
+			pg_err.UnwrapPgErr(err),
+			"error getting external connection",
+		)
 	}
 
 	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
@@ -145,7 +156,7 @@ func toDomain(row artel_q.ExternalConnection, credJSON []byte) domain.ExternalCo
 
 func toNullRawMessage(m json.RawMessage) pqtype.NullRawMessage {
 	return pqtype.NullRawMessage{
-		RawMessage: json.RawMessage(m),
+		RawMessage: m,
 		Valid:      m != nil,
 	}
 }
@@ -155,5 +166,5 @@ func fromNullRawMessage(m pqtype.NullRawMessage) json.RawMessage {
 		return nil
 	}
 
-	return json.RawMessage(m.RawMessage)
+	return m.RawMessage
 }

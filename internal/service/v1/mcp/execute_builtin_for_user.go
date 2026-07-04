@@ -5,11 +5,13 @@ import (
 	"encoding/base64"
 
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
+	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/storage"
-	"go.redsock.ru/rerrors"
 )
 
 // ExecuteBuiltinToolForUser runs a builtin (vault) tool as userUuid rather than through an
@@ -18,7 +20,12 @@ import (
 // vault by membership. Ambiguous for users with more than one vault until tract action steps
 // carry an explicit vault reference — a known v1 gap, flagged for the tract MCP-authoring
 // phase to revisit.
-func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error) {
+func (s *ServiceImpl) ExecuteBuiltinToolForUser(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	toolName string,
+	params map[string]interface{},
+) (string, error) {
 	memberVaults, err := s.vaults.ListByMembership(ctx, userUuid)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error listing vaults for user")
@@ -35,12 +42,18 @@ func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid
 		return "", rerrors.Wrap(err, "error getting couch instance")
 	}
 
-	client := couchdb.NewLiveSyncClient(couchInstance.Url, vault.CouchDBName, couchInstance.Username, couchInstance.Password)
+	client := couchdb.NewLiveSyncClient(
+		couchInstance.Url,
+		vault.CouchDBName,
+		couchInstance.Username,
+		couchInstance.Password,
+	)
 
 	var bucket storage.BinaryStore
 
 	if vault.S3InstanceUuid != nil {
-		s3Instance, err := s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
+		var s3Instance domain.S3Instance
+		s3Instance, err = s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
 		if err != nil {
 			return "", rerrors.Wrap(err, "error getting s3 instance")
 		}
@@ -54,7 +67,8 @@ func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid
 			PathStyle: s3Instance.PathStyle,
 		}
 
-		s3cli, err := s3client.New(cfg, vault.S3BucketName)
+		var s3cli *s3client.Client
+		s3cli, err = s3client.New(cfg, vault.S3BucketName)
 		if err != nil {
 			return "", rerrors.Wrap(err, "error initializing s3 client")
 		}

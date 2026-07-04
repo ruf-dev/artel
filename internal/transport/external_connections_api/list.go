@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) ListConnections(ctx context.Context, _ *pb.ListConnections_Request) (*pb.ListConnections_Response, error) {
+func (e *ExternalConnectionsImpl) ListConnections(
+	ctx context.Context,
+	_ *pb.ListConnections_Request,
+) (*pb.ListConnections_Response, error) {
 	metas, err := e.svc.ListConnections(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing connections")

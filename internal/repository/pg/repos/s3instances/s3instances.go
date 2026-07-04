@@ -25,7 +25,13 @@ func New(db sqldb.DB, encryptionKey []byte) *Repo {
 	}
 }
 
-func (r *Repo) Register(ctx context.Context, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte) (uuid.UUID, error) {
+func (r *Repo) Register(
+	ctx context.Context,
+	endpoint, region string,
+	useSSL, pathStyle bool,
+	accessKey string,
+	secretKeyPlain []byte,
+) (uuid.UUID, error) {
 	secretKeyEnc, err := cryptoutil.Encrypt(r.encryptionKey, secretKeyPlain)
 	if err != nil {
 		return uuid.UUID{}, rerrors.Wrap(err, "error encrypting secret key")
@@ -95,7 +101,14 @@ func (r *Repo) List(ctx context.Context) ([]domain.S3Instance, error) {
 	return instances, nil
 }
 
-func (r *Repo) Update(ctx context.Context, id uuid.UUID, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte) error {
+func (r *Repo) Update(
+	ctx context.Context,
+	id uuid.UUID,
+	endpoint, region string,
+	useSSL, pathStyle bool,
+	accessKey string,
+	secretKeyPlain []byte,
+) error {
 	secretKeyEnc, err := cryptoutil.Encrypt(r.encryptionKey, secretKeyPlain)
 	if err != nil {
 		return rerrors.Wrap(err, "error encrypting secret key")

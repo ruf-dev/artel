@@ -67,8 +67,8 @@ func normalizeGitlabPush(raw json.RawMessage) (json.RawMessage, error) {
 		return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "error unmarshaling gitlab push payload")
 	}
 
-	ref, _ := payload["ref"].(string)
-	payload["branch"] = strings.TrimPrefix(ref, gitlabRefBranchPrefix)
+	ref, _ := payload[fieldRef].(string)
+	payload[fieldBranch] = strings.TrimPrefix(ref, gitlabRefBranchPrefix)
 
 	normalized, err := json.Marshal(payload)
 	if err != nil {
@@ -83,42 +83,45 @@ func normalizeGitlabPush(raw json.RawMessage) (json.RawMessage, error) {
 // email}}/total_commits_count.
 func gitlabPushPayloadSchema() domain.ToolSchema {
 	author := domain.ToolProperty{
-		Type: "object",
+		Type: schemaTypeObject,
 		Properties: map[string]domain.ToolProperty{
-			"name":  {Type: "string"},
-			"email": {Type: "string"},
+			fieldName: {Type: "string"},
+			"email":   {Type: "string"},
 		},
 	}
 
 	commitItem := domain.ToolProperty{
-		Type: "object",
+		Type: schemaTypeObject,
 		Properties: map[string]domain.ToolProperty{
-			"id":      {Type: "string", Description: "commit sha"},
-			"message": {Type: "string"},
-			"url":     {Type: "string"},
-			"author":  author,
+			"id":         {Type: "string", Description: "commit sha"},
+			fieldMessage: {Type: "string"},
+			"url":        {Type: "string"},
+			"author":     author,
 		},
 	}
 
 	project := domain.ToolProperty{
-		Type: "object",
+		Type: schemaTypeObject,
 		Properties: map[string]domain.ToolProperty{
-			"id":   {Type: "integer"},
-			"name": {Type: "string"},
-			"path": {Type: "string"},
+			"id":      {Type: "integer"},
+			fieldName: {Type: "string"},
+			"path":    {Type: "string"},
 		},
 	}
 
 	schema := domain.ToolSchema{
 		Properties: map[string]domain.ToolProperty{
-			"ref":                 {Type: "string", Description: "full git ref, e.g. refs/heads/feature-x"},
-			"branch":              {Type: "string", Description: "ref with refs/heads/ trimmed (added by the normalizer)"},
+			fieldRef: {Type: "string", Description: "full git ref, e.g. refs/heads/feature-x"},
+			fieldBranch: {
+				Type:        "string",
+				Description: "ref with refs/heads/ trimmed (added by the normalizer)",
+			},
 			"user_name":           {Type: "string"},
 			"project":             project,
 			"commits":             {Type: "array", Items: &commitItem},
 			"total_commits_count": {Type: "integer"},
 		},
-		Required: []string{"ref", "branch"},
+		Required: []string{fieldRef, fieldBranch},
 	}
 
 	return schema

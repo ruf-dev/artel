@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (m *McpKeysImpl) ExecuteMomTool(ctx context.Context, req *pb.ExecuteMomTool_Request) (*pb.ExecuteMomTool_Response, error) {
+func (m *McpKeysImpl) ExecuteMomTool(
+	ctx context.Context,
+	req *pb.ExecuteMomTool_Request,
+) (*pb.ExecuteMomTool_Response, error) {
 	exConnUuid, err := uuid.Parse(req.ExternalConnectionId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error parsing external connection id")

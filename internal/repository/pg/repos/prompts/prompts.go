@@ -5,9 +5,12 @@ import (
 	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
+
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/utils"
+
 	"go.redsock.ru/rerrors"
 )
 
@@ -57,7 +60,7 @@ func (r *Repo) List(ctx context.Context, params repository.ListPromptsParams) ([
 	if err != nil {
 		return nil, 0, rerrors.Wrap(err, "list prompts")
 	}
-	defer rows.Close()
+	defer utils.CloseWithLog(rows, "error closing list query (prompts)")
 
 	var result []domain.Prompt
 

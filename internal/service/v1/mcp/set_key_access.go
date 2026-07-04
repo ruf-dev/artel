@@ -9,7 +9,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error {
+func (s *ServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return user_errors.Unauthenticated

@@ -11,7 +11,10 @@ import (
 
 const webhookPathPrefix = "/tract/hook/"
 
-func (t *TractsImpl) CreateTrigger(ctx context.Context, req *pb.CreateTrigger_Request) (*pb.CreateTrigger_Response, error) {
+func (t *TractsImpl) CreateTrigger(
+	ctx context.Context,
+	req *pb.CreateTrigger_Request,
+) (*pb.CreateTrigger_Response, error) {
 	config := json.RawMessage(req.Config)
 	if len(config) == 0 {
 		config = json.RawMessage(`{}`)

@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (e *ExternalConnectionsImpl) AddSpreadsheet(ctx context.Context, req *pb.AddSpreadsheet_Request) (*pb.AddSpreadsheet_Response, error) {
+func (e *ExternalConnectionsImpl) AddSpreadsheet(
+	ctx context.Context,
+	req *pb.AddSpreadsheet_Request,
+) (*pb.AddSpreadsheet_Response, error) {
 	spreadsheet, err := e.svc.AddSpreadsheet(ctx, req.SpreadsheetId, req.Name)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error adding spreadsheet")
@@ -21,7 +24,10 @@ func (e *ExternalConnectionsImpl) AddSpreadsheet(ctx context.Context, req *pb.Ad
 	return resp, nil
 }
 
-func (e *ExternalConnectionsImpl) ListSpreadsheets(ctx context.Context, _ *pb.ListSpreadsheets_Request) (*pb.ListSpreadsheets_Response, error) {
+func (e *ExternalConnectionsImpl) ListSpreadsheets(
+	ctx context.Context,
+	_ *pb.ListSpreadsheets_Request,
+) (*pb.ListSpreadsheets_Response, error) {
 	spreadsheets, err := e.svc.ListSpreadsheets(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing spreadsheets")
@@ -39,7 +45,10 @@ func (e *ExternalConnectionsImpl) ListSpreadsheets(ctx context.Context, _ *pb.Li
 	return resp, nil
 }
 
-func (e *ExternalConnectionsImpl) RemoveSpreadsheet(ctx context.Context, req *pb.RemoveSpreadsheet_Request) (*pb.RemoveSpreadsheet_Response, error) {
+func (e *ExternalConnectionsImpl) RemoveSpreadsheet(
+	ctx context.Context,
+	req *pb.RemoveSpreadsheet_Request,
+) (*pb.RemoveSpreadsheet_Response, error) {
 	err := e.svc.RemoveSpreadsheet(ctx, req.SpreadsheetId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error removing spreadsheet")

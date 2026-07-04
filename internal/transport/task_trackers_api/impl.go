@@ -24,7 +24,11 @@ func (t *TaskTrackersImpl) Register(srv grpc.ServiceRegistrar) {
 	pb.RegisterTaskTrackersAPIServer(srv, t)
 }
 
-func (t *TaskTrackersImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
+func (t *TaskTrackersImpl) Gateway(
+	ctx context.Context,
+	endpoint string,
+	opts ...grpc.DialOption,
+) (string, http.Handler) {
 	gwMux := runtime.NewServeMux()
 
 	err := pb.RegisterTaskTrackersAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)

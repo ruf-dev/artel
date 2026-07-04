@@ -13,6 +13,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/oauth2"
+
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
@@ -20,8 +23,6 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/oauth2"
 )
 
 const googleUserInfoURL = "https://www.googleapis.com/oauth2/v2/userinfo"
@@ -91,7 +92,11 @@ func (s *Service) InitiateGoogleOAuth(ctx context.Context, origin string) (strin
 	return authURL, nil
 }
 
-func (s *Service) HandleGoogleOAuthCallback(ctx context.Context, code string, state string) (domain.ExternalConnectionMeta, error) {
+func (s *Service) HandleGoogleOAuthCallback(
+	ctx context.Context,
+	code string,
+	state string,
+) (domain.ExternalConnectionMeta, error) {
 	pendingCode, err := s.pendingCodes.Get(ctx, state)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, user_errors.InvalidOAuthState
@@ -214,12 +219,11 @@ func (s *Service) GetGoogleClient(ctx context.Context) (*googleapi.Client, error
 		return nil, user_errors.Unauthenticated
 	}
 
-	creds, conn, err := s.freshGoogleCreds(ctx, uc.UserUuid)
+	creds, err := s.freshGoogleCreds(ctx, uc.UserUuid)
 	if err != nil {
 		return nil, err
 	}
 
-	_ = conn
 	client := googleapi.New(ctx, creds, s.oauthCfg)
 
 	return client, nil
@@ -231,7 +235,7 @@ func (s *Service) GetPickerToken(ctx context.Context) (string, error) {
 		return "", user_errors.Unauthenticated
 	}
 
-	creds, _, err := s.freshGoogleCreds(ctx, uc.UserUuid)
+	creds, err := s.freshGoogleCreds(ctx, uc.UserUuid)
 	if err != nil {
 		return "", err
 	}
@@ -239,7 +243,11 @@ func (s *Service) GetPickerToken(ctx context.Context) (string, error) {
 	return creds.AccessToken, nil
 }
 
-func (s *Service) AddSpreadsheet(ctx context.Context, spreadsheetId string, name string) (domain.McpSpreadsheet, error) {
+func (s *Service) AddSpreadsheet(
+	ctx context.Context,
+	spreadsheetId string,
+	name string,
+) (domain.McpSpreadsheet, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.McpSpreadsheet{}, user_errors.Unauthenticated
@@ -297,7 +305,14 @@ func (s *Service) RemoveSpreadsheet(ctx context.Context, spreadsheetId string) e
 	return nil
 }
 
-func (s *Service) AddEmailConnection(ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string) (domain.ExternalConnectionMeta, error) {
+func (s *Service) AddEmailConnection(
+	ctx context.Context,
+	email, imapHost string,
+	imapPort int,
+	smtpHost string,
+	smtpPort int,
+	password string,
+) (domain.ExternalConnectionMeta, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
@@ -342,7 +357,10 @@ func (s *Service) AddEmailConnection(ctx context.Context, email, imapHost string
 	return toMeta(saved, email), nil
 }
 
-func (s *Service) AddGitlabConnection(ctx context.Context, personalAccessToken, instanceUrl string) (domain.ExternalConnectionMeta, error) {
+func (s *Service) AddGitlabConnection(
+	ctx context.Context,
+	personalAccessToken, instanceUrl string,
+) (domain.ExternalConnectionMeta, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
@@ -395,7 +413,10 @@ func (s *Service) AddGitlabConnection(ctx context.Context, personalAccessToken, 
 	return toMeta(saved, username), nil
 }
 
-func (s *Service) SetGitlabWebhookSecret(ctx context.Context, webhookSecret string) (domain.ExternalConnectionMeta, error) {
+func (s *Service) SetGitlabWebhookSecret(
+	ctx context.Context,
+	webhookSecret string,
+) (domain.ExternalConnectionMeta, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
@@ -487,7 +508,8 @@ func isLocalGitlabHost(host string) bool {
 		return false
 	}
 
-	return ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || ip.IsPrivate() || ip.IsUnspecified()
+	return ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || ip.IsPrivate() ||
+		ip.IsUnspecified()
 }
 
 // validateGitlabToken pings the instance's "who am I" endpoint to confirm the token and
@@ -527,17 +549,17 @@ func (s *Service) validateGitlabToken(ctx context.Context, instanceUrl, personal
 	return userInfo.Username, nil
 }
 
-// freshGoogleCreds loads the stored Google credentials for the given user, refreshes the
-// access token if it is within 5 minutes of expiry, persists any refreshed token, and
-// returns the up-to-date credentials together with the connection row.
-func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (domain.GoogleOAuthCredentials, domain.ExternalConnection, error) {
+func (s *Service) freshGoogleCreds(
+	ctx context.Context,
+	userUuid uuid.UUID,
+) (domain.GoogleOAuthCredentials, error) {
 	result, err := s.connections.GetByUserAndProvider(ctx, userUuid, domain.ProviderGoogleSheets)
 	if err != nil {
-		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error getting google connection")
+		return domain.GoogleOAuthCredentials{}, rerrors.Wrap(err, "error getting google connection")
 	}
 
 	if !result.Valid {
-		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, user_errors.GoogleNotConnected
+		return domain.GoogleOAuthCredentials{}, user_errors.GoogleNotConnected
 	}
 
 	conn := result.V
@@ -546,7 +568,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 
 	err = json.Unmarshal(conn.CredentialsJSON, &creds)
 	if err != nil {
-		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error parsing google credentials")
+		return domain.GoogleOAuthCredentials{}, rerrors.Wrap(err, "error parsing google credentials")
 	}
 
 	if time.Until(creds.Expiry) < 5*time.Minute {
@@ -561,7 +583,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 
 		freshToken, err := tokenSource.Token()
 		if err != nil {
-			return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error refreshing google token")
+			return domain.GoogleOAuthCredentials{}, rerrors.Wrap(err, "error refreshing google token")
 		}
 
 		if freshToken.AccessToken != creds.AccessToken {
@@ -575,19 +597,23 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 
 			credJSON, err := json.Marshal(creds)
 			if err != nil {
-				return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error marshaling refreshed credentials")
+				return domain.GoogleOAuthCredentials{},
+					rerrors.Wrap(err, "error marshaling refreshed credentials")
 			}
 
-			conn.CredentialsJSON = json.RawMessage(credJSON)
+			conn.CredentialsJSON = credJSON
 
-			conn, err = s.connections.Upsert(ctx, conn)
+			_, err = s.connections.Upsert(ctx, conn)
 			if err != nil {
-				return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error storing refreshed credentials")
+				return domain.GoogleOAuthCredentials{}, rerrors.Wrap(
+					err,
+					"error storing refreshed credentials",
+				)
 			}
 		}
 	}
 
-	return creds, conn, nil
+	return creds, nil
 }
 
 func toMeta(conn domain.ExternalConnection, displayName string) domain.ExternalConnectionMeta {
@@ -617,7 +643,10 @@ func extractDisplayName(conn domain.ExternalConnection) string {
 	return meta.Email
 }
 
-func (s *Service) ListMailServerSuggestions(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error) {
+func (s *Service) ListMailServerSuggestions(
+	ctx context.Context,
+	domainPrefix string,
+) ([]domain.MailServerSuggestion, error) {
 	suggestions, err := s.mailServerSuggestions.ListByDomain(ctx, domainPrefix)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mail server suggestions")

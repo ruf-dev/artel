@@ -88,7 +88,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	secretMatches := token != "" && subtle.ConstantTimeCompare(tokenHash[:], trigger.SecretHash) == 1
 	if !secretMatches {
-		log.Warn().Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: token does not match configured secret")
+		log.Warn().
+			Str("trigger_uuid", triggerUuid.String()).
+			Msg("tract webhook: token does not match configured secret")
 		w.WriteHeader(http.StatusUnauthorized)
 
 		return
@@ -124,7 +126,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	links, err := h.triggers.ListLinksByTrigger(ctx, trigger.Uuid)
 	if err != nil {
-		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: failed to list linked tracts")
+		log.Error().
+			Err(err).
+			Str("trigger_uuid", triggerUuid.String()).
+			Msg("tract webhook: failed to list linked tracts")
 		w.WriteHeader(http.StatusOK)
 
 		return
@@ -137,7 +142,11 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		matched, err := tract.EvaluateTriggerFilters(normalized, link.Filters)
 		if err != nil {
-			log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Str("tract_uuid", link.Tract.Uuid.String()).Msg("tract webhook: failed to evaluate link filters")
+			log.Error().
+				Err(err).
+				Str("trigger_uuid", triggerUuid.String()).
+				Str("tract_uuid", link.Tract.Uuid.String()).
+				Msg("tract webhook: failed to evaluate link filters")
 
 			continue
 		}
@@ -158,6 +167,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) startRun(linkedTract domain.Tract, triggerUuid uuid.UUID, payload json.RawMessage) {
 	_, err := h.tractSvc.StartRun(h.baseCtx, linkedTract, payload, tract.StartedByWebhook, triggerUuid)
 	if err != nil {
-		log.Error().Err(err).Str("tract_uuid", linkedTract.Uuid.String()).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: run failed")
+		log.Error().
+			Err(err).
+			Str("tract_uuid", linkedTract.Uuid.String()).
+			Str("trigger_uuid", triggerUuid.String()).
+			Msg("tract webhook: run failed")
 	}
 }

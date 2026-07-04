@@ -26,7 +26,11 @@ func New(db sqldb.DB, encryptionKey []byte) *Repo {
 	}
 }
 
-func (r *Repo) Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status, passphrase string) (domain.Vault, error) {
+func (r *Repo) Upsert(
+	ctx context.Context,
+	userID, couchInstanceID uuid.UUID,
+	name, couchDBName, status, passphrase string,
+) (domain.Vault, error) {
 	passphraseEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passphrase))
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error encrypting livesync passphrase")
@@ -46,7 +50,19 @@ func (r *Repo) Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, na
 		return domain.Vault{}, rerrors.Wrap(err, "error creating vault")
 	}
 
-	v, err := rowToVault(row.ID, row.UserID, row.Name, row.CouchDbName, row.CouchInstanceID, row.Status, row.LivesyncPassphraseEnc, row.S3InstanceID, row.S3BucketName, row.CreatedAt, r.encryptionKey)
+	v, err := rowToVault(
+		row.ID,
+		row.UserID,
+		row.Name,
+		row.CouchDbName,
+		row.CouchInstanceID,
+		row.Status,
+		row.LivesyncPassphraseEnc,
+		row.S3InstanceID,
+		row.S3BucketName,
+		row.CreatedAt,
+		r.encryptionKey,
+	)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
 	}
@@ -60,7 +76,19 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error) 
 		return domain.Vault{}, rerrors.Wrap(err, "error getting vault by id")
 	}
 
-	v, err := rowToVault(row.ID, row.UserID, row.Name, row.CouchDbName, row.CouchInstanceID, row.Status, row.LivesyncPassphraseEnc, row.S3InstanceID, row.S3BucketName, row.CreatedAt, r.encryptionKey)
+	v, err := rowToVault(
+		row.ID,
+		row.UserID,
+		row.Name,
+		row.CouchDbName,
+		row.CouchInstanceID,
+		row.Status,
+		row.LivesyncPassphraseEnc,
+		row.S3InstanceID,
+		row.S3BucketName,
+		row.CreatedAt,
+		r.encryptionKey,
+	)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
 	}
@@ -79,7 +107,19 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 		return domain.Vault{}, rerrors.Wrap(err, "error getting vault by name and user")
 	}
 
-	v, err := rowToVault(row.ID, row.UserID, row.Name, row.CouchDbName, row.CouchInstanceID, row.Status, row.LivesyncPassphraseEnc, row.S3InstanceID, row.S3BucketName, row.CreatedAt, r.encryptionKey)
+	v, err := rowToVault(
+		row.ID,
+		row.UserID,
+		row.Name,
+		row.CouchDbName,
+		row.CouchInstanceID,
+		row.Status,
+		row.LivesyncPassphraseEnc,
+		row.S3InstanceID,
+		row.S3BucketName,
+		row.CreatedAt,
+		r.encryptionKey,
+	)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
 	}
@@ -129,7 +169,19 @@ func (r *Repo) ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain
 	vaultList := make([]domain.Vault, 0, len(rows))
 
 	for _, row := range rows {
-		v, err := rowToVault(row.ID, row.UserID, row.Name, row.CouchDbName, row.CouchInstanceID, row.Status, row.LivesyncPassphraseEnc, row.S3InstanceID, row.S3BucketName, row.CreatedAt, r.encryptionKey)
+		v, err := rowToVault(
+			row.ID,
+			row.UserID,
+			row.Name,
+			row.CouchDbName,
+			row.CouchInstanceID,
+			row.Status,
+			row.LivesyncPassphraseEnc,
+			row.S3InstanceID,
+			row.S3BucketName,
+			row.CreatedAt,
+			r.encryptionKey,
+		)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error mapping vault row")
 		}
@@ -177,7 +229,17 @@ func (r *Repo) WithTx(tx sqldb.DB) repository.Vaults {
 	return New(tx, r.encryptionKey)
 }
 
-func rowToVault(id, userID uuid.UUID, name, couchDbName string, couchInstanceID uuid.NullUUID, status string, passphraseEnc []byte, s3InstanceID uuid.NullUUID, s3BucketName sql.NullString, createdAt time.Time, encryptionKey []byte) (domain.Vault, error) {
+func rowToVault(
+	id, userID uuid.UUID,
+	name, couchDbName string,
+	couchInstanceID uuid.NullUUID,
+	status string,
+	passphraseEnc []byte,
+	s3InstanceID uuid.NullUUID,
+	s3BucketName sql.NullString,
+	createdAt time.Time,
+	encryptionKey []byte,
+) (domain.Vault, error) {
 	v := domain.Vault{
 		Uuid:        id,
 		UserUuid:    userID,

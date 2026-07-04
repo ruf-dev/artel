@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) listConnectionsForTracts(ctx context.Context, userUuid uuid.UUID) (domain.ToolExecResult, error) {
+func (s *ServiceImpl) listConnectionsForTracts(
+	ctx context.Context,
+	userUuid uuid.UUID,
+) (domain.ToolExecResult, error) {
 	conns, err := s.externalConnections.ListByUser(ctx, userUuid)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "error listing external connections")
@@ -19,8 +22,8 @@ func (s *McpServiceImpl) listConnectionsForTracts(ctx context.Context, userUuid 
 
 	for _, c := range conns {
 		row := map[string]string{
-			"uuid":     c.Uuid.String(),
-			"provider": c.Provider,
+			fieldUuid:     c.Uuid.String(),
+			fieldProvider: c.Provider,
 		}
 		rows = append(rows, row)
 	}

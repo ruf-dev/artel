@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TaskTrackersImpl) ListTrelloBoards(ctx context.Context, req *pb.ListTrelloBoards_Request) (*pb.ListTrelloBoards_Response, error) {
+func (t *TaskTrackersImpl) ListTrelloBoards(
+	ctx context.Context,
+	req *pb.ListTrelloBoards_Request,
+) (*pb.ListTrelloBoards_Response, error) {
 	trackerUuid, err := uuid.Parse(req.TrackerId)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.NotFound, "error parsing tracker id")

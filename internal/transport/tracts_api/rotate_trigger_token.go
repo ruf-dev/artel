@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TractsImpl) RotateTriggerToken(ctx context.Context, req *pb.RotateTriggerToken_Request) (*pb.RotateTriggerToken_Response, error) {
+func (t *TractsImpl) RotateTriggerToken(
+	ctx context.Context,
+	req *pb.RotateTriggerToken_Request,
+) (*pb.RotateTriggerToken_Response, error) {
 	id, err := uuid.Parse(req.Uuid)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.NotFound, "error parsing trigger uuid")

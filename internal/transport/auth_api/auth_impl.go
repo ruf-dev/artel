@@ -24,7 +24,10 @@ type authHandler struct {
 	telegramClientID string
 }
 
-func (h *authHandler) Register(ctx context.Context, req *artel_api.Register_Request) (*artel_api.Register_Response, error) {
+func (h *authHandler) Register(
+	ctx context.Context,
+	req *artel_api.Register_Request,
+) (*artel_api.Register_Response, error) {
 	user, err := h.authSvc.Register(ctx, req.Email, req.Password)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "register")
@@ -73,7 +76,10 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 	}
 }
 
-func (h *authHandler) GetConfig(_ context.Context, _ *artel_api.GetConfig_Request) (*artel_api.GetConfig_Response, error) {
+func (h *authHandler) GetConfig(
+	_ context.Context,
+	_ *artel_api.GetConfig_Request,
+) (*artel_api.GetConfig_Response, error) {
 	return &artel_api.GetConfig_Response{TelegramClientId: h.telegramClientID}, nil
 }
 

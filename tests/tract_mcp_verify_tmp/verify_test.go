@@ -17,15 +17,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
+	"github.com/stretchr/testify/suite"
 )
 
 func randomEmail() string {
@@ -72,7 +72,13 @@ func (s *TractVerifySuite) SetupSuite() {
 
 	// Mirror custom.go's Tract wiring exactly.
 	tractToolExecutor := tract.NewToolExecutor(s.svcs.McpService(), s.svcs.MomService())
-	s.svcs.Tract = tract.New(s.repos.Tracts(), s.repos.Triggers(), s.repos.ExternalConnections(), s.repos.McpDefinitions(), tractToolExecutor)
+	s.svcs.Tract = tract.New(
+		s.repos.Tracts(),
+		s.repos.Triggers(),
+		s.repos.ExternalConnections(),
+		s.repos.McpDefinitions(),
+		tractToolExecutor,
+	)
 	s.svcs.McpService().SetTractService(ctx, s.svcs.TractService())
 
 	// Use 127.0.0.1 rather than localhost: a pre-existing (unrelated, real) couch_instances row
@@ -115,7 +121,8 @@ func (s *TractVerifySuite) TestTractMcpTools() {
 	// row directly instead, pointed at our own throwaway couch instance.
 	couchInstanceUuid, err := uuid.Parse(s.couchInstanceID)
 	s.Require().NoError(err)
-	vault, err := s.repos.Vaults().Upsert(ctx, user.Uuid, couchInstanceUuid, "tractverify_vault", "tractverify_vault_db", "active", "")
+	vault, err := s.repos.Vaults().
+		Upsert(ctx, user.Uuid, couchInstanceUuid, "tractverify_vault", "tractverify_vault_db", "active", "")
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
 		_ = s.repos.Vaults().Delete(context.Background(), vault.Uuid)

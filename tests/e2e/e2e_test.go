@@ -17,13 +17,12 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
+	"github.com/stretchr/testify/suite"
 )
 
 func envOrDefault(key, def string) string {

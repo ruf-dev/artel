@@ -7,7 +7,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TaskTrackersImpl) ListTaskTrackers(ctx context.Context, _ *pb.ListTaskTrackers_Request) (*pb.ListTaskTrackers_Response, error) {
+func (t *TaskTrackersImpl) ListTaskTrackers(
+	ctx context.Context,
+	_ *pb.ListTaskTrackers_Request,
+) (*pb.ListTaskTrackers_Response, error) {
 	trackers, err := t.trackerSvc.ListTrackers(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing task trackers")

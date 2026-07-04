@@ -1,4 +1,4 @@
-package mcp
+package mcp_test
 
 import (
 	"context"
@@ -8,13 +8,17 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service/v1/mcp"
 )
 
 type fakeExternalConnectionRepo struct {
 	conns []domain.ExternalConnection
 }
 
-func (f *fakeExternalConnectionRepo) Upsert(_ context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error) {
+func (f *fakeExternalConnectionRepo) Upsert(
+	_ context.Context,
+	conn domain.ExternalConnection,
+) (domain.ExternalConnection, error) {
 	return conn, nil
 }
 
@@ -22,7 +26,11 @@ func (f *fakeExternalConnectionRepo) GetByID(_ context.Context, _ uuid.UUID) (do
 	return domain.ExternalConnection{}, nil
 }
 
-func (f *fakeExternalConnectionRepo) GetByUserAndProvider(_ context.Context, _ uuid.UUID, _ string) (sql.Null[domain.ExternalConnection], error) {
+func (f *fakeExternalConnectionRepo) GetByUserAndProvider(
+	_ context.Context,
+	_ uuid.UUID,
+	_ string,
+) (sql.Null[domain.ExternalConnection], error) {
 	return sql.Null[domain.ExternalConnection]{}, nil
 }
 
@@ -44,9 +52,11 @@ func TestListConnectionsForTracts(t *testing.T) {
 		},
 	}
 
-	svc := New(nil, nil, nil, nil, nil, nil, nil, repo)
+	svc := mcp.New(nil, nil, nil, nil, nil, nil, nil, repo)
 
-	result, err := svc.listConnectionsForTracts(context.Background(), userUuid)
+	keyCtx := domain.McpKeyContext{UserUuid: userUuid}
+
+	result, err := svc.ExecuteTool(context.Background(), keyCtx, "list_connections_for_tracts", nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

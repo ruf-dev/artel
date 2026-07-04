@@ -20,7 +20,11 @@ func New(repo repository.Repo) *Service {
 	}
 }
 
-func (s *Service) RegisterS3Instance(ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool) (string, error) {
+func (s *Service) RegisterS3Instance(
+	ctx context.Context,
+	endpoint, region, accessKey, secretKey string,
+	useSSL, pathStyle bool,
+) (string, error) {
 	id, err := s.s3InstancesRepo.Register(ctx, endpoint, region, useSSL, pathStyle, accessKey, []byte(secretKey))
 	if err != nil {
 		return "", rerrors.Wrap(err, "register s3 instance")
@@ -52,7 +56,11 @@ func (s *Service) ListS3Instances(ctx context.Context) ([]domain.S3Instance, err
 	return instances, nil
 }
 
-func (s *Service) UpdateS3Instance(ctx context.Context, id, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool) error {
+func (s *Service) UpdateS3Instance(
+	ctx context.Context,
+	id, endpoint, region, accessKey, secretKey string,
+	useSSL, pathStyle bool,
+) error {
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return rerrors.Wrap(err, "parse uuid")

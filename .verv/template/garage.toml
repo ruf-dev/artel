@@ -1,0 +1,17 @@
+metadata_dir = "/var/lib/garage/meta"
+data_dir = "/var/lib/garage/data"
+
+replication_factor = 1
+consistency_mode = "consistent"
+
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "127.0.0.1:3901"
+rpc_secret = "b952417b193ae1e9150f77446ea6c328a192b793c5989fa6a01d150a4ff2f73d"
+
+[s3_api]
+s3_region = "spb"
+api_bind_addr = "[::]:3900"
+
+[admin]
+api_bind_addr = "[::]:3903"
+admin_token = "uFQL0eY1+tOj5hKwZn966u9g1EZAJ29liCXFHTs1fBk="

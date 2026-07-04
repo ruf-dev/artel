@@ -1,4 +1,4 @@
-package executors
+package executors_test
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 )
 
 // TestHttpExecutor_QueryParam_EmptyOmitted verifies that a query param whose
@@ -38,7 +39,7 @@ func TestHttpExecutor_QueryParam_EmptyOmitted(t *testing.T) {
 		"state": "opened",
 	}
 
-	e := NewHttpExecutor()
+	e := executors.NewHttpExecutor()
 
 	_, err := e.Execute(context.Background(), action, nil, params)
 	if err != nil {
@@ -81,7 +82,7 @@ func TestHttpExecutor_Header_EmptyOmitted(t *testing.T) {
 		"provided": "value",
 	}
 
-	e := NewHttpExecutor()
+	e := executors.NewHttpExecutor()
 
 	_, err := e.Execute(context.Background(), action, nil, params)
 	if err != nil {
@@ -133,7 +134,7 @@ func TestHttpExecutor_BodyKey_EmptyDropped(t *testing.T) {
 		"title": "my issue",
 	}
 
-	e := NewHttpExecutor()
+	e := executors.NewHttpExecutor()
 
 	_, err := e.Execute(context.Background(), action, nil, params)
 	if err != nil {

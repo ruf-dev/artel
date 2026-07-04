@@ -9,7 +9,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) RemoveConnector(ctx context.Context, keyID uuid.UUID, mcpName string) error {
+func (s *ServiceImpl) RemoveConnector(ctx context.Context, keyID uuid.UUID, mcpName string) error {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return user_errors.Unauthenticated

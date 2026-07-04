@@ -16,6 +16,24 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+  artel-garage-s3:
+    image: dxflrs/garage:v2.3.0
+    container_name: artel-garage-s3
+    ports:
+      - "13900:3900" # S3 API
+      - "13901:3901" # RPC (cluster/layout management)
+      - "13902:3902" # Web
+      - "13903:3903" # Admin API
+    volumes:
+      - ./.verv/template/garage.toml:/etc/garage.toml:ro
+      - ./local_data/garage/meta:/var/lib/garage/meta
+      - ./local_data/garage/data:/var/lib/garage/data
+    healthcheck:
+      test: ["CMD", "/garage", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   artel-db:
     image: postgres:18
     environment:

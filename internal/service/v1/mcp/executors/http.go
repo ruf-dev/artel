@@ -11,15 +11,20 @@ import (
 	"regexp"
 	"time"
 
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
-	"go.redsock.ru/rerrors"
 )
 
 const (
 	httpExecutorTimeout  = 15 * time.Second
 	httpMaxResponseBytes = 1 << 20 // 1MB
+
+	// regexSubmatchWithGroup is len(FindStringSubmatch(...)) for a pattern with one capture
+	// group: index 0 is the full match, index 1 is the group.
+	regexSubmatchWithGroup = 2
 )
 
 var (
@@ -109,7 +114,8 @@ func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
 	}
 
 	for key, value := range httpAction.Headers {
-		resolved, err := resolveActionValue(value, params, secrets)
+		var resolved string
+		resolved, err = resolveActionValue(value, params, secrets)
 		if err != nil {
 			return "", err
 		}
@@ -146,7 +152,11 @@ func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
 // renderHttpBody walks the HttpAction.Body JSON template and interpolates every string leaf
 // via resolveActionValue (same ${{params.*}} / __secrets.* rules as headers and query values),
 // then re-marshals the result to send as the request body.
-func renderHttpBody(body json.RawMessage, params map[string]interface{}, secrets map[string]interface{}) (json.RawMessage, error) {
+func renderHttpBody(
+	body json.RawMessage,
+	params map[string]interface{},
+	secrets map[string]interface{},
+) (json.RawMessage, error) {
 	var parsed interface{}
 
 	err := json.Unmarshal(body, &parsed)
@@ -167,10 +177,14 @@ func renderHttpBody(body json.RawMessage, params map[string]interface{}, secrets
 	return data, nil
 }
 
-func renderBodyValue(value interface{}, params map[string]interface{}, secrets map[string]interface{}) (interface{}, error) {
-	switch v := value.(type) {
+func renderBodyValue(
+	value interface{},
+	params map[string]interface{},
+	secrets map[string]interface{},
+) (interface{}, error) {
+	switch typedValue := value.(type) {
 	case string:
-		resolved, err := resolveActionValue(v, params, secrets)
+		resolved, err := resolveActionValue(typedValue, params, secrets)
 		if err != nil {
 			return nil, err
 		}
@@ -178,9 +192,9 @@ func renderBodyValue(value interface{}, params map[string]interface{}, secrets m
 		return resolved, nil
 
 	case map[string]interface{}:
-		rendered := make(map[string]interface{}, len(v))
+		rendered := make(map[string]interface{}, len(typedValue))
 
-		for key, val := range v {
+		for key, val := range typedValue {
 			renderedVal, err := renderBodyValue(val, params, secrets)
 			if err != nil {
 				return nil, err
@@ -196,9 +210,9 @@ func renderBodyValue(value interface{}, params map[string]interface{}, secrets m
 		return rendered, nil
 
 	case []interface{}:
-		rendered := make([]interface{}, len(v))
+		rendered := make([]interface{}, len(typedValue))
 
-		for i, val := range v {
+		for i, val := range typedValue {
 			renderedVal, err := renderBodyValue(val, params, secrets)
 			if err != nil {
 				return nil, err
@@ -210,7 +224,7 @@ func renderBodyValue(value interface{}, params map[string]interface{}, secrets m
 		return rendered, nil
 
 	default:
-		return v, nil
+		return typedValue, nil
 	}
 }
 
@@ -246,7 +260,7 @@ func secretField(value string) (string, bool) {
 func interpolateParams(value string, params map[string]interface{}) string {
 	return paramInterpolationRegexp.ReplaceAllStringFunc(value, func(match string) string {
 		submatches := paramInterpolationRegexp.FindStringSubmatch(match)
-		if len(submatches) < 2 {
+		if len(submatches) < regexSubmatchWithGroup {
 			return match
 		}
 
@@ -266,7 +280,7 @@ func interpolateParams(value string, params map[string]interface{}) string {
 func interpolateSecrets(value string, secrets map[string]interface{}) string {
 	return secretInterpolationRegexp.ReplaceAllStringFunc(value, func(match string) string {
 		submatches := secretInterpolationRegexp.FindStringSubmatch(match)
-		if len(submatches) < 2 {
+		if len(submatches) < regexSubmatchWithGroup {
 			return match
 		}
 

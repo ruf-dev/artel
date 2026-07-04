@@ -12,7 +12,10 @@ import (
 
 	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
+
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/utils"
+
 	"go.redsock.ru/rerrors"
 )
 
@@ -36,7 +39,7 @@ func NewLiveSyncClient(baseURL, dbName, username, password string) *LiveSyncClie
 
 func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
 	rows := c.db.AllDocs(ctx, kivik.Params(map[string]any{"include_docs": true}))
-	defer rows.Close()
+	defer utils.CloseWithLog(rows, "error closing list notes request")
 
 	var notes []NoteEntry
 
@@ -74,7 +77,7 @@ func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
 
 func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, error) {
 	d := c.db.Get(ctx, path)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "error closing read note request")
 
 	var couchDoc docFull
 
@@ -120,7 +123,7 @@ func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, er
 
 func (c *LiveSyncClient) WriteNote(ctx context.Context, path, content string) error {
 	d := c.db.Get(ctx, path)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "error closing write note request")
 
 	var existing docRev
 
@@ -259,7 +262,7 @@ func (c *LiveSyncClient) GetNoteMetadata(ctx context.Context, path string) (Note
 
 func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 	rows := c.db.AllDocs(ctx, kivik.Params(map[string]any{"include_docs": true}))
-	defer rows.Close()
+	defer utils.CloseWithLog(rows, "error closing list files request")
 
 	var files []FileEntry
 
@@ -304,7 +307,7 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 	mime := MimeTypeForPath(path)
 
 	d := c.db.Get(ctx, path)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "error closing read file request")
 
 	var couchDoc docFull
 
@@ -374,7 +377,7 @@ func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 
 func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) error {
 	d := c.db.Get(ctx, oldPath)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "error closing move file request")
 
 	var couchDoc docType
 
@@ -417,7 +420,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 
 func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, error) {
 	d := c.db.Get(ctx, hash)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "error closing fetch leaf request")
 
 	var leaf leafDoc
 
@@ -431,7 +434,7 @@ func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, er
 
 func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, error) {
 	d := c.db.Get(ctx, path)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "error closing get revision request")
 
 	var doc docRev
 

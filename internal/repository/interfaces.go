@@ -69,7 +69,9 @@ type Users interface {
 }
 
 type Vaults interface {
-	Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status, passphrase string) (domain.Vault, error)
+	Upsert(
+		ctx context.Context, userID, couchInstanceID uuid.UUID, name, couchDBName, status, passphrase string,
+	) (domain.Vault, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error)
 	GetByNameAndUser(ctx context.Context, userID uuid.UUID, name string) (domain.Vault, error)
 	UpdateStatus(ctx context.Context, vaultID uuid.UUID, status string) error
@@ -94,7 +96,9 @@ type VaultMembers interface {
 }
 
 type VaultInvites interface {
-	Create(ctx context.Context, vaultID, createdBy uuid.UUID, role artel_q.VaultRole, token string) (domain.VaultInvite, error)
+	Create(
+		ctx context.Context, vaultID, createdBy uuid.UUID, role artel_q.VaultRole, token string,
+	) (domain.VaultInvite, error)
 	GetByToken(ctx context.Context, token string) (domain.VaultInvite, error)
 	ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error)
 	Revoke(ctx context.Context, id uuid.UUID) error
@@ -118,7 +122,9 @@ type Subscriptions interface {
 }
 
 type CouchAccounts interface {
-	Upsert(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error)
+	Upsert(
+		ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string,
+	) (domain.CouchAccount, error)
 	GetByUserAndInstance(ctx context.Context, userID, instanceID uuid.UUID) (domain.CouchAccount, error)
 	ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.CouchAccount, error)
 	UpdatePassword(ctx context.Context, username string, instanceID uuid.UUID, passwordPlain string) error
@@ -139,10 +145,15 @@ type CouchInstances interface {
 }
 
 type S3Instances interface {
-	Register(ctx context.Context, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte) (uuid.UUID, error)
+	Register(
+		ctx context.Context, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte,
+	) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.S3Instance, error)
 	List(ctx context.Context) ([]domain.S3Instance, error)
-	Update(ctx context.Context, id uuid.UUID, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte) error
+	Update(
+		ctx context.Context, id uuid.UUID, endpoint, region string,
+		useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte,
+	) error
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	WithTx(tx sqldb.DB) S3Instances
@@ -150,7 +161,10 @@ type S3Instances interface {
 
 type UserPermissionsRepo interface {
 	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
-	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, hasEmails bool, hasTaskTrackers bool, hasNotes bool, hasSpreadsheets bool) (domain.UserPermissions, error)
+	Upsert(
+		ctx context.Context, userUuid uuid.UUID,
+		isAdmin bool, hasEmails bool, hasTaskTrackers bool, hasNotes bool, hasSpreadsheets bool,
+	) (domain.UserPermissions, error)
 	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
 
 	WithTx(tx *sql.Tx) UserPermissionsRepo
@@ -159,7 +173,9 @@ type UserPermissionsRepo interface {
 type ExternalConnectionRepo interface {
 	Upsert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnection, error)
-	GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, provider string) (sql.Null[domain.ExternalConnection], error)
+	GetByUserAndProvider(
+		ctx context.Context, userUuid uuid.UUID, provider string,
+	) (sql.Null[domain.ExternalConnection], error)
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.ExternalConnection, error)
 	Delete(ctx context.Context, userUuid uuid.UUID, provider string) error
 }
@@ -171,7 +187,9 @@ type McpSpreadsheetsRepo interface {
 }
 
 type McpKeyRepository interface {
-	CreateMcpKey(ctx context.Context, vaultID, userID, keyID uuid.UUID, name string, keyHash []byte, keyPreview string) (domain.McpKey, error)
+	CreateMcpKey(
+		ctx context.Context, vaultID, userID, keyID uuid.UUID, name string, keyHash []byte, keyPreview string,
+	) (domain.McpKey, error)
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error)
 	ListMcpKeysByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.McpKey, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (domain.McpKey, error)
@@ -236,7 +254,9 @@ type TractsRepo interface {
 	// InsertRunStep persists a running row for one executed step before it executes
 	// (persist-before-apply, append-only history).
 	InsertRunStep(ctx context.Context, step domain.TractRunStep) (domain.TractRunStep, error)
-	UpdateRunStepFinish(ctx context.Context, id uuid.UUID, status domain.TractRunStepStatus, output json.RawMessage, errMsg string) error
+	UpdateRunStepFinish(
+		ctx context.Context, id uuid.UUID, status domain.TractRunStepStatus, output json.RawMessage, errMsg string,
+	) error
 	ListRunStepsByRun(ctx context.Context, runUuid uuid.UUID) ([]domain.TractRunStep, error)
 
 	// SweepStaleRuns/SweepStaleRunSteps mark stale 'running' rows 'failed' — call once at app init.

@@ -81,11 +81,11 @@ func compare(op string, left, right interface{}) (bool, error) {
 		return !compareEqual(left, right), nil
 	case ">", "<", ">=", "<=":
 		return compareNumeric(op, left, right)
-	case "contains":
+	case opContains:
 		return compareContains(left, right), nil
-	case "glob":
+	case opGlob:
 		return compareGlob(left, right)
-	case "regex":
+	case opRegex:
 		return compareRegex(left, right)
 	default:
 		return false, rerrors.Wrap(user_errors.TractUnknownStepType, "unknown condition operator: "+op)

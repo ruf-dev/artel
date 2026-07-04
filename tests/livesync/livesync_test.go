@@ -8,9 +8,12 @@ import (
 	"strings"
 	"testing"
 
-	kivik "github.com/go-kivik/kivik/v4"
+	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
+
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
+	"github.com/ruf-dev/artel/internal/utils"
+
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -26,6 +29,7 @@ func envOrDefault(key, def string) string {
 // noteID returns a unique, suite-scoped document ID derived from the test name and a suffix.
 // Using the test name as a prefix keeps docs isolated within the shared DB.
 func noteID(t *testing.T, suffix string) string {
+	t.Helper()
 	name := strings.ReplaceAll(t.Name(), "/", "_")
 
 	return fmt.Sprintf("%s/%s.md", name, suffix)
@@ -345,7 +349,7 @@ func (s *VaultSuite) TestLiveSyncCompat_WriteNote_ChildrenIsEmptyArray() {
 	require.NoError(t, err)
 
 	d := s.rawDB.Get(ctx, path)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "raw db conn")
 
 	var raw struct {
 		Children []string `json:"children"`
@@ -353,7 +357,11 @@ func (s *VaultSuite) TestLiveSyncCompat_WriteNote_ChildrenIsEmptyArray() {
 
 	err = d.ScanDoc(&raw)
 	require.NoError(t, err)
-	require.NotNil(t, raw.Children, "children field must be an empty array, not missing — LiveSync iterates it unconditionally")
+	require.NotNil(
+		t,
+		raw.Children,
+		"children field must be an empty array, not missing — LiveSync iterates it unconditionally",
+	)
 	require.Empty(t, raw.Children)
 }
 
@@ -369,7 +377,7 @@ func (s *VaultSuite) TestLiveSyncCompat_DeleteNote_ChildrenIsEmptyArray() {
 	require.NoError(t, err)
 
 	d := s.rawDB.Get(ctx, path)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "raw db conn")
 
 	var raw struct {
 		Children []string `json:"children"`
@@ -405,7 +413,7 @@ func (s *VaultSuite) TestLiveSyncCompat_MoveFile_DestinationChildrenIsEmptyArray
 	require.NoError(t, err)
 
 	d := s.rawDB.Get(ctx, newPath)
-	defer d.Close()
+	defer utils.CloseWithLog(d, "raw db conn")
 
 	var raw struct {
 		Children []string `json:"children"`

@@ -8,7 +8,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (m *McpKeysImpl) SetMcpKeyAccess(ctx context.Context, req *pb.SetMcpKeyAccess_Request) (*pb.SetMcpKeyAccess_Response, error) {
+func (m *McpKeysImpl) SetMcpKeyAccess(
+	ctx context.Context,
+	req *pb.SetMcpKeyAccess_Request,
+) (*pb.SetMcpKeyAccess_Response, error) {
 	keyID, err := uuid.Parse(req.KeyId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse key id")

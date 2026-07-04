@@ -25,7 +25,12 @@ func New(db sqldb.DB, encryptionKey []byte) *Repo {
 	}
 }
 
-func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, username string, passwordPlain string) (domain.CouchAccount, error) {
+func (r *Repo) Upsert(
+	ctx context.Context,
+	userID, instanceID uuid.UUID,
+	username string,
+	passwordPlain string,
+) (domain.CouchAccount, error) {
 	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passwordPlain))
 	if err != nil {
 		return domain.CouchAccount{}, rerrors.Wrap(err, "encrypt password")

@@ -9,7 +9,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (t *TractsImpl) UnlinkTrigger(ctx context.Context, req *pb.UnlinkTrigger_Request) (*pb.UnlinkTrigger_Response, error) {
+func (t *TractsImpl) UnlinkTrigger(
+	ctx context.Context,
+	req *pb.UnlinkTrigger_Request,
+) (*pb.UnlinkTrigger_Response, error) {
 	triggerUuid, err := uuid.Parse(req.TriggerUuid)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.NotFound, "error parsing trigger uuid")

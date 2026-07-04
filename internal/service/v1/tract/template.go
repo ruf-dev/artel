@@ -28,34 +28,34 @@ type resolver struct {
 // stringified and substituted into the surrounding text. Literal `${{ ... }}` sequences
 // (MoM's own params/secrets interpolation, which runs later) pass through untouched. Resolved
 // values are never re-scanned for further tokens — this is a single pass over the input.
-func (r *resolver) render(s string) (interface{}, error) {
-	if expr, ok := singleToken(strings.TrimSpace(s)); ok {
+func (r *resolver) render(tmpl string) (interface{}, error) {
+	if expr, ok := singleToken(strings.TrimSpace(tmpl)); ok {
 		return r.eval(expr)
 	}
 
 	var sb strings.Builder
 
-	i := 0
-	for i < len(s) {
-		if isEscapedOpen(s, i) {
-			end := strings.Index(s[i:], "}}")
+	pos := 0
+	for pos < len(tmpl) {
+		if isEscapedOpen(tmpl, pos) {
+			end := strings.Index(tmpl[pos:], "}}")
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated ${{ ... }} sequence")
 			}
 
-			sb.WriteString(s[i : i+end+2])
-			i += end + 2
+			sb.WriteString(tmpl[pos : pos+end+2])
+			pos += end + len("}}")
 
 			continue
 		}
 
-		if isOpen(s, i) {
-			end := strings.Index(s[i:], "}}")
+		if isOpen(tmpl, pos) {
+			end := strings.Index(tmpl[pos:], "}}")
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated {{ ... }} token")
 			}
 
-			expr := strings.TrimSpace(s[i+2 : i+end])
+			expr := strings.TrimSpace(tmpl[pos+2 : pos+end])
 
 			value, err := r.eval(expr)
 			if err != nil {
@@ -64,46 +64,46 @@ func (r *resolver) render(s string) (interface{}, error) {
 
 			sb.WriteString(stringify(value))
 
-			i += end + 2
+			pos += end + len("}}")
 
 			continue
 		}
 
-		sb.WriteByte(s[i])
+		sb.WriteByte(tmpl[pos])
 
-		i++
+		pos++
 	}
 
 	return sb.String(), nil
 }
 
-// extractRefs scans s for `{{ ... }}` tract tokens (skipping literal `${{ ... }}` MoM
-// escapes) and returns each token's raw reference expression — `length(...)` wrappers are
+// extractRefs scans tmpl for `{{ ... }}` tract tokens (skipping literal `${{ ... }}` MoM
+// escapes) and returns each token'tmpl raw reference expression — `length(...)` wrappers are
 // unwrapped to their inner reference, and `$`-variables (e.g. `$now`) are omitted since they
 // have no visibility/schema implications. Used by validation, not execution.
-func extractRefs(s string) ([]string, error) {
+func extractRefs(tmpl string) ([]string, error) {
 	var refs []string
 
-	i := 0
-	for i < len(s) {
-		if isEscapedOpen(s, i) {
-			end := strings.Index(s[i:], "}}")
+	pos := 0
+	for pos < len(tmpl) {
+		if isEscapedOpen(tmpl, pos) {
+			end := strings.Index(tmpl[pos:], "}}")
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated ${{ ... }} sequence")
 			}
 
-			i += end + 2
+			pos += end + len("}}")
 
 			continue
 		}
 
-		if isOpen(s, i) {
-			end := strings.Index(s[i:], "}}")
+		if isOpen(tmpl, pos) {
+			end := strings.Index(tmpl[pos:], "}}")
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated {{ ... }} token")
 			}
 
-			expr := strings.TrimSpace(s[i+2 : i+end])
+			expr := strings.TrimSpace(tmpl[pos+2 : pos+end])
 			if !strings.HasPrefix(expr, "$") {
 				ref := expr
 				if strings.HasPrefix(expr, "length(") && strings.HasSuffix(expr, ")") {
@@ -113,12 +113,12 @@ func extractRefs(s string) ([]string, error) {
 				refs = append(refs, ref)
 			}
 
-			i += end + 2
+			pos += end + len("}}")
 
 			continue
 		}
 
-		i++
+		pos++
 	}
 
 	return refs, nil
@@ -240,18 +240,18 @@ func splitRef(ref string) (string, []pathSegment, error) {
 func parsePathSegments(rest string) ([]pathSegment, error) {
 	var segments []pathSegment
 
-	i := 0
-	for i < len(rest) {
-		switch rest[i] {
+	pos := 0
+	for pos < len(rest) {
+		switch rest[pos] {
 		case '.':
-			i++
-			start := i
+			pos++
+			start := pos
 
-			for i < len(rest) && rest[i] != '.' && rest[i] != '[' {
-				i++
+			for pos < len(rest) && rest[pos] != '.' && rest[pos] != '[' {
+				pos++
 			}
 
-			name := rest[start:i]
+			name := rest[start:pos]
 			if name == "" {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "empty path segment in: "+rest)
 			}
@@ -259,12 +259,12 @@ func parsePathSegments(rest string) ([]pathSegment, error) {
 			segments = append(segments, pathSegment{field: name})
 
 		case '[':
-			end := strings.IndexByte(rest[i:], ']')
+			end := strings.IndexByte(rest[pos:], ']')
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated [ index in: "+rest)
 			}
 
-			numStr := rest[i+1 : i+end]
+			numStr := rest[pos+1 : pos+end]
 
 			idx, err := strconv.Atoi(numStr)
 			if err != nil {
@@ -272,7 +272,7 @@ func parsePathSegments(rest string) ([]pathSegment, error) {
 			}
 
 			segments = append(segments, pathSegment{index: idx, isIndex: true})
-			i += end + 1
+			pos += end + 1
 
 		default:
 			return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unexpected character in path: "+rest)

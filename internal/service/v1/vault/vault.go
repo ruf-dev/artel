@@ -80,7 +80,15 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 				return rerrors.Wrap(err, "generate livesync passphrase")
 			}
 
-			vault, err = s.ensureVaultExists(ctx, couchClient, uc, instanceWithAccount, vaultName, liveSyncPassphrase, vaultsRepo)
+			vault, err = s.ensureVaultExists(
+				ctx,
+				couchClient,
+				uc,
+				instanceWithAccount,
+				vaultName,
+				liveSyncPassphrase,
+				vaultsRepo,
+			)
 			if err != nil {
 				return rerrors.Wrap(err, "create couch database")
 			}
@@ -147,7 +155,11 @@ func (s *Service) ListMembers(ctx context.Context, vaultID uuid.UUID) ([]domain.
 	return members, nil
 }
 
-func (s *Service) CreateInviteLink(ctx context.Context, vaultID uuid.UUID, role artel_q.VaultRole) (domain.VaultInvite, error) {
+func (s *Service) CreateInviteLink(
+	ctx context.Context,
+	vaultID uuid.UUID,
+	role artel_q.VaultRole,
+) (domain.VaultInvite, error) {
 	if role == artel_q.VaultRoleOwner {
 		return domain.VaultInvite{}, rerrors.New("cannot create invite with owner role")
 	}

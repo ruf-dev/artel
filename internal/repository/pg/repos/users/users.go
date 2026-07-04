@@ -7,12 +7,14 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
 	"github.com/ruf-dev/artel/internal/utils"
-	"go.redsock.ru/rerrors"
 )
 
 type UsersRepo struct {
@@ -220,8 +222,9 @@ func (r *UsersRepo) ListAll(ctx context0.Context, req domain.ListUsersReq) ([]do
 
 	rows, err := r.db.QueryContext(ctx, listSQL, listArgs...)
 	if err != nil {
-		return nil, 0, rerrors.Wrap(err, "error listing users")
+		return nil, 0, pg_err.UnwrapPgErr(err)
 	}
+
 	defer utils.CloseWithLog(rows, "list users rows")
 
 	var result []domain.User

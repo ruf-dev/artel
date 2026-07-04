@@ -77,7 +77,8 @@ func LogInterceptor() grpc.ServerOption {
 				Any("response", resp)
 
 			return resp, err
-		})
+		},
+	)
 }
 
 func enrichCtxLogger(ctx context.Context) context.Context {

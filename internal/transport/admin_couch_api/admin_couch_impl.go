@@ -36,7 +36,10 @@ func (a *AdminCouchImpl) Gateway(ctx context.Context, endpoint string, opts ...g
 	return "/api/admin_couch/", gwMux
 }
 
-func (a *AdminCouchImpl) ListCouchUsers(ctx context.Context, req *artel_api.ListCouchUsers_Request) (*artel_api.ListCouchUsers_Response, error) {
+func (a *AdminCouchImpl) ListCouchUsers(
+	ctx context.Context,
+	req *artel_api.ListCouchUsers_Request,
+) (*artel_api.ListCouchUsers_Response, error) {
 	users, err := a.svc.ListUsers(ctx, req.InstanceId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "listing couch users")
@@ -54,7 +57,10 @@ func (a *AdminCouchImpl) ListCouchUsers(ctx context.Context, req *artel_api.List
 	return resp, nil
 }
 
-func (a *AdminCouchImpl) DeleteCouchUser(ctx context.Context, req *artel_api.DeleteCouchUser_Request) (*artel_api.DeleteCouchUser_Response, error) {
+func (a *AdminCouchImpl) DeleteCouchUser(
+	ctx context.Context,
+	req *artel_api.DeleteCouchUser_Request,
+) (*artel_api.DeleteCouchUser_Response, error) {
 	err := a.svc.DeleteUser(ctx, req.InstanceId, req.Username)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "deleting couch user")
@@ -65,7 +71,10 @@ func (a *AdminCouchImpl) DeleteCouchUser(ctx context.Context, req *artel_api.Del
 	return resp, nil
 }
 
-func (a *AdminCouchImpl) ChangeCouchUserPassword(ctx context.Context, req *artel_api.ChangeCouchUserPassword_Request) (*artel_api.ChangeCouchUserPassword_Response, error) {
+func (a *AdminCouchImpl) ChangeCouchUserPassword(
+	ctx context.Context,
+	req *artel_api.ChangeCouchUserPassword_Request,
+) (*artel_api.ChangeCouchUserPassword_Response, error) {
 	err := a.svc.ChangeUserPassword(ctx, req.InstanceId, req.Username, req.NewPassword)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "changing couch user password")
@@ -76,7 +85,10 @@ func (a *AdminCouchImpl) ChangeCouchUserPassword(ctx context.Context, req *artel
 	return resp, nil
 }
 
-func (a *AdminCouchImpl) ListCouchDatabases(ctx context.Context, req *artel_api.ListCouchDatabases_Request) (*artel_api.ListCouchDatabases_Response, error) {
+func (a *AdminCouchImpl) ListCouchDatabases(
+	ctx context.Context,
+	req *artel_api.ListCouchDatabases_Request,
+) (*artel_api.ListCouchDatabases_Response, error) {
 	databases, err := a.svc.ListDatabases(ctx, req.InstanceId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "listing couch databases")
@@ -87,7 +99,10 @@ func (a *AdminCouchImpl) ListCouchDatabases(ctx context.Context, req *artel_api.
 	return resp, nil
 }
 
-func (a *AdminCouchImpl) GrantDatabaseAccess(ctx context.Context, req *artel_api.GrantDatabaseAccess_Request) (*artel_api.GrantDatabaseAccess_Response, error) {
+func (a *AdminCouchImpl) GrantDatabaseAccess(
+	ctx context.Context,
+	req *artel_api.GrantDatabaseAccess_Request,
+) (*artel_api.GrantDatabaseAccess_Response, error) {
 	err := a.svc.GrantDatabaseAccess(ctx, req.InstanceId, req.DbName, req.Username)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "granting database access")
@@ -98,7 +113,10 @@ func (a *AdminCouchImpl) GrantDatabaseAccess(ctx context.Context, req *artel_api
 	return resp, nil
 }
 
-func (a *AdminCouchImpl) RevokeDatabaseAccess(ctx context.Context, req *artel_api.RevokeDatabaseAccess_Request) (*artel_api.RevokeDatabaseAccess_Response, error) {
+func (a *AdminCouchImpl) RevokeDatabaseAccess(
+	ctx context.Context,
+	req *artel_api.RevokeDatabaseAccess_Request,
+) (*artel_api.RevokeDatabaseAccess_Response, error) {
 	err := a.svc.RevokeDatabaseAccess(ctx, req.InstanceId, req.DbName, req.Username)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "revoking database access")
@@ -109,7 +127,10 @@ func (a *AdminCouchImpl) RevokeDatabaseAccess(ctx context.Context, req *artel_ap
 	return resp, nil
 }
 
-func (a *AdminCouchImpl) GetUserDatabaseAccess(ctx context.Context, req *artel_api.GetUserDatabaseAccess_Request) (*artel_api.GetUserDatabaseAccess_Response, error) {
+func (a *AdminCouchImpl) GetUserDatabaseAccess(
+	ctx context.Context,
+	req *artel_api.GetUserDatabaseAccess_Request,
+) (*artel_api.GetUserDatabaseAccess_Response, error) {
 	databases, err := a.svc.GetUserDatabaseAccess(ctx, req.InstanceId, req.Username)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "getting user database access")

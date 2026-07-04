@@ -10,7 +10,7 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-func (s *McpServiceImpl) ListConnectors(ctx context.Context, keyID uuid.UUID) ([]domain.McpConnector, error) {
+func (s *ServiceImpl) ListConnectors(ctx context.Context, keyID uuid.UUID) ([]domain.McpConnector, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return nil, user_errors.Unauthenticated
