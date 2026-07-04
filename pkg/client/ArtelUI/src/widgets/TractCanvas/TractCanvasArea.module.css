@@ -1,0 +1,35 @@
+.Wrap {
+    flex: 1;
+    overflow: auto;
+    background-image: radial-gradient(circle, var(--color-border-light) 1px, transparent 1px);
+    background-size: 1.5rem 1.5rem;
+    background-attachment: local;
+}
+
+.Canvas {
+    position: relative;
+}
+
+.Svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.Conn {
+    stroke: var(--color-border-light);
+    stroke-width: 1.5px;
+    fill: none;
+    transition: stroke 280ms ease;
+}
+
+.ConnRunning {
+    stroke: rgba(74,222,128,0.55);
+    stroke-dasharray: 7 5;
+    animation: dashFlow 0.65s linear infinite;
+}
+
+@keyframes dashFlow {
+    to { stroke-dashoffset: -24; }
+}

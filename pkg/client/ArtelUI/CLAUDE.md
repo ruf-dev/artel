@@ -89,6 +89,25 @@ splitting an existing fat page.
 - **Private components** that need to change **parent local state** (e.g. `useState` in the enclosing component) receive a callback prop for that change — local state belongs to whoever owns it.
 - **Public/exported components** that trigger state changes always receive a callback prop — they must not reach into a specific store themselves, because callers control which state is affected.
 
+## Never use z-index
+
+- **`z-index` is forbidden** in every `.module.css`/`.css` file and in inline `style` props —
+  no exceptions, no "just this once."
+- Stacking order comes from **DOM order** instead: within a stacking context, positioned
+  elements paint in document order, so put the element that should be on top **later in the
+  DOM** (use flexbox `order` if you need it to *look* earlier visually — `order` doesn't
+  affect paint/stacking order, only layout position).
+- Floating UI (dropdowns, popovers, tooltips) that must render above unrelated sibling
+  content should be **portaled to `document.body`** (`createPortal`) and positioned via
+  `getBoundingClientRect()`, not stacked with `z-index` — see
+  `components/TemplateInput/TemplateInput.tsx` for the pattern.
+- Global overlays (dialogs, toasts) already work without `z-index` because they're mounted
+  last, as a sibling after `<Routes>`, in `pages/segments/Dialog.tsx` — follow that precedent
+  for any new global overlay instead of reaching for `z-index`.
+- Enforced for JS/TSX by the `no-restricted-syntax` rule banning `zIndex` in `eslint.config.js`.
+  There is no CSS linter in this project (see root CLAUDE.md — only add one if the user asks),
+  so `z-index` in `.module.css` files must be caught in code review.
+
 ## Async style
 
 - **Prefer promise chains over `try/catch`** — use `.then().catch().finally()` instead

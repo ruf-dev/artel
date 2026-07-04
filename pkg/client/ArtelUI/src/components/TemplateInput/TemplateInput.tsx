@@ -1,4 +1,5 @@
-import {useMemo, useRef, useState} from "react"
+import {useEffect, useMemo, useRef, useState} from "react"
+import {createPortal} from "react-dom"
 
 import cls from "@/components/TemplateInput/TemplateInput.module.css"
 
@@ -58,12 +59,43 @@ interface Props {
     placeholder?: string
 }
 
+interface DropdownRect {
+    top: number
+    left: number
+    width: number
+}
+
 export default function TemplateInput({value, onChange, sources, placeholder}: Props) {
+    const wrapRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const [open, setOpen] = useState(false)
     const [query, setQuery] = useState("")
     const [triggerStart, setTriggerStart] = useState<number | null>(null)
     const [activeIndex, setActiveIndex] = useState(0)
+    const [dropdownRect, setDropdownRect] = useState<DropdownRect | null>(null)
+
+    // Portal the dropdown to document.body and position it with getBoundingClientRect instead
+    // of z-index — see the "Never use z-index" rule in CLAUDE.md. Being appended after #root in
+    // the DOM, it paints above the app with no stacking-context gymnastics needed.
+    useEffect(() => {
+        if (!open) return
+
+        function reposition() {
+            const el = wrapRef.current
+            if (!el) return
+            // TODO WHY THIS
+            const box = el.getBoundingClientRect()
+            setDropdownRect({top: box.bottom + 4, left: box.left, width: box.width})
+        }
+
+        reposition()
+        window.addEventListener("scroll", reposition, true)
+        window.addEventListener("resize", reposition)
+        return () => {
+            window.removeEventListener("scroll", reposition, true)
+            window.removeEventListener("resize", reposition)
+        }
+    }, [open])
 
     const sourceIds = useMemo(() => sources.map(s => s.id), [sources])
 
@@ -167,7 +199,7 @@ export default function TemplateInput({value, onChange, sources, placeholder}: P
             : undefined
 
     return (
-        <div className={cls.Wrap}>
+        <div className={cls.Wrap} ref={wrapRef}>
             <div className={cls.InputRow}>
                 <input
                     ref={inputRef}
@@ -190,15 +222,20 @@ export default function TemplateInput({value, onChange, sources, placeholder}: P
                     {"{}"}
                 </Button>
             </div>
-            {open && (
-                <div className={cls.Dropdown}>
+            {open && dropdownRect && createPortal(
+                <div
+                    className={cls.Dropdown}
+                    style={{top: dropdownRect.top, left: dropdownRect.left, width: dropdownRect.width}}
+                    onMouseDown={e => e.preventDefault()}
+                >
                     <SourceGroups
                         groups={filtered}
                         flatList={flatList}
                         activeIndex={activeIndex}
                         onSelect={insertRef}
                     />
-                </div>
+                </div>,
+                document.body,
             )}
         </div>
     )

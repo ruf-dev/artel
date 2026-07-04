@@ -16,8 +16,8 @@ import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
 import ToolboxPage from "@/pages/toolbox/ToolboxPage.tsx"
-import TractsPage from "@/pages/tracts/TractsPage.tsx"
-import TractEditorPage from "@/pages/tracts/TractEditorPage.tsx"
+import TractCanvasListPage from "@/pages/tract-canvas/TractCanvasListPage.tsx"
+import TractCanvasBuilderPage from "@/pages/tract-canvas/TractCanvasBuilderPage.tsx"
 import GoogleOAuthCallbackPage from "@/pages/connections/GoogleOAuthCallbackPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
@@ -85,8 +85,8 @@ export default function Router() {
                         <Route path={Path.ConnectionsPage} element={<ConnectionsPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.GoogleOAuthCallback} element={<GoogleOAuthCallbackPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={Path.ToolboxPage} element={<ToolboxPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.TractsPage} element={<TractsPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.TractEditorPage} element={<TractEditorPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.TractsPage} element={<TractCanvasListPage/>} errorElement={<ErrorPage/>}/>
+                        <Route path={Path.TractEditorPage} element={<TractCanvasBuilderPage/>} errorElement={<ErrorPage/>}/>
                         <Route path={"*"} element={<Navigate to={Path.HomePage} replace/>}/>
                     </Route>
 

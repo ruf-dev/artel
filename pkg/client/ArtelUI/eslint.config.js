@@ -31,6 +31,10 @@ export default tseslint.config([
                     selector: 'JSXOpeningElement[name.name="div"]:not(:has(JSXAttribute[name.name="className"]))',
                     message: '<div> must have a className (use a CSS module class).',
                 },
+                {
+                    selector: 'Property[key.name="zIndex"]',
+                    message: 'Never use z-index — rely on DOM order or a portal to document.body instead (see pkg/client/ArtelUI/CLAUDE.md).',
+                },
             ],
         },
     },

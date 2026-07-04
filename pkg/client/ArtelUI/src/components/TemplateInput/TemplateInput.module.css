@@ -42,11 +42,7 @@
 }
 
 .Dropdown {
-    position: absolute;
-    top: calc(100% + 0.25rem);
-    left: 0;
-    right: 0;
-    z-index: 20;
+    position: fixed;
     max-height: 16rem;
     overflow-y: auto;
     background: var(--color-bg-card);
