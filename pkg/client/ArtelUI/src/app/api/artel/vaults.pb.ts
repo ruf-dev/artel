@@ -28,6 +28,8 @@ export type GetVaultResponse = {
   id?: string;
   name?: string;
   dbUrl?: string;
+  s3InstanceId?: string;
+  s3BucketName?: string;
 };
 
 export type GetVault = Record<string, never>;
@@ -117,11 +119,31 @@ export type AcceptInviteResponse = {
 
 export type AcceptInvite = Record<string, never>;
 
+export type LinkS3BucketRequest = {
+  vaultId?: string;
+  s3InstanceId?: string;
+  bucketName?: string;
+};
+
+export type LinkS3BucketResponse = Record<string, never>;
+
+export type LinkS3Bucket = Record<string, never>;
+
+export type UnlinkS3BucketRequest = {
+  vaultId?: string;
+};
+
+export type UnlinkS3BucketResponse = Record<string, never>;
+
+export type UnlinkS3Bucket = Record<string, never>;
+
 export type VaultItem = {
   id?: string;
   name?: string;
   dbUrl?: string;
   livesyncPassphrase?: string;
+  s3InstanceId?: string;
+  s3BucketName?: string;
 };
 
 export type VaultMemberInfo = {
@@ -174,5 +196,11 @@ export class VaultsAPI {
   }
   static AcceptInvite(this:void, req: AcceptInviteRequest, initReq?: fm.InitReq): Promise<AcceptInviteResponse> {
     return fm.fetchRequest<AcceptInviteResponse>(`/api/vaults/join`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static LinkS3Bucket(this:void, req: LinkS3BucketRequest, initReq?: fm.InitReq): Promise<LinkS3BucketResponse> {
+    return fm.fetchRequest<LinkS3BucketResponse>(`/api/vaults/s3/link`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static UnlinkS3Bucket(this:void, req: UnlinkS3BucketRequest, initReq?: fm.InitReq): Promise<UnlinkS3BucketResponse> {
+    return fm.fetchRequest<UnlinkS3BucketResponse>(`/api/vaults/s3/unlink`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

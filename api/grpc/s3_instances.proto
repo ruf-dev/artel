@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package artel_s3;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service S3InstancesAPI {
+  rpc RegisterS3Instance(RegisterS3Instance.Request) returns (RegisterS3Instance.Response) {
+    option (google.api.http) = {
+      post: "/api/s3/add"
+      body: "*"
+    };
+  };
+  rpc GetS3Instance(GetS3Instance.Request) returns (GetS3Instance.Response) {
+    option (google.api.http) = {
+      post: "/api/s3/get"
+      body: "*"
+    };
+  };
+  rpc ListS3Instances(ListS3Instances.Request) returns (ListS3Instances.Response) {
+    option (google.api.http) = {
+      post: "/api/s3/list"
+      body: "*"
+    };
+  };
+  rpc UpdateS3Instance(UpdateS3Instance.Request) returns (UpdateS3Instance.Response) {
+    option (google.api.http) = {
+      post: "/api/s3/update"
+      body: "*"
+    };
+  };
+  rpc DeleteS3Instance(DeleteS3Instance.Request) returns (DeleteS3Instance.Response) {
+    option (google.api.http) = {
+      post: "/api/s3/delete"
+      body: "*"
+    };
+  };
+  rpc TestS3Instance(TestS3Instance.Request) returns (TestS3Instance.Response) {
+    option (google.api.http) = {
+      post: "/api/s3/test"
+      body: "*"
+    };
+  };
+}
+
+message RegisterS3Instance {
+  message Request {
+    string endpoint    = 1;
+    string region      = 2;
+    string access_key  = 3;
+    string secret_key  = 4;
+    bool   use_ssl     = 5;
+    bool   path_style  = 6;
+  }
+  message Response {
+    string id = 1;
+  }
+}
+
+message GetS3Instance {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    string id         = 1;
+    string endpoint   = 2;
+    string region     = 3;
+    bool   use_ssl    = 4;
+    bool   path_style = 5;
+    string created_at = 6;
+    // access_key/secret_key deliberately omitted — never round-tripped to the client, matching GetCouchInstance.Response
+  }
+}
+
+message ListS3Instances {
+  message Request {}
+  message Response {
+    repeated GetS3Instance.Response instances = 1;
+  }
+}
+
+message UpdateS3Instance {
+  message Request {
+    string id          = 1;
+    string endpoint    = 2;
+    string region      = 3;
+    string access_key  = 4;
+    string secret_key  = 5;
+    bool   use_ssl     = 6;
+    bool   path_style  = 7;
+  }
+  message Response {}
+}
+
+message DeleteS3Instance {
+  message Request {
+    string id = 1;
+  }
+  message Response {}
+}
+
+message TestS3Instance {
+  message Request {
+    string id = 1;
+  }
+  message Response {}
+}

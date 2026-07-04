@@ -30,6 +30,8 @@ const (
 	VaultsAPI_ListInviteLinks_FullMethodName  = "/artel_vaults.VaultsAPI/ListInviteLinks"
 	VaultsAPI_RevokeInviteLink_FullMethodName = "/artel_vaults.VaultsAPI/RevokeInviteLink"
 	VaultsAPI_AcceptInvite_FullMethodName     = "/artel_vaults.VaultsAPI/AcceptInvite"
+	VaultsAPI_LinkS3Bucket_FullMethodName     = "/artel_vaults.VaultsAPI/LinkS3Bucket"
+	VaultsAPI_UnlinkS3Bucket_FullMethodName   = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -47,6 +49,8 @@ type VaultsAPIClient interface {
 	ListInviteLinks(ctx context.Context, in *ListInviteLinks_Request, opts ...grpc.CallOption) (*ListInviteLinks_Response, error)
 	RevokeInviteLink(ctx context.Context, in *RevokeInviteLink_Request, opts ...grpc.CallOption) (*RevokeInviteLink_Response, error)
 	AcceptInvite(ctx context.Context, in *AcceptInvite_Request, opts ...grpc.CallOption) (*AcceptInvite_Response, error)
+	LinkS3Bucket(ctx context.Context, in *LinkS3Bucket_Request, opts ...grpc.CallOption) (*LinkS3Bucket_Response, error)
+	UnlinkS3Bucket(ctx context.Context, in *UnlinkS3Bucket_Request, opts ...grpc.CallOption) (*UnlinkS3Bucket_Response, error)
 }
 
 type vaultsAPIClient struct {
@@ -167,6 +171,26 @@ func (c *vaultsAPIClient) AcceptInvite(ctx context.Context, in *AcceptInvite_Req
 	return out, nil
 }
 
+func (c *vaultsAPIClient) LinkS3Bucket(ctx context.Context, in *LinkS3Bucket_Request, opts ...grpc.CallOption) (*LinkS3Bucket_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LinkS3Bucket_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_LinkS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) UnlinkS3Bucket(ctx context.Context, in *UnlinkS3Bucket_Request, opts ...grpc.CallOption) (*UnlinkS3Bucket_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnlinkS3Bucket_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_UnlinkS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VaultsAPIServer is the server API for VaultsAPI service.
 // All implementations must embed UnimplementedVaultsAPIServer
 // for forward compatibility.
@@ -182,6 +206,8 @@ type VaultsAPIServer interface {
 	ListInviteLinks(context.Context, *ListInviteLinks_Request) (*ListInviteLinks_Response, error)
 	RevokeInviteLink(context.Context, *RevokeInviteLink_Request) (*RevokeInviteLink_Response, error)
 	AcceptInvite(context.Context, *AcceptInvite_Request) (*AcceptInvite_Response, error)
+	LinkS3Bucket(context.Context, *LinkS3Bucket_Request) (*LinkS3Bucket_Response, error)
+	UnlinkS3Bucket(context.Context, *UnlinkS3Bucket_Request) (*UnlinkS3Bucket_Response, error)
 	mustEmbedUnimplementedVaultsAPIServer()
 }
 
@@ -224,6 +250,12 @@ func (UnimplementedVaultsAPIServer) RevokeInviteLink(context.Context, *RevokeInv
 }
 func (UnimplementedVaultsAPIServer) AcceptInvite(context.Context, *AcceptInvite_Request) (*AcceptInvite_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method AcceptInvite not implemented")
+}
+func (UnimplementedVaultsAPIServer) LinkS3Bucket(context.Context, *LinkS3Bucket_Request) (*LinkS3Bucket_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method LinkS3Bucket not implemented")
+}
+func (UnimplementedVaultsAPIServer) UnlinkS3Bucket(context.Context, *UnlinkS3Bucket_Request) (*UnlinkS3Bucket_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method UnlinkS3Bucket not implemented")
 }
 func (UnimplementedVaultsAPIServer) mustEmbedUnimplementedVaultsAPIServer() {}
 func (UnimplementedVaultsAPIServer) testEmbeddedByValue()                   {}
@@ -444,6 +476,42 @@ func _VaultsAPI_AcceptInvite_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_LinkS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinkS3Bucket_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).LinkS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_LinkS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).LinkS3Bucket(ctx, req.(*LinkS3Bucket_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_UnlinkS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnlinkS3Bucket_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).UnlinkS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_UnlinkS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).UnlinkS3Bucket(ctx, req.(*UnlinkS3Bucket_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VaultsAPI_ServiceDesc is the grpc.ServiceDesc for VaultsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -494,6 +562,14 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AcceptInvite",
 			Handler:    _VaultsAPI_AcceptInvite_Handler,
+		},
+		{
+			MethodName: "LinkS3Bucket",
+			Handler:    _VaultsAPI_LinkS3Bucket_Handler,
+		},
+		{
+			MethodName: "UnlinkS3Bucket",
+			Handler:    _VaultsAPI_UnlinkS3Bucket_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

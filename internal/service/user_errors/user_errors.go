@@ -96,6 +96,13 @@ var (
 		rerrors.WithHttpStatus(http.StatusFailedDependency),
 		rerrors.WithPreconditionFailure("COUCHDB", "instance", pb.UserErrors_NoCouchDbInstance.String()))
 
+	// s3 / binary storage
+	NoS3BucketLinked = rerrors.New("vault has no linked S3 bucket; this operation is unavailable for non-markdown files",
+		codes.FailedPrecondition,
+		rerrors.WithPreconditionFailure("S3", "bucket", pb.UserErrors_NoS3BucketLinked.String()))
+
+	McpCrossBackendMoveNotSupported = rerrors.New("cannot move a file across the markdown/binary storage boundary in one call; write to the new path then delete the old path instead", codes.InvalidArgument)
+
 	// gitlab webhook
 	GitlabWebhookSecretMismatch     = rerrors.New("gitlab webhook: token does not match configured secret", codes.PermissionDenied, rerrors.WithHttpStatus(http.StatusUnauthorized))
 	GitlabWebhookConnectionNotFound = rerrors.New("gitlab webhook: no external connection found for this webhook id", codes.NotFound, rerrors.WithHttpStatus(http.StatusNotFound))

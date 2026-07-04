@@ -22,7 +22,7 @@ Add to `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Applicat
 }
 ```
 
-Restart Claude Desktop. The vault tools (`list_notes`, `read_note`, `write_note`, etc.) will appear automatically.
+Restart Claude Desktop. The vault tools (`list_files`, `read_file`, `write_file`, etc.) will appear automatically.
 
 ---
 
@@ -110,9 +110,9 @@ rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}})
 result = rpc("tools/call", {"name": "list_notes", "arguments": {}})
 print(result["result"]["content"][0]["text"])
 
-# Write a note
+# Write a note (markdown path -> plain text content)
 rpc("tools/call", {
-    "name": "write_note",
+    "name": "write_file",
     "arguments": {"path": "AI/hello.md", "content": "# Hello from Python"}
 })
 ```
@@ -125,15 +125,18 @@ rpc("tools/call", {
 |------|-------------|---------------|
 | `list_files` | List all files in the vault (notes and binary files) | — |
 | `read_file` | Read any file by path (text or base64 binary) | `path` |
-| `write_note` | Create or update a note | `path`, `content` |
+| `write_file` | Create or update a file | `path`, `content` |
 | `delete_file` | Delete any file by path | `path` |
 | `move_file` | Move/rename any file | `old_path`, `new_path` |
 | `list_folders` | List all folders | — |
 | `list_tags` | List all tags | — |
-| `get_note_metadata` | Get id, rev, mtime, ctime, size | `path` |
+| `get_file_metadata` | Get id, rev, mtime, ctime, size | `path` |
 | `connections` | List the MoMs (e.g. `email`) connected to this key | — |
 
 Text tools return `{"content": [{"type": "text", "text": "..."}]}`; `read_file` on an image/PDF
-returns an `image`/`document` content block with base64 `data` instead. Beyond these built-in
-tools, a key may also expose extra tools from connected MoMs (e.g. `send_email`) — see
+returns an `image`/`document` content block with base64 `data` instead. `.md`/`.markdown` paths
+are stored in CouchDB and `write_file`'s `content` is plain text for them; any other path routes
+to the vault's linked S3 bucket, and `write_file`'s `content` must then be base64-encoded (fails
+with a "no linked S3 bucket" error if the vault has none linked). Beyond these built-in tools, a
+key may also expose extra tools from connected MoMs (e.g. `send_email`) — see
 [tools.md](tools.md) for exactly when those appear.

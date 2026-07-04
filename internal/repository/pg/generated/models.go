@@ -333,6 +333,17 @@ type Prompt struct {
 	Prompt string
 }
 
+type S3Instance struct {
+	ID           uuid.UUID
+	Endpoint     string
+	Region       string
+	AccessKey    string
+	SecretKeyEnc []byte
+	UseSsl       bool
+	PathStyle    bool
+	CreatedAt    time.Time
+}
+
 type Session struct {
 	ID        uuid.UUID
 	UserID    uuid.UUID
@@ -442,6 +453,8 @@ type Vault struct {
 	CouchInstanceID       uuid.NullUUID
 	Status                string
 	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
 }
 
 type VaultInvite struct {

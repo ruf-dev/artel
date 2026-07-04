@@ -10,4 +10,5 @@ export enum UserErrors {
   UndefinedError = "UndefinedError",
   NoSubscription = "NoSubscription",
   NoCouchDbInstance = "NoCouchDbInstance",
+  NoS3BucketLinked = "NoS3BucketLinked",
 }

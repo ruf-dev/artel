@@ -30,6 +30,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
 	"github.com/ruf-dev/artel/internal/transport/notes_api"
 	"github.com/ruf-dev/artel/internal/transport/prompts_api"
+	"github.com/ruf-dev/artel/internal/transport/s3_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
 	"github.com/ruf-dev/artel/internal/transport/tracts_api"
@@ -87,6 +88,7 @@ func (c *Custom) Init(a *App) error {
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
+	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
 	adminUsersImpl := admin_users_api.New(services.AdminUsersService())
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService())
@@ -118,6 +120,14 @@ func (c *Custom) Init(a *App) error {
 			pb.CouchInstancesAPI_ListCouchInstances_FullMethodName,
 			pb.CouchInstancesAPI_UpdateCouchInstance_FullMethodName,
 			pb.CouchInstancesAPI_DeleteCouchInstance_FullMethodName,
+			pb.S3InstancesAPI_RegisterS3Instance_FullMethodName,
+			pb.S3InstancesAPI_GetS3Instance_FullMethodName,
+			pb.S3InstancesAPI_ListS3Instances_FullMethodName,
+			pb.S3InstancesAPI_UpdateS3Instance_FullMethodName,
+			pb.S3InstancesAPI_DeleteS3Instance_FullMethodName,
+			pb.S3InstancesAPI_TestS3Instance_FullMethodName,
+			pb.VaultsAPI_LinkS3Bucket_FullMethodName,
+			pb.VaultsAPI_UnlinkS3Bucket_FullMethodName,
 			pb.AdminCouchAPI_ListCouchUsers_FullMethodName,
 			pb.AdminCouchAPI_DeleteCouchUser_FullMethodName,
 			pb.AdminCouchAPI_ChangeCouchUserPassword_FullMethodName,
@@ -129,7 +139,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminUsersAPI_GetUserSessions_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)

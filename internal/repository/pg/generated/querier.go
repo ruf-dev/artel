@@ -31,6 +31,7 @@ type Querier interface {
 	DeleteMcpDefinition(ctx context.Context, name string) error
 	DeleteMcpSpreadsheet(ctx context.Context, arg DeleteMcpSpreadsheetParams) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
+	DeleteS3Instance(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteTaskTracker(ctx context.Context, id uuid.UUID) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
@@ -47,6 +48,8 @@ type Querier interface {
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
 	GetMcpTool(ctx context.Context, arg GetMcpToolParams) (McpTool, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
+	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)
+	GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (S3Instance, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
@@ -74,6 +77,7 @@ type Querier interface {
 	InsertTractRunStep(ctx context.Context, arg InsertTractRunStepParams) (TractRunStep, error)
 	InsertTrigger(ctx context.Context, arg InsertTriggerParams) (Trigger, error)
 	LinkTriggerToTract(ctx context.Context, arg LinkTriggerToTractParams) error
+	LinkVaultS3Bucket(ctx context.Context, arg LinkVaultS3BucketParams) error
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListAllMcpTools(ctx context.Context) ([]McpTool, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
@@ -86,6 +90,7 @@ type Querier interface {
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListMcpSpreadsheetsByUser(ctx context.Context, userID uuid.UUID) ([]McpSpreadsheet, error)
 	ListMcpToolsByMcpName(ctx context.Context, mcpName string) ([]McpTool, error)
+	ListS3Instances(ctx context.Context) ([]ListS3InstancesRow, error)
 	ListTaskTrackersByUser(ctx context.Context, userID uuid.UUID) ([]TaskTracker, error)
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
 	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)
@@ -101,6 +106,7 @@ type Querier interface {
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
+	RegisterS3Instance(ctx context.Context, arg RegisterS3InstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	RevokeVaultInvite(ctx context.Context, id uuid.UUID) error
@@ -115,8 +121,10 @@ type Querier interface {
 	SweepStaleTractRuns(ctx context.Context, createdAt time.Time) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
 	UnlinkTriggerFromTract(ctx context.Context, arg UnlinkTriggerFromTractParams) error
+	UnlinkVaultS3Bucket(ctx context.Context, id uuid.UUID) error
 	UpdateCouchAccountPassword(ctx context.Context, arg UpdateCouchAccountPasswordParams) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
+	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
 	UpdateTract(ctx context.Context, arg UpdateTractParams) (Tract, error)
 	UpdateTractRunStatus(ctx context.Context, arg UpdateTractRunStatusParams) error
 	UpdateTractRunStepFinish(ctx context.Context, arg UpdateTractRunStepFinishParams) error

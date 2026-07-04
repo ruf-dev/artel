@@ -15,6 +15,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpspreadsheets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/s3instances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tasktrackers"
@@ -37,6 +38,7 @@ type Repos struct {
 	subscriptions         repository.Subscriptions
 	couchAccounts         repository.CouchAccounts
 	couchInstances        repository.CouchInstances
+	s3Instances           repository.S3Instances
 	userPermissions       repository.UserPermissionsRepo
 	mcpKey                repository.McpKeyRepository
 	pendingAuthCodes      repository.PendingAuthCodes
@@ -79,6 +81,10 @@ func (r Repos) CouchAccounts() repository.CouchAccounts {
 
 func (r Repos) CouchInstances() repository.CouchInstances {
 	return r.couchInstances
+}
+
+func (r Repos) S3Instances() repository.S3Instances {
+	return r.s3Instances
 }
 
 func (r Repos) Users() repository.Users {
@@ -146,6 +152,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		vaultMembers:     vaultmembers.New(db),
 		vaultInvitesRepo: vaultinvites.New(db),
 		couchInstances:   couchinstances.New(db, encryptionKey),
+		s3Instances:      s3instances.New(db, encryptionKey),
 
 		users:                 users.New(q, db),
 		sessions:              sessions.New(q),

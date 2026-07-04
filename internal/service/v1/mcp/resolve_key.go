@@ -60,6 +60,23 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get couch instance")
 	}
 
+	var s3Ctx *domain.McpKeyS3Context
+	if vault.S3InstanceUuid != nil {
+		s3Instance, err := s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
+		if err != nil {
+			return domain.McpKeyContext{}, rerrors.Wrap(err, "get s3 instance")
+		}
+		s3Ctx = &domain.McpKeyS3Context{
+			Endpoint:  s3Instance.Endpoint,
+			Region:    s3Instance.Region,
+			AccessKey: s3Instance.AccessKey,
+			SecretKey: s3Instance.SecretKey,
+			UseSSL:    s3Instance.UseSSL,
+			PathStyle: s3Instance.PathStyle,
+			Bucket:    vault.S3BucketName,
+		}
+	}
+
 	result := domain.McpKeyContext{
 		KeyUuid:   mcpKey.Uuid,
 		VaultUuid: mcpKey.VaultUuid,
@@ -68,6 +85,7 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 		CouchDb:   vault.CouchDBName,
 		CouchUser: couchInstance.Username,
 		CouchPass: couchInstance.Password,
+		S3:        s3Ctx,
 	}
 
 	go func() {

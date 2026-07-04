@@ -107,7 +107,9 @@ Exposes vault content and email to external AI tools (Claude, etc.) using the [M
 
 **Auth:** Bearer token (`artel_vtk_{uuid}_{hex_secret}`) resolved to vault + CouchDB credentials on each request.
 
-**MCP tools exposed:** `list_files`, `read_file`, `write_note`, `delete_file`, `move_file`, `list_folders`, `list_tags`, `list_email_accounts`, `list_email_folders`, `list_emails`, `read_email`, `send_email`
+**MCP tools exposed:** `list_files`, `read_file`, `write_file`, `delete_file`, `move_file`, `list_folders`, `list_tags`, `list_email_accounts`, `list_email_folders`, `list_emails`, `read_email`, `send_email`
+
+Vault file content is split across two backends by extension: `.md`/`.markdown` paths are stored in CouchDB; every other path is stored in the vault's linked S3-compatible bucket (optional, linked separately from the mandatory CouchDB instance). `write_file` requires base64-encoded `content` for non-markdown paths.
 
 ### OAuth 2.0 PKCE Flow
 

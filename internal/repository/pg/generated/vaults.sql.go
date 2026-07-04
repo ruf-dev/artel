@@ -7,15 +7,16 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 const createVault = `-- name: CreateVault :one
-INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, created_at
+INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, created_at
 `
 
 type CreateVaultParams struct {
@@ -25,6 +26,8 @@ type CreateVaultParams struct {
 	CouchInstanceID       uuid.NullUUID
 	Status                string
 	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
 }
 
 type CreateVaultRow struct {
@@ -35,6 +38,8 @@ type CreateVaultRow struct {
 	CouchInstanceID       uuid.NullUUID
 	Status                string
 	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
 	CreatedAt             time.Time
 }
 
@@ -46,6 +51,8 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		arg.CouchInstanceID,
 		arg.Status,
 		arg.LivesyncPassphraseEnc,
+		arg.S3InstanceID,
+		arg.S3BucketName,
 	)
 	var i CreateVaultRow
 	err := row.Scan(
@@ -56,6 +63,8 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		&i.CouchInstanceID,
 		&i.Status,
 		&i.LivesyncPassphraseEnc,
+		&i.S3InstanceID,
+		&i.S3BucketName,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -73,7 +82,7 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 }
 
 const getVaultByID = `-- name: GetVaultByID :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, created_at
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, created_at
 FROM vaults
 WHERE id = $1
 `
@@ -86,6 +95,8 @@ type GetVaultByIDRow struct {
 	CouchInstanceID       uuid.NullUUID
 	Status                string
 	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
 	CreatedAt             time.Time
 }
 
@@ -100,13 +111,15 @@ func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDR
 		&i.CouchInstanceID,
 		&i.Status,
 		&i.LivesyncPassphraseEnc,
+		&i.S3InstanceID,
+		&i.S3BucketName,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getVaultByNameAndUser = `-- name: GetVaultByNameAndUser :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, created_at
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, created_at
 FROM vaults
 WHERE user_id = $1
   AND name = $2
@@ -125,6 +138,8 @@ type GetVaultByNameAndUserRow struct {
 	CouchInstanceID       uuid.NullUUID
 	Status                string
 	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
 	CreatedAt             time.Time
 }
 
@@ -139,13 +154,30 @@ func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameA
 		&i.CouchInstanceID,
 		&i.Status,
 		&i.LivesyncPassphraseEnc,
+		&i.S3InstanceID,
+		&i.S3BucketName,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
+const linkVaultS3Bucket = `-- name: LinkVaultS3Bucket :exec
+UPDATE vaults SET s3_instance_id = $2, s3_bucket_name = $3 WHERE id = $1
+`
+
+type LinkVaultS3BucketParams struct {
+	ID           uuid.UUID
+	S3InstanceID uuid.NullUUID
+	S3BucketName sql.NullString
+}
+
+func (q *Queries) LinkVaultS3Bucket(ctx context.Context, arg LinkVaultS3BucketParams) error {
+	_, err := q.db.ExecContext(ctx, linkVaultS3Bucket, arg.ID, arg.S3InstanceID, arg.S3BucketName)
+	return err
+}
+
 const listVaultsByMembership = `-- name: ListVaultsByMembership :many
-SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.created_at
+SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.s3_instance_id, v.s3_bucket_name, v.created_at
 FROM vaults v
          JOIN vault_members vm ON vm.vault_id = v.id
 WHERE vm.user_id = $1
@@ -159,6 +191,8 @@ type ListVaultsByMembershipRow struct {
 	CouchInstanceID       uuid.NullUUID
 	Status                string
 	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
 	CreatedAt             time.Time
 }
 
@@ -179,6 +213,8 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 			&i.CouchInstanceID,
 			&i.Status,
 			&i.LivesyncPassphraseEnc,
+			&i.S3InstanceID,
+			&i.S3BucketName,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -207,6 +243,15 @@ type SetVaultLiveSyncPassphraseParams struct {
 
 func (q *Queries) SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error {
 	_, err := q.db.ExecContext(ctx, setVaultLiveSyncPassphrase, arg.ID, arg.LivesyncPassphraseEnc)
+	return err
+}
+
+const unlinkVaultS3Bucket = `-- name: UnlinkVaultS3Bucket :exec
+UPDATE vaults SET s3_instance_id = NULL, s3_bucket_name = NULL WHERE id = $1
+`
+
+func (q *Queries) UnlinkVaultS3Bucket(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, unlinkVaultS3Bucket, id)
 	return err
 }
 

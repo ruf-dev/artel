@@ -1,16 +1,16 @@
-# Graph Report - artel  (2026-07-03)
+# Graph Report - artel  (2026-07-04)
 
 ## Corpus Check
-- 456 files · ~248,585 words
+- 537 files · ~306,403 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8541 nodes · 14131 edges · 730 communities (512 shown, 218 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 361 edges (avg confidence: 0.81)
+- 10715 nodes · 18357 edges · 889 communities (626 shown, 263 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 433 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4d4380e4`
+- Built from commit: `d7527f7b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -671,18 +671,155 @@
 - [[_COMMUNITY_Community 724|Community 724]]
 - [[_COMMUNITY_Community 725|Community 725]]
 - [[_COMMUNITY_Community 726|Community 726]]
+- [[_COMMUNITY_Community 730|Community 730]]
+- [[_COMMUNITY_Community 731|Community 731]]
+- [[_COMMUNITY_Community 732|Community 732]]
+- [[_COMMUNITY_Community 733|Community 733]]
+- [[_COMMUNITY_Community 734|Community 734]]
+- [[_COMMUNITY_Community 735|Community 735]]
+- [[_COMMUNITY_Community 736|Community 736]]
+- [[_COMMUNITY_Community 737|Community 737]]
+- [[_COMMUNITY_Community 738|Community 738]]
+- [[_COMMUNITY_Community 739|Community 739]]
+- [[_COMMUNITY_Community 740|Community 740]]
+- [[_COMMUNITY_Community 741|Community 741]]
+- [[_COMMUNITY_Community 742|Community 742]]
+- [[_COMMUNITY_Community 743|Community 743]]
+- [[_COMMUNITY_Community 744|Community 744]]
+- [[_COMMUNITY_Community 745|Community 745]]
+- [[_COMMUNITY_Community 746|Community 746]]
+- [[_COMMUNITY_Community 747|Community 747]]
+- [[_COMMUNITY_Community 748|Community 748]]
+- [[_COMMUNITY_Community 749|Community 749]]
+- [[_COMMUNITY_Community 750|Community 750]]
+- [[_COMMUNITY_Community 751|Community 751]]
+- [[_COMMUNITY_Community 752|Community 752]]
+- [[_COMMUNITY_Community 753|Community 753]]
+- [[_COMMUNITY_Community 754|Community 754]]
+- [[_COMMUNITY_Community 755|Community 755]]
+- [[_COMMUNITY_Community 756|Community 756]]
+- [[_COMMUNITY_Community 757|Community 757]]
+- [[_COMMUNITY_Community 758|Community 758]]
+- [[_COMMUNITY_Community 759|Community 759]]
+- [[_COMMUNITY_Community 760|Community 760]]
+- [[_COMMUNITY_Community 761|Community 761]]
+- [[_COMMUNITY_Community 762|Community 762]]
+- [[_COMMUNITY_Community 763|Community 763]]
+- [[_COMMUNITY_Community 764|Community 764]]
+- [[_COMMUNITY_Community 765|Community 765]]
+- [[_COMMUNITY_Community 766|Community 766]]
+- [[_COMMUNITY_Community 767|Community 767]]
+- [[_COMMUNITY_Community 768|Community 768]]
+- [[_COMMUNITY_Community 769|Community 769]]
+- [[_COMMUNITY_Community 770|Community 770]]
+- [[_COMMUNITY_Community 771|Community 771]]
+- [[_COMMUNITY_Community 772|Community 772]]
+- [[_COMMUNITY_Community 773|Community 773]]
+- [[_COMMUNITY_Community 774|Community 774]]
+- [[_COMMUNITY_Community 775|Community 775]]
+- [[_COMMUNITY_Community 776|Community 776]]
+- [[_COMMUNITY_Community 777|Community 777]]
+- [[_COMMUNITY_Community 778|Community 778]]
+- [[_COMMUNITY_Community 779|Community 779]]
+- [[_COMMUNITY_Community 780|Community 780]]
+- [[_COMMUNITY_Community 781|Community 781]]
+- [[_COMMUNITY_Community 782|Community 782]]
+- [[_COMMUNITY_Community 783|Community 783]]
+- [[_COMMUNITY_Community 784|Community 784]]
+- [[_COMMUNITY_Community 785|Community 785]]
+- [[_COMMUNITY_Community 786|Community 786]]
+- [[_COMMUNITY_Community 787|Community 787]]
+- [[_COMMUNITY_Community 788|Community 788]]
+- [[_COMMUNITY_Community 789|Community 789]]
+- [[_COMMUNITY_Community 790|Community 790]]
+- [[_COMMUNITY_Community 791|Community 791]]
+- [[_COMMUNITY_Community 792|Community 792]]
+- [[_COMMUNITY_Community 793|Community 793]]
+- [[_COMMUNITY_Community 794|Community 794]]
+- [[_COMMUNITY_Community 795|Community 795]]
+- [[_COMMUNITY_Community 796|Community 796]]
+- [[_COMMUNITY_Community 797|Community 797]]
+- [[_COMMUNITY_Community 798|Community 798]]
+- [[_COMMUNITY_Community 799|Community 799]]
+- [[_COMMUNITY_Community 800|Community 800]]
+- [[_COMMUNITY_Community 801|Community 801]]
+- [[_COMMUNITY_Community 802|Community 802]]
+- [[_COMMUNITY_Community 803|Community 803]]
+- [[_COMMUNITY_Community 804|Community 804]]
+- [[_COMMUNITY_Community 805|Community 805]]
+- [[_COMMUNITY_Community 806|Community 806]]
+- [[_COMMUNITY_Community 807|Community 807]]
+- [[_COMMUNITY_Community 808|Community 808]]
+- [[_COMMUNITY_Community 809|Community 809]]
+- [[_COMMUNITY_Community 810|Community 810]]
+- [[_COMMUNITY_Community 811|Community 811]]
+- [[_COMMUNITY_Community 812|Community 812]]
+- [[_COMMUNITY_Community 813|Community 813]]
+- [[_COMMUNITY_Community 814|Community 814]]
+- [[_COMMUNITY_Community 815|Community 815]]
+- [[_COMMUNITY_Community 816|Community 816]]
+- [[_COMMUNITY_Community 817|Community 817]]
+- [[_COMMUNITY_Community 818|Community 818]]
+- [[_COMMUNITY_Community 819|Community 819]]
+- [[_COMMUNITY_Community 820|Community 820]]
+- [[_COMMUNITY_Community 821|Community 821]]
+- [[_COMMUNITY_Community 822|Community 822]]
+- [[_COMMUNITY_Community 823|Community 823]]
+- [[_COMMUNITY_Community 824|Community 824]]
+- [[_COMMUNITY_Community 825|Community 825]]
+- [[_COMMUNITY_Community 826|Community 826]]
+- [[_COMMUNITY_Community 827|Community 827]]
+- [[_COMMUNITY_Community 828|Community 828]]
+- [[_COMMUNITY_Community 829|Community 829]]
+- [[_COMMUNITY_Community 830|Community 830]]
+- [[_COMMUNITY_Community 831|Community 831]]
+- [[_COMMUNITY_Community 832|Community 832]]
+- [[_COMMUNITY_Community 833|Community 833]]
+- [[_COMMUNITY_Community 834|Community 834]]
+- [[_COMMUNITY_Community 836|Community 836]]
+- [[_COMMUNITY_Community 858|Community 858]]
+- [[_COMMUNITY_Community 860|Community 860]]
+- [[_COMMUNITY_Community 861|Community 861]]
+- [[_COMMUNITY_Community 862|Community 862]]
+- [[_COMMUNITY_Community 863|Community 863]]
+- [[_COMMUNITY_Community 864|Community 864]]
+- [[_COMMUNITY_Community 865|Community 865]]
+- [[_COMMUNITY_Community 866|Community 866]]
+- [[_COMMUNITY_Community 867|Community 867]]
+- [[_COMMUNITY_Community 868|Community 868]]
+- [[_COMMUNITY_Community 869|Community 869]]
+- [[_COMMUNITY_Community 870|Community 870]]
+- [[_COMMUNITY_Community 871|Community 871]]
+- [[_COMMUNITY_Community 872|Community 872]]
+- [[_COMMUNITY_Community 873|Community 873]]
+- [[_COMMUNITY_Community 874|Community 874]]
+- [[_COMMUNITY_Community 876|Community 876]]
+- [[_COMMUNITY_Community 878|Community 878]]
+- [[_COMMUNITY_Community 879|Community 879]]
+- [[_COMMUNITY_Community 881|Community 881]]
+- [[_COMMUNITY_Community 885|Community 885]]
+- [[_COMMUNITY_Community 886|Community 886]]
+- [[_COMMUNITY_Community 887|Community 887]]
+- [[_COMMUNITY_Community 888|Community 888]]
+- [[_COMMUNITY_Community 889|Community 889]]
+- [[_COMMUNITY_Community 890|Community 890]]
+- [[_COMMUNITY_Community 892|Community 892]]
+- [[_COMMUNITY_Community 893|Community 893]]
+- [[_COMMUNITY_Community 894|Community 894]]
+- [[_COMMUNITY_Community 896|Community 896]]
+- [[_COMMUNITY_Community 897|Community 897]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `useDialog` - 75 edges
-2. `UnwrapPgErr()` - 63 edges
-3. `Queries struct` - 54 edges
-4. `Repos` - 46 edges
-5. `file_mcp_keys_proto_rawDescGZIP()` - 43 edges
-6. `definitions` - 41 edges
-7. `useBakeError()` - 41 edges
-8. `file_external_connections_proto_rawDescGZIP()` - 40 edges
-9. `MessageState` - 40 edges
-10. `UnknownFields` - 40 edges
+1. `useDialog` - 116 edges
+2. `useBakeError()` - 66 edges
+3. `UnwrapPgErr()` - 65 edges
+4. `file_tracts_proto_rawDescGZIP()` - 63 edges
+5. `MessageState` - 62 edges
+6. `UnknownFields` - 62 edges
+7. `SizeCache` - 62 edges
+8. `Message` - 62 edges
+9. `Context` - 54 edges
+10. `Queries struct` - 54 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Topbar Segment (Brand + Nav + UserMenu composition)` --conceptually_related_to--> `Topbar`  [INFERRED]
@@ -704,31 +841,31 @@
 - **Artel Authentication Mechanisms** — concept_mcp_auth, concept_oauth2_pkce, concept_telegram_oauth [EXTRACTED 0.95]
 - **Code Generation Pipeline (Proto + SQL + TS)** — moti_yaml, sqlc_yaml, concept_grpc_gateway, concept_sqlc_codegen [EXTRACTED 0.90]
 
-## Communities (730 total, 218 thin omitted)
+## Communities (889 total, 263 thin omitted)
 
 ### Community 0 - "CouchDB LiveSync & MCP Tools"
-Cohesion: 0.06
-Nodes (76): ContentBlock, MimeTypeForPath(), EmailCredentials, marshalResult(), NewEmailExecutor(), EmailExecutor, NewVaultExecutor(), VaultToolDefinitions() (+68 more)
+Cohesion: 0.08
+Nodes (62): ContentBlock, App, Context, Context, EmailService, McpService, MomService, RawMessage (+54 more)
 
 ### Community 1 - "Email Account & MCP OAuth Service"
-Cohesion: 0.06
-Nodes (45): envOrDefault(), mcpCall(), randomEmail(), TestE2E(), E2ESuite, AuthService, Context, ServerOption (+37 more)
+Cohesion: 0.25
+Nodes (10): Context, Request, ResponseWriter, jsonErr(), oauthTokenError(), parseTokenRequest(), pkceVerify(), randomHex() (+2 more)
 
 ### Community 2 - "Auth gRPC Transport"
 Cohesion: 0.05
 Nodes (67): _AuthAPI_GetConfig_Handler(), _AuthAPI_GetMe_Handler(), _AuthAPI_Login_Handler(), _AuthAPI_Logout_Handler(), _AuthAPI_Register_Handler(), NewAuthAPIClient(), RegisterAuthAPIServer(), local_request_AuthAPI_GetConfig_0() (+59 more)
 
 ### Community 3 - "CouchDB Instances gRPC"
-Cohesion: 0.09
-Nodes (20): NewCouchInstancesImpl(), CouchInstancesImpl, Context, CouchInstanceService, DeleteCouchInstance_Request, DeleteCouchInstance_Response, GetCouchInstance_Request, GetCouchInstance_Response (+12 more)
+Cohesion: 0.08
+Nodes (21): NewCouchInstancesImpl(), CouchInstancesImpl, Context, CouchInstanceService, DeleteCouchInstance_Request, DeleteCouchInstance_Response, GetCouchInstance_Request, GetCouchInstance_Response (+13 more)
 
 ### Community 4 - "Transport Implementation Core"
-Cohesion: 0.29
-Nodes (7): _VaultsAPI_AcceptInvite_Handler(), _VaultsAPI_RemoveMember_Handler(), AcceptInvite_Request, AcceptInvite_Response, Context, RemoveMember_Request, RemoveMember_Response
+Cohesion: 0.40
+Nodes (4): _VaultsAPI_AcceptInvite_Handler(), AcceptInvite_Request, AcceptInvite_Response, UnaryServerInterceptor
 
 ### Community 5 - "Frontend Email & Alpha UI"
-Cohesion: 0.07
-Nodes (28): Props, ContentSegment(), EditVaultDialog(), HeroSegment(), useMcpKeys, useVaults(), CandidateOptionList(), ConnectionOptionList() (+20 more)
+Cohesion: 0.12
+Nodes (3): toTract(), toTrigger(), TractsService
 
 ### Community 6 - "Prompts Proto Messages"
 Cohesion: 0.06
@@ -751,16 +888,16 @@ Cohesion: 0.05
 Nodes (43): CouchAccount, CouchInstance, CouchInstanceWithAccount, McpKey, McpKeyContext, PendingAuthCode, Prompt, Session (+35 more)
 
 ### Community 11 - "Frontend API Client"
-Cohesion: 0.04
-Nodes (34): apiPrefix(), InitReq, Options, TelegramLoginResponse, AuthAPI, ClosedAlphaPage(), useServerStatus(), LoginContent() (+26 more)
+Cohesion: 0.03
+Nodes (40): apiPrefix(), InitReq, Options, TelegramLoginResponse, AuthAPI, ListPrompts, ListPromptsRequest, ListPromptsResponse (+32 more)
 
 ### Community 12 - "Vaults Proto Messages"
-Cohesion: 0.03
-Nodes (56): AcceptInvite, AcceptInviteRequest, AcceptInviteResponse, AddMember, AddMemberRequest, AddMemberResponse, CreateInviteLink, CreateInviteLinkRequest (+48 more)
+Cohesion: 0.02
+Nodes (62): AcceptInvite, AcceptInviteRequest, AcceptInviteResponse, AddMember, AddMemberRequest, AddMemberResponse, CreateInviteLink, CreateInviteLinkRequest (+54 more)
 
 ### Community 13 - "MCP Keys gRPC API"
-Cohesion: 0.07
-Nodes (41): _McpKeysAPI_AddMcpConnector_Handler(), _McpKeysAPI_CreateMcpKey_Handler(), _McpKeysAPI_ExecuteMomTool_Handler(), _McpKeysAPI_ListMcpConnectors_Handler(), _McpKeysAPI_ListMcpKeys_Handler(), _McpKeysAPI_ListMomCandidates_Handler(), _McpKeysAPI_ListUserMcpKeys_Handler(), _McpKeysAPI_RemoveMcpConnector_Handler() (+33 more)
+Cohesion: 0.05
+Nodes (48): _McpKeysAPI_AddMcpConnector_Handler(), _McpKeysAPI_CreateMcpKey_Handler(), _McpKeysAPI_ExecuteMomTool_Handler(), _McpKeysAPI_ListMcpConnectors_Handler(), _McpKeysAPI_ListMcpKeys_Handler(), _McpKeysAPI_ListMomCandidates_Handler(), _McpKeysAPI_ListUserMcpKeys_Handler(), _McpKeysAPI_RemoveMcpConnector_Handler() (+40 more)
 
 ### Community 14 - "Server Transport Manager"
 Cohesion: 0.22
@@ -779,8 +916,8 @@ Cohesion: 0.07
 Nodes (35): email_accounts DB table, mcp_keys DB table, user_permissions DB table, OAuthHandler, PKCE OAuth Flow, ServeOAuthLogin, ServeOAuthVault, ServeOAuthVaults (+27 more)
 
 ### Community 18 - "Email Accounts gRPC"
-Cohesion: 0.03
-Nodes (56): Absent, AddEmailConnection, AddEmailConnectionRequest, AddEmailConnectionResponse, AddGitlabConnection, AddGitlabConnectionRequest, AddGitlabConnectionResponse, AddSpreadsheet (+48 more)
+Cohesion: 0.04
+Nodes (53): Absent, AddEmailConnection, AddEmailConnectionRequest, AddEmailConnectionResponse, AddGitlabConnection, AddGitlabConnectionRequest, AddGitlabConnectionResponse, AddSpreadsheet (+45 more)
 
 ### Community 19 - "Dev Tooling & Config"
 Cohesion: 0.06
@@ -788,7 +925,7 @@ Nodes (38): Architecture, Client side changes, Code Generation, Frontend Coding 
 
 ### Community 20 - "Postgres Repo Implementation"
 Cohesion: 0.12
-Nodes (13): CouchAccounts, CouchInstances, EmailAccounts, MailServerSuggestions, McpKeyRepository, McpSpreadsheetsRepo, Prompts, Sessions (+5 more)
+Nodes (13): CouchAccounts, CouchInstances, ExternalConnectionRepo, MailServerSuggestions, McpConnectorsRepo, McpKeyRepository, Sessions, Subscriptions (+5 more)
 
 ### Community 21 - "Swagger Auth Docs"
 Cohesion: 0.11
@@ -796,31 +933,31 @@ Nodes (23): description, schema, delete, get, put, description, schema, operatio
 
 ### Community 22 - "Swagger Email Docs"
 Cohesion: 0.25
-Nodes (15): description, post, post, post, post, paths, /api/email-accounts/add, /api/email-accounts/delete (+7 more)
+Nodes (15): post, post, post, post, description, paths, /api/email-accounts/add, /api/email-accounts/delete (+7 more)
 
 ### Community 23 - "Proto Init & Registry"
 Cohesion: 0.10
 Nodes (11): file_artel_api_proto_init(), file_artel_api_proto_rawDescGZIP(), init(), Version, Version_Request, Version_Response, Message, MessageState (+3 more)
 
 ### Community 24 - "Protobuf TypeScript Client"
-Cohesion: 0.09
-Nodes (21): Absent, BaseLoginRequest, GetConfig, GetConfigRequest, GetConfigResponse, GetMe, GetMeRequest, GetMeResponse (+13 more)
+Cohesion: 0.03
+Nodes (102): ButtonVariant, Props, variantClass, connectionLabel(), TractsState, CanvasEdge, CanvasLayout, CanvasNode (+94 more)
 
 ### Community 25 - "Admin UI Page"
-Cohesion: 0.04
-Nodes (35): AdminUsersAPI, ArtelUserDetails, ArtelUserEntry, GetArtelUser, GetArtelUserRequest, GetArtelUserResponse, GetUserSessions, GetUserSessionsRequest (+27 more)
+Cohesion: 0.09
+Nodes (21): DeleteCouchInstance, DeleteCouchInstanceRequest, DeleteCouchInstanceResponse, GetCouchInstance, GetCouchInstanceRequest, GetCouchInstanceResponse, GetCouchInstanceStatus, GetCouchInstanceStatusRequest (+13 more)
 
 ### Community 26 - "Vaults HTTP Gateway"
-Cohesion: 0.29
-Nodes (36): local_request_VaultsAPI_AcceptInvite_0(), local_request_VaultsAPI_AddMember_0(), local_request_VaultsAPI_CreateInviteLink_0(), local_request_VaultsAPI_CreateVault_0(), local_request_VaultsAPI_DeleteVault_0(), local_request_VaultsAPI_GetVault_0(), local_request_VaultsAPI_ListInviteLinks_0(), local_request_VaultsAPI_ListMembers_0() (+28 more)
+Cohesion: 0.28
+Nodes (40): local_request_VaultsAPI_AcceptInvite_0(), local_request_VaultsAPI_AddMember_0(), local_request_VaultsAPI_CreateInviteLink_0(), local_request_VaultsAPI_CreateVault_0(), local_request_VaultsAPI_DeleteVault_0(), local_request_VaultsAPI_GetVault_0(), local_request_VaultsAPI_LinkS3Bucket_0(), local_request_VaultsAPI_ListInviteLinks_0() (+32 more)
 
 ### Community 27 - "Vault Service Layer"
 Cohesion: 0.13
-Nodes (23): Client, Context, CouchAccounts, CouchInstance, CouchInstances, CouchInstanceWithAccount, Repo, TxManager (+15 more)
+Nodes (24): Client, Context, CouchAccounts, CouchInstance, CouchInstances, CouchInstanceWithAccount, Repo, S3Instances (+16 more)
 
 ### Community 28 - "Generated SQL Models"
 Cohesion: 0.07
-Nodes (44): ArtelPrompt, CouchAccount, CouchInstance, EmailAccount, ExternalConnection, ExternalProviderType, IdentitiesTelegram, MailServerSuggestion (+36 more)
+Nodes (46): ArtelPrompt, CouchAccount, CouchInstance, EmailAccount, ExternalConnection, ExternalProviderType, IdentitiesTelegram, MailServerSuggestion (+38 more)
 
 ### Community 29 - "Auth HTTP Gateway"
 Cohesion: 0.05
@@ -832,15 +969,15 @@ Nodes (24): compilerOptions, allowImportingTsExtensions, allowJs, allowSynthetic
 
 ### Community 31 - "CouchInstances HTTP Gateway"
 Cohesion: 0.09
-Nodes (21): Context, ExternalConnection, McpDefinition, McpToolDef, McpToolRef, Mutex, Null, RawMessage (+13 more)
+Nodes (20): Context, ExternalConnection, McpDefinition, McpToolDef, McpToolRef, Mutex, Null, RawMessage (+12 more)
 
 ### Community 32 - "MCP Keys Proto Messages"
-Cohesion: 0.03
-Nodes (56): Absent, AddMcpConnector, AddMcpConnectorRequest, AddMcpConnectorResponse, BaseMcpToolInfo, BaseToolParamDef, CreateMcpKey, CreateMcpKeyRequest (+48 more)
+Cohesion: 0.02
+Nodes (88): Absent, AddMcpConnector, AddMcpConnectorRequest, AddMcpConnectorResponse, BaseMcpToolInfo, BaseToolParamDef, CreateMcpKey, CreateMcpKeyRequest (+80 more)
 
 ### Community 33 - "MCP Keys HTTP Gateway"
-Cohesion: 0.38
-Nodes (29): local_request_McpKeysAPI_AddMcpConnector_0(), local_request_McpKeysAPI_CreateMcpKey_0(), local_request_McpKeysAPI_ExecuteMomTool_0(), local_request_McpKeysAPI_ListMcpConnectors_0(), local_request_McpKeysAPI_ListMcpKeys_0(), local_request_McpKeysAPI_ListMomCandidates_0(), local_request_McpKeysAPI_ListUserMcpKeys_0(), local_request_McpKeysAPI_RemoveMcpConnector_0() (+21 more)
+Cohesion: 0.30
+Nodes (34): local_request_McpKeysAPI_AddMcpConnector_0(), local_request_McpKeysAPI_CreateMcpKey_0(), local_request_McpKeysAPI_ExecuteMomTool_0(), local_request_McpKeysAPI_ListMcpConnectors_0(), local_request_McpKeysAPI_ListMcpKeys_0(), local_request_McpKeysAPI_ListMomCandidates_0(), local_request_McpKeysAPI_ListUserMcpKeys_0(), local_request_McpKeysAPI_RemoveMcpConnector_0() (+26 more)
 
 ### Community 34 - "Auth Service"
 Cohesion: 0.08
@@ -848,7 +985,7 @@ Nodes (28): generateToken(), New(), Service, Time, Context, Repo, Session, Sessi
 
 ### Community 35 - "Email Accounts HTTP Gateway"
 Cohesion: 0.04
-Nodes (42): BreadcrumbBarProps, Mode, CreateNoteDialog(), Props, SuggestionListProps, DialogManager, useDialogKeyboard(), NoteMode (+34 more)
+Nodes (33): BreadcrumbBarProps, Mode, NoteMode, useNotes, UseAutosaveOptions, UseAutosaveResult, getNoteMeta(), getNoteTitle() (+25 more)
 
 ### Community 36 - "Email Accounts Proto"
 Cohesion: 0.06
@@ -863,8 +1000,8 @@ Cohesion: 0.19
 Nodes (16): CreateByUsernameParams, CreateByUsernameRow, CreateUserParams, CreateUserRow, GetUserByEmailRow, GetUserByIDRow, GetUserByTelegramIdRow, GetUserDetailsRow (+8 more)
 
 ### Community 39 - "Vaults TypeScript Client"
-Cohesion: 0.05
-Nodes (45): docDelete, docFull, docRev, docScan, docType, FileDoc, FileEntry, fileWrite (+37 more)
+Cohesion: 0.06
+Nodes (41): docDelete, docFull, docRev, docScan, docType, FileDoc, FileEntry, fileWrite (+33 more)
 
 ### Community 40 - "Frontend Protobuf Utils"
 Cohesion: 0.11
@@ -872,11 +1009,11 @@ Nodes (15): b64, b64Encode(), fetchStreamingRequest(), FlattenedRequestPayload, 
 
 ### Community 41 - "ArtelAPI Version Proto"
 Cohesion: 0.12
-Nodes (21): CreateTractParams, InsertTractRunParams, InsertTractRunStepParams, ListTractRunsByTractParams, SetTractEnabledParams, UpdateTractParams, UpdateTractRunStatusParams, UpdateTractRunStepFinishParams (+13 more)
+Nodes (22): CreateTractParams, InsertTractParams, InsertTractRunParams, InsertTractRunStepParams, ListTractRunsByTractParams, SetTractEnabledParams, UpdateTractParams, UpdateTractRunStatusParams (+14 more)
 
 ### Community 42 - "Vaults SQL Queries"
-Cohesion: 0.21
-Nodes (11): Context, DB, NullUUID, Queries, Time, UUID, Vault, Vaults (+3 more)
+Cohesion: 0.18
+Nodes (12): Context, DB, NullString, NullUUID, Queries, Time, UUID, Vault (+4 more)
 
 ### Community 43 - "Users SQL Queries"
 Cohesion: 0.16
@@ -887,24 +1024,24 @@ Cohesion: 0.07
 Nodes (51): NewTaskTrackersAPIClient(), RegisterTaskTrackersAPIServer(), _TaskTrackersAPI_AddTaskTracker_Handler(), _TaskTrackersAPI_DeleteTaskTracker_Handler(), _TaskTrackersAPI_ListTaskTrackers_Handler(), _TaskTrackersAPI_ListTrelloBoards_Handler(), local_request_TaskTrackersAPI_AddTaskTracker_0(), local_request_TaskTrackersAPI_DeleteTaskTracker_0() (+43 more)
 
 ### Community 45 - "Vaults SQL Models"
-Cohesion: 0.24
-Nodes (13): CreateVaultParams, CreateVaultRow, GetVaultByIDRow, GetVaultByNameAndUserParams, GetVaultByNameAndUserRow, ListVaultsByMembershipRow, SetVaultLiveSyncPassphraseParams, UpdateVaultStatusParams (+5 more)
+Cohesion: 0.22
+Nodes (15): CreateVaultParams, CreateVaultRow, GetVaultByIDRow, GetVaultByNameAndUserParams, GetVaultByNameAndUserRow, LinkVaultS3BucketParams, ListVaultsByMembershipRow, SetVaultLiveSyncPassphraseParams (+7 more)
 
 ### Community 46 - "Swagger Properties"
 Cohesion: 0.14
 Nodes (17): properties, type, properties, type, artel_apiAddEmailAccountRequest, type, type, format (+9 more)
 
 ### Community 47 - "Service Layer Impl"
-Cohesion: 0.09
-Nodes (19): AdminCouchService, AdminUsersService, AuthService, CouchInstanceService, EmailService, EnvironmentConfig, ExternalConnectionService, McpService (+11 more)
+Cohesion: 0.08
+Nodes (21): AdminCouchService, AdminUsersService, AuthService, CouchInstanceService, EmailService, EnvironmentConfig, ExternalConnectionService, McpService (+13 more)
 
 ### Community 48 - "Auth Middleware"
-Cohesion: 0.08
-Nodes (23): Event, Hook, Level, envOrDefault(), noteID(), TestVault(), VaultSuite, Logger (+15 more)
+Cohesion: 0.05
+Nodes (36): envOrDefault(), mcpCall(), randomEmail(), TestE2E(), E2ESuite, Event, Hook, Level (+28 more)
 
 ### Community 49 - "Email Account Proto"
-Cohesion: 0.07
-Nodes (45): AdminPage(), ArtelUserDetailDialog(), ArtelUserRow(), ArtelUsersTab(), ChangePasswordDialog(), InstanceFormDialog(), InstanceRow(), InstancesTab() (+37 more)
+Cohesion: 0.04
+Nodes (83): AdminPage(), ArtelUserDetailDialog(), ArtelUserRow(), ArtelUsersTab(), ChangePasswordDialog(), InstanceFormDialog(), InstanceRow(), InstancesTab() (+75 more)
 
 ### Community 50 - "MCP Keys TypeScript"
 Cohesion: 0.06
@@ -923,16 +1060,16 @@ Cohesion: 0.23
 Nodes (16): AdminPage, ClosedAlphaPage, FormField, HomePage, InitPage, McpAuthPage, McpKeysPage, ModalActions (+8 more)
 
 ### Community 55 - "Swagger Vaults Docs"
-Cohesion: 0.09
-Nodes (26): properties, type, properties, type, properties, type, properties, type (+18 more)
+Cohesion: 0.12
+Nodes (20): properties, type, properties, type, properties, type, properties, type (+12 more)
 
 ### Community 56 - "All Services Container"
 Cohesion: 0.17
 Nodes (16): auth.Service, couchinstances.Service, mcp.McpServiceImpl, subscription.Service, vault.Service.ListVaults, vault.Service, artel_api_impl.Impl, auth_api.authHandler (+8 more)
 
 ### Community 58 - "Topbar & Layout"
-Cohesion: 0.09
-Nodes (20): New(), AdminCouchImpl, AdminCouchService, ChangeCouchUserPassword_Request, ChangeCouchUserPassword_Response, Context, DeleteCouchUser_Request, DeleteCouchUser_Response (+12 more)
+Cohesion: 0.08
+Nodes (21): New(), AdminCouchImpl, AdminCouchService, ChangeCouchUserPassword_Request, ChangeCouchUserPassword_Response, Context, DeleteCouchUser_Request, DeleteCouchUser_Response (+13 more)
 
 ### Community 59 - "CouchInstances SQL Models"
 Cohesion: 0.24
@@ -948,7 +1085,7 @@ Nodes (7): CreateMcpKeyParams, SetMcpKeyAccessParams, Context, Queries, McpKey, 
 
 ### Community 63 - "repository / interfaces.go"
 Cohesion: 0.07
-Nodes (28): Tract, TractCondition, Trigger, CouchAccounts, CouchInstances, EmailAccounts, ExternalConnectionRepo, ListPromptsParams (+20 more)
+Nodes (30): Tract, TractCondition, Trigger, UUID, CouchAccounts, CouchInstances, EmailAccounts, ExternalConnectionRepo (+22 more)
 
 ### Community 64 - "migrations / Database schema evolution"
 Cohesion: 0.16
@@ -967,8 +1104,8 @@ Cohesion: 0.17
 Nodes (6): GetConfig, GetConfig_Request, GetMe, MessageState, SizeCache, UnknownFields
 
 ### Community 71 - "swaggers / description"
-Cohesion: 0.24
-Nodes (10): schema, get, get, description, schema, operationId, responses, tags (+2 more)
+Cohesion: 0.20
+Nodes (12): schema, get, get, description, schema, operationId, responses, tags (+4 more)
 
 ### Community 72 - "swaggers / properties"
 Cohesion: 0.14
@@ -1011,12 +1148,12 @@ Cohesion: 0.25
 Nodes (8): format, type, rpcStatus, type, code, message, properties, type
 
 ### Community 82 - "swaggers / type"
-Cohesion: 0.18
-Nodes (11): type, type, type, type, type, definitions, artel_vaultsAddMemberResponse, artel_vaultsDeleteVaultResponse (+3 more)
+Cohesion: 0.13
+Nodes (15): type, type, type, type, type, type, type, definitions (+7 more)
 
 ### Community 83 - "emailaccounts / New()"
-Cohesion: 0.24
-Nodes (10): _AdminCouchAPI_GetUserDatabaseAccess_Handler(), _AdminCouchAPI_GrantDatabaseAccess_Handler(), _AdminCouchAPI_ListCouchDatabases_Handler(), _AdminCouchAPI_RevokeDatabaseAccess_Handler(), Context, GetUserDatabaseAccess_Request, GetUserDatabaseAccess_Response, GrantDatabaseAccess_Request (+2 more)
+Cohesion: 0.09
+Nodes (31): _AdminCouchAPI_ChangeCouchUserPassword_Handler(), _AdminCouchAPI_DeleteCouchUser_Handler(), _AdminCouchAPI_GetUserDatabaseAccess_Handler(), _AdminCouchAPI_GrantDatabaseAccess_Handler(), _AdminCouchAPI_ListCouchDatabases_Handler(), _AdminCouchAPI_ListCouchUsers_Handler(), _AdminCouchAPI_RevokeDatabaseAccess_Handler(), NewAdminCouchAPIClient() (+23 more)
 
 ### Community 84 - "generated / CreateCouchAccount query"
 Cohesion: 0.24
@@ -1051,8 +1188,8 @@ Cohesion: 0.25
 Nodes (7): Service, Context, CouchInstance, CouchInstances, New(), Repo, SetupStatus
 
 ### Community 92 - "swaggers / post"
-Cohesion: 0.07
-Nodes (57): description, schema, post, post, post, post, get, post (+49 more)
+Cohesion: 0.06
+Nodes (61): description, schema, post, post, post, post, get, post (+53 more)
 
 ### Community 93 - "middleware / Buffer"
 Cohesion: 0.21
@@ -1084,7 +1221,7 @@ Nodes (16): properties, type, properties, type, properties, type, artel_authLogi
 
 ### Community 103 - "swaggers / properties"
 Cohesion: 0.15
-Nodes (16): properties, type, properties, type, artel_vaultsListInviteLinksResponse, artel_vaultsListVaultsResponse, items, items (+8 more)
+Nodes (16): properties, type, properties, type, artel_vaultsListMembersResponse, artel_vaultsListVaultsResponse, items, items (+8 more)
 
 ### Community 104 - "app / New()"
 Cohesion: 0.07
@@ -1095,8 +1232,8 @@ Cohesion: 0.27
 Nodes (9): AppConfig, AppInfo, Config, Init(), Load(), DataSourcesConfig, EnvironmentConfig, ServersConfig (+1 more)
 
 ### Community 106 - "email_accounts_api / .Gateway()"
-Cohesion: 0.13
-Nodes (34): description, schema, post, post, post, post, post, post (+26 more)
+Cohesion: 0.10
+Nodes (41): description, schema, post, post, post, post, post, post (+33 more)
 
 ### Community 107 - "mcp_keys_api / mcp_keys_impl.go"
 Cohesion: 0.11
@@ -1104,7 +1241,7 @@ Nodes (18): GetNote, GetNoteRequest, GetNoteResponse, ListFolders, ListFoldersRe
 
 ### Community 108 - "ui / Swagger()"
 Cohesion: 0.08
-Nodes (44): apiDescriptionRow, httpActionRow, imapActionRow, Context, Mcp, McpDefinition, McpTool, McpToolDef (+36 more)
+Nodes (41): apiDescriptionRow, Context, Mcp, McpDefinition, McpTool, McpToolDef, McpToolRef, Null (+33 more)
 
 ### Community 109 - "artel_api / AddEmailAccount_Request"
 Cohesion: 0.29
@@ -1113,6 +1250,10 @@ Nodes (36): local_request_ExternalConnectionsAPI_AddEmailConnection_0(), local_r
 ### Community 110 - "artel_api / VaultsAPIClient"
 Cohesion: 0.25
 Nodes (8): VaultsAPIClient, AddMember, CreateVault, DeleteVault, GetVault, ListVaults, RemoveMember, VaultItem
+
+### Community 115 - "artel_api / .ProtoReflect()"
+Cohesion: 0.18
+Nodes (3): CreateInviteLink, LinkS3Bucket, UnknownFields
 
 ### Community 116 - "couchdb / LiveSyncClient.DeleteNote"
 Cohesion: 0.22
@@ -1135,12 +1276,12 @@ Cohesion: 0.33
 Nodes (10): ArtelIdentity, Subscription, TelegramIdentity, User, UserDetails, UserIdentities, UserPermissions, Time (+2 more)
 
 ### Community 121 - "service / interfaces.go"
-Cohesion: 0.12
-Nodes (16): AdminCouchService, AdminUsersService, AuthService, CouchInstanceService, EmailService, ExternalConnectionService, ListPromptsParams, McpService (+8 more)
+Cohesion: 0.11
+Nodes (17): AdminCouchService, AdminUsersService, AuthService, CouchInstanceService, EmailService, ExternalConnectionService, ListPromptsParams, McpService (+9 more)
 
 ### Community 122 - "swaggers / post"
-Cohesion: 0.24
-Nodes (17): description, post, post, post, post, post, paths, /api/auth/config (+9 more)
+Cohesion: 0.27
+Nodes (15): description, post, post, post, post, post, paths, /api/auth/login (+7 more)
 
 ### Community 123 - "swaggers / properties"
 Cohesion: 0.08
@@ -1163,16 +1304,16 @@ Cohesion: 0.20
 Nodes (10): format, type, rpcStatus, type, type, code, details, message (+2 more)
 
 ### Community 128 - "swaggers / description"
-Cohesion: 0.12
-Nodes (24): extractDisplayName(), isLocalGitlabHost(), normalizeGitlabInstanceURL(), randomHex(), toMeta(), gitlabConnectionMeta, gitlabUserInfo, googleUserInfo (+16 more)
+Cohesion: 0.10
+Nodes (27): extractDisplayName(), isLocalGitlabHost(), normalizeGitlabInstanceURL(), randomHex(), toMeta(), gitlabConnectionMeta, gitlabUserInfo, googleUserInfo (+19 more)
 
 ### Community 129 - "app / App"
-Cohesion: 0.08
-Nodes (21): App, App, Custom, Custom, CMux, couchdb.Client, LiveSyncClient, grpcServer (+13 more)
+Cohesion: 0.11
+Nodes (14): App, App, Custom, Custom, couchdb.Client, LiveSyncClient, Context, AuthService (+6 more)
 
 ### Community 130 - "artel_api / file_email_accounts_proto"
-Cohesion: 0.08
-Nodes (14): ExternalConnectionsAPI, connectionLabel(), ConnectorChip(), EmailChip(), KNOWN_MAIL_DOMAIN_CLASSES, mailDomainAccent(), PROVIDER_CHIP_CLASS, Input (+6 more)
+Cohesion: 0.06
+Nodes (13): ExternalConnectionsAPI, ConnectorChip(), EmailChip(), KNOWN_MAIL_DOMAIN_CLASSES, mailDomainAccent(), PROVIDER_CHIP_CLASS, Input, InputProps (+5 more)
 
 ### Community 131 - "artel_api / AuthAPIClient"
 Cohesion: 0.22
@@ -1183,8 +1324,8 @@ Cohesion: 0.25
 Nodes (3): file_couch_instances_proto_init(), init(), DeleteCouchInstance_Response
 
 ### Community 138 - "artel_api / CreateVault"
-Cohesion: 0.18
-Nodes (3): CreateVault, DeleteVault, SizeCache
+Cohesion: 0.19
+Nodes (21): RawMessage, resolver, TractCondition, T, compare(), compareContains(), compareEqual(), compareGlob() (+13 more)
 
 ### Community 141 - "email_accounts_api / .ListMailServerSuggestion"
 Cohesion: 0.06
@@ -1211,16 +1352,16 @@ Cohesion: 0.28
 Nodes (9): Edit/Delete Vault Modal (danger zone pattern), VaultCard Flip Animation (front/back faces), POST /api/vaults/{id}/delete, artel_vaultsVaultItem (id, name, dbUrl), Task 22: UI VaultCard Redesign, Task 25: UI Edit/Delete Vault Modal, VaultCard, VaultCardBack (+1 more)
 
 ### Community 147 - "swaggers / type"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (17): Context, Null, Queries, RawMessage, Time, Tract, TractRun, TractRunStatus (+9 more)
 
 ### Community 148 - "swaggers / get"
 Cohesion: 0.07
-Nodes (37): Context, McpServiceImpl, McpKey, UUID, Context, McpServiceImpl, McpKey, UUID (+29 more)
+Nodes (40): Context, McpServiceImpl, McpKey, UUID, Context, McpServiceImpl, McpKey, UUID (+32 more)
 
 ### Community 149 - "swaggers / properties"
 Cohesion: 0.22
-Nodes (9): properties, type, format, type, format, type, ids, page (+1 more)
+Nodes (9): properties, type, artel_apiListPromptsRequest, format, type, format, type, page (+1 more)
 
 ### Community 150 - "artel_api / CouchInstancesAPIClient"
 Cohesion: 0.29
@@ -1241,10 +1382,6 @@ Nodes (5): Context, MailServerSuggestion, Queries, Repo, New()
 ### Community 160 - "prompts / prompts.go"
 Cohesion: 0.07
 Nodes (27): format, type, consumes, definitions, protobufAny, rpcStatus, items, type (+19 more)
-
-### Community 161 - "couchdb / .DeleteUser()"
-Cohesion: 0.36
-Nodes (5): couchDBUser, UserInfo, UserListEntry, Context, Client
 
 ### Community 162 - "prompt / prompt.go"
 Cohesion: 0.32
@@ -1271,8 +1408,8 @@ Cohesion: 0.25
 Nodes (8): format, type, rpcStatus, type, code, message, properties, type
 
 ### Community 168 - "swaggers / couch_instances.swagger.j"
-Cohesion: 0.13
-Nodes (23): Context, Null, Queries, RawMessage, ToolProperty, toolPropertyRow, ToolSchema, TractCondition (+15 more)
+Cohesion: 0.14
+Nodes (27): Context, Null, Queries, RawMessage, ToolProperty, toolPropertyRow, ToolSchema, TractCondition (+19 more)
 
 ### Community 169 - "swaggers / mcp_keys.swagger.json"
 Cohesion: 0.08
@@ -1287,16 +1424,16 @@ Cohesion: 0.25
 Nodes (7): consumes, info, title, version, produces, swagger, tags
 
 ### Community 172 - "swaggers / format"
-Cohesion: 0.25
-Nodes (8): format, type, rpcStatus, type, code, message, properties, type
+Cohesion: 0.33
+Nodes (6): format, type, type, code, message, properties
 
 ### Community 173 - "swaggers / properties"
 Cohesion: 0.25
 Nodes (8): properties, type, artel_apiListPromptsResponse, type, prompts, total, format, type
 
 ### Community 174 - "swaggers / vaults.swagger.json"
-Cohesion: 0.07
-Nodes (28): ListPrompts, ListPromptsRequest, ListPromptsResponse, PromptId, PromptItem, PromptsAPI, UserErrors, BadRequestDetail (+20 more)
+Cohesion: 0.09
+Nodes (21): Absent, BaseLoginRequest, GetConfig, GetConfigRequest, GetConfigResponse, GetMe, GetMeRequest, GetMeResponse (+13 more)
 
 ### Community 175 - "swaggers / format"
 Cohesion: 0.20
@@ -1311,8 +1448,8 @@ Cohesion: 0.13
 Nodes (3): ListMomCandidates_Response, MomCandidate, ExternalConnectionInfo
 
 ### Community 179 - "artel_api / .ProtoReflect()"
-Cohesion: 0.08
-Nodes (29): properties, type, properties, type, properties, type, properties, type (+21 more)
+Cohesion: 0.10
+Nodes (24): properties, type, properties, type, properties, type, properties, type (+16 more)
 
 ### Community 180 - "artel_api / AuthAPIServer"
 Cohesion: 0.29
@@ -1320,7 +1457,7 @@ Nodes (6): AuthAPIServer, AuthAPI (service), McpKeysAPIServer, McpKeysAPI (servi
 
 ### Community 181 - "artel_api / ListMcpKeys_Request"
 Cohesion: 0.11
-Nodes (4): ListMcpKeys, ListMcpKeys_Request, ListMomCandidates, SizeCache
+Nodes (4): ListMcpKeys, ListMcpKeys_Request, RemoveMcpConnector, SizeCache
 
 ### Community 182 - "artel_api / ListMcpKeys_Response"
 Cohesion: 0.09
@@ -1364,19 +1501,19 @@ Nodes (7): properties, type, artel_apiCreateMcpKeyResponse, $ref, key, rawToken,
 
 ### Community 198 - "swaggers / type"
 Cohesion: 0.29
-Nodes (7): type, default, enum, type, definitions, artel_apiListPromptsRequest, artel_apiPromptId
+Nodes (7): default, enum, type, definitions, artel_apiPromptId, rpcStatus, type
 
 ### Community 199 - "swaggers / items"
-Cohesion: 0.33
-Nodes (7): items, type, items, $ref, type, items, details
+Cohesion: 0.25
+Nodes (9): items, type, items, type, $ref, type, items, details (+1 more)
 
 ### Community 200 - "swaggers / properties"
 Cohesion: 0.29
 Nodes (7): properties, type, artel_apiPromptItem, $ref, type, id, prompt
 
 ### Community 201 - "artel_api / DeleteEmailAccount_Respon"
-Cohesion: 0.13
-Nodes (17): AddTaskTracker, AddTaskTrackerRequest, AddTaskTrackerResponse, DeleteTaskTracker, DeleteTaskTrackerRequest, DeleteTaskTrackerResponse, ListTaskTrackers, ListTaskTrackersRequest (+9 more)
+Cohesion: 0.09
+Nodes (25): AddTaskTracker, AddTaskTrackerRequest, AddTaskTrackerResponse, DeleteTaskTracker, DeleteTaskTrackerRequest, DeleteTaskTrackerResponse, ListTaskTrackers, ListTaskTrackersRequest (+17 more)
 
 ### Community 202 - "artel_api / .Descriptor()"
 Cohesion: 0.10
@@ -1394,13 +1531,21 @@ Nodes (7): McpKeysAPIClient, CreateMcpKey, ListMcpKeys, ListUserMcpKeys, McpKeyI
 Cohesion: 0.40
 Nodes (6): PromptsAPIClient, PromptsAPIServer, ListPrompts, PromptId (enum), PromptItem, PromptsAPI (service)
 
+### Community 216 - "artel_api / DeleteVault_Response"
+Cohesion: 0.12
+Nodes (3): DeleteVault_Response, UnlinkS3Bucket, file_vaults_proto_rawDescGZIP()
+
 ### Community 217 - "artel_api / GetVault"
 Cohesion: 0.18
-Nodes (3): AddMember_Response, GetVault, MessageState
+Nodes (3): AddMember, AddMember_Response, MessageState
+
+### Community 218 - "artel_api / ListVaults"
+Cohesion: 0.05
+Nodes (73): NewS3InstancesAPIClient(), RegisterS3InstancesAPIServer(), _S3InstancesAPI_DeleteS3Instance_Handler(), _S3InstancesAPI_GetS3Instance_Handler(), _S3InstancesAPI_ListS3Instances_Handler(), _S3InstancesAPI_RegisterS3Instance_Handler(), _S3InstancesAPI_TestS3Instance_Handler(), _S3InstancesAPI_UpdateS3Instance_Handler() (+65 more)
 
 ### Community 219 - "artel_api / RemoveMember"
-Cohesion: 0.25
-Nodes (3): RemoveMember, file_vaults_proto_init(), init()
+Cohesion: 0.18
+Nodes (3): ListVaults, RemoveMember, SizeCache
 
 ### Community 221 - "tx_manager / tx_manager.go"
 Cohesion: 0.47
@@ -1459,8 +1604,8 @@ Cohesion: 0.33
 Nodes (6): protobufAny, @type, additionalProperties, properties, type, type
 
 ### Community 236 - "artel_api / AddMember"
-Cohesion: 0.18
-Nodes (3): AcceptInvite, AddMember, UnknownFields
+Cohesion: 0.09
+Nodes (25): properties, type, type, properties, type, type, type, properties (+17 more)
 
 ### Community 237 - "artel_api / DeleteVault"
 Cohesion: 0.10
@@ -1475,8 +1620,8 @@ Cohesion: 0.40
 Nodes (4): Context, Queries, MailServerSuggestion, NullString
 
 ### Community 240 - "domain / McpKey"
-Cohesion: 0.50
-Nodes (4): McpKey, McpKeyContext, Time, UUID
+Cohesion: 0.33
+Nodes (6): McpKey, McpKeyContext, McpKeyS3Context, Time, UUID, McpKeyS3Context
 
 ### Community 241 - "domain / Vault"
 Cohesion: 0.46
@@ -1527,8 +1672,8 @@ Cohesion: 0.20
 Nodes (11): properties, type, artel_couchListCouchInstancesResponse, items, type, items, type, $ref (+3 more)
 
 ### Community 254 - "swaggers / type"
-Cohesion: 0.11
-Nodes (20): properties, properties, type, artel_admin_usersArtelUserEntry, type, type, type, type (+12 more)
+Cohesion: 0.12
+Nodes (18): properties, properties, type, type, type, type, type, type (+10 more)
 
 ### Community 255 - "swaggers / properties"
 Cohesion: 0.10
@@ -1587,8 +1732,8 @@ Cohesion: 0.50
 Nodes (3): CouchAccount, Time, UUID
 
 ### Community 269 - ".claude / settings.local.json"
-Cohesion: 0.11
-Nodes (19): properties, type, properties, type, properties, type, properties, type (+11 more)
+Cohesion: 0.10
+Nodes (22): properties, type, properties, type, properties, type, properties, type (+14 more)
 
 ### Community 273 - "couchdb / CreateDbErrorResp"
 Cohesion: 0.12
@@ -1616,15 +1761,15 @@ Nodes (18): description, schema, post, post, post, description, schema, paths (+
 
 ### Community 314 - "email_accounts_api / delete.go"
 Cohesion: 0.15
-Nodes (16): properties, type, properties, type, items, type, artel_apiListConnectionsResponse, artel_apiListSpreadsheetsResponse (+8 more)
+Nodes (16): properties, type, properties, type, items, artel_apiListMailServerSuggestionsResponse, artel_apiListSpreadsheetsResponse, items (+8 more)
 
 ### Community 334 - "domain / EmailMeta"
 Cohesion: 0.25
 Nodes (8): New(), Service, Client, Context, CouchAccounts, CouchInstances, Repo, UserListEntry
 
 ### Community 335 - "domain / EmailMessage"
-Cohesion: 0.32
-Nodes (28): AdminCouchAPIClient, AdminCouchAPIServer, local_request_AdminCouchAPI_ChangeCouchUserPassword_0(), local_request_AdminCouchAPI_DeleteCouchUser_0(), local_request_AdminCouchAPI_GetUserDatabaseAccess_0(), local_request_AdminCouchAPI_GrantDatabaseAccess_0(), local_request_AdminCouchAPI_ListCouchDatabases_0(), local_request_AdminCouchAPI_ListCouchUsers_0() (+20 more)
+Cohesion: 0.43
+Nodes (23): AdminCouchAPIClient, AdminCouchAPIServer, local_request_AdminCouchAPI_ChangeCouchUserPassword_0(), local_request_AdminCouchAPI_DeleteCouchUser_0(), local_request_AdminCouchAPI_GetUserDatabaseAccess_0(), local_request_AdminCouchAPI_GrantDatabaseAccess_0(), local_request_AdminCouchAPI_ListCouchDatabases_0(), local_request_AdminCouchAPI_ListCouchUsers_0() (+15 more)
 
 ### Community 351 - ".claude / .claude/settings.local.js"
 Cohesion: 0.15
@@ -1654,6 +1799,10 @@ Nodes (24): properties, type, properties, type, properties, type, properties, ty
 Cohesion: 0.16
 Nodes (6): GetArtelUser, GetArtelUser_Request, ListArtelUsers, MessageState, SizeCache, UnknownFields
 
+### Community 364 - "Community 364"
+Cohesion: 0.10
+Nodes (21): UserErrors, BadRequestDetail, DetailType, DetailTypeName, ErrorInfoDetail, FieldViolation, getDetail(), getFieldViolations() (+13 more)
+
 ### Community 365 - "Community 365"
 Cohesion: 0.24
 Nodes (10): Context, DB, Queries, UUID, VaultInvite, VaultInvites, VaultRole, Repo (+2 more)
@@ -1663,8 +1812,8 @@ Cohesion: 0.14
 Nodes (16): $ref, properties, description, type, type, additionalProperties, description, properties (+8 more)
 
 ### Community 367 - "Community 367"
-Cohesion: 0.13
-Nodes (16): properties, type, properties, type, type, artel_apiExternalConnectionInfo, artel_apiSpreadsheet, $ref (+8 more)
+Cohesion: 0.10
+Nodes (22): properties, type, properties, type, properties, type, type, artel_apiDisconnectProviderRequest (+14 more)
 
 ### Community 368 - "Community 368"
 Cohesion: 0.14
@@ -1687,8 +1836,8 @@ Cohesion: 0.13
 Nodes (15): type, default, enum, type, type, type, type, type (+7 more)
 
 ### Community 377 - "Community 377"
-Cohesion: 0.13
-Nodes (15): properties, type, properties, type, artel_apiListMailServerSuggestionsRequest, artel_apiMailServerSuggestion, type, type (+7 more)
+Cohesion: 0.11
+Nodes (19): properties, type, properties, type, artel_apiAddEmailConnectionRequest, artel_apiGoogleConnectionInfo, type, type (+11 more)
 
 ### Community 378 - "Community 378"
 Cohesion: 0.14
@@ -1715,8 +1864,8 @@ Cohesion: 0.21
 Nodes (10): New(), Service, Context, ListUsersReq, Session, Sessions, User, UserDetails (+2 more)
 
 ### Community 384 - "Community 384"
-Cohesion: 0.24
-Nodes (10): _CouchInstancesAPI_DeleteCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstanceStatus_Handler(), _CouchInstancesAPI_SetupCouchInstance_Handler(), _CouchInstancesAPI_UpdateCouchInstance_Handler(), Context, DeleteCouchInstance_Request, DeleteCouchInstance_Response, GetCouchInstanceStatus_Request (+2 more)
+Cohesion: 0.09
+Nodes (31): _CouchInstancesAPI_DeleteCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstanceStatus_Handler(), _CouchInstancesAPI_ListCouchInstances_Handler(), _CouchInstancesAPI_RegisterCouchInstance_Handler(), _CouchInstancesAPI_SetupCouchInstance_Handler(), _CouchInstancesAPI_UpdateCouchInstance_Handler(), NewCouchInstancesAPIClient() (+23 more)
 
 ### Community 385 - "Community 385"
 Cohesion: 0.16
@@ -1731,8 +1880,8 @@ Cohesion: 0.19
 Nodes (7): file_user_errors_proto_init(), file_user_errors_proto_rawDescGZIP(), init(), UserErrors, EnumDescriptor, EnumNumber, EnumType
 
 ### Community 388 - "Community 388"
-Cohesion: 0.22
-Nodes (9): Closer, Context, TrelloBoard, Client, TaskTrackerCredentials, New(), TrelloCredentials, TrelloMember (+1 more)
+Cohesion: 0.25
+Nodes (9): GetS3InstanceRow, ListS3InstancesRow, RegisterS3InstanceParams, UpdateS3InstanceParams, Context, Queries, S3Instance, Time (+1 more)
 
 ### Community 389 - "Community 389"
 Cohesion: 0.14
@@ -1799,8 +1948,8 @@ Cohesion: 0.17
 Nodes (12): description, minLength, type, properties, enum, type, credentials, method (+4 more)
 
 ### Community 406 - "Community 406"
-Cohesion: 0.11
-Nodes (19): properties, type, properties, type, artel_apiAddEmailConnectionRequest, artel_apiGoogleConnectionInfo, type, type (+11 more)
+Cohesion: 0.22
+Nodes (9): Closer, Context, TrelloBoard, Client, TaskTrackerCredentials, New(), TrelloCredentials, TrelloMember (+1 more)
 
 ### Community 407 - "Community 407"
 Cohesion: 0.17
@@ -1815,24 +1964,24 @@ Cohesion: 0.17
 Nodes (19): Time, TractStep, pathSegment, resolver, extractRefs(), isEscapedOpen(), isOpen(), lengthOf() (+11 more)
 
 ### Community 413 - "Community 413"
-Cohesion: 0.18
-Nodes (10): ArtelUI Frontend Rules, Async style, Buttons, Component Structure, CSS Modules, Error and Confirmation Handling, Feature-Sliced Design layers, Reference example (+2 more)
+Cohesion: 0.17
+Nodes (11): ArtelUI Frontend Rules, Async style, Buttons, Component Structure, CSS Modules, Error and Confirmation Handling, Feature-Sliced Design layers, Never use z-index (+3 more)
 
 ### Community 414 - "Community 414"
 Cohesion: 0.31
 Nodes (6): CreateVaultInviteParams, Context, Queries, UUID, VaultInvite, VaultRole
 
 ### Community 415 - "Community 415"
-Cohesion: 0.29
-Nodes (9): Context, Vault, Service, DefaultConfig(), encryptOctagonalWheels(), GenerateSetupURI(), LiveSyncConfig, pbkdf2Key() (+1 more)
+Cohesion: 0.03
+Nodes (7): CreateTract_Response, GetTract_Response, ListTracts_Response, TractItem, TractLastRun, TractTriggerSummary, UpdateTract_Response
 
 ### Community 416 - "Community 416"
 Cohesion: 0.35
 Nodes (7): Context, McpSpreadsheet, Queries, UUID, New(), toDomain(), Repo
 
 ### Community 417 - "Community 417"
-Cohesion: 0.20
-Nodes (11): type, properties, type, properties, type, definitions, artel_admin_usersArtelUserDetails, artel_admin_usersGetArtelUserRequest (+3 more)
+Cohesion: 0.17
+Nodes (13): type, type, properties, type, properties, type, definitions, artel_admin_usersArtelUserDetails (+5 more)
 
 ### Community 418 - "Community 418"
 Cohesion: 0.18
@@ -1844,7 +1993,7 @@ Nodes (11): properties, type, format, type, artel_admin_usersUserSession, format
 
 ### Community 420 - "Community 420"
 Cohesion: 0.18
-Nodes (11): schema, delete, description, schema, operationId, parameters, responses, tags (+3 more)
+Nodes (11): description, schema, delete, schema, operationId, parameters, responses, tags (+3 more)
 
 ### Community 421 - "Community 421"
 Cohesion: 0.18
@@ -1855,16 +2004,16 @@ Cohesion: 0.09
 Nodes (22): 1. Tract List (`#screenList`), 2. Tract Builder (`#screenBuilder`), 3. Block Picker Modal, About the Design Files, Assets, Border Radius, Builder Toolbar (46px bar below topbar), Canvas (+14 more)
 
 ### Community 428 - "Community 428"
-Cohesion: 0.21
-Nodes (12): CreateTriggerParams, LinkTriggerParams, ListLinksByTractRow, ListLinksByTriggerRow, SetTriggerEnabledParams, UnlinkTriggerParams, Context, Queries (+4 more)
+Cohesion: 0.16
+Nodes (18): CreateTriggerParams, InsertTriggerParams, LinkTriggerParams, LinkTriggerToTractParams, ListLinksByTractRow, ListLinksByTriggerRow, ListTriggerLinksByTractRow, ListTriggerLinksByTriggerRow (+10 more)
 
 ### Community 429 - "Community 429"
 Cohesion: 0.20
 Nodes (9): Action Buttons (right side), Combined Chrome Anatomy, Contents (left → right), Hamburger Button, Mode Bar (38px), Mode Tabs, Note Info Column, Step 3 — Top Bar & Mode Bar (+1 more)
 
 ### Community 430 - "Community 430"
-Cohesion: 0.24
-Nodes (12): interpolateParams(), interpolateSecrets(), NewHttpExecutor(), renderBodyValue(), renderHttpBody(), resolveActionValue(), secretField(), HttpExecutor (+4 more)
+Cohesion: 0.26
+Nodes (11): interpolateParams(), interpolateSecrets(), renderBodyValue(), renderHttpBody(), resolveActionValue(), secretField(), HttpExecutor, Client (+3 more)
 
 ### Community 431 - "Community 431"
 Cohesion: 0.33
@@ -1879,16 +2028,16 @@ Cohesion: 0.31
 Nodes (6): UpsertMcpDefinitionParams, Context, Queries, Mcp, RawMessage, Mcp
 
 ### Community 434 - "Community 434"
-Cohesion: 0.24
-Nodes (7): TrelloBoardInfo, useTaskTrackers, AddTrackerDialog(), ContentSegment(), HeroSegment(), Step, TrelloSetupStep()
+Cohesion: 0.03
+Nodes (62): CreateTract, CreateTractRequest, CreateTractResponse, CreateTrigger, CreateTriggerRequest, CreateTriggerResponse, DeleteTract, DeleteTractRequest (+54 more)
 
 ### Community 435 - "Community 435"
 Cohesion: 0.24
 Nodes (7): Context, Handler, ServiceRegistrar, UnimplementedVaultsAPIServer, VaultsImpl, VaultService, NewVaultsImpl()
 
 ### Community 436 - "Community 436"
-Cohesion: 0.22
-Nodes (8): Swagger(), FS, HandlerFunc, Handler, Request, ResponseWriter, spaHandler, NewHandler()
+Cohesion: 0.07
+Nodes (21): DeleteS3Instance, DeleteS3InstanceRequest, DeleteS3InstanceResponse, GetS3Instance, GetS3InstanceRequest, GetS3InstanceResponse, ListS3Instances, ListS3InstancesRequest (+13 more)
 
 ### Community 437 - "Community 437"
 Cohesion: 0.22
@@ -1926,9 +2075,13 @@ Nodes (10): format, type, rpcStatus, type, type, code, details, message (+2 more
 Cohesion: 0.25
 Nodes (3): file_admin_users_proto_init(), init(), GetUserSessions
 
-### Community 455 - "Community 455"
+### Community 450 - "Community 450"
 Cohesion: 0.25
-Nodes (3): MoveNote, file_notes_proto_init(), init()
+Nodes (3): DeleteTaskTracker, file_task_trackers_proto_init(), init()
+
+### Community 454 - "Community 454"
+Cohesion: 0.22
+Nodes (19): description, post, post, post, post, post, post, paths (+11 more)
 
 ### Community 459 - "Community 459"
 Cohesion: 0.22
@@ -1951,20 +2104,20 @@ Cohesion: 0.22
 Nodes (9): properties, type, artel_apiToolParamDef, $ref, $ref, enumParam, integerParam, stringParam (+1 more)
 
 ### Community 474 - "Community 474"
-Cohesion: 0.21
-Nodes (13): Context, Mutex, RawMessage, resolver, Tract, Service, TractRun, TractStep (+5 more)
+Cohesion: 0.22
+Nodes (10): Context, DB, Queries, S3Instance, S3Instances, New(), UUID, S3Instances (+2 more)
 
 ### Community 475 - "Community 475"
 Cohesion: 0.23
 Nodes (14): Context, ExternalConnectionRepo, McpDefinitionsRepo, ToolSchema, Tract, Service, TractDefinition, TractsRepo (+6 more)
 
 ### Community 476 - "Community 476"
-Cohesion: 0.36
-Nodes (6): Handler, New(), ExternalConnectionRepo, MomService, Request, ResponseWriter
+Cohesion: 0.21
+Nodes (13): Context, Mutex, RawMessage, resolver, Tract, Service, TractRun, TractStep (+5 more)
 
 ### Community 477 - "Community 477"
-Cohesion: 0.21
-Nodes (19): resolver, TractCondition, T, compare(), compareContains(), compareEqual(), compareGlob(), compareNumeric() (+11 more)
+Cohesion: 0.29
+Nodes (9): Context, Vault, Service, DefaultConfig(), encryptOctagonalWheels(), GenerateSetupURI(), LiveSyncConfig, pbkdf2Key() (+1 more)
 
 ### Community 478 - "Community 478"
 Cohesion: 0.25
@@ -1999,8 +2152,8 @@ Cohesion: 0.33
 Nodes (6): properties, type, artel_admin_usersListArtelUsersResponse, total, format, type
 
 ### Community 486 - "Community 486"
-Cohesion: 0.18
-Nodes (11): properties, type, properties, type, properties, type, $ref, artel_apiAddEmailConnectionResponse (+3 more)
+Cohesion: 0.23
+Nodes (10): Context, RawMessage, Request, ResponseWriter, Tract, TractService, TriggersRepo, UUID (+2 more)
 
 ### Community 487 - "Community 487"
 Cohesion: 0.20
@@ -2011,8 +2164,8 @@ Cohesion: 0.25
 Nodes (8): properties, type, properties, type, artel_apiImapToolAction, artel_apiSmtpToolAction, $ref, operation
 
 ### Community 489 - "Community 489"
-Cohesion: 0.25
-Nodes (8): properties, type, properties, type, type, artel_notesGetNoteResponse, artel_notesSaveNoteRequest, content
+Cohesion: 0.08
+Nodes (55): description, schema, post, post, post, post, post, post (+47 more)
 
 ### Community 492 - "Community 492"
 Cohesion: 0.25
@@ -2020,11 +2173,11 @@ Nodes (7): consumes, info, title, version, produces, swagger, tags
 
 ### Community 500 - "Community 500"
 Cohesion: 0.12
-Nodes (3): GooglePickerToken, InitiateGoogleOAuth_Response, Message
+Nodes (3): GooglePickerToken_Request, InitiateGoogleOAuth_Response, Message
 
 ### Community 506 - "Community 506"
-Cohesion: 0.11
-Nodes (4): AddMcpConnector, ListMcpConnectors_Request, RemoveMcpConnector, MessageState
+Cohesion: 0.12
+Nodes (13): AdminUsersAPI, ArtelUserDetails, ArtelUserEntry, GetArtelUser, GetArtelUserRequest, GetArtelUserResponse, GetUserSessions, GetUserSessionsRequest (+5 more)
 
 ### Community 514 - "Community 514"
 Cohesion: 0.33
@@ -2064,7 +2217,7 @@ Nodes (12): properties, type, properties, type, artel_apiAddGitlabConnectionRequ
 
 ### Community 523 - "Community 523"
 Cohesion: 0.17
-Nodes (19): Tract, TractCondition, TractDefinition, TractRun, TractRunStatus, TractRunStep, TractRunStepStatus, TractStep (+11 more)
+Nodes (20): Tract, TractCondition, TractDefinition, TractRun, TractRunStatus, TractRunStep, TractRunStepStatus, TractStep (+12 more)
 
 ### Community 524 - "Community 524"
 Cohesion: 0.29
@@ -2079,28 +2232,28 @@ Cohesion: 0.29
 Nodes (7): properties, type, artel_notesMoveNoteRequest, type, type, newPath, oldPath
 
 ### Community 527 - "Community 527"
-Cohesion: 0.22
-Nodes (19): fakeMcpDefsRepo, fakeExternalConnsRepo, fakeToolExecutor, Service, T, TractStep, newFakeExternalConnsRepo(), newFakeMcpDefsRepo() (+11 more)
+Cohesion: 0.19
+Nodes (20): fakeMcpDefsRepo, fakeExternalConnsRepo, fakeToolExecutor, Service, T, TractStep, newFakeExternalConnsRepo(), newFakeMcpDefsRepo() (+12 more)
 
 ### Community 531 - "Community 531"
 Cohesion: 0.18
 Nodes (3): AddEmailConnection, DisconnectProvider, SizeCache
 
-### Community 532 - "Community 532"
+### Community 548 - "Community 548"
+Cohesion: 0.25
+Nodes (3): MoveNote_Response, file_notes_proto_init(), init()
+
+### Community 549 - "Community 549"
 Cohesion: 0.18
-Nodes (3): DisconnectProvider_Response, ListConnections_Request, UnknownFields
+Nodes (3): ListConnections_Request, RemoveSpreadsheet, UnknownFields
 
-### Community 535 - "Community 535"
-Cohesion: 0.25
-Nodes (3): file_admin_couch_proto_init(), init(), GrantDatabaseAccess
-
-### Community 547 - "Community 547"
-Cohesion: 0.25
-Nodes (3): ListTrelloBoards, file_task_trackers_proto_init(), init()
+### Community 553 - "Community 553"
+Cohesion: 0.12
+Nodes (3): AcceptInvite, RevokeInviteLink, Message
 
 ### Community 558 - "Community 558"
-Cohesion: 0.33
-Nodes (4): ArtelAPI, Version, VersionRequest, VersionResponse
+Cohesion: 0.24
+Nodes (4): NoteItem, NotesState, INotesService, NotesService
 
 ### Community 560 - "Community 560"
 Cohesion: 0.26
@@ -2119,27 +2272,31 @@ Cohesion: 0.33
 Nodes (6): protobufAny, @type, additionalProperties, properties, type, type
 
 ### Community 564 - "Community 564"
-Cohesion: 0.33
-Nodes (6): properties, type, artel_apiDisconnectProviderRequest, provider, $ref, type
+Cohesion: 0.36
+Nodes (5): couchDBUser, UserInfo, UserListEntry, Context, Client
 
 ### Community 565 - "Community 565"
 Cohesion: 0.33
 Nodes (6): protobufAny, @type, additionalProperties, properties, type, type
 
 ### Community 566 - "Community 566"
-Cohesion: 0.33
-Nodes (6): properties, type, artel_notesListFoldersResponse, items, type, folders
+Cohesion: 0.15
+Nodes (19): type, properties, type, properties, properties, type, artel_s3GetS3InstanceResponse, artel_s3UpdateS3InstanceRequest (+11 more)
 
 ### Community 567 - "Community 567"
 Cohesion: 0.33
 Nodes (6): protobufAny, @type, additionalProperties, properties, type, type
+
+### Community 570 - "Community 570"
+Cohesion: 0.25
+Nodes (3): file_admin_couch_proto_init(), init(), ChangeCouchUserPassword_Response
 
 ### Community 572 - "Community 572"
 Cohesion: 0.40
 Nodes (4): Context, McpServiceImpl, McpConnector, UUID
 
 ### Community 573 - "Community 573"
-Cohesion: 0.23
+Cohesion: 0.24
 Nodes (9): Context, RawMessage, ToolSchema, Service, TractCondition, TractTriggerLink, Trigger, UUID (+1 more)
 
 ### Community 578 - "Community 578"
@@ -2235,8 +2392,8 @@ Cohesion: 0.40
 Nodes (5): schema, description, schema, default, $ref
 
 ### Community 601 - "Community 601"
-Cohesion: 0.19
-Nodes (12): RegisterMcpKeysAPIHandler(), RegisterMcpKeysAPIHandlerFromEndpoint(), ClientConn, DialOption, ServeMux, Context, Handler, McpKeysImpl (+4 more)
+Cohesion: 0.17
+Nodes (59): local_request_TractsAPI_CreateTract_0(), local_request_TractsAPI_CreateTrigger_0(), local_request_TractsAPI_DeleteTract_0(), local_request_TractsAPI_DeleteTrigger_0(), local_request_TractsAPI_GetRun_0(), local_request_TractsAPI_GetTract_0(), local_request_TractsAPI_LinkTrigger_0(), local_request_TractsAPI_ListRuns_0() (+51 more)
 
 ### Community 602 - "Community 602"
 Cohesion: 0.40
@@ -2266,10 +2423,6 @@ Nodes (5): properties, type, artel_apiInitiateGoogleOAuthRequest, type, origin
 Cohesion: 0.40
 Nodes (5): properties, type, type, artel_apiInitiateGoogleOAuthResponse, authUrl
 
-### Community 609 - "Community 609"
-Cohesion: 0.50
-Nodes (3): Context, McpServiceImpl, UUID
-
 ### Community 610 - "Community 610"
 Cohesion: 0.40
 Nodes (5): properties, type, $ref, artel_apiAddMcpConnectorResponse, connector
@@ -2290,17 +2443,9 @@ Nodes (5): properties, type, artel_apiListTrelloBoardsRequest, trackerId, type
 Cohesion: 0.40
 Nodes (5): properties, type, artel_vaultsCreateInviteLinkResponse, $ref, invite
 
-### Community 615 - "Community 615"
-Cohesion: 0.40
-Nodes (5): properties, type, artel_vaultsListMembersResponse, type, members
-
 ### Community 616 - "Community 616"
-Cohesion: 0.24
-Nodes (4): NoteItem, NotesState, INotesService, NotesService
-
-### Community 617 - "Community 617"
-Cohesion: 0.40
-Nodes (5): properties, type, artel_vaultsRevokeInviteLinkRequest, type, inviteId
+Cohesion: 0.07
+Nodes (38): TractLastRun, Props, ConnectionStep(), LOGIC_OPTIONS, LogicCell(), LogicOption, Props, ToolCell() (+30 more)
 
 ### Community 618 - "Community 618"
 Cohesion: 0.17
@@ -2326,85 +2471,89 @@ Nodes (3): ExternalConnectionsImpl, Request, ResponseWriter
 Cohesion: 0.17
 Nodes (11): 10. Migration 032 is destructive, 1. JSONB definition has no referential integrity, 2. Tree model cannot express arbitrary DAGs (canvas mismatch), 3. Declared output schemas can drift from real tool outputs, 4. MoM refactor touches the live MCP wire format, 5. Multi-trigger tracts have ambiguous input shapes, 6. In-process engine: runs die with the process, 7. Parallel execution shares mutable run state (+3 more)
 
+### Community 628 - "Community 628"
+Cohesion: 0.05
+Nodes (4): CreateTrigger_Response, ListTriggers_Response, RotateTriggerToken_Response, TriggerItem
+
+### Community 629 - "Community 629"
+Cohesion: 0.26
+Nodes (6): Context, Repo, S3Instance, S3Instances, New(), Service
+
+### Community 633 - "Community 633"
+Cohesion: 0.27
+Nodes (7): IsTractTool(), Context, McpServiceImpl, McpKeyContext, ToolExecResult, UUID, McpServiceImpl
+
 ### Community 675 - "Community 675"
-Cohesion: 0.24
-Nodes (8): NewAdminCouchAPIClient(), RegisterAdminCouchAPIServer(), AdminCouchAPIClient, AdminCouchAPIServer, UnsafeAdminCouchAPIServer, ClientConnInterface, ServiceRegistrar, ServiceRegistrar
+Cohesion: 0.09
+Nodes (27): properties, type, properties, type, properties, type, artel_apiListRunsResponse, artel_apiListTractsResponse (+19 more)
 
 ### Community 676 - "Community 676"
 Cohesion: 0.31
 Nodes (6): GetMcpToolParams, UpsertMcpToolParams, Context, Queries, McpTool, RawMessage
 
 ### Community 677 - "Community 677"
-Cohesion: 0.31
-Nodes (7): Context, UUID, McpBuiltinExecutor, MomConnectionExecutor, ToolExecutor, NewToolExecutor(), toolExecutorAdapter
+Cohesion: 0.26
+Nodes (8): Context, McpToolDef, UUID, McpBuiltinExecutor, MomConnectionExecutor, ToolExecutor, NewToolExecutor(), toolExecutorAdapter
 
 ### Community 678 - "Community 678"
-Cohesion: 0.24
-Nodes (6): RegisterCouchInstancesAPIServer(), CouchInstancesAPIServer, UnimplementedCouchInstancesAPIServer, UnsafeCouchInstancesAPIServer, ServiceRegistrar, ServiceRegistrar
+Cohesion: 0.17
+Nodes (14): fakeTractService, Context, McpToolRef, RawMessage, ToolSchema, Tract, TractCondition, TractDefinition (+6 more)
 
 ### Community 680 - "Community 680"
 Cohesion: 0.25
 Nodes (6): Impl, New(), Context, Handler, ServiceRegistrar, UnimplementedVaultsAPIServer
+
+### Community 681 - "Community 681"
+Cohesion: 0.24
+Nodes (9): Context, RawMessage, ToolSchema, Service, TriggerSourcePreset, gitlabPushPayloadSchema(), ListTriggerSources(), normalizeGitlabPush() (+1 more)
 
 ### Community 682 - "Community 682"
 Cohesion: 0.32
 Nodes (5): UnimplementedVaultsAPIServer, UnsafeVaultsAPIServer, RegisterVaultsAPIServer(), VaultsAPIServer, ServiceRegistrar
 
 ### Community 683 - "Community 683"
-Cohesion: 0.32
-Nodes (6): NewVaultsAPIClient(), _VaultsAPI_GetVault_Handler(), VaultsAPIClient, ClientConnInterface, GetVault_Request, GetVault_Response
+Cohesion: 0.50
+Nodes (3): _VaultsAPI_GetVault_Handler(), GetVault_Request, GetVault_Response
 
 ### Community 684 - "Community 684"
 Cohesion: 0.32
 Nodes (6): Context, DB, ListPromptsParams, Prompt, New(), Repo
 
 ### Community 685 - "Community 685"
-Cohesion: 0.25
-Nodes (7): consumes, info, title, version, produces, swagger, tags
+Cohesion: 0.18
+Nodes (13): Swagger(), NewHttpExecutor(), TestHttpExecutor_BodyKey_EmptyDropped(), TestHttpExecutor_Header_EmptyOmitted(), TestHttpExecutor_QueryParam_EmptyOmitted(), FS, HandlerFunc, T (+5 more)
 
-### Community 686 - "Community 686"
-Cohesion: 0.38
-Nodes (5): NewCouchInstancesAPIClient(), CouchInstancesAPIClient, ClientConnInterface, SetupCouchInstance_Request, SetupCouchInstance_Response
+### Community 687 - "Community 687"
+Cohesion: 0.18
+Nodes (11): properties, type, properties, type, properties, type, $ref, artel_apiAddEmailConnectionResponse (+3 more)
 
 ### Community 688 - "Community 688"
-Cohesion: 0.40
-Nodes (3): UnimplementedAdminCouchAPIServer, RevokeDatabaseAccess_Request, RevokeDatabaseAccess_Response
+Cohesion: 0.10
+Nodes (21): type, type, type, type, type, type, type, type (+13 more)
 
 ### Community 692 - "Community 692"
-Cohesion: 0.40
-Nodes (4): _VaultsAPI_CreateVault_Handler(), CreateVault_Request, CreateVault_Response, UnaryServerInterceptor
+Cohesion: 0.36
+Nodes (6): Handler, New(), ExternalConnectionRepo, MomService, Request, ResponseWriter
 
 ### Community 693 - "Community 693"
 Cohesion: 0.47
 Nodes (3): Theme, useTheme(), TopbarThemeToggle()
 
-### Community 694 - "Community 694"
-Cohesion: 0.50
-Nodes (3): _AdminCouchAPI_ChangeCouchUserPassword_Handler(), ChangeCouchUserPassword_Request, ChangeCouchUserPassword_Response
-
 ### Community 695 - "Community 695"
-Cohesion: 0.50
-Nodes (3): _AdminCouchAPI_DeleteCouchUser_Handler(), DeleteCouchUser_Request, DeleteCouchUser_Response
+Cohesion: 0.29
+Nodes (7): properties, type, artel_apiListTriggersResponse, triggers, items, title, type
 
 ### Community 696 - "Community 696"
-Cohesion: 0.50
-Nodes (3): _AdminCouchAPI_ListCouchUsers_Handler(), ListCouchUsers_Request, ListCouchUsers_Response
-
-### Community 697 - "Community 697"
-Cohesion: 0.50
-Nodes (3): _CouchInstancesAPI_GetCouchInstance_Handler(), GetCouchInstance_Request, GetCouchInstance_Response
-
-### Community 698 - "Community 698"
-Cohesion: 0.50
-Nodes (3): _CouchInstancesAPI_ListCouchInstances_Handler(), ListCouchInstances_Request, ListCouchInstances_Response
+Cohesion: 0.06
+Nodes (67): BinaryStore, MimeTypeForPath(), EmailCredentials, marshalResult(), NewEmailExecutor(), EmailExecutor, runRow, runStepRow (+59 more)
 
 ### Community 699 - "Community 699"
-Cohesion: 0.50
-Nodes (3): _CouchInstancesAPI_RegisterCouchInstance_Handler(), RegisterCouchInstance_Request, RegisterCouchInstance_Response
+Cohesion: 0.18
+Nodes (10): Context, Config, Context, Object, ObjectEntry, Client, New(), newMinioClient() (+2 more)
 
 ### Community 700 - "Community 700"
-Cohesion: 0.50
-Nodes (3): _VaultsAPI_AddMember_Handler(), AddMember_Request, AddMember_Response
+Cohesion: 0.25
+Nodes (8): properties, type, properties, type, artel_vaultsDeleteVaultRequest, artel_vaultsGetVaultRequest, type, id
 
 ### Community 701 - "Community 701"
 Cohesion: 0.50
@@ -2423,12 +2572,8 @@ Cohesion: 0.50
 Nodes (3): _VaultsAPI_ListMembers_Handler(), ListMembers_Request, ListMembers_Response
 
 ### Community 705 - "Community 705"
-Cohesion: 0.50
-Nodes (3): _VaultsAPI_ListVaults_Handler(), ListVaults_Request, ListVaults_Response
-
-### Community 706 - "Community 706"
-Cohesion: 0.50
-Nodes (3): _VaultsAPI_RevokeInviteLink_Handler(), RevokeInviteLink_Request, RevokeInviteLink_Response
+Cohesion: 0.29
+Nodes (7): _VaultsAPI_AddMember_Handler(), _VaultsAPI_ListVaults_Handler(), AddMember_Request, AddMember_Response, Context, ListVaults_Request, ListVaults_Response
 
 ### Community 707 - "Community 707"
 Cohesion: 0.60
@@ -2439,44 +2584,404 @@ Cohesion: 0.40
 Nodes (4): Context, ExecuteMomTool_Request, ExecuteMomTool_Response, McpKeysImpl
 
 ### Community 709 - "Community 709"
-Cohesion: 0.40
-Nodes (5): properties, type, artel_authTelegramCredentials, type, idToken
-
-### Community 710 - "Community 710"
-Cohesion: 0.40
-Nodes (5): properties, type, artel_apiDeleteEmailAccountRequest, type, id
-
-### Community 711 - "Community 711"
-Cohesion: 0.40
-Nodes (5): properties, type, artel_apiListMailServerSuggestionsResponse, suggestions, type
+Cohesion: 0.15
+Nodes (16): AuthService, Context, MD, ServerOption, Service, SubscriptionService, MD, authMiddleware (+8 more)
 
 ### Community 712 - "Community 712"
 Cohesion: 0.40
 Nodes (5): properties, type, artel_apiExecuteMomToolResponse, result, type
 
+### Community 713 - "Community 713"
+Cohesion: 0.11
+Nodes (20): properties, type, properties, type, type, title, type, artel_apiCreateTractRequest (+12 more)
+
+### Community 714 - "Community 714"
+Cohesion: 0.11
+Nodes (4): DeleteTract_Response, DeleteTrigger, SetTriggerEnabled_Request, UnknownFields
+
 ### Community 715 - "Community 715"
 Cohesion: 0.50
 Nodes (3): Context, Time, Service
 
+### Community 717 - "Community 717"
+Cohesion: 0.25
+Nodes (9): properties, type, artel_s3ListS3InstancesResponse, items, items, type, $ref, type (+1 more)
+
+### Community 718 - "Community 718"
+Cohesion: 0.22
+Nodes (4): DeleteS3Instance, GetS3Instance, SizeCache, UnknownFields
+
+### Community 724 - "Community 724"
+Cohesion: 0.33
+Nodes (4): ArtelAPI, Version, VersionRequest, VersionResponse
+
+### Community 725 - "Community 725"
+Cohesion: 0.11
+Nodes (4): AddMcpConnector, ListMcpConnectors_Request, ListMomCandidates, MessageState
+
+### Community 731 - "Community 731"
+Cohesion: 0.11
+Nodes (19): properties, type, properties, type, properties, type, properties, type (+11 more)
+
+### Community 732 - "Community 732"
+Cohesion: 0.11
+Nodes (3): file_tracts_proto_rawDescGZIP(), UnlinkTrigger_Request, UnlinkTrigger_Response
+
+### Community 733 - "Community 733"
+Cohesion: 0.11
+Nodes (3): DeleteTract_Request, GetRun_Request, Message
+
+### Community 734 - "Community 734"
+Cohesion: 0.11
+Nodes (4): GetTract_Request, ListTractTools_Request, ListTriggerSources_Request, SizeCache
+
+### Community 737 - "Community 737"
+Cohesion: 0.12
+Nodes (4): CreateTract, CreateTrigger, ListTriggers, MessageState
+
+### Community 740 - "Community 740"
+Cohesion: 0.14
+Nodes (4): CreateVault, GetVault, file_vaults_proto_init(), init()
+
+### Community 742 - "Community 742"
+Cohesion: 0.18
+Nodes (11): DB, Repos, Services, Suite, T, deleteCouchDatabase(), envOrDefault(), putCouchDatabase() (+3 more)
+
+### Community 743 - "Community 743"
+Cohesion: 0.20
+Nodes (11): DB, McpHandler, Repos, Services, Suite, T, TractVerifySuite, extractToolResult() (+3 more)
+
+### Community 744 - "Community 744"
+Cohesion: 0.16
+Nodes (12): Context, CreateTrigger_Request, CreateTrigger_Response, TractsImpl, Context, ListTriggers_Request, ListTriggers_Response, TractsImpl (+4 more)
+
+### Community 745 - "Community 745"
+Cohesion: 0.33
+Nodes (9): ToolProperty, toolPropertyRow, ToolSchema, schemaFromJSON(), schemaToJSON(), toolPropertyRowFromDomain(), toolPropertyRowToDomain(), toolPropertyRow (+1 more)
+
+### Community 746 - "Community 746"
+Cohesion: 0.33
+Nodes (6): properties, type, artel_apiRunTractRequest, title, type, params
+
+### Community 747 - "Community 747"
+Cohesion: 0.25
+Nodes (8): description, properties, type, type, artel_apiTractLastRun, at, status, type
+
+### Community 748 - "Community 748"
+Cohesion: 0.29
+Nodes (7): Context, ExternalConnection, Null, T, UUID, fakeExternalConnectionRepo, TestListConnectionsForTracts()
+
+### Community 749 - "Community 749"
+Cohesion: 0.25
+Nodes (3): ListS3Instances, file_s3_instances_proto_init(), init()
+
+### Community 750 - "Community 750"
+Cohesion: 0.15
+Nodes (13): properties, type, title, type, artel_apiCreateTriggerRequest, type, title, type (+5 more)
+
+### Community 751 - "Community 751"
+Cohesion: 0.18
+Nodes (13): properties, type, properties, type, artel_apiCreateTriggerResponse, artel_apiRotateTriggerTokenResponse, trigger, webhookToken (+5 more)
+
+### Community 752 - "Community 752"
+Cohesion: 0.17
+Nodes (10): Context, CreateTract_Request, CreateTract_Response, TractsImpl, TractDefinition, Context, TractsImpl, UpdateTract_Request (+2 more)
+
+### Community 753 - "Community 753"
+Cohesion: 0.20
+Nodes (11): Context, GetTract_Request, GetTract_Response, TractsImpl, Tract, TractItem, TractTriggerLink, tractToProto() (+3 more)
+
+### Community 755 - "Community 755"
+Cohesion: 0.29
+Nodes (7): _TractsAPI_DeleteTrigger_Handler(), _TractsAPI_ListRuns_Handler(), Context, DeleteTrigger_Request, DeleteTrigger_Response, ListRuns_Request, ListRuns_Response
+
+### Community 756 - "Community 756"
+Cohesion: 0.25
+Nodes (8): properties, type, properties, type, type, artel_notesGetNoteResponse, artel_notesSaveNoteRequest, content
+
+### Community 758 - "Community 758"
+Cohesion: 0.24
+Nodes (7): CMux, grpcServer, httpServer, Context, Listener, NewServerManager(), ServersManager
+
+### Community 761 - "Community 761"
+Cohesion: 0.28
+Nodes (8): Context, GetRun_Request, GetRun_Response, TractsImpl, TractRunStep, TractRunStepItem, runStepsToProto(), runStepToProto()
+
+### Community 762 - "Community 762"
+Cohesion: 0.28
+Nodes (8): Context, ListRuns_Request, ListRuns_Response, TractsImpl, TractRun, TractRunItem, runsToProto(), runToProto()
+
+### Community 763 - "Community 763"
+Cohesion: 0.28
+Nodes (8): Context, ListTriggerSources_Request, ListTriggerSources_Response, TractsImpl, TriggerSourcePreset, triggerSourcesToProto(), triggerSourceToProto(), TriggerSourceItem
+
+### Community 764 - "Community 764"
+Cohesion: 0.09
+Nodes (23): properties, type, properties, type, properties, type, artel_apiLinkTriggerRequest, artel_apiListRunsRequest (+15 more)
+
+### Community 766 - "Community 766"
+Cohesion: 0.60
+Nodes (6): AuthService, McpService, PendingAuthCodes, VaultService, NewOAuthHandler(), OAuthHandler
+
+### Community 768 - "Community 768"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_ListTriggers_Handler(), ListTriggers_Request, ListTriggers_Response
+
+### Community 769 - "Community 769"
+Cohesion: 0.24
+Nodes (6): RegisterTractsAPIServer(), TractsAPIServer, UnimplementedTractsAPIServer, UnsafeTractsAPIServer, ServiceRegistrar, ServiceRegistrar
+
+### Community 771 - "Community 771"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_RunTract_Handler(), RunTract_Request, RunTract_Response
+
+### Community 772 - "Community 772"
+Cohesion: 0.32
+Nodes (6): Context, ListTracts_Request, ListTracts_Response, Tract, TractItem, TractsImpl
+
+### Community 773 - "Community 773"
+Cohesion: 0.29
+Nodes (6): Context, RawMessage, RunTract_Request, RunTract_Response, Tract, TractsImpl
+
+### Community 774 - "Community 774"
+Cohesion: 0.25
+Nodes (8): properties, type, properties, type, artel_apiCreateTractResponse, artel_apiGetTractResponse, tract, $ref
+
+### Community 778 - "Community 778"
+Cohesion: 0.43
+Nodes (5): Context, Service, TractRun, TractRunStep, UUID
+
+### Community 779 - "Community 779"
+Cohesion: 0.50
+Nodes (3): _VaultsAPI_CreateVault_Handler(), CreateVault_Request, CreateVault_Response
+
+### Community 780 - "Community 780"
+Cohesion: 0.29
+Nodes (6): Context, LinkTrigger_Request, LinkTrigger_Response, TractsImpl, TractCondition, filtersFromJSON()
+
+### Community 785 - "Community 785"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_admin_couchChangeCouchUserPasswordRequest, type, newPassword
+
+### Community 786 - "Community 786"
+Cohesion: 0.10
+Nodes (5): ListTracts_Request, ListTractTools, RunTract, file_tracts_proto_init(), init()
+
+### Community 794 - "Community 794"
+Cohesion: 0.25
+Nodes (7): consumes, info, title, version, produces, swagger, tags
+
+### Community 796 - "Community 796"
+Cohesion: 0.20
+Nodes (10): format, type, rpcStatus, type, type, code, details, message (+2 more)
+
+### Community 798 - "Community 798"
+Cohesion: 0.40
+Nodes (4): _TractsAPI_CreateTract_Handler(), CreateTract_Request, CreateTract_Response, UnaryServerInterceptor
+
+### Community 802 - "Community 802"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_authTelegramCredentials, type, idToken
+
+### Community 803 - "Community 803"
+Cohesion: 0.50
+Nodes (5): RegisterAdminCouchAPIHandler(), RegisterAdminCouchAPIHandlerFromEndpoint(), ClientConn, DialOption, ServeMux
+
+### Community 804 - "Community 804"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_CreateTrigger_Handler(), CreateTrigger_Request, CreateTrigger_Response
+
+### Community 805 - "Community 805"
+Cohesion: 0.32
+Nodes (6): NewTractsAPIClient(), _TractsAPI_DeleteTract_Handler(), TractsAPIClient, ClientConnInterface, DeleteTract_Request, DeleteTract_Response
+
+### Community 806 - "Community 806"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_GetRun_Handler(), GetRun_Request, GetRun_Response
+
+### Community 807 - "Community 807"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_GetTract_Handler(), GetTract_Request, GetTract_Response
+
+### Community 808 - "Community 808"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_LinkTrigger_Handler(), LinkTrigger_Request, LinkTrigger_Response
+
+### Community 810 - "Community 810"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_ListTracts_Handler(), ListTracts_Request, ListTracts_Response
+
+### Community 811 - "Community 811"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_ListTractTools_Handler(), ListTractTools_Request, ListTractTools_Response
+
+### Community 812 - "Community 812"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_ListTriggerSources_Handler(), ListTriggerSources_Request, ListTriggerSources_Response
+
+### Community 813 - "Community 813"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_RotateTriggerToken_Handler(), RotateTriggerToken_Request, RotateTriggerToken_Response
+
+### Community 814 - "Community 814"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_SetTractEnabled_Handler(), SetTractEnabled_Request, SetTractEnabled_Response
+
+### Community 815 - "Community 815"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_SetTriggerEnabled_Handler(), SetTriggerEnabled_Request, SetTriggerEnabled_Response
+
+### Community 816 - "Community 816"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_UnlinkTrigger_Handler(), UnlinkTrigger_Request, UnlinkTrigger_Response
+
+### Community 817 - "Community 817"
+Cohesion: 0.50
+Nodes (3): _TractsAPI_UpdateTract_Handler(), UpdateTract_Request, UpdateTract_Response
+
+### Community 819 - "Community 819"
+Cohesion: 0.40
+Nodes (4): Context, McpServiceImpl, ToolExecResult, UUID
+
+### Community 820 - "Community 820"
+Cohesion: 0.33
+Nodes (6): properties, type, artel_notesListFoldersResponse, items, type, folders
+
+### Community 821 - "Community 821"
+Cohesion: 0.40
+Nodes (4): Context, DeleteTract_Request, DeleteTract_Response, TractsImpl
+
+### Community 822 - "Community 822"
+Cohesion: 0.40
+Nodes (4): Context, DeleteTrigger_Request, DeleteTrigger_Response, TractsImpl
+
+### Community 823 - "Community 823"
+Cohesion: 0.28
+Nodes (8): Context, ListTractTools_Request, ListTractTools_Response, TractsImpl, McpToolRef, toolRefsToProto(), toolRefToProto(), TractToolItem
+
+### Community 824 - "Community 824"
+Cohesion: 0.40
+Nodes (4): Context, SetTractEnabled_Request, SetTractEnabled_Response, TractsImpl
+
+### Community 825 - "Community 825"
+Cohesion: 0.40
+Nodes (4): Context, SetTriggerEnabled_Request, SetTriggerEnabled_Response, TractsImpl
+
+### Community 826 - "Community 826"
+Cohesion: 0.40
+Nodes (4): Context, TractsImpl, UnlinkTrigger_Request, UnlinkTrigger_Response
+
+### Community 827 - "Community 827"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_vaultsRevokeInviteLinkRequest, type, inviteId
+
+### Community 829 - "Community 829"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_apiListTriggerSourcesResponse, sources, type
+
+### Community 830 - "Community 830"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_apiGetRunRequest, runUuid, type
+
+### Community 831 - "Community 831"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_apiGetRunResponse, run, $ref
+
+### Community 832 - "Community 832"
+Cohesion: 0.50
+Nodes (4): httpActionRow, imapActionRow, toolActionRow, smtpActionRow
+
+### Community 833 - "Community 833"
+Cohesion: 0.50
+Nodes (3): UUID, contextKey, UserContext
+
+### Community 836 - "Community 836"
+Cohesion: 0.50
+Nodes (3): BinaryStore, Object, ObjectEntry
+
+### Community 860 - "Community 860"
+Cohesion: 0.50
+Nodes (3): S3Instance, Time, UUID
+
+### Community 861 - "Community 861"
+Cohesion: 0.40
+Nodes (5): properties, type, type, artel_apiListConnectionsResponse, connections
+
+### Community 862 - "Community 862"
+Cohesion: 0.29
+Nodes (7): properties, type, type, artel_vaultsLinkS3BucketRequest, bucketName, s3InstanceId, type
+
+### Community 873 - "Community 873"
+Cohesion: 0.13
+Nodes (15): properties, type, properties, type, artel_apiListMailServerSuggestionsRequest, artel_apiMailServerSuggestion, type, type (+7 more)
+
+### Community 881 - "Community 881"
+Cohesion: 0.33
+Nodes (6): protobufAny, @type, additionalProperties, properties, type, type
+
+### Community 885 - "Community 885"
+Cohesion: 0.32
+Nodes (6): NewVaultsAPIClient(), _VaultsAPI_LinkS3Bucket_Handler(), VaultsAPIClient, ClientConnInterface, LinkS3Bucket_Request, LinkS3Bucket_Response
+
+### Community 886 - "Community 886"
+Cohesion: 0.50
+Nodes (3): _VaultsAPI_RemoveMember_Handler(), RemoveMember_Request, RemoveMember_Response
+
+### Community 887 - "Community 887"
+Cohesion: 0.50
+Nodes (3): _VaultsAPI_UnlinkS3Bucket_Handler(), UnlinkS3Bucket_Request, UnlinkS3Bucket_Response
+
+### Community 888 - "Community 888"
+Cohesion: 0.40
+Nodes (4): Context, LinkS3Bucket_Request, LinkS3Bucket_Response, VaultsImpl
+
+### Community 889 - "Community 889"
+Cohesion: 0.40
+Nodes (4): Context, UnlinkS3Bucket_Request, UnlinkS3Bucket_Response, VaultsImpl
+
+### Community 890 - "Community 890"
+Cohesion: 0.50
+Nodes (3): _VaultsAPI_RevokeInviteLink_Handler(), RevokeInviteLink_Request, RevokeInviteLink_Response
+
+### Community 892 - "Community 892"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_apiDeleteEmailAccountRequest, type, id
+
+### Community 893 - "Community 893"
+Cohesion: 0.40
+Nodes (5): schema, description, schema, default, $ref
+
+### Community 894 - "Community 894"
+Cohesion: 0.40
+Nodes (5): properties, type, artel_vaultsListInviteLinksResponse, type, invites
+
+### Community 896 - "Community 896"
+Cohesion: 0.50
+Nodes (3): Context, McpToolRef, Service
+
+### Community 897 - "Community 897"
+Cohesion: 0.67
+Nodes (3): title, type, createdAt
+
 ## Knowledge Gaps
-- **2238 isolated node(s):** `Suite`, `Client`, `LiveSyncClient`, `Suite`, `DB` (+2233 more)
+- **2639 isolated node(s):** `Suite`, `Client`, `LiveSyncClient`, `Suite`, `DB` (+2634 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **218 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **263 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `GetUserContext()` connect `swaggers / description` to `Email Account & MCP OAuth Service`, `Community 609`, `app / App`, `swaggers / delete`, `Community 519`, `Vaults TypeScript Client`, `Vault Service Layer`, `Community 396`, `swaggers / get`, `middleware / App`, `Community 475`, `Community 572`, `Community 573`, `Community 415`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **Why does `GetUserContext()` connect `swaggers / description` to `Community 896`, `Community 833`, `app / App`, `swaggers / delete`, `Email Account & MCP OAuth Service`, `Community 477`, `Community 519`, `Vaults TypeScript Client`, `Vault Service Layer`, `Community 396`, `swaggers / get`, `middleware / App`, `Community 475`, `Community 572`, `Community 573`?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Why does `GrpcAdminInterceptor()` connect `app / App` to `swaggers / description`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `Encrypt()` connect `.claude / settings.local.json` to `CouchAccounts Repo`, `Vaults SQL Queries`, `Community 404`, `CouchInstances Repo`, `Community 415`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Are the 62 inferred relationships involving `UnwrapPgErr()` (e.g. with `.Upsert()` and `.RandomPick()`) actually correct?**
-  _`UnwrapPgErr()` has 62 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `Encrypt()` connect `.claude / settings.local.json` to `CouchAccounts Repo`, `Vaults SQL Queries`, `Community 404`, `CouchInstances Repo`, `Community 474`, `Community 477`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Are the 64 inferred relationships involving `UnwrapPgErr()` (e.g. with `.Upsert()` and `.RandomPick()`) actually correct?**
+  _`UnwrapPgErr()` has 64 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Suite`, `Client`, `LiveSyncClient` to the rest of the system?**
-  _2243 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2644 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `CouchDB LiveSync & MCP Tools` be split into smaller, more focused modules?**
-  _Cohesion score 0.05818181818181818 - nodes in this community are weakly interconnected._
-- **Should `Email Account & MCP OAuth Service` be split into smaller, more focused modules?**
-  _Cohesion score 0.05711263881544157 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07885968159940762 - nodes in this community are weakly interconnected._
+- **Should `Auth gRPC Transport` be split into smaller, more focused modules?**
+  _Cohesion score 0.05337078651685393 - nodes in this community are weakly interconnected._

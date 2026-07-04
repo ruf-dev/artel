@@ -17,7 +17,7 @@ func actionStep(id string, params map[string]string) domain.TractStep {
 		Name:   id,
 		Type:   stepTypeAction,
 		Mcp:    builtinMcpName,
-		Tool:   "write_note",
+		Tool:   "write_file",
 		Params: params,
 	}
 	return step
@@ -274,7 +274,7 @@ func newTestService(mcpDefs *fakeMcpDefsRepo, externalConns *fakeExternalConnsRe
 func TestValidateActionTool_BuiltinRules(t *testing.T) {
 	mcpDefs := newFakeMcpDefsRepo()
 	externalConns := newFakeExternalConnsRepo()
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc := newTestService(mcpDefs, externalConns, executor)
 
 	ownerUuid := uuid.New()
@@ -305,7 +305,7 @@ func TestValidateActionTool_MomRules(t *testing.T) {
 	mcpDefs := newFakeMcpDefsRepo()
 	mcpDefs.addTool("gitlab", "create_merge_request")
 	externalConns := newFakeExternalConnsRepo()
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc := newTestService(mcpDefs, externalConns, executor)
 
 	ownerUuid := uuid.New()

@@ -12,6 +12,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
+	"github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -26,6 +27,7 @@ type Service struct {
 	vaultInvitesRepo   repository.VaultInvites
 	couchAccountsRepo  repository.CouchAccounts
 	couchInstancesRepo repository.CouchInstances
+	s3InstancesRepo    repository.S3Instances
 
 	txManager tx_manager.TxManager
 }
@@ -39,6 +41,7 @@ func New(
 		vaultInvitesRepo:   repo.VaultInvites(),
 		couchAccountsRepo:  repo.CouchAccounts(),
 		couchInstancesRepo: repo.CouchInstances(),
+		s3InstancesRepo:    repo.S3Instances(),
 
 		txManager: repo.TxManager(),
 	}
@@ -252,6 +255,45 @@ func (s *Service) RemoveMember(ctx context.Context, vaultID, targetUserUuid uuid
 		return rerrors.Wrap(err, "remove vault member")
 	}
 
+	return nil
+}
+
+func (s *Service) LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error {
+	instance, err := s.s3InstancesRepo.Get(ctx, s3InstanceID)
+	if err != nil {
+		return rerrors.Wrap(err, "get s3 instance")
+	}
+
+	cfg := s3client.Config{
+		Endpoint:  instance.Endpoint,
+		Region:    instance.Region,
+		AccessKey: instance.AccessKey,
+		SecretKey: instance.SecretKey,
+		UseSSL:    instance.UseSSL,
+		PathStyle: instance.PathStyle,
+	}
+	client, err := s3client.New(cfg, bucketName)
+	if err != nil {
+		return rerrors.Wrap(err, "init s3 client")
+	}
+
+	err = client.EnsureBucket(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "ensure bucket exists")
+	}
+
+	err = s.vaultsRepo.LinkS3Bucket(ctx, vaultID, s3InstanceID, bucketName)
+	if err != nil {
+		return rerrors.Wrap(err, "link vault s3 bucket")
+	}
+	return nil
+}
+
+func (s *Service) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {
+	err := s.vaultsRepo.UnlinkS3Bucket(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "unlink vault s3 bucket")
+	}
 	return nil
 }
 

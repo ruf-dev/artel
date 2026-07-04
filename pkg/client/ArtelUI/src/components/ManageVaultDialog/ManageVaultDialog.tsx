@@ -5,7 +5,9 @@ import cls from "@/components/ManageVaultDialog/ManageVaultDialog.module.css"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {useVaultMutations, VaultMemberInfo, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
+import useUser from "@/hooks/user/User.ts"
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
+import ManageVaultS3Section, {S3LinkPatch} from "@/components/ManageVaultS3Section/ManageVaultS3Section.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts";
 
 interface Props {
@@ -18,11 +20,15 @@ interface Props {
 export default function ManageVaultDialog({vault, currentUserId, onClose, onDeleted}: Props) {
     const {listMembers, removeMember, listInvites, revokeInvite, remove} = useVaultMutations()
     const {OpenDialog} = useDialog()
+    const {isAdmin} = useUser()
     const bakeError = useBakeError()
 
     const [members, setMembers] = useState<VaultMemberInfo[]>([])
     const [invites, setInvites] = useState<VaultInviteItem[]>([])
     const [deleting, setDeleting] = useState(false)
+    const [s3Override, setS3Override] = useState<S3LinkPatch | null>(null)
+
+    const effectiveVault: VaultItem = s3Override ? {...vault, ...s3Override} : vault
 
     useEffect(() => {
         if (!vault.id) return
@@ -110,6 +116,10 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
                     {invites.length === 0 && <p className={cls.Empty}>No invite links yet.</p>}
                 </div>
             </section>
+
+            {isAdmin && (
+                <ManageVaultS3Section vault={effectiveVault} onLinked={setS3Override}/>
+            )}
 
             <section className={cls.DangerZone}>
                 <div className={cls.DangerZoneRow}>

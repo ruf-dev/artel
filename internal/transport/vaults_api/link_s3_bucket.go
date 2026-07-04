@@ -1,0 +1,29 @@
+package vaults_api
+
+import (
+	"context"
+
+	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
+
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+)
+
+func (v *VaultsImpl) LinkS3Bucket(ctx context.Context, req *pb.LinkS3Bucket_Request) (*pb.LinkS3Bucket_Response, error) {
+	vaultID, err := uuid.Parse(req.VaultId)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "parse vault id")
+	}
+
+	s3InstanceID, err := uuid.Parse(req.S3InstanceId)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "parse s3 instance id")
+	}
+
+	err = v.vaultSvc.LinkS3Bucket(ctx, vaultID, s3InstanceID, req.BucketName)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "link s3 bucket")
+	}
+
+	return &pb.LinkS3Bucket_Response{}, nil
+}

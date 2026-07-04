@@ -7,9 +7,17 @@ and what that specific key has been granted.
 
 Always present for any valid, unrevoked MCP key — no extra setup needed beyond having the key.
 
-- **Vault tools** — `list_files`, `read_file`, `write_note`, `delete_file`, `move_file`,
-  `list_folders`, `list_tags`, `get_note_metadata`. Operate on the vault the key is bound to.
+- **Vault tools** — `list_files`, `read_file`, `write_file`, `delete_file`, `move_file`,
+  `list_folders`, `list_tags`, `get_file_metadata`. Operate on the vault the key is bound to.
   Defined in code (`internal/service/v1/mcp/executors/vault.go`), not stored in the database.
+  Vault content is split across two backends by file extension: `.md`/`.markdown` paths live in
+  CouchDB, everything else lives in the vault's linked S3-compatible bucket (if any). `write_file`
+  takes plain-text `content` for markdown paths and base64-encoded `content` for everything else;
+  non-markdown ops fail with a "no linked S3 bucket" error on vaults that have no bucket linked.
+  `move_file` cannot cross the markdown/S3 boundary in one call — write to the new path then
+  delete the old one instead. `get_file_metadata`'s `rev`/`ctime`/`deleted` fields are
+  CouchDB-specific and always zero-valued (`rev` empty, `ctime` == `mtime`, `deleted` false) for
+  S3-backed files.
 - **`connections`** — always listed, but its *result* depends on what MoMs (see below) are linked
   to this key. Calling it returns the connected MoM packages (name/author/description), e.g.
   `[{"name":"email","author":"Artel","description":"..."}]`, or `[]` if none are linked yet.

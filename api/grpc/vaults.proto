@@ -75,6 +75,18 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc LinkS3Bucket(LinkS3Bucket.Request) returns (LinkS3Bucket.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/s3/link"
+      body: "*"
+    };
+  };
+  rpc UnlinkS3Bucket(UnlinkS3Bucket.Request) returns (UnlinkS3Bucket.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/s3/unlink"
+      body: "*"
+    };
+  };
 }
 
 message CreateVault {
@@ -96,6 +108,8 @@ message GetVault {
     string id = 1;
     string name = 2;
     string db_url = 3;
+    string s3_instance_id = 4;
+    string s3_bucket_name = 5;
   }
 }
 
@@ -175,11 +189,29 @@ message AcceptInvite {
   }
 }
 
+message LinkS3Bucket {
+  message Request {
+    string vault_id = 1;
+    string s3_instance_id = 2;
+    string bucket_name = 3;
+  }
+  message Response {}
+}
+
+message UnlinkS3Bucket {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {}
+}
+
 message VaultItem {
   string id = 1;
   string name = 2;
   string db_url = 3;
   string livesync_passphrase = 4;
+  string s3_instance_id = 5;
+  string s3_bucket_name = 6;
 }
 
 message VaultMemberInfo {

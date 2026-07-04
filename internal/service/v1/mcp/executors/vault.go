@@ -2,25 +2,26 @@ package executors
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
-	"strings"
 
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/storage"
 )
 
 const (
 	ToolListFiles       = "list_files"
 	ToolReadFile        = "read_file"
-	ToolWriteNote       = "write_note"
+	ToolWriteFile       = "write_file"
 	ToolDeleteFile      = "delete_file"
 	ToolMoveFile        = "move_file"
 	ToolListFolders     = "list_folders"
 	ToolListTags        = "list_tags"
-	ToolGetNoteMetadata = "get_note_metadata"
+	ToolGetFileMetadata = "get_file_metadata"
 )
 
 type VaultExecutor struct{}
@@ -29,37 +30,37 @@ func NewVaultExecutor() *VaultExecutor {
 	return &VaultExecutor{}
 }
 
-func (e *VaultExecutor) Execute(ctx context.Context, toolName string, client *couchdb.LiveSyncClient, params map[string]interface{}) (domain.ToolExecResult, error) {
+// Execute dispatches a vault tool call. client serves the markdown half of the vault (CouchDB
+// livesync); bucket serves the non-markdown half (S3-compatible object storage) and may be nil
+// if the vault has no linked bucket — handlers that need it then return
+// user_errors.NoS3BucketLinked for non-markdown paths.
+func (e *VaultExecutor) Execute(ctx context.Context, toolName string, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
 	switch toolName {
 	case ToolListFiles:
-		return e.listFiles(ctx, client)
+		return e.listFiles(ctx, client, bucket)
 	case ToolReadFile:
-		return e.readFile(ctx, client, params)
-	case ToolWriteNote:
-		return e.writeNote(ctx, client, params)
+		return e.readFile(ctx, client, bucket, params)
+	case ToolWriteFile:
+		return e.writeFile(ctx, client, bucket, params)
 	case ToolDeleteFile:
-		return e.deleteFile(ctx, client, params)
+		return e.deleteFile(ctx, client, bucket, params)
 	case ToolMoveFile:
-		return e.moveFile(ctx, client, params)
+		return e.moveFile(ctx, client, bucket, params)
 	case ToolListFolders:
 		return e.listFolders(ctx, client)
 	case ToolListTags:
 		return e.listTags(ctx, client)
-	case ToolGetNoteMetadata:
-		return e.getNoteMetadata(ctx, client, params)
+	case ToolGetFileMetadata:
+		return e.getFileMetadata(ctx, client, bucket, params)
 	default:
 		return domain.ToolExecResult{}, rerrors.New(fmt.Sprintf("unknown vault tool: %s", toolName))
 	}
 }
 
-func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncClient) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore) (domain.ToolExecResult, error) {
 	notes, err := client.ListNotes(ctx)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list notes")
-	}
-	binaries, err := client.ListFiles(ctx)
-	if err != nil {
-		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list files")
 	}
 
 	var entries []map[string]interface{}
@@ -70,12 +71,22 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 			"mimeType": couchdb.MimeTypeForPath(n.Path),
 		})
 	}
-	for _, f := range binaries {
-		entries = append(entries, map[string]interface{}{
-			"path":     f.Path,
-			"mtime":    f.Mtime,
-			"mimeType": f.MimeType,
-		})
+
+	if bucket != nil {
+		objects, err := bucket.List(ctx)
+		if err != nil {
+			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list bucket objects")
+		}
+		for _, o := range objects {
+			// S3's ListObjectsV2 response doesn't carry per-object Content-Type (unlike a
+			// HEAD/GetObject request, which Get/Stat use) — derive it from the extension instead
+			// of trusting o.MimeType, which is unreliable here.
+			entries = append(entries, map[string]interface{}{
+				"path":     o.Path,
+				"mtime":    o.Mtime,
+				"mimeType": couchdb.MimeTypeForPath(o.Path),
+			})
+		}
 	}
 
 	text, err := marshalResult(entries)
@@ -85,13 +96,13 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 	return domain.ToolExecResult{Text: text}, nil
 }
 
-func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncClient, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
 	path, ok := params["path"].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
 
-	if strings.HasPrefix(couchdb.MimeTypeForPath(path), "text/") {
+	if storage.IsMarkdown(path) {
 		note, err := client.ReadNote(ctx, path)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to read file")
@@ -99,14 +110,18 @@ func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncCl
 		return domain.ToolExecResult{Text: note.Content}, nil
 	}
 
-	file, err := client.ReadFile(ctx, path)
+	if bucket == nil {
+		return domain.ToolExecResult{}, user_errors.NoS3BucketLinked
+	}
+
+	obj, err := bucket.Get(ctx, path)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to read file")
 	}
-	return domain.ToolExecResult{Data: file.RawBytes, MimeType: file.MimeType, ResourcePath: file.Id}, nil
+	return domain.ToolExecResult{Data: obj.RawBytes, MimeType: obj.MimeType, ResourcePath: path}, nil
 }
 
-func (e *VaultExecutor) writeNote(ctx context.Context, client *couchdb.LiveSyncClient, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) writeFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
 	path, ok := params["path"].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
@@ -117,26 +132,50 @@ func (e *VaultExecutor) writeNote(ctx context.Context, client *couchdb.LiveSyncC
 		return domain.ToolExecResult{}, user_errors.McpContentRequired
 	}
 
-	err := client.WriteNote(ctx, path, content)
-	if err != nil {
-		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to write note")
+	if storage.IsMarkdown(path) {
+		err := client.WriteNote(ctx, path, content)
+		if err != nil {
+			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to write note")
+		}
+		return domain.ToolExecResult{Text: "File written successfully"}, nil
 	}
 
-	return domain.ToolExecResult{Text: "Note written successfully"}, nil
+	if bucket == nil {
+		return domain.ToolExecResult{}, user_errors.NoS3BucketLinked
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(content)
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "decode base64 content")
+	}
+
+	err = bucket.Put(ctx, path, decoded, couchdb.MimeTypeForPath(path))
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to write file")
+	}
+
+	return domain.ToolExecResult{Text: "File written successfully"}, nil
 }
 
-func (e *VaultExecutor) deleteFile(ctx context.Context, client *couchdb.LiveSyncClient, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) deleteFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
 	path, ok := params["path"].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
 
-	var err error
-	if strings.HasPrefix(couchdb.MimeTypeForPath(path), "text/") {
-		err = client.DeleteNote(ctx, path)
-	} else {
-		err = client.DeleteFile(ctx, path)
+	if storage.IsMarkdown(path) {
+		err := client.DeleteNote(ctx, path)
+		if err != nil {
+			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to delete file")
+		}
+		return domain.ToolExecResult{Text: "File deleted successfully"}, nil
 	}
+
+	if bucket == nil {
+		return domain.ToolExecResult{}, user_errors.NoS3BucketLinked
+	}
+
+	err := bucket.Delete(ctx, path)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to delete file")
 	}
@@ -144,7 +183,7 @@ func (e *VaultExecutor) deleteFile(ctx context.Context, client *couchdb.LiveSync
 	return domain.ToolExecResult{Text: "File deleted successfully"}, nil
 }
 
-func (e *VaultExecutor) moveFile(ctx context.Context, client *couchdb.LiveSyncClient, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) moveFile(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
 	oldPath, ok := params["old_path"].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpOldPathRequired
@@ -155,12 +194,26 @@ func (e *VaultExecutor) moveFile(ctx context.Context, client *couchdb.LiveSyncCl
 		return domain.ToolExecResult{}, user_errors.McpNewPathRequired
 	}
 
-	var err error
-	if strings.HasPrefix(couchdb.MimeTypeForPath(oldPath), "text/") {
-		err = client.MoveNote(ctx, oldPath, newPath)
-	} else {
-		err = client.MoveFile(ctx, oldPath, newPath)
+	oldIsMarkdown := storage.IsMarkdown(oldPath)
+	newIsMarkdown := storage.IsMarkdown(newPath)
+
+	if oldIsMarkdown != newIsMarkdown {
+		return domain.ToolExecResult{}, user_errors.McpCrossBackendMoveNotSupported
 	}
+
+	if oldIsMarkdown {
+		err := client.MoveNote(ctx, oldPath, newPath)
+		if err != nil {
+			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to move file")
+		}
+		return domain.ToolExecResult{Text: "File moved successfully"}, nil
+	}
+
+	if bucket == nil {
+		return domain.ToolExecResult{}, user_errors.NoS3BucketLinked
+	}
+
+	err := bucket.Move(ctx, oldPath, newPath)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to move file")
 	}
@@ -194,24 +247,52 @@ func (e *VaultExecutor) listTags(ctx context.Context, client *couchdb.LiveSyncCl
 	return domain.ToolExecResult{Text: text}, nil
 }
 
-func (e *VaultExecutor) getNoteMetadata(ctx context.Context, client *couchdb.LiveSyncClient, params map[string]interface{}) (domain.ToolExecResult, error) {
+func (e *VaultExecutor) getFileMetadata(ctx context.Context, client *couchdb.LiveSyncClient, bucket storage.BinaryStore, params map[string]interface{}) (domain.ToolExecResult, error) {
 	path, ok := params["path"].(string)
 	if !ok {
 		return domain.ToolExecResult{}, user_errors.McpPathRequired
 	}
 
-	metadata, err := client.GetNoteMetadata(ctx, path)
-	if err != nil {
-		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to get note metadata")
+	if storage.IsMarkdown(path) {
+		metadata, err := client.GetNoteMetadata(ctx, path)
+		if err != nil {
+			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to get note metadata")
+		}
+
+		metadataMap := map[string]interface{}{
+			"id":      metadata.Id,
+			"rev":     metadata.Rev,
+			"mtime":   metadata.Mtime,
+			"ctime":   metadata.Ctime,
+			"size":    metadata.Size,
+			"deleted": metadata.Deleted,
+		}
+
+		text, err := marshalResult(metadataMap)
+		if err != nil {
+			return domain.ToolExecResult{}, err
+		}
+		return domain.ToolExecResult{Text: text}, nil
 	}
 
+	if bucket == nil {
+		return domain.ToolExecResult{}, user_errors.NoS3BucketLinked
+	}
+
+	entry, err := bucket.Stat(ctx, path)
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to get file metadata")
+	}
+
+	// S3 has no revision/separate-ctime/tombstone concept: reuse mtime for ctime, leave rev
+	// empty, and deleted is always false (a delete simply removes the key, no tombstone row).
 	metadataMap := map[string]interface{}{
-		"id":      metadata.Id,
-		"rev":     metadata.Rev,
-		"mtime":   metadata.Mtime,
-		"ctime":   metadata.Ctime,
-		"size":    metadata.Size,
-		"deleted": metadata.Deleted,
+		"id":      path,
+		"rev":     "",
+		"mtime":   entry.Mtime,
+		"ctime":   entry.Mtime,
+		"size":    entry.Size,
+		"deleted": false,
 	}
 
 	text, err := marshalResult(metadataMap)
@@ -261,8 +342,8 @@ func VaultToolDefinitions() []domain.McpToolDef {
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolWriteNote,
-				Description: "Create or update a note",
+				Name:        ToolWriteFile,
+				Description: "Create or update a file. For .md/.markdown paths, content is plain text stored in CouchDB. For any other path, content must be base64-encoded and is stored in the vault's linked S3 bucket (fails if no bucket is linked).",
 				Properties: map[string]domain.ToolProperty{
 					"path":    {Type: "string"},
 					"content": {Type: "string"},
@@ -295,7 +376,7 @@ func VaultToolDefinitions() []domain.McpToolDef {
 		{
 			ApiDescription: domain.ToolApiDescription{
 				Name:        ToolMoveFile,
-				Description: "Move or rename any file. Not supported for large chunked binary files.",
+				Description: "Move or rename a file. Both old_path and new_path must be on the same backend (both .md/.markdown or both non-markdown) — moving a file across the markdown/S3 boundary is not supported in one call.",
 				Properties: map[string]domain.ToolProperty{
 					"old_path": {Type: "string"},
 					"new_path": {Type: "string"},
@@ -339,8 +420,8 @@ func VaultToolDefinitions() []domain.McpToolDef {
 		},
 		{
 			ApiDescription: domain.ToolApiDescription{
-				Name:        ToolGetNoteMetadata,
-				Description: "Get metadata for a note",
+				Name:        ToolGetFileMetadata,
+				Description: "Get metadata for a file. rev/ctime/deleted are CouchDB-specific and zero-valued (rev empty, ctime==mtime, deleted false) for S3-backed (non-markdown) files.",
 				Properties: map[string]domain.ToolProperty{
 					"path": {Type: "string"},
 				},
@@ -348,12 +429,12 @@ func VaultToolDefinitions() []domain.McpToolDef {
 			},
 			OutputSchema: domain.ToolSchema{
 				Properties: map[string]domain.ToolProperty{
-					"id":      {Type: "string", Description: "CouchDB document id"},
-					"rev":     {Type: "string", Description: "CouchDB document revision"},
+					"id":      {Type: "string", Description: "CouchDB document id, or the file path for S3-backed files"},
+					"rev":     {Type: "string", Description: "CouchDB document revision; empty for S3-backed files"},
 					"mtime":   {Type: "integer", Description: "Last modified time, unix ms"},
-					"ctime":   {Type: "integer", Description: "Creation time, unix ms"},
+					"ctime":   {Type: "integer", Description: "Creation time, unix ms; equals mtime for S3-backed files"},
 					"size":    {Type: "integer", Description: "Content size in bytes"},
-					"deleted": {Type: "boolean", Description: "Whether the note is tombstoned"},
+					"deleted": {Type: "boolean", Description: "Whether the note is tombstoned; always false for S3-backed files"},
 				},
 				Required: []string{"id", "rev", "mtime", "ctime", "size", "deleted"},
 			},

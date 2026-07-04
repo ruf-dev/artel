@@ -151,7 +151,7 @@ func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
 		"content": "# Hello\nThis is a test note from the e2e suite.",
 	}
 	callParams := map[string]any{
-		"name":      "write_note",
+		"name":      "write_file",
 		"arguments": writeArgs,
 	}
 	body := mcpCall("tools/call", callParams)
@@ -171,7 +171,7 @@ func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
 	}
 	err = json.Unmarshal(w.Body.Bytes(), &rpcResp)
 	s.Require().NoError(err)
-	s.Require().Nil(rpcResp.Error, "mcp write_note returned rpc error: %+v", rpcResp.Error)
+	s.Require().Nil(rpcResp.Error, "mcp write_file returned rpc error: %+v", rpcResp.Error)
 
 	// 8. Read notes back via notes service API
 	notes, err := s.svcs.Notes.ListNotes(userCtx, vault.Uuid)

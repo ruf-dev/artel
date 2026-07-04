@@ -45,7 +45,7 @@ func TestListConnectionsForTracts(t *testing.T) {
 		},
 	}
 
-	svc := New(nil, nil, nil, nil, nil, nil, repo)
+	svc := New(nil, nil, nil, nil, nil, nil, nil, repo)
 
 	result, err := svc.listConnectionsForTracts(context.Background(), userUuid)
 	if err != nil {

@@ -19,6 +19,7 @@ type Service interface {
 	AuthService() AuthService
 	VaultService() VaultService
 	CouchInstanceService() CouchInstanceService
+	S3InstanceService() S3InstanceService
 	AdminCouchService() AdminCouchService
 	McpService() McpService
 	SubscriptionService() SubscriptionService
@@ -59,6 +60,8 @@ type VaultService interface {
 	ListInviteLinks(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error)
 	RevokeInviteLink(ctx context.Context, inviteID uuid.UUID) error
 	AcceptInvite(ctx context.Context, token string) error
+	LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error
+	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
 }
 
 type CouchInstanceService interface {
@@ -69,6 +72,15 @@ type CouchInstanceService interface {
 	DeleteCouchInstance(ctx context.Context, id string) error
 	SetupCouchInstance(ctx context.Context, id string) error
 	GetCouchInstanceStatus(ctx context.Context, id string) (couchdb.SetupStatus, error)
+}
+
+type S3InstanceService interface {
+	RegisterS3Instance(ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool) (string, error)
+	GetS3Instance(ctx context.Context, id string) (domain.S3Instance, error)
+	ListS3Instances(ctx context.Context) ([]domain.S3Instance, error)
+	UpdateS3Instance(ctx context.Context, id, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool) error
+	DeleteS3Instance(ctx context.Context, id string) error
+	TestS3Instance(ctx context.Context, id string) error
 }
 
 type AdminCouchService interface {

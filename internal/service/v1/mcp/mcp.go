@@ -17,6 +17,7 @@ type McpServiceImpl struct {
 	vaults              repository.Vaults
 	vaultMembers        repository.VaultMembers
 	couchInstances      repository.CouchInstances
+	s3Instances         repository.S3Instances
 	mcpConnectors       repository.McpConnectorsRepo
 	mcpDefinitions      repository.McpDefinitionsRepo
 	externalConnections repository.ExternalConnectionRepo
@@ -36,6 +37,7 @@ func New(
 	vaults repository.Vaults,
 	vaultMembers repository.VaultMembers,
 	couchInstances repository.CouchInstances,
+	s3Instances repository.S3Instances,
 	mcpConnectors repository.McpConnectorsRepo,
 	mcpDefinitions repository.McpDefinitionsRepo,
 	externalConnections repository.ExternalConnectionRepo,
@@ -45,6 +47,7 @@ func New(
 		vaults:              vaults,
 		vaultMembers:        vaultMembers,
 		couchInstances:      couchInstances,
+		s3Instances:         s3Instances,
 		mcpConnectors:       mcpConnectors,
 		mcpDefinitions:      mcpDefinitions,
 		externalConnections: externalConnections,

@@ -15,8 +15,9 @@ import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast"
+import S3InstancesTab from "@/widgets/S3InstancesTab/S3InstancesTab.tsx"
 
-type Tab = "instances" | "couch_users" | "users"
+type Tab = "instances" | "couch_users" | "users" | "s3_instances"
 
 export default function AdminPage() {
     const navigate = useNavigate()
@@ -40,6 +41,11 @@ export default function AdminPage() {
             {tab === "instances" && <InstancesTab />}
             {tab === "couch_users" && <UsersTab />}
             {tab === "users" && <ArtelUsersTab />}
+            {tab === "s3_instances" && (
+                <div className={cls.ContentContainer}>
+                    <S3InstancesTab />
+                </div>
+            )}
         </div>
     )
 }
@@ -51,6 +57,7 @@ function AdminHero({tab}: {tab: Tab}) {
         instances: "CouchDB instances",
         couch_users: "CouchDB users",
         users: "Artel users",
+        s3_instances: "S3 storage",
     }
     const title = titleMap[tab]
     return (
@@ -67,6 +74,7 @@ function TabBar({tab, onTabChange}: {tab: Tab; onTabChange: (t: Tab) => void}) {
     const instancesCls = tab === "instances" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
     const couchUsersCls = tab === "couch_users" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
     const usersCls = tab === "users" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
+    const s3InstancesCls = tab === "s3_instances" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
     return (
         <div className={cls.TabBar}>
             <button type="button" className={instancesCls} onClick={() => onTabChange("instances")}>
@@ -77,6 +85,9 @@ function TabBar({tab, onTabChange}: {tab: Tab; onTabChange: (t: Tab) => void}) {
             </button>
             <button type="button" className={usersCls} onClick={() => onTabChange("users")}>
                 Users
+            </button>
+            <button type="button" className={s3InstancesCls} onClick={() => onTabChange("s3_instances")}>
+                S3 storage
             </button>
         </div>
     )

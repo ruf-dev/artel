@@ -16,11 +16,18 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 
 	items := make([]*pb.VaultItem, 0, len(vaults))
 	for _, vault := range vaults {
+		s3InstanceId := ""
+		if vault.S3InstanceUuid != nil {
+			s3InstanceId = vault.S3InstanceUuid.String()
+		}
+
 		item := &pb.VaultItem{
 			Id:                 vault.Uuid.String(),
 			Name:               vault.Name,
 			DbUrl:              vault.CouchDBURL,
 			LivesyncPassphrase: vault.LiveSyncPassphrase,
+			S3InstanceId:       s3InstanceId,
+			S3BucketName:       vault.S3BucketName,
 		}
 		items = append(items, item)
 	}

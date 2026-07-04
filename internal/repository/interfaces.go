@@ -23,6 +23,7 @@ type Repo interface {
 	Subscriptions() Subscriptions
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
+	S3Instances() S3Instances
 	UserPermissions() UserPermissionsRepo
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
@@ -76,6 +77,9 @@ type Vaults interface {
 	SetLiveSyncPassphrase(ctx context.Context, vaultID uuid.UUID, passphrase string) error
 	ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain.Vault, error)
 	Delete(ctx context.Context, vaultID uuid.UUID) error
+
+	LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error
+	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
 
 	WithTx(tx sqldb.DB) Vaults
 }
@@ -133,6 +137,16 @@ type CouchInstances interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 
 	WithTx(tx sqldb.DB) CouchInstances
+}
+
+type S3Instances interface {
+	Register(ctx context.Context, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte) (uuid.UUID, error)
+	Get(ctx context.Context, id uuid.UUID) (domain.S3Instance, error)
+	List(ctx context.Context) ([]domain.S3Instance, error)
+	Update(ctx context.Context, id uuid.UUID, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte) error
+	Delete(ctx context.Context, id uuid.UUID) error
+
+	WithTx(tx sqldb.DB) S3Instances
 }
 
 type UserPermissionsRepo interface {

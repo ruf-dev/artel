@@ -367,6 +367,70 @@
           "VaultsAPI"
         ]
       }
+    },
+    "/api/vaults/s3/link": {
+      "post": {
+        "operationId": "VaultsAPI_LinkS3Bucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsLinkS3BucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsLinkS3BucketRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/s3/unlink": {
+      "post": {
+        "operationId": "VaultsAPI_UnlinkS3Bucket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsUnlinkS3BucketResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsUnlinkS3BucketRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
     }
   },
   "definitions": {
@@ -474,8 +538,31 @@
         },
         "dbUrl": {
           "type": "string"
+        },
+        "s3InstanceId": {
+          "type": "string"
+        },
+        "s3BucketName": {
+          "type": "string"
         }
       }
+    },
+    "artel_vaultsLinkS3BucketRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "s3InstanceId": {
+          "type": "string"
+        },
+        "bucketName": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsLinkS3BucketResponse": {
+      "type": "object"
     },
     "artel_vaultsListInviteLinksRequest": {
       "type": "object",
@@ -560,6 +647,17 @@
     "artel_vaultsRevokeInviteLinkResponse": {
       "type": "object"
     },
+    "artel_vaultsUnlinkS3BucketRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsUnlinkS3BucketResponse": {
+      "type": "object"
+    },
     "artel_vaultsVaultInviteItem": {
       "type": "object",
       "properties": {
@@ -596,6 +694,12 @@
           "type": "string"
         },
         "livesyncPassphrase": {
+          "type": "string"
+        },
+        "s3InstanceId": {
+          "type": "string"
+        },
+        "s3BucketName": {
           "type": "string"
         }
       }

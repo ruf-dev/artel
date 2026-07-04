@@ -34,7 +34,7 @@ func testTract(userUuid uuid.UUID, steps []domain.TractStep) domain.Tract {
 }
 
 func TestEngine_SimpleActionRun(t *testing.T) {
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc, tracts, _ := newEngineTestService(executor)
 
 	userUuid := uuid.New()
@@ -51,7 +51,7 @@ func TestEngine_SimpleActionRun(t *testing.T) {
 }
 
 func TestEngine_ConditionThenElse(t *testing.T) {
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 
 	t.Run("then branch taken", func(t *testing.T) {
 		svc, tracts, _ := newEngineTestService(executor)
@@ -109,7 +109,7 @@ func TestEngine_ConditionThenElse(t *testing.T) {
 }
 
 func TestEngine_GroupNesting(t *testing.T) {
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc, tracts, _ := newEngineTestService(executor)
 	userUuid := uuid.New()
 
@@ -137,7 +137,7 @@ func TestEngine_GroupNesting(t *testing.T) {
 }
 
 func TestEngine_ParallelFailingLaneCancelsSiblings(t *testing.T) {
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc, tracts, _ := newEngineTestService(executor)
 	userUuid := uuid.New()
 
@@ -166,7 +166,7 @@ func TestEngine_ParallelFailingLaneCancelsSiblings(t *testing.T) {
 }
 
 func TestEngine_OutputParsing(t *testing.T) {
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc, tracts, _ := newEngineTestService(executor)
 	userUuid := uuid.New()
 
@@ -200,7 +200,7 @@ func TestEngine_OutputParsing(t *testing.T) {
 }
 
 func TestEngine_ActionFailureFailsRun(t *testing.T) {
-	executor := newFakeToolExecutor("write_note")
+	executor := newFakeToolExecutor("write_file")
 	svc, tracts, _ := newEngineTestService(executor)
 	userUuid := uuid.New()
 

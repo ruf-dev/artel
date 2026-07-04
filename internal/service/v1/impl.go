@@ -16,6 +16,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/mom"
 	"github.com/ruf-dev/artel/internal/service/v1/notes"
 	"github.com/ruf-dev/artel/internal/service/v1/prompt"
+	"github.com/ruf-dev/artel/internal/service/v1/s3instances"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
 	"github.com/ruf-dev/artel/internal/service/v1/vault"
@@ -25,6 +26,7 @@ type Services struct {
 	Auth                service.AuthService
 	Vault               service.VaultService
 	CouchInstance       service.CouchInstanceService
+	S3Instance          service.S3InstanceService
 	AdminCouch          service.AdminCouchService
 	Mcp                 service.McpService
 	Subscription        service.SubscriptionService
@@ -56,8 +58,9 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Auth:                auth.New(repo, cfg.TelegramClientID),
 		Vault:               vault.New(repo),
 		CouchInstance:       couchinstances.New(repo),
+		S3Instance:          s3instances.New(repo),
 		AdminCouch:          admincouchsvc.New(repo),
-		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.CouchInstances(), repo.McpConnectors(), repo.McpDefinitions(), repo.ExternalConnections()),
+		Mcp:                 mcp.New(repo.McpKeyRepository(), repo.Vaults(), repo.VaultMembers(), repo.CouchInstances(), repo.S3Instances(), repo.McpConnectors(), repo.McpDefinitions(), repo.ExternalConnections()),
 		Subscription:        subscription.New(repo.Subscriptions()),
 		Prompt:              prompt.New(repo.Prompts()),
 		TaskTracker:         tasktracker.New(repo.TaskTrackers()),
@@ -78,6 +81,10 @@ func (s *Services) VaultService() service.VaultService {
 
 func (s *Services) CouchInstanceService() service.CouchInstanceService {
 	return s.CouchInstance
+}
+
+func (s *Services) S3InstanceService() service.S3InstanceService {
+	return s.S3Instance
 }
 
 func (s *Services) AdminCouchService() service.AdminCouchService {
