@@ -1,0 +1,98 @@
+.DialogContainer {
+    width: clamp(360px, 34vw, 520px);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: dialogIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+@keyframes dialogIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.DialogTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+    margin-bottom: 1rem;
+}
+
+.Empty {
+    color: var(--color-fg-secondary);
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+}
+
+.ParamsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 20rem;
+    overflow-y: auto;
+}
+
+.ParamRow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ParamName {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-fg-primary);
+}
+
+.ParamDesc {
+    font-size: 0.75rem;
+    color: var(--color-fg-secondary);
+}
+
+.ParamField {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-input);
+    color: var(--color-fg-primary);
+    font-size: 0.8125rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 160ms ease;
+}
+
+.ParamField:focus {
+    border-color: var(--coral);
+}
+
+.JsonInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-input);
+    color: var(--color-fg-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    outline: none;
+    resize: vertical;
+    transition: border-color 160ms ease;
+}
+
+.JsonInput:focus {
+    border-color: var(--coral);
+}
+
+.DialogActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin-top: 1.5rem;
+}

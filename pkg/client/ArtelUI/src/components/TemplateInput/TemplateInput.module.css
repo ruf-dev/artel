@@ -1,0 +1,112 @@
+.Wrap {
+    position: relative;
+    width: 100%;
+}
+
+.InputRow {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.Input {
+    flex: 1;
+    box-sizing: border-box;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-input);
+    color: var(--color-fg-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    outline: none;
+    transition: border-color 160ms ease;
+}
+
+.Input:focus {
+    border-color: var(--coral);
+}
+
+.InputInvalid {
+    border-color: var(--color-error);
+}
+
+.AffixBtn {
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border-radius: 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+}
+
+.Dropdown {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 16rem;
+    overflow-y: auto;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.625rem;
+    box-shadow: 0 12px 32px -8px rgba(0,0,0,0.6);
+    padding: 0.375rem;
+}
+
+.Empty {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+}
+
+.Group {
+    margin-bottom: 0.25rem;
+}
+
+.GroupLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3125rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-fg-primary);
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+.GroupLabel:hover,
+.EntryActive {
+    background: var(--color-bg-hover);
+}
+
+.Entry {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.Entry:hover {
+    background: var(--color-bg-hover);
+}
+
+.EntryLabel {
+    font-family: var(--font-mono);
+    color: var(--color-fg-secondary);
+}
+
+.EntryType {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-fg-tertiary);
+}
+

@@ -1,0 +1,126 @@
+.DialogContainer {
+    width: clamp(360px, 32vw, 480px);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: dialogIn 280ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+@keyframes dialogIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.DialogTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-fg-primary);
+    margin-bottom: 1rem;
+}
+
+.List {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+.KindOption {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-light);
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 160ms ease, background 160ms ease;
+}
+
+.KindOption:hover {
+    border-color: var(--coral-border);
+    background: var(--coral-dim);
+}
+
+.KindTitle {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-fg-primary);
+}
+
+.KindDesc {
+    font-size: 0.75rem;
+    color: var(--color-fg-secondary);
+}
+
+.McpGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.McpGroupLabel {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-fg-tertiary);
+    padding: 0.25rem 0.25rem 0;
+}
+
+.ToolRow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.125rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background 140ms ease;
+}
+
+.ToolRow:hover {
+    background: var(--color-bg-hover);
+}
+
+.ToolName {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-fg-primary);
+}
+
+.ToolDesc {
+    font-size: 0.75rem;
+    color: var(--color-fg-secondary);
+}
+
+.Empty {
+    color: var(--color-fg-secondary);
+    font-size: 0.875rem;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.DialogActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.25rem;
+}
+
+.ActionsRight {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
