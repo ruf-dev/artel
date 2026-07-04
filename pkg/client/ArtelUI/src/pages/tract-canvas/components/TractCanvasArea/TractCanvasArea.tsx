@@ -1,9 +1,9 @@
-import cls from "@/widgets/TractCanvas/TractCanvasArea.module.css"
+import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.module.css"
 
-import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/processes/tractCanvasLayout.ts"
+import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 
-import TractCanvasNode, {NodeStatus} from "@/widgets/TractCanvas/TractCanvasNode.tsx"
+import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 
 interface Props {
     layout: CanvasLayout

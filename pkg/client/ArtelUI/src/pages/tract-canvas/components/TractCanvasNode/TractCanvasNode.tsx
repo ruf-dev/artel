@@ -1,6 +1,6 @@
-import cls from "@/widgets/TractCanvas/TractCanvasNode.module.css"
+import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.module.css"
 
-import {CanvasNode, NODE_WIDTH} from "@/processes/tractCanvasLayout.ts"
+import {CanvasNode, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 import {
     BranchIcon,
@@ -9,8 +9,8 @@ import {
     LayersIcon,
     ManualTriggerIcon,
     WebhookIcon,
-} from "@/components/TractIcons/TractIcons.tsx"
-import {colorForKind, iconForTool} from "@/components/TractIcons/tractIconHelpers.ts"
+} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 
 export type NodeStatus = "ok" | "err" | "running" | "idle"
 

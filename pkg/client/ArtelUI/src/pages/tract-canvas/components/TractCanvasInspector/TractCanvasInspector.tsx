@@ -1,8 +1,8 @@
 import {useState} from "react"
 
-import cls from "@/widgets/TractCanvas/TractCanvasInspector.module.css"
+import cls from "@/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.module.css"
 
-import {CanvasNode} from "@/processes/tractCanvasLayout.ts"
+import {CanvasNode} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {SchemaNode, TractCondition, TractStep, TractTool, TractTriggerSummary} from "@/processes/Tracts.ts"
 import {computeVisibleStepIds, findStepById} from "@/processes/tractTemplate.ts"
 import {hasChildren, Location, removeStepAt, replaceStep} from "@/processes/tractSteps.ts"
@@ -13,7 +13,7 @@ import Button from "@/components/shared/Button/Button.tsx"
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
-import {CloseIcon} from "@/components/TractIcons/TractIcons.tsx"
+import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import TractStepTree from "@/components/TractStepTree/TractStepTree.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
 

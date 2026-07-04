@@ -1,10 +1,10 @@
 import {useEffect} from "react"
 
-import cls from "@/widgets/TractCanvas/TractCanvasLogPanel.module.css"
+import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.module.css"
 
 import {TractRun, TractRunStep} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
-import {CloseIcon} from "@/components/TractIcons/TractIcons.tsx"
+import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import Button from "@/components/shared/Button/Button.tsx"
 
 interface Props {

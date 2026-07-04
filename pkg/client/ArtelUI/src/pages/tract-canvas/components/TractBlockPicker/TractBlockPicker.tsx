@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react"
 
-import cls from "@/components/TractBlockPicker/TractBlockPicker.module.css"
+import cls from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.module.css"
 
 import {TractTool} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
@@ -10,8 +10,8 @@ import {useDialog} from "@/app/hooks/Dialog"
 import Button from "@/components/shared/Button/Button.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
-import {BranchIcon, ForkIcon, LayersIcon} from "@/components/TractIcons/TractIcons.tsx"
-import {colorForKind, iconForTool} from "@/components/TractIcons/tractIconHelpers.ts"
+import {BranchIcon, ForkIcon, LayersIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 import type {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 
 const BUILTIN_MCP = "artel"

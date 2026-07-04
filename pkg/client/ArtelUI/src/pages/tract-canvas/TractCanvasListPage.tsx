@@ -10,7 +10,7 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import Button from "@/components/shared/Button/Button.tsx"
-import TractCanvasCard from "@/widgets/TractCanvasCard/TractCanvasCard.tsx"
+import TractCanvasCard from "@/pages/tract-canvas/components/TractCanvasCard/TractCanvasCard.tsx"
 
 export default function TractCanvasListPage() {
     const navigate = useNavigate()

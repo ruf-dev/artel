@@ -1,4 +1,4 @@
-import cls from "@/widgets/TractCanvasCard/TractCanvasCard.module.css"
+import cls from "@/pages/tract-canvas/components/TractCanvasCard/TractCanvasCard.module.css"
 
 import {Tract, TractLastRun} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
@@ -7,7 +7,7 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
 import Button from "@/components/shared/Button/Button.tsx"
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
-import {ChevronRightIcon, ManualTriggerIcon, TrashIcon, WebhookIcon} from "@/components/TractIcons/TractIcons.tsx"
+import {ChevronRightIcon, ManualTriggerIcon, TrashIcon, WebhookIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 
 interface Props {
     tract: Tract

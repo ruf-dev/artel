@@ -11,17 +11,17 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import Button from "@/components/shared/Button/Button.tsx"
-import TractBlockPicker from "@/components/TractBlockPicker/TractBlockPicker.tsx"
-import {PlayIcon} from "@/components/TractIcons/TractIcons.tsx"
+import TractBlockPicker from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx"
+import {PlayIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 
-import TractCanvasArea from "@/widgets/TractCanvas/TractCanvasArea.tsx"
-import TractCanvasInspector from "@/widgets/TractCanvas/TractCanvasInspector.tsx"
-import TractCanvasLogPanel from "@/widgets/TractCanvas/TractCanvasLogPanel.tsx"
-import {NodeStatus} from "@/widgets/TractCanvas/TractCanvasNode.tsx"
+import TractCanvasArea from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx"
+import TractCanvasInspector from "@/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx"
+import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
+import {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 
 import {buildStepFromDraft, collectAllStepIds, insertStepAt, Location, ROOT_LOCATION} from "@/processes/tractSteps.ts"
-import {layoutTract, TRIGGER_NODE_ID} from "@/processes/tractCanvasLayout.ts"
+import {layoutTract, TRIGGER_NODE_ID} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))

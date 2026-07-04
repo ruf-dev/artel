@@ -12,7 +12,7 @@ import {
     SearchIcon,
     TrashIcon,
     WrenchIcon,
-} from "@/components/TractIcons/TractIcons.tsx"
+} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 
 /** iconForTool picks a reasonable icon for an action step from its mcp/tool name — a heuristic
  * since real MoM tools don't carry an icon/category of their own. */
