@@ -7,9 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 // resolver renders template strings against one run's context: the trigger payload and the
@@ -35,6 +34,7 @@ func (r *resolver) render(s string) (interface{}, error) {
 	}
 
 	var sb strings.Builder
+
 	i := 0
 	for i < len(s) {
 		if isEscapedOpen(s, i) {
@@ -42,8 +42,10 @@ func (r *resolver) render(s string) (interface{}, error) {
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated ${{ ... }} sequence")
 			}
+
 			sb.WriteString(s[i : i+end+2])
 			i += end + 2
+
 			continue
 		}
 
@@ -52,19 +54,26 @@ func (r *resolver) render(s string) (interface{}, error) {
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated {{ ... }} token")
 			}
+
 			expr := strings.TrimSpace(s[i+2 : i+end])
+
 			value, err := r.eval(expr)
 			if err != nil {
 				return nil, err
 			}
+
 			sb.WriteString(stringify(value))
+
 			i += end + 2
+
 			continue
 		}
 
 		sb.WriteByte(s[i])
+
 		i++
 	}
+
 	return sb.String(), nil
 }
 
@@ -74,6 +83,7 @@ func (r *resolver) render(s string) (interface{}, error) {
 // have no visibility/schema implications. Used by validation, not execution.
 func extractRefs(s string) ([]string, error) {
 	var refs []string
+
 	i := 0
 	for i < len(s) {
 		if isEscapedOpen(s, i) {
@@ -81,7 +91,9 @@ func extractRefs(s string) ([]string, error) {
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated ${{ ... }} sequence")
 			}
+
 			i += end + 2
+
 			continue
 		}
 
@@ -90,20 +102,25 @@ func extractRefs(s string) ([]string, error) {
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated {{ ... }} token")
 			}
+
 			expr := strings.TrimSpace(s[i+2 : i+end])
 			if !strings.HasPrefix(expr, "$") {
 				ref := expr
 				if strings.HasPrefix(expr, "length(") && strings.HasSuffix(expr, ")") {
 					ref = strings.TrimSpace(expr[len("length(") : len(expr)-1])
 				}
+
 				refs = append(refs, ref)
 			}
+
 			i += end + 2
+
 			continue
 		}
 
 		i++
 	}
+
 	return refs, nil
 }
 
@@ -121,10 +138,12 @@ func singleToken(trimmed string) (string, bool) {
 	if !strings.HasPrefix(trimmed, "{{") || !strings.HasSuffix(trimmed, "}}") {
 		return "", false
 	}
+
 	inner := trimmed[2 : len(trimmed)-2]
 	if strings.Contains(inner, "{{") || strings.Contains(inner, "}}") {
 		return "", false
 	}
+
 	return strings.TrimSpace(inner), true
 }
 
@@ -140,10 +159,12 @@ func (r *resolver) eval(expr string) (interface{}, error) {
 
 	if strings.HasPrefix(expr, "length(") && strings.HasSuffix(expr, ")") {
 		inner := strings.TrimSpace(expr[len("length(") : len(expr)-1])
+
 		value, err := r.resolveRef(inner)
 		if err != nil {
 			return nil, err
 		}
+
 		return lengthOf(value)
 	}
 
@@ -157,6 +178,7 @@ func (r *resolver) evalVar(expr string) (interface{}, error) {
 		if now.IsZero() {
 			now = time.Now()
 		}
+
 		return now.Format(time.RFC3339), nil
 	default:
 		return nil, rerrors.Wrap(user_errors.TractUnknownTemplateVar, expr)
@@ -177,6 +199,7 @@ func (r *resolver) resolveRef(ref string) (interface{}, error) {
 		if !ok {
 			return nil, rerrors.Wrap(user_errors.TractStepNotFound, base)
 		}
+
 		root = value
 	}
 
@@ -200,6 +223,7 @@ func splitRef(ref string) (string, []pathSegment, error) {
 	for i < len(ref) && ref[i] != '.' && ref[i] != '[' {
 		i++
 	}
+
 	base := ref[:i]
 	if base == "" {
 		return "", nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "reference missing base identifier: "+ref)
@@ -209,24 +233,29 @@ func splitRef(ref string) (string, []pathSegment, error) {
 	if err != nil {
 		return "", nil, err
 	}
+
 	return base, segments, nil
 }
 
 func parsePathSegments(rest string) ([]pathSegment, error) {
 	var segments []pathSegment
+
 	i := 0
 	for i < len(rest) {
 		switch rest[i] {
 		case '.':
 			i++
 			start := i
+
 			for i < len(rest) && rest[i] != '.' && rest[i] != '[' {
 				i++
 			}
+
 			name := rest[start:i]
 			if name == "" {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "empty path segment in: "+rest)
 			}
+
 			segments = append(segments, pathSegment{field: name})
 
 		case '[':
@@ -234,11 +263,14 @@ func parsePathSegments(rest string) ([]pathSegment, error) {
 			if end == -1 {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unterminated [ index in: "+rest)
 			}
+
 			numStr := rest[i+1 : i+end]
+
 			idx, err := strconv.Atoi(numStr)
 			if err != nil {
 				return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "non-numeric index in: "+rest)
 			}
+
 			segments = append(segments, pathSegment{index: idx, isIndex: true})
 			i += end + 1
 
@@ -246,21 +278,26 @@ func parsePathSegments(rest string) ([]pathSegment, error) {
 			return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "unexpected character in path: "+rest)
 		}
 	}
+
 	return segments, nil
 }
 
 func navigate(value interface{}, segments []pathSegment) (interface{}, error) {
 	cur := value
+
 	for _, seg := range segments {
 		if seg.isIndex {
 			arr, ok := cur.([]interface{})
 			if !ok {
 				return nil, rerrors.Wrap(user_errors.TractStepNotFound, "index access on a non-array value")
 			}
+
 			if seg.index < 0 || seg.index >= len(arr) {
 				return nil, rerrors.Wrap(user_errors.TractStepNotFound, "index out of range")
 			}
+
 			cur = arr[seg.index]
+
 			continue
 		}
 
@@ -268,12 +305,15 @@ func navigate(value interface{}, segments []pathSegment) (interface{}, error) {
 		if !ok {
 			return nil, rerrors.Wrap(user_errors.TractStepNotFound, "field access on a non-object value: "+seg.field)
 		}
+
 		fieldVal, ok := m[seg.field]
 		if !ok {
 			return nil, rerrors.Wrap(user_errors.TractStepNotFound, "field not found: "+seg.field)
 		}
+
 		cur = fieldVal
 	}
+
 	return cur, nil
 }
 
@@ -309,6 +349,7 @@ func stringify(value interface{}) string {
 		if err != nil {
 			return fmt.Sprintf("%v", v)
 		}
+
 		return string(data)
 	}
 }

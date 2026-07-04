@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*pb.GetVault_Response, error) {
@@ -32,5 +31,6 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*p
 		S3InstanceId: s3InstanceId,
 		S3BucketName: vault.S3BucketName,
 	}
+
 	return resp, nil
 }

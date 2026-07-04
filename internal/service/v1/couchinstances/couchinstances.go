@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -32,6 +31,7 @@ func (s *Service) RegisterCouchInstance(ctx context.Context, url, username, pass
 		User:     username,
 		Password: password,
 	}
+
 	client, err := couchdb.New(cfg)
 	if err != nil {
 		return "", rerrors.Wrap(err, "creating couch client")
@@ -112,6 +112,7 @@ func (s *Service) SetupCouchInstance(ctx context.Context, id string) error {
 		User:     instance.Username,
 		Password: instance.Password,
 	}
+
 	client, err := couchdb.New(cfg)
 	if err != nil {
 		return rerrors.Wrap(err, "creating couch client")
@@ -141,6 +142,7 @@ func (s *Service) GetCouchInstanceStatus(ctx context.Context, id string) (couchd
 		User:     instance.Username,
 		Password: instance.Password,
 	}
+
 	client, err := couchdb.New(cfg)
 	if err != nil {
 		return couchdb.SetupStatus{}, rerrors.Wrap(err, "creating couch client")

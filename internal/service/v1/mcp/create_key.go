@@ -8,12 +8,11 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name string) (rawToken string, key domain.McpKey, err error) {
@@ -25,6 +24,7 @@ func (s *McpServiceImpl) CreateKey(ctx context.Context, vaultID uuid.UUID, name 
 	keyID := uuid.New()
 
 	secretBytes := make([]byte, 16)
+
 	_, err = rand.Read(secretBytes)
 	if err != nil {
 		return "", domain.McpKey{}, rerrors.Wrap(err, "generate secret bytes")

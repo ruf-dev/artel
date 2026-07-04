@@ -9,13 +9,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
+	"go.redsock.ru/rerrors"
 )
 
 const (
@@ -39,15 +38,18 @@ func New(externalConns repository.ExternalConnectionRepo, momSvc service.MomServ
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+
 		return
 	}
 
 	ctx := r.Context()
 
 	rawId := strings.TrimPrefix(r.URL.Path, pathPrefix)
+
 	exConnId, err := uuid.Parse(rawId)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+
 		return
 	}
 
@@ -56,29 +58,35 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		wrappedErr := rerrors.Wrap(user_errors.GitlabWebhookConnectionNotFound, "error loading external connection")
 		log.Error().Err(wrappedErr).Str("external_connection_id", exConnId.String()).Msg("gitlab webhook: connection lookup failed")
 		w.WriteHeader(http.StatusNotFound)
+
 		return
 	}
 
 	if exConn.Provider != domain.ProviderGitlab {
 		log.Error().Err(user_errors.GitlabWebhookConnectionNotFound).Str("external_connection_id", exConnId.String()).Msg("gitlab webhook: connection is not a gitlab connection")
 		w.WriteHeader(http.StatusNotFound)
+
 		return
 	}
 
 	var creds domain.GitlabCredentials
+
 	err = json.Unmarshal(exConn.CredentialsJSON, &creds)
 	if err != nil {
 		wrappedErr := rerrors.Wrap(user_errors.GitlabWebhookConnectionNotFound, "error unmarshalling gitlab credentials")
 		log.Error().Err(wrappedErr).Str("external_connection_id", exConnId.String()).Msg("gitlab webhook: invalid credentials")
 		w.WriteHeader(http.StatusNotFound)
+
 		return
 	}
 
 	token := r.Header.Get("X-Gitlab-Token")
+
 	secretMatches := creds.WebhookSecret != "" && subtle.ConstantTimeCompare([]byte(token), []byte(creds.WebhookSecret)) == 1
 	if !secretMatches {
 		log.Warn().Str("external_connection_id", exConnId.String()).Msg(user_errors.GitlabWebhookSecretMismatch.Error())
 		w.WriteHeader(http.StatusUnauthorized)
+
 		return
 	}
 
@@ -88,10 +96,12 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer utils.CloseWithLog(r.Body, "gitlab webhook request body")
 
 	limitedBody := io.LimitReader(r.Body, maxBodyBytes)
+
 	body, err := io.ReadAll(limitedBody)
 	if err != nil {
 		log.Error().Err(err).Str("external_connection_id", exConnId.String()).Msg("gitlab webhook: failed to read body")
 		w.WriteHeader(http.StatusOK)
+
 		return
 	}
 
@@ -99,6 +109,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(payloadPreview) > loggedPayloadBytes {
 		payloadPreview = payloadPreview[:loggedPayloadBytes]
 	}
+
 	log.Debug().Str("external_connection_id", exConnId.String()).Str("event", event).Bytes("payload_preview", payloadPreview).Msg("gitlab webhook: payload received")
 
 	w.WriteHeader(http.StatusOK)

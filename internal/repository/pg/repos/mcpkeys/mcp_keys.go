@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type McpKeyRepo struct {
@@ -28,6 +27,7 @@ func (r *McpKeyRepo) CreateMcpKey(ctx context.Context, vaultID, userID, keyID uu
 		KeyHash:    keyHash,
 		KeyPreview: keyPreview,
 	}
+
 	row, err := r.q.CreateMcpKey(ctx, params)
 	if err != nil {
 		return domain.McpKey{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "store mcp key")
@@ -46,6 +46,7 @@ func (r *McpKeyRepo) ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) 
 	for _, row := range rows {
 		keys = append(keys, toMcpKey(row))
 	}
+
 	return keys, nil
 }
 
@@ -59,6 +60,7 @@ func (r *McpKeyRepo) ListMcpKeysByUser(ctx context.Context, userUuid uuid.UUID) 
 	for _, row := range rows {
 		keys = append(keys, toMcpKey(row))
 	}
+
 	return keys, nil
 }
 
@@ -81,6 +83,7 @@ func (r *McpKeyRepo) ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) (
 	for _, row := range rows {
 		keys = append(keys, toMcpKey(row))
 	}
+
 	return keys, nil
 }
 
@@ -89,6 +92,7 @@ func (r *McpKeyRepo) RevokeMcpKey(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "revoke mcp key")
 	}
+
 	return nil
 }
 
@@ -101,6 +105,7 @@ func (r *McpKeyRepo) SetMcpKeyAccess(ctx context.Context, keyUuid, userUuid, vau
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "set mcp key access")
 	}
+
 	return nil
 }
 
@@ -109,6 +114,7 @@ func (r *McpKeyRepo) TouchLastAccessed(ctx context.Context, keyUuid uuid.UUID) e
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "touch mcp key last accessed")
 	}
+
 	return nil
 }
 
@@ -125,8 +131,10 @@ func toMcpKey(row artel_q.McpKey) domain.McpKey {
 	if row.RevokedAt.Valid {
 		key.RevokedAt = &row.RevokedAt.Time
 	}
+
 	if row.LastAccessedAt.Valid {
 		key.LastAccessedAt = &row.LastAccessedAt.Time
 	}
+
 	return key
 }

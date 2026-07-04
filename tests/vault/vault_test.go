@@ -7,16 +7,16 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/ruf-dev/artel/internal/clients/couchdb"
 )
 
 func envOrDefault(key, def string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
 	}
+
 	return def
 }
 
@@ -30,13 +30,15 @@ func TestVaultDeletion(t *testing.T) {
 }
 
 func (s *VaultDeletionSuite) SetupSuite() {
-	s.admin = couchdb.New(couchdb.Config{
+	admin, err := couchdb.New(couchdb.Config{
 		BaseURL:  envOrDefault("COUCH_URL", "http://localhost:15985"),
 		User:     envOrDefault("COUCH_USER", "admin"),
 		Password: envOrDefault("COUCH_PASS", "admin"),
 	})
+	s.Require().NoError(err)
+	s.admin = admin
 
-	err := s.admin.Setup(context.Background())
+	err = s.admin.Setup(context.Background())
 	s.Require().NoError(err, "CouchDB system setup failed — is the container running?")
 }
 

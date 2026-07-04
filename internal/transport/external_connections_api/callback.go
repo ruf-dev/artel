@@ -14,10 +14,13 @@ type exchangeRequest struct {
 
 func (e *ExternalConnectionsImpl) HandleGoogleExchange(w http.ResponseWriter, r *http.Request) {
 	var req exchangeRequest
+
 	decoder := json.NewDecoder(r.Body)
+
 	err := decoder.Decode(&req)
 	if err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
+
 		return
 	}
 
@@ -25,6 +28,7 @@ func (e *ExternalConnectionsImpl) HandleGoogleExchange(w http.ResponseWriter, r 
 	if err != nil {
 		log.Ctx(r.Context()).Error().Err(err).Msg("google oauth exchange failed")
 		http.Error(w, "exchange failed", http.StatusInternalServerError)
+
 		return
 	}
 

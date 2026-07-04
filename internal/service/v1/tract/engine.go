@@ -46,12 +46,14 @@ func (rs *runState) snapshotResolver() *resolver {
 	for k, v := range rs.outputs {
 		outputsCopy[k] = v
 	}
+
 	return &resolver{trigger: rs.triggerPayload, outputs: outputsCopy}
 }
 
 func (rs *runState) setOutput(stepId string, value interface{}) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
+
 	rs.outputs[stepId] = value
 }
 
@@ -77,6 +79,7 @@ func (s *Service) StartRun(ctx context.Context, tract domain.Tract, payload json
 	}
 
 	var triggerPayload interface{}
+
 	err = json.Unmarshal(payload, &triggerPayload)
 	if err != nil {
 		triggerPayload = map[string]interface{}{}
@@ -93,6 +96,7 @@ func (s *Service) StartRun(ctx context.Context, tract domain.Tract, payload json
 
 	finalStatus := domain.TractRunDone
 	errMsg := ""
+
 	if runErr != nil {
 		finalStatus = domain.TractRunFailed
 		errMsg = runErr.Error()
@@ -106,6 +110,7 @@ func (s *Service) StartRun(ctx context.Context, tract domain.Tract, payload json
 
 	run.Status = finalStatus
 	run.Error = errMsg
+
 	return run, runErr
 }
 
@@ -116,13 +121,14 @@ func (s *Service) executeSteps(ctx context.Context, state *runState, steps []dom
 			return err
 		}
 	}
+
 	return nil
 }
 
 func (s *Service) executeStep(ctx context.Context, state *runState, step domain.TractStep) error {
 	select {
 	case <-ctx.Done():
-		return ctx.Err()
+		return rerrors.Wrap(ctx.Err())
 	default:
 	}
 
@@ -161,6 +167,7 @@ func (s *Service) executeAction(ctx context.Context, state *runState, step domai
 		StepType: step.Type,
 		Input:    inputJSON,
 	}
+
 	insertedStep, err := s.tracts.InsertRunStep(ctx, runStep)
 	if err != nil {
 		return rerrors.Wrap(err, "error inserting run step: "+step.Id)
@@ -172,10 +179,12 @@ func (s *Service) executeAction(ctx context.Context, state *runState, step domai
 		if finishErr != nil {
 			log.Error().Err(finishErr).Str("step_id", step.Id).Msg("error updating failed run step")
 		}
+
 		return rerrors.Wrap(err, "error executing tool for step: "+step.Id)
 	}
 
 	output := parseToolOutput(resultText)
+
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		return rerrors.Wrap(err, "error marshaling step output: "+step.Id)
@@ -187,18 +196,22 @@ func (s *Service) executeAction(ctx context.Context, state *runState, step domai
 	}
 
 	state.setOutput(step.Id, output)
+
 	return nil
 }
 
 func renderParams(rslv *resolver, params map[string]string) (map[string]interface{}, error) {
 	rendered := make(map[string]interface{}, len(params))
+
 	for key, value := range params {
 		result, err := rslv.render(value)
 		if err != nil {
 			return nil, err
 		}
+
 		rendered[key] = result
 	}
+
 	return rendered, nil
 }
 
@@ -207,18 +220,29 @@ func renderParams(rslv *resolver, params map[string]string) (map[string]interfac
 // webhook-triggered runs, which have no user_context.
 func (s *Service) executeTool(ctx context.Context, tract domain.Tract, step domain.TractStep, params map[string]interface{}) (string, error) {
 	if step.Mcp == builtinMcpName {
-		return s.toolExecutor.ExecuteBuiltinTool(ctx, tract.UserUuid, step.Tool, params)
+		res, err := s.toolExecutor.ExecuteBuiltinTool(ctx, tract.UserUuid, step.Tool, params)
+		if err != nil {
+			return "", rerrors.Wrap(err, "error executing builtin tool: "+step.Tool)
+		}
+
+		return res, nil
 	}
 
 	conn, err := s.externalConns.GetByID(ctx, step.ConnectionUuid)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting external connection")
 	}
+
 	if conn.UserUuid != tract.UserUuid {
 		return "", rerrors.Wrap(user_errors.TractConnectionNotOwned, step.Id)
 	}
 
-	return s.toolExecutor.ExecuteMomTool(ctx, step.ConnectionUuid, step.Mcp, step.Tool, params)
+	res, err := s.toolExecutor.ExecuteMomTool(ctx, step.ConnectionUuid, step.Mcp, step.Tool, params)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error executing mom tool: "+step.Id)
+	}
+
+	return res, nil
 }
 
 // parseToolOutput stores a tool's result as parsed JSON when it is valid JSON, or wraps it in
@@ -226,10 +250,12 @@ func (s *Service) executeTool(ctx context.Context, tract domain.Tract, step doma
 // resolvable by later steps' templates.
 func parseToolOutput(text string) interface{} {
 	var parsed interface{}
+
 	err := json.Unmarshal([]byte(text), &parsed)
 	if err != nil {
 		return map[string]interface{}{"raw": text}
 	}
+
 	return parsed
 }
 
@@ -244,12 +270,15 @@ func (s *Service) executeCondition(ctx context.Context, state *runState, step do
 
 	rendered := make([]renderedCondition, len(step.Conditions))
 	overallResult := true
+
 	for i, cond := range step.Conditions {
 		result, left, right, err := evaluate(cond, rslv)
 		if err != nil {
 			return rerrors.Wrap(err, "error evaluating condition: "+step.Id)
 		}
+
 		rendered[i] = renderedCondition{Left: left, Op: cond.Op, Right: right}
+
 		if !result {
 			overallResult = false
 		}
@@ -262,12 +291,14 @@ func (s *Service) executeCondition(ctx context.Context, state *runState, step do
 
 	branch := branchElse
 	branchSteps := step.Else
+
 	if overallResult {
 		branch = branchThen
 		branchSteps = step.Then
 	}
 
 	output := map[string]interface{}{"result": overallResult, "branch": branch}
+
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
 		return rerrors.Wrap(err, "error marshaling condition output: "+step.Id)
@@ -280,6 +311,7 @@ func (s *Service) executeCondition(ctx context.Context, state *runState, step do
 		StepType: step.Type,
 		Input:    inputJSON,
 	}
+
 	insertedStep, err := s.tracts.InsertRunStep(ctx, runStep)
 	if err != nil {
 		return rerrors.Wrap(err, "error inserting condition run step: "+step.Id)
@@ -303,6 +335,7 @@ func (s *Service) executeParallel(ctx context.Context, state *runState, step dom
 
 	for _, lane := range step.Steps {
 		lane := lane
+
 		group.Go(func() error {
 			return s.executeStep(groupCtx, state, lane)
 		})
@@ -312,5 +345,6 @@ func (s *Service) executeParallel(ctx context.Context, state *runState, step dom
 	if err != nil {
 		return rerrors.Wrap(err, "error in parallel step: "+step.Id)
 	}
+
 	return nil
 }

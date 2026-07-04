@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -24,6 +23,7 @@ func (s *Service) ListUsers(ctx context.Context, req domain.ListUsersReq) ([]dom
 	if err != nil {
 		return nil, 0, rerrors.Wrap(err, "error listing users")
 	}
+
 	return users, total, nil
 }
 
@@ -32,6 +32,7 @@ func (s *Service) GetUser(ctx context.Context, userUuid uuid.UUID) (domain.UserD
 	if err != nil {
 		return domain.UserDetails{}, rerrors.Wrap(err, "error getting user details")
 	}
+
 	return details, nil
 }
 
@@ -40,5 +41,6 @@ func (s *Service) GetUserSessions(ctx context.Context, userUuid uuid.UUID) ([]do
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error getting user sessions")
 	}
+
 	return sessions, nil
 }

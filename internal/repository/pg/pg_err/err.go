@@ -5,9 +5,8 @@ import (
 
 	"github.com/lib/pq"
 	"github.com/lib/pq/pqerror"
-	errors "go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	errors "go.redsock.ru/rerrors"
 )
 
 func UnwrapPgErr(err error) error {

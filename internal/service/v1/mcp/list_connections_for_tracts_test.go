@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-
 	"github.com/ruf-dev/artel/internal/domain"
 )
 
@@ -53,6 +52,7 @@ func TestListConnectionsForTracts(t *testing.T) {
 	}
 
 	var rows []map[string]string
+
 	err = json.Unmarshal([]byte(result.Text), &rows)
 	if err != nil {
 		t.Fatalf("error unmarshaling result: %v", err)

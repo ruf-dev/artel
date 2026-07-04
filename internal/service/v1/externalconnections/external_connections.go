@@ -13,9 +13,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/oauth2"
-
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
@@ -23,6 +20,8 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/oauth2"
 )
 
 const googleUserInfoURL = "https://www.googleapis.com/oauth2/v2/userinfo"
@@ -88,6 +87,7 @@ func (s *Service) InitiateGoogleOAuth(ctx context.Context, origin string) (strin
 	cfgCopy := *s.oauthCfg
 	cfgCopy.RedirectURL = redirectURL
 	authURL := cfgCopy.AuthCodeURL(state, oauth2.AccessTypeOffline)
+
 	return authURL, nil
 }
 
@@ -111,10 +111,12 @@ func (s *Service) HandleGoogleOAuthCallback(ctx context.Context, code string, st
 	}
 
 	httpClient := cfgCopy.Client(ctx, token)
+
 	resp, err := httpClient.Get(googleUserInfoURL)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error fetching google userinfo")
 	}
+
 	defer utils.CloseWithLog(resp.Body, "google userinfo response")
 
 	body, err := io.ReadAll(resp.Body)
@@ -123,6 +125,7 @@ func (s *Service) HandleGoogleOAuthCallback(ctx context.Context, code string, st
 	}
 
 	var userInfo googleUserInfo
+
 	err = json.Unmarshal(body, &userInfo)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing google userinfo")
@@ -143,6 +146,7 @@ func (s *Service) HandleGoogleOAuthCallback(ctx context.Context, code string, st
 	}
 
 	meta := domain.GoogleConnectionMeta{Email: userInfo.Email, Scopes: scope}
+
 	metaJSON, err := json.Marshal(meta)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error marshaling google connection meta")
@@ -179,6 +183,7 @@ func (s *Service) DisconnectProvider(ctx context.Context, provider string) error
 	if err != nil {
 		return rerrors.Wrap(err, "error disconnecting provider")
 	}
+
 	return nil
 }
 
@@ -194,10 +199,12 @@ func (s *Service) ListConnections(ctx context.Context) ([]domain.ExternalConnect
 	}
 
 	metas := make([]domain.ExternalConnectionMeta, len(conns))
+
 	for i, conn := range conns {
 		displayName := extractDisplayName(conn)
 		metas[i] = toMeta(conn, displayName)
 	}
+
 	return metas, nil
 }
 
@@ -214,6 +221,7 @@ func (s *Service) GetGoogleClient(ctx context.Context) (*googleapi.Client, error
 
 	_ = conn
 	client := googleapi.New(ctx, creds, s.oauthCfg)
+
 	return client, nil
 }
 
@@ -241,6 +249,7 @@ func (s *Service) AddSpreadsheet(ctx context.Context, spreadsheetId string, name
 	if err != nil {
 		return domain.McpSpreadsheet{}, rerrors.Wrap(err, "error getting google connection")
 	}
+
 	if !result.Valid {
 		return domain.McpSpreadsheet{}, user_errors.GoogleNotConnected
 	}
@@ -302,6 +311,7 @@ func (s *Service) AddEmailConnection(ctx context.Context, email, imapHost string
 		Username: email,
 		Password: password,
 	}
+
 	credJSON, err := json.Marshal(creds)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal email credentials")
@@ -310,6 +320,7 @@ func (s *Service) AddEmailConnection(ctx context.Context, email, imapHost string
 	type emailMeta struct {
 		Username string `json:"username"`
 	}
+
 	metaJSON, err := json.Marshal(emailMeta{Username: email})
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal email meta")
@@ -351,6 +362,7 @@ func (s *Service) AddGitlabConnection(ctx context.Context, personalAccessToken, 
 		PersonalAccessToken: personalAccessToken,
 		InstanceUrl:         normalizedInstanceUrl,
 	}
+
 	credJSON, err := json.Marshal(creds)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab credentials")
@@ -361,6 +373,7 @@ func (s *Service) AddGitlabConnection(ctx context.Context, personalAccessToken, 
 		InstanceUrl:      normalizedInstanceUrl,
 		WebhookSecretSet: "false",
 	}
+
 	metaJSON, err := json.Marshal(meta)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab meta")
@@ -392,6 +405,7 @@ func (s *Service) SetGitlabWebhookSecret(ctx context.Context, webhookSecret stri
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error getting gitlab connection")
 	}
+
 	if !result.Valid {
 		return domain.ExternalConnectionMeta{}, user_errors.GitlabConnectionNotFound
 	}
@@ -399,10 +413,12 @@ func (s *Service) SetGitlabWebhookSecret(ctx context.Context, webhookSecret stri
 	conn := result.V
 
 	var creds domain.GitlabCredentials
+
 	err = json.Unmarshal(conn.CredentialsJSON, &creds)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing gitlab credentials")
 	}
+
 	creds.WebhookSecret = webhookSecret
 
 	credJSON, err := json.Marshal(creds)
@@ -411,10 +427,12 @@ func (s *Service) SetGitlabWebhookSecret(ctx context.Context, webhookSecret stri
 	}
 
 	var meta gitlabConnectionMeta
+
 	err = json.Unmarshal(conn.Metadata, &meta)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing gitlab meta")
 	}
+
 	meta.WebhookSecretSet = "true"
 
 	metaJSON, err := json.Marshal(meta)
@@ -447,9 +465,11 @@ func normalizeGitlabInstanceURL(instanceUrl string) (string, error) {
 	if err != nil {
 		return "", rerrors.Wrap(user_errors.InvalidInstanceURL, "error parsing instance url")
 	}
+
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
 		return "", user_errors.InvalidInstanceURL
 	}
+
 	if isLocalGitlabHost(parsed.Hostname()) {
 		return "", user_errors.InvalidInstanceURL
 	}
@@ -479,6 +499,7 @@ func (s *Service) validateGitlabToken(ctx context.Context, instanceUrl, personal
 	if err != nil {
 		return "", rerrors.Wrap(err, "error building gitlab validation request")
 	}
+
 	req.Header.Set("PRIVATE-TOKEN", personalAccessToken)
 
 	resp, err := gitlabValidationClient.Do(req)
@@ -497,6 +518,7 @@ func (s *Service) validateGitlabToken(ctx context.Context, instanceUrl, personal
 	}
 
 	var userInfo gitlabUserInfo
+
 	err = json.Unmarshal(body, &userInfo)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error parsing gitlab validation response")
@@ -513,6 +535,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 	if err != nil {
 		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error getting google connection")
 	}
+
 	if !result.Valid {
 		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, user_errors.GoogleNotConnected
 	}
@@ -520,6 +543,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 	conn := result.V
 
 	var creds domain.GoogleOAuthCredentials
+
 	err = json.Unmarshal(conn.CredentialsJSON, &creds)
 	if err != nil {
 		return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error parsing google credentials")
@@ -534,6 +558,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 		}
 
 		tokenSource := s.oauthCfg.TokenSource(ctx, existingToken)
+
 		freshToken, err := tokenSource.Token()
 		if err != nil {
 			return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error refreshing google token")
@@ -543,6 +568,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 			creds.AccessToken = freshToken.AccessToken
 			creds.Expiry = freshToken.Expiry
 			creds.TokenType = freshToken.TokenType
+
 			if freshToken.RefreshToken != "" {
 				creds.RefreshToken = freshToken.RefreshToken
 			}
@@ -553,6 +579,7 @@ func (s *Service) freshGoogleCreds(ctx context.Context, userUuid uuid.UUID) (dom
 			}
 
 			conn.CredentialsJSON = json.RawMessage(credJSON)
+
 			conn, err = s.connections.Upsert(ctx, conn)
 			if err != nil {
 				return domain.GoogleOAuthCredentials{}, domain.ExternalConnection{}, rerrors.Wrap(err, "error storing refreshed credentials")
@@ -579,11 +606,14 @@ func extractDisplayName(conn domain.ExternalConnection) string {
 	if conn.Metadata == nil {
 		return ""
 	}
+
 	var meta domain.GoogleConnectionMeta
+
 	err := json.Unmarshal(conn.Metadata, &meta)
 	if err != nil {
 		return ""
 	}
+
 	return meta.Email
 }
 
@@ -592,14 +622,17 @@ func (s *Service) ListMailServerSuggestions(ctx context.Context, domainPrefix st
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mail server suggestions")
 	}
+
 	return suggestions, nil
 }
 
 func randomHex(n int) string {
 	b := make([]byte, n)
+
 	_, err := rand.Read(b)
 	if err != nil {
 		panic(err)
 	}
+
 	return hex.EncodeToString(b)
 }

@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) listConnectionsForTracts(ctx context.Context, userUuid uuid.UUID) (domain.ToolExecResult, error) {
@@ -17,6 +16,7 @@ func (s *McpServiceImpl) listConnectionsForTracts(ctx context.Context, userUuid 
 	}
 
 	rows := make([]map[string]string, 0, len(conns))
+
 	for _, c := range conns {
 		row := map[string]string{
 			"uuid":     c.Uuid.String(),

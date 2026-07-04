@@ -5,11 +5,10 @@ import (
 	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -34,6 +33,7 @@ func (r *Repo) List(ctx context.Context, params repository.ListPromptsParams) ([
 	if params.Limit > 0 {
 		base = base.Limit(uint64(params.Limit))
 	}
+
 	base = base.Offset(uint64(params.Offset))
 
 	countSQL, countArgs, err := countBase.ToSql()
@@ -42,6 +42,7 @@ func (r *Repo) List(ctx context.Context, params repository.ListPromptsParams) ([
 	}
 
 	var total int64
+
 	err = r.db.QueryRowContext(ctx, countSQL, countArgs...).Scan(&total)
 	if err != nil {
 		return nil, 0, rerrors.Wrap(err, "count prompts")
@@ -59,12 +60,15 @@ func (r *Repo) List(ctx context.Context, params repository.ListPromptsParams) ([
 	defer rows.Close()
 
 	var result []domain.Prompt
+
 	for rows.Next() {
 		var p domain.Prompt
+
 		err = rows.Scan(&p.Id, &p.Text)
 		if err != nil {
 			return nil, 0, rerrors.Wrap(err, "scan prompt")
 		}
+
 		result = append(result, p)
 	}
 

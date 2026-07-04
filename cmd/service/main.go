@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/rs/zerolog/log"
-
 	"github.com/ruf-dev/artel/internal/app"
 )
 

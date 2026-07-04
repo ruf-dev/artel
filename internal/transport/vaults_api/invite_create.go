@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) CreateInviteLink(ctx context.Context, req *pb.CreateInviteLink_Request) (*pb.CreateInviteLink_Response, error) {

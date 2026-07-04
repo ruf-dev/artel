@@ -34,7 +34,8 @@ type grpcServer struct {
 func newGrpcServer(
 	ctx context.Context,
 	listener net.Listener,
-	gatewayMux *http.ServeMux) grpcServer {
+	gatewayMux *http.ServeMux,
+) grpcServer {
 	return grpcServer{
 		ctx:        ctx,
 		listener:   listener,
@@ -64,6 +65,7 @@ func (s *grpcServer) start() error {
 
 func (s *grpcServer) stop() error {
 	s.stopCall()
+
 	return nil
 }
 

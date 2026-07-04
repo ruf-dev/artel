@@ -37,6 +37,7 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 			Bytes("req_body", reqBody).
 			Dur("dur", elapsed).
 			Msg("couch db returned error")
+
 		return resp, err
 	}
 

@@ -12,5 +12,6 @@ func (s *McpServiceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "revoke mcp key")
 	}
+
 	return nil
 }

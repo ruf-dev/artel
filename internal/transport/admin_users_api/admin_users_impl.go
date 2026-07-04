@@ -7,13 +7,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"google.golang.org/grpc"
-	"google.golang.org/protobuf/types/known/timestamppb"
-
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type AdminUsersImpl struct {
@@ -31,22 +30,26 @@ func (a *AdminUsersImpl) Register(srv grpc.ServiceRegistrar) {
 
 func (a *AdminUsersImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
 	gwMux := runtime.NewServeMux()
+
 	err := artel_api.RegisterAdminUsersAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {
 		log.Error().Err(err).Msg("error registering admin users grpc-gateway handler")
 	}
+
 	return "/api/admin_users/", gwMux
 }
 
 func (a *AdminUsersImpl) ListArtelUsers(ctx context.Context, req *artel_api.ListArtelUsers_Request) (*artel_api.ListArtelUsers_Response, error) {
 	paging := domain.Paging{Limit: req.Limit, Offset: req.Offset}
 	listReq := domain.ListUsersReq{Paging: paging, Search: req.Search}
+
 	users, total, err := a.svc.ListUsers(ctx, listReq)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing artel users")
 	}
 
 	entries := make([]*artel_api.ArtelUserEntry, len(users))
+
 	for i, u := range users {
 		entry := &artel_api.ArtelUserEntry{
 			UserId:    u.Uuid.String(),
@@ -58,6 +61,7 @@ func (a *AdminUsersImpl) ListArtelUsers(ctx context.Context, req *artel_api.List
 	}
 
 	resp := &artel_api.ListArtelUsers_Response{Users: entries, Total: total}
+
 	return resp, nil
 }
 
@@ -84,6 +88,7 @@ func (a *AdminUsersImpl) GetArtelUser(ctx context.Context, req *artel_api.GetArt
 		SubscriptionActive: details.Subscription.Active,
 	}
 	resp := &artel_api.GetArtelUser_Response{User: userDetails}
+
 	return resp, nil
 }
 
@@ -99,6 +104,7 @@ func (a *AdminUsersImpl) GetUserSessions(ctx context.Context, req *artel_api.Get
 	}
 
 	entries := make([]*artel_api.UserSession, len(sessions))
+
 	for i, s := range sessions {
 		entry := &artel_api.UserSession{
 			SessionId: s.Uuid.String(),
@@ -109,5 +115,6 @@ func (a *AdminUsersImpl) GetUserSessions(ctx context.Context, req *artel_api.Get
 	}
 
 	resp := &artel_api.GetUserSessions_Response{Sessions: entries}
+
 	return resp, nil
 }

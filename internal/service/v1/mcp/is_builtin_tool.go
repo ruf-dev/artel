@@ -9,5 +9,6 @@ func (s *McpServiceImpl) IsBuiltinTool(name string) bool {
 		toolConnections, toolConnectionsForTracts:
 		return true
 	}
+
 	return executors.IsTractTool(name)
 }

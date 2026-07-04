@@ -5,10 +5,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ruf-dev/artel/internal/domain"
 )
 
 func actionStep(id string, params map[string]string) domain.TractStep {
@@ -20,6 +19,7 @@ func actionStep(id string, params map[string]string) domain.TractStep {
 		Tool:   "write_file",
 		Params: params,
 	}
+
 	return step
 }
 
@@ -268,6 +268,7 @@ func TestValidateShape_VisibilityRule(t *testing.T) {
 
 func newTestService(mcpDefs *fakeMcpDefsRepo, externalConns *fakeExternalConnsRepo, executor *fakeToolExecutor) *Service {
 	svc := New(nil, nil, externalConns, mcpDefs, executor)
+
 	return svc
 }
 
@@ -304,6 +305,7 @@ func TestValidateActionTool_BuiltinRules(t *testing.T) {
 func TestValidateActionTool_MomRules(t *testing.T) {
 	mcpDefs := newFakeMcpDefsRepo()
 	mcpDefs.addTool("gitlab", "create_merge_request")
+
 	externalConns := newFakeExternalConnsRepo()
 	executor := newFakeToolExecutor("write_file")
 	svc := newTestService(mcpDefs, externalConns, executor)

@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (m *McpKeysImpl) ExecuteMomTool(ctx context.Context, req *pb.ExecuteMomTool_Request) (*pb.ExecuteMomTool_Response, error) {
@@ -30,5 +29,6 @@ func (m *McpKeysImpl) ExecuteMomTool(ctx context.Context, req *pb.ExecuteMomTool
 	}
 
 	resp := &pb.ExecuteMomTool_Response{Result: result}
+
 	return resp, nil
 }

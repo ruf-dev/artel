@@ -9,12 +9,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.opentelemetry.io/otel/trace"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/requesthost"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.opentelemetry.io/otel/trace"
+	"go.redsock.ru/rerrors"
 )
 
 type rpcRequest struct {
@@ -53,6 +52,7 @@ func NewMcpHandler(mcpSvc service.McpService, momSvc service.MomService) *McpHan
 func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		h.serveSSE(w, r)
+
 		return
 	}
 
@@ -63,6 +63,7 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+
 		return
 	}
 
@@ -70,20 +71,24 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if token == "" {
 		w.Header().Set("WWW-Authenticate", `Bearer realm="`+publicHost(r)+`"`)
 		w.WriteHeader(http.StatusUnauthorized)
+
 		return
 	}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		writeErrorResponse(ctx, w, nil, -32700, "parse error", err)
+
 		return
 	}
 	defer r.Body.Close()
 
 	var req rpcRequest
+
 	err = json.Unmarshal(body, &req)
 	if err != nil {
 		writeErrorResponse(ctx, w, nil, -32700, "parse error", err)
+
 		return
 	}
 
@@ -91,9 +96,12 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if h.isNotification(req) {
 			w.WriteHeader(http.StatusOK)
+
 			return
 		}
+
 		writeErrorResponse(ctx, w, req.Id, -32001, "unauthorized", nil)
+
 		return
 	}
 
@@ -101,9 +109,11 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch req.Method {
 		case "notifications/initialized":
 			w.WriteHeader(http.StatusOK)
+
 			return
 		default:
 			w.WriteHeader(http.StatusOK)
+
 			return
 		}
 	}
@@ -116,25 +126,33 @@ func (h *McpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h *McpHandler) serveSSE(w http.ResponseWriter, r *http.Request) {
 	if !strings.Contains(r.Header.Get("Accept"), "text/event-stream") {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+
 		return
 	}
+
 	token := extractBearerToken(r)
 	if token == "" {
 		w.Header().Set("WWW-Authenticate", `Bearer realm="`+publicHost(r)+`"`)
 		w.WriteHeader(http.StatusUnauthorized)
+
 		return
 	}
+
 	if _, err := h.mcpSvc.ResolveKey(r.Context(), token); err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
+
 		return
 	}
+
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 	w.WriteHeader(http.StatusOK)
+
 	if f, ok := w.(http.Flusher); ok {
 		f.Flush()
 	}
+
 	<-r.Context().Done()
 }
 
@@ -183,6 +201,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 	if !ok {
 		log.Error().Msg("mcp: keyContext missing from context in tools/list")
 		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", nil)
+
 		return
 	}
 
@@ -190,6 +209,7 @@ func (h *McpHandler) handleToolsList(w http.ResponseWriter, ctx context.Context,
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to list builtin tools")
 		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", err)
+
 		return
 	}
 
@@ -234,6 +254,7 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	if err != nil {
 		log.Error().Err(err).Msg("mcp: failed to unmarshal tools/call params")
 		writeErrorResponse(ctx, w, req.Id, -32602, "invalid params", err)
+
 		return
 	}
 
@@ -241,25 +262,31 @@ func (h *McpHandler) handleToolsCall(w http.ResponseWriter, ctx context.Context,
 	if !ok {
 		log.Error().Msg("mcp: keyContext missing from context in tools/call")
 		writeErrorResponse(ctx, w, req.Id, -32603, "internal error", nil)
+
 		return
 	}
 
 	var result interface{}
+
 	if h.mcpSvc.IsBuiltinTool(callReq.Name) {
 		execRes, err := h.mcpSvc.ExecuteTool(ctx, keyCtx, callReq.Name, callReq.Arguments)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: tool execution failed")
 			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)
+
 			return
 		}
+
 		result = toolResultFromExec(execRes)
 	} else {
 		text, err := h.momSvc.ExecuteToolForKey(ctx, keyCtx.KeyUuid, callReq.Name, callReq.Arguments)
 		if err != nil {
 			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: mom tool execution failed")
 			writeErrorResponse(ctx, w, req.Id, -32603, "tool execution failed", err)
+
 			return
 		}
+
 		result = textResult(text)
 	}
 
@@ -280,6 +307,7 @@ func publicHost(r *http.Request) string {
 	if h := r.Header.Get("X-Forwarded-Host"); h != "" {
 		return h
 	}
+
 	return r.Host
 }
 
@@ -299,6 +327,7 @@ func extractBearerToken(r *http.Request) string {
 
 func writeJsonResponse(w http.ResponseWriter, response rpcResponse) error {
 	w.Header().Set("Content-Type", "application/json")
+
 	data, err := json.Marshal(response)
 	if err != nil {
 		return rerrors.Wrap(err, "failed to marshal response")
@@ -320,6 +349,7 @@ func writeErrorResponse(ctx context.Context, w http.ResponseWriter, id any, code
 	if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
 		e.TraceId = span.SpanContext().TraceID().String()
 	}
+
 	if cause != nil {
 		e.Details = cause.Error()
 	}

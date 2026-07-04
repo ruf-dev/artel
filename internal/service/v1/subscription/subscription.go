@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -23,6 +22,7 @@ func (s *Service) CheckActive(ctx context.Context, userUuid uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "get subscription")
 	}
+
 	if !sub.Active {
 		return user_errors.NoActiveSubscription
 	}

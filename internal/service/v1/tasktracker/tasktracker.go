@@ -5,13 +5,12 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -35,6 +34,7 @@ func (s *Service) AddTracker(ctx context.Context, tracker domain.TaskTracker, cr
 		if errors.Is(err, trello.ErrUnauthorized) {
 			return domain.TaskTracker{}, nil, user_errors.TrelloInvalidCredentials
 		}
+
 		return domain.TaskTracker{}, nil, rerrors.Wrap(err, "error verifying trello credentials")
 	}
 
@@ -78,6 +78,7 @@ func (s *Service) DeleteTracker(ctx context.Context, trackerUuid uuid.UUID) erro
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting task tracker")
 	}
+
 	return nil
 }
 
@@ -94,6 +95,7 @@ func (s *Service) ListTrelloBoards(ctx context.Context, trackerUuid uuid.UUID) (
 		if errors.Is(err, trello.ErrUnauthorized) {
 			return nil, user_errors.TrelloInvalidCredentials
 		}
+
 		return nil, rerrors.Wrap(err, "error listing trello boards")
 	}
 

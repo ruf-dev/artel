@@ -47,6 +47,7 @@ func (a *App) initOTel() error {
 
 	closer.Add(func() error {
 		_ = tp.Shutdown(context.Background())
+
 		return conn.Close()
 	})
 

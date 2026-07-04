@@ -6,11 +6,10 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -47,10 +46,12 @@ func (r *Repo) Get(ctx context.Context, mcpKeyUuid uuid.UUID, mcpName string) (s
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.McpConnector]{}, nil
 		}
+
 		return sql.Null[domain.McpConnector]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting mcp connector")
 	}
 
 	result := sql.Null[domain.McpConnector]{V: toDomain(row), Valid: true}
+
 	return result, nil
 }
 
@@ -64,6 +65,7 @@ func (r *Repo) ListByKey(ctx context.Context, mcpKeyUuid uuid.UUID) ([]domain.Mc
 	for i, row := range rows {
 		connectors[i] = toDomain(row)
 	}
+
 	return connectors, nil
 }
 
@@ -77,6 +79,7 @@ func (r *Repo) Delete(ctx context.Context, mcpKeyUuid uuid.UUID, mcpName string)
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting mcp connector")
 	}
+
 	return nil
 }
 

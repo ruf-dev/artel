@@ -11,6 +11,7 @@ func TestTgClaims_UnmarshalJSON_IdAsNumber(t *testing.T) {
 	raw := []byte(`{"id":123456789,"name":"John"}`)
 
 	var claims telegram.TgClaims
+
 	err := json.Unmarshal(raw, &claims)
 	if err != nil {
 		t.Fatal(err)
@@ -25,6 +26,7 @@ func TestTgClaims_UnmarshalJSON_IdAsString(t *testing.T) {
 	raw := []byte(`{"id":"123456789","name":"John"}`)
 
 	var claims telegram.TgClaims
+
 	err := json.Unmarshal(raw, &claims)
 	if err != nil {
 		t.Fatal(err)
@@ -39,6 +41,7 @@ func TestTgClaims_UnmarshalJSON_IdAbsent(t *testing.T) {
 	raw := []byte(`{"name":"John"}`)
 
 	var claims telegram.TgClaims
+
 	err := json.Unmarshal(raw, &claims)
 	if err != nil {
 		t.Fatal(err)

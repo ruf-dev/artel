@@ -4,14 +4,13 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -38,6 +37,7 @@ func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, usernam
 		CouchUsername:    username,
 		CouchPasswordEnc: passwordEnc,
 	}
+
 	err = r.q.UpsertCouchAccount(ctx, upsertParams)
 	if err != nil {
 		return domain.CouchAccount{}, pg_err.UnwrapPgErr(err)
@@ -47,6 +47,7 @@ func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, usernam
 		UserID:          userID,
 		CouchInstanceID: instanceID,
 	}
+
 	row, err := r.q.GetCouchAccountByUserAndInstance(ctx, getParams)
 	if err != nil {
 		return domain.CouchAccount{}, pg_err.UnwrapPgErr(err)
@@ -60,6 +61,7 @@ func (r *Repo) Upsert(ctx context.Context, userID, instanceID uuid.UUID, usernam
 		CouchPassword:     "",
 		CreatedAt:         row.CreatedAt,
 	}
+
 	return account, nil
 }
 
@@ -68,6 +70,7 @@ func (r *Repo) GetByUserAndInstance(ctx context.Context, userID, instanceID uuid
 		UserID:          userID,
 		CouchInstanceID: instanceID,
 	}
+
 	row, err := r.q.GetCouchAccountByUserAndInstance(ctx, params)
 	if err != nil {
 		return domain.CouchAccount{}, rerrors.Wrap(err, "get couch account")
@@ -86,6 +89,7 @@ func (r *Repo) GetByUserAndInstance(ctx context.Context, userID, instanceID uuid
 		CouchPassword:     string(passwordPlain),
 		CreatedAt:         row.CreatedAt,
 	}
+
 	return account, nil
 }
 
@@ -96,6 +100,7 @@ func (r *Repo) ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.Couch
 	}
 
 	accounts := make([]domain.CouchAccount, len(rows))
+
 	for i, row := range rows {
 		passwordPlain, err := cryptoutil.Decrypt(r.encryptionKey, row.CouchPasswordEnc)
 		if err != nil {
@@ -111,6 +116,7 @@ func (r *Repo) ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.Couch
 			CreatedAt:         row.CreatedAt,
 		}
 	}
+
 	return accounts, nil
 }
 
@@ -125,10 +131,12 @@ func (r *Repo) UpdatePassword(ctx context.Context, username string, instanceID u
 		CouchInstanceID:  instanceID,
 		CouchPasswordEnc: passwordEnc,
 	}
+
 	err = r.q.UpdateCouchAccountPassword(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error updating couch account password")
 	}
+
 	return nil
 }
 
@@ -137,6 +145,7 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "delete couch account")
 	}
+
 	return nil
 }
 

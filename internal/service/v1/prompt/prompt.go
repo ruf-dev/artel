@@ -3,11 +3,10 @@ package prompt
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {

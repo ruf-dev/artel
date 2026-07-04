@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) LinkS3Bucket(ctx context.Context, req *pb.LinkS3Bucket_Request) (*pb.LinkS3Bucket_Response, error) {

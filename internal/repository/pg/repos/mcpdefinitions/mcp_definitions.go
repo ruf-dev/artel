@@ -6,11 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -55,6 +54,7 @@ func (r *Repo) Upsert(ctx context.Context, def domain.McpDefinition) (domain.Mcp
 		Tools:       tools,
 		CreatedAt:   row.CreatedAt,
 	}
+
 	return result, nil
 }
 
@@ -68,6 +68,7 @@ func (r *Repo) upsertTool(ctx context.Context, mcpName string, tool domain.McpTo
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error upserting mcp tool")
 	}
+
 	return nil
 }
 
@@ -77,6 +78,7 @@ func (r *Repo) Get(ctx context.Context, name string) (sql.Null[domain.McpDefinit
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.McpDefinition]{}, nil
 		}
+
 		return sql.Null[domain.McpDefinition]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting mcp definition")
 	}
 
@@ -94,6 +96,7 @@ func (r *Repo) Get(ctx context.Context, name string) (sql.Null[domain.McpDefinit
 	}
 
 	result := sql.Null[domain.McpDefinition]{V: def, Valid: true}
+
 	return result, nil
 }
 
@@ -109,20 +112,24 @@ func (r *Repo) List(ctx context.Context) ([]domain.McpDefinition, error) {
 	}
 
 	toolsByMcp := make(map[string][]domain.McpToolDef, len(rows))
+
 	for _, tr := range toolRows {
 		tool, err := toolRowToDomain(tr)
 		if err != nil {
 			return nil, err
 		}
+
 		toolsByMcp[tr.McpName] = append(toolsByMcp[tr.McpName], tool)
 	}
 
 	defs := make([]domain.McpDefinition, len(rows))
+
 	for i, row := range rows {
 		tools := toolsByMcp[row.Name]
 		if tools == nil {
 			tools = []domain.McpToolDef{}
 		}
+
 		defs[i] = domain.McpDefinition{
 			Name:        row.Name,
 			Author:      row.Author,
@@ -131,6 +138,7 @@ func (r *Repo) List(ctx context.Context) ([]domain.McpDefinition, error) {
 			CreatedAt:   row.CreatedAt,
 		}
 	}
+
 	return defs, nil
 }
 
@@ -139,6 +147,7 @@ func (r *Repo) Delete(ctx context.Context, name string) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting mcp definition")
 	}
+
 	return nil
 }
 
@@ -156,6 +165,7 @@ func (r *Repo) GetTool(ctx context.Context, mcpName string, toolName string) (sq
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.McpToolDef]{}, nil
 		}
+
 		return sql.Null[domain.McpToolDef]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting mcp tool")
 	}
 
@@ -165,6 +175,7 @@ func (r *Repo) GetTool(ctx context.Context, mcpName string, toolName string) (sq
 	}
 
 	result := sql.Null[domain.McpToolDef]{V: tool, Valid: true}
+
 	return result, nil
 }
 
@@ -177,13 +188,16 @@ func (r *Repo) ListAllTools(ctx context.Context) ([]domain.McpToolRef, error) {
 	}
 
 	refs := make([]domain.McpToolRef, len(rows))
+
 	for i, row := range rows {
 		tool, err := toolRowToDomain(row)
 		if err != nil {
 			return nil, err
 		}
+
 		refs[i] = domain.McpToolRef{McpName: row.McpName, Tool: tool}
 	}
+
 	return refs, nil
 }
 
@@ -194,13 +208,16 @@ func (r *Repo) listTools(ctx context.Context, mcpName string) ([]domain.McpToolD
 	}
 
 	tools := make([]domain.McpToolDef, len(rows))
+
 	for i, row := range rows {
 		tool, err := toolRowToDomain(row)
 		if err != nil {
 			return nil, err
 		}
+
 		tools[i] = tool
 	}
+
 	return tools, nil
 }
 
@@ -209,12 +226,14 @@ func upsertToolParams(mcpName string, tool domain.McpToolDef) (artel_q.UpsertMcp
 		Properties: tool.ApiDescription.Properties,
 		Required:   tool.ApiDescription.Required,
 	})
+
 	inputSchemaJSON, err := json.Marshal(inputSchema)
 	if err != nil {
 		return artel_q.UpsertMcpToolParams{}, rerrors.Wrap(err, "error marshaling tool input schema")
 	}
 
 	outputSchema := toolSchemaFromDomain(tool.OutputSchema)
+
 	outputSchemaJSON, err := json.Marshal(outputSchema)
 	if err != nil {
 		return artel_q.UpsertMcpToolParams{}, rerrors.Wrap(err, "error marshaling tool output schema")
@@ -233,23 +252,27 @@ func upsertToolParams(mcpName string, tool domain.McpToolDef) (artel_q.UpsertMcp
 		OutputSchema: outputSchemaJSON,
 		Action:       actionJSON,
 	}
+
 	return params, nil
 }
 
 func toolRowToDomain(row artel_q.McpTool) (domain.McpToolDef, error) {
 	var inputSchemaRow toolSchemaRow
+
 	err := json.Unmarshal(row.InputSchema, &inputSchemaRow)
 	if err != nil {
 		return domain.McpToolDef{}, rerrors.Wrap(err, "error unmarshaling tool input schema")
 	}
 
 	var outputSchemaRow toolSchemaRow
+
 	err = json.Unmarshal(row.OutputSchema, &outputSchemaRow)
 	if err != nil {
 		return domain.McpToolDef{}, rerrors.Wrap(err, "error unmarshaling tool output schema")
 	}
 
 	var actionRow toolActionRow
+
 	err = json.Unmarshal(row.Action, &actionRow)
 	if err != nil {
 		return domain.McpToolDef{}, rerrors.Wrap(err, "error unmarshaling tool action")
@@ -269,6 +292,7 @@ func toolRowToDomain(row artel_q.McpTool) (domain.McpToolDef, error) {
 		OutputSchema:   toolSchemaToDomain(outputSchemaRow),
 		Action:         actionToDomain(actionRow),
 	}
+
 	return tool, nil
 }
 
@@ -277,9 +301,11 @@ func actionToDomain(ar toolActionRow) domain.ToolAction {
 	if ar.Imap != nil {
 		action.Imap = &domain.ImapAction{Operation: domain.ImapOperation(ar.Imap.Operation)}
 	}
+
 	if ar.Smtp != nil {
 		action.Smtp = &domain.SmtpAction{Operation: domain.SmtpOperation(ar.Smtp.Operation)}
 	}
+
 	if ar.Http != nil {
 		action.Http = &domain.HttpAction{
 			Method:      ar.Http.Method,
@@ -290,6 +316,7 @@ func actionToDomain(ar toolActionRow) domain.ToolAction {
 			Credentials: ar.Http.Credentials,
 		}
 	}
+
 	return action
 }
 
@@ -298,9 +325,11 @@ func actionFromDomain(a domain.ToolAction) toolActionRow {
 	if a.Imap != nil {
 		ar.Imap = &imapActionRow{Operation: string(a.Imap.Operation)}
 	}
+
 	if a.Smtp != nil {
 		ar.Smtp = &smtpActionRow{Operation: string(a.Smtp.Operation)}
 	}
+
 	if a.Http != nil {
 		ar.Http = &httpActionRow{
 			Method:      a.Http.Method,
@@ -311,6 +340,7 @@ func actionFromDomain(a domain.ToolAction) toolActionRow {
 			Credentials: a.Http.Credentials,
 		}
 	}
+
 	return ar
 }
 
@@ -367,6 +397,7 @@ func toolSchemaToDomain(s toolSchemaRow) domain.ToolSchema {
 	for k, v := range s.Properties {
 		props[k] = toolPropertyToDomain(v)
 	}
+
 	return domain.ToolSchema{Properties: props, Required: s.Required}
 }
 
@@ -375,6 +406,7 @@ func toolSchemaFromDomain(s domain.ToolSchema) toolSchemaRow {
 	for k, v := range s.Properties {
 		props[k] = toolPropertyFromDomain(v)
 	}
+
 	return toolSchemaRow{Properties: props, Required: s.Required}
 }
 

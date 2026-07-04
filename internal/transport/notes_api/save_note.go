@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (n *NotesImpl) SaveNote(ctx context.Context, req *pb.SaveNote_Request) (*pb.SaveNote_Response, error) {

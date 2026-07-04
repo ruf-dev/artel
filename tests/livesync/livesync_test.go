@@ -10,16 +10,16 @@ import (
 
 	kivik "github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/ruf-dev/artel/internal/clients/couchdb"
 )
 
 func envOrDefault(key, def string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
 	}
+
 	return def
 }
 
@@ -27,6 +27,7 @@ func envOrDefault(key, def string) string {
 // Using the test name as a prefix keeps docs isolated within the shared DB.
 func noteID(t *testing.T, suffix string) string {
 	name := strings.ReplaceAll(t.Name(), "/", "_")
+
 	return fmt.Sprintf("%s/%s.md", name, suffix)
 }
 
@@ -49,15 +50,17 @@ func (s *VaultSuite) SetupSuite() {
 
 	s.dbName = fmt.Sprintf("test_vault_%08x", rand.Uint32())
 
-	s.admin = couchdb.New(couchdb.Config{
+	admin, err := couchdb.New(couchdb.Config{
 		BaseURL:  couchURL,
 		User:     couchUser,
 		Password: couchPass,
 	})
+	s.Require().NoError(err)
+	s.admin = admin
 
 	ctx := context.Background()
 
-	err := s.admin.Setup(ctx)
+	err = s.admin.Setup(ctx)
 	s.Require().NoError(err, "CouchDB system setup failed — is the container running?")
 
 	err = s.admin.CreateDatabase(ctx, s.dbName)
@@ -202,6 +205,7 @@ func (s *VaultSuite) TestWriteMany_ListAll() {
 	ctx := context.Background()
 
 	const count = 10
+
 	paths := make([]string, count)
 	for i := range paths {
 		paths[i] = noteID(t, fmt.Sprintf("many%d", i))
@@ -213,12 +217,15 @@ func (s *VaultSuite) TestWriteMany_ListAll() {
 	require.NoError(t, err)
 
 	prefix := strings.ReplaceAll(t.Name(), "/", "_")
+
 	var matching int
+
 	for _, n := range notes {
 		if strings.HasPrefix(n.Path, prefix) {
 			matching++
 		}
 	}
+
 	require.Equal(t, count, matching, "expected exactly %d notes with test prefix", count)
 }
 
@@ -343,6 +350,7 @@ func (s *VaultSuite) TestLiveSyncCompat_WriteNote_ChildrenIsEmptyArray() {
 	var raw struct {
 		Children []string `json:"children"`
 	}
+
 	err = d.ScanDoc(&raw)
 	require.NoError(t, err)
 	require.NotNil(t, raw.Children, "children field must be an empty array, not missing — LiveSync iterates it unconditionally")
@@ -367,6 +375,7 @@ func (s *VaultSuite) TestLiveSyncCompat_DeleteNote_ChildrenIsEmptyArray() {
 		Children []string `json:"children"`
 		Deleted  bool     `json:"deleted"`
 	}
+
 	err = d.ScanDoc(&raw)
 	require.NoError(t, err)
 	require.True(t, raw.Deleted)
@@ -401,6 +410,7 @@ func (s *VaultSuite) TestLiveSyncCompat_MoveFile_DestinationChildrenIsEmptyArray
 	var raw struct {
 		Children []string `json:"children"`
 	}
+
 	err = d.ScanDoc(&raw)
 	require.NoError(t, err)
 	require.NotNil(t, raw.Children, "children field must be present on move destination")

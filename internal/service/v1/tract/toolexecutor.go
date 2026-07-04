@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
 )
@@ -55,6 +56,7 @@ func NewToolExecutor(builtin McpBuiltinExecutor, mom MomConnectionExecutor) Tool
 		builtin: builtin,
 		mom:     mom,
 	}
+
 	return adapter
 }
 
@@ -63,13 +65,29 @@ func (a *toolExecutorAdapter) IsBuiltinTool(toolName string) bool {
 }
 
 func (a *toolExecutorAdapter) ExecuteBuiltinTool(ctx context.Context, userUuid uuid.UUID, toolName string, params map[string]interface{}) (string, error) {
-	return a.builtin.ExecuteBuiltinToolForUser(ctx, userUuid, toolName, params)
+	res, err := a.builtin.ExecuteBuiltinToolForUser(ctx, userUuid, toolName, params)
+	if err != nil {
+		return "", rerrors.Wrap(err, "Error executing builtin tool")
+	}
+
+	return res, nil
 }
 
-func (a *toolExecutorAdapter) ExecuteMomTool(ctx context.Context, connectionUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{}) (string, error) {
-	return a.mom.ExecuteToolForConnection(ctx, connectionUuid, mcpName, toolName, params)
+func (a *toolExecutorAdapter) ExecuteMomTool(ctx context.Context, connectionUuid uuid.UUID,
+	mcpName string, toolName string, params map[string]interface{}) (string, error) {
+	res, err := a.mom.ExecuteToolForConnection(ctx, connectionUuid, mcpName, toolName, params)
+	if err != nil {
+		return "", rerrors.Wrap(err)
+	}
+
+	return res, nil
 }
 
 func (a *toolExecutorAdapter) ListBuiltinTools(ctx context.Context) ([]domain.McpToolDef, error) {
-	return a.builtin.ListTools(ctx)
+	res, err := a.builtin.ListTools(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "Error listing tools")
+	}
+
+	return res, nil
 }

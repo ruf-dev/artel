@@ -6,11 +6,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"google.golang.org/grpc"
-
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
 )
 
 type AdminCouchImpl struct {
@@ -44,12 +43,14 @@ func (a *AdminCouchImpl) ListCouchUsers(ctx context.Context, req *artel_api.List
 	}
 
 	entries := make([]*artel_api.CouchUserEntry, len(users))
+
 	for i, u := range users {
 		entry := &artel_api.CouchUserEntry{Name: u.Name, Roles: u.Roles}
 		entries[i] = entry
 	}
 
 	resp := &artel_api.ListCouchUsers_Response{Users: entries}
+
 	return resp, nil
 }
 
@@ -60,6 +61,7 @@ func (a *AdminCouchImpl) DeleteCouchUser(ctx context.Context, req *artel_api.Del
 	}
 
 	resp := &artel_api.DeleteCouchUser_Response{}
+
 	return resp, nil
 }
 
@@ -70,6 +72,7 @@ func (a *AdminCouchImpl) ChangeCouchUserPassword(ctx context.Context, req *artel
 	}
 
 	resp := &artel_api.ChangeCouchUserPassword_Response{}
+
 	return resp, nil
 }
 
@@ -80,6 +83,7 @@ func (a *AdminCouchImpl) ListCouchDatabases(ctx context.Context, req *artel_api.
 	}
 
 	resp := &artel_api.ListCouchDatabases_Response{Databases: databases}
+
 	return resp, nil
 }
 
@@ -90,6 +94,7 @@ func (a *AdminCouchImpl) GrantDatabaseAccess(ctx context.Context, req *artel_api
 	}
 
 	resp := &artel_api.GrantDatabaseAccess_Response{}
+
 	return resp, nil
 }
 
@@ -100,6 +105,7 @@ func (a *AdminCouchImpl) RevokeDatabaseAccess(ctx context.Context, req *artel_ap
 	}
 
 	resp := &artel_api.RevokeDatabaseAccess_Response{}
+
 	return resp, nil
 }
 
@@ -110,5 +116,6 @@ func (a *AdminCouchImpl) GetUserDatabaseAccess(ctx context.Context, req *artel_a
 	}
 
 	resp := &artel_api.GetUserDatabaseAccess_Response{Databases: databases}
+
 	return resp, nil
 }

@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 // ListRuns returns the most recent runs of tractUuid (most recent first), capped at limit —
@@ -22,6 +21,7 @@ func (s *Service) ListRuns(ctx context.Context, tractUuid uuid.UUID, limit int32
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing tract runs")
 	}
+
 	return runs, nil
 }
 
@@ -32,6 +32,7 @@ func (s *Service) GetRun(ctx context.Context, id uuid.UUID) (domain.TractRun, []
 	if err != nil {
 		return domain.TractRun{}, nil, rerrors.Wrap(err, "error getting tract run")
 	}
+
 	if !result.Valid {
 		return domain.TractRun{}, nil, rerrors.Wrap(user_errors.NotFound)
 	}

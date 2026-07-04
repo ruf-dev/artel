@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) ListConnectors(ctx context.Context, keyID uuid.UUID) ([]domain.McpConnector, error) {
@@ -21,6 +20,7 @@ func (s *McpServiceImpl) ListConnectors(ctx context.Context, keyID uuid.UUID) ([
 	if err != nil {
 		return nil, rerrors.Wrap(err, "get mcp key")
 	}
+
 	if key.UserUuid != uc.UserUuid {
 		return nil, rerrors.Wrap(user_errors.NotFound, "mcp key not found")
 	}
@@ -29,5 +29,6 @@ func (s *McpServiceImpl) ListConnectors(ctx context.Context, keyID uuid.UUID) ([
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mcp connectors")
 	}
+
 	return connectors, nil
 }

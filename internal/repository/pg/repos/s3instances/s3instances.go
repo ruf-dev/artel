@@ -4,14 +4,13 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -40,6 +39,7 @@ func (r *Repo) Register(ctx context.Context, endpoint, region string, useSSL, pa
 		UseSsl:       useSSL,
 		PathStyle:    pathStyle,
 	}
+
 	id, err := r.q.RegisterS3Instance(ctx, params)
 	if err != nil {
 		return uuid.UUID{}, pg_err.UnwrapPgErr(err)
@@ -69,6 +69,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (domain.S3Instance, error)
 		PathStyle: row.PathStyle,
 		CreatedAt: row.CreatedAt,
 	}
+
 	return instance, nil
 }
 
@@ -90,6 +91,7 @@ func (r *Repo) List(ctx context.Context) ([]domain.S3Instance, error) {
 			CreatedAt: row.CreatedAt,
 		}
 	}
+
 	return instances, nil
 }
 
@@ -108,10 +110,12 @@ func (r *Repo) Update(ctx context.Context, id uuid.UUID, endpoint, region string
 		UseSsl:       useSSL,
 		PathStyle:    pathStyle,
 	}
+
 	err = r.q.UpdateS3Instance(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error updating s3 instance")
 	}
+
 	return nil
 }
 
@@ -120,6 +124,7 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting s3 instance")
 	}
+
 	return nil
 }
 

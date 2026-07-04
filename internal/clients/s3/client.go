@@ -7,9 +7,8 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/storage"
+	"go.redsock.ru/rerrors"
 )
 
 type Config struct {
@@ -40,6 +39,7 @@ func New(cfg Config, bucket string) (*Client, error) {
 		mc:     mc,
 		bucket: bucket,
 	}
+
 	return c, nil
 }
 
@@ -62,6 +62,7 @@ func newMinioClient(cfg Config) (*minio.Client, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "constructing minio client")
 	}
+
 	return mc, nil
 }
 
@@ -74,19 +75,23 @@ func (c *Client) EnsureBucket(ctx context.Context) error {
 	if err != nil {
 		return rerrors.Wrap(err, "checking bucket existence")
 	}
+
 	if exists {
 		return nil
 	}
 
 	makeBucketOpts := minio.MakeBucketOptions{}
+
 	err = c.mc.MakeBucket(ctx, c.bucket, makeBucketOpts)
 	if err != nil {
 		exists, existsErr := c.mc.BucketExists(ctx, c.bucket)
 		if existsErr == nil && exists {
 			return nil
 		}
+
 		return rerrors.Wrap(err, "making bucket")
 	}
+
 	return nil
 }
 
@@ -96,6 +101,7 @@ func (c *Client) BucketExists(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, rerrors.Wrap(err, "checking bucket exists")
 	}
+
 	return exists, nil
 }
 
@@ -103,19 +109,23 @@ func (c *Client) Put(ctx context.Context, path string, content []byte, mimeType 
 	reader := bytes.NewReader(content)
 
 	putOpts := minio.PutObjectOptions{ContentType: mimeType}
+
 	_, err := c.mc.PutObject(ctx, c.bucket, path, reader, int64(len(content)), putOpts)
 	if err != nil {
 		return rerrors.Wrap(err, "putting object")
 	}
+
 	return nil
 }
 
 func (c *Client) Get(ctx context.Context, path string) (storage.Object, error) {
 	getOpts := minio.GetObjectOptions{}
+
 	obj, err := c.mc.GetObject(ctx, c.bucket, path, getOpts)
 	if err != nil {
 		return storage.Object{}, rerrors.Wrap(err, "getting object")
 	}
+
 	defer obj.Close()
 
 	stat, err := obj.Stat()
@@ -134,11 +144,13 @@ func (c *Client) Get(ctx context.Context, path string) (storage.Object, error) {
 		MimeType: stat.ContentType,
 		Size:     stat.Size,
 	}
+
 	return object, nil
 }
 
 func (c *Client) Stat(ctx context.Context, path string) (storage.ObjectEntry, error) {
 	statOpts := minio.StatObjectOptions{}
+
 	stat, err := c.mc.StatObject(ctx, c.bucket, path, statOpts)
 	if err != nil {
 		return storage.ObjectEntry{}, rerrors.Wrap(err, "stating object")
@@ -150,15 +162,18 @@ func (c *Client) Stat(ctx context.Context, path string) (storage.ObjectEntry, er
 		MimeType: stat.ContentType,
 		Mtime:    stat.LastModified.UnixMilli(),
 	}
+
 	return entry, nil
 }
 
 func (c *Client) Delete(ctx context.Context, path string) error {
 	removeOpts := minio.RemoveObjectOptions{}
+
 	err := c.mc.RemoveObject(ctx, c.bucket, path, removeOpts)
 	if err != nil {
 		return rerrors.Wrap(err, "removing object")
 	}
+
 	return nil
 }
 
@@ -182,6 +197,7 @@ func (c *Client) Move(ctx context.Context, oldPath, newPath string) error {
 	if err != nil {
 		return rerrors.Wrap(err, "removing object at old path")
 	}
+
 	return nil
 }
 
@@ -190,6 +206,7 @@ func (c *Client) List(ctx context.Context) ([]storage.ObjectEntry, error) {
 	objectCh := c.mc.ListObjects(ctx, c.bucket, listOpts)
 
 	var entries []storage.ObjectEntry
+
 	for obj := range objectCh {
 		if obj.Err != nil {
 			return nil, rerrors.Wrap(obj.Err, "listing objects")
@@ -203,5 +220,6 @@ func (c *Client) List(ctx context.Context) ([]storage.ObjectEntry, error) {
 		}
 		entries = append(entries, entry)
 	}
+
 	return entries, nil
 }

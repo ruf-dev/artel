@@ -15,6 +15,7 @@ func NewHandler() http.Handler {
 	if err != nil {
 		panic(err)
 	}
+
 	return &spaHandler{fs: sub}
 }
 
@@ -30,6 +31,7 @@ func (h *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			f.Close()
 			http.FileServer(http.FS(h.fs)).ServeHTTP(w, r)
+
 			return
 		}
 	}

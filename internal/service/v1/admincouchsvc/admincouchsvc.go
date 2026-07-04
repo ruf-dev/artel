@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/repository"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -156,5 +155,6 @@ func (s *Service) resolveClient(ctx context.Context, instanceId string) (*couchd
 	if err != nil {
 		return nil, rerrors.Wrap(err, "creating couch client")
 	}
+
 	return client, nil
 }

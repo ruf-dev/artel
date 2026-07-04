@@ -18,6 +18,7 @@ func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo
 	externalConns := newFakeExternalConnsRepo()
 	mcpDefs := newFakeMcpDefsRepo()
 	svc := New(tracts, nil, externalConns, mcpDefs, executor)
+
 	return svc, tracts, externalConns
 }
 
@@ -30,6 +31,7 @@ func testTract(userUuid uuid.UUID, steps []domain.TractStep) domain.Tract {
 		Enabled:    true,
 		Definition: def,
 	}
+
 	return tract
 }
 
@@ -77,6 +79,7 @@ func TestEngine_ConditionThenElse(t *testing.T) {
 		assert.NotContains(t, steps, "else_action")
 
 		var output map[string]interface{}
+
 		err = json.Unmarshal(steps["cond"].Output, &output)
 		require.NoError(t, err)
 		assert.Equal(t, "then", output["branch"])
@@ -131,6 +134,7 @@ func TestEngine_GroupNesting(t *testing.T) {
 	require.Contains(t, steps, "second")
 
 	var secondInput map[string]interface{}
+
 	err = json.Unmarshal(steps["second"].Input, &secondInput)
 	require.NoError(t, err)
 	assert.Equal(t, true, secondInput["ref"])
@@ -178,7 +182,9 @@ func TestEngine_OutputParsing(t *testing.T) {
 		require.NoError(t, err)
 
 		steps := tracts.stepsByStepId(run.Uuid)
+
 		var output map[string]interface{}
+
 		err = json.Unmarshal(steps["json_step"].Output, &output)
 		require.NoError(t, err)
 		assert.Equal(t, true, output["ok"])
@@ -192,7 +198,9 @@ func TestEngine_OutputParsing(t *testing.T) {
 		require.NoError(t, err)
 
 		steps := tracts.stepsByStepId(run.Uuid)
+
 		var output map[string]interface{}
+
 		err = json.Unmarshal(steps["raw_step"].Output, &output)
 		require.NoError(t, err)
 		assert.Equal(t, "plain text result, not json", output["raw"])

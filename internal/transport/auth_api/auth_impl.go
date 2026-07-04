@@ -6,14 +6,13 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
+	"github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
-
-	"github.com/ruf-dev/artel/internal/api/server/artel_api"
-	"github.com/ruf-dev/artel/internal/service"
-	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 // authHandler implements the AuthAPIServer proto interface.
@@ -35,6 +34,7 @@ func (h *authHandler) Register(ctx context.Context, req *artel_api.Register_Requ
 		Id:    user.Uuid.String(),
 		Email: user.Email,
 	}
+
 	return resp, nil
 }
 
@@ -42,25 +42,31 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 	switch {
 	case req.GetPassword() != nil:
 		passwordCreds := req.GetPassword()
+
 		session, err := h.authSvc.Login(ctx, passwordCreds.GetEmail(), passwordCreds.GetPassword())
 		if err != nil {
 			return nil, rerrors.Wrap(err, "login")
 		}
+
 		resp := &artel_api.Login_Response{
 			Token:     session.Token,
 			ExpiresAt: timestamppb.New(session.ExpiresAt),
 		}
+
 		return resp, nil
 	case req.GetTelegram() != nil:
 		telegramCreds := req.GetTelegram()
+
 		session, err := h.authSvc.LoginViaTelegram(ctx, telegramCreds.GetIdToken())
 		if err != nil {
 			return nil, rerrors.Wrap(err, "login via telegram")
 		}
+
 		resp := &artel_api.Login_Response{
 			Token:     session.Token,
 			ExpiresAt: timestamppb.New(session.ExpiresAt),
 		}
+
 		return resp, nil
 	default:
 		return nil, user_errors.UnsupportedLoginMethod
@@ -119,6 +125,7 @@ func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*a
 			HasNotes:        perms.HasNotes,
 		},
 	}
+
 	return resp, nil
 }
 

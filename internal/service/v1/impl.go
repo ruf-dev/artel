@@ -1,9 +1,6 @@
 package v1
 
 import (
-	"golang.org/x/oauth2"
-	googleoauth "golang.org/x/oauth2/google"
-
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
@@ -20,6 +17,8 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
 	"github.com/ruf-dev/artel/internal/service/v1/vault"
+	"golang.org/x/oauth2"
+	googleoauth "golang.org/x/oauth2/google"
 )
 
 type Services struct {

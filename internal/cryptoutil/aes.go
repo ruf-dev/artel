@@ -20,6 +20,7 @@ func Encrypt(key, plaintext []byte) ([]byte, error) {
 	}
 
 	nonce := make([]byte, gcm.NonceSize())
+
 	_, err = rand.Read(nonce)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error generating nonce")

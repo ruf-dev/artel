@@ -3,10 +3,9 @@ package external_connections_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 func (e *ExternalConnectionsImpl) AddSpreadsheet(ctx context.Context, req *pb.AddSpreadsheet_Request) (*pb.AddSpreadsheet_Response, error) {
@@ -18,6 +17,7 @@ func (e *ExternalConnectionsImpl) AddSpreadsheet(ctx context.Context, req *pb.Ad
 	resp := &pb.AddSpreadsheet_Response{
 		Spreadsheet: spreadsheetToProto(spreadsheet),
 	}
+
 	return resp, nil
 }
 
@@ -35,6 +35,7 @@ func (e *ExternalConnectionsImpl) ListSpreadsheets(ctx context.Context, _ *pb.Li
 	resp := &pb.ListSpreadsheets_Response{
 		Spreadsheets: items,
 	}
+
 	return resp, nil
 }
 

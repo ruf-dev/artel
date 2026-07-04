@@ -5,9 +5,8 @@ import (
 	"net/http"
 
 	kivik "github.com/go-kivik/kivik/v4"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (c *Client) CreateDatabase(ctx context.Context, name string) error {

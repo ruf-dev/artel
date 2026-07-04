@@ -39,13 +39,16 @@ type telegramID int64
 
 func (t *telegramID) UnmarshalJSON(data []byte) error {
 	var asInt int64
+
 	err := json.Unmarshal(data, &asInt)
 	if err == nil {
 		*t = telegramID(asInt)
+
 		return nil
 	}
 
 	var asString string
+
 	err = json.Unmarshal(data, &asString)
 	if err != nil {
 		return rerrors.New(fmt.Sprintf("error reading id claim: neither a number nor a string: %s", string(data)))
@@ -57,6 +60,7 @@ func (t *telegramID) UnmarshalJSON(data []byte) error {
 	}
 
 	*t = telegramID(parsed)
+
 	return nil
 }
 
@@ -64,6 +68,7 @@ func (t *telegramID) UnmarshalJSON(data []byte) error {
 // while every other field keeps the default struct-tag-driven unmarshaling.
 func (c *TgClaims) UnmarshalJSON(data []byte) error {
 	type alias TgClaims
+
 	aux := struct {
 		Id telegramID `json:"id"`
 		*alias
@@ -77,6 +82,7 @@ func (c *TgClaims) UnmarshalJSON(data []byte) error {
 	}
 
 	c.Id = int64(aux.Id)
+
 	return nil
 }
 
@@ -117,10 +123,12 @@ func NewTokenParser(jwksURL, issuer, audience string) TokenParser {
 
 func (tp *TokenParser) ParseAndVerifyIdToken(idToken string) (TgClaims, error) {
 	claimsTarget := &TgClaims{}
+
 	token, err := jwt.ParseWithClaims(idToken, claimsTarget, tp.keyFunc)
 	if err != nil {
 		return TgClaims{}, rerrors.Wrap(err, "error parsing id token")
 	}
+
 	if !token.Valid {
 		return TgClaims{}, rerrors.New("token is invalid")
 	}
@@ -136,12 +144,15 @@ func (tp *TokenParser) ParseAndVerifyIdToken(idToken string) (TgClaims, error) {
 
 	if tp.audience != "" && claims.Audience != nil {
 		audienceFound := false
+
 		for _, aud := range claims.Audience {
 			if aud == tp.audience {
 				audienceFound = true
+
 				break
 			}
 		}
+
 		if !audienceFound {
 			return TgClaims{}, rerrors.New(fmt.Sprintf("error validating audience: expected %s", tp.audience))
 		}
@@ -177,12 +188,15 @@ func (tp *TokenParser) keyFunc(token *jwt.Token) (interface{}, error) {
 	if jwk == nil {
 		// kid not in cache — force a refresh and try once more (handles key rotation)
 		tp.jwksCache = nil
+
 		jwks, err = tp.getJWKS()
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error fetching fresh JWKS")
 		}
+
 		jwk = findKey(jwks, kid)
 	}
+
 	if jwk == nil {
 		return nil, rerrors.New(fmt.Sprintf("error finding key for kid: %s", kid))
 	}
@@ -196,6 +210,7 @@ func findKey(jwks *JWKSResponse, kid string) *JWK {
 			return &jwks.Keys[i]
 		}
 	}
+
 	return nil
 }
 
@@ -211,6 +226,7 @@ func (tp *TokenParser) getJWKS() (*JWKSResponse, error) {
 	defer resp.Body.Close()
 
 	var jwks JWKSResponse
+
 	err = json.NewDecoder(resp.Body).Decode(&jwks)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error decoding JWKS response")
@@ -259,6 +275,7 @@ func (tp *TokenParser) jwkToRSAKey(jwk *JWK) (*rsa.PublicKey, error) {
 
 func (tp *TokenParser) jwkToECKey(jwk *JWK) (*ecdsa.PublicKey, error) {
 	var curve elliptic.Curve
+
 	switch jwk.Crv {
 	case "P-256":
 		curve = elliptic.P256()

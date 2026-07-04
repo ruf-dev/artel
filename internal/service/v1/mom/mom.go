@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
+	"go.redsock.ru/rerrors"
 )
 
 type ServiceImpl struct {
@@ -43,14 +42,17 @@ func (s *ServiceImpl) ListToolsForKey(ctx context.Context, keyId uuid.UUID) ([]d
 	}
 
 	var tools []domain.McpToolDef
+
 	for _, connector := range connectors {
 		def, err := s.mcpDefinitions.Get(ctx, connector.McpName)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error getting mcp definition")
 		}
+
 		if !def.Valid {
 			continue
 		}
+
 		tools = append(tools, def.V.Tools...)
 	}
 
@@ -68,6 +70,7 @@ func (s *ServiceImpl) ExecuteToolForKey(ctx context.Context, keyId uuid.UUID, to
 		if err != nil {
 			return "", rerrors.Wrap(err, "error getting mcp definition")
 		}
+
 		if !def.Valid {
 			continue
 		}
@@ -92,6 +95,7 @@ func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid u
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting mcp definition")
 	}
+
 	if !def.Valid {
 		return "", user_errors.McpToolNotFound
 	}
@@ -100,6 +104,7 @@ func (s *ServiceImpl) ExecuteToolForConnection(ctx context.Context, exConnUuid u
 		if tool.ApiDescription.Name != toolName {
 			continue
 		}
+
 		return s.dispatch(ctx, exConnUuid, tool.Action, params)
 	}
 
@@ -146,6 +151,7 @@ func (s *ServiceImpl) dispatch(ctx context.Context, exConnUuid uuid.UUID, action
 
 func (s *ServiceImpl) dispatchEmail(ctx context.Context, exConn domain.ExternalConnection, action domain.ToolAction, params map[string]interface{}) (string, error) {
 	var creds domain.EmailCredentials
+
 	err := json.Unmarshal(exConn.CredentialsJSON, &creds)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error unmarshaling email credentials")
@@ -165,6 +171,7 @@ func (s *ServiceImpl) dispatchHttp(ctx context.Context, exConn domain.ExternalCo
 	}
 
 	var secrets map[string]interface{}
+
 	err := json.Unmarshal(exConn.CredentialsJSON, &secrets)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error unmarshaling http credentials")

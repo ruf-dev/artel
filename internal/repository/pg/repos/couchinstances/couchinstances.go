@@ -4,14 +4,13 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -37,6 +36,7 @@ func (r *Repo) Register(ctx context.Context, url, username string, passwordPlain
 		Username:    username,
 		PasswordEnc: passwordEnc,
 	}
+
 	id, err := r.q.RegisterCouchInstance(ctx, params)
 	if err != nil {
 		return uuid.UUID{}, pg_err.UnwrapPgErr(err)
@@ -63,6 +63,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, err
 		Password:  string(decrypted),
 		CreatedAt: row.CreatedAt,
 	}
+
 	return instance, nil
 }
 
@@ -81,6 +82,7 @@ func (r *Repo) List(ctx context.Context) ([]domain.CouchInstance, error) {
 			CreatedAt: row.CreatedAt,
 		}
 	}
+
 	return instances, nil
 }
 
@@ -96,10 +98,12 @@ func (r *Repo) Update(ctx context.Context, id uuid.UUID, url, username string, p
 		Username:    username,
 		PasswordEnc: passwordEnc,
 	}
+
 	err = r.q.UpdateCouchInstance(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "update couch instance")
 	}
+
 	return nil
 }
 
@@ -108,6 +112,7 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "delete couch instance")
 	}
+
 	return nil
 }
 

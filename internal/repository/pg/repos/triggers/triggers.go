@@ -7,12 +7,11 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 // Repo is the pure-DB layer for standalone triggers and their tract links (see migration 033:
@@ -61,6 +60,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.Trigger],
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.Trigger]{}, nil
 		}
+
 		return sql.Null[domain.Trigger]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting trigger")
 	}
 
@@ -70,6 +70,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.Trigger],
 	}
 
 	result := sql.Null[domain.Trigger]{V: trigger, Valid: true}
+
 	return result, nil
 }
 
@@ -81,6 +82,7 @@ func (r *Repo) GetByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (sql
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.Trigger]{}, nil
 		}
+
 		return sql.Null[domain.Trigger]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting trigger by trigger uuid")
 	}
 
@@ -90,6 +92,7 @@ func (r *Repo) GetByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (sql
 	}
 
 	result := sql.Null[domain.Trigger]{V: trigger, Valid: true}
+
 	return result, nil
 }
 
@@ -100,13 +103,16 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Tri
 	}
 
 	triggers := make([]domain.Trigger, len(rows))
+
 	for i, row := range rows {
 		trigger, convErr := triggerToDomain(row)
 		if convErr != nil {
 			return nil, convErr
 		}
+
 		triggers[i] = trigger
 	}
+
 	return triggers, nil
 }
 
@@ -120,6 +126,7 @@ func (r *Repo) SetEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error setting trigger enabled")
 	}
+
 	return nil
 }
 
@@ -128,6 +135,7 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting trigger")
 	}
+
 	return nil
 }
 
@@ -167,6 +175,7 @@ func (r *Repo) Link(ctx context.Context, link domain.TriggerTractLink) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error linking trigger to tract")
 	}
+
 	return nil
 }
 
@@ -180,6 +189,7 @@ func (r *Repo) Unlink(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error unlinking trigger from tract")
 	}
+
 	return nil
 }
 
@@ -192,6 +202,7 @@ func (r *Repo) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]rep
 	}
 
 	links := make([]repository.TractTriggerLink, len(rows))
+
 	for i, row := range rows {
 		schema, convErr := unmarshalToolSchema(row.PayloadSchema)
 		if convErr != nil {
@@ -224,6 +235,7 @@ func (r *Repo) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]rep
 			Filters:     filters,
 		}
 	}
+
 	return links, nil
 }
 
@@ -236,8 +248,10 @@ func (r *Repo) ListLinksByTrigger(ctx context.Context, triggerUuid uuid.UUID) ([
 	}
 
 	links := make([]repository.TractTriggerLink, len(rows))
+
 	for i, row := range rows {
 		var def domain.TractDefinition
+
 		unmarshalErr := json.Unmarshal(row.Definition, &def)
 		if unmarshalErr != nil {
 			return nil, rerrors.Wrap(unmarshalErr, "error unmarshaling tract definition")
@@ -266,6 +280,7 @@ func (r *Repo) ListLinksByTrigger(ctx context.Context, triggerUuid uuid.UUID) ([
 			Filters:     filters,
 		}
 	}
+
 	return links, nil
 }
 
@@ -288,6 +303,7 @@ func triggerToDomain(row artel_q.Trigger) (domain.Trigger, error) {
 		Enabled:       row.Enabled,
 		CreatedAt:     row.CreatedAt,
 	}
+
 	return trigger, nil
 }
 
@@ -308,6 +324,7 @@ func marshalToolSchema(schema domain.ToolSchema) (json.RawMessage, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error marshaling trigger payload schema")
 	}
+
 	return data, nil
 }
 
@@ -317,6 +334,7 @@ func unmarshalToolSchema(raw json.RawMessage) (domain.ToolSchema, error) {
 	}
 
 	var row toolSchemaRow
+
 	err := json.Unmarshal(raw, &row)
 	if err != nil {
 		return domain.ToolSchema{}, rerrors.Wrap(err, "error unmarshaling trigger payload schema")
@@ -326,6 +344,7 @@ func unmarshalToolSchema(raw json.RawMessage) (domain.ToolSchema, error) {
 	for k, v := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(v)
 	}
+
 	return schema, nil
 }
 
@@ -401,6 +420,7 @@ func marshalFilters(filters []domain.TractCondition) (json.RawMessage, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error marshaling trigger link filters")
 	}
+
 	return data, nil
 }
 
@@ -410,9 +430,11 @@ func unmarshalFilters(raw json.RawMessage) ([]domain.TractCondition, error) {
 	}
 
 	var filters []domain.TractCondition
+
 	err := json.Unmarshal(raw, &filters)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error unmarshaling trigger link filters")
 	}
+
 	return filters, nil
 }

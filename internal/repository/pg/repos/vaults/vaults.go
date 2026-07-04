@@ -6,13 +6,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -41,6 +40,7 @@ func (r *Repo) Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, na
 		Status:                status,
 		LivesyncPassphraseEnc: passphraseEnc,
 	}
+
 	row, err := r.q.CreateVault(ctx, params)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error creating vault")
@@ -50,6 +50,7 @@ func (r *Repo) Upsert(ctx context.Context, userID, couchInstanceID uuid.UUID, na
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
 	}
+
 	return v, nil
 }
 
@@ -63,6 +64,7 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error) 
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
 	}
+
 	return v, nil
 }
 
@@ -71,6 +73,7 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 		UserID: userID,
 		Name:   name,
 	}
+
 	row, err := r.q.GetVaultByNameAndUser(ctx, params)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error getting vault by name and user")
@@ -80,6 +83,7 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
 	}
+
 	return v, nil
 }
 
@@ -88,10 +92,12 @@ func (r *Repo) UpdateStatus(ctx context.Context, vaultID uuid.UUID, status strin
 		ID:     vaultID,
 		Status: status,
 	}
+
 	err := r.q.UpdateVaultStatus(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error updating vault status")
 	}
+
 	return nil
 }
 
@@ -105,10 +111,12 @@ func (r *Repo) SetLiveSyncPassphrase(ctx context.Context, vaultID uuid.UUID, pas
 		ID:                    vaultID,
 		LivesyncPassphraseEnc: passphraseEnc,
 	}
+
 	err = r.q.SetVaultLiveSyncPassphrase(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error setting livesync passphrase")
 	}
+
 	return nil
 }
 
@@ -119,13 +127,16 @@ func (r *Repo) ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain
 	}
 
 	vaultList := make([]domain.Vault, 0, len(rows))
+
 	for _, row := range rows {
 		v, err := rowToVault(row.ID, row.UserID, row.Name, row.CouchDbName, row.CouchInstanceID, row.Status, row.LivesyncPassphraseEnc, row.S3InstanceID, row.S3BucketName, row.CreatedAt, r.encryptionKey)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error mapping vault row")
 		}
+
 		vaultList = append(vaultList, v)
 	}
+
 	return vaultList, nil
 }
 
@@ -144,10 +155,12 @@ func (r *Repo) LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID
 		S3InstanceID: uuid.NullUUID{UUID: s3InstanceID, Valid: true},
 		S3BucketName: sql.NullString{String: bucketName, Valid: true},
 	}
+
 	err := r.q.LinkVaultS3Bucket(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error linking vault s3 bucket")
 	}
+
 	return nil
 }
 
@@ -156,6 +169,7 @@ func (r *Repo) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "error unlinking vault s3 bucket")
 	}
+
 	return nil
 }
 
@@ -175,19 +189,24 @@ func rowToVault(id, userID uuid.UUID, name, couchDbName string, couchInstanceID 
 	if couchInstanceID.Valid {
 		v.CouchInstanceUuid = couchInstanceID.UUID
 	}
+
 	if len(passphraseEnc) > 0 {
 		decrypted, err := cryptoutil.Decrypt(encryptionKey, passphraseEnc)
 		if err != nil {
 			return domain.Vault{}, rerrors.Wrap(err, "error decrypting livesync passphrase")
 		}
+
 		v.LiveSyncPassphrase = string(decrypted)
 	}
+
 	if s3InstanceID.Valid {
 		s3Uuid := s3InstanceID.UUID
 		v.S3InstanceUuid = &s3Uuid
 	}
+
 	if s3BucketName.Valid {
 		v.S3BucketName = s3BucketName.String
 	}
+
 	return v, nil
 }

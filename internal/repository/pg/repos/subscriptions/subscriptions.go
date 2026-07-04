@@ -5,11 +5,10 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 type SubscriptionsRepo struct {

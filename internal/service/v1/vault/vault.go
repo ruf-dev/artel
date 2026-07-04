@@ -9,16 +9,15 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	"github.com/ruf-dev/artel/internal/clients/s3"
+	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -162,6 +161,7 @@ func (s *Service) CreateInviteLink(ctx context.Context, vaultID uuid.UUID, role 
 	if err != nil {
 		return domain.VaultInvite{}, rerrors.Wrap(err, "get vault membership")
 	}
+
 	if membership.Role != artel_q.VaultRoleOwner {
 		return domain.VaultInvite{}, rerrors.Wrap(user_errors.NotVaultOwner)
 	}
@@ -272,6 +272,7 @@ func (s *Service) LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.U
 		UseSSL:    instance.UseSSL,
 		PathStyle: instance.PathStyle,
 	}
+
 	client, err := s3client.New(cfg, bucketName)
 	if err != nil {
 		return rerrors.Wrap(err, "init s3 client")
@@ -286,6 +287,7 @@ func (s *Service) LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.U
 	if err != nil {
 		return rerrors.Wrap(err, "link vault s3 bucket")
 	}
+
 	return nil
 }
 
@@ -294,6 +296,7 @@ func (s *Service) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "unlink vault s3 bucket")
 	}
+
 	return nil
 }
 
@@ -303,7 +306,6 @@ func (s *Service) ensureCouchUserExists(ctx context.Context,
 	instanceWithAccountPtr *domain.CouchInstanceWithAccount,
 	couchAccountsRepo repository.CouchAccounts,
 ) (err error) {
-
 	var couchPassword string
 	if instanceWithAccountPtr.Account != nil {
 		couchPassword = instanceWithAccountPtr.Account.CouchPassword
@@ -342,7 +344,6 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 	liveSyncPassphrase string,
 	vaultsRepo repository.Vaults,
 ) (domain.Vault, error) {
-
 	databaseName := sanitizeCouchDBName(uc.UserName + "-" + vaultName + "-vault")
 
 	err := adminClient.CreateDatabase(ctx, databaseName)
@@ -356,7 +357,7 @@ func (s *Service) ensureVaultExists(ctx context.Context,
 		uc.UserUuid,
 		instanceWithAccount.Instance.Uuid,
 		vaultName, databaseName,
-		//TODO move to sql
+		// TODO move to sql
 		"ready",
 		liveSyncPassphrase)
 	if err != nil {
@@ -377,22 +378,25 @@ func newCouchClient(instance domain.CouchInstance) (*couchdb.Client, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "creating couch client")
 	}
+
 	return adminClient, nil
 }
 
 func sanitizeCouchDBName(name string) string {
 	name = strings.ToLower(name)
 
-	name = strings.Replace(name, " ", "_", -1)
+	name = strings.ReplaceAll(name, " ", "_")
 
 	return name
 }
 
 func generatePassword() (string, error) {
 	b := make([]byte, 16)
+
 	_, err := rand.Read(b)
 	if err != nil {
 		return "", rerrors.Wrap(err, "generate random bytes")
 	}
+
 	return hex.EncodeToString(b), nil
 }

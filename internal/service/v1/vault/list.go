@@ -3,12 +3,11 @@ package vault
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/livesync"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *Service) ListVaults(ctx context.Context) ([]domain.Vault, error) {
@@ -23,7 +22,7 @@ func (s *Service) ListVaults(ctx context.Context) ([]domain.Vault, error) {
 	}
 
 	for i, vault := range vaults {
-		//TODO remake onto one sql call
+		// TODO remake onto one sql call
 		instance, err := s.couchInstancesRepo.Get(ctx, vault.CouchInstanceUuid)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "get couch instance")

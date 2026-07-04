@@ -39,15 +39,18 @@ func googleDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Google {
 	if raw != nil {
 		_ = json.Unmarshal(raw, &meta)
 	}
+
 	googleInfo := &pb.GoogleConnectionInfo{
 		Email:  meta.Email,
 		Scopes: meta.Scopes,
 	}
+
 	return &pb.ExternalConnectionInfo_Google{Google: googleInfo}
 }
 
 func genericDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Generic {
 	fields := make(map[string]string)
+
 	if raw != nil {
 		var parsed map[string]any
 		if err := json.Unmarshal(raw, &parsed); err == nil {
@@ -58,6 +61,8 @@ func genericDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Generic {
 			}
 		}
 	}
+
 	generic := &pb.GenericConnection{Fields: fields}
+
 	return &pb.ExternalConnectionInfo_Generic{Generic: generic}
 }

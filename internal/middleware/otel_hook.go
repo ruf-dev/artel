@@ -12,6 +12,7 @@ type otelLogHook struct {
 
 func NewOtelLogHook(instrumentationScope string) zerolog.Hook {
 	logger := otellogGlobal.GetLoggerProvider().Logger(instrumentationScope)
+
 	return &otelLogHook{logger: logger}
 }
 
@@ -19,8 +20,11 @@ func (o *otelLogHook) Run(e *zerolog.Event, level zerolog.Level, message string)
 	if e == nil || level == zerolog.NoLevel || level == zerolog.Disabled {
 		return
 	}
+
 	ctx := e.GetCtx()
+
 	var rec otellog.Record
+
 	rec.SetBody(otellog.StringValue(message))
 	rec.SetSeverity(zerologToOtelSeverity(level))
 	rec.SetSeverityText(level.String())

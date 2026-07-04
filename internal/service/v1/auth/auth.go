@@ -9,14 +9,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/ruf-dev/artel/internal/client/telegram"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
@@ -133,6 +132,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	}
 
 	telegramId := strconv.FormatInt(claims.Id, 10)
+
 	var user domain.User
 
 	err = s.txManager.Execute(
@@ -161,6 +161,7 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 				UserUuid:   user.Uuid,
 				TelegramId: telegramId,
 			}
+
 			err = usersRepo.UpsertTelegramIdentity(ctx, identity)
 			if err != nil {
 				return rerrors.Wrap(err, "upsert telegram identity")
@@ -227,6 +228,7 @@ func (s *Service) CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error {
 
 func generateToken() string {
 	b := make([]byte, 32)
+
 	_, err := rand.Read(b)
 	if err != nil {
 		panic(err)

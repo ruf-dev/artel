@@ -3,11 +3,10 @@ package mcp_keys_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/transport/external_connections_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandidates_Request) (*pb.ListMomCandidates_Response, error) {
@@ -17,6 +16,7 @@ func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandid
 	}
 
 	out := make([]*pb.MomCandidate, 0, len(candidates))
+
 	for _, c := range candidates {
 		connections := make([]*pb.ExternalConnectionInfo, 0, len(c.Connections))
 		for _, conn := range c.Connections {
@@ -24,31 +24,38 @@ func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandid
 		}
 
 		tools := make([]*pb.McpToolInfo, 0, len(c.Tools))
+
 		for _, t := range c.Tools {
 			tool := &pb.McpToolInfo{
 				Name:        t.ApiDescription.Name,
 				Description: t.ApiDescription.Description,
 			}
+
 			if t.Action.Smtp != nil {
 				op := pb.SmtpOperation_SMTP_OP_UNSPECIFIED
 				if t.Action.Smtp.Operation == domain.SMTP_OP_SEND {
 					op = pb.SmtpOperation_SMTP_OP_SEND
 				}
+
 				smtpAction := &pb.SmtpToolAction{Operation: op}
 				smtpWrapper := &pb.McpToolInfo_Smtp{Smtp: smtpAction}
 				tool.Action = smtpWrapper
 			}
+
 			if t.Action.Imap != nil {
 				op := imapOperationToProto(t.Action.Imap.Operation)
 				imapAction := &pb.ImapToolAction{Operation: op}
 				imapWrapper := &pb.McpToolInfo_Imap{Imap: imapAction}
 				tool.Action = imapWrapper
 			}
+
 			params := make(map[string]*pb.ToolParamDef, len(t.ApiDescription.Properties))
+
 			for name, prop := range t.ApiDescription.Properties {
 				paramDef := toolPropertyToProto(prop)
 				params[name] = paramDef
 			}
+
 			tool.Params = params
 			tools = append(tools, tool)
 		}
@@ -68,21 +75,27 @@ func (m *McpKeysImpl) ListMomCandidates(ctx context.Context, _ *pb.ListMomCandid
 
 func toolPropertyToProto(prop domain.ToolProperty) *pb.ToolParamDef {
 	paramDef := &pb.ToolParamDef{Description: prop.Description}
+
 	if len(prop.Enum) > 0 {
 		enumParam := &pb.EnumParam{Values: prop.Enum}
 		enumKind := &pb.ToolParamDef_EnumParam{EnumParam: enumParam}
 		paramDef.Kind = enumKind
+
 		return paramDef
 	}
+
 	if prop.Type == "integer" || prop.Type == "number" {
 		intParam := &pb.IntegerParam{}
 		intKind := &pb.ToolParamDef_IntegerParam{IntegerParam: intParam}
 		paramDef.Kind = intKind
+
 		return paramDef
 	}
+
 	strParam := &pb.StringParam{}
 	strKind := &pb.ToolParamDef_StringParam{StringParam: strParam}
 	paramDef.Kind = strKind
+
 	return paramDef
 }
 

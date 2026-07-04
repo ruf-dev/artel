@@ -3,11 +3,10 @@ package tract
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 // ListTractTools returns the tract action picker's tool catalog: builtins (paired with the
@@ -29,10 +28,12 @@ func (s *Service) ListTractTools(ctx context.Context) ([]domain.McpToolRef, erro
 	}
 
 	catalog := make([]domain.McpToolRef, 0, len(builtins)+len(momTools))
+
 	for _, tool := range builtins {
 		ref := domain.McpToolRef{McpName: builtinMcpName, Tool: tool}
 		catalog = append(catalog, ref)
 	}
+
 	catalog = append(catalog, momTools...)
 
 	return catalog, nil

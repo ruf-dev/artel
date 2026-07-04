@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (n *NotesImpl) ListNotes(ctx context.Context, req *pb.ListNotes_Request) (*pb.ListNotes_Response, error) {

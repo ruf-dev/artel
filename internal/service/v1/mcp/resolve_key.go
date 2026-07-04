@@ -7,11 +7,10 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error) {
@@ -20,17 +19,21 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 	}
 
 	rest := rawToken[len(tokenPrefix):]
+
 	parts := strings.SplitN(rest, "_", 2)
 	if len(parts) != 2 {
 		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.McpInvalidToken, "invalid token format")
 	}
+
 	uuidHex := parts[0]
 	secretHex := parts[1]
+
 	if len(uuidHex) < 32 {
 		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.McpInvalidToken, "invalid token format")
 	}
 
 	uuidFormatted := fmt.Sprintf("%s-%s-%s-%s-%s", uuidHex[0:8], uuidHex[8:12], uuidHex[12:16], uuidHex[16:20], uuidHex[20:32])
+
 	keyUUID, err := uuid.Parse(uuidFormatted)
 	if err != nil {
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "parse key uuid")
@@ -61,11 +64,13 @@ func (s *McpServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domai
 	}
 
 	var s3Ctx *domain.McpKeyS3Context
+
 	if vault.S3InstanceUuid != nil {
 		s3Instance, err := s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
 		if err != nil {
 			return domain.McpKeyContext{}, rerrors.Wrap(err, "get s3 instance")
 		}
+
 		s3Ctx = &domain.McpKeyS3Context{
 			Endpoint:  s3Instance.Endpoint,
 			Region:    s3Instance.Region,

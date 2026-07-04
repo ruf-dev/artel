@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaultID uuid.UUID) error {
@@ -25,5 +24,6 @@ func (s *McpServiceImpl) SetKeyAccess(ctx context.Context, keyID uuid.UUID, vaul
 	if err != nil {
 		return rerrors.Wrap(err, "set mcp key access")
 	}
+
 	return nil
 }

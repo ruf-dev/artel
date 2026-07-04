@@ -10,6 +10,7 @@ import (
 
 func TestEncryptDecryptRoundTrip(t *testing.T) {
 	key := make([]byte, 32)
+
 	_, err := rand.Read(key)
 	if err != nil {
 		t.Fatal(err)

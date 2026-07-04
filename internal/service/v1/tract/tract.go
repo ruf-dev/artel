@@ -6,12 +6,11 @@ import (
 	"regexp"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 // builtinMcpName is the Mcp sentinel value for builtin (vault) tool actions — "artel" per the
@@ -100,9 +99,11 @@ func (s *Service) GetTract(ctx context.Context, id uuid.UUID) (domain.Tract, err
 	if err != nil {
 		return domain.Tract{}, rerrors.Wrap(err, "error getting tract")
 	}
+
 	if !result.Valid {
 		return domain.Tract{}, rerrors.Wrap(user_errors.NotFound)
 	}
+
 	if result.V.UserUuid != uc.UserUuid {
 		return domain.Tract{}, rerrors.Wrap(user_errors.TractNotOwned)
 	}
@@ -120,6 +121,7 @@ func (s *Service) ListTracts(ctx context.Context) ([]domain.Tract, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing tracts")
 	}
+
 	return tracts, nil
 }
 
@@ -146,6 +148,7 @@ func (s *Service) UpdateTract(ctx context.Context, id uuid.UUID, name string, de
 	if err != nil {
 		return domain.Tract{}, nil, rerrors.Wrap(err, "error listing tract trigger links")
 	}
+
 	schemas := make([]domain.ToolSchema, len(links))
 	for i, link := range links {
 		schemas[i] = link.Trigger.PayloadSchema
@@ -173,6 +176,7 @@ func (s *Service) SetTractEnabled(ctx context.Context, id uuid.UUID, enabled boo
 	if err != nil {
 		return rerrors.Wrap(err, "error setting tract enabled")
 	}
+
 	return nil
 }
 
@@ -186,6 +190,7 @@ func (s *Service) DeleteTract(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting tract")
 	}
+
 	return nil
 }
 
@@ -193,12 +198,14 @@ func (s *Service) DeleteTract(ctx context.Context, id uuid.UUID) error {
 // visibility rule. Pure — no repo access.
 func validateShape(def domain.TractDefinition) error {
 	ids := map[string]struct{}{}
+
 	err := walkIdsAndShape(def.Steps, ids)
 	if err != nil {
 		return err
 	}
 
 	_, err = checkVisibility(def.Steps, map[string]struct{}{})
+
 	return err
 }
 
@@ -220,6 +227,7 @@ func walkIdsAndShape(steps []domain.TractStep, ids map[string]struct{}) error {
 			if err != nil {
 				return err
 			}
+
 			err = walkIdsAndShape(step.Else, ids)
 			if err != nil {
 				return err
@@ -231,6 +239,7 @@ func walkIdsAndShape(steps []domain.TractStep, ids map[string]struct{}) error {
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -243,7 +252,9 @@ func validateStepId(id string, ids map[string]struct{}) error {
 	if exists {
 		return rerrors.Wrap(user_errors.TractStepIdDuplicate, id)
 	}
+
 	ids[id] = struct{}{}
+
 	return nil
 }
 
@@ -253,18 +264,22 @@ func validateStepShape(step domain.TractStep) error {
 		if len(step.Conditions) > 0 || len(step.Then) > 0 || len(step.Else) > 0 || len(step.Steps) > 0 {
 			return rerrors.Wrap(user_errors.TractConditionsOnNonBranch, step.Id)
 		}
+
 		if step.Mcp == "" || step.Tool == "" {
 			return rerrors.Wrap(user_errors.TractToolNotFound, step.Id)
 		}
+
 		return nil
 
 	case stepTypeCondition:
 		if len(step.Params) > 0 || step.Mcp != "" || step.Tool != "" || step.ConnectionUuid != uuid.Nil || len(step.Steps) > 0 {
 			return rerrors.Wrap(user_errors.TractParamsOnNonAction, step.Id)
 		}
+
 		if len(step.Conditions) == 0 {
 			return rerrors.Wrap(user_errors.TractConditionsOnNonBranch, fmt.Sprintf("%s: condition step requires at least one condition", step.Id))
 		}
+
 		return nil
 
 	case stepTypeParallel, stepTypeGroup:
@@ -272,9 +287,11 @@ func validateStepShape(step domain.TractStep) error {
 			len(step.Conditions) > 0 || len(step.Then) > 0 || len(step.Else) > 0 {
 			return rerrors.Wrap(user_errors.TractParamsOnNonAction, step.Id)
 		}
+
 		if len(step.Steps) == 0 {
 			return rerrors.Wrap(user_errors.TractUnknownStepType, fmt.Sprintf("%s: %s step requires at least one child step", step.Id, step.Type))
 		}
+
 		return nil
 
 	default:
@@ -294,6 +311,7 @@ func checkVisibility(steps []domain.TractStep, visible map[string]struct{}) (map
 	for id := range visible {
 		local[id] = struct{}{}
 	}
+
 	produced := map[string]struct{}{}
 
 	for _, step := range steps {
@@ -312,25 +330,31 @@ func checkVisibility(steps []domain.TractStep, visible map[string]struct{}) (map
 			if err != nil {
 				return nil, err
 			}
+
 			_, err = checkVisibility(step.Else, local)
 			if err != nil {
 				return nil, err
 			}
+
 			local[step.Id] = struct{}{}
 			produced[step.Id] = struct{}{}
 
 		case stepTypeParallel:
 			fannedIn := map[string]struct{}{}
+
 			for _, lane := range step.Steps {
 				laneSteps := []domain.TractStep{lane}
+
 				laneProduced, err := checkVisibility(laneSteps, local)
 				if err != nil {
 					return nil, err
 				}
+
 				for id := range laneProduced {
 					fannedIn[id] = struct{}{}
 				}
 			}
+
 			for id := range fannedIn {
 				local[id] = struct{}{}
 				produced[id] = struct{}{}
@@ -341,6 +365,7 @@ func checkVisibility(steps []domain.TractStep, visible map[string]struct{}) (map
 			if err != nil {
 				return nil, err
 			}
+
 			for id := range groupProduced {
 				local[id] = struct{}{}
 				produced[id] = struct{}{}
@@ -356,6 +381,7 @@ func checkStepRefs(step domain.TractStep, visible map[string]struct{}) error {
 	for _, v := range step.Params {
 		sources = append(sources, v)
 	}
+
 	for _, c := range step.Conditions {
 		sources = append(sources, c.Left, c.Right)
 	}
@@ -371,6 +397,7 @@ func checkStepRefs(step domain.TractStep, visible map[string]struct{}) error {
 			if err != nil {
 				return err
 			}
+
 			if base == reservedStepId {
 				continue
 			}
@@ -381,6 +408,7 @@ func checkStepRefs(step domain.TractStep, visible map[string]struct{}) error {
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -406,6 +434,7 @@ func walkActions(steps []domain.TractStep, fn func(domain.TractStep) error) erro
 			if err != nil {
 				return err
 			}
+
 			err = walkActions(step.Else, fn)
 			if err != nil {
 				return err
@@ -417,6 +446,7 @@ func walkActions(steps []domain.TractStep, fn func(domain.TractStep) error) erro
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -425,9 +455,11 @@ func (s *Service) validateActionTool(ctx context.Context, ownerUuid uuid.UUID, s
 		if !s.toolExecutor.IsBuiltinTool(step.Tool) {
 			return rerrors.Wrap(user_errors.TractToolNotFound, step.Id)
 		}
+
 		if step.ConnectionUuid != uuid.Nil {
 			return rerrors.Wrap(user_errors.TractConnectionForbidden, step.Id)
 		}
+
 		return nil
 	}
 
@@ -435,6 +467,7 @@ func (s *Service) validateActionTool(ctx context.Context, ownerUuid uuid.UUID, s
 	if err != nil {
 		return rerrors.Wrap(err, "error checking tract action tool")
 	}
+
 	if !tool.Valid {
 		return rerrors.Wrap(user_errors.TractToolNotFound, step.Id)
 	}
@@ -447,9 +480,11 @@ func (s *Service) validateActionTool(ctx context.Context, ownerUuid uuid.UUID, s
 	if err != nil {
 		return rerrors.Wrap(err, "error getting external connection")
 	}
+
 	if conn.UserUuid != ownerUuid {
 		return rerrors.Wrap(user_errors.TractConnectionNotOwned, step.Id)
 	}
+
 	return nil
 }
 
@@ -468,28 +503,34 @@ func checkTriggerFieldWarnings(def domain.TractDefinition, schemas []domain.Tool
 	}
 
 	seen := map[string]struct{}{}
+
 	var warnings []string
+
 	for _, field := range fields {
 		_, already := seen[field]
 		if already {
 			continue
 		}
+
 		seen[field] = struct{}{}
 
 		if !anySchemaDeclaresField(schemas, field) {
 			warnings = append(warnings, fmt.Sprintf("template references trigger.%s, which is not declared by any linked trigger's payload schema", field))
 		}
 	}
+
 	return warnings
 }
 
 func collectTriggerFields(steps []domain.TractStep) []string {
 	var fields []string
+
 	for _, step := range steps {
 		var sources []string
 		for _, v := range step.Params {
 			sources = append(sources, v)
 		}
+
 		for _, c := range step.Conditions {
 			sources = append(sources, c.Left, c.Right)
 		}
@@ -499,11 +540,13 @@ func collectTriggerFields(steps []domain.TractStep) []string {
 			if err != nil {
 				continue
 			}
+
 			for _, ref := range refs {
 				base, segments, err := splitRef(ref)
 				if err != nil || base != reservedStepId || len(segments) == 0 || segments[0].isIndex {
 					continue
 				}
+
 				fields = append(fields, segments[0].field)
 			}
 		}
@@ -512,6 +555,7 @@ func collectTriggerFields(steps []domain.TractStep) []string {
 		fields = append(fields, collectTriggerFields(step.Else)...)
 		fields = append(fields, collectTriggerFields(step.Steps)...)
 	}
+
 	return fields
 }
 
@@ -522,5 +566,6 @@ func anySchemaDeclaresField(schemas []domain.ToolSchema, field string) bool {
 			return true
 		}
 	}
+
 	return false
 }

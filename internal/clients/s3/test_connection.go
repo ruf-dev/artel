@@ -18,5 +18,6 @@ func TestConnection(ctx context.Context, cfg Config) error {
 	if err != nil {
 		return rerrors.Wrap(err, "list buckets")
 	}
+
 	return nil
 }

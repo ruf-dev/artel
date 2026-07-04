@@ -3,9 +3,8 @@ package mcp_keys_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (m *McpKeysImpl) ListUserMcpKeys(ctx context.Context, _ *pb.ListUserMcpKeys_Request) (*pb.ListUserMcpKeys_Response, error) {
@@ -15,6 +14,7 @@ func (m *McpKeysImpl) ListUserMcpKeys(ctx context.Context, _ *pb.ListUserMcpKeys
 	}
 
 	keyInfos := make([]*pb.McpKeyInfo, 0, len(keys))
+
 	for _, key := range keys {
 		keyInfo := &pb.McpKeyInfo{
 			Id:         key.Uuid.String(),
@@ -26,6 +26,7 @@ func (m *McpKeysImpl) ListUserMcpKeys(ctx context.Context, _ *pb.ListUserMcpKeys
 		if key.LastAccessedAt != nil {
 			keyInfo.LastAccessedAt = key.LastAccessedAt.String()
 		}
+
 		keyInfos = append(keyInfos, keyInfo)
 	}
 

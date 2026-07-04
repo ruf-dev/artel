@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TractsImpl) UnlinkTrigger(ctx context.Context, req *pb.UnlinkTrigger_Request) (*pb.UnlinkTrigger_Response, error) {

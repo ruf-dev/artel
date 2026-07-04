@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) listConnectedMoms(ctx context.Context, keyUuid uuid.UUID) (domain.ToolExecResult, error) {
@@ -17,11 +16,13 @@ func (s *McpServiceImpl) listConnectedMoms(ctx context.Context, keyUuid uuid.UUI
 	}
 
 	moms := make([]map[string]string, 0, len(connectors))
+
 	for _, c := range connectors {
 		def, err := s.mcpDefinitions.Get(ctx, c.McpName)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "get mcp definition")
 		}
+
 		if !def.Valid {
 			continue
 		}

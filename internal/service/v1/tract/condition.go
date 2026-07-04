@@ -7,10 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 // evaluate renders both sides of cond through r and compares them per cond.Op. It returns the
@@ -21,6 +20,7 @@ func evaluate(cond domain.TractCondition, r *resolver) (bool, interface{}, inter
 	if err != nil {
 		return false, nil, nil, err
 	}
+
 	right, err := r.render(cond.Right)
 	if err != nil {
 		return false, nil, nil, err
@@ -30,6 +30,7 @@ func evaluate(cond domain.TractCondition, r *resolver) (bool, interface{}, inter
 	if err != nil {
 		return false, left, right, err
 	}
+
 	return result, left, right, nil
 }
 
@@ -44,12 +45,14 @@ func EvaluateTriggerFilters(payload json.RawMessage, filters []domain.TractCondi
 	}
 
 	var trigger interface{}
+
 	err := json.Unmarshal(payload, &trigger)
 	if err != nil {
 		trigger = map[string]interface{}{}
 	}
 
 	r := &resolver{trigger: trigger, outputs: map[string]interface{}{}}
+
 	return evaluateAll(filters, r)
 }
 
@@ -61,10 +64,12 @@ func evaluateAll(conditions []domain.TractCondition, r *resolver) (bool, error) 
 		if err != nil {
 			return false, err
 		}
+
 		if !result {
 			return false, nil
 		}
 	}
+
 	return true, nil
 }
 
@@ -98,6 +103,7 @@ func numericValue(v interface{}) (float64, bool) {
 		if err != nil {
 			return 0, false
 		}
+
 		return f, true
 	default:
 		return 0, false
@@ -107,15 +113,18 @@ func numericValue(v interface{}) (float64, bool) {
 func compareEqual(a, b interface{}) bool {
 	af, aok := numericValue(a)
 	bf, bok := numericValue(b)
+
 	if aok && bok {
 		return af == bf
 	}
+
 	return stringify(a) == stringify(b)
 }
 
 func compareNumeric(op string, a, b interface{}) (bool, error) {
 	af, aok := numericValue(a)
 	bf, bok := numericValue(b)
+
 	if !aok || !bok {
 		return false, rerrors.Wrap(user_errors.TractMalformedTemplate, "numeric comparison requires numeric operands")
 	}
@@ -142,8 +151,10 @@ func compareContains(a, b interface{}) bool {
 				return true
 			}
 		}
+
 		return false
 	}
+
 	return strings.Contains(stringify(a), stringify(b))
 }
 
@@ -152,6 +163,7 @@ func compareGlob(a, b interface{}) (bool, error) {
 	if err != nil {
 		return false, rerrors.Wrap(user_errors.TractMalformedTemplate, "invalid glob pattern: "+err.Error())
 	}
+
 	return matched, nil
 }
 
@@ -160,5 +172,6 @@ func compareRegex(a, b interface{}) (bool, error) {
 	if err != nil {
 		return false, rerrors.Wrap(user_errors.TractMalformedTemplate, "invalid regex: "+err.Error())
 	}
+
 	return matched, nil
 }

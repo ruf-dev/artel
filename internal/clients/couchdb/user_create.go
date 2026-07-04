@@ -7,9 +7,8 @@ import (
 	"strings"
 
 	kivik "github.com/go-kivik/kivik/v4"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (c *Client) CreateUser(ctx context.Context, username, password string, roles []string) error {
@@ -37,6 +36,7 @@ func (c *Client) CreateUser(ctx context.Context, username, password string, role
 		if strings.Contains(err.Error(), "locked") {
 			return rerrors.Wrap(user_errors.CouchDbAccountLocked)
 		}
+
 		return rerrors.Wrap(err, "creating user")
 	default:
 		return rerrors.Wrap(err, "creating user")

@@ -5,12 +5,11 @@ import (
 	"encoding/base64"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	"github.com/ruf-dev/artel/internal/clients/s3"
+	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/storage"
+	"go.redsock.ru/rerrors"
 )
 
 // ExecuteBuiltinToolForUser runs a builtin (vault) tool as userUuid rather than through an
@@ -24,9 +23,11 @@ func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid
 	if err != nil {
 		return "", rerrors.Wrap(err, "error listing vaults for user")
 	}
+
 	if len(memberVaults) == 0 {
 		return "", rerrors.Wrap(user_errors.NoVaultForBuiltinTool)
 	}
+
 	vault := memberVaults[0]
 
 	couchInstance, err := s.couchInstances.Get(ctx, vault.CouchInstanceUuid)
@@ -37,6 +38,7 @@ func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid
 	client := couchdb.NewLiveSyncClient(couchInstance.Url, vault.CouchDBName, couchInstance.Username, couchInstance.Password)
 
 	var bucket storage.BinaryStore
+
 	if vault.S3InstanceUuid != nil {
 		s3Instance, err := s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
 		if err != nil {
@@ -51,10 +53,12 @@ func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid
 			UseSSL:    s3Instance.UseSSL,
 			PathStyle: s3Instance.PathStyle,
 		}
+
 		s3cli, err := s3client.New(cfg, vault.S3BucketName)
 		if err != nil {
 			return "", rerrors.Wrap(err, "error initializing s3 client")
 		}
+
 		bucket = s3cli
 	}
 
@@ -66,8 +70,10 @@ func (s *McpServiceImpl) ExecuteBuiltinToolForUser(ctx context.Context, userUuid
 	if result.Text != "" {
 		return result.Text, nil
 	}
+
 	if len(result.Data) > 0 {
 		return base64.StdEncoding.EncodeToString(result.Data), nil
 	}
+
 	return "", nil
 }

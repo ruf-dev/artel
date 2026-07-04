@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -32,6 +33,7 @@ func newFakeTractsRepo() *fakeTractsRepo {
 		runs:  map[uuid.UUID]domain.TractRun{},
 		steps: map[uuid.UUID]domain.TractRunStep{},
 	}
+
 	return repo
 }
 
@@ -65,6 +67,7 @@ func (f *fakeTractsRepo) InsertRun(_ context.Context, run domain.TractRun) (doma
 
 	run.Uuid = uuid.New()
 	f.runs[run.Uuid] = run
+
 	return run, nil
 }
 
@@ -76,6 +79,7 @@ func (f *fakeTractsRepo) UpdateRunStatus(_ context.Context, id uuid.UUID, status
 	run.Status = status
 	run.Error = errMsg
 	f.runs[id] = run
+
 	return nil
 }
 
@@ -87,7 +91,9 @@ func (f *fakeTractsRepo) GetRun(_ context.Context, id uuid.UUID) (sql.Null[domai
 	if !ok {
 		return sql.Null[domain.TractRun]{}, nil
 	}
+
 	result := sql.Null[domain.TractRun]{V: run, Valid: true}
+
 	return result, nil
 }
 
@@ -105,6 +111,7 @@ func (f *fakeTractsRepo) InsertRunStep(_ context.Context, step domain.TractRunSt
 
 	step.Uuid = uuid.New()
 	f.steps[step.Uuid] = step
+
 	return step, nil
 }
 
@@ -117,6 +124,7 @@ func (f *fakeTractsRepo) UpdateRunStepFinish(_ context.Context, id uuid.UUID, st
 	step.Output = output
 	step.Error = errMsg
 	f.steps[id] = step
+
 	return nil
 }
 
@@ -130,6 +138,7 @@ func (f *fakeTractsRepo) ListRunStepsByRun(_ context.Context, runUuid uuid.UUID)
 			steps = append(steps, step)
 		}
 	}
+
 	return steps, nil
 }
 
@@ -142,11 +151,13 @@ func (f *fakeTractsRepo) stepsByStepId(runUuid uuid.UUID) map[string]domain.Trac
 	defer f.mu.Unlock()
 
 	result := map[string]domain.TractRunStep{}
+
 	for _, step := range f.steps {
 		if step.RunUuid == runUuid {
 			result[step.StepId] = step
 		}
 	}
+
 	return result
 }
 
@@ -157,11 +168,13 @@ type fakeExternalConnsRepo struct {
 
 func newFakeExternalConnsRepo() *fakeExternalConnsRepo {
 	repo := &fakeExternalConnsRepo{conns: map[uuid.UUID]domain.ExternalConnection{}}
+
 	return repo
 }
 
 func (f *fakeExternalConnsRepo) Upsert(_ context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error) {
 	f.conns[conn.Uuid] = conn
+
 	return conn, nil
 }
 
@@ -170,6 +183,7 @@ func (f *fakeExternalConnsRepo) GetByID(_ context.Context, id uuid.UUID) (domain
 	if !ok {
 		return domain.ExternalConnection{}, sql.ErrNoRows
 	}
+
 	return conn, nil
 }
 
@@ -193,6 +207,7 @@ type fakeMcpDefsRepo struct {
 
 func newFakeMcpDefsRepo() *fakeMcpDefsRepo {
 	repo := &fakeMcpDefsRepo{tools: map[string]map[string]bool{}}
+
 	return repo
 }
 
@@ -200,6 +215,7 @@ func (f *fakeMcpDefsRepo) addTool(mcpName string, toolName string) {
 	if f.tools[mcpName] == nil {
 		f.tools[mcpName] = map[string]bool{}
 	}
+
 	f.tools[mcpName][toolName] = true
 }
 
@@ -223,8 +239,10 @@ func (f *fakeMcpDefsRepo) GetTool(_ context.Context, mcpName string, toolName st
 	if !f.tools[mcpName][toolName] {
 		return sql.Null[domain.McpToolDef]{}, nil
 	}
+
 	tool := domain.McpToolDef{ApiDescription: domain.ToolApiDescription{Name: toolName}}
 	result := sql.Null[domain.McpToolDef]{V: tool, Valid: true}
+
 	return result, nil
 }
 
@@ -232,9 +250,11 @@ func (f *fakeMcpDefsRepo) ListAllTools(_ context.Context) ([]domain.McpToolRef, 
 	return nil, nil
 }
 
-var _ repository.TractsRepo = (*fakeTractsRepo)(nil)
-var _ repository.ExternalConnectionRepo = (*fakeExternalConnsRepo)(nil)
-var _ repository.McpDefinitionsRepo = (*fakeMcpDefsRepo)(nil)
+var (
+	_ repository.TractsRepo             = (*fakeTractsRepo)(nil)
+	_ repository.ExternalConnectionRepo = (*fakeExternalConnsRepo)(nil)
+	_ repository.McpDefinitionsRepo     = (*fakeMcpDefsRepo)(nil)
+)
 
 // fakeToolExecutor is a controllable ToolExecutor for engine/validation tests.
 type fakeToolExecutor struct {
@@ -249,7 +269,9 @@ func newFakeToolExecutor(builtinNames ...string) *fakeToolExecutor {
 	for _, name := range builtinNames {
 		names[name] = true
 	}
+
 	executor := &fakeToolExecutor{builtins: names}
+
 	return executor
 }
 
@@ -260,16 +282,19 @@ func (f *fakeToolExecutor) IsBuiltinTool(toolName string) bool {
 func (f *fakeToolExecutor) recordCall(name string) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
+
 	f.calls = append(f.calls, name)
 }
 
 func (f *fakeToolExecutor) ExecuteBuiltinTool(ctx context.Context, _ uuid.UUID, toolName string, params map[string]interface{}) (string, error) {
 	f.recordCall(toolName)
+
 	return dispatchFakeTool(ctx, toolName, params)
 }
 
 func (f *fakeToolExecutor) ExecuteMomTool(ctx context.Context, _ uuid.UUID, _ string, toolName string, params map[string]interface{}) (string, error) {
 	f.recordCall(toolName)
+
 	return dispatchFakeTool(ctx, toolName, params)
 }
 
@@ -290,7 +315,7 @@ func dispatchFakeTool(ctx context.Context, toolName string, params map[string]in
 	case "slow":
 		select {
 		case <-ctx.Done():
-			return "", ctx.Err()
+			return "", rerrors.Wrap(ctx.Err())
 		case <-time.After(5 * time.Second):
 			return "", errFakeToolTimedOut
 		}
@@ -298,10 +323,12 @@ func dispatchFakeTool(ctx context.Context, toolName string, params map[string]in
 		return "plain text result, not json", nil
 	default:
 		result := map[string]interface{}{"ok": true, "tool": toolName, "params": params}
+
 		data, err := json.Marshal(result)
 		if err != nil {
-			return "", err
+			return "", rerrors.Wrap(err, "failed to marshal result")
 		}
+
 		return string(data), nil
 	}
 }

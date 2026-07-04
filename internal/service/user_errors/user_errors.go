@@ -3,10 +3,9 @@ package user_errors
 import (
 	"net/http"
 
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc/codes"
-
-	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 )
 
 var (
@@ -22,12 +21,12 @@ var (
 	McpKeyRevoked   = rerrors.New("mcp key revoked", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusBadRequest))
 	McpInvalidToken = rerrors.New("invalid mcp token", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusBadRequest))
 
-	// auth
+	// auth.
 	SessionExpired         = rerrors.New("session expired", codes.Unauthenticated)
 	InvalidTelegramToken   = rerrors.New("invalid telegram token", codes.Unauthenticated)
 	UnsupportedLoginMethod = rerrors.New("unsupported login method", codes.InvalidArgument)
 
-	// subscription
+	// subscription.
 
 	NoActiveSubscription = rerrors.New("no active subscription",
 		codes.FailedPrecondition,
@@ -35,26 +34,26 @@ var (
 		rerrors.WithPreconditionFailure("SUB", "subscription", pb.UserErrors_NoSubscription.String()),
 	)
 
-	// admin
+	// admin.
 	NotAdmin = rerrors.New("not an administrator", codes.PermissionDenied)
 
-	// feature flags
+	// feature flags.
 	NotesNotEnabled = rerrors.New("notes are not enabled for your account", codes.PermissionDenied)
 
-	// vault
+	// vault.
 	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)
 	InviteLinkRevoked  = rerrors.New("invite link has been revoked", codes.FailedPrecondition)
 	InvalidInviteToken = rerrors.New("invalid invite token", codes.NotFound)
 
-	// middleware
+	// middleware.
 	NoMetadataInContext = rerrors.New("error getting metadata from context", codes.FailedPrecondition)
 	NoAuthHeader        = rerrors.New("error getting auth header", codes.Unauthenticated)
 	DebugNotSupported   = rerrors.New("debug not supported", codes.Unimplemented)
 
-	// task tracker
+	// task tracker.
 	TrelloInvalidCredentials = rerrors.New("invalid trello api key or token", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
 
-	// mcp tool argument validation
+	// mcp tool argument validation.
 	McpPathRequired      = rerrors.New("path is required and must be a string", codes.InvalidArgument)
 	McpContentRequired   = rerrors.New("content is required and must be a string", codes.InvalidArgument)
 	McpOldPathRequired   = rerrors.New("old_path is required and must be a string", codes.InvalidArgument)
@@ -65,7 +64,7 @@ var (
 	McpSubjectRequired   = rerrors.New("subject is required and must be a string", codes.InvalidArgument)
 	McpBodyRequired      = rerrors.New("body is required and must be a string", codes.InvalidArgument)
 
-	// mcp executor
+	// mcp executor.
 	McpEmailActionMissing          = rerrors.New("email executor: action must have imap or smtp discriminator", codes.InvalidArgument)
 	McpUnknownImapOperation        = rerrors.New("email executor: unknown imap operation", codes.InvalidArgument)
 	McpUnknownSmtpOperation        = rerrors.New("email executor: unknown smtp operation", codes.InvalidArgument)
@@ -77,17 +76,17 @@ var (
 	McpCredentialsProviderMismatch = rerrors.New("http executor: linked external connection provider does not match tool's declared credentials provider", codes.FailedPrecondition)
 	McpHttpRequestFailed           = rerrors.New("http executor: upstream request failed", codes.Unavailable)
 
-	// livesync file-type constraints
+	// livesync file-type constraints.
 	UseReadNoteForTextFiles       = rerrors.New("use read_note for text files", codes.FailedPrecondition)
 	UseDeleteNoteForTextFiles     = rerrors.New("use delete_note for text files", codes.FailedPrecondition)
 	UseMoveNoteForTextFiles       = rerrors.New("use move_note for text files", codes.FailedPrecondition)
 	ChunkedBinaryMoveNotSupported = rerrors.New("move of chunked binary files is not supported; use Obsidian to move large files", codes.FailedPrecondition)
 
-	// imap
+	// imap.
 	InvalidEmailId       = rerrors.New("invalid email id", codes.InvalidArgument)
 	EmailMessageNotFound = rerrors.New("message not found", codes.NotFound)
 
-	// external connections
+	// external connections.
 	GoogleNotConnected = rerrors.New("google account not connected", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusPreconditionFailed))
 	InvalidOAuthState  = rerrors.New("invalid or expired oauth state", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
 
@@ -96,18 +95,18 @@ var (
 		rerrors.WithHttpStatus(http.StatusFailedDependency),
 		rerrors.WithPreconditionFailure("COUCHDB", "instance", pb.UserErrors_NoCouchDbInstance.String()))
 
-	// s3 / binary storage
+	// s3 / binary storage.
 	NoS3BucketLinked = rerrors.New("vault has no linked S3 bucket; this operation is unavailable for non-markdown files",
 		codes.FailedPrecondition,
 		rerrors.WithPreconditionFailure("S3", "bucket", pb.UserErrors_NoS3BucketLinked.String()))
 
 	McpCrossBackendMoveNotSupported = rerrors.New("cannot move a file across the markdown/binary storage boundary in one call; write to the new path then delete the old path instead", codes.InvalidArgument)
 
-	// gitlab webhook
+	// gitlab webhook.
 	GitlabWebhookSecretMismatch     = rerrors.New("gitlab webhook: token does not match configured secret", codes.PermissionDenied, rerrors.WithHttpStatus(http.StatusUnauthorized))
 	GitlabWebhookConnectionNotFound = rerrors.New("gitlab webhook: no external connection found for this webhook id", codes.NotFound, rerrors.WithHttpStatus(http.StatusNotFound))
 
-	// gitlab connection
+	// gitlab connection.
 	InvalidInstanceURL       = rerrors.New("invalid gitlab instance url", codes.InvalidArgument, rerrors.WithHttpStatus(http.StatusBadRequest))
 	GitlabValidationFailed   = rerrors.New("could not verify gitlab token against instance", codes.FailedPrecondition, rerrors.WithHttpStatus(http.StatusPreconditionFailed))
 	GitlabConnectionNotFound = rerrors.New("no gitlab connection found", codes.NotFound, rerrors.WithHttpStatus(http.StatusNotFound))

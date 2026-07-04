@@ -11,7 +11,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
@@ -48,15 +47,18 @@ func New(baseCtx context.Context, triggers repository.TriggersRepo, tractSvc ser
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+
 		return
 	}
 
 	ctx := r.Context()
 
 	rawId := strings.TrimPrefix(r.URL.Path, pathPrefix)
+
 	triggerUuid, err := uuid.Parse(rawId)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+
 		return
 	}
 
@@ -64,34 +66,43 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: trigger lookup failed")
 		w.WriteHeader(http.StatusNotFound)
+
 		return
 	}
+
 	if !result.Valid {
 		log.Warn().Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: no trigger found for this webhook id")
 		w.WriteHeader(http.StatusNotFound)
+
 		return
 	}
+
 	trigger := result.V
 
 	token := r.Header.Get("X-Tract-Token")
 	if token == "" {
 		token = r.Header.Get("X-Gitlab-Token")
 	}
+
 	tokenHash := sha256.Sum256([]byte(token))
+
 	secretMatches := token != "" && subtle.ConstantTimeCompare(tokenHash[:], trigger.SecretHash) == 1
 	if !secretMatches {
 		log.Warn().Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: token does not match configured secret")
 		w.WriteHeader(http.StatusUnauthorized)
+
 		return
 	}
 
 	defer utils.CloseWithLog(r.Body, "tract webhook request body")
 
 	limitedBody := io.LimitReader(r.Body, maxBodyBytes)
+
 	body, err := io.ReadAll(limitedBody)
 	if err != nil {
 		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: failed to read body")
 		w.WriteHeader(http.StatusOK)
+
 		return
 	}
 
@@ -99,6 +110,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// which (if any) linked tracts matched their filters.
 	if !trigger.Enabled {
 		w.WriteHeader(http.StatusOK)
+
 		return
 	}
 
@@ -106,6 +118,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: failed to normalize payload")
 		w.WriteHeader(http.StatusOK)
+
 		return
 	}
 
@@ -113,6 +126,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: failed to list linked tracts")
 		w.WriteHeader(http.StatusOK)
+
 		return
 	}
 
@@ -124,8 +138,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		matched, err := tract.EvaluateTriggerFilters(normalized, link.Filters)
 		if err != nil {
 			log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Str("tract_uuid", link.Tract.Uuid.String()).Msg("tract webhook: failed to evaluate link filters")
+
 			continue
 		}
+
 		if !matched {
 			continue
 		}

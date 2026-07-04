@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) RemoveConnector(ctx context.Context, keyID uuid.UUID, mcpName string) error {
@@ -20,6 +19,7 @@ func (s *McpServiceImpl) RemoveConnector(ctx context.Context, keyID uuid.UUID, m
 	if err != nil {
 		return rerrors.Wrap(err, "get mcp key")
 	}
+
 	if key.UserUuid != uc.UserUuid {
 		return rerrors.Wrap(user_errors.NotFound, "mcp key not found")
 	}
@@ -28,5 +28,6 @@ func (s *McpServiceImpl) RemoveConnector(ctx context.Context, keyID uuid.UUID, m
 	if err != nil {
 		return rerrors.Wrap(err, "delete mcp connector")
 	}
+
 	return nil
 }

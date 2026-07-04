@@ -23,6 +23,7 @@ func newLoggingDB(db *sql.DB) *loggingDB {
 
 func (l *loggingDB) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	q := trimQuery(query)
+
 	ctx, span := pgTracer.Start(ctx, "pg.exec")
 	defer span.End()
 
@@ -36,6 +37,7 @@ func (l *loggingDB) ExecContext(ctx context.Context, query string, args ...inter
 	} else {
 		log.Ctx(ctx).Debug().Str("query", q).Dur("dur", elapsed).Msg("pg")
 	}
+
 	return res, err
 }
 
@@ -45,6 +47,7 @@ func (l *loggingDB) PrepareContext(ctx context.Context, query string) (*sql.Stmt
 
 func (l *loggingDB) QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
 	q := trimQuery(query)
+
 	ctx, span := pgTracer.Start(ctx, "pg.query")
 	defer span.End()
 
@@ -58,11 +61,13 @@ func (l *loggingDB) QueryContext(ctx context.Context, query string, args ...inte
 	} else {
 		log.Ctx(ctx).Debug().Str("query", q).Dur("dur", elapsed).Msg("pg")
 	}
+
 	return rows, err
 }
 
 func (l *loggingDB) QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row {
 	q := trimQuery(query)
+
 	ctx, span := pgTracer.Start(ctx, "pg.query_row")
 	defer span.End()
 
@@ -70,6 +75,7 @@ func (l *loggingDB) QueryRowContext(ctx context.Context, query string, args ...i
 	row := l.db.QueryRowContext(ctx, query, args...)
 	elapsed := time.Since(start)
 	log.Ctx(ctx).Debug().Str("query", q).Dur("dur", elapsed).Msg("pg")
+
 	return row
 }
 
@@ -78,5 +84,6 @@ func trimQuery(q string) string {
 	if len(q) > 120 {
 		q = q[:120]
 	}
+
 	return q
 }

@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) ListKeys(ctx context.Context, vaultID uuid.UUID) ([]domain.McpKey, error) {
@@ -14,5 +13,6 @@ func (s *McpServiceImpl) ListKeys(ctx context.Context, vaultID uuid.UUID) ([]dom
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list mcp keys")
 	}
+
 	return keys, nil
 }

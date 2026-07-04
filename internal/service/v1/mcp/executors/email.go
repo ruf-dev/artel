@@ -4,12 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/imap"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 const defaultEmailListLimit = 20
@@ -40,10 +39,12 @@ func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation
 		if err != nil {
 			return "", rerrors.Wrap(err, "list imap folders")
 		}
+
 		return marshalResult(folders)
 
 	case domain.IMAP_OP_LIST_MESSAGES:
 		limit := defaultEmailListLimit
+
 		if raw, ok := params["limit"]; ok {
 			switch v := raw.(type) {
 			case float64:
@@ -52,10 +53,12 @@ func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation
 				limit = v
 			}
 		}
+
 		emails, err := c.ListEmails(ctx, limit)
 		if err != nil {
 			return "", rerrors.Wrap(err, "list emails")
 		}
+
 		return marshalResult(emails)
 
 	case domain.IMAP_OP_FETCH_MESSAGE:
@@ -63,10 +66,12 @@ func (e *EmailExecutor) executeImap(ctx context.Context, op domain.ImapOperation
 		if !ok {
 			return "", user_errors.McpIdRequired
 		}
+
 		msg, err := c.ReadEmail(ctx, id)
 		if err != nil {
 			return "", rerrors.Wrap(err, "read email")
 		}
+
 		return marshalResult(msg)
 
 	default:
@@ -81,19 +86,24 @@ func (e *EmailExecutor) executeSmtp(ctx context.Context, op domain.SmtpOperation
 		if !ok {
 			return "", user_errors.McpToRequired
 		}
+
 		subject, ok := params["subject"].(string)
 		if !ok {
 			return "", user_errors.McpSubjectRequired
 		}
+
 		body, ok := params["body"].(string)
 		if !ok {
 			return "", user_errors.McpBodyRequired
 		}
+
 		c := smtp.New(creds.SmtpHost, creds.SmtpPort, creds.Username, creds.Password)
+
 		err := c.Send(ctx, to, subject, body)
 		if err != nil {
 			return "", rerrors.Wrap(err, "send email")
 		}
+
 		return "Email sent successfully", nil
 
 	default:
@@ -106,5 +116,6 @@ func marshalResult(v interface{}) (string, error) {
 	if err != nil {
 		return "", rerrors.Wrap(err, "marshal executor result")
 	}
+
 	return string(data), nil
 }

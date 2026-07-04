@@ -4,10 +4,9 @@ import (
 	"context"
 	"time"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 type PendingAuthCodesRepo struct {
@@ -30,6 +29,7 @@ func (r *PendingAuthCodesRepo) Create(ctx context.Context, code, rawToken, codeC
 	if err != nil {
 		return rerrors.Wrap(err, "create pending auth code")
 	}
+
 	return nil
 }
 
@@ -38,6 +38,7 @@ func (r *PendingAuthCodesRepo) Get(ctx context.Context, code string) (domain.Pen
 	if err != nil {
 		return domain.PendingAuthCode{}, rerrors.Wrap(err, "get pending auth code")
 	}
+
 	return domain.PendingAuthCode{
 		Code:          row.Code,
 		RawToken:      row.RawToken,
@@ -53,6 +54,7 @@ func (r *PendingAuthCodesRepo) Delete(ctx context.Context, code string) error {
 	if err != nil {
 		return rerrors.Wrap(err, "delete pending auth code")
 	}
+
 	return nil
 }
 
@@ -61,5 +63,6 @@ func (r *PendingAuthCodesRepo) DeleteExpired(ctx context.Context) error {
 	if err != nil {
 		return rerrors.Wrap(err, "delete expired pending auth codes")
 	}
+
 	return nil
 }

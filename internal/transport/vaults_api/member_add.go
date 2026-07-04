@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) AddMember(ctx context.Context, req *pb.AddMember_Request) (*pb.AddMember_Response, error) {
@@ -32,5 +31,6 @@ func (v *VaultsImpl) AddMember(ctx context.Context, req *pb.AddMember_Request) (
 	}
 
 	resp := &pb.AddMember_Response{}
+
 	return resp, nil
 }

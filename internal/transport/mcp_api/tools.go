@@ -43,6 +43,7 @@ type ResourceContent struct {
 
 func textResult(text string) ToolResult {
 	block := ContentBlock{Type: "text", Text: text}
+
 	return ToolResult{Content: []ContentBlock{block}}
 }
 
@@ -50,6 +51,7 @@ func toolResultFromExec(res domain.ToolExecResult) ToolResult {
 	if res.Data != nil {
 		return ToolResult{Content: []ContentBlock{buildContentBlock(res.Data, res.MimeType, res.ResourcePath)}}
 	}
+
 	return textResult(res.Text)
 }
 
@@ -78,11 +80,13 @@ func toolSchemaToWire(properties map[string]domain.ToolProperty, required []stri
 	for name, p := range properties {
 		props[name] = toolPropertyToWire(p)
 	}
+
 	schema := map[string]interface{}{
 		"type":       "object",
 		"properties": props,
 		"required":   required,
 	}
+
 	return schema
 }
 
@@ -98,6 +102,7 @@ func toolPropertyToWire(p domain.ToolProperty) map[string]interface{} {
 		for name, sub := range p.Properties {
 			nested[name] = toolPropertyToWire(sub)
 		}
+
 		wire["properties"] = nested
 		wire["required"] = p.Required
 	}
@@ -119,6 +124,7 @@ func buildContentBlock(data []byte, mimeType, path string) ContentBlock {
 		return ContentBlock{Type: "document", Data: b64, MimeType: mimeType}
 	default:
 		res := &ResourceContent{Uri: "file://" + path, MimeType: mimeType, Blob: b64}
+
 		return ContentBlock{Type: "resource", Resource: res}
 	}
 }

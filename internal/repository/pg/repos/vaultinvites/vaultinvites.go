@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -57,6 +56,7 @@ func (r *Repo) ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.Vau
 	for i, row := range rows {
 		result[i] = mapInvite(row)
 	}
+
 	return result, nil
 }
 
@@ -65,6 +65,7 @@ func (r *Repo) Revoke(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "revoke vault invite")
 	}
+
 	return nil
 }
 
@@ -84,5 +85,6 @@ func mapInvite(inv artel_q.VaultInvite) domain.VaultInvite {
 	if inv.RevokedAt.Valid {
 		d.RevokedAt = &inv.RevokedAt.Time
 	}
+
 	return d
 }

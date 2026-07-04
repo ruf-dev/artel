@@ -3,9 +3,8 @@ package task_trackers_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TaskTrackersImpl) ListTaskTrackers(ctx context.Context, _ *pb.ListTaskTrackers_Request) (*pb.ListTaskTrackers_Response, error) {

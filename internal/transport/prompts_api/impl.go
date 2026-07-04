@@ -6,6 +6,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
+	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
@@ -46,22 +47,26 @@ func (p *PromptsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc
 
 func (p *PromptsImpl) ListPrompts(ctx context.Context, req *pb.ListPrompts_Request) (*pb.ListPrompts_Response, error) {
 	var ids []string
+
 	for _, pid := range req.GetIds() {
 		if s, ok := promptIdToString[pid]; ok {
 			ids = append(ids, s)
 		}
 	}
 
-	prompts, total, err := p.promptSvc.ListPrompts(ctx, service.ListPromptsParams{
+	listPromptsParams := service.ListPromptsParams{
 		Ids:      ids,
 		Page:     req.GetPage(),
 		PageSize: req.GetPageSize(),
-	})
+	}
+
+	prompts, total, err := p.promptSvc.ListPrompts(ctx, listPromptsParams)
 	if err != nil {
-		return nil, err
+		return nil, rerrors.Wrap(err)
 	}
 
 	items := make([]*pb.PromptItem, 0, len(prompts))
+
 	for _, pr := range prompts {
 		pid := stringToPromptId[pr.Id]
 		items = append(items, &pb.PromptItem{

@@ -7,10 +7,9 @@ import (
 	"strings"
 
 	kivik "github.com/go-kivik/kivik/v4"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
+	"go.redsock.ru/rerrors"
 )
 
 type couchDBUser struct {
@@ -40,13 +39,16 @@ func (c *Client) getUserDoc(ctx context.Context, username string) (couchDBUser, 
 	defer utils.CloseWithLog(row, "get user response")
 
 	var u couchDBUser
+
 	err := row.ScanDoc(&u)
 	if err != nil {
 		if kivik.HTTPStatus(err) == http.StatusForbidden && strings.Contains(err.Error(), "locked") {
 			return couchDBUser{}, rerrors.Wrap(user_errors.CouchDbAccountLocked)
 		}
+
 		return couchDBUser{}, rerrors.Wrap(err, "scanning user doc")
 	}
+
 	return u, nil
 }
 
@@ -55,6 +57,7 @@ func (c *Client) GetUser(ctx context.Context, username string) (UserInfo, error)
 	if err != nil {
 		return UserInfo{}, err
 	}
+
 	return UserInfo{Name: u.Name, Roles: u.Roles}, nil
 }
 
@@ -65,16 +68,19 @@ func (c *Client) ListUsers(ctx context.Context) ([]UserListEntry, error) {
 	defer utils.CloseWithLog(rows, "list users response")
 
 	var users []UserListEntry
+
 	for rows.Next() {
 		id, err := rows.ID()
 		if err != nil {
 			continue
 		}
+
 		if !strings.HasPrefix(id, "org.couchdb.user:") {
 			continue
 		}
 
 		var doc couchDBUser
+
 		err = rows.ScanDoc(&doc)
 		if err != nil {
 			continue
@@ -88,6 +94,7 @@ func (c *Client) ListUsers(ctx context.Context) ([]UserListEntry, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "iterating user rows")
 	}
+
 	return users, nil
 }
 
@@ -114,8 +121,10 @@ func (c *Client) UpdateUser(ctx context.Context, username, password string, role
 		if kivik.HTTPStatus(err) == http.StatusForbidden && strings.Contains(err.Error(), "locked") {
 			return rerrors.Wrap(user_errors.CouchDbAccountLocked)
 		}
+
 		return rerrors.Wrap(err, "updating user")
 	}
+
 	return nil
 }
 
@@ -133,7 +142,9 @@ func (c *Client) DeleteUser(ctx context.Context, username string) error {
 		if kivik.HTTPStatus(err) == http.StatusForbidden && strings.Contains(err.Error(), "locked") {
 			return rerrors.Wrap(user_errors.CouchDbAccountLocked)
 		}
+
 		return rerrors.Wrap(err, "deleting user")
 	}
+
 	return nil
 }

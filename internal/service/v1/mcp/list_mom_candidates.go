@@ -4,11 +4,10 @@ import (
 	"context"
 	"sort"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCandidate, error) {
@@ -40,6 +39,7 @@ func (s *McpServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCan
 	}
 
 	candidates := make([]domain.MomCandidate, 0, len(defs))
+
 	for _, def := range defs {
 		var matched []domain.ExternalConnectionMeta
 		for _, provider := range requiredProviders(def) {
@@ -60,6 +60,7 @@ func (s *McpServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCan
 		if iHas != jHas {
 			return iHas
 		}
+
 		return candidates[i].Name < candidates[j].Name
 	})
 
@@ -70,13 +71,16 @@ func (s *McpServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCan
 // that def's tools need credentials for.
 func requiredProviders(def domain.McpDefinition) []string {
 	seen := make(map[string]bool)
+
 	var providers []string
 
 	add := func(provider string) {
 		if provider == "" || seen[provider] {
 			return
 		}
+
 		seen[provider] = true
+
 		providers = append(providers, provider)
 	}
 

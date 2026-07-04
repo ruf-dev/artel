@@ -4,10 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 const webhookPathPrefix = "/tract/hook/"
@@ -17,6 +16,7 @@ func (t *TractsImpl) CreateTrigger(ctx context.Context, req *pb.CreateTrigger_Re
 	if len(config) == 0 {
 		config = json.RawMessage(`{}`)
 	}
+
 	if !json.Valid(config) {
 		return nil, rerrors.Wrap(user_errors.TractRequestFieldInvalidJSON, "error validating config")
 	}
@@ -38,5 +38,6 @@ func (t *TractsImpl) CreateTrigger(ctx context.Context, req *pb.CreateTrigger_Re
 		WebhookUrl:   webhookUrl,
 		WebhookToken: rawToken,
 	}
+
 	return resp, nil
 }

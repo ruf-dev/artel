@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) UnlinkS3Bucket(ctx context.Context, req *pb.UnlinkS3Bucket_Request) (*pb.UnlinkS3Bucket_Response, error) {

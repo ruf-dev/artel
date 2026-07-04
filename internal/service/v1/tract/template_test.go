@@ -34,6 +34,7 @@ func testResolver() *resolver {
 	fixedNow := time.Date(2026, 7, 3, 12, 0, 0, 0, time.UTC)
 
 	r := &resolver{trigger: trigger, outputs: outputs, now: fixedNow}
+
 	return r
 }
 

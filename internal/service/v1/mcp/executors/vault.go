@@ -5,12 +5,11 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/storage"
+	"go.redsock.ru/rerrors"
 )
 
 const (
@@ -77,6 +76,7 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to list bucket objects")
 		}
+
 		for _, o := range objects {
 			// S3's ListObjectsV2 response doesn't carry per-object Content-Type (unlike a
 			// HEAD/GetObject request, which Get/Stat use) — derive it from the extension instead
@@ -93,6 +93,7 @@ func (e *VaultExecutor) listFiles(ctx context.Context, client *couchdb.LiveSyncC
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -107,6 +108,7 @@ func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncCl
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to read file")
 		}
+
 		return domain.ToolExecResult{Text: note.Content}, nil
 	}
 
@@ -118,6 +120,7 @@ func (e *VaultExecutor) readFile(ctx context.Context, client *couchdb.LiveSyncCl
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to read file")
 	}
+
 	return domain.ToolExecResult{Data: obj.RawBytes, MimeType: obj.MimeType, ResourcePath: path}, nil
 }
 
@@ -137,6 +140,7 @@ func (e *VaultExecutor) writeFile(ctx context.Context, client *couchdb.LiveSyncC
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to write note")
 		}
+
 		return domain.ToolExecResult{Text: "File written successfully"}, nil
 	}
 
@@ -168,6 +172,7 @@ func (e *VaultExecutor) deleteFile(ctx context.Context, client *couchdb.LiveSync
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to delete file")
 		}
+
 		return domain.ToolExecResult{Text: "File deleted successfully"}, nil
 	}
 
@@ -206,6 +211,7 @@ func (e *VaultExecutor) moveFile(ctx context.Context, client *couchdb.LiveSyncCl
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "failed to move file")
 		}
+
 		return domain.ToolExecResult{Text: "File moved successfully"}, nil
 	}
 
@@ -231,6 +237,7 @@ func (e *VaultExecutor) listFolders(ctx context.Context, client *couchdb.LiveSyn
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -244,6 +251,7 @@ func (e *VaultExecutor) listTags(ctx context.Context, client *couchdb.LiveSyncCl
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -272,6 +280,7 @@ func (e *VaultExecutor) getFileMetadata(ctx context.Context, client *couchdb.Liv
 		if err != nil {
 			return domain.ToolExecResult{}, err
 		}
+
 		return domain.ToolExecResult{Text: text}, nil
 	}
 
@@ -299,6 +308,7 @@ func (e *VaultExecutor) getFileMetadata(ctx context.Context, client *couchdb.Liv
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 

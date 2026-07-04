@@ -20,5 +20,6 @@ func (s *Service) SweepStaleRuns(ctx context.Context, threshold time.Time) error
 	if err != nil {
 		return rerrors.Wrap(err, "error sweeping stale tract run steps")
 	}
+
 	return nil
 }

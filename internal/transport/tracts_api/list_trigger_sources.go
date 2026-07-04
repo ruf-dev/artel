@@ -3,9 +3,8 @@ package tracts_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TractsImpl) ListTriggerSources(ctx context.Context, _ *pb.ListTriggerSources_Request) (*pb.ListTriggerSources_Response, error) {
@@ -15,5 +14,6 @@ func (t *TractsImpl) ListTriggerSources(ctx context.Context, _ *pb.ListTriggerSo
 	}
 
 	resp := &pb.ListTriggerSources_Response{Sources: triggerSourcesToProto(sources)}
+
 	return resp, nil
 }

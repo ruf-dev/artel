@@ -4,11 +4,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -45,6 +44,7 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Mcp
 	for i, row := range rows {
 		spreadsheets[i] = toDomain(row)
 	}
+
 	return spreadsheets, nil
 }
 
@@ -58,6 +58,7 @@ func (r *Repo) Delete(ctx context.Context, userUuid uuid.UUID, spreadsheetId str
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting mcp spreadsheet")
 	}
+
 	return nil
 }
 

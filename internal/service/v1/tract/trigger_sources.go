@@ -5,10 +5,9 @@ import (
 	"encoding/json"
 	"strings"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 // Webhook trigger source presets — see the Trigger.Source doc comment in domain/tract.go.
@@ -62,6 +61,7 @@ func NormalizePayload(source string, raw json.RawMessage) (json.RawMessage, erro
 // design's inspector template requirements ({{ trigger.branch }}).
 func normalizeGitlabPush(raw json.RawMessage) (json.RawMessage, error) {
 	var payload map[string]interface{}
+
 	err := json.Unmarshal(raw, &payload)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.TractMalformedTemplate, "error unmarshaling gitlab push payload")
@@ -74,6 +74,7 @@ func normalizeGitlabPush(raw json.RawMessage) (json.RawMessage, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error marshaling normalized gitlab push payload")
 	}
+
 	return normalized, nil
 }
 
@@ -119,5 +120,6 @@ func gitlabPushPayloadSchema() domain.ToolSchema {
 		},
 		Required: []string{"ref", "branch"},
 	}
+
 	return schema
 }

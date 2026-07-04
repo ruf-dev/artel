@@ -6,12 +6,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
+	"go.redsock.ru/rerrors"
 )
 
 // RunTract fires a manual run and returns immediately — the same fire-and-forget shape as the

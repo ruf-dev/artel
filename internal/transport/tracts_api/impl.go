@@ -6,11 +6,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 // TractsImpl implements pb.TractsAPIServer. RunTract fires the engine as
@@ -59,6 +58,7 @@ func webhookBaseURL(ctx context.Context) string {
 	if host == "" {
 		host = firstMetadataValue(md, ":authority")
 	}
+
 	if host == "" {
 		return ""
 	}
@@ -76,5 +76,6 @@ func firstMetadataValue(md metadata.MD, key string) string {
 	if len(values) == 0 {
 		return ""
 	}
+
 	return values[0]
 }

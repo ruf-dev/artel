@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -56,6 +55,7 @@ func (r *Repo) Get(ctx context.Context, vaultUuid, userUuid uuid.UUID) (domain.V
 		VaultID: vaultUuid,
 		UserID:  userUuid,
 	}
+
 	member, err := r.q.GetVaultMembership(ctx, params)
 	if err != nil {
 		return domain.VaultMember{}, rerrors.Wrap(err, "get vault membership")
@@ -86,6 +86,7 @@ func (r *Repo) ListByVault(ctx context.Context, vaultUuid uuid.UUID) ([]domain.V
 			CreatedAt: m.CreatedAt,
 		}
 	}
+
 	return result, nil
 }
 
@@ -109,6 +110,7 @@ func (r *Repo) ListByVaultWithUsers(ctx context.Context, vaultUuid uuid.UUID) ([
 			Username: row.Username,
 		}
 	}
+
 	return result, nil
 }
 

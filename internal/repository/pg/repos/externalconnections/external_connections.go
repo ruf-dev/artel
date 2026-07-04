@@ -7,13 +7,12 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/sqlc-dev/pqtype"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"github.com/sqlc-dev/pqtype"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -80,6 +79,7 @@ func (r *Repo) GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, pro
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.ExternalConnection]{}, nil
 		}
+
 		return sql.Null[domain.ExternalConnection]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting external connection")
 	}
 
@@ -92,6 +92,7 @@ func (r *Repo) GetByUserAndProvider(ctx context.Context, userUuid uuid.UUID, pro
 		V:     toDomain(row, credJSON),
 		Valid: true,
 	}
+
 	return result, nil
 }
 
@@ -102,13 +103,16 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Ext
 	}
 
 	conns := make([]domain.ExternalConnection, len(rows))
+
 	for i, row := range rows {
 		credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error decrypting credentials")
 		}
+
 		conns[i] = toDomain(row, credJSON)
 	}
+
 	return conns, nil
 }
 
@@ -117,10 +121,12 @@ func (r *Repo) Delete(ctx context.Context, userUuid uuid.UUID, provider string) 
 		UserID:   userUuid,
 		Provider: provider,
 	}
+
 	err := r.q.DeleteExternalConnection(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting external connection")
 	}
+
 	return nil
 }
 
@@ -148,5 +154,6 @@ func fromNullRawMessage(m pqtype.NullRawMessage) json.RawMessage {
 	if !m.Valid {
 		return nil
 	}
+
 	return json.RawMessage(m.RawMessage)
 }

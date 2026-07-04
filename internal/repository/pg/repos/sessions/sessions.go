@@ -5,11 +5,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type SessionsRepo struct {
@@ -26,6 +25,7 @@ func (r *SessionsRepo) Create(ctx context.Context, userID uuid.UUID, token strin
 		Token:     token,
 		ExpiresAt: expiresAt,
 	}
+
 	session, err := r.q.CreateSession(ctx, params)
 	if err != nil {
 		return domain.Session{}, rerrors.Wrap(err, "failed to create session")
@@ -80,5 +80,6 @@ func (r *SessionsRepo) GetByUserID(ctx context.Context, userUuid uuid.UUID) ([]d
 			CreatedAt: row.CreatedAt,
 		}
 	}
+
 	return result, nil
 }

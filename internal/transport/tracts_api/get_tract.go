@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TractsImpl) GetTract(ctx context.Context, req *pb.GetTract_Request) (*pb.GetTract_Response, error) {
@@ -27,5 +26,6 @@ func (t *TractsImpl) GetTract(ctx context.Context, req *pb.GetTract_Request) (*p
 	}
 
 	resp := &pb.GetTract_Response{Tract: item}
+
 	return resp, nil
 }

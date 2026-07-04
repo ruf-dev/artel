@@ -5,11 +5,10 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -49,6 +48,7 @@ func (r *Repo) Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool, has
 		HasNotes:        hasNotes,
 		HasSpreadsheets: hasSpreadsheets,
 	}
+
 	row, err := r.q.UpsertUserPermissions(ctx, params)
 	if err != nil {
 		return domain.UserPermissions{}, rerrors.Wrap(err, "upsert user permissions")

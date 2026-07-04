@@ -9,7 +9,7 @@ import (
 // UserContext encapsulates user-specific data.
 type UserContext struct {
 	UserUuid uuid.UUID
-	//TODO fill
+	// TODO fill
 	UserName string
 	Roles    []string
 }
@@ -27,5 +27,6 @@ func WithUserContext(ctx context.Context, uc UserContext) context.Context {
 // GetUserContext retrieves UserContext from the context.
 func GetUserContext(ctx context.Context) (UserContext, bool) {
 	uc, ok := ctx.Value(userContextKey).(UserContext)
+
 	return uc, ok
 }

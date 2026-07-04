@@ -3,11 +3,10 @@ package mcp
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (s *McpServiceImpl) ListUserKeys(ctx context.Context) ([]domain.McpKey, error) {
@@ -20,5 +19,6 @@ func (s *McpServiceImpl) ListUserKeys(ctx context.Context) ([]domain.McpKey, err
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list user mcp keys")
 	}
+
 	return keys, nil
 }

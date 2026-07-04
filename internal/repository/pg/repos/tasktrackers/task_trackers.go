@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -77,6 +76,7 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Tas
 	}
 
 	trackers := make([]domain.TaskTracker, len(rows))
+
 	for i, row := range rows {
 		apiKey, err := cryptoutil.Decrypt(r.encryptionKey, row.ApiKeyEnc)
 		if err != nil {
@@ -90,6 +90,7 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Tas
 
 		trackers[i] = toDomain(row, string(apiKey), string(apiToken))
 	}
+
 	return trackers, nil
 }
 
@@ -98,6 +99,7 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting task tracker")
 	}
+
 	return nil
 }
 

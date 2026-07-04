@@ -1,29 +1,10 @@
-# configuration settings https://golangci-lint.run/usage/configuration/
-
+version: "2"
 run:
-  timeout: 5m
   issues-exit-code: 42
-  skip-dirs:
-    - configs
-
-output:
-  format: colored-line-number
-
-linters-settings:
-  varnamelen: # scope of variable
-    max-distance: 25 # amount of lines when variable can be used (about 1 screen space)
-    min-name-length: 2 # minimal lenght of variable that goes out of scope
-
-    ignore-type-assert-ok: true
-    check-type-param: true
-    ignore-chan-recv-ok: true
-
 linters:
-  disable-all: true
+  default: none
   enable:
-    - varnamelen # check lenght of scope of a variable
-    - err113
-    - asasalint # prevents from passing []any
+    - asasalint
     - asciicheck
     - bidichk
     - bodyclose
@@ -36,18 +17,17 @@ linters:
     - dupl
     - dupword
     - durationcheck
+    - err113
     - errcheck
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exhaustive
-    - exportloopref
     - forbidigo
     - forcetypeassert
     - funlen
-    - gci
     - gochecknoglobals
+    - noinlineerr
     - gochecknoinits
     - gocognit
     - goconst
@@ -55,31 +35,22 @@ linters:
     - gocyclo
     - godot
     - godox
-    - goerr113
-    - gofmt
-    - gofumpt
     - goheader
-    - goimports
-    - golint
-    - gomnd
     - gomoddirectives
-    - gomodguard
+    - gomodguard_v2
     - goprintffuncname
     - gosec
-    - gosimple
     - govet
     - grouper
     - importas
     - ineffassign
     - interfacebloat
-    - interfacer
-    - ireturn
     - lll
     - loggercheck
     - maintidx
     - makezero
-    - maligned
     - misspell
+    - mnd
     - nakedret
     - nestif
     - nilerr
@@ -97,29 +68,79 @@ linters:
     - rowserrcheck
     - sqlclosecheck
     - staticcheck
-    - structcheck
-    - stylecheck
-    - tagliatelle
-    - tenv
     - testableexamples
     - testpackage
     - thelper
     - tparallel
-    - typecheck
     - unconvert
     - unparam
     - unused
     - usestdlibvars
+    - varnamelen
     - wastedassign
     - whitespace
     - wrapcheck
-    - wsl
-issues:
-  # See the dedicated "issues" documentation section.
-  exclude-rules:
-    - linters:
-        - staticcheck
-      text: "SA9003:"
-    - linters:
-        - lll
-      source: "^//go:generate "
+    - wsl_v5
+  settings:
+    varnamelen:
+      max-distance: 25
+      min-name-length: 2
+      check-type-param: true
+      ignore-type-assert-ok: true
+      ignore-chan-recv-ok: true
+    depguard:
+      rules:
+        main:
+          files:
+            - $all
+          deny:
+            - pkg: io/ioutil
+              desc: 'io/ioutil is deprecated, use io or os instead'
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - staticcheck
+        text: 'SA9003:'
+      - linters:
+          - lll
+        source: '^//go:generate '
+      - linters:
+          - errname
+          - gochecknoglobals
+        path: internal/service/user_errors/
+      - linters:
+          - revive
+        text: 'var-naming:.*should be'
+      - linters:
+          - revive
+        text: "don't use ALL_CAPS in Go names"
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - configs$
+      - pkg/client/ArtelUI/node_modules
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+      - configs$
+      - pkg/client/ArtelUI/node_modules

@@ -16,6 +16,7 @@ func (c *Client) ListDatabases(ctx context.Context) ([]string, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "listing databases")
 	}
+
 	return dbs, nil
 }
 
@@ -24,5 +25,6 @@ func (c *Client) DeleteDatabase(ctx context.Context, name string) error {
 	if err != nil {
 		return rerrors.Wrap(err, "deleting database")
 	}
+
 	return nil
 }

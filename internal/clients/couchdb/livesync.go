@@ -12,9 +12,8 @@ import (
 
 	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type LiveSyncClient struct {
@@ -40,28 +39,36 @@ func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
 	defer rows.Close()
 
 	var notes []NoteEntry
+
 	for rows.Next() {
 		id, err := rows.ID()
 		if err != nil {
 			continue
 		}
+
 		if strings.HasPrefix(id, "_design/") {
 			continue
 		}
+
 		var doc docScan
+
 		err = rows.ScanDoc(&doc)
 		if err != nil {
 			continue
 		}
+
 		if doc.Type != "plain" || doc.Deleted {
 			continue
 		}
+
 		notes = append(notes, NoteEntry{Path: id, Mtime: doc.Mtime})
 	}
+
 	err := rows.Err()
 	if err != nil {
 		return nil, rerrors.Wrap(err, "rows iteration failed during notes listing")
 	}
+
 	return notes, nil
 }
 
@@ -70,27 +77,33 @@ func (c *LiveSyncClient) ReadNote(ctx context.Context, path string) (NoteDoc, er
 	defer d.Close()
 
 	var couchDoc docFull
+
 	err := d.ScanDoc(&couchDoc)
 	if err != nil {
 		return NoteDoc{}, rerrors.Wrap(err, "scan doc")
 	}
 
 	var content string
+
 	if len(couchDoc.Children) > 0 {
 		var sb strings.Builder
+
 		for _, hash := range couchDoc.Children {
 			chunk, err := c.fetchLeaf(ctx, hash)
 			if err != nil {
 				return NoteDoc{}, rerrors.Wrap(err, fmt.Sprintf("fetch leaf %s", hash))
 			}
+
 			sb.WriteString(chunk)
 		}
+
 		content = sb.String()
 	} else {
 		decoded, err := base64.StdEncoding.DecodeString(couchDoc.Data)
 		if err != nil {
 			return NoteDoc{}, rerrors.Wrap(err, "decode base64")
 		}
+
 		content = string(decoded)
 	}
 
@@ -110,7 +123,9 @@ func (c *LiveSyncClient) WriteNote(ctx context.Context, path, content string) er
 	defer d.Close()
 
 	var existing docRev
+
 	rev := ""
+
 	err := d.ScanDoc(&existing)
 	if err != nil {
 		if kivik.HTTPStatus(err) != http.StatusNotFound {
@@ -136,6 +151,7 @@ func (c *LiveSyncClient) WriteNote(ctx context.Context, path, content string) er
 	if err != nil {
 		return rerrors.Wrap(err, "put doc")
 	}
+
 	return nil
 }
 
@@ -157,6 +173,7 @@ func (c *LiveSyncClient) DeleteNote(ctx context.Context, path string) error {
 	if err != nil {
 		return rerrors.Wrap(err, "put delete doc")
 	}
+
 	return nil
 }
 
@@ -175,6 +192,7 @@ func (c *LiveSyncClient) MoveNote(ctx context.Context, oldPath, newPath string) 
 	if err != nil {
 		return rerrors.Wrap(err, "delete note from old path")
 	}
+
 	return nil
 }
 
@@ -185,6 +203,7 @@ func (c *LiveSyncClient) ListFolders(ctx context.Context) ([]string, error) {
 	}
 
 	folderMap := make(map[string]bool)
+
 	for _, note := range notes {
 		dir := filepath.Dir(note.Path)
 		if dir != "." {
@@ -196,6 +215,7 @@ func (c *LiveSyncClient) ListFolders(ctx context.Context) ([]string, error) {
 	for folder := range folderMap {
 		folders = append(folders, folder)
 	}
+
 	return folders, nil
 }
 
@@ -206,11 +226,13 @@ func (c *LiveSyncClient) ListTags(ctx context.Context) ([]string, error) {
 	}
 
 	tagMap := make(map[string]bool)
+
 	for _, note := range notes {
 		noteDoc, err := c.ReadNote(ctx, note.Path)
 		if err != nil {
 			continue
 		}
+
 		for _, tag := range extractTags(noteDoc.Content) {
 			tagMap[tag] = true
 		}
@@ -220,6 +242,7 @@ func (c *LiveSyncClient) ListTags(ctx context.Context) ([]string, error) {
 	for tag := range tagMap {
 		tags = append(tags, tag)
 	}
+
 	return tags, nil
 }
 
@@ -228,7 +251,9 @@ func (c *LiveSyncClient) GetNoteMetadata(ctx context.Context, path string) (Note
 	if err != nil {
 		return NoteDoc{}, rerrors.Wrap(err, "read note")
 	}
+
 	note.Content = ""
+
 	return note, nil
 }
 
@@ -237,57 +262,71 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 	defer rows.Close()
 
 	var files []FileEntry
+
 	for rows.Next() {
 		id, err := rows.ID()
 		if err != nil {
 			continue
 		}
+
 		if strings.HasPrefix(id, "_design/") {
 			continue
 		}
+
 		var doc docScan
+
 		err = rows.ScanDoc(&doc)
 		if err != nil {
 			continue
 		}
+
 		if (doc.Type != "plain" && doc.Type != "newnote") || doc.Deleted {
 			continue
 		}
+
 		mime := MimeTypeForPath(id)
 		if strings.HasPrefix(mime, "text/") {
 			continue
 		}
+
 		files = append(files, FileEntry{Path: id, Mtime: doc.Mtime, MimeType: mime})
 	}
+
 	err := rows.Err()
 	if err != nil {
 		return nil, rerrors.Wrap(err, "rows iteration failed during files listing")
 	}
+
 	return files, nil
 }
 
 func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, error) {
 	mime := MimeTypeForPath(path)
+
 	d := c.db.Get(ctx, path)
 	defer d.Close()
 
 	var couchDoc docFull
+
 	err := d.ScanDoc(&couchDoc)
 	if err != nil {
 		return FileDoc{}, rerrors.Wrap(err, "scan doc")
 	}
 
 	var rawBytes []byte
+
 	if couchDoc.Type == "newnote" {
 		for _, hash := range couchDoc.Children {
 			raw, err := c.fetchLeaf(ctx, hash)
 			if err != nil {
 				return FileDoc{}, rerrors.Wrap(err, fmt.Sprintf("fetch leaf %s", hash))
 			}
+
 			chunk, err := base64.StdEncoding.DecodeString(raw)
 			if err != nil {
 				return FileDoc{}, rerrors.Wrap(err, fmt.Sprintf("decode leaf %s", hash))
 			}
+
 			rawBytes = append(rawBytes, chunk...)
 		}
 	} else {
@@ -295,6 +334,7 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 		if err != nil {
 			return FileDoc{}, rerrors.Wrap(err, "decode base64")
 		}
+
 		rawBytes = decoded
 	}
 
@@ -328,6 +368,7 @@ func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
 	if err != nil {
 		return rerrors.Wrap(err, "put delete doc")
 	}
+
 	return nil
 }
 
@@ -336,6 +377,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 	defer d.Close()
 
 	var couchDoc docType
+
 	err := d.ScanDoc(&couchDoc)
 	if err != nil {
 		return rerrors.Wrap(err, "get existing doc type")
@@ -369,6 +411,7 @@ func (c *LiveSyncClient) MoveFile(ctx context.Context, oldPath, newPath string) 
 	if err != nil {
 		return rerrors.Wrap(err, "delete old file")
 	}
+
 	return nil
 }
 
@@ -377,10 +420,12 @@ func (c *LiveSyncClient) fetchLeaf(ctx context.Context, hash string) (string, er
 	defer d.Close()
 
 	var leaf leafDoc
+
 	err := d.ScanDoc(&leaf)
 	if err != nil {
 		return "", rerrors.Wrap(err, "scan leaf")
 	}
+
 	return leaf.Data, nil
 }
 
@@ -389,10 +434,12 @@ func (c *LiveSyncClient) getDocRev(ctx context.Context, path string) (string, er
 	defer d.Close()
 
 	var doc docRev
+
 	err := d.ScanDoc(&doc)
 	if err != nil {
 		return "", rerrors.Wrap(err, "get doc rev")
 	}
+
 	return doc.Rev, nil
 }
 
@@ -408,6 +455,7 @@ func extractTags(content string) []string {
 	for i := 1; i < len(lines); i++ {
 		if lines[i] == "---" {
 			frontmatter = strings.Join(lines[1:i], "\n")
+
 			break
 		}
 	}

@@ -6,13 +6,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/requesthost"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
+	"go.redsock.ru/rerrors"
 )
 
 const (
@@ -71,6 +70,7 @@ func IsTractTool(name string) bool {
 		ToolListTracts, ToolGetTract, ToolGetTractRuns, ToolRunTract:
 		return true
 	}
+
 	return false
 }
 
@@ -136,6 +136,7 @@ func (e *TractExecutor) listTractActions(ctx context.Context, ts TractService) (
 	}
 
 	actions := make([]tractActionEntry, len(refs))
+
 	for i, ref := range refs {
 		inputSchema := domain.ToolSchema{Properties: ref.Tool.ApiDescription.Properties, Required: ref.Tool.ApiDescription.Required}
 		actions[i] = tractActionEntry{
@@ -162,6 +163,7 @@ func (e *TractExecutor) listTractActions(ctx context.Context, ts TractService) (
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -186,10 +188,12 @@ func tractToRow(t domain.Tract, includeDefinition bool) tractRow {
 		CreatedAt:   t.CreatedAt.UTC().Format(timeFormat),
 		UpdatedAt:   t.UpdatedAt.UTC().Format(timeFormat),
 	}
+
 	if includeDefinition {
 		def := t.Definition
 		row.Definition = &def
 	}
+
 	return row
 }
 
@@ -213,6 +217,7 @@ func (e *TractExecutor) createTract(ctx context.Context, ts TractService, params
 	}
 
 	var def domain.TractDefinition
+
 	err := decodeInto(defParam, &def)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "error decoding definition")
@@ -234,6 +239,7 @@ func (e *TractExecutor) createTract(ctx context.Context, ts TractService, params
 		if err != nil {
 			return domain.ToolExecResult{}, err
 		}
+
 		result["webhook_trigger"] = webhookResult
 	}
 
@@ -241,6 +247,7 @@ func (e *TractExecutor) createTract(ctx context.Context, ts TractService, params
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -256,6 +263,7 @@ func (e *TractExecutor) createLinkedWebhook(ctx context.Context, ts TractService
 	}
 
 	var filters []domain.TractCondition
+
 	rawFilters, ok := wt["filters"]
 	if ok {
 		err := decodeInto(rawFilters, &filters)
@@ -266,6 +274,7 @@ func (e *TractExecutor) createLinkedWebhook(ctx context.Context, ts TractService
 
 	emptyConfig := json.RawMessage(`{}`)
 	emptySchema := domain.ToolSchema{}
+
 	trig, rawToken, err := ts.CreateTrigger(ctx, name, triggerKindWebhook, source, emptyConfig, emptySchema)
 	if err != nil {
 		return webhookTriggerRow{}, rerrors.Wrap(err, "error creating trigger")
@@ -281,6 +290,7 @@ func (e *TractExecutor) createLinkedWebhook(ctx context.Context, ts TractService
 		WebhookUrl:   buildWebhookUrl(ctx, trig.TriggerUuid),
 		WebhookToken: rawToken,
 	}
+
 	return row, nil
 }
 
@@ -289,6 +299,7 @@ func buildWebhookUrl(ctx context.Context, triggerUuid uuid.UUID) string {
 	if !ok || host == "" {
 		return webhookPathPrefix + triggerUuid.String()
 	}
+
 	return "https://" + host + webhookPathPrefix + triggerUuid.String()
 }
 
@@ -313,6 +324,7 @@ func (e *TractExecutor) updateTract(ctx context.Context, ts TractService, params
 	}
 
 	var def domain.TractDefinition
+
 	err = decodeInto(defParam, &def)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "error decoding definition")
@@ -332,6 +344,7 @@ func (e *TractExecutor) updateTract(ctx context.Context, ts TractService, params
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -354,6 +367,7 @@ func (e *TractExecutor) createTrigger(ctx context.Context, ts TractService, para
 	}
 
 	emptyConfig := json.RawMessage(`{}`)
+
 	trig, rawToken, err := ts.CreateTrigger(ctx, name, triggerKindWebhook, source, emptyConfig, schema)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "error creating trigger")
@@ -369,6 +383,7 @@ func (e *TractExecutor) createTrigger(ctx context.Context, ts TractService, para
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -386,6 +401,7 @@ func (e *TractExecutor) linkTrigger(ctx context.Context, ts TractService, params
 	}
 
 	var filters []domain.TractCondition
+
 	rawFilters, ok := params["filters"]
 	if ok {
 		err = decodeInto(rawFilters, &filters)
@@ -400,10 +416,12 @@ func (e *TractExecutor) linkTrigger(ctx context.Context, ts TractService, params
 	}
 
 	result := map[string]interface{}{"message": "trigger linked"}
+
 	text, err := marshalResult(result)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -424,6 +442,7 @@ func (e *TractExecutor) listTracts(ctx context.Context, ts TractService) (domain
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -480,6 +499,7 @@ func (e *TractExecutor) getTract(ctx context.Context, ts TractService, params ma
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -524,6 +544,7 @@ func runToRow(r domain.TractRun, steps []domain.TractRunStep) runRow {
 		UpdatedAt:      r.UpdatedAt.UTC().Format(timeFormat),
 		Steps:          stepRows,
 	}
+
 	return row
 }
 
@@ -544,6 +565,7 @@ func stepToRow(s domain.TractRunStep) runStepRow {
 		StartedAt:  s.StartedAt.UTC().Format(timeFormat),
 		FinishedAt: finishedAt,
 	}
+
 	return row
 }
 
@@ -561,11 +583,13 @@ func (e *TractExecutor) getTractRuns(ctx context.Context, ts TractService, param
 	}
 
 	rows := make([]runRow, len(runs))
+
 	for i, run := range runs {
 		_, steps, err := ts.GetRun(ctx, run.Uuid)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "error getting tract run")
 		}
+
 		rows[i] = runToRow(run, steps)
 	}
 
@@ -573,6 +597,7 @@ func (e *TractExecutor) getTractRuns(ctx context.Context, ts TractService, param
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -590,22 +615,26 @@ func (e *TractExecutor) runTract(ctx context.Context, baseCtx context.Context, t
 	}
 
 	payload := json.RawMessage(`{}`)
+
 	runParams, ok := params["params"]
 	if ok {
 		encoded, err := json.Marshal(runParams)
 		if err != nil {
 			return domain.ToolExecResult{}, rerrors.Wrap(err, "error marshaling run params")
 		}
+
 		payload = encoded
 	}
 
 	go e.runAsync(baseCtx, ts, tr, payload)
 
 	result := map[string]interface{}{"message": "tract run started", "tract_uuid": tr.Uuid.String()}
+
 	text, err := marshalResult(result)
 	if err != nil {
 		return domain.ToolExecResult{}, err
 	}
+
 	return domain.ToolExecResult{Text: text}, nil
 }
 
@@ -614,6 +643,7 @@ func (e *TractExecutor) runTract(ctx context.Context, baseCtx context.Context, t
 // tracts_api.TractsImpl.runManual.
 func (e *TractExecutor) runAsync(baseCtx context.Context, ts TractService, tr domain.Tract, payload json.RawMessage) {
 	triggerUuid := uuid.Nil
+
 	_, err := ts.StartRun(baseCtx, tr, payload, tract.StartedByMcp, triggerUuid)
 	if err != nil {
 		log.Error().Err(err).Str("tract_uuid", tr.Uuid.String()).Msg("mcp tract run failed")
@@ -627,7 +657,9 @@ func paramString(params map[string]interface{}, key string) (string, bool) {
 	if !ok {
 		return "", false
 	}
+
 	s, ok := v.(string)
+
 	return s, ok
 }
 
@@ -636,7 +668,9 @@ func paramObject(params map[string]interface{}, key string) (map[string]interfac
 	if !ok {
 		return nil, false
 	}
+
 	m, ok := v.(map[string]interface{})
+
 	return m, ok
 }
 
@@ -656,6 +690,7 @@ func paramInt32(params map[string]interface{}, key string, fallback int32) int32
 	case int64:
 		return int32(n)
 	}
+
 	return fallback
 }
 
@@ -669,6 +704,7 @@ func paramUuid(params map[string]interface{}, key string, requiredErr error, inv
 	if err != nil {
 		return uuid.Nil, invalidErr
 	}
+
 	return id, nil
 }
 
@@ -686,6 +722,7 @@ func decodeInto(v interface{}, out interface{}) error {
 	if err != nil {
 		return rerrors.Wrap(err, "error unmarshaling param")
 	}
+
 	return nil
 }
 
@@ -716,6 +753,7 @@ func toolSchemaFromParam(v interface{}) (domain.ToolSchema, error) {
 	}
 
 	var row toolSchemaRow
+
 	err := decodeInto(v, &row)
 	if err != nil {
 		return domain.ToolSchema{}, err
@@ -725,6 +763,7 @@ func toolSchemaFromParam(v interface{}) (domain.ToolSchema, error) {
 	for k, pr := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(pr)
 	}
+
 	return schema, nil
 }
 
@@ -733,6 +772,7 @@ func toolSchemaToRow(schema domain.ToolSchema) toolSchemaRow {
 	for k, v := range schema.Properties {
 		row.Properties[k] = toolPropertyRowFromDomain(v)
 	}
+
 	return row
 }
 

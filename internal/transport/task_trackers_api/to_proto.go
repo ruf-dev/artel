@@ -26,5 +26,6 @@ func boardsToProto(boards []domain.TrelloBoard) []*pb.TrelloBoardInfo {
 	for i, b := range boards {
 		result[i] = boardToProto(b)
 	}
+
 	return result
 }

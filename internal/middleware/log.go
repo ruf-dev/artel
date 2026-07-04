@@ -24,6 +24,7 @@ func (w *capturingResponseWriter) WriteHeader(code int) {
 
 func (w *capturingResponseWriter) Write(b []byte) (int, error) {
 	w.body.Write(b)
+
 	return w.ResponseWriter.Write(b)
 }
 
@@ -81,6 +82,7 @@ func LogInterceptor() grpc.ServerOption {
 
 func enrichCtxLogger(ctx context.Context) context.Context {
 	logger := log.Logger
+
 	if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
 		sc := span.SpanContext()
 		logger = logger.With().
@@ -88,5 +90,6 @@ func enrichCtxLogger(ctx context.Context) context.Context {
 			Str("span_id", sc.SpanID().String()).
 			Logger()
 	}
+
 	return logger.WithContext(ctx)
 }

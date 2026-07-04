@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 const timeFormat = "2006-01-02T15:04:05Z"
@@ -31,6 +30,7 @@ func tractToProto(t domain.Tract) (*pb.TractItem, error) {
 		CreatedAt:   t.CreatedAt.UTC().Format(timeFormat),
 		UpdatedAt:   t.UpdatedAt.UTC().Format(timeFormat),
 	}
+
 	return item, nil
 }
 
@@ -64,6 +64,7 @@ func triggerSummaryToProto(t domain.Trigger) *pb.TractTriggerSummary {
 		Kind:   t.Kind,
 		Source: t.Source,
 	}
+
 	return summary
 }
 
@@ -84,6 +85,7 @@ func runToProto(r domain.TractRun) *pb.TractRunItem {
 		CreatedAt:      r.CreatedAt.UTC().Format(timeFormat),
 		UpdatedAt:      r.UpdatedAt.UTC().Format(timeFormat),
 	}
+
 	return item
 }
 
@@ -92,6 +94,7 @@ func runsToProto(runs []domain.TractRun) []*pb.TractRunItem {
 	for i, r := range runs {
 		items[i] = runToProto(r)
 	}
+
 	return items
 }
 
@@ -112,6 +115,7 @@ func runStepToProto(s domain.TractRunStep) *pb.TractRunStepItem {
 		StartedAt:  s.StartedAt.UTC().Format(timeFormat),
 		FinishedAt: finishedAt,
 	}
+
 	return item
 }
 
@@ -120,6 +124,7 @@ func runStepsToProto(steps []domain.TractRunStep) []*pb.TractRunStepItem {
 	for i, s := range steps {
 		items[i] = runStepToProto(s)
 	}
+
 	return items
 }
 
@@ -133,6 +138,7 @@ func toolRefToProto(ref domain.McpToolRef) *pb.TractToolItem {
 		InputSchema:  schemaToJSON(inputSchema),
 		OutputSchema: schemaToJSON(ref.Tool.OutputSchema),
 	}
+
 	return item
 }
 
@@ -141,6 +147,7 @@ func toolRefsToProto(refs []domain.McpToolRef) []*pb.TractToolItem {
 	for i, ref := range refs {
 		items[i] = toolRefToProto(ref)
 	}
+
 	return items
 }
 
@@ -150,6 +157,7 @@ func triggerSourceToProto(p domain.TriggerSourcePreset) *pb.TriggerSourceItem {
 		Description:   p.Description,
 		PayloadSchema: schemaToJSON(p.PayloadSchema),
 	}
+
 	return item
 }
 
@@ -158,6 +166,7 @@ func triggerSourcesToProto(presets []domain.TriggerSourcePreset) []*pb.TriggerSo
 	for i, p := range presets {
 		items[i] = triggerSourceToProto(p)
 	}
+
 	return items
 }
 
@@ -173,6 +182,7 @@ func triggerToProto(t domain.Trigger) *pb.TriggerItem {
 		Enabled:       t.Enabled,
 		CreatedAt:     t.CreatedAt.UTC().Format(timeFormat),
 	}
+
 	return item
 }
 
@@ -181,6 +191,7 @@ func triggersToProto(triggers []domain.Trigger) []*pb.TriggerItem {
 	for i, t := range triggers {
 		items[i] = triggerToProto(t)
 	}
+
 	return items
 }
 
@@ -216,6 +227,7 @@ func schemaToJSON(schema domain.ToolSchema) string {
 	if err != nil {
 		return "{}"
 	}
+
 	return string(data)
 }
 
@@ -225,6 +237,7 @@ func schemaFromJSON(raw string) (domain.ToolSchema, error) {
 	}
 
 	var row toolSchemaRow
+
 	err := json.Unmarshal([]byte(raw), &row)
 	if err != nil {
 		return domain.ToolSchema{}, rerrors.Wrap(user_errors.TractRequestFieldInvalidJSON, "error unmarshaling payload_schema")
@@ -234,6 +247,7 @@ func schemaFromJSON(raw string) (domain.ToolSchema, error) {
 	for k, v := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(v)
 	}
+
 	return schema, nil
 }
 
@@ -291,10 +305,12 @@ func toolPropertyRowToDomain(p toolPropertyRow) domain.ToolProperty {
 
 func definitionFromJSON(raw string) (domain.TractDefinition, error) {
 	var def domain.TractDefinition
+
 	err := json.Unmarshal([]byte(raw), &def)
 	if err != nil {
 		return domain.TractDefinition{}, rerrors.Wrap(user_errors.TractRequestFieldInvalidJSON, "error unmarshaling definition")
 	}
+
 	return def, nil
 }
 
@@ -304,9 +320,11 @@ func filtersFromJSON(raw string) ([]domain.TractCondition, error) {
 	}
 
 	var filters []domain.TractCondition
+
 	err := json.Unmarshal([]byte(raw), &filters)
 	if err != nil {
 		return nil, rerrors.Wrap(user_errors.TractRequestFieldInvalidJSON, "error unmarshaling filters")
 	}
+
 	return filters, nil
 }

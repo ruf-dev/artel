@@ -31,9 +31,11 @@ func (c *Client) Send(_ context.Context, to, subject, body string) error {
 		c.email, to, subject, body)
 
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
 	err := smtp.SendMail(addr, auth, c.email, []string{to}, []byte(msg))
 	if err != nil {
 		return rerrors.Wrap(err, "send mail")
 	}
+
 	return nil
 }

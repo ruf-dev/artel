@@ -3,11 +3,10 @@ package task_trackers_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TaskTrackersImpl) AddTaskTracker(ctx context.Context, req *pb.AddTaskTracker_Request) (*pb.AddTaskTracker_Response, error) {
@@ -29,5 +28,6 @@ func (t *TaskTrackersImpl) AddTaskTracker(ctx context.Context, req *pb.AddTaskTr
 		Tracker: trackerToProto(created),
 		Boards:  boardsToProto(boards),
 	}
+
 	return resp, nil
 }

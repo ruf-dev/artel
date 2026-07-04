@@ -40,6 +40,7 @@ func (s *Service) liveSyncClient(ctx context.Context, vaultID uuid.UUID) (*couch
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error getting permissions")
 	}
+
 	if !perms.HasNotes {
 		return nil, rerrors.Wrap(user_errors.NotesNotEnabled)
 	}
@@ -104,10 +105,15 @@ func (s *Service) GetNote(ctx context.Context, vaultID uuid.UUID, path string) (
 func (s *Service) ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error) {
 	client, err := s.liveSyncClient(ctx, vaultID)
 	if err != nil {
-		return nil, err
+		return nil, rerrors.Wrap(err)
 	}
 
-	return client.ListTags(ctx)
+	tags, err := client.ListTags(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "list tags")
+	}
+
+	return tags, nil
 }
 
 func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error {
@@ -120,6 +126,7 @@ func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content
 	if err != nil {
 		return rerrors.Wrap(err, "error writing note")
 	}
+
 	return nil
 }
 
@@ -133,5 +140,6 @@ func (s *Service) MoveNote(ctx context.Context, vaultID uuid.UUID, oldPath, newP
 	if err != nil {
 		return rerrors.Wrap(err, "error moving note")
 	}
+
 	return nil
 }

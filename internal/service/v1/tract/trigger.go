@@ -8,12 +8,11 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 const triggerTokenBytes = 32
@@ -30,6 +29,7 @@ func (s *Service) CreateTrigger(ctx context.Context, name string, kind string, s
 	if err != nil {
 		return domain.Trigger{}, "", rerrors.Wrap(err, "error generating trigger token")
 	}
+
 	hash := sha256.Sum256([]byte(rawToken))
 
 	trigger := domain.Trigger{
@@ -53,10 +53,12 @@ func (s *Service) CreateTrigger(ctx context.Context, name string, kind string, s
 
 func generateTriggerToken() (string, error) {
 	buf := make([]byte, triggerTokenBytes)
+
 	_, err := rand.Read(buf)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error reading random bytes")
 	}
+
 	return hex.EncodeToString(buf), nil
 }
 
@@ -74,12 +76,15 @@ func (s *Service) getOwnedTrigger(ctx context.Context, id uuid.UUID, ownerUuid u
 	if err != nil {
 		return domain.Trigger{}, rerrors.Wrap(err, "error getting trigger")
 	}
+
 	if !result.Valid {
 		return domain.Trigger{}, rerrors.Wrap(user_errors.TriggerNotFound)
 	}
+
 	if result.V.UserUuid != ownerUuid {
 		return domain.Trigger{}, rerrors.Wrap(user_errors.TriggerNotOwned)
 	}
+
 	return result.V, nil
 }
 
@@ -93,6 +98,7 @@ func (s *Service) ListTriggers(ctx context.Context) ([]domain.Trigger, error) {
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing triggers")
 	}
+
 	return triggers, nil
 }
 
@@ -106,6 +112,7 @@ func (s *Service) SetTriggerEnabled(ctx context.Context, id uuid.UUID, enabled b
 	if err != nil {
 		return rerrors.Wrap(err, "error setting trigger enabled")
 	}
+
 	return nil
 }
 
@@ -119,6 +126,7 @@ func (s *Service) DeleteTrigger(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting trigger")
 	}
+
 	return nil
 }
 
@@ -140,6 +148,7 @@ func (s *Service) RotateTriggerToken(ctx context.Context, id uuid.UUID) (domain.
 	if err != nil {
 		return domain.Trigger{}, "", rerrors.Wrap(err, "error generating trigger token")
 	}
+
 	hash := sha256.Sum256([]byte(rawToken))
 	newTriggerUuid := uuid.New()
 
@@ -168,9 +177,11 @@ func (s *Service) LinkTrigger(ctx context.Context, triggerUuid uuid.UUID, tractU
 	if err != nil {
 		return rerrors.Wrap(err, "error getting tract")
 	}
+
 	if !tract.Valid {
 		return rerrors.Wrap(user_errors.NotFound)
 	}
+
 	if tract.V.UserUuid != uc.UserUuid {
 		return rerrors.Wrap(user_errors.TractNotOwned)
 	}
@@ -185,6 +196,7 @@ func (s *Service) LinkTrigger(ctx context.Context, triggerUuid uuid.UUID, tractU
 	if err != nil {
 		return rerrors.Wrap(err, "error linking trigger to tract")
 	}
+
 	return nil
 }
 
@@ -203,6 +215,7 @@ func (s *Service) UnlinkTrigger(ctx context.Context, triggerUuid uuid.UUID, trac
 	if err != nil {
 		return rerrors.Wrap(err, "error unlinking trigger from tract")
 	}
+
 	return nil
 }
 
@@ -218,5 +231,6 @@ func (s *Service) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error listing tract trigger links")
 	}
+
 	return links, nil
 }

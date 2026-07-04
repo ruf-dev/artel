@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (m *McpKeysImpl) ListMcpKeys(ctx context.Context, req *pb.ListMcpKeys_Request) (*pb.ListMcpKeys_Response, error) {
@@ -21,6 +20,7 @@ func (m *McpKeysImpl) ListMcpKeys(ctx context.Context, req *pb.ListMcpKeys_Reque
 	}
 
 	keyInfos := make([]*pb.McpKeyInfo, 0, len(keys))
+
 	for _, key := range keys {
 		keyInfo := &pb.McpKeyInfo{
 			Id:         key.Uuid.String(),
@@ -35,5 +35,6 @@ func (m *McpKeysImpl) ListMcpKeys(ctx context.Context, req *pb.ListMcpKeys_Reque
 	resp := &pb.ListMcpKeys_Response{
 		Keys: keyInfos,
 	}
+
 	return resp, nil
 }

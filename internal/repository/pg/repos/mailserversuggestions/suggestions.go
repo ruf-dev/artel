@@ -4,11 +4,10 @@ import (
 	"context"
 	"database/sql"
 
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
+	"go.redsock.ru/rerrors"
 )
 
 type Repo struct {
@@ -35,5 +34,6 @@ func (r *Repo) ListByDomain(ctx context.Context, domainPrefix string) ([]domain.
 			ImapPort: int(row.ImapPort),
 		}
 	}
+
 	return suggestions, nil
 }

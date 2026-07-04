@@ -3,10 +3,9 @@ package tract
 import (
 	"testing"
 
+	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ruf-dev/artel/internal/domain"
 )
 
 func TestEvaluate_NumericVsString(t *testing.T) {

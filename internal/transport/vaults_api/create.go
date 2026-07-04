@@ -3,9 +3,8 @@ package vaults_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) CreateVault(ctx context.Context, req *pb.CreateVault_Request) (*pb.CreateVault_Response, error) {
@@ -19,5 +18,6 @@ func (v *VaultsImpl) CreateVault(ctx context.Context, req *pb.CreateVault_Reques
 		Name:  vault.Name,
 		DbUrl: vault.CouchDBURL,
 	}
+
 	return resp, nil
 }

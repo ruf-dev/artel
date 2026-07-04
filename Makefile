@@ -25,3 +25,6 @@ build-local-container:
 			--load \
 			--platform linux/arm64 \
 			-t artel:local .
+
+lint:
+	golangci-lint run ./...

@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) DeleteVault(ctx context.Context, req *pb.DeleteVault_Request) (*pb.DeleteVault_Response, error) {
@@ -21,5 +20,6 @@ func (v *VaultsImpl) DeleteVault(ctx context.Context, req *pb.DeleteVault_Reques
 	}
 
 	resp := &pb.DeleteVault_Response{}
+
 	return resp, nil
 }

@@ -19,5 +19,6 @@ func WithHost(ctx context.Context, host string) context.Context {
 // FromContext retrieves the public host stored by WithHost.
 func FromContext(ctx context.Context) (string, bool) {
 	host, ok := ctx.Value(hostContextKey).(string)
+
 	return host, ok
 }

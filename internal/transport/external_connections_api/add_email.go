@@ -3,9 +3,8 @@ package external_connections_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (e *ExternalConnectionsImpl) AddEmailConnection(ctx context.Context, req *pb.AddEmailConnection_Request) (*pb.AddEmailConnection_Response, error) {

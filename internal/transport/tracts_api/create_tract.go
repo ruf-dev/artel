@@ -3,9 +3,8 @@ package tracts_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TractsImpl) CreateTract(ctx context.Context, req *pb.CreateTract_Request) (*pb.CreateTract_Response, error) {
@@ -28,5 +27,6 @@ func (t *TractsImpl) CreateTract(ctx context.Context, req *pb.CreateTract_Reques
 		Tract:    item,
 		Warnings: warnings,
 	}
+
 	return resp, nil
 }

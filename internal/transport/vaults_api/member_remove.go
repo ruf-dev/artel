@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) RemoveMember(ctx context.Context, req *pb.RemoveMember_Request) (*pb.RemoveMember_Response, error) {
@@ -26,5 +25,6 @@ func (v *VaultsImpl) RemoveMember(ctx context.Context, req *pb.RemoveMember_Requ
 	}
 
 	resp := &pb.RemoveMember_Response{}
+
 	return resp, nil
 }

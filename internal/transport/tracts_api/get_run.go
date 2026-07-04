@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 func (t *TractsImpl) GetRun(ctx context.Context, req *pb.GetRun_Request) (*pb.GetRun_Response, error) {
@@ -25,5 +24,6 @@ func (t *TractsImpl) GetRun(ctx context.Context, req *pb.GetRun_Request) (*pb.Ge
 		Run:   runToProto(run),
 		Steps: runStepsToProto(steps),
 	}
+
 	return resp, nil
 }

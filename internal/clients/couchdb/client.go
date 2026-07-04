@@ -8,9 +8,8 @@ import (
 
 	kivik "github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type Config struct {
@@ -45,6 +44,7 @@ func New(cfg Config) (*Client, error) {
 		user:       cfg.User,
 		password:   cfg.Password,
 	}
+
 	return c, nil
 }
 
@@ -68,6 +68,7 @@ func (c *Client) Setup(ctx context.Context) error {
 			return rerrors.Wrap(err, "create system db "+db)
 		}
 	}
+
 	return nil
 }
 
@@ -83,6 +84,7 @@ func (c *Client) enableSingleNode(ctx context.Context) error {
 	if err != nil && kivik.HTTPStatus(err) != http.StatusBadRequest {
 		return rerrors.Wrap(err, "cluster setup")
 	}
+
 	return nil
 }
 
@@ -107,6 +109,7 @@ func (c *Client) GetSetupStatus(ctx context.Context) (SetupStatus, error) {
 		UsersDbInitialized:      usersExists,
 		ReplicatorDbInitialized: replicatorExists,
 	}
+
 	return status, nil
 }
 
@@ -115,6 +118,7 @@ func (c *Client) isClusterModeEnabled(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, rerrors.Wrap(err, "error creating cluster status request")
 	}
+
 	req.SetBasicAuth(c.user, c.password)
 
 	resp, err := c.httpClient.Do(req)
@@ -126,6 +130,7 @@ func (c *Client) isClusterModeEnabled(ctx context.Context) (bool, error) {
 	var body struct {
 		State string `json:"state"`
 	}
+
 	err = json.NewDecoder(resp.Body).Decode(&body)
 	if err != nil {
 		return false, rerrors.Wrap(err, "error decoding cluster status response")

@@ -7,10 +7,9 @@ import (
 
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"go.redsock.ru/rerrors"
 )
 
 type Client struct {
@@ -54,28 +53,34 @@ func (c *Client) ListEmails(_ context.Context, limit int) ([]domain.EmailMeta, e
 	seqSet.AddRange(from, mbox.Messages)
 
 	messages := make(chan *imap.Message, limit)
+
 	err = conn.Fetch(seqSet, []imap.FetchItem{imap.FetchEnvelope, imap.FetchUid}, messages)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "fetch messages")
 	}
 
 	var result []domain.EmailMeta
+
 	for msg := range messages {
 		meta := domain.EmailMeta{
 			Id:      fmt.Sprintf("%d", msg.Uid),
 			Subject: msg.Envelope.Subject,
 		}
+
 		if len(msg.Envelope.From) > 0 {
 			addr := msg.Envelope.From[0]
 			meta.From = addr.Address()
 		}
+
 		if msg.Envelope.Date.IsZero() {
 			meta.Date = ""
 		} else {
 			meta.Date = msg.Envelope.Date.UTC().Format("2006-01-02T15:04:05Z")
 		}
+
 		result = append(result, meta)
 	}
+
 	return result, nil
 }
 
@@ -100,6 +105,7 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 
 	messages := make(chan *imap.Message, 1)
 	section := &imap.BodySectionName{}
+
 	err = conn.UidFetch(seqSet, []imap.FetchItem{imap.FetchEnvelope, section.FetchItem()}, messages)
 	if err != nil {
 		return domain.EmailMessage{}, rerrors.Wrap(err, "fetch message")
@@ -117,13 +123,16 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 	if len(msg.Envelope.From) > 0 {
 		result.From = msg.Envelope.From[0].Address()
 	}
+
 	if len(msg.Envelope.To) > 0 {
 		addrs := make([]string, len(msg.Envelope.To))
 		for i, a := range msg.Envelope.To {
 			addrs[i] = a.Address()
 		}
+
 		result.To = strings.Join(addrs, ", ")
 	}
+
 	if !msg.Envelope.Date.IsZero() {
 		result.Date = msg.Envelope.Date.UTC().Format("2006-01-02T15:04:05Z")
 	}
@@ -132,16 +141,20 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 	if body != nil {
 		buf := new(strings.Builder)
 		buf.Grow(4096)
+
 		b := make([]byte, 4096)
+
 		for {
 			n, readErr := body.Read(b)
 			if n > 0 {
 				buf.Write(b[:n])
 			}
+
 			if readErr != nil {
 				break
 			}
 		}
+
 		result.Body = buf.String()
 	}
 
@@ -157,6 +170,7 @@ func (c *Client) ListFolders(_ context.Context) ([]string, error) {
 
 	mailboxes := make(chan *imap.MailboxInfo, 16)
 	done := make(chan error, 1)
+
 	go func() {
 		done <- conn.List("", "*", mailboxes)
 	}()
@@ -165,14 +179,17 @@ func (c *Client) ListFolders(_ context.Context) ([]string, error) {
 	for m := range mailboxes {
 		folders = append(folders, m.Name)
 	}
+
 	if err := <-done; err != nil {
 		return nil, rerrors.Wrap(err, "list folders")
 	}
+
 	return folders, nil
 }
 
 func (c *Client) connect() (*client.Client, error) {
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
 	conn, err := client.DialTLS(addr, nil)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "connect to imap server")
@@ -180,6 +197,7 @@ func (c *Client) connect() (*client.Client, error) {
 
 	if err := conn.Login(c.email, c.password); err != nil {
 		conn.Logout()
+
 		return nil, rerrors.Wrap(err, "imap login failed")
 	}
 

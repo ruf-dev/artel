@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 )
@@ -78,8 +77,11 @@ func TestUpdateTract_Success(t *testing.T) {
 	}
 
 	var gotId uuid.UUID
+
 	var gotName string
+
 	var gotDescription string
+
 	var gotDef domain.TractDefinition
 
 	ts := &fakeTractService{
@@ -88,6 +90,7 @@ func TestUpdateTract_Success(t *testing.T) {
 			gotName = name
 			gotDescription = description
 			gotDef = d
+
 			return updated, nil, nil
 		},
 	}
@@ -100,6 +103,7 @@ func TestUpdateTract_Success(t *testing.T) {
 	}
 
 	var defParam map[string]interface{}
+
 	err = json.Unmarshal(defRaw, &defParam)
 	if err != nil {
 		t.Fatalf("error unmarshaling definition param: %v", err)
@@ -134,6 +138,7 @@ func TestUpdateTract_Success(t *testing.T) {
 	}
 
 	var decoded map[string]interface{}
+
 	err = json.Unmarshal([]byte(result.Text), &decoded)
 	if err != nil {
 		t.Fatalf("error unmarshaling result: %v", err)

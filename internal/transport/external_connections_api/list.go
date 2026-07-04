@@ -3,9 +3,8 @@ package external_connections_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (e *ExternalConnectionsImpl) ListConnections(ctx context.Context, _ *pb.ListConnections_Request) (*pb.ListConnections_Response, error) {
@@ -22,5 +21,6 @@ func (e *ExternalConnectionsImpl) ListConnections(ctx context.Context, _ *pb.Lis
 	resp := &pb.ListConnections_Response{
 		Connections: connections,
 	}
+
 	return resp, nil
 }

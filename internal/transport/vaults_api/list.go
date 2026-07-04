@@ -3,9 +3,8 @@ package vaults_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request) (*pb.ListVaults_Response, error) {
@@ -15,6 +14,7 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 	}
 
 	items := make([]*pb.VaultItem, 0, len(vaults))
+
 	for _, vault := range vaults {
 		s3InstanceId := ""
 		if vault.S3InstanceUuid != nil {
@@ -35,5 +35,6 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 	resp := &pb.ListVaults_Response{
 		Vaults: items,
 	}
+
 	return resp, nil
 }

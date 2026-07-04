@@ -3,10 +3,9 @@ package tracts_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
+	"go.redsock.ru/rerrors"
 )
 
 const lastRunLimit = 1
@@ -21,15 +20,18 @@ func (t *TractsImpl) ListTracts(ctx context.Context, _ *pb.ListTracts_Request) (
 	}
 
 	items := make([]*pb.TractItem, len(tracts))
+
 	for i, tr := range tracts {
 		item, err := t.tractWithSummary(ctx, tr)
 		if err != nil {
 			return nil, err
 		}
+
 		items[i] = item
 	}
 
 	resp := &pb.ListTracts_Response{Tracts: items}
+
 	return resp, nil
 }
 

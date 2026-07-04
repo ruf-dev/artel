@@ -6,11 +6,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"google.golang.org/grpc"
-
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
 )
 
 type S3InstancesImpl struct {
@@ -46,6 +45,7 @@ func (s *S3InstancesImpl) RegisterS3Instance(ctx context.Context, req *artel_api
 	resp := &artel_api.RegisterS3Instance_Response{
 		Id: id,
 	}
+
 	return resp, nil
 }
 
@@ -63,6 +63,7 @@ func (s *S3InstancesImpl) GetS3Instance(ctx context.Context, req *artel_api.GetS
 		PathStyle: instance.PathStyle,
 		CreatedAt: instance.CreatedAt.String(),
 	}
+
 	return resp, nil
 }
 
@@ -87,6 +88,7 @@ func (s *S3InstancesImpl) ListS3Instances(ctx context.Context, req *artel_api.Li
 	resp := &artel_api.ListS3Instances_Response{
 		Instances: respInstances,
 	}
+
 	return resp, nil
 }
 
@@ -106,6 +108,7 @@ func (s *S3InstancesImpl) DeleteS3Instance(ctx context.Context, req *artel_api.D
 	}
 
 	resp := &artel_api.DeleteS3Instance_Response{}
+
 	return resp, nil
 }
 
@@ -116,5 +119,6 @@ func (s *S3InstancesImpl) TestS3Instance(ctx context.Context, req *artel_api.Tes
 	}
 
 	resp := &artel_api.TestS3Instance_Response{}
+
 	return resp, nil
 }

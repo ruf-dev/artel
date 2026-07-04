@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 

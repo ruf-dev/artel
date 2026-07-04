@@ -8,13 +8,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/sqlc-dev/pqtype"
-	"go.redsock.ru/rerrors"
-
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
+	"github.com/sqlc-dev/pqtype"
+	"go.redsock.ru/rerrors"
 )
 
 // Repo is the pure-DB layer for tracts + their runs/run-steps. The step tree itself is not a
@@ -58,6 +57,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.Tract], e
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.Tract]{}, nil
 		}
+
 		return sql.Null[domain.Tract]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting tract")
 	}
 
@@ -67,6 +67,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.Tract], e
 	}
 
 	result := sql.Null[domain.Tract]{V: tract, Valid: true}
+
 	return result, nil
 }
 
@@ -77,13 +78,16 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Tra
 	}
 
 	tracts := make([]domain.Tract, len(rows))
+
 	for i, row := range rows {
 		tract, convErr := tractToDomain(row)
 		if convErr != nil {
 			return nil, convErr
 		}
+
 		tracts[i] = tract
 	}
+
 	return tracts, nil
 }
 
@@ -119,6 +123,7 @@ func (r *Repo) SetEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error setting tract enabled")
 	}
+
 	return nil
 }
 
@@ -127,11 +132,13 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting tract")
 	}
+
 	return nil
 }
 
 func tractToDomain(row artel_q.Tract) (domain.Tract, error) {
 	var def domain.TractDefinition
+
 	err := json.Unmarshal(row.Definition, &def)
 	if err != nil {
 		return domain.Tract{}, rerrors.Wrap(err, "error unmarshaling tract definition")
@@ -147,6 +154,7 @@ func tractToDomain(row artel_q.Tract) (domain.Tract, error) {
 		CreatedAt:   row.CreatedAt,
 		UpdatedAt:   row.UpdatedAt,
 	}
+
 	return tract, nil
 }
 
@@ -179,10 +187,12 @@ func (r *Repo) GetRun(ctx context.Context, id uuid.UUID) (sql.Null[domain.TractR
 		if errors.Is(err, sql.ErrNoRows) {
 			return sql.Null[domain.TractRun]{}, nil
 		}
+
 		return sql.Null[domain.TractRun]{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error getting tract run")
 	}
 
 	result := sql.Null[domain.TractRun]{V: runToDomain(row), Valid: true}
+
 	return result, nil
 }
 
@@ -201,6 +211,7 @@ func (r *Repo) ListRunsByTract(ctx context.Context, tractUuid uuid.UUID, limit i
 	for i, row := range rows {
 		runs[i] = runToDomain(row)
 	}
+
 	return runs, nil
 }
 
@@ -215,6 +226,7 @@ func (r *Repo) UpdateRunStatus(ctx context.Context, id uuid.UUID, status domain.
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error updating tract run status")
 	}
+
 	return nil
 }
 
@@ -223,6 +235,7 @@ func (r *Repo) SweepStaleRuns(ctx context.Context, threshold time.Time) error {
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error sweeping stale tract runs")
 	}
+
 	return nil
 }
 
@@ -239,9 +252,11 @@ func runToDomain(row artel_q.TractRun) domain.TractRun {
 	if row.TriggerID.Valid {
 		run.TriggerUuid = row.TriggerID.UUID
 	}
+
 	if row.Error.Valid {
 		run.Error = row.Error.String
 	}
+
 	return run
 }
 
@@ -276,6 +291,7 @@ func (r *Repo) UpdateRunStepFinish(ctx context.Context, id uuid.UUID, status dom
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error updating tract run step")
 	}
+
 	return nil
 }
 
@@ -289,6 +305,7 @@ func (r *Repo) ListRunStepsByRun(ctx context.Context, runUuid uuid.UUID) ([]doma
 	for i, row := range rows {
 		steps[i] = runStepToDomain(row)
 	}
+
 	return steps, nil
 }
 
@@ -297,6 +314,7 @@ func (r *Repo) SweepStaleRunSteps(ctx context.Context, threshold time.Time) erro
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error sweeping stale tract run steps")
 	}
+
 	return nil
 }
 
@@ -313,14 +331,18 @@ func runStepToDomain(row artel_q.TractRunStep) domain.TractRunStep {
 	if row.Input.Valid {
 		step.Input = row.Input.RawMessage
 	}
+
 	if row.Output.Valid {
 		step.Output = row.Output.RawMessage
 	}
+
 	if row.Error.Valid {
 		step.Error = row.Error.String
 	}
+
 	if row.FinishedAt.Valid {
 		step.FinishedAt = row.FinishedAt.Time
 	}
+
 	return step
 }

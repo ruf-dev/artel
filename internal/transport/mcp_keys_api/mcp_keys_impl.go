@@ -6,10 +6,9 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
-
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"google.golang.org/grpc"
 )
 
 type McpKeysImpl struct {

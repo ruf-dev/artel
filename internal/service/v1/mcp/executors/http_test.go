@@ -19,6 +19,7 @@ func TestHttpExecutor_QueryParam_EmptyOmitted(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotQuery = r.URL.Query()
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -61,6 +62,7 @@ func TestHttpExecutor_Header_EmptyOmitted(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotHeaders = r.Header
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -89,6 +91,7 @@ func TestHttpExecutor_Header_EmptyOmitted(t *testing.T) {
 	if gotHeaders.Get("X-Empty") != "" {
 		t.Fatalf("expected X-Empty header to be absent, got %q", gotHeaders.Get("X-Empty"))
 	}
+
 	if _, ok := gotHeaders["X-Empty"]; ok {
 		t.Fatalf("expected X-Empty header to not be set at all, got %v", gotHeaders)
 	}
@@ -107,10 +110,12 @@ func TestHttpExecutor_BodyKey_EmptyDropped(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
+
 		err := decoder.Decode(&gotBody)
 		if err != nil {
 			t.Fatalf("failed to decode request body: %v", err)
 		}
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()

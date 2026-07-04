@@ -3,9 +3,8 @@ package external_connections_api
 import (
 	"context"
 
-	"go.redsock.ru/rerrors"
-
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"go.redsock.ru/rerrors"
 )
 
 func (e *ExternalConnectionsImpl) InitiateGoogleOAuth(ctx context.Context, req *pb.InitiateGoogleOAuth_Request) (*pb.InitiateGoogleOAuth_Response, error) {
@@ -17,5 +16,6 @@ func (e *ExternalConnectionsImpl) InitiateGoogleOAuth(ctx context.Context, req *
 	resp := &pb.InitiateGoogleOAuth_Response{
 		AuthUrl: authURL,
 	}
+
 	return resp, nil
 }

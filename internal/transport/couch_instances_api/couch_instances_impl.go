@@ -6,11 +6,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
-	"go.redsock.ru/rerrors"
-	"google.golang.org/grpc"
-
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"go.redsock.ru/rerrors"
+	"google.golang.org/grpc"
 )
 
 type CouchInstancesImpl struct {
@@ -46,6 +45,7 @@ func (c *CouchInstancesImpl) RegisterCouchInstance(ctx context.Context, req *art
 	resp := &artel_api.RegisterCouchInstance_Response{
 		Id: id,
 	}
+
 	return resp, nil
 }
 
@@ -61,6 +61,7 @@ func (c *CouchInstancesImpl) GetCouchInstance(ctx context.Context, req *artel_ap
 		Username:  instance.Username,
 		CreatedAt: instance.CreatedAt.String(),
 	}
+
 	return resp, nil
 }
 
@@ -83,6 +84,7 @@ func (c *CouchInstancesImpl) ListCouchInstances(ctx context.Context, req *artel_
 	resp := &artel_api.ListCouchInstances_Response{
 		Instances: respInstances,
 	}
+
 	return resp, nil
 }
 
@@ -102,6 +104,7 @@ func (c *CouchInstancesImpl) DeleteCouchInstance(ctx context.Context, req *artel
 	}
 
 	resp := &artel_api.DeleteCouchInstance_Response{}
+
 	return resp, nil
 }
 
@@ -112,6 +115,7 @@ func (c *CouchInstancesImpl) SetupCouchInstance(ctx context.Context, req *artel_
 	}
 
 	resp := &artel_api.SetupCouchInstance_Response{}
+
 	return resp, nil
 }
 
@@ -126,5 +130,6 @@ func (c *CouchInstancesImpl) GetCouchInstanceStatus(ctx context.Context, req *ar
 		UsersDbInitialized:      status.UsersDbInitialized,
 		ReplicatorDbInitialized: status.ReplicatorDbInitialized,
 	}
+
 	return resp, nil
 }
