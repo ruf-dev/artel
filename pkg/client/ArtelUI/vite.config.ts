@@ -20,9 +20,9 @@ export default ({mode}: { mode: string }) => {
     uc.server = {
         port: 5175,
         host: true,
-        allowedHosts: ['.loca.lt', 'localhost', '127.0.0.1', 'alexskilled.zpotify.ru'],
+        allowedHosts: ['.loca.lt', 'localhost', '127.0.0.1', 'artel-alexskilled.redsock.ru'],
         hmr: {
-            host: 'alexskilled.zpotify.ru',
+            host: 'artel-alexskilled.redsock.ru',
             protocol: 'wss',
             clientPort: 443,
         }

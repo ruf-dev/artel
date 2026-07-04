@@ -8,7 +8,7 @@ code = 4593f8bcde194b577906e9a932fb2a06 &
 client_id = 33b343b2f1911f76160442ece36ba2d6 &
 code_verifier = 30RO__Sm98GzGISwG84JwRG-S77eoe8uqgI6NoK7RJThUswmAZ_9LL-wWwGbCpwxoI6uUjVxMzg_og3AO4IXYb7z1lFbPXJkcF5Y0JD4h40XKg7NT_CU6xuQ2mXVawhW &
 redirect_uri = https%3A%2F%2Fclaude.ai%2Fapi%2Fmcp%2Fauth_callback &
-resource = https%3A%2F%2Falexskilled.zpotify.ru%2Fmcp
+resource = https%3A%2F%2Fartel-alexskilled.redsock.ru%2Fmcp
 
 ### Initialize
 POST {{artel_url}}/mcp
