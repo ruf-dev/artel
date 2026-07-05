@@ -1,6 +1,7 @@
 import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.module.css"
 
 import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
+import {Location} from "@/processes/tractSteps.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 
 import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
@@ -14,9 +15,10 @@ interface Props {
     onBackgroundClick: () => void
     nodeStatus: (id: string) => NodeStatus
     runningEdgeIds: Set<string>
+    onAddBlock: (location: Location, index: number) => void
 }
 
-export default function TractCanvasArea({layout, tools, triggerInfo, selectedNodeId, onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds}: Props) {
+export default function TractCanvasArea({layout, tools, triggerInfo, selectedNodeId, onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock}: Props) {
     return (
         <div className={cls.Wrap} onClick={onBackgroundClick}>
             <div className={cls.Canvas} style={{width: layout.width, height: layout.height}}>
@@ -37,6 +39,7 @@ export default function TractCanvasArea({layout, tools, triggerInfo, selectedNod
                         status={nodeStatus(node.id)}
                         selected={node.id === selectedNodeId}
                         onClick={() => onSelectNode(node.id)}
+                        onAddBlock={() => onAddBlock(node.location, node.index + 1)}
                     />
                 ))}
             </div>

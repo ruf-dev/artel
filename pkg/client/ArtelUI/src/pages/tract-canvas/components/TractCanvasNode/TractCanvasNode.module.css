@@ -119,3 +119,36 @@
     background: rgba(74,222,128,0.10);
     border-color: rgba(74,222,128,0.18);
 }
+
+.Node .AddButton {
+    position: absolute;
+    top: 50%;
+    right: -0.8125rem;
+    width: 1.625rem;
+    height: 1.625rem;
+    padding: 0;
+    border-radius: 999px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    color: var(--color-fg-secondary);
+    justify-content: center;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.Node .AddButton svg {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+.Node:hover .AddButton {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.Node .AddButton:hover {
+    color: var(--color-fg-primary);
+    border-color: var(--coral-border);
+}

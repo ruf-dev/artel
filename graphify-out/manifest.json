@@ -2660,13 +2660,13 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx": {
-    "mtime": 1783154599.711863,
-    "ast_hash": "b6115588e73269fffceafc43955adfd3",
+    "mtime": 1783245309.1826622,
+    "ast_hash": "e0e6fa6398ddc5a3718083b1a4fc1e0e",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx": {
-    "mtime": 1783157078.194792,
-    "ast_hash": "4755061dae266cafa412e9e569428369",
+    "mtime": 1783245280.859089,
+    "ast_hash": "aed2aae2ca7ca3ecf92a67b0163a75c4",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasCard/TractCanvasCard.tsx": {
@@ -2675,8 +2675,8 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx": {
-    "mtime": 1783154564.88787,
-    "ast_hash": "ae14ec685ec7d3a952670bc0daeb8413",
+    "mtime": 1783245294.7382157,
+    "ast_hash": "0c032789cfef83846066cb2b51e4aaec",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx": {

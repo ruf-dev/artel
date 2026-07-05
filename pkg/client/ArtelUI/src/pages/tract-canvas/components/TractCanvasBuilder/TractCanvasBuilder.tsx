@@ -17,7 +17,7 @@ import {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractC
 import RunStatusBadge from "@/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx"
 import RunButton from "@/pages/tract-canvas/components/RunButton/RunButton.tsx"
 
-import {buildStepFromDraft, collectAllStepIds, insertStepAt, Location, ROOT_LOCATION} from "@/processes/tractSteps.ts"
+import {buildStepFromDraft, collectAllStepIds, insertStepAt, Location} from "@/processes/tractSteps.ts"
 import {layoutTract, TRIGGER_NODE_ID} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
 
@@ -148,7 +148,6 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
                 <div className={cls.BarRight}>
                     <RunStatusBadge running={running} lastRunStatus={runs[0]?.status}/>
                     <Button variant="ghost" onClick={() => setLogOpen(o => !o)}>Logs</Button>
-                    <Button variant="ghost" onClick={() => openAddBlock(ROOT_LOCATION, definition.steps.length)}>+ Add block</Button>
                     {isDirty && (
                         <Button onClick={handleSave} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
                     )}
@@ -170,6 +169,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
                     onBackgroundClick={() => setSelectedNodeId(null)}
                     nodeStatus={nodeStatus}
                     runningEdgeIds={runningEdgeIds}
+                    onAddBlock={openAddBlock}
                 />
                 <TractCanvasInspector
                     node={selectedNode}

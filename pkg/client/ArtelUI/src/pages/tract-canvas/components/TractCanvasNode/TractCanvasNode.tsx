@@ -2,12 +2,14 @@ import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode
 
 import {CanvasNode, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
+import Button from "@/components/shared/Button/Button.tsx"
 import {
     BranchIcon,
     ChatIcon,
     ForkIcon,
     LayersIcon,
     ManualTriggerIcon,
+    PlusIcon,
     WebhookIcon,
 } from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
@@ -21,9 +23,10 @@ interface Props {
     status: NodeStatus
     selected: boolean
     onClick: () => void
+    onAddBlock: () => void
 }
 
-export default function TractCanvasNode({node, tools, triggerInfo, status, selected, onClick}: Props) {
+export default function TractCanvasNode({node, tools, triggerInfo, status, selected, onClick, onAddBlock}: Props) {
     const step = node.step
     const color = colorForKind(node.kind, step?.mcp)
 
@@ -51,6 +54,17 @@ export default function TractCanvasNode({node, tools, triggerInfo, status, selec
             <div className={cls.Chips}>
                 <NodeChips node={node} tools={tools} triggerInfo={triggerInfo}/>
             </div>
+            <Button
+                className={cls.AddButton}
+                aria-label="Add block after"
+                title="Add block after"
+                onClick={e => {
+                    e.stopPropagation()
+                    onAddBlock()
+                }}
+            >
+                <PlusIcon/>
+            </Button>
         </div>
     )
 }
