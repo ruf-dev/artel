@@ -16,10 +16,8 @@ interface Props {
 }
 
 export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSelectRun, onClose}: Props) {
-    if (!open) return null
-
     return (
-        <div className={cls.Panel}>
+        <div className={`${cls.Panel}${open ? ` ${cls.PanelOpen}` : ""}`}>
             <div className={cls.Bar}>
                 <span className={cls.BarLabel}>Runs</span>
                 <Button variant="iconDanger" onClick={onClose} aria-label="Close log">
