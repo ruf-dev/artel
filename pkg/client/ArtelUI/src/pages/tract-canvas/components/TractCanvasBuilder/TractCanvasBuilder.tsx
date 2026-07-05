@@ -6,22 +6,18 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
 import TractBlockPicker from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx"
 import {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 
+import TractCanvasTopBar from "@/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx"
 import TractCanvasArea from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx"
 import TractCanvasInspector from "@/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx"
 import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
-import {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
-import RunStatusBadge from "@/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx"
-import RunButton from "@/pages/tract-canvas/components/RunButton/RunButton.tsx"
+import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts"
 
 import {buildStepFromDraft, collectAllStepIds, insertStepAt, Location} from "@/processes/tractSteps.ts"
-import {layoutTract, TRIGGER_NODE_ID} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
+import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
-
-const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
 interface Props {
     tract: Tract
@@ -32,7 +28,7 @@ interface Props {
 }
 
 export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack}: Props) {
-    const {updateTract, runTract, fetchRuns, currentRun, currentRunSteps} = useTracts()
+    const {updateTract} = useTracts()
     const bakeError = useBakeError()
     const {OpenDialog} = useDialog()
 
@@ -42,9 +38,6 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
     const [saving, setSaving] = useState(false)
     const [warnings, setWarnings] = useState<string[]>([])
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
-    const [logOpen, setLogOpen] = useState(false)
-    const [selectedRunUuid, setSelectedRunUuid] = useState<string | null>(null)
-    const [running, setRunning] = useState(false)
 
     useEffect(() => {
         if (!seeded) {
@@ -64,31 +57,10 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
     const triggerInfo = firstLinked ? {name: firstLinked.name, kind: firstLinked.kind, source: firstLinked.source} : undefined
     const triggerSchema = triggers.find(t => linkedSummaries.some(l => l.uuid === t.uuid) && Object.keys(t.payloadSchema.properties).length > 0)?.payloadSchema
 
-    const activeRunSteps = useMemo(
-        () => selectedRunUuid && currentRun?.uuid === selectedRunUuid ? currentRunSteps : [],
-        [selectedRunUuid, currentRun, currentRunSteps],
-    )
-    const lastOutputByStepId = useMemo(() => {
-        const m: Record<string, unknown> = {}
-        for (const s of activeRunSteps) {
-            if (s.status === "done" && s.output && typeof s.output === "object") m[s.stepId] = s.output
-        }
-        return m
-    }, [activeRunSteps])
-
-    function nodeStatus(id: string): NodeStatus {
-        if (id === TRIGGER_NODE_ID) return activeRunSteps.length > 0 ? "ok" : "idle"
-        const step = activeRunSteps.find(s => s.stepId === id)
-        if (!step) return "idle"
-        if (step.status === "done") return "ok"
-        if (step.status === "failed") return "err"
-        return "running"
-    }
-
-    const runningEdgeIds = useMemo(() => {
-        if (!running) return new Set<string>()
-        return new Set(layout.edges.map(e => e.id))
-    }, [running, layout])
+    const {
+        running, logOpen, setLogOpen, selectedRunUuid, setSelectedRunUuid,
+        lastOutputByStepId, nodeStatus, runningEdgeIds, handleRun,
+    } = useTractRunTracking(tract.uuid, layout)
 
     function handleSave() {
         setSaving(true)
@@ -114,46 +86,20 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
         )
     }
 
-    function handleRun() {
-        setRunning(true)
-        runTract(tract.uuid, {})
-            .then(() => sleep(900))
-            .then(() => fetchRuns(tract.uuid))
-            .then(() => sleep(1200))
-            .then(() => fetchRuns(tract.uuid))
-            .then(() => {
-                const latest = runsByLatest()
-                if (latest) {
-                    setSelectedRunUuid(latest.uuid)
-                    setLogOpen(true)
-                }
-            })
-            .catch(err => bakeError("Failed to run tract", err))
-            .finally(() => setRunning(false))
-    }
-
-    function runsByLatest(): TractRun | undefined {
-        // Read the live store rather than the `runs` prop — this closure outlives the render
-        // that created it (it runs after two awaited fetches), so the prop would be stale.
-        return useTracts.getState().runsByTract[tract.uuid]?.[0]
-    }
-
     return (
         <div className={cls.Root}>
-            <div className={cls.Bar}>
-                <Button variant="ghost" onClick={onBack}>← Tracts</Button>
-                <span className={cls.Divider}/>
-                <input className={cls.NameInput} value={name} onChange={e => setName(e.target.value)}/>
-                {isDirty && <span className={cls.DirtyDot} title="Unsaved changes"/>}
-                <div className={cls.BarRight}>
-                    <RunStatusBadge running={running} lastRunStatus={runs[0]?.status}/>
-                    <Button variant="ghost" onClick={() => setLogOpen(o => !o)}>Logs</Button>
-                    {isDirty && (
-                        <Button onClick={handleSave} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
-                    )}
-                    <RunButton running={running} onClick={handleRun}/>
-                </div>
-            </div>
+            <TractCanvasTopBar
+                name={name}
+                onNameChange={setName}
+                isDirty={isDirty}
+                saving={saving}
+                running={running}
+                lastRunStatus={runs[0]?.status}
+                onBack={onBack}
+                onSave={handleSave}
+                onRun={handleRun}
+                onToggleLog={() => setLogOpen(o => !o)}
+            />
             {warnings.length > 0 && (
                 <div className={cls.Warnings}>
                     {warnings.map((w, i) => <div key={i} className={cls.WarningRow}>{w}</div>)}
