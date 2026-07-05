@@ -1,0 +1,21 @@
+.Menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 11.25rem;
+    padding: 0.375rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.75rem;
+    box-shadow: 0 24px 64px -16px rgba(0,0,0,0.7);
+    animation: menuIn 160ms ease both;
+}
+
+@keyframes menuIn {
+    from { opacity: 0; transform: translateY(-0.25rem); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+[data-theme="light"] .Menu {
+    background: #FFFFFF;
+}

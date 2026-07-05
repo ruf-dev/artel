@@ -1,0 +1,27 @@
+.UserPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.3125rem 0.75rem 0.3125rem 0.3125rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--color-fg-primary);
+    transition: border-color var(--ease-default), background var(--ease-default);
+}
+
+.UserPill:hover {
+    border-color: var(--color-border-light);
+    background: var(--color-bg-elevated);
+}
+
+.Avatar {
+    width: min(1.75rem, 35px);
+    height: min(1.75rem, 35px);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF4B3E 0%, #ff8266 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
