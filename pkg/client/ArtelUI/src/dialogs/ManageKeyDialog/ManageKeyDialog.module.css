@@ -102,59 +102,6 @@
 
 /* ── Buttons ──────────────────────────────────────────────── */
 
-.BtnPrimary {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.625rem 1.125rem;
-    border-radius: 0.625rem;
-    border: 1px solid var(--coral);
-    background: var(--coral);
-    color: white;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    box-shadow: 0 10px 28px -12px var(--coral-glow);
-    transition: filter 160ms ease, opacity 160ms ease;
-}
-
-.BtnPrimary:hover:not(:disabled) { filter: brightness(1.06); }
-.BtnPrimary:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.BtnGhost {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 0.875rem;
-    border-radius: 0.625rem;
-    border: 1px solid var(--color-border-light);
-    background: transparent;
-    color: var(--color-fg-secondary);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 160ms ease, color 160ms ease;
-}
-
-.BtnGhost:hover:not(:disabled) { background: var(--color-bg-hover); color: var(--color-fg-primary); }
-.BtnGhost:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.BtnGhostSmall {
-    flex-shrink: 0;
-    padding: 0.3125rem 0.625rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--color-border-light);
-    background: transparent;
-    color: var(--color-fg-tertiary);
-    font-size: 0.75rem;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
-}
-
-.BtnGhostSmall:hover { background: rgba(193,37,61,0.10); border-color: var(--color-error); color: var(--color-error); }
-
 .LinkBtn {
     display: inline;
     padding: 0;

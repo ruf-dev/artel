@@ -1,7 +1,7 @@
 import {useState, useEffect, type ReactNode} from "react"
 import {useNavigate} from "react-router-dom"
 
-import {Button, ModalClose, ModalActions, ConfirmDialog} from "@vervstack/chures"
+import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/dialogs/ManageKeyDialog/ManageKeyDialog.module.css"
 
 import {McpKeyInfo, McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
@@ -118,23 +118,12 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                 <DialogHead titleId="manageVaultTitle" title="Select vault" disabled={saving}/>
                 <p className={cls.ModalSub}>Choose which vault this key connects to.</p>
                 <VaultOptionList selectedVaultId={selectedVaultId} onSelect={setSelectedVaultId}/>
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {
-                            label: "Back",
-                            onClick: () => setStep("main"),
-                            className: cls.BtnGhost,
-                            disabled: saving
-                        },
-                        {
-                            label: saving ? "Saving…" : "Save",
-                            onClick: handleSaveVault,
-                            className: cls.BtnPrimary,
-                            disabled: saving || !selectedVaultId
-                        },
-                    ]}
-                />
+                <div className={cls.ModalActions}>
+                    <Button variant="ghost" onClick={() => setStep("main")} disabled={saving}>Back</Button>
+                    <Button variant="primary" onClick={handleSaveVault} disabled={saving || !selectedVaultId}>
+                        {saving ? "Saving…" : "Save"}
+                    </Button>
+                </div>
             </div>
         )
     }
@@ -146,12 +135,9 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                 <DialogHead titleId="addConnectionTitle" title="Add connection"/>
                 <p className={cls.ModalSub}>Pick a service to connect to this key.</p>
                 <CandidateOptionList connectors={connectors} onSelect={handleSelectCandidate}/>
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {label: "Back", onClick: () => setStep("main"), className: cls.BtnGhost, disabled: false},
-                    ]}
-                />
+                <div className={cls.ModalActions}>
+                    <Button variant="ghost" onClick={() => setStep("main")}>Back</Button>
+                </div>
             </div>
         )
     }
@@ -169,23 +155,17 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                     selectedId={selectedExternalConnectionId}
                     onSelect={setSelectedExternalConnectionId}
                 />
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {
-                            label: "Back",
-                            onClick: () => setStep(editingConnectorName ? "main" : "addConnection"),
-                            className: cls.BtnGhost,
-                            disabled: saving,
-                        },
-                        {
-                            label: saving ? (editingConnectorName ? "Saving…" : "Adding…") : (editingConnectorName ? "Save" : "Add"),
-                            onClick: handleAddConnector,
-                            className: cls.BtnPrimary,
-                            disabled: saving || !selectedExternalConnectionId,
-                        },
-                    ]}
-                />
+                <div className={cls.ModalActions}>
+                    <Button
+                        variant="ghost"
+                        onClick={() => setStep(editingConnectorName ? "main" : "addConnection")}
+                        disabled={saving}>
+                        Back
+                    </Button>
+                    <Button variant="primary" onClick={handleAddConnector} disabled={saving || !selectedExternalConnectionId}>
+                        {saving ? (editingConnectorName ? "Saving…" : "Adding…") : (editingConnectorName ? "Save" : "Add")}
+                    </Button>
+                </div>
             </div>
         )
     }
@@ -334,7 +314,7 @@ function VaultField({selectedVaultId, onChangeVault}: {
             <span className={cls.FieldLabel}>Vault</span>
             <div className={cls.ConnectorRowWrapper}>
                 <VaultChipDisplay vault={vault}/>
-                <button className={cls.BtnGhost} onClick={onChangeVault} type="button">Change</button>
+                <Button variant="ghost" onClick={onChangeVault}>Change</Button>
             </div>
         </div>
     )

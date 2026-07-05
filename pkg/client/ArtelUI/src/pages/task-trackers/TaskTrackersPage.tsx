@@ -9,7 +9,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useTaskTrackers} from "@/app/hooks/TaskTrackers.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import {ModalClose, CheckmarkIcon} from "@vervstack/chures"
+import {Button, ModalClose, CheckmarkIcon} from "@vervstack/chures"
 
 export default function TaskTrackersPage() {
     const navigate = useNavigate()
@@ -50,14 +50,14 @@ function HeroSegment({onAddClick}: { onAddClick: () => void }) {
                     {" · "}<span>connected task tracking services</span>
                 </p>
             </div>
-            <button className={cls.AddBtn} onClick={onAddClick}>
+            <Button variant="primary" onClick={onAddClick}>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"
                      strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 Add connection
-            </button>
+            </Button>
         </div>
     )
 }
@@ -109,9 +109,9 @@ function TrackerRow({tracker, onRemove}: {
                 <span className={cls.RowName}>{tracker.name}</span>
                 <span className={cls.RowMeta}>{tracker.type} · connected {tracker.createdAt}</span>
             </div>
-            <button className={cls.BtnDanger} onClick={handleRemove} disabled={removing} type="button">
+            <Button variant="danger" onClick={handleRemove} disabled={removing}>
                 {removing ? "Removing…" : "Remove"}
-            </button>
+            </Button>
         </div>
     )
 }
@@ -254,17 +254,16 @@ function TrelloSetupStep({onSuccess, onBack, onClose}: {
                 )}
 
                 <div className={cls.ModalActions}>
-                    <button className={cls.BtnSecondary} onClick={onBack} disabled={connecting} type="button">
+                    <Button variant="secondary" onClick={onBack} disabled={connecting}>
                         Back
-                    </button>
-                    <button
-                        className={cls.BtnPrimary}
+                    </Button>
+                    <Button
+                        variant="primary"
                         onClick={handleConnect}
                         disabled={connecting || !apiKey || !apiToken}
-                        type="button"
                     >
                         {connecting ? "Connecting…" : "Connect"}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -299,7 +298,7 @@ function DoneStep({boards, onClose}: {
                 </div>
 
                 <div className={cls.ModalActions}>
-                    <button className={cls.BtnPrimary} onClick={onClose} type="button">Done</button>
+                    <Button variant="primary" onClick={onClose}>Done</Button>
                 </div>
             </div>
         </div>

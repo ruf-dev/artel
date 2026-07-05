@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
-import {Loader} from "@vervstack/chures"
+import {Button, Loader} from "@vervstack/chures"
 
 import cls from "@/pages/join/JoinVaultPage.module.css"
 
@@ -57,9 +57,9 @@ export default function JoinVaultPage() {
                 {status === "error" && (
                     <>
                         <p className={cls.ErrorMessage}>{errorMsg}</p>
-                        <button className={cls.BtnHome} onClick={() => navigate(Path.HomePage)}>
+                        <Button variant="secondary" onClick={() => navigate(Path.HomePage)}>
                             Go home
-                        </button>
+                        </Button>
                     </>
                 )}
             </div>

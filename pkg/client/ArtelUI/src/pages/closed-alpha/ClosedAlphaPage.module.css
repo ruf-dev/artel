@@ -47,20 +47,3 @@
     margin: 0;
 }
 
-.LogoutBtn {
-    width: 100%;
-    padding: var(--space-3) var(--space-4);
-    background: transparent;
-    border: 1px solid var(--element-border-color);
-    border-radius: var(--border-radius-sm);
-    color: var(--secondary-fg-color);
-    font-size: var(--font-size-lg);
-    font-weight: 500;
-    cursor: pointer;
-    transition: border-color var(--ease-default), color var(--ease-default);
-}
-
-.LogoutBtn:hover {
-    border-color: var(--element-border-color-lighter);
-    color: var(--main-fg-color);
-}

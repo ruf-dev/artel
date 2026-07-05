@@ -11,7 +11,7 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import {ModalClose, ModalActions} from "@vervstack/chures"
+import {Button, ModalClose} from "@vervstack/chures"
 import FormField from "@/components/FormField/FormField.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import ManageKeyDialog from "@/dialogs/ManageKeyDialog/ManageKeyDialog.tsx"
@@ -58,14 +58,14 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
                     {" · "}<span>bridge your MCP agents to Artel</span>
                 </p>
             </div>
-            <button className={cls.AddBtn} onClick={onCreateClick}>
+            <Button variant="primary" onClick={onCreateClick}>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"
                      strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 New key
-            </button>
+            </Button>
         </div>
     )
 }
@@ -147,21 +147,13 @@ function CreateKeyDialog() {
                     </p>
                     <div className={cls.TokenBox}>
                         <span className={cls.TokenText}>{rawToken}</span>
-                        <button className={cls.BtnCopy} onClick={handleCopy} type="button">
+                        <Button variant="secondary" onClick={handleCopy}>
                             {copied ? "Copied!" : "Copy"}
-                        </button>
+                        </Button>
                     </div>
-                    <ModalActions
-                        containerClassName={cls.ModalActions}
-                        buttons={[
-                            {
-                                label: "Done",
-                                onClick: CloseDialog,
-                                className: cls.BtnPrimary,
-                                disabled: false,
-                            },
-                        ]}
-                    />
+                    <div className={cls.ModalActions}>
+                        <Button variant="primary" onClick={CloseDialog}>Done</Button>
+                    </div>
                 </div>
             </div>
         )
@@ -204,17 +196,11 @@ function CreateKeyDialog() {
                     </div>
                 </div>
 
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {
-                            label: creating ? "Creating…" : "Create key",
-                            onClick: handleCreate,
-                            className: cls.BtnPrimary,
-                            disabled: creating || !name || !selectedVaultId,
-                        }
-                    ]}
-                />
+                <div className={cls.ModalActions}>
+                    <Button variant="primary" onClick={handleCreate} disabled={creating || !name || !selectedVaultId}>
+                        {creating ? "Creating…" : "Create key"}
+                    </Button>
+                </div>
             </div>
         </div>
     )

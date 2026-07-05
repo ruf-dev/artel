@@ -7,7 +7,7 @@ import {useVaults, useVaultMutations} from "@/app/hooks/Vaults.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 
-import {ModalClose, ModalActions, InfoDialog} from "@vervstack/chures"
+import {Button, ModalClose, InfoDialog} from "@vervstack/chures"
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
@@ -73,14 +73,14 @@ function HeroSegment({onCreateClick}: { onCreateClick: () => void }) {
                     {" · "}<span>all systems operational</span>
                 </p>
             </div>
-            <button className={cls.NewVaultBtn} onClick={onCreateClick}>
+            <Button variant="primary" onClick={onCreateClick}>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"
                      strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 New vault
-            </button>
+            </Button>
         </div>
     )
 }
@@ -151,17 +151,11 @@ function CreateVaultDialog() {
                     inputClassName={cls.Input}
                 />
 
-                <ModalActions
-                    containerClassName={cls.ModalActions}
-                    buttons={[
-                        {
-                            label: isCreating ? "Creating…" : "Create vault",
-                            onClick: handleCreate,
-                            className: cls.BtnPrimary,
-                            disabled: isCreating
-                        }
-                    ]}
-                />
+                <div className={cls.ModalActions}>
+                    <Button variant="primary" onClick={handleCreate} disabled={isCreating}>
+                        {isCreating ? "Creating…" : "Create vault"}
+                    </Button>
+                </div>
             </div>
         </div>
     )

@@ -5,6 +5,12 @@
   --coral-dim:          rgba(255, 75, 62, 0.12);
   --coral-border:       rgba(255, 75, 62, 0.30);
 
+  /* ── chures package overrides (make its buttons/accents red) ── */
+  --chures-accent:       var(--coral);
+  --chures-accent-muted: var(--coral-glow);
+  --chures-btn-from:     var(--coral);
+  --chures-btn-to:       var(--coral);
+
   /* Backgrounds */
   --color-bg-base:        #000000;
   --color-bg-secondary:   #0d0d0d;

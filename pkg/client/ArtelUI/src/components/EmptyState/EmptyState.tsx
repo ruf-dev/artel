@@ -1,4 +1,5 @@
 import cls from "./EmptyState.module.css"
+import {Button} from "@vervstack/chures"
 
 interface Props {
     onCreateClick: () => void
@@ -20,12 +21,12 @@ export default function EmptyState({onCreateClick}: Props) {
                 Vaults are encrypted CouchDB instances for your data. Create your first one
                 and you'll get a connection string in seconds.
             </p>
-            <button className={cls.Cta} type="button" onClick={onCreateClick}>
+            <Button variant="primary" onClick={onCreateClick}>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 Create your first vault
-            </button>
+            </Button>
         </div>
     )
 }

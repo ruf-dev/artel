@@ -10,7 +10,7 @@ import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
 
-import {ModalClose, ModalActions, ConfirmDialog} from "@vervstack/chures"
+import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
 import FormField from "@/components/FormField/FormField.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import S3InstancesTab from "@/widgets/S3InstancesTab/S3InstancesTab.tsx"
@@ -157,14 +157,14 @@ function InstancesActionBar({count, onAddClick}: {count: number; onAddClick: () 
                 <b>{count} {count === 1 ? "instance" : "instances"}</b>
                 {" · "}<span>manage CouchDB cluster nodes</span>
             </p>
-            <button className={cls.AddBtn} onClick={onAddClick} type="button">
+            <Button variant="primary" onClick={onAddClick}>
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"
                      strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 Add instance
-            </button>
+            </Button>
         </div>
     )
 }
@@ -230,10 +230,10 @@ function InstanceRow({instance, onEdit, onDelete}: {
                 <span className={cls.RowMeta}>{instance.username} · added {instance.createdAt?.slice(0, 10)}</span>
             </div>
             <div className={cls.RowActions}>
-                <button className={cls.BtnSecondary} type="button" onClick={() => onEdit(instance)}>Edit</button>
-                <button className={cls.BtnDanger} type="button" onClick={handleDelete} disabled={deleting}>
+                <Button variant="secondary" onClick={() => onEdit(instance)}>Edit</Button>
+                <Button variant="danger" onClick={handleDelete} disabled={deleting}>
                     {deleting ? "Removing…" : "Remove"}
-                </button>
+                </Button>
             </div>
         </div>
     )
@@ -320,15 +320,6 @@ function InstanceFormDialog({initial, onSave}: {
         }
     }
 
-    const buttons = isEdit
-        ? [
-            {label: settingUp ? "Setting up…" : "Setup", onClick: handleSetup, className: cls.BtnSecondary, disabled: busy},
-            {label: saving ? "Saving…" : "Save changes", onClick: handleSave, className: cls.BtnPrimary, disabled: busy},
-          ]
-        : [
-            {label: saving ? "Saving…" : "Add instance", onClick: handleSave, className: cls.BtnPrimary, disabled: busy},
-          ]
-
     return (
         <div className={cls.ModalContainer} role="dialog" aria-modal="true">
             <div className={cls.ModalHead}>
@@ -367,7 +358,22 @@ function InstanceFormDialog({initial, onSave}: {
                     autoComplete="new-password"
                 />
             </div>
-            <ModalActions containerClassName={cls.ModalActions} buttons={buttons} />
+            <div className={cls.ModalActions}>
+                {isEdit ? (
+                    <>
+                        <Button variant="secondary" onClick={handleSetup} disabled={busy}>
+                            {settingUp ? "Setting up…" : "Setup"}
+                        </Button>
+                        <Button variant="primary" onClick={handleSave} disabled={busy}>
+                            {saving ? "Saving…" : "Save changes"}
+                        </Button>
+                    </>
+                ) : (
+                    <Button variant="primary" onClick={handleSave} disabled={busy}>
+                        {saving ? "Saving…" : "Add instance"}
+                    </Button>
+                )}
+            </div>
         </div>
     )
 }
@@ -520,15 +526,15 @@ function UserRow({instanceId, user, onRefresh}: {
                 <span className={cls.RowMeta}>{(user.roles ?? []).join(", ") || "no roles"}</span>
             </div>
             <div className={cls.RowActions}>
-                <button className={cls.BtnSecondary} type="button" onClick={openManageAccess}>
+                <Button variant="secondary" onClick={openManageAccess}>
                     DB Access
-                </button>
-                <button className={cls.BtnSecondary} type="button" onClick={openChangePassword}>
+                </Button>
+                <Button variant="secondary" onClick={openChangePassword}>
                     Change Password
-                </button>
-                <button className={cls.BtnDanger} type="button" onClick={handleDelete} disabled={deleting}>
+                </Button>
+                <Button variant="danger" onClick={handleDelete} disabled={deleting}>
                     {deleting ? "Deleting…" : "Delete"}
-                </button>
+                </Button>
             </div>
         </div>
     )
@@ -572,17 +578,11 @@ function ChangePasswordDialog({instanceId, username}: {instanceId: string; usern
                     autoComplete="new-password"
                 />
             </div>
-            <ModalActions
-                containerClassName={cls.ModalActions}
-                buttons={[
-                    {
-                        label: saving ? "Saving…" : "Save password",
-                        onClick: handleSave,
-                        className: cls.BtnPrimary,
-                        disabled: saving || !newPassword,
-                    }
-                ]}
-            />
+            <div className={cls.ModalActions}>
+                <Button variant="primary" onClick={handleSave} disabled={saving || !newPassword}>
+                    {saving ? "Saving…" : "Save password"}
+                </Button>
+            </div>
         </div>
     )
 }
@@ -656,10 +656,9 @@ function ManageAccessDialog({instanceId, username}: {instanceId: string; usernam
                     onToggle={handleToggle}
                 />
             )}
-            <ModalActions
-                containerClassName={cls.ModalActions}
-                buttons={[{label: "Done", onClick: CloseDialog, className: cls.BtnPrimary}]}
-            />
+            <div className={cls.ModalActions}>
+                <Button variant="primary" onClick={CloseDialog}>Done</Button>
+            </div>
         </div>
     )
 }
@@ -694,14 +693,13 @@ function DbAccessRow({db, granted, busy, onToggle}: {
     return (
         <div className={cls.DbAccessRow}>
             <span className={cls.DbAccessName}>{db}</span>
-            <button
-                type="button"
-                className={granted ? cls.BtnDanger : cls.BtnPrimary}
+            <Button
+                variant={granted ? "danger" : "primary"}
                 disabled={busy}
                 onClick={() => onToggle(db, !granted)}
             >
                 {busy ? "…" : granted ? "Revoke" : "Grant"}
-            </button>
+            </Button>
         </div>
     )
 }
@@ -775,9 +773,9 @@ function ArtelUserRow({user}: {user: ArtelUserEntry}) {
                 <span className={cls.RowMeta}>{user.email || "no email"}</span>
             </div>
             <div className={cls.RowActions}>
-                <button className={cls.BtnSecondary} type="button" onClick={openDetail}>
+                <Button variant="secondary" onClick={openDetail}>
                     Details
-                </button>
+                </Button>
             </div>
         </div>
     )
@@ -837,13 +835,10 @@ function ArtelUserDetailDialog({userId}: {userId: string}) {
             ) : (
                 <p className={cls.Empty}>User not found.</p>
             )}
-            <ModalActions
-                containerClassName={cls.ModalActions}
-                buttons={[
-                    {label: "Sessions", onClick: openSessions, className: cls.BtnSecondary},
-                    {label: "Close", onClick: CloseDialog, className: cls.BtnPrimary},
-                ]}
-            />
+            <div className={cls.ModalActions}>
+                <Button variant="secondary" onClick={openSessions}>Sessions</Button>
+                <Button variant="primary" onClick={CloseDialog}>Close</Button>
+            </div>
         </div>
     )
 }
@@ -894,10 +889,9 @@ function UserSessionsDialog({userId}: {userId: string}) {
                     </div>
                 ))
             )}
-            <ModalActions
-                containerClassName={cls.ModalActions}
-                buttons={[{label: "Close", onClick: CloseDialog, className: cls.BtnPrimary}]}
-            />
+            <div className={cls.ModalActions}>
+                <Button variant="primary" onClick={CloseDialog}>Close</Button>
+            </div>
         </div>
     )
 }

@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom"
 import cls from "@/pages/closed-alpha/ClosedAlphaPage.module.css"
 import {Path} from "@/app/routing/Router.tsx"
 import useUser from "@/hooks/user/User.ts"
+import {Button} from "@vervstack/chures"
 
 export default function ClosedAlphaPage() {
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ export default function ClosedAlphaPage() {
                     <p className={cls.Sub}>Your account is not yet approved for access. Contact the team to request an
                         invite.</p>
                 </div>
-                <button className={cls.LogoutBtn} onClick={handleLogout}>Log out</button>
+                <Button variant="secondary" onClick={handleLogout}>Log out</Button>
             </div>
         </div>
     )

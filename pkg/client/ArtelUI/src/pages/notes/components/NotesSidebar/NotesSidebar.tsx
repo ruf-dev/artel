@@ -6,6 +6,7 @@ import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
 import SearchIcon from "@/pages/notes/components/icons/SearchIcon.tsx"
+import {Button} from "@vervstack/chures"
 
 interface VaultOption {
     id: string
@@ -220,9 +221,9 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, on
         <>
             <div className={cls.SectionHeader}>
                 <span className={cls.SectionLabel}>All Notes</span>
-                <button className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
+                <Button variant="ghost" className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
                     <PlusIcon/>
-                </button>
+                </Button>
             </div>
             {tree.map(node => (
                 <FolderNodeItem

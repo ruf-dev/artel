@@ -1,6 +1,7 @@
 import { useState } from "react"
 import cls from "./RenameDialog.module.css"
 import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
+import { Button } from "@vervstack/chures"
 
 function ensureExtension(path: string): string {
     const filename = path.split("/").pop() ?? path
@@ -45,22 +46,16 @@ export default function RenameDialog({ currentPath, onConfirm }: Props) {
                 spellCheck={false}
             />
             <div className={cls.RenameActions}>
-                <button
-                    className={cls.BtnCancel}
-                    type="button"
-                    onClick={CloseDialog}
-                    disabled={loading}
-                >
+                <Button variant="ghost" onClick={CloseDialog} disabled={loading}>
                     Cancel
-                </button>
-                <button
-                    className={cls.BtnConfirm}
-                    type="button"
+                </Button>
+                <Button
+                    variant="primary"
                     onClick={handleConfirm}
                     disabled={loading || !newPath.trim() || newPath === currentPath}
                 >
                     {loading ? "…" : "Move"}
-                </button>
+                </Button>
             </div>
         </div>
     )

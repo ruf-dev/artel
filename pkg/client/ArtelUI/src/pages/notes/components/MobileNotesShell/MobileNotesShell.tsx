@@ -147,12 +147,12 @@ function MobileDrawer({ open, onClose, vaultOptions }: MobileDrawerProps) {
                 </div>
                 {vaultId && (
                     <div className={cls.DrawerFooter}>
-                        <button type="button" className={cls.NewNoteBtn} onClick={handleNewNote}>
+                        <Button variant="primary" className={cls.NewNoteBtn} onClick={handleNewNote}>
                             <svg viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                                 <path d="M6 1v10M1 6h10" />
                             </svg>
                             New Note
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>

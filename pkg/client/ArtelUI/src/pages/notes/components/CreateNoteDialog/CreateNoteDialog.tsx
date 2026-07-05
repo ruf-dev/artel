@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import cls from "./CreateNoteDialog.module.css"
 import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
+import { Button } from "@vervstack/chures"
 
 function ensureExtension(path: string): string {
     const filename = path.split("/").pop() ?? path
@@ -127,22 +128,12 @@ export default function CreateNoteDialog({ onConfirm, initialPath, folders }: Pr
                 )}
             </div>
             <div className={cls.CreateNoteActions}>
-                <button
-                    className={cls.BtnCancel}
-                    type="button"
-                    onClick={CloseDialog}
-                    disabled={loading}
-                >
+                <Button variant="ghost" onClick={CloseDialog} disabled={loading}>
                     Cancel
-                </button>
-                <button
-                    className={cls.BtnConfirm}
-                    type="button"
-                    onClick={handleConfirm}
-                    disabled={loading || !path.trim()}
-                >
+                </Button>
+                <Button variant="primary" onClick={handleConfirm} disabled={loading || !path.trim()}>
                     {loading ? "…" : "Create"}
-                </button>
+                </Button>
             </div>
         </div>
     )

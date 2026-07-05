@@ -6,7 +6,7 @@ import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {useVaultMutations, VaultMemberInfo, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import useUser from "@/hooks/user/User.ts"
-import {ModalClose} from "@vervstack/chures"
+import {Button, ModalClose} from "@vervstack/chures"
 import ManageVaultS3Section, {S3LinkPatch} from "@/components/ManageVaultS3Section/ManageVaultS3Section.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts";
 
@@ -101,9 +101,9 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
             <section className={cls.Section}>
                 <div className={cls.SectionHead}>
                     <span className={cls.SectionTitle}>Invite links</span>
-                    <button className={cls.BtnSecondary} onClick={openCreateInviteDialog}>
+                    <Button variant="secondary" onClick={openCreateInviteDialog}>
                         + New link
-                    </button>
+                    </Button>
                 </div>
                 <div className={cls.InviteList}>
                     {invites.map(inv => (
@@ -124,14 +124,14 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
             <section className={cls.DangerZone}>
                 <div className={cls.DangerZoneRow}>
                     <DangerZoneText/>
-                    <button className={cls.BtnDanger} onClick={handleDelete} disabled={deleting}>
+                    <Button variant="danger" onClick={handleDelete} disabled={deleting}>
                         {deleting ? "Deleting…" : "Delete"}
-                    </button>
+                    </Button>
                 </div>
             </section>
 
             <div className={cls.ModalFooter}>
-                <button className={cls.BtnGhost} onClick={onClose}>Close</button>
+                <Button variant="ghost" onClick={onClose}>Close</Button>
             </div>
         </div>
     )
@@ -170,9 +170,9 @@ function MemberRow({member, isSelf, onRemove}: {
             </div>
             <RoleBadge role={member.role ?? ""} />
             {!isSelf && member.role !== "owner" && (
-                <button className={cls.BtnRemove} onClick={handleRemove} disabled={removing}>
+                <Button variant="danger" onClick={handleRemove} disabled={removing}>
                     {removing ? "…" : "Remove"}
-                </button>
+                </Button>
             )}
         </div>
     )
@@ -206,12 +206,12 @@ function InviteRow({invite, onRevoke}: {
                 <span className={cls.RevokedLabel}>Revoked</span>
             ) : (
                 <>
-                    <button className={cls.BtnCopy} onClick={handleCopy}>
+                    <Button variant="secondary" onClick={handleCopy}>
                         {copied ? "Copied!" : "Copy link"}
-                    </button>
-                    <button className={cls.BtnRemove} onClick={handleRevoke} disabled={revoking}>
+                    </Button>
+                    <Button variant="danger" onClick={handleRevoke} disabled={revoking}>
                         {revoking ? "…" : "Revoke"}
-                    </button>
+                    </Button>
                 </>
             )}
         </div>
@@ -280,10 +280,10 @@ function CreateInviteLinkDialog({vaultId, onCreated}: {
                         />
                     </div>
                     <div className={cls.ModalFooter}>
-                        <button className={cls.BtnGhost} onClick={CloseDialog}>Cancel</button>
-                        <button className={cls.BtnPrimary} onClick={handleCreateInvite} disabled={creating}>
+                        <Button variant="ghost" onClick={CloseDialog}>Cancel</Button>
+                        <Button variant="primary" onClick={handleCreateInvite} disabled={creating}>
                             {creating ? "Creating…" : "Create link"}
-                        </button>
+                        </Button>
                     </div>
                 </>
             ) : (
@@ -293,10 +293,10 @@ function CreateInviteLinkDialog({vaultId, onCreated}: {
                         <span className={cls.LinkText}>{window.location.origin}/join/{created.token}</span>
                     </div>
                     <div className={cls.ModalFooter}>
-                        <button className={cls.BtnGhost} onClick={CloseDialog}>Done</button>
-                        <button className={cls.BtnPrimary} onClick={handleCopy}>
+                        <Button variant="ghost" onClick={CloseDialog}>Done</Button>
+                        <Button variant="primary" onClick={handleCopy}>
                             {copied ? "Copied!" : "Copy link"}
-                        </button>
+                        </Button>
                     </div>
                 </>
             )}
