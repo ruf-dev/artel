@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.module.css"
 
@@ -7,7 +7,7 @@ import {SchemaNode, TractCondition, TractStep, TractTool, TractTriggerSummary} f
 import {computeVisibleStepIds, findStepById} from "@/processes/tractTemplate.ts"
 import {hasChildren, Location, removeStepAt, replaceStep} from "@/processes/tractSteps.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
+import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 
 import Button from "@/components/shared/Button/Button.tsx"
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
@@ -17,6 +17,7 @@ import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.t
 import TractStepTree from "@/components/TractStepTree/TractStepTree.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
 
+const BUILTIN_MCP = "artel"
 const CONDITION_OPS = ["==", "!=", ">", "<", ">=", "<=", "contains", "glob", "regex"] as const
 
 function buildSources(rootSteps: TractStep[], targetId: string, tools: TractTool[], triggerSchema?: SchemaNode): TemplateSource[] {
@@ -162,14 +163,20 @@ function ActionBody({rootSteps, step, tools, triggerSchema, lastOutput, onChange
     lastOutput: unknown
     onChangeSteps: (s: TractStep[]) => void
 }) {
-    const {connections} = useExternalConnections()
+    const {momCandidates, fetchMomCandidates} = useMcpKeys()
     const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
-    const conn = connections.find(c => c.id === step.connectionUuid)
     const sources = buildSources(rootSteps, step.id, tools, triggerSchema)
+
+    useEffect(() => {
+        void fetchMomCandidates()
+    }, [fetchMomCandidates])
 
     function update(updater: (s: TractStep) => TractStep) {
         onChangeSteps(replaceStep(rootSteps, step.id, updater))
     }
+
+    const candidate = momCandidates.find(c => c.name === step.mcp)
+    const stepConnections = candidate?.connections ?? []
 
     return (
         <>
@@ -179,10 +186,23 @@ function ActionBody({rootSteps, step, tools, triggerSchema, lastOutput, onChange
                     <span className={cls.Key}>tool</span>
                     <span className={cls.Val}>{step.mcp}.{step.tool}</span>
                 </div>
-                {conn && (
+                {step.mcp !== BUILTIN_MCP && (
                     <div className={cls.Row}>
                         <span className={cls.Key}>connection</span>
-                        <span className={cls.Val}>{connectionLabel(conn)}</span>
+                        {stepConnections.length > 0 ? (
+                            <select
+                                className={`${cls.Select} ${!step.connection_uuid ? cls.InputInvalid : ""}`}
+                                value={step.connection_uuid ?? ""}
+                                onChange={e => update(s => ({...s, connection_uuid: e.target.value}))}
+                            >
+                                <option value="">— select —</option>
+                                {stepConnections.map(c => (
+                                    <option key={c.id} value={c.id}>{connectionLabel(c)}</option>
+                                ))}
+                            </select>
+                        ) : (
+                            <p className={cls.Empty}>No connections available for {step.mcp}.</p>
+                        )}
                     </div>
                 )}
             </Section>

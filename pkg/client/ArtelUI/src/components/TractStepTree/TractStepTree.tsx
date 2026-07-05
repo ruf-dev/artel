@@ -270,7 +270,7 @@ function ActionCard({rootSteps, step, tools, triggerSchema, onUpdate, onDelete}:
     const [outputOpen, setOutputOpen] = useState(false)
 
     const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
-    const conn = connections.find(c => c.id === step.connectionUuid)
+    const conn = connections.find(c => c.id === step.connection_uuid)
     const sources = buildSourcesFor(rootSteps, step.id, tools, triggerSchema)
 
     function setParam(name: string, value: string) {

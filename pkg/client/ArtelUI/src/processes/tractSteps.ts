@@ -121,7 +121,7 @@ export function buildStepFromDraft(draft: StepDraft, existingIds: Set<string>): 
     const id = generateStepId(baseName, existingIds)
 
     if (draft.type === "action") {
-        return {id, name: id, type: "action", mcp: draft.mcp, tool: draft.tool, connectionUuid: draft.connectionUuid, params: {}}
+        return {id, name: id, type: "action", mcp: draft.mcp, tool: draft.tool, connection_uuid: draft.connectionUuid, params: {}}
     }
     if (draft.type === "condition") {
         return {id, name: id, type: "condition", conditions: [{left: "", op: "==", right: ""}], then: [], else: []}

@@ -21,7 +21,7 @@ export interface TractStep {
     type: "action" | "condition" | "parallel" | "group"
     mcp?: string
     tool?: string
-    connectionUuid?: string
+    connection_uuid?: string
     params?: Record<string, string>
     conditions?: TractCondition[]
     then?: TractStep[]
