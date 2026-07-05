@@ -9,8 +9,7 @@ import {hasChildren, Location, removeStepAt, replaceStep} from "@/processes/trac
 import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
+import {Button, ConfirmDialog} from "@vervstack/chures"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
@@ -356,7 +355,7 @@ function DangerZone({rootSteps, step, location, onChangeSteps, onClose}: {
     onChangeSteps: (s: TractStep[]) => void
     onClose: () => void
 }) {
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
 
     function doDelete() {
         onChangeSteps(removeStepAt(rootSteps, location, step.id))
@@ -371,6 +370,7 @@ function DangerZone({rootSteps, step, location, onChangeSteps, onClose}: {
                     message={`Delete "${step.name || step.id}"? Its nested branches/lanes will be removed too.`}
                     confirmLabel="Delete"
                     danger
+                    onClose={CloseDialog}
                     onConfirm={async () => doDelete()}
                 />
             )

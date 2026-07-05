@@ -6,7 +6,7 @@ import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {useVaultMutations, VaultMemberInfo, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import useUser from "@/hooks/user/User.ts"
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
+import {ModalClose} from "@vervstack/chures"
 import ManageVaultS3Section, {S3LinkPatch} from "@/components/ManageVaultS3Section/ManageVaultS3Section.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts";
 

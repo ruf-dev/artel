@@ -15,23 +15,18 @@ const timeFormat = "2006-01-02T15:04:05Z"
 
 // tractToProto renders a bare TractItem — no linked-trigger summaries or last-run info.
 // ListTracts overlays those via tractToProtoWithSummary.
-func tractToProto(t domain.Tract) (*pb.TractItem, error) {
-	defJSON, err := json.Marshal(t.Definition)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "error marshaling tract definition")
-	}
-
+func tractToProto(t domain.Tract) *pb.TractItem {
 	item := &pb.TractItem{
 		Uuid:        t.Uuid.String(),
 		Name:        t.Name,
 		Description: t.Description,
 		Enabled:     t.Enabled,
-		Definition:  string(defJSON),
+		Definition:  definitionToProto(t.Definition),
 		CreatedAt:   t.CreatedAt.UTC().Format(timeFormat),
 		UpdatedAt:   t.UpdatedAt.UTC().Format(timeFormat),
 	}
 
-	return item, nil
+	return item
 }
 
 // tractToProtoWithSummary adds the linked-trigger summaries and last-run badge ListTracts
@@ -40,11 +35,8 @@ func tractToProtoWithSummary(
 	t domain.Tract,
 	links []repository.TractTriggerLink,
 	lastRun *domain.TractRun,
-) (*pb.TractItem, error) {
-	item, err := tractToProto(t)
-	if err != nil {
-		return nil, err
-	}
+) *pb.TractItem {
+	item := tractToProto(t)
 
 	item.Triggers = make([]*pb.TractTriggerSummary, len(links))
 	for i, link := range links {
@@ -58,7 +50,7 @@ func tractToProtoWithSummary(
 		}
 	}
 
-	return item, nil
+	return item
 }
 
 func triggerSummaryToProto(t domain.Trigger) *pb.TractTriggerSummary {
@@ -313,24 +305,181 @@ func toolPropertyRowToDomain(p toolPropertyRow) domain.ToolProperty {
 	return prop
 }
 
-// -- JSON <-> domain.TractDefinition / []domain.TractCondition --
+// -- pb.TractDefinition/TractStep (oneof wire shape) <-> domain.TractDefinition/TractStep (flat) --
 //
-// Unlike ToolSchema/ToolProperty, domain.TractDefinition and domain.TractCondition already
-// carry json tags (see internal/domain/tract.go) — the engine/validation layer marshals them
-// directly — so these just wrap json.(Un)marshal with the transport's error convention.
+// The wire shape uses a oneof per step kind so invalid field combinations (e.g. action fields
+// set alongside conditions) are unrepresentable on the wire. domain.TractStep stays flat with a
+// Type string discriminant, matching what internal/service/v1/tract's validation is keyed off
+// of — these functions are the only place that bridges the two shapes.
 
-func definitionFromJSON(raw string) (domain.TractDefinition, error) {
-	var def domain.TractDefinition
+func conditionToProto(c domain.TractCondition) *pb.TractCondition {
+	return &pb.TractCondition{Left: c.Left, Op: c.Op, Right: c.Right}
+}
 
-	err := json.Unmarshal([]byte(raw), &def)
-	if err != nil {
-		return domain.TractDefinition{}, rerrors.Wrap(
+func conditionFromProto(c *pb.TractCondition) domain.TractCondition {
+	return domain.TractCondition{Left: c.Left, Op: c.Op, Right: c.Right}
+}
+
+func conditionsToProto(cs []domain.TractCondition) []*pb.TractCondition {
+	items := make([]*pb.TractCondition, len(cs))
+	for i, c := range cs {
+		items[i] = conditionToProto(c)
+	}
+
+	return items
+}
+
+func conditionsFromProto(cs []*pb.TractCondition) []domain.TractCondition {
+	items := make([]domain.TractCondition, len(cs))
+	for i, c := range cs {
+		items[i] = conditionFromProto(c)
+	}
+
+	return items
+}
+
+func stepToProto(s domain.TractStep) *pb.TractStep {
+	step := &pb.TractStep{
+		Id:          s.Id,
+		Name:        s.Name,
+		Description: s.Description,
+	}
+
+	switch s.Type {
+	case "action":
+		connectionUuid := ""
+		if s.ConnectionUuid != uuid.Nil {
+			connectionUuid = s.ConnectionUuid.String()
+		}
+
+		step.Kind = &pb.TractStep_Action{Action: &pb.ActionStep{
+			Mcp:            s.Mcp,
+			Tool:           s.Tool,
+			ConnectionUuid: connectionUuid,
+			Params:         s.Params,
+		}}
+	case "condition":
+		step.Kind = &pb.TractStep_Condition{Condition: &pb.ConditionStep{
+			Conditions: conditionsToProto(s.Conditions),
+			Then:       stepsToProto(s.Then),
+			Else:       stepsToProto(s.Else),
+		}}
+	case "parallel":
+		step.Kind = &pb.TractStep_Parallel{Parallel: &pb.ParallelStep{Steps: stepsToProto(s.Steps)}}
+	case "group":
+		step.Kind = &pb.TractStep_Group{Group: &pb.GroupStep{Steps: stepsToProto(s.Steps)}}
+	}
+
+	return step
+}
+
+func stepsToProto(steps []domain.TractStep) []*pb.TractStep {
+	items := make([]*pb.TractStep, len(steps))
+	for i, s := range steps {
+		items[i] = stepToProto(s)
+	}
+
+	return items
+}
+
+func stepFromProto(s *pb.TractStep) (domain.TractStep, error) {
+	step := domain.TractStep{
+		Id:          s.Id,
+		Name:        s.Name,
+		Description: s.Description,
+	}
+
+	switch kind := s.Kind.(type) {
+	case *pb.TractStep_Action:
+		step.Type = "action"
+		step.Mcp = kind.Action.Mcp
+		step.Tool = kind.Action.Tool
+		step.Params = kind.Action.Params
+
+		if kind.Action.ConnectionUuid != "" {
+			id, err := uuid.Parse(kind.Action.ConnectionUuid)
+			if err != nil {
+				return domain.TractStep{}, rerrors.Wrap(
+					user_errors.TractRequestFieldInvalidJSON,
+					"error parsing step connection_uuid",
+				)
+			}
+
+			step.ConnectionUuid = id
+		}
+	case *pb.TractStep_Condition:
+		step.Type = "condition"
+		step.Conditions = conditionsFromProto(kind.Condition.Conditions)
+
+		then, err := stepsFromProto(kind.Condition.Then)
+		if err != nil {
+			return domain.TractStep{}, err
+		}
+
+		els, err := stepsFromProto(kind.Condition.Else)
+		if err != nil {
+			return domain.TractStep{}, err
+		}
+
+		step.Then = then
+		step.Else = els
+	case *pb.TractStep_Parallel:
+		step.Type = "parallel"
+
+		steps, err := stepsFromProto(kind.Parallel.Steps)
+		if err != nil {
+			return domain.TractStep{}, err
+		}
+
+		step.Steps = steps
+	case *pb.TractStep_Group:
+		step.Type = "group"
+
+		steps, err := stepsFromProto(kind.Group.Steps)
+		if err != nil {
+			return domain.TractStep{}, err
+		}
+
+		step.Steps = steps
+	default:
+		return domain.TractStep{}, rerrors.Wrap(
 			user_errors.TractRequestFieldInvalidJSON,
-			"error unmarshaling definition",
+			"tract step is missing a kind",
 		)
 	}
 
-	return def, nil
+	return step, nil
+}
+
+func stepsFromProto(steps []*pb.TractStep) ([]domain.TractStep, error) {
+	items := make([]domain.TractStep, len(steps))
+	for i, s := range steps {
+		step, err := stepFromProto(s)
+		if err != nil {
+			return nil, err
+		}
+
+		items[i] = step
+	}
+
+	return items, nil
+}
+
+func definitionToProto(def domain.TractDefinition) *pb.TractDefinition {
+	return &pb.TractDefinition{Steps: stepsToProto(def.Steps)}
+}
+
+func definitionFromProto(def *pb.TractDefinition) (domain.TractDefinition, error) {
+	if def == nil {
+		return domain.TractDefinition{}, nil
+	}
+
+	steps, err := stepsFromProto(def.Steps)
+	if err != nil {
+		return domain.TractDefinition{}, err
+	}
+
+	return domain.TractDefinition{Steps: steps}, nil
 }
 
 func filtersFromJSON(raw string) ([]domain.TractCondition, error) {

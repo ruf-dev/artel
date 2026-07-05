@@ -1,5 +1,6 @@
 import {useState} from "react"
 
+import {Button, ModalClose} from "@vervstack/chures"
 import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
 
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
@@ -8,8 +9,6 @@ import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 
 import FormField from "@/components/FormField/FormField.tsx"
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
-import Button from "@/components/shared/Button/Button.tsx"
 
 interface Props {
     initial?: GetS3InstanceResponse

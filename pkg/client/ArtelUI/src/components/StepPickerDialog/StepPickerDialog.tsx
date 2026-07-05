@@ -7,7 +7,7 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 

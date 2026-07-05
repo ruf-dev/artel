@@ -20,19 +20,6 @@
     min-width: 18rem;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.Spinner {
-    width: 2rem;
-    height: 2rem;
-    border: 2px solid var(--color-border-light);
-    border-top-color: var(--coral);
-    border-radius: 50%;
-    animation: spin 700ms linear infinite;
-}
-
 .SuccessIcon {
     width: 2.5rem;
     height: 2.5rem;

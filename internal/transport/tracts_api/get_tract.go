@@ -20,10 +20,7 @@ func (t *TractsImpl) GetTract(ctx context.Context, req *pb.GetTract_Request) (*p
 		return nil, rerrors.Wrap(err, "error getting tract")
 	}
 
-	item, err := tractToProto(found)
-	if err != nil {
-		return nil, err
-	}
+	item := tractToProto(found)
 
 	resp := &pb.GetTract_Response{Tract: item}
 

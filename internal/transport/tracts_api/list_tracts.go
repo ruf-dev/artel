@@ -51,5 +51,5 @@ func (t *TractsImpl) tractWithSummary(ctx context.Context, tr domain.Tract) (*pb
 		lastRun = &runs[0]
 	}
 
-	return tractToProtoWithSummary(tr, links, lastRun)
+	return tractToProtoWithSummary(tr, links, lastRun), nil
 }

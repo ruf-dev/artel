@@ -2,7 +2,7 @@ import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode
 
 import {CanvasNode, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import {
     BranchIcon,
     ChatIcon,

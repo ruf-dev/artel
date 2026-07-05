@@ -1,5 +1,6 @@
 import {useState, useEffect, useCallback} from "react"
 
+import {Button, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/widgets/S3InstancesTab/S3InstancesTab.module.css"
 
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
@@ -7,8 +8,6 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import S3InstanceFormDialog from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.tsx"
 
 type TestStatus = "idle" | "testing" | "ok" | "fail"
@@ -96,7 +95,7 @@ function S3InstanceRow({instance, onEdit, onDelete}: {
     onDelete: (id: string) => Promise<void>
 }) {
     const {auth} = useUser()
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
     const [deleting, setDeleting] = useState(false)
     const [testStatus, setTestStatus] = useState<TestStatus>("idle")
@@ -121,6 +120,7 @@ function S3InstanceRow({instance, onEdit, onDelete}: {
                 message={`Remove "${instance.endpoint}"? This cannot be undone.`}
                 danger
                 confirmLabel="Remove"
+                onClose={CloseDialog}
                 onConfirm={() => {
                     setDeleting(true)
                     return onDelete(id)

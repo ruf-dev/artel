@@ -600,6 +600,52 @@
     }
   },
   "definitions": {
+    "artel_apiActionStep": {
+      "type": "object",
+      "properties": {
+        "mcp": {
+          "type": "string"
+        },
+        "tool": {
+          "type": "string"
+        },
+        "connectionUuid": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_apiConditionStep": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractCondition"
+          }
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractStep"
+          }
+        },
+        "else": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractStep"
+          }
+        }
+      }
+    },
     "artel_apiCreateTractRequest": {
       "type": "object",
       "properties": {
@@ -610,8 +656,7 @@
           "type": "string"
         },
         "definition": {
-          "type": "string",
-          "title": "JSON-encoded TractDefinition"
+          "$ref": "#/definitions/artel_apiTractDefinition"
         }
       }
     },
@@ -727,6 +772,18 @@
         }
       }
     },
+    "artel_apiGroupStep": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractStep"
+          }
+        }
+      }
+    },
     "artel_apiLinkTriggerRequest": {
       "type": "object",
       "properties": {
@@ -829,6 +886,18 @@
         }
       }
     },
+    "artel_apiParallelStep": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractStep"
+          }
+        }
+      }
+    },
     "artel_apiRotateTriggerTokenResponse": {
       "type": "object",
       "properties": {
@@ -887,6 +956,33 @@
     "artel_apiSetTriggerEnabledResponse": {
       "type": "object"
     },
+    "artel_apiTractCondition": {
+      "type": "object",
+      "properties": {
+        "left": {
+          "type": "string"
+        },
+        "op": {
+          "type": "string",
+          "title": "\"==\" | \"!=\" | \"\u003e\" | \"\u003c\" | \"\u003e=\" | \"\u003c=\" | \"contains\" | \"glob\" | \"regex\""
+        },
+        "right": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiTractDefinition": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractStep"
+          }
+        }
+      }
+    },
     "artel_apiTractItem": {
       "type": "object",
       "properties": {
@@ -903,8 +999,7 @@
           "type": "boolean"
         },
         "definition": {
-          "type": "string",
-          "title": "JSON-encoded TractDefinition ({\"steps\": [...]})"
+          "$ref": "#/definitions/artel_apiTractDefinition"
         },
         "triggers": {
           "type": "array",
@@ -1007,6 +1102,33 @@
           "title": "empty while the step is still running"
         }
       }
+    },
+    "artel_apiTractStep": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "action": {
+          "$ref": "#/definitions/artel_apiActionStep"
+        },
+        "condition": {
+          "$ref": "#/definitions/artel_apiConditionStep"
+        },
+        "parallel": {
+          "$ref": "#/definitions/artel_apiParallelStep"
+        },
+        "group": {
+          "$ref": "#/definitions/artel_apiGroupStep"
+        }
+      },
+      "description": "TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one\ndetermines the step's behavior (no separate type discriminant needed on the wire)."
     },
     "artel_apiTractToolItem": {
       "type": "object",
@@ -1130,7 +1252,7 @@
           "type": "string"
         },
         "definition": {
-          "type": "string"
+          "$ref": "#/definitions/artel_apiTractDefinition"
         }
       }
     },

@@ -10,7 +10,7 @@ import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 
@@ -234,7 +234,9 @@ function ConnectionPicker({connections, selectedId, onSelect}: {
         return (
             <div className={cls.ParamsSection}>
                 <span className={cls.ParamsSectionTitle}>Connection</span>
-                <Button variant="ghost" onClick={() => navigate(Path.ConnectionsPage)}>
+                <Button
+                    variant="ghost"
+                    onClick={() => navigate(Path.ConnectionsPage)}>
                     No connections — add one
                 </Button>
             </div>

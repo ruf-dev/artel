@@ -3,7 +3,7 @@ import cls from "@/widgets/GoogleConnectionContent/GoogleConnectionContent.modul
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 import {parseScopeList, SCOPE_INFO, trimScope} from "@/app/utils/googleScopes.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 
 export default function GoogleConnectionContent({connection, onDisconnect}: {
     connection: ExternalConnectionInfo

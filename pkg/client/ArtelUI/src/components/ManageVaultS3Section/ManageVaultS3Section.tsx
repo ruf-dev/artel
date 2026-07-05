@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react"
 
+import {Button, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/components/ManageVaultS3Section/ManageVaultS3Section.module.css"
 
 import {VaultItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
@@ -8,8 +9,6 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 
 export interface S3LinkPatch {
@@ -40,7 +39,7 @@ export default function ManageVaultS3Section({vault, onLinked}: Props) {
 
 function LinkedView({vault, onLinked}: Props) {
     const {auth} = useUser()
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
     const [instance, setInstance] = useState<GetS3InstanceResponse | null>(null)
     const [unlinking, setUnlinking] = useState(false)
@@ -61,6 +60,7 @@ function LinkedView({vault, onLinked}: Props) {
                 message="Unlink this vault's S3 bucket? Attachments will stop syncing to S3 until relinked."
                 danger
                 confirmLabel="Unlink"
+                onClose={CloseDialog}
                 onConfirm={() => {
                     setUnlinking(true)
                     return VaultsAPI.UnlinkS3Bucket({vaultId}, auth.getInitReq())

@@ -1,6 +1,6 @@
 import React, {useState} from "react"
+import {Button, InfoDialog} from "@vervstack/chures"
 import cls from "@/widgets/VaultCard/VaultCard.module.css"
-import Button from "@/components/shared/Button/Button"
 
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 
@@ -9,7 +9,6 @@ import VaultCardStatus from "@/components/VaultCard/VaultCardStatus.tsx";
 import VaultCardConnBar from "@/components/VaultCard/VaultCardConnBar.tsx";
 import FastSetupDialog from "@/components/VaultCard/FastSetupDialog.tsx";
 import {useDialog} from "@/app/hooks/Dialog.ts";
-import InfoDialog from "@/components/InfoDialog/InfoDialog.tsx";
 
 interface Props {
     vault: VaultItem
@@ -54,6 +53,7 @@ function VaultCardBack() {
         OpenDialog(<InfoDialog
             title={'Not implemented yet'}
             message={'Later there will be instructions on how to setup different AI agents'}
+            onClose={CloseDialog}
         />)
 
     }

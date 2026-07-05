@@ -5,10 +5,9 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import {ChevronRightIcon, ManualTriggerIcon, TrashIcon, WebhookIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 
+import {Button, ConfirmDialog} from "@vervstack/chures"
 interface Props {
     tract: Tract
     onClick: () => void
@@ -17,7 +16,7 @@ interface Props {
 export default function TractCanvasCard({tract, onClick}: Props) {
     const {setEnabled, deleteTract} = useTracts()
     const bakeError = useBakeError()
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
 
     function handleToggle() {
         setEnabled(tract.uuid, !tract.enabled).catch(err => bakeError("Failed to update tract", err))
@@ -31,6 +30,7 @@ export default function TractCanvasCard({tract, onClick}: Props) {
                 message={`Delete "${tract.name}"? This cannot be undone.`}
                 confirmLabel="Delete"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() => deleteTract(tract.uuid).catch(err => bakeError("Failed to delete tract", err))}
             />
         )

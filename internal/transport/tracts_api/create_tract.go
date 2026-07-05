@@ -8,7 +8,7 @@ import (
 )
 
 func (t *TractsImpl) CreateTract(ctx context.Context, req *pb.CreateTract_Request) (*pb.CreateTract_Response, error) {
-	def, err := definitionFromJSON(req.Definition)
+	def, err := definitionFromProto(req.Definition)
 	if err != nil {
 		return nil, err
 	}
@@ -18,10 +18,7 @@ func (t *TractsImpl) CreateTract(ctx context.Context, req *pb.CreateTract_Reques
 		return nil, rerrors.Wrap(err, "error creating tract")
 	}
 
-	item, err := tractToProto(created)
-	if err != nil {
-		return nil, err
-	}
+	item := tractToProto(created)
 
 	resp := &pb.CreateTract_Response{
 		Tract:    item,

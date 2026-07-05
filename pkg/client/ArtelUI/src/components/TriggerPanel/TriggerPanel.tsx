@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react"
 
+import {Button, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/components/TriggerPanel/TriggerPanel.module.css"
 
 import {SchemaNode, SchemaProperty, TractCondition, Trigger} from "@/processes/Tracts.ts"
@@ -7,8 +8,6 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
 
@@ -19,7 +18,7 @@ interface Props {
 
 export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props) {
     const {triggers, fetchTriggers, fetchTriggerSources, unlinkTrigger, setTriggerEnabled, rotateTriggerToken} = useTracts()
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
 
     useEffect(() => {
@@ -37,6 +36,7 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
                 message="This tract will no longer start on this trigger's events."
                 confirmLabel="Unlink"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() => unlinkTrigger(triggerUuid, tractUuid).catch(err => bakeError("Failed to unlink trigger", err))}
             />
         )
@@ -49,6 +49,7 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
                 message="The old webhook URL stops working immediately."
                 confirmLabel="Rotate"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() => rotateTriggerToken(triggerUuid)
                     .then(result => {
                         setTimeout(() => OpenDialog(<TokenRevealDialog webhookUrl={result.webhookUrl} webhookToken={result.webhookToken}/>), 0)

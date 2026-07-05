@@ -6,7 +6,7 @@ import cls from "@/components/TemplateInput/TemplateInput.module.css"
 import {SchemaNode, SchemaProperty} from "@/processes/Tracts.ts"
 import {extractRefs, validateRef} from "@/processes/tractTemplate.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 
 export interface TemplateSource {
     id: string
@@ -223,18 +223,21 @@ export default function TemplateInput({value, onChange, sources, placeholder}: P
                 </Button>
             </div>
             {open && dropdownRect && createPortal(
-                <div
-                    className={cls.Dropdown}
-                    style={{top: dropdownRect.top, left: dropdownRect.left, width: dropdownRect.width}}
-                    onMouseDown={e => e.preventDefault()}
-                >
-                    <SourceGroups
-                        groups={filtered}
-                        flatList={flatList}
-                        activeIndex={activeIndex}
-                        onSelect={insertRef}
-                    />
-                </div>,
+                <>
+                    <div className={cls.Backdrop} onClick={closeDropdown} />
+                    <div
+                        className={cls.Dropdown}
+                        style={{top: dropdownRect.top, left: dropdownRect.left, width: dropdownRect.width}}
+                        onMouseDown={e => e.preventDefault()}
+                    >
+                        <SourceGroups
+                            groups={filtered}
+                            flatList={flatList}
+                            activeIndex={activeIndex}
+                            onSelect={insertRef}
+                        />
+                    </div>
+                </>,
                 document.body,
             )}
         </div>

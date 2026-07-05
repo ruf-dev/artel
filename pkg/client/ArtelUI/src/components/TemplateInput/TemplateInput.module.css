@@ -41,6 +41,11 @@
     font-size: 0.75rem;
 }
 
+.Backdrop {
+    position: fixed;
+    inset: 0;
+}
+
 .Dropdown {
     position: fixed;
     max-height: 16rem;

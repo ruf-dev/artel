@@ -8,7 +8,7 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import TractCanvasBuilder from "@/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx"
 
 export default function TractCanvasBuilderPage() {

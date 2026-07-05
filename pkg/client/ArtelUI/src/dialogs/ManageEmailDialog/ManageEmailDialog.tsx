@@ -1,5 +1,6 @@
 import {useState, useRef, useEffect} from "react"
 
+import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/dialogs/ManageEmailDialog/ManageEmailDialog.module.css"
 
 import {
@@ -15,10 +16,7 @@ import useUser from "@/hooks/user/User.ts"
 
 import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
 
-import Button from "@/components/shared/Button/Button.tsx"
 import Input from "@/components/shared/Input/Input.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 export default function ManageEmailDialog() {
@@ -41,6 +39,7 @@ export default function ManageEmailDialog() {
                 confirmLabel="Remove"
                 cancelLabel="Cancel"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() =>
                     disconnect("email")
                         .catch(e => bakeError("Failed to remove account", e))}

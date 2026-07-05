@@ -1,5 +1,6 @@
 import {useState} from "react"
 
+import {Button, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/components/TractStepTree/TractStepTree.module.css"
 
 import {SchemaNode, SchemaProperty, TractCondition, TractStep, TractTool} from "@/processes/Tracts.ts"
@@ -8,8 +9,6 @@ import {appendStep, buildStepFromDraft, hasChildren, insertStepAt, Location, rem
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import StepPickerDialog, {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
@@ -143,7 +142,7 @@ function StepCard({rootSteps, location, step, tools, triggerSchema, onChange}: {
     triggerSchema?: SchemaNode
     onChange: (newRootSteps: TractStep[]) => void
 }) {
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
 
     function updateStep(updater: (s: TractStep) => TractStep) {
         onChange(replaceStep(rootSteps, step.id, updater))
@@ -157,6 +156,7 @@ function StepCard({rootSteps, location, step, tools, triggerSchema, onChange}: {
                     message={`Delete "${step.name || step.id}"? Its nested branches/lanes will be removed too.`}
                     confirmLabel="Delete"
                     danger
+                    onClose={CloseDialog}
                     onConfirm={() => onChange(removeStepAt(rootSteps, location, step.id))}
                 />
             )

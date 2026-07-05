@@ -1,5 +1,6 @@
 import {useEffect, useRef} from "react"
 
+import {Button, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/widgets/GoogleSheetsConnectionContent/GoogleSheetsConnectionContent.module.css"
 
 import {ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
@@ -8,8 +9,6 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {parseScopeList, SCOPE_INFO, trimScope} from "@/app/utils/googleScopes.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 
 type GapiWindow = Window & { gapi: { load: (lib: string, cb: () => void) => void } }
 
@@ -40,7 +39,7 @@ export default function GoogleSheetsConnectionContent({connection, onDisconnect}
     connection: ExternalConnectionInfo
     onDisconnect: () => void
 }) {
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
     const {spreadsheets, spreadsheetsLoading, fetchSpreadsheets, addSpreadsheet, removeSpreadsheet, getPickerToken} =
         useExternalConnections()
@@ -113,6 +112,7 @@ export default function GoogleSheetsConnectionContent({connection, onDisconnect}
                 confirmLabel="Remove"
                 cancelLabel="Cancel"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() => removeSpreadsheet(sheet.id ?? "").catch(e => bakeError("Failed to remove spreadsheet", e))}
             />
         )

@@ -10,10 +10,8 @@ import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
 
+import {ModalClose, ModalActions, ConfirmDialog} from "@vervstack/chures"
 import FormField from "@/components/FormField/FormField.tsx"
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
-import ModalActions from "@/components/ModalActions/ModalActions.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import S3InstancesTab from "@/widgets/S3InstancesTab/S3InstancesTab.tsx"
 
@@ -198,7 +196,7 @@ function InstanceRow({instance, onEdit, onDelete}: {
     onDelete: (id: string) => Promise<void>
 }) {
     const [deleting, setDeleting] = useState(false)
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
 
     function handleDelete() {
@@ -210,6 +208,7 @@ function InstanceRow({instance, onEdit, onDelete}: {
                 message={`Remove "${instance.url}"? This cannot be undone.`}
                 danger
                 confirmLabel="Remove"
+                onClose={CloseDialog}
                 onConfirm={async () => {
                     setDeleting(true)
                     try {
@@ -471,7 +470,7 @@ function UserRow({instanceId, user, onRefresh}: {
     onRefresh: () => Promise<void>
 }) {
     const {auth} = useUser()
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
     const [deleting, setDeleting] = useState(false)
 
@@ -484,6 +483,7 @@ function UserRow({instanceId, user, onRefresh}: {
                 message={`Delete "${name}"? This cannot be undone.`}
                 danger
                 confirmLabel="Delete"
+                onClose={CloseDialog}
                 onConfirm={async () => {
                     setDeleting(true)
                     try {

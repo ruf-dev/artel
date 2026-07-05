@@ -5,7 +5,7 @@ import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvas
 import {TractRun, TractRunStep} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 
 interface Props {
     open: boolean

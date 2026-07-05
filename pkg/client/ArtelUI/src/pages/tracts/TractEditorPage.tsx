@@ -10,7 +10,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import TractRunTimeline from "@/components/TractRunTimeline/TractRunTimeline.tsx"
 import RunTractDialog from "@/components/RunTractDialog/RunTractDialog.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"

@@ -9,7 +9,7 @@ import NoteEditor from "@/pages/notes/components/NoteEditor/NoteEditor.tsx"
 import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
 import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import ArtelLogoIcon from "@/pages/notes/components/icons/ArtelLogoIcon.tsx"
 import CloseIcon from "@/pages/notes/components/icons/CloseIcon.tsx"
 

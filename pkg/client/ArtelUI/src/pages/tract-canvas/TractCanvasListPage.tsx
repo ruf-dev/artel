@@ -9,7 +9,7 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import TractCanvasCard from "@/pages/tract-canvas/components/TractCanvasCard/TractCanvasCard.tsx"
 
 export default function TractCanvasListPage() {

@@ -7,17 +7,15 @@ import {useVaults, useVaultMutations} from "@/app/hooks/Vaults.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 
+import {ModalClose, ModalActions, InfoDialog} from "@vervstack/chures"
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
-import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
-import InfoDialog from "@/components/InfoDialog/InfoDialog.tsx"
 import type {GrpcStatusError} from "@/processes/grpcErrors.ts";
 import {isMissingSubscription} from "@/processes/UserErrors.ts";
 
 export default function HomePage() {
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
     const {error: vaultsErr, isLoading, vaults} = useVaults()
     const bakeError = useBakeError()
 
@@ -29,6 +27,7 @@ export default function HomePage() {
                 <InfoDialog
                     title="Subscriptions unavailable"
                     message="Subscriptions are currently not available. Subscribe to Telegram channel @artel_ai"
+                    onClose={CloseDialog}
                 />
             )
             return;

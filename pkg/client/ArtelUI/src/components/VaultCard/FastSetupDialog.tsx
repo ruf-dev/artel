@@ -3,7 +3,7 @@ import {createPortal} from "react-dom"
 import cls from "@/components/VaultCard/FastSetupDialog.module.css"
 import {PromptsAPI, PromptId} from "@/app/api/artel/prompts.pb.ts"
 import useUser from "@/hooks/user/User.ts"
-import {CheckmarkIcon} from "@/icons/common/CheckmarkIcon.tsx"
+import {CheckmarkIcon} from "@vervstack/chures"
 
 interface Props {
     onClose: () => void

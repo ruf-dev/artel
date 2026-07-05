@@ -22,9 +22,9 @@ type Tract struct {
 }
 
 // TractDefinition is the JSON-serialized step tree — json tags live here because the
-// engine/validation layer (internal/service/v1/tract) marshals it directly, and
-// internal/transport/tracts_api/to_proto.go round-trips it via json.Marshal/Unmarshal as a
-// definition_json string field.
+// engine/validation layer (internal/service/v1/tract) marshals it directly for Postgres JSONB
+// storage. The wire (proto) shape is a typed oneof-per-step-kind message, mapped to/from this
+// flat struct by internal/transport/tracts_api/to_proto.go's stepToProto/stepFromProto.
 type TractDefinition struct {
 	Steps []TractStep `json:"steps"`
 }

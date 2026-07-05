@@ -25,3 +25,13 @@
     align-items: center;
     justify-content: center;
 }
+
+.Chevron {
+    flex-shrink: 0;
+    color: var(--color-fg-tertiary);
+    transition: transform 200ms ease;
+}
+
+.ChevronOpen {
+    transform: rotate(180deg);
+}

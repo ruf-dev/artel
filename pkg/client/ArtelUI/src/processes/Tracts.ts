@@ -1,9 +1,16 @@
 import {
+    ActionStep as PbActionStep,
+    ConditionStep as PbConditionStep,
     CreateTriggerRequest,
+    GroupStep as PbGroupStep,
+    ParallelStep as PbParallelStep,
+    TractCondition as PbTractCondition,
+    TractDefinition as PbTractDefinition,
     TractItem,
     TractRunItem,
     TractRunStepItem,
     TractsAPI,
+    TractStep as PbTractStep,
     TractToolItem,
     TriggerItem,
     TriggerSourceItem,
@@ -141,8 +148,67 @@ function safeParseJson<T>(raw: string | undefined, fallback: T): T {
 
 const emptySchema: SchemaNode = {properties: {}}
 
-function parseDefinition(raw: string | undefined): TractDefinition {
-    return safeParseJson(raw, {steps: []})
+function conditionToProto(c: TractCondition): PbTractCondition {
+    return {left: c.left, op: c.op, right: c.right}
+}
+
+function conditionFromProto(c: PbTractCondition): TractCondition {
+    return {left: c.left ?? "", op: (c.op ?? "==") as TractCondition["op"], right: c.right ?? ""}
+}
+
+function stepToProto(s: TractStep): PbTractStep {
+    const base = {id: s.id, name: s.name, description: s.description}
+    switch (s.type) {
+        case "action":
+            return {...base, action: {mcp: s.mcp, tool: s.tool, connectionUuid: s.connection_uuid, params: s.params}}
+        case "condition":
+            return {
+                ...base,
+                condition: {
+                    conditions: (s.conditions ?? []).map(conditionToProto),
+                    then: (s.then ?? []).map(stepToProto),
+                    else: (s.else ?? []).map(stepToProto),
+                },
+            }
+        case "parallel":
+            return {...base, parallel: {steps: (s.steps ?? []).map(stepToProto)}}
+        case "group":
+            return {...base, group: {steps: (s.steps ?? []).map(stepToProto)}}
+    }
+}
+
+function stepFromProto(s: PbTractStep): TractStep {
+    const base = {id: s.id ?? "", name: s.name, description: s.description}
+
+    if (s.action) {
+        const action: PbActionStep = s.action
+        return {...base, type: "action", mcp: action.mcp, tool: action.tool, connection_uuid: action.connectionUuid, params: action.params}
+    }
+    if (s.condition) {
+        const condition: PbConditionStep = s.condition
+        return {
+            ...base,
+            type: "condition",
+            conditions: (condition.conditions ?? []).map(conditionFromProto),
+            then: (condition.then ?? []).map(stepFromProto),
+            else: (condition.else ?? []).map(stepFromProto),
+        }
+    }
+    if (s.parallel) {
+        const parallel: PbParallelStep = s.parallel
+        return {...base, type: "parallel", steps: (parallel.steps ?? []).map(stepFromProto)}
+    }
+
+    const group: PbGroupStep | undefined = s.group
+    return {...base, type: "group", steps: (group?.steps ?? []).map(stepFromProto)}
+}
+
+function definitionToProto(def: TractDefinition): PbTractDefinition {
+    return {steps: def.steps.map(stepToProto)}
+}
+
+function definitionFromProto(def: PbTractDefinition | undefined): TractDefinition {
+    return {steps: (def?.steps ?? []).map(stepFromProto)}
 }
 
 function parseSchema(raw: string | undefined): SchemaNode {
@@ -155,7 +221,7 @@ function toTract(item: TractItem): Tract {
         name: item.name ?? "",
         description: item.description ?? "",
         enabled: item.enabled ?? false,
-        definition: parseDefinition(item.definition),
+        definition: definitionFromProto(item.definition),
         triggers: item.triggers?.map(t => ({
             uuid: t.uuid ?? "",
             name: t.name ?? "",
@@ -265,7 +331,7 @@ export class TractsService implements ITractsService {
 
     async createTract(name: string, description: string, definition: TractDefinition): Promise<{ tract: Tract; warnings: string[] }> {
         const res = await TractsAPI.CreateTract(
-            {name, description, definition: JSON.stringify(definition)},
+            {name, description, definition: definitionToProto(definition)},
             useUser.getState().auth.getInitReq(),
         )
         return {tract: toTract(res.tract!), warnings: res.warnings ?? []}
@@ -273,7 +339,7 @@ export class TractsService implements ITractsService {
 
     async updateTract(uuid: string, name: string, description: string, definition: TractDefinition): Promise<{ tract: Tract; warnings: string[] }> {
         const res = await TractsAPI.UpdateTract(
-            {uuid, name, description, definition: JSON.stringify(definition)},
+            {uuid, name, description, definition: definitionToProto(definition)},
             useUser.getState().auth.getInitReq(),
         )
         return {tract: toTract(res.tract!), warnings: res.warnings ?? []}

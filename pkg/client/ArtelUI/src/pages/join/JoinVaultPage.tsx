@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
+import {Loader} from "@vervstack/chures"
 
 import cls from "@/pages/join/JoinVaultPage.module.css"
 
@@ -43,7 +44,7 @@ export default function JoinVaultPage() {
             <div className={cls.Card}>
                 {status === "joining" && (
                     <>
-                        <div className={cls.Spinner}/>
+                        <Loader variant="arcs" size="sm" color="var(--coral)"/>
                         <p className={cls.Message}>Joining vault…</p>
                     </>
                 )}

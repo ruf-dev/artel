@@ -149,12 +149,57 @@ message TractLastRun {
   string at     = 2;
 }
 
+message TractCondition {
+  string left  = 1;
+  string op    = 2; // "==" | "!=" | ">" | "<" | ">=" | "<=" | "contains" | "glob" | "regex"
+  string right = 3;
+}
+
+message ActionStep {
+  string mcp                 = 1;
+  string tool                = 2;
+  string connection_uuid     = 3;
+  map<string, string> params = 4;
+}
+
+message ConditionStep {
+  repeated TractCondition conditions = 1;
+  repeated TractStep then            = 2;
+  repeated TractStep else            = 3;
+}
+
+message ParallelStep {
+  repeated TractStep steps = 1;
+}
+
+message GroupStep {
+  repeated TractStep steps = 1;
+}
+
+// TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one
+// determines the step's behavior (no separate type discriminant needed on the wire).
+message TractStep {
+  string id          = 1;
+  string name        = 2;
+  string description = 3;
+  oneof kind {
+    ActionStep action       = 4;
+    ConditionStep condition = 5;
+    ParallelStep parallel   = 6;
+    GroupStep group         = 7;
+  }
+}
+
+message TractDefinition {
+  repeated TractStep steps = 1;
+}
+
 message TractItem {
   string uuid                           = 1;
   string name                           = 2;
   string description                    = 3;
   bool enabled                          = 4;
-  string definition                     = 5; // JSON-encoded TractDefinition ({"steps": [...]})
+  TractDefinition definition            = 5;
   repeated TractTriggerSummary triggers = 6; // populated by ListTracts only
   TractLastRun last_run                 = 7; // populated by ListTracts only
   string created_at                     = 8;
@@ -215,9 +260,9 @@ message TriggerItem {
 
 message CreateTract {
   message Request {
-    string name        = 1;
-    string description = 2;
-    string definition  = 3; // JSON-encoded TractDefinition
+    string name                = 1;
+    string description         = 2;
+    TractDefinition definition = 3;
   }
   message Response {
     TractItem tract          = 1;
@@ -227,10 +272,10 @@ message CreateTract {
 
 message UpdateTract {
   message Request {
-    string uuid        = 1;
-    string name        = 2;
-    string description = 3;
-    string definition  = 4;
+    string uuid                = 1;
+    string name                = 2;
+    string description         = 3;
+    TractDefinition definition = 4;
   }
   message Response {
     TractItem tract          = 1;

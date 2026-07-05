@@ -2,7 +2,7 @@ import cls from "@/widgets/GenericConnectionContent/GenericConnectionContent.mod
 
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 
 export default function GenericConnectionContent({connection, onDisconnect}: {
     connection: ExternalConnectionInfo

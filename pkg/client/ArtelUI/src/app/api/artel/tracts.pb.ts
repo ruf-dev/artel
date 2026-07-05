@@ -7,6 +7,15 @@
 
 import * as fm from "./fetch.pb";
 
+type Absent<T, K extends keyof T> = { [k in Exclude<keyof T, K>]?: undefined };
+
+type OneOf<T> =
+  | { [k in keyof T]?: undefined }
+  | (keyof T extends infer K
+      ? K extends string & keyof T
+        ? { [k in K]: T[K] } & Absent<T, K>
+        : never
+      : never);
 
 export type TractTriggerSummary = {
   uuid?: string;
@@ -20,12 +29,57 @@ export type TractLastRun = {
   at?: string;
 };
 
+export type TractCondition = {
+  left?: string;
+  op?: string;
+  right?: string;
+};
+
+export type ActionStep = {
+  mcp?: string;
+  tool?: string;
+  connectionUuid?: string;
+  params?: Record<string, string>;
+};
+
+export type ConditionStep = {
+  conditions?: TractCondition[];
+  then?: TractStep[];
+  else?: TractStep[];
+};
+
+export type ParallelStep = {
+  steps?: TractStep[];
+};
+
+export type GroupStep = {
+  steps?: TractStep[];
+};
+
+type BaseTractStep = {
+  id?: string;
+  name?: string;
+  description?: string;
+};
+
+export type TractStep = BaseTractStep &
+  OneOf<{
+    action: ActionStep;
+    condition: ConditionStep;
+    parallel: ParallelStep;
+    group: GroupStep;
+  }>;
+
+export type TractDefinition = {
+  steps?: TractStep[];
+};
+
 export type TractItem = {
   uuid?: string;
   name?: string;
   description?: string;
   enabled?: boolean;
-  definition?: string;
+  definition?: TractDefinition;
   triggers?: TractTriggerSummary[];
   lastRun?: TractLastRun;
   createdAt?: string;
@@ -85,7 +139,7 @@ export type TriggerItem = {
 export type CreateTractRequest = {
   name?: string;
   description?: string;
-  definition?: string;
+  definition?: TractDefinition;
 };
 
 export type CreateTractResponse = {
@@ -99,7 +153,7 @@ export type UpdateTractRequest = {
   uuid?: string;
   name?: string;
   description?: string;
-  definition?: string;
+  definition?: TractDefinition;
 };
 
 export type UpdateTractResponse = {

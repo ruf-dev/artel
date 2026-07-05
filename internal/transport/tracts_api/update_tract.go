@@ -15,7 +15,7 @@ func (t *TractsImpl) UpdateTract(ctx context.Context, req *pb.UpdateTract_Reques
 		return nil, rerrors.Wrap(user_errors.NotFound, "error parsing tract uuid")
 	}
 
-	def, err := definitionFromJSON(req.Definition)
+	def, err := definitionFromProto(req.Definition)
 	if err != nil {
 		return nil, err
 	}
@@ -25,10 +25,7 @@ func (t *TractsImpl) UpdateTract(ctx context.Context, req *pb.UpdateTract_Reques
 		return nil, rerrors.Wrap(err, "error updating tract")
 	}
 
-	item, err := tractToProto(updated)
-	if err != nil {
-		return nil, err
-	}
+	item := tractToProto(updated)
 
 	resp := &pb.UpdateTract_Response{
 		Tract:    item,

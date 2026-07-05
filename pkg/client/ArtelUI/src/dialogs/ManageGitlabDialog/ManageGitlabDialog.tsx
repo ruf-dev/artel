@@ -1,5 +1,6 @@
 import {useState} from "react"
 
+import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.module.css"
 
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
@@ -7,10 +8,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
-import Button from "@/components/shared/Button/Button.tsx"
 import Input from "@/components/shared/Input/Input.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 export default function ManageGitlabDialog() {
@@ -28,6 +26,7 @@ export default function ManageGitlabDialog() {
                 confirmLabel="Disconnect"
                 cancelLabel="Cancel"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() =>
                     disconnect("gitlab").catch(e => bakeError("Failed to disconnect", e))}
             />

@@ -9,8 +9,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useTaskTrackers} from "@/app/hooks/TaskTrackers.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
-import {CheckmarkIcon} from "@/icons/common/CheckmarkIcon.tsx"
+import {ModalClose, CheckmarkIcon} from "@vervstack/chures"
 
 export default function TaskTrackersPage() {
     const navigate = useNavigate()

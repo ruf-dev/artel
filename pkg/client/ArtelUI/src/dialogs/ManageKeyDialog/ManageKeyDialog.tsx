@@ -1,6 +1,7 @@
 import {useState, useEffect, type ReactNode} from "react"
 import {useNavigate} from "react-router-dom"
 
+import {Button, ModalClose, ModalActions, ConfirmDialog} from "@vervstack/chures"
 import cls from "@/dialogs/ManageKeyDialog/ManageKeyDialog.module.css"
 
 import {McpKeyInfo, McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
@@ -10,13 +11,9 @@ import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 
-import ModalClose from "@/components/ModalClose/ModalClose.tsx"
-import ModalActions from "@/components/ModalActions/ModalActions.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import ConnectorChip from "@/components/ConnectorChip/ConnectorChip.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
-import Button from "@/components/shared/Button/Button.tsx"
-import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 
 type ManageStep = "main" | "vault" | "addConnection" | "selectConnection"
 
@@ -37,7 +34,7 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
         fetchMomCandidates,
         revoke,
     } = useMcpKeys()
-    const {OpenDialog} = useDialog()
+    const {OpenDialog, CloseDialog} = useDialog()
 
     const connectors = mcpKey.id ? connectorsByKey[mcpKey.id] ?? [] : []
 
@@ -105,6 +102,7 @@ export default function ManageKeyDialog({mcpKey}: { mcpKey: McpKeyInfo }) {
                 message={`Revoke "${mcpKey.name}"? Any agents using this key will immediately lose access. This cannot be undone.`}
                 confirmLabel="Revoke"
                 danger
+                onClose={CloseDialog}
                 onConfirm={() => {
                     if (!mcpKey.id || !mcpKey.vaultId) return
                     return revoke(mcpKey.id, mcpKey.vaultId)

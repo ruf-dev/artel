@@ -1,4 +1,4 @@
-import Button from "@/components/shared/Button/Button.tsx"
+import {Button} from "@vervstack/chures"
 import {PlayIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 
 interface Props {
