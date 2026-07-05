@@ -279,6 +279,10 @@
     gap: 0.875rem;
 }
 
+.DangerZoneText {
+    min-width: 0;
+}
+
 .DangerZoneTitle {
     font-size: 0.8125rem;
     font-weight: 600;

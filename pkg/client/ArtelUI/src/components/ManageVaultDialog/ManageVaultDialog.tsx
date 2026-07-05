@@ -123,10 +123,7 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
 
             <section className={cls.DangerZone}>
                 <div className={cls.DangerZoneRow}>
-                    <div>
-                        <div className={cls.DangerZoneTitle}>Delete this vault</div>
-                        <div className={cls.DangerZoneSub}>Permanent. Connection string stops working immediately.</div>
-                    </div>
+                    <DangerZoneText/>
                     <button className={cls.BtnDanger} onClick={handleDelete} disabled={deleting}>
                         {deleting ? "Deleting…" : "Delete"}
                     </button>
@@ -136,6 +133,15 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
             <div className={cls.ModalFooter}>
                 <button className={cls.BtnGhost} onClick={onClose}>Close</button>
             </div>
+        </div>
+    )
+}
+
+function DangerZoneText() {
+    return (
+        <div className={cls.DangerZoneText}>
+            <div className={cls.DangerZoneTitle}>Delete this vault</div>
+            <div className={cls.DangerZoneSub}>Permanent. Connection string stops working immediately.</div>
         </div>
     )
 }

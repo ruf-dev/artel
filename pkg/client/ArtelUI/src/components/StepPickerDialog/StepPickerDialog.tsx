@@ -9,7 +9,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 
 import Button from "@/components/shared/Button/Button.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
-import {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
+import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 
 const BUILTIN_MCP = "artel"
 

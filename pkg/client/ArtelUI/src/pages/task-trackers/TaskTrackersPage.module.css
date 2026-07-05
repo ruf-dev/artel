@@ -249,6 +249,10 @@
     font-weight: 700;
 }
 
+.TypeCardText {
+    min-width: 0;
+}
+
 .TypeCardLabel {
     font-size: 0.9375rem;
     font-weight: 600;

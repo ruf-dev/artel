@@ -260,7 +260,7 @@ function VaultList({vaults, loading, onSelect}: {vaults: Vault[]; loading: boole
         )
     }
     return (
-        <div style={{display: "flex", flexDirection: "column", gap: "var(--space-2)", width: "100%"}}>
+        <div className={cls.VaultList}>
             {vaults.map(function (v) {
                 return (
                     <button

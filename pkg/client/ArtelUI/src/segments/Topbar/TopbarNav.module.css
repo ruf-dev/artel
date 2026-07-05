@@ -25,6 +25,10 @@
     background: var(--color-bg-hover);
 }
 
+.NavLinkDisabledWrapper {
+    min-width: 0;
+}
+
 .NavLinkDisabled {
     padding: 0.375rem 0.75rem;
     border-radius: 0.5rem;

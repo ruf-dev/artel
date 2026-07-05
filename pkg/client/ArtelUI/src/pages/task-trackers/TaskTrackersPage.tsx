@@ -10,6 +10,7 @@ import {useTaskTrackers} from "@/app/hooks/TaskTrackers.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import ModalClose from "@/components/ModalClose/ModalClose.tsx"
+import {CheckmarkIcon} from "@/icons/common/CheckmarkIcon.tsx"
 
 export default function TaskTrackersPage() {
     const navigate = useNavigate()
@@ -154,16 +155,28 @@ function ChooseTypeStep({onChooseTrello, onClose}: {
                 </div>
                 <p className={cls.ModalSub}>Choose a task tracking service to connect.</p>
 
-                <div className={cls.TypeGrid}>
-                    <button className={cls.TypeCard} onClick={onChooseTrello} type="button">
-                        <div className={cls.TypeCardIcon}>T</div>
-                        <div>
-                            <div className={cls.TypeCardLabel}>Trello</div>
-                            <div className={cls.TypeCardDesc}>Connect via API key and token</div>
-                        </div>
-                    </button>
-                </div>
+                <TypeGrid onChooseTrello={onChooseTrello}/>
             </div>
+        </div>
+    )
+}
+
+function TypeGrid({onChooseTrello}: {onChooseTrello: () => void}) {
+    return (
+        <div className={cls.TypeGrid}>
+            <button className={cls.TypeCard} onClick={onChooseTrello} type="button">
+                <div className={cls.TypeCardIcon}>T</div>
+                <TypeCardText label="Trello" desc="Connect via API key and token"/>
+            </button>
+        </div>
+    )
+}
+
+function TypeCardText({label, desc}: {label: string; desc: string}) {
+    return (
+        <div className={cls.TypeCardText}>
+            <div className={cls.TypeCardLabel}>{label}</div>
+            <div className={cls.TypeCardDesc}>{desc}</div>
         </div>
     )
 }
@@ -259,6 +272,15 @@ function TrelloSetupStep({onSuccess, onBack, onClose}: {
     )
 }
 
+function SuccessBannerText({boardCount}: {boardCount: number}) {
+    return (
+        <span>
+            Successfully connected.{" "}
+            <b>{boardCount} {boardCount === 1 ? "board" : "boards"}</b> available.
+        </span>
+    )
+}
+
 function DoneStep({boards, onClose}: {
     boards: TrelloBoardInfo[]
     onClose: () => void
@@ -273,14 +295,8 @@ function DoneStep({boards, onClose}: {
                 </div>
 
                 <div className={cls.SuccessBanner}>
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5"
-                         strokeLinecap="round" strokeLinejoin="round" style={{flexShrink: 0}}>
-                        <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span>
-                        Successfully connected.{" "}
-                        <b>{boards.length} {boards.length === 1 ? "board" : "boards"}</b> available.
-                    </span>
+                    <CheckmarkIcon/>
+                    <SuccessBannerText boardCount={boards.length}/>
                 </div>
 
                 <div className={cls.ModalActions}>

@@ -9,14 +9,7 @@ import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
 
 import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
-
-export function connectionLabel(c: ExternalConnectionInfo): string {
-    if (c.google) return c.google.email ?? "Google account"
-    if (c.provider === ExternalProvider.EXTERNAL_PROVIDER_EMAIL) {
-        return c.generic?.fields?.username ?? "Email account"
-    }
-    return c.provider?.replace("EXTERNAL_PROVIDER_", "").toLowerCase() ?? "Connection"
-}
+import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 
 const KNOWN_MAIL_DOMAIN_CLASSES: Record<string, string> = {
     "yandex.ru": cls.AccentYandex,

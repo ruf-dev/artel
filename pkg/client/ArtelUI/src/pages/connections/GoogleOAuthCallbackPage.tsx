@@ -10,8 +10,6 @@ export default function GoogleOAuthCallbackPage() {
         const code = searchParams.get("code") ?? ""
         const state = searchParams.get("state") ?? ""
 
-        // @ts-ignore
-        // that's google
         externalConnectionsService.exchangeGoogleOAuth(code, state)
             .then(() => navigate("/connections?status=connected", {replace: true}))
             .catch(() => navigate("/connections?status=error", {replace: true}))

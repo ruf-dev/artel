@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint'
 import {globalIgnores} from 'eslint/config'
 
 export default tseslint.config([
-    globalIgnores(['dist']),
+    globalIgnores(['dist', '**/*.pb.ts']),
     {
         files: ['**/*.{ts,tsx}'],
         extends: [
@@ -24,6 +24,8 @@ export default tseslint.config([
             globals: globals.browser,
         },
         rules: {
+            'react-hooks/exhaustive-deps': 'off',
+            'no-empty': ['error', {allowEmptyCatch: true}],
             'react/jsx-max-depth': ['error', {max: 3}],
             'no-restricted-syntax': [
                 'warn',

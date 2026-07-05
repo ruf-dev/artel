@@ -24,6 +24,7 @@ export default function TopbarNav() {
                 </NavLink>
             ) : (
                 <div
+                    className={cls.NavLinkDisabledWrapper}
                     data-tooltip-id={"root-tooltip"}
                     data-tooltip-content={"Notes are not enabled for your account"}
                 >

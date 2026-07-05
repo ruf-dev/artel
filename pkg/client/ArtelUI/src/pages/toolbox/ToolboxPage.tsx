@@ -12,7 +12,7 @@ import useUser from "@/hooks/user/User.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import Button from "@/components/shared/Button/Button.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
-import {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
+import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 
 export default function ToolboxPage() {
     const navigate = useNavigate()

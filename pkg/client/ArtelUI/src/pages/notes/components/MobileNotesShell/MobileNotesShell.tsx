@@ -10,6 +10,8 @@ import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
 import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 import Button from "@/components/shared/Button/Button.tsx"
+import ArtelLogoIcon from "@/pages/notes/components/icons/ArtelLogoIcon.tsx"
+import CloseIcon from "@/pages/notes/components/icons/CloseIcon.tsx"
 
 interface VaultOption {
     id: string
@@ -93,6 +95,14 @@ function MobileTopBar({ selectedPath, noteContent, sidebarOpen, onHamburgerClick
     )
 }
 
+function DrawerCloseButton({onClose}: {onClose: () => void}) {
+    return (
+        <Button variant="ghost" className={cls.DrawerCloseBtn} onClick={onClose} aria-label="Close sidebar">
+            <CloseIcon/>
+        </Button>
+    )
+}
+
 interface MobileDrawerProps {
     open: boolean
     onClose: () => void
@@ -126,23 +136,11 @@ function MobileDrawer({ open, onClose, vaultOptions }: MobileDrawerProps) {
             <div className={panelClass}>
                 <div className={cls.DrawerStatusSpacer} />
                 <div className={cls.DrawerHeader}>
-                    <svg viewBox="0 0 100 100" width={22} height={22} style={{ flexShrink: 0 }}>
-                        <defs>
-                            <mask id="mobile-artel-mask">
-                                <rect width="100" height="100" fill="white" />
-                                <path d="M 50 22 L 28 78 L 38 78 L 43.5 64 L 56.5 64 L 62 78 L 72 78 Z M 46.5 56 L 50 38 L 53.5 56 Z" fill="black" />
-                            </mask>
-                        </defs>
-                        <circle cx="50" cy="50" r="50" fill="#FF4B3E" mask="url(#mobile-artel-mask)" />
-                    </svg>
+                    <ArtelLogoIcon/>
                     <span className={cls.DrawerWordmark}>artel</span>
                     <span className={cls.DrawerNotesLabel}>notes</span>
                     <span className={cls.DrawerSpacer} />
-                    <Button variant="ghost" className={cls.DrawerCloseBtn} onClick={onClose} aria-label="Close sidebar">
-                        <svg viewBox="0 0 13 13" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                            <path d="M1 1l11 11M12 1L1 12" />
-                        </svg>
-                    </Button>
+                    <DrawerCloseButton onClose={onClose}/>
                 </div>
                 <div className={cls.DrawerBody}>
                     <NotesSidebar vaults={vaultOptions} />
@@ -168,15 +166,12 @@ export default function MobileNotesShell({
     selectedPath,
     mode,
     showEditor,
-    saveStatus: _saveStatus,
-    saveError: _saveError,
     scrollTopRef,
     fontScale,
     onModeChange,
     onChange,
     onContentClick,
     onEscape,
-    onRename: _onRename,
 }: MobileNotesShellProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const { selectedPath: storeSelectedPath } = useNotes()

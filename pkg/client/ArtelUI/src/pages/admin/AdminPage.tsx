@@ -623,7 +623,11 @@ function ManageAccessDialog({instanceId, username}: {instanceId: string; usernam
             }
             setGrantedSet(prev => {
                 const next = new Set(prev)
-                grant ? next.add(db) : next.delete(db)
+                if (grant) {
+                    next.add(db)
+                } else {
+                    next.delete(db)
+                }
                 return next
             })
         } catch (err) {

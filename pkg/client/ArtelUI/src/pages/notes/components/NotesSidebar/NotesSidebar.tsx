@@ -4,6 +4,8 @@ import { NoteItem, useNotes } from "@/app/hooks/Notes.ts"
 import { useDialog } from "@/app/hooks/Dialog.ts"
 import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
+import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
+import SearchIcon from "@/pages/notes/components/icons/SearchIcon.tsx"
 
 interface VaultOption {
     id: string
@@ -219,9 +221,7 @@ function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, on
             <div className={cls.SectionHeader}>
                 <span className={cls.SectionLabel}>All Notes</span>
                 <button className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
-                    <svg viewBox="0 0 12 12" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-                        <path d="M6 1v10M1 6h10" />
-                    </svg>
+                    <PlusIcon/>
                 </button>
             </div>
             {tree.map(node => (
@@ -297,10 +297,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
             </div>
             <div className={cls.SearchWrapper}>
                 <div className={cls.SearchBar}>
-                    <svg viewBox="0 0 16 16" width={17} height={17} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className={cls.SearchIcon}>
-                        <circle cx="6.5" cy="6.5" r="4.5" />
-                        <path d="M10.5 10.5l3 3" />
-                    </svg>
+                    <SearchIcon className={cls.SearchIcon}/>
                     <input
                         className={cls.SearchInput}
                         placeholder="Search notes…"

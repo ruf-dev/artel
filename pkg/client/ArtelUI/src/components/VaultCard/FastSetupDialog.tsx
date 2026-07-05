@@ -3,6 +3,7 @@ import {createPortal} from "react-dom"
 import cls from "@/components/VaultCard/FastSetupDialog.module.css"
 import {PromptsAPI, PromptId} from "@/app/api/artel/prompts.pb.ts"
 import useUser from "@/hooks/user/User.ts"
+import {CheckmarkIcon} from "@/icons/common/CheckmarkIcon.tsx"
 
 interface Props {
     onClose: () => void
@@ -55,9 +56,7 @@ export default function FastSetupDialog({onClose}: Props) {
                         disabled={loading}
                     >
                         {copied ? (
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12"/>
-                            </svg>
+                            <CheckmarkIcon size={16} strokeWidth={2} shrink={false}/>
                         ) : (
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2"/>

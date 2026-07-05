@@ -12,7 +12,7 @@ import Button from "@/components/shared/Button/Button.tsx"
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog.tsx"
 import StepPickerDialog, {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
-import {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
+import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 
 const CONDITION_OPS = ["==", "!=", ">", "<", ">=", "<=", "contains", "glob", "regex"] as const
 

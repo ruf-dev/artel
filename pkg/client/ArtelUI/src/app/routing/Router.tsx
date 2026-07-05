@@ -2,7 +2,7 @@ import {useEffect} from "react"
 
 import cls from "@/app/routing/Router.module.css"
 
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom"
+import {Navigate, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
 
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
@@ -47,11 +47,35 @@ export enum Path {
 
 export const REDIRECT_AFTER_LOGIN_KEY = "artel_post_login_redirect"
 
+const routes: RouteObject[] = [
+    {
+        element: <HomeLayout/>,
+        children: [
+            {path: Path.HomePage, element: <HomePage/>, errorElement: <ErrorPage/>},
+            {path: Path.McpKeysPage, element: <McpKeysPage/>, errorElement: <ErrorPage/>},
+            {path: Path.Admin, element: <AdminPage/>, errorElement: <ErrorPage/>},
+            {path: Path.TaskTrackersPage, element: <TaskTrackersPage/>, errorElement: <ErrorPage/>},
+            {path: Path.NotesPage, element: <NotesPage/>, errorElement: <ErrorPage/>},
+            {path: Path.ConnectionsPage, element: <ConnectionsPage/>, errorElement: <ErrorPage/>},
+            {path: Path.GoogleOAuthCallback, element: <GoogleOAuthCallbackPage/>, errorElement: <ErrorPage/>},
+            {path: Path.ToolboxPage, element: <ToolboxPage/>, errorElement: <ErrorPage/>},
+            {path: Path.TractsPage, element: <TractCanvasListPage/>, errorElement: <ErrorPage/>},
+            {path: Path.TractEditorPage, element: <TractCanvasBuilderPage/>, errorElement: <ErrorPage/>},
+            {path: "*", element: <Navigate to={Path.HomePage} replace/>},
+        ],
+    },
+    {path: Path.InitPage, element: <InitPage/>, errorElement: <ErrorPage/>},
+    {path: Path.McpAuth, element: <McpAuthPage/>, errorElement: <ErrorPage/>},
+    {path: Path.ClosedAlpha, element: <ClosedAlphaPage/>, errorElement: <ErrorPage/>},
+    {path: Path.JoinVault, element: <JoinVaultPage/>, errorElement: <ErrorPage/>},
+]
+
 export default function Router() {
     const navigate = useNavigate()
 
     const {auth, setUserInfo} = useUser()
     const isServerAvailable = useServerStatus()
+    const routeElement = useRoutes(routes)
 
     useEffect(() => {
         if (!auth.isAuthenticated()) return
@@ -75,26 +99,7 @@ export default function Router() {
     return (
         <div className={cls.Root}>
             <div className={cls.Content}>
-                <Routes>
-                    <Route element={<HomeLayout/>}>
-                        <Route path={Path.HomePage} element={<HomePage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.McpKeysPage} element={<McpKeysPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.Admin} element={<AdminPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.TaskTrackersPage} element={<TaskTrackersPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.NotesPage} element={<NotesPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.ConnectionsPage} element={<ConnectionsPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.GoogleOAuthCallback} element={<GoogleOAuthCallbackPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.ToolboxPage} element={<ToolboxPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.TractsPage} element={<TractCanvasListPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={Path.TractEditorPage} element={<TractCanvasBuilderPage/>} errorElement={<ErrorPage/>}/>
-                        <Route path={"*"} element={<Navigate to={Path.HomePage} replace/>}/>
-                    </Route>
-
-                    <Route path={Path.InitPage} element={<InitPage/>} errorElement={<ErrorPage/>}/>
-                    <Route path={Path.McpAuth} element={<McpAuthPage/>} errorElement={<ErrorPage/>}/>
-                    <Route path={Path.ClosedAlpha} element={<ClosedAlphaPage/>} errorElement={<ErrorPage/>}/>
-                    <Route path={Path.JoinVault} element={<JoinVaultPage/>} errorElement={<ErrorPage/>}/>
-                </Routes>
+                {routeElement}
             </div>
             <Dialog/>
             <Toaster/>

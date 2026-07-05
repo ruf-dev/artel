@@ -122,3 +122,10 @@
     justify-content: center;
     min-height: 2.5rem;
 }
+
+.VaultList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+}

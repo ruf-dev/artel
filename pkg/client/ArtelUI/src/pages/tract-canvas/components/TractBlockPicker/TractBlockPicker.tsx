@@ -9,7 +9,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 
 import Button from "@/components/shared/Button/Button.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
-import {connectionLabel} from "@/components/ConnectorChip/ConnectorChip.tsx"
+import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import {BranchIcon, ForkIcon, LayersIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 import type {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
