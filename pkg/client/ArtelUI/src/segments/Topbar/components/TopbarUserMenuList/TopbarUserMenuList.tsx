@@ -1,5 +1,5 @@
 import cls from "./TopbarUserMenuList.module.css"
-import TopbarUserMenuItem from "./TopbarUserMenuItem.tsx"
+import TopbarUserMenuItem from "../TopbarUserMenuItem/TopbarUserMenuItem.tsx"
 
 interface TopbarUserMenuListProps {
     isAdmin: boolean

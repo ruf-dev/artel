@@ -3,8 +3,8 @@ import cls from "./TopbarUserMenu.module.css"
 import {Path} from "@/app/routing/Router.tsx"
 import {useNavigate} from "react-router-dom"
 import useUser from "@/hooks/user/User.ts"
-import TopbarUserMenuPill from "./TopbarUserMenuPill.tsx"
-import TopbarUserMenuList from "./TopbarUserMenuList.tsx"
+import TopbarUserMenuPill from "../TopbarUserMenuPill/TopbarUserMenuPill.tsx"
+import TopbarUserMenuList from "../TopbarUserMenuList/TopbarUserMenuList.tsx"
 
 export default function TopbarUserMenu() {
     const [menuOpen, setMenuOpen] = useState(false)
