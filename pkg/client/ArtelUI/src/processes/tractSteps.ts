@@ -56,6 +56,34 @@ export function appendStep(rootSteps: TractStep[], location: Location, newStep: 
     return mutateAt(rootSteps, location, arr => [...arr, newStep])
 }
 
+/** insertBlockAfter inserts newStep at index within location's array, for the canvas's "add
+ * step after this node" action. If a step already occupies that position (the clicked node
+ * already has a "next"), newStep does NOT get spliced into the sequence — instead it becomes
+ * a parallel sibling of the existing step, both forking from the same predecessor and
+ * rejoining afterward, matching the canvas's fork/join visual model (see
+ * pages/tract-canvas/processes/tractCanvasLayout.ts). If the existing step at that position is
+ * already a "parallel" step, newStep is added as another lane instead of nesting parallels. */
+export function insertBlockAfter(rootSteps: TractStep[], location: Location, index: number, newStep: TractStep, existingIds: Set<string>): TractStep[] {
+    return mutateAt(rootSteps, location, arr => {
+        const existing = arr[index]
+        if (!existing) {
+            const copy = [...arr]
+            copy.splice(index, 0, newStep)
+            return copy
+        }
+
+        const copy = [...arr]
+        if (existing.type === "parallel") {
+            copy[index] = {...existing, steps: [...(existing.steps ?? []), newStep]}
+            return copy
+        }
+
+        const parallelId = generateStepId("parallel", existingIds)
+        copy[index] = {id: parallelId, name: parallelId, type: "parallel", steps: [existing, newStep]}
+        return copy
+    })
+}
+
 export function removeStepAt(rootSteps: TractStep[], location: Location, stepId: string): TractStep[] {
     return mutateAt(rootSteps, location, arr => arr.filter(s => s.id !== stepId))
 }

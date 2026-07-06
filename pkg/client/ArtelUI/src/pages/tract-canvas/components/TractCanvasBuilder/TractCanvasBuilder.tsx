@@ -15,7 +15,7 @@ import TractCanvasInspector from "@/pages/tract-canvas/components/TractCanvasIns
 import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
 import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts"
 
-import {buildStepFromDraft, collectAllStepIds, insertStepAt, Location} from "@/processes/tractSteps.ts"
+import {buildStepFromDraft, collectAllStepIds, insertBlockAfter, Location} from "@/processes/tractSteps.ts"
 import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
 
@@ -80,7 +80,8 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
                 onConfirm={(draft: StepDraft) => {
                     const existingIds = collectAllStepIds(definition.steps)
                     const newStep = buildStepFromDraft(draft, existingIds)
-                    setDefinition(d => ({steps: insertStepAt(d.steps, location, index, newStep)}))
+                    existingIds.add(newStep.id)
+                    setDefinition(d => ({steps: insertBlockAfter(d.steps, location, index, newStep, existingIds)}))
                 }}
             />
         )

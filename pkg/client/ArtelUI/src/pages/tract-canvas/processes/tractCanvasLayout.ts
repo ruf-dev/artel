@@ -21,8 +21,13 @@ export const COLUMN_PITCH = 256
 export const MARGIN_X = 48
 export const MARGIN_Y = 220
 
-const BASE_SPREAD = 96
-const MIN_SPREAD = 50
+// Adjacent parallel lanes sit "spread" rows apart (see layoutFlow's parallel case), so spread
+// must clear NODE_HEIGHT plus a gap or sibling cards overlap. MIN_SPREAD is the floor spread
+// decays to at deeper nesting (spread / 2 per level) — kept equal to the safe distance so no
+// depth of nesting can overlap, not just the top level.
+const ROW_GAP = 32
+const BASE_SPREAD = NODE_HEIGHT + ROW_GAP + 10
+const MIN_SPREAD = NODE_HEIGHT + ROW_GAP
 
 export type CanvasNodeKind = "trigger" | "action" | "condition" | "parallel" | "group"
 
