@@ -62,10 +62,12 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
     return (
         <div className={cls.Panel}>
             <div className={cls.PanelHeader}>
-                <span className={cls.PanelTitle}>Triggers</span>
-                <Button variant="ghost" onClick={() => OpenDialog(<AddTriggerDialog tractUuid={tractUuid} linkedUuids={linkedUuids}/>)}>
-                    + Add trigger
-                </Button>
+                <span className={cls.PanelTitle}>Trigger</span>
+                {linked.length === 0 && (
+                    <Button variant="ghost" onClick={() => OpenDialog(<AddTriggerDialog tractUuid={tractUuid} linkedUuids={linkedUuids}/>)}>
+                        + Add trigger
+                    </Button>
+                )}
             </div>
             {linked.length === 0 && (
                 <p className={cls.Empty}>No triggers linked — use "Run" in the Runs panel to fire manually, or add a trigger.</p>
