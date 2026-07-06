@@ -209,7 +209,7 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
     if (step === "create") {
         return (
             <div className={cls.DialogContainer} role="dialog" aria-modal="true">
-                <h2 className={cls.DialogTitle}>New trigger</h2>
+                <DialogHeaderWithBack title="New trigger" onBack={() => setStep("mode")}/>
                 <div className={cls.Body}>
                     <label className={cls.Field}>
                         <span className={cls.FieldLabel}>Name</span>
@@ -232,14 +232,11 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
                         <SchemaBuilder fields={fields} onChange={setFields}/>
                     )}
                 </div>
-                <div className={cls.DialogActions}>
-                    <Button variant="ghost" onClick={() => setStep("mode")} disabled={saving}>Back</Button>
-                    <div className={cls.ActionsRight}>
-                        <Button variant="ghost" onClick={CloseDialog} disabled={saving}>Cancel</Button>
-                        <Button variant="primary" onClick={handleCreate} disabled={saving || !name.trim()}>
-                            {saving ? "Creating…" : "Create & link"}
-                        </Button>
-                    </div>
+                <div className={`${cls.DialogActions} ${cls.DialogActionsEnd}`}>
+                    <Button variant="ghost" onClick={CloseDialog} disabled={saving}>Cancel</Button>
+                    <Button variant="primary" onClick={handleCreate} disabled={saving || !name.trim()}>
+                        {saving ? "Creating…" : "Create & link"}
+                    </Button>
                 </div>
             </div>
         )
@@ -252,7 +249,7 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
 
         return (
             <div className={cls.DialogContainer} role="dialog" aria-modal="true">
-                <h2 className={cls.DialogTitle}>Link existing trigger</h2>
+                <DialogHeaderWithBack title="Link existing trigger" onBack={() => setStep("mode")}/>
                 <div className={cls.Body}>
                     {linkable.map(t => (
                         <SelectOption key={t.uuid} label={`${t.name} (${t.kind}/${t.source})`} selected={t.uuid === selectedTriggerId} onSelect={() => setSelectedTriggerId(t.uuid)}/>
@@ -275,14 +272,11 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
                         </div>
                     )}
                 </div>
-                <div className={cls.DialogActions}>
-                    <Button variant="ghost" onClick={() => setStep("mode")} disabled={saving}>Back</Button>
-                    <div className={cls.ActionsRight}>
-                        <Button variant="ghost" onClick={CloseDialog} disabled={saving}>Cancel</Button>
-                        <Button variant="primary" onClick={handleLink} disabled={saving || !selectedTriggerId}>
-                            {saving ? "Linking…" : "Link"}
-                        </Button>
-                    </div>
+                <div className={`${cls.DialogActions} ${cls.DialogActionsEnd}`}>
+                    <Button variant="ghost" onClick={CloseDialog} disabled={saving}>Cancel</Button>
+                    <Button variant="primary" onClick={handleLink} disabled={saving || !selectedTriggerId}>
+                        {saving ? "Linking…" : "Link"}
+                    </Button>
                 </div>
             </div>
         )
@@ -292,17 +286,36 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
         <div className={cls.DialogContainer} role="dialog" aria-modal="true">
             <h2 className={cls.DialogTitle}>Add trigger</h2>
             <div className={cls.Body}>
-                <button type="button" className={cls.Row} onClick={() => setStep("create")}>
+                <Button variant="ghost" className={cls.OptionRow} onClick={() => setStep("create")}>
                     <span className={cls.Name}>Create new trigger</span>
-                </button>
-                <button type="button" className={cls.Row} onClick={() => setStep("link")}>
+                </Button>
+                <Button variant="ghost" className={cls.OptionRow} onClick={() => setStep("link")}>
                     <span className={cls.Name}>Link existing trigger</span>
-                </button>
+                </Button>
             </div>
-            <div className={cls.DialogActions}>
+            <div className={`${cls.DialogActions} ${cls.DialogActionsEnd}`}>
                 <Button variant="ghost" onClick={CloseDialog}>Cancel</Button>
             </div>
         </div>
+    )
+}
+
+function DialogHeaderWithBack({title, onBack}: { title: string; onBack: () => void }) {
+    return (
+        <div className={cls.DialogHeader}>
+            <Button variant="ghost" className={cls.BackBtn} onClick={onBack} aria-label="Back">
+                <BackChevronIcon className={cls.BackIcon}/>
+            </Button>
+            <h2 className={cls.DialogTitle}>{title}</h2>
+        </div>
+    )
+}
+
+function BackChevronIcon({className}: { className?: string }) {
+    return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
     )
 }
 
