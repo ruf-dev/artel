@@ -11,6 +11,13 @@
 //     condition node itself (branches don't feed data forward, per checkVisibility semantics)
 //   - a "group" step is drawn as a single collapsed node — its nested steps are edited via the
 //     inspector (reusing the tree editor), not expanded into the canvas
+//
+// Vertical placement is a two-pass measure-then-place: measureExtent() walks a branch/lane
+// bottom-up to find how much room ABOVE and BELOW its own center row it actually needs
+// (recursing into any condition/parallel nested inside it), then layoutFlow() places siblings
+// using those real measurements instead of a guessed fixed offset. This is required because a
+// fixed offset that merely decays with nesting depth can't know how tall a deeply-nested branch
+// really is — it can allot less room than a branch needs and let it spill into a sibling's rows.
 
 import {TractStep} from "@/processes/Tracts.ts"
 import {Location, ROOT_LOCATION} from "@/processes/tractSteps.ts"
@@ -21,13 +28,7 @@ export const COLUMN_PITCH = 256
 export const MARGIN_X = 48
 export const MARGIN_Y = 220
 
-// Adjacent parallel lanes sit "spread" rows apart (see layoutFlow's parallel case), so spread
-// must clear NODE_HEIGHT plus a gap or sibling cards overlap. MIN_SPREAD is the floor spread
-// decays to at deeper nesting (spread / 2 per level) — kept equal to the safe distance so no
-// depth of nesting can overlap, not just the top level.
 const ROW_GAP = 32
-const BASE_SPREAD = NODE_HEIGHT + ROW_GAP + 10
-const MIN_SPREAD = NODE_HEIGHT + ROW_GAP
 
 export type CanvasNodeKind = "trigger" | "action" | "condition" | "parallel" | "group"
 
@@ -74,6 +75,13 @@ interface FlowResult {
     maxRow: number
 }
 
+/** How far a branch/lane's rendered content reaches above and below its own center row —
+ * everything needed to place it as a sibling without measuring its neighbors. */
+interface Extent {
+    above: number
+    below: number
+}
+
 export const TRIGGER_NODE_ID = "trigger"
 
 function addEdges(edges: CanvasEdge[], fromIds: string[], toId: string) {
@@ -82,12 +90,41 @@ function addEdges(edges: CanvasEdge[], fromIds: string[], toId: string) {
     }
 }
 
+/** Bottom-up: how much vertical room does this steps list need above/below its own center row.
+ * A plain sequential list needs only its own node height, regardless of length, since sequential
+ * steps share one row and differ only in column. Only condition/parallel steps push the
+ * requirement out further, by however much their own nested branches/lanes need. */
+function measureExtent(steps: TractStep[]): Extent {
+    let above = NODE_HEIGHT / 2
+    let below = NODE_HEIGHT / 2
+
+    for (const step of steps) {
+        if (step.type === "condition") {
+            const thenE = measureExtent(step.then ?? [])
+            const elseE = measureExtent(step.else ?? [])
+            above = Math.max(above, ROW_GAP / 2 + thenE.above + thenE.below)
+            below = Math.max(below, ROW_GAP / 2 + elseE.above + elseE.below)
+        } else if (step.type === "parallel") {
+            const lanes = step.steps ?? []
+            if (lanes.length > 0) {
+                const total = lanes.reduce((sum, lane) => {
+                    const e = measureExtent([lane])
+                    return sum + e.above + e.below
+                }, 0) + (lanes.length - 1) * ROW_GAP
+                above = Math.max(above, total / 2)
+                below = Math.max(below, total / 2)
+            }
+        }
+    }
+
+    return {above, below}
+}
+
 function layoutFlow(
     steps: TractStep[],
     location: Location,
     col: number,
     row: number,
-    spread: number,
     prevIds: string[],
     nodes: RawNode[],
     edges: CanvasEdge[],
@@ -104,11 +141,16 @@ function layoutFlow(
             addEdges(edges, curPrevIds, id)
             curCol++
 
-            const childSpread = Math.max(spread / 2, MIN_SPREAD)
+            const thenSteps = step.then ?? []
+            const elseSteps = step.else ?? []
+            const thenE = measureExtent(thenSteps)
+            const elseE = measureExtent(elseSteps)
             const thenLoc: Location = {parentId: id, branch: "then"}
             const elseLoc: Location = {parentId: id, branch: "else"}
-            const thenRes = layoutFlow(step.then ?? [], thenLoc, curCol, row - spread, childSpread, [id], nodes, edges)
-            const elseRes = layoutFlow(step.else ?? [], elseLoc, curCol, row + spread, childSpread, [id], nodes, edges)
+            const thenRow = row - ROW_GAP / 2 - thenE.below
+            const elseRow = row + ROW_GAP / 2 + elseE.above
+            const thenRes = layoutFlow(thenSteps, thenLoc, curCol, thenRow, [id], nodes, edges)
+            const elseRes = layoutFlow(elseSteps, elseLoc, curCol, elseRow, [id], nodes, edges)
 
             curCol = Math.max(curCol, thenRes.maxCol, elseRes.maxCol)
             minRow = Math.min(minRow, thenRes.minRow, elseRes.minRow)
@@ -128,12 +170,16 @@ function layoutFlow(
                 return
             }
 
-            const childSpread = Math.max(spread / 2, MIN_SPREAD)
-            const startOffset = -(lanes.length - 1) / 2
             const laneLoc: Location = {parentId: step.id, branch: "steps"}
-            const laneResults = lanes.map((lane, i) =>
-                layoutFlow([lane], laneLoc, curCol, row + (startOffset + i) * spread, childSpread, curPrevIds, nodes, edges),
-            )
+            const laneExtents = lanes.map(lane => measureExtent([lane]))
+            const total = laneExtents.reduce((sum, e) => sum + e.above + e.below, 0) + (lanes.length - 1) * ROW_GAP
+            let cursor = row - total / 2
+            const laneResults = lanes.map((lane, i) => {
+                const e = laneExtents[i]
+                const laneRow = cursor + e.above
+                cursor += e.above + e.below + ROW_GAP
+                return layoutFlow([lane], laneLoc, curCol, laneRow, curPrevIds, nodes, edges)
+            })
 
             curCol = Math.max(curCol, ...laneResults.map(r => r.maxCol))
             minRow = Math.min(minRow, ...laneResults.map(r => r.minRow))
@@ -158,7 +204,7 @@ export function layoutTract(rootSteps: TractStep[]): CanvasLayout {
     const rawNodes: RawNode[] = [{id: TRIGGER_NODE_ID, col: 0, row: 0, kind: "trigger", location: ROOT_LOCATION, index: -1}]
     const edges: CanvasEdge[] = []
 
-    const result = layoutFlow(rootSteps, ROOT_LOCATION, 1, 0, BASE_SPREAD, [TRIGGER_NODE_ID], rawNodes, edges)
+    const result = layoutFlow(rootSteps, ROOT_LOCATION, 1, 0, [TRIGGER_NODE_ID], rawNodes, edges)
 
     const rowShift = MARGIN_Y - result.minRow
     const nodes: CanvasNode[] = rawNodes.map(n => ({

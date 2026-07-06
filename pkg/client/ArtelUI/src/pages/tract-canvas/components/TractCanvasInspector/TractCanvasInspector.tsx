@@ -138,7 +138,7 @@ function Body({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractU
                 )}
                 <Section title="Flow">
                     <Button variant="ghost" onClick={() => onOpenAddBlock(node.location, node.index + 1)}>
-                        {node.kind === "trigger" ? "+ Add first step" : "+ Add step after"}
+                        {node.kind === "trigger" && rootSteps.length === 0 ? "+ Add first step" : "+ Add step after"}
                     </Button>
                 </Section>
             </div>
