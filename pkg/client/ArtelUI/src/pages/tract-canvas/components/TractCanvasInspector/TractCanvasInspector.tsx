@@ -12,7 +12,7 @@ import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {Button, ConfirmDialog} from "@vervstack/chures"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
-import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {ChevronRightIcon, CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import TractStepTree from "@/components/TractStepTree/TractStepTree.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
 
@@ -49,38 +49,64 @@ interface Props {
 }
 
 export default function TractCanvasInspector({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose}: Props) {
+    const [enlarged, setEnlarged] = useState(false)
+
+    useEffect(() => {
+        setEnlarged(false)
+    }, [node?.id])
+
     return (
-        <div className={`${cls.Panel} ${node ? cls.Open : ""}`}>
-            {node && (
-                <Body
-                    key={node.id}
-                    node={node}
-                    rootSteps={rootSteps}
-                    tools={tools}
-                    triggerSchema={triggerSchema}
-                    lastOutputByStepId={lastOutputByStepId}
-                    tractUuid={tractUuid}
-                    linkedTriggerSummaries={linkedTriggerSummaries}
-                    onChangeSteps={onChangeSteps}
-                    onOpenAddBlock={onOpenAddBlock}
-                    onClose={onClose}
-                />
+        <>
+            {node && enlarged && (
+                <div className={cls.Backdrop} onClick={() => setEnlarged(false)}/>
             )}
-        </div>
+            <div className={`${cls.Panel} ${node ? cls.Open : ""} ${node && enlarged ? cls.Enlarged : ""}`}>
+                {node && (
+                    <Body
+                        key={node.id}
+                        node={node}
+                        rootSteps={rootSteps}
+                        tools={tools}
+                        triggerSchema={triggerSchema}
+                        lastOutputByStepId={lastOutputByStepId}
+                        tractUuid={tractUuid}
+                        linkedTriggerSummaries={linkedTriggerSummaries}
+                        onChangeSteps={onChangeSteps}
+                        onOpenAddBlock={onOpenAddBlock}
+                        onClose={onClose}
+                        enlarged={enlarged}
+                        onToggleEnlarge={() => setEnlarged(e => !e)}
+                    />
+                )}
+            </div>
+        </>
     )
 }
 
-function Body({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose}: Omit<Props, "node"> & { node: CanvasNode }) {
+function Body({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose, enlarged, onToggleEnlarge}: Omit<Props, "node"> & {
+    node: CanvasNode
+    enlarged: boolean
+    onToggleEnlarge: () => void
+}) {
     const step = node.step
 
     return (
         <>
             <div className={cls.Head}>
+                <Button
+                    variant="ghost"
+                    className={cls.EnlargeBtn}
+                    onClick={onToggleEnlarge}
+                    aria-label={enlarged ? "Shrink inspector" : "Enlarge inspector"}
+                    aria-pressed={enlarged}
+                >
+                    <ChevronRightIcon className={`${cls.EnlargeChevron} ${enlarged ? cls.EnlargeChevronOpen : ""}`}/>
+                </Button>
                 <div className={cls.Titles}>
                     <div className={cls.Title}>{node.kind === "trigger" ? "Trigger" : step?.name || step?.id || node.kind}</div>
                     <div className={cls.Sub}>{node.kind === "trigger" ? "trigger" : node.kind}</div>
                 </div>
-                <Button variant="iconDanger" onClick={onClose} aria-label="Close inspector">
+                <Button variant="iconDanger" className={cls.CloseBtn} onClick={onClose} aria-label="Close inspector">
                     <CloseIcon/>
                 </Button>
             </div>
