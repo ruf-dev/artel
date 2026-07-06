@@ -2374,7 +2374,7 @@
       "source_file": "internal/middleware/admin_interceptor.go",
       "source_location": "L1",
       "id": "internal_middleware_admin_interceptor_go",
-      "community": 436,
+      "community": 782,
       "norm_label": "admin_interceptor.go"
     },
     {
@@ -2383,7 +2383,7 @@
       "source_file": "internal/middleware/admin_interceptor.go",
       "source_location": "L15",
       "id": "middleware_admin_interceptor_grpcadmininterceptor",
-      "community": 436,
+      "community": 782,
       "norm_label": "grpcadmininterceptor()"
     },
     {
@@ -2392,7 +2392,7 @@
       "source_file": "internal/middleware/admin_interceptor.go",
       "source_location": "L15",
       "id": "internal_middleware_admin_interceptor_go_authservice",
-      "community": 436,
+      "community": 782,
       "norm_label": "authservice"
     },
     {
@@ -2401,7 +2401,7 @@
       "source_file": "internal/middleware/admin_interceptor.go",
       "source_location": "L15",
       "id": "internal_middleware_admin_interceptor_go_serveroption",
-      "community": 436,
+      "community": 782,
       "norm_label": "serveroption"
     },
     {
@@ -8602,7 +8602,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L1",
       "id": "internal_repository_pg_repos_mailserversuggestions_suggestions_go",
-      "community": 159,
+      "community": 681,
       "norm_label": "suggestions.go"
     },
     {
@@ -8611,7 +8611,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L13",
       "id": "mailserversuggestions_repo",
-      "community": 159,
+      "community": 681,
       "norm_label": "repo"
     },
     {
@@ -8620,7 +8620,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L14",
       "id": "internal_repository_pg_repos_mailserversuggestions_suggestions_go_queries",
-      "community": 159,
+      "community": 681,
       "norm_label": "queries"
     },
     {
@@ -8629,7 +8629,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L17",
       "id": "mailserversuggestions_suggestions_new",
-      "community": 159,
+      "community": 681,
       "norm_label": "new()"
     },
     {
@@ -8638,7 +8638,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L21",
       "id": "mailserversuggestions_repo_listbydomain",
-      "community": 159,
+      "community": 681,
       "norm_label": ".listbydomain()"
     },
     {
@@ -8647,7 +8647,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L21",
       "id": "internal_repository_pg_repos_mailserversuggestions_suggestions_go_context",
-      "community": 159,
+      "community": 681,
       "norm_label": "context"
     },
     {
@@ -8656,7 +8656,7 @@
       "source_file": "internal/repository/pg/repos/mailserversuggestions/suggestions.go",
       "source_location": "L21",
       "id": "internal_repository_pg_repos_mailserversuggestions_suggestions_go_mailserversuggestion",
-      "community": 159,
+      "community": 681,
       "norm_label": "mailserversuggestion"
     },
     {
@@ -14335,7 +14335,7 @@
       "source_file": "internal/transport/mcp_keys_api/mcp_keys_impl.go",
       "source_location": "L1",
       "id": "internal_transport_mcp_keys_api_mcp_keys_impl_go",
-      "community": 770,
+      "community": 436,
       "norm_label": "mcp_keys_impl.go"
     },
     {
@@ -14344,7 +14344,7 @@
       "source_file": "internal/transport/mcp_keys_api/mcp_keys_impl.go",
       "source_location": "L14",
       "id": "internal_transport_mcp_keys_api_mcp_keys_impl_go_mcp_keys_api_mcpkeysimpl",
-      "community": 770,
+      "community": 436,
       "norm_label": "mcpkeysimpl"
     },
     {
@@ -14353,7 +14353,7 @@
       "source_file": "internal/transport/mcp_keys_api/mcp_keys_impl.go",
       "source_location": "L15",
       "id": "unimplementedmcpkeysapiserver",
-      "community": 770,
+      "community": 436,
       "norm_label": "unimplementedmcpkeysapiserver"
     },
     {
@@ -14362,7 +14362,7 @@
       "source_file": "internal/transport/mcp_keys_api/mcp_keys_impl.go",
       "source_location": "L16",
       "id": "internal_transport_mcp_keys_api_mcp_keys_impl_go_mcpservice",
-      "community": 770,
+      "community": 436,
       "norm_label": "mcpservice"
     },
     {
@@ -14371,7 +14371,7 @@
       "source_file": "internal/transport/mcp_keys_api/mcp_keys_impl.go",
       "source_location": "L17",
       "id": "internal_transport_mcp_keys_api_mcp_keys_impl_go_momservice",
-      "community": 770,
+      "community": 436,
       "norm_label": "momservice"
     },
     {
@@ -14380,7 +14380,7 @@
       "source_file": "internal/transport/mcp_keys_api/mcp_keys_impl.go",
       "source_location": "L20",
       "id": "mcp_keys_api_mcp_keys_impl_newmcpkeysimpl",
-      "community": 770,
+      "community": 436,
       "norm_label": "newmcpkeysimpl()"
     },
     {
@@ -18088,7 +18088,7 @@
       "source_file": "internal/livesync/builder.go",
       "source_location": "L1",
       "id": "internal_livesync_builder_go",
-      "community": 130,
+      "community": 27,
       "norm_label": "builder.go"
     },
     {
@@ -18097,7 +18097,7 @@
       "source_file": "internal/livesync/builder.go",
       "source_location": "L40",
       "id": "livesync_config",
-      "community": 130,
+      "community": 27,
       "norm_label": "config"
     },
     {
@@ -18106,7 +18106,7 @@
       "source_file": "internal/livesync/builder.go",
       "source_location": "L71",
       "id": "livesync_builder_defaultconfig",
-      "community": 130,
+      "community": 27,
       "norm_label": "defaultconfig()"
     },
     {
@@ -18115,7 +18115,7 @@
       "source_file": "internal/livesync/builder.go",
       "source_location": "L107",
       "id": "livesync_builder_generatesetupuri",
-      "community": 130,
+      "community": 27,
       "norm_label": "generatesetupuri()"
     },
     {
@@ -18124,7 +18124,7 @@
       "source_file": "internal/livesync/builder.go",
       "source_location": "L123",
       "id": "livesync_builder_pbkdf2key",
-      "community": 130,
+      "community": 27,
       "norm_label": "pbkdf2key()"
     },
     {
@@ -18133,7 +18133,7 @@
       "source_file": "internal/livesync/builder.go",
       "source_location": "L171",
       "id": "livesync_builder_encryptoctagonalwheels",
-      "community": 130,
+      "community": 27,
       "norm_label": "encryptoctagonalwheels()"
     },
     {
@@ -18250,7 +18250,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1",
       "id": "internal_api_server_artel_api_vaults_pb_go",
-      "community": 834,
+      "community": 107,
       "norm_label": "vaults.pb.go"
     },
     {
@@ -18259,7 +18259,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L26",
       "id": "artel_api_createvault",
-      "community": 724,
+      "community": 834,
       "norm_label": "createvault"
     },
     {
@@ -18295,7 +18295,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L32",
       "id": "artel_api_createvault_reset",
-      "community": 724,
+      "community": 834,
       "norm_label": ".reset()"
     },
     {
@@ -18304,7 +18304,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L39",
       "id": "artel_api_createvault_string",
-      "community": 724,
+      "community": 834,
       "norm_label": ".string()"
     },
     {
@@ -18313,7 +18313,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L43",
       "id": "artel_api_createvault_protomessage",
-      "community": 724,
+      "community": 834,
       "norm_label": ".protomessage()"
     },
     {
@@ -18322,7 +18322,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L45",
       "id": "artel_api_createvault_protoreflect",
-      "community": 724,
+      "community": 834,
       "norm_label": ".protoreflect()"
     },
     {
@@ -18340,7 +18340,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L58",
       "id": "artel_api_createvault_descriptor",
-      "community": 724,
+      "community": 834,
       "norm_label": ".descriptor()"
     },
     {
@@ -18349,7 +18349,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L62",
       "id": "artel_api_getvault",
-      "community": 216,
+      "community": 107,
       "norm_label": "getvault"
     },
     {
@@ -18358,7 +18358,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L68",
       "id": "artel_api_getvault_reset",
-      "community": 216,
+      "community": 107,
       "norm_label": ".reset()"
     },
     {
@@ -18367,7 +18367,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L75",
       "id": "artel_api_getvault_string",
-      "community": 216,
+      "community": 107,
       "norm_label": ".string()"
     },
     {
@@ -18376,7 +18376,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L79",
       "id": "artel_api_getvault_protomessage",
-      "community": 216,
+      "community": 107,
       "norm_label": ".protomessage()"
     },
     {
@@ -18385,7 +18385,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L81",
       "id": "artel_api_getvault_protoreflect",
-      "community": 216,
+      "community": 107,
       "norm_label": ".protoreflect()"
     },
     {
@@ -18394,7 +18394,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L94",
       "id": "artel_api_getvault_descriptor",
-      "community": 216,
+      "community": 107,
       "norm_label": ".descriptor()"
     },
     {
@@ -18457,7 +18457,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L134",
       "id": "artel_api_deletevault",
-      "community": 834,
+      "community": 783,
       "norm_label": "deletevault"
     },
     {
@@ -18466,7 +18466,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L140",
       "id": "artel_api_deletevault_reset",
-      "community": 834,
+      "community": 783,
       "norm_label": ".reset()"
     },
     {
@@ -18475,7 +18475,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L147",
       "id": "artel_api_deletevault_string",
-      "community": 834,
+      "community": 783,
       "norm_label": ".string()"
     },
     {
@@ -18484,7 +18484,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L151",
       "id": "artel_api_deletevault_protomessage",
-      "community": 834,
+      "community": 783,
       "norm_label": ".protomessage()"
     },
     {
@@ -18493,7 +18493,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L153",
       "id": "artel_api_deletevault_protoreflect",
-      "community": 834,
+      "community": 783,
       "norm_label": ".protoreflect()"
     },
     {
@@ -18502,7 +18502,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L166",
       "id": "artel_api_deletevault_descriptor",
-      "community": 834,
+      "community": 783,
       "norm_label": ".descriptor()"
     },
     {
@@ -18673,7 +18673,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L278",
       "id": "artel_api_createinvitelink",
-      "community": 834,
+      "community": 107,
       "norm_label": "createinvitelink"
     },
     {
@@ -18682,7 +18682,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L284",
       "id": "artel_api_createinvitelink_reset",
-      "community": 834,
+      "community": 107,
       "norm_label": ".reset()"
     },
     {
@@ -18691,7 +18691,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L291",
       "id": "artel_api_createinvitelink_string",
-      "community": 834,
+      "community": 107,
       "norm_label": ".string()"
     },
     {
@@ -18700,7 +18700,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L295",
       "id": "artel_api_createinvitelink_protomessage",
-      "community": 834,
+      "community": 107,
       "norm_label": ".protomessage()"
     },
     {
@@ -18709,7 +18709,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L297",
       "id": "artel_api_createinvitelink_protoreflect",
-      "community": 834,
+      "community": 107,
       "norm_label": ".protoreflect()"
     },
     {
@@ -18718,7 +18718,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L310",
       "id": "artel_api_createinvitelink_descriptor",
-      "community": 834,
+      "community": 107,
       "norm_label": ".descriptor()"
     },
     {
@@ -20950,7 +20950,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1894",
       "id": "artel_api_unlinks3bucket_response",
-      "community": 605,
+      "community": 216,
       "norm_label": "unlinks3bucket_response"
     },
     {
@@ -20959,7 +20959,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1900",
       "id": "artel_api_unlinks3bucket_response_reset",
-      "community": 605,
+      "community": 216,
       "norm_label": ".reset()"
     },
     {
@@ -20968,7 +20968,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1907",
       "id": "artel_api_unlinks3bucket_response_string",
-      "community": 605,
+      "community": 216,
       "norm_label": ".string()"
     },
     {
@@ -20977,7 +20977,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1911",
       "id": "artel_api_unlinks3bucket_response_protomessage",
-      "community": 605,
+      "community": 216,
       "norm_label": ".protomessage()"
     },
     {
@@ -20986,7 +20986,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1913",
       "id": "artel_api_unlinks3bucket_response_protoreflect",
-      "community": 605,
+      "community": 216,
       "norm_label": ".protoreflect()"
     },
     {
@@ -20995,7 +20995,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L1926",
       "id": "artel_api_unlinks3bucket_response_descriptor",
-      "community": 605,
+      "community": 216,
       "norm_label": ".descriptor()"
     },
     {
@@ -21013,7 +21013,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L2148",
       "id": "artel_api_vaults_pb_init",
-      "community": 834,
+      "community": 107,
       "norm_label": "init()"
     },
     {
@@ -21022,7 +21022,7 @@
       "source_file": "internal/api/server/artel_api/vaults.pb.go",
       "source_location": "L2149",
       "id": "artel_api_vaults_pb_file_vaults_proto_init",
-      "community": 834,
+      "community": 107,
       "norm_label": "file_vaults_proto_init()"
     },
     {
@@ -22930,7 +22930,7 @@
       "source_file": "internal/api/server/artel_api/s3_instances.pb.go",
       "source_location": "L94",
       "id": "artel_api_gets3instance_descriptor",
-      "community": 710,
+      "community": 870,
       "norm_label": ".descriptor()"
     },
     {
@@ -23092,7 +23092,7 @@
       "source_file": "internal/api/server/artel_api/s3_instances.pb.go",
       "source_location": "L202",
       "id": "artel_api_deletes3instance_descriptor",
-      "community": 710,
+      "community": 870,
       "norm_label": ".descriptor()"
     },
     {
@@ -23434,7 +23434,7 @@
       "source_file": "internal/api/server/artel_api/s3_instances.pb.go",
       "source_location": "L452",
       "id": "artel_api_gets3instance_response_descriptor",
-      "community": 710,
+      "community": 870,
       "norm_label": ".descriptor()"
     },
     {
@@ -23830,7 +23830,7 @@
       "source_file": "internal/api/server/artel_api/s3_instances.pb.go",
       "source_location": "L739",
       "id": "artel_api_deletes3instance_request_descriptor",
-      "community": 710,
+      "community": 870,
       "norm_label": ".descriptor()"
     },
     {
@@ -24019,7 +24019,7 @@
       "source_file": "internal/api/server/artel_api/s3_instances.pb.go",
       "source_location": "L939",
       "id": "artel_api_s3_instances_pb_file_s3_instances_proto_rawdescgzip",
-      "community": 710,
+      "community": 870,
       "norm_label": "file_s3_instances_proto_rawdescgzip()"
     },
     {
@@ -25801,7 +25801,7 @@
       "source_file": "internal/api/server/artel_api/admin_couch.pb.go",
       "source_location": "L146",
       "id": "artel_api_deletecouchuser_descriptor",
-      "community": 575,
+      "community": 538,
       "norm_label": ".descriptor()"
     },
     {
@@ -25855,7 +25855,7 @@
       "source_file": "internal/api/server/artel_api/admin_couch.pb.go",
       "source_location": "L182",
       "id": "artel_api_changecouchuserpassword_descriptor",
-      "community": 575,
+      "community": 538,
       "norm_label": ".descriptor()"
     },
     {
@@ -26458,7 +26458,7 @@
       "source_file": "internal/api/server/artel_api/admin_couch.pb.go",
       "source_location": "L598",
       "id": "artel_api_changecouchuserpassword_response_descriptor",
-      "community": 575,
+      "community": 538,
       "norm_label": ".descriptor()"
     },
     {
@@ -26998,7 +26998,7 @@
       "source_file": "internal/api/server/artel_api/admin_couch.pb.go",
       "source_location": "L1052",
       "id": "artel_api_admin_couch_pb_file_admin_couch_proto_rawdescgzip",
-      "community": 575,
+      "community": 538,
       "norm_label": "file_admin_couch_proto_rawdescgzip()"
     },
     {
@@ -27961,7 +27961,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.gw.go",
       "source_location": "L313",
       "id": "internal_api_server_artel_api_mcp_keys_pb_gw_go_servemux",
-      "community": 33,
+      "community": 770,
       "norm_label": "servemux"
     },
     {
@@ -27970,7 +27970,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.gw.go",
       "source_location": "L520",
       "id": "artel_api_mcp_keys_pb_gw_registermcpkeysapihandlerfromendpoint",
-      "community": 33,
+      "community": 770,
       "norm_label": "registermcpkeysapihandlerfromendpoint()"
     },
     {
@@ -27979,7 +27979,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.gw.go",
       "source_location": "L520",
       "id": "internal_api_server_artel_api_mcp_keys_pb_gw_go_dialoption",
-      "community": 33,
+      "community": 770,
       "norm_label": "dialoption"
     },
     {
@@ -27988,7 +27988,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.gw.go",
       "source_location": "L544",
       "id": "artel_api_mcp_keys_pb_gw_registermcpkeysapihandler",
-      "community": 33,
+      "community": 770,
       "norm_label": "registermcpkeysapihandler()"
     },
     {
@@ -27997,7 +27997,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.gw.go",
       "source_location": "L544",
       "id": "internal_api_server_artel_api_mcp_keys_pb_gw_go_clientconn",
-      "community": 33,
+      "community": 770,
       "norm_label": "clientconn"
     },
     {
@@ -29779,7 +29779,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L1",
       "id": "internal_api_server_artel_api_couch_instances_pb_go",
-      "community": 556,
+      "community": 136,
       "norm_label": "couch_instances.pb.go"
     },
     {
@@ -29797,7 +29797,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L27",
       "id": "internal_api_server_artel_api_couch_instances_pb_go_messagestate",
-      "community": 235,
+      "community": 98,
       "norm_label": "messagestate"
     },
     {
@@ -29914,7 +29914,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L81",
       "id": "artel_api_getcouchinstance_protoreflect",
-      "community": 425,
+      "community": 235,
       "norm_label": ".protoreflect()"
     },
     {
@@ -29923,7 +29923,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L94",
       "id": "artel_api_getcouchinstance_descriptor",
-      "community": 213,
+      "community": 235,
       "norm_label": ".descriptor()"
     },
     {
@@ -29968,7 +29968,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L117",
       "id": "artel_api_listcouchinstances_protoreflect",
-      "community": 98,
+      "community": 425,
       "norm_label": ".protoreflect()"
     },
     {
@@ -29977,7 +29977,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L130",
       "id": "artel_api_listcouchinstances_descriptor",
-      "community": 98,
+      "community": 213,
       "norm_label": ".descriptor()"
     },
     {
@@ -31147,7 +31147,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L1062",
       "id": "artel_api_couch_instances_pb_init",
-      "community": 556,
+      "community": 136,
       "norm_label": "init()"
     },
     {
@@ -31156,7 +31156,7 @@
       "source_file": "internal/api/server/artel_api/couch_instances.pb.go",
       "source_location": "L1063",
       "id": "artel_api_couch_instances_pb_file_couch_instances_proto_init",
-      "community": 556,
+      "community": 136,
       "norm_label": "file_couch_instances_proto_init()"
     },
     {
@@ -32344,7 +32344,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L87",
       "id": "internal_api_server_artel_api_external_connections_pb_go_unknownfields",
-      "community": 409,
+      "community": 532,
       "norm_label": "unknownfields"
     },
     {
@@ -32830,7 +32830,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L401",
       "id": "artel_api_googlepickertoken",
-      "community": 537,
+      "community": 694,
       "norm_label": "googlepickertoken"
     },
     {
@@ -32839,7 +32839,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L407",
       "id": "artel_api_googlepickertoken_reset",
-      "community": 537,
+      "community": 694,
       "norm_label": ".reset()"
     },
     {
@@ -32848,7 +32848,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L414",
       "id": "artel_api_googlepickertoken_string",
-      "community": 537,
+      "community": 694,
       "norm_label": ".string()"
     },
     {
@@ -32857,7 +32857,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L418",
       "id": "artel_api_googlepickertoken_protomessage",
-      "community": 537,
+      "community": 694,
       "norm_label": ".protomessage()"
     },
     {
@@ -32866,7 +32866,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L420",
       "id": "artel_api_googlepickertoken_protoreflect",
-      "community": 537,
+      "community": 694,
       "norm_label": ".protoreflect()"
     },
     {
@@ -32875,7 +32875,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L433",
       "id": "artel_api_googlepickertoken_descriptor",
-      "community": 537,
+      "community": 694,
       "norm_label": ".descriptor()"
     },
     {
@@ -33568,7 +33568,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L913",
       "id": "artel_api_listconnections_request",
-      "community": 409,
+      "community": 532,
       "norm_label": "listconnections_request"
     },
     {
@@ -33577,7 +33577,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L919",
       "id": "artel_api_listconnections_request_reset",
-      "community": 409,
+      "community": 532,
       "norm_label": ".reset()"
     },
     {
@@ -33586,7 +33586,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L926",
       "id": "artel_api_listconnections_request_string",
-      "community": 409,
+      "community": 532,
       "norm_label": ".string()"
     },
     {
@@ -33595,7 +33595,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L930",
       "id": "artel_api_listconnections_request_protomessage",
-      "community": 409,
+      "community": 532,
       "norm_label": ".protomessage()"
     },
     {
@@ -33802,7 +33802,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L1073",
       "id": "artel_api_googlepickertoken_request",
-      "community": 681,
+      "community": 537,
       "norm_label": "googlepickertoken_request"
     },
     {
@@ -33811,7 +33811,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L1079",
       "id": "artel_api_googlepickertoken_request_reset",
-      "community": 681,
+      "community": 537,
       "norm_label": ".reset()"
     },
     {
@@ -33820,7 +33820,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L1086",
       "id": "artel_api_googlepickertoken_request_string",
-      "community": 681,
+      "community": 537,
       "norm_label": ".string()"
     },
     {
@@ -33829,7 +33829,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L1090",
       "id": "artel_api_googlepickertoken_request_protomessage",
-      "community": 681,
+      "community": 537,
       "norm_label": ".protomessage()"
     },
     {
@@ -33838,7 +33838,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L1092",
       "id": "artel_api_googlepickertoken_request_protoreflect",
-      "community": 681,
+      "community": 537,
       "norm_label": ".protoreflect()"
     },
     {
@@ -33847,7 +33847,7 @@
       "source_file": "internal/api/server/artel_api/external_connections.pb.go",
       "source_location": "L1105",
       "id": "artel_api_googlepickertoken_request_descriptor",
-      "community": 681,
+      "community": 537,
       "norm_label": ".descriptor()"
     },
     {
@@ -35044,7 +35044,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L124",
       "id": "internal_api_server_artel_api_mcp_keys_pb_go_messagestate",
-      "community": 96,
+      "community": 725,
       "norm_label": "messagestate"
     },
     {
@@ -35062,7 +35062,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L133",
       "id": "internal_api_server_artel_api_mcp_keys_pb_go_sizecache",
-      "community": 725,
+      "community": 96,
       "norm_label": "sizecache"
     },
     {
@@ -35242,7 +35242,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L251",
       "id": "artel_api_listmcpkeys",
-      "community": 725,
+      "community": 96,
       "norm_label": "listmcpkeys"
     },
     {
@@ -35251,7 +35251,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L257",
       "id": "artel_api_listmcpkeys_reset",
-      "community": 725,
+      "community": 96,
       "norm_label": ".reset()"
     },
     {
@@ -35260,7 +35260,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L264",
       "id": "artel_api_listmcpkeys_string",
-      "community": 725,
+      "community": 96,
       "norm_label": ".string()"
     },
     {
@@ -35269,7 +35269,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L268",
       "id": "artel_api_listmcpkeys_protomessage",
-      "community": 725,
+      "community": 96,
       "norm_label": ".protomessage()"
     },
     {
@@ -35548,7 +35548,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L463",
       "id": "artel_api_smtptoolaction",
-      "community": 151,
+      "community": 159,
       "norm_label": "smtptoolaction"
     },
     {
@@ -35557,7 +35557,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L470",
       "id": "artel_api_smtptoolaction_reset",
-      "community": 151,
+      "community": 159,
       "norm_label": ".reset()"
     },
     {
@@ -35566,7 +35566,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L477",
       "id": "artel_api_smtptoolaction_string",
-      "community": 151,
+      "community": 159,
       "norm_label": ".string()"
     },
     {
@@ -35575,7 +35575,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L481",
       "id": "artel_api_smtptoolaction_protomessage",
-      "community": 151,
+      "community": 159,
       "norm_label": ".protomessage()"
     },
     {
@@ -35584,7 +35584,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L483",
       "id": "artel_api_smtptoolaction_protoreflect",
-      "community": 151,
+      "community": 159,
       "norm_label": ".protoreflect()"
     },
     {
@@ -35593,7 +35593,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L496",
       "id": "artel_api_smtptoolaction_descriptor",
-      "community": 151,
+      "community": 159,
       "norm_label": ".descriptor()"
     },
     {
@@ -35674,7 +35674,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L551",
       "id": "artel_api_stringparam",
-      "community": 223,
+      "community": 95,
       "norm_label": "stringparam"
     },
     {
@@ -35683,7 +35683,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L557",
       "id": "artel_api_stringparam_reset",
-      "community": 223,
+      "community": 95,
       "norm_label": ".reset()"
     },
     {
@@ -35692,7 +35692,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L564",
       "id": "artel_api_stringparam_string",
-      "community": 223,
+      "community": 95,
       "norm_label": ".string()"
     },
     {
@@ -35701,7 +35701,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L568",
       "id": "artel_api_stringparam_protomessage",
-      "community": 223,
+      "community": 95,
       "norm_label": ".protomessage()"
     },
     {
@@ -35710,7 +35710,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L570",
       "id": "artel_api_stringparam_protoreflect",
-      "community": 223,
+      "community": 95,
       "norm_label": ".protoreflect()"
     },
     {
@@ -35719,7 +35719,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L583",
       "id": "artel_api_stringparam_descriptor",
-      "community": 223,
+      "community": 95,
       "norm_label": ".descriptor()"
     },
     {
@@ -35728,7 +35728,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L587",
       "id": "artel_api_integerparam",
-      "community": 95,
+      "community": 130,
       "norm_label": "integerparam"
     },
     {
@@ -35737,7 +35737,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L593",
       "id": "artel_api_integerparam_reset",
-      "community": 95,
+      "community": 130,
       "norm_label": ".reset()"
     },
     {
@@ -35746,7 +35746,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L600",
       "id": "artel_api_integerparam_string",
-      "community": 95,
+      "community": 130,
       "norm_label": ".string()"
     },
     {
@@ -35755,7 +35755,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L604",
       "id": "artel_api_integerparam_protomessage",
-      "community": 95,
+      "community": 130,
       "norm_label": ".protomessage()"
     },
     {
@@ -35764,7 +35764,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L606",
       "id": "artel_api_integerparam_protoreflect",
-      "community": 95,
+      "community": 130,
       "norm_label": ".protoreflect()"
     },
     {
@@ -35773,7 +35773,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L619",
       "id": "artel_api_integerparam_descriptor",
-      "community": 95,
+      "community": 130,
       "norm_label": ".descriptor()"
     },
     {
@@ -35926,7 +35926,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L724",
       "id": "artel_api_toolparamdef_getstringparam",
-      "community": 223,
+      "community": 95,
       "norm_label": ".getstringparam()"
     },
     {
@@ -35935,7 +35935,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L733",
       "id": "artel_api_toolparamdef_getintegerparam",
-      "community": 95,
+      "community": 130,
       "norm_label": ".getintegerparam()"
     },
     {
@@ -35962,7 +35962,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L755",
       "id": "artel_api_toolparamdef_stringparam",
-      "community": 223,
+      "community": 95,
       "norm_label": "toolparamdef_stringparam"
     },
     {
@@ -35971,7 +35971,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L759",
       "id": "artel_api_toolparamdef_integerparam",
-      "community": 95,
+      "community": 130,
       "norm_label": "toolparamdef_integerparam"
     },
     {
@@ -35989,7 +35989,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L767",
       "id": "artel_api_toolparamdef_stringparam_istoolparamdef_kind",
-      "community": 223,
+      "community": 95,
       "norm_label": ".istoolparamdef_kind()"
     },
     {
@@ -35998,7 +35998,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L769",
       "id": "artel_api_toolparamdef_integerparam_istoolparamdef_kind",
-      "community": 95,
+      "community": 130,
       "norm_label": ".istoolparamdef_kind()"
     },
     {
@@ -36106,7 +36106,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L838",
       "id": "artel_api_mcptoolinfo_getsmtp",
-      "community": 151,
+      "community": 159,
       "norm_label": ".getsmtp()"
     },
     {
@@ -36142,7 +36142,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L867",
       "id": "artel_api_mcptoolinfo_smtp",
-      "community": 95,
+      "community": 159,
       "norm_label": "mcptoolinfo_smtp"
     },
     {
@@ -36151,7 +36151,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L871",
       "id": "artel_api_mcptoolinfo_imap",
-      "community": 151,
+      "community": 95,
       "norm_label": "mcptoolinfo_imap"
     },
     {
@@ -36160,7 +36160,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L875",
       "id": "artel_api_mcptoolinfo_smtp_ismcptoolinfo_action",
-      "community": 95,
+      "community": 159,
       "norm_label": ".ismcptoolinfo_action()"
     },
     {
@@ -36169,7 +36169,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L877",
       "id": "artel_api_mcptoolinfo_imap_ismcptoolinfo_action",
-      "community": 151,
+      "community": 95,
       "norm_label": ".ismcptoolinfo_action()"
     },
     {
@@ -36286,7 +36286,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L955",
       "id": "artel_api_listmcpconnectors",
-      "community": 694,
+      "community": 95,
       "norm_label": "listmcpconnectors"
     },
     {
@@ -36295,7 +36295,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L961",
       "id": "artel_api_listmcpconnectors_reset",
-      "community": 694,
+      "community": 95,
       "norm_label": ".reset()"
     },
     {
@@ -36304,7 +36304,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L968",
       "id": "artel_api_listmcpconnectors_string",
-      "community": 694,
+      "community": 95,
       "norm_label": ".string()"
     },
     {
@@ -36313,7 +36313,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L972",
       "id": "artel_api_listmcpconnectors_protomessage",
-      "community": 694,
+      "community": 95,
       "norm_label": ".protomessage()"
     },
     {
@@ -36322,7 +36322,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L974",
       "id": "artel_api_listmcpconnectors_protoreflect",
-      "community": 694,
+      "community": 95,
       "norm_label": ".protoreflect()"
     },
     {
@@ -36331,7 +36331,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L987",
       "id": "artel_api_listmcpconnectors_descriptor",
-      "community": 694,
+      "community": 95,
       "norm_label": ".descriptor()"
     },
     {
@@ -36340,7 +36340,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L991",
       "id": "artel_api_addmcpconnector",
-      "community": 96,
+      "community": 725,
       "norm_label": "addmcpconnector"
     },
     {
@@ -36349,7 +36349,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L997",
       "id": "artel_api_addmcpconnector_reset",
-      "community": 96,
+      "community": 725,
       "norm_label": ".reset()"
     },
     {
@@ -36358,7 +36358,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L1004",
       "id": "artel_api_addmcpconnector_string",
-      "community": 96,
+      "community": 725,
       "norm_label": ".string()"
     },
     {
@@ -36367,7 +36367,7 @@
       "source_file": "internal/api/server/artel_api/mcp_keys.pb.go",
       "source_location": "L1008",
       "id": "artel_api_addmcpconnector_protomessage",
-      "community": 96,
+      "community": 725,
       "norm_label": ".protomessage()"
     },
     {
@@ -38581,7 +38581,7 @@
       "source_file": "internal/api/server/artel_api/notes.pb.go",
       "source_location": "L1",
       "id": "internal_api_server_artel_api_notes_pb_go",
-      "community": 548,
+      "community": 540,
       "norm_label": "notes.pb.go"
     },
     {
@@ -39814,7 +39814,7 @@
       "source_file": "internal/api/server/artel_api/notes.pb.go",
       "source_location": "L954",
       "id": "artel_api_notes_pb_init",
-      "community": 548,
+      "community": 540,
       "norm_label": "init()"
     },
     {
@@ -39823,7 +39823,7 @@
       "source_file": "internal/api/server/artel_api/notes.pb.go",
       "source_location": "L955",
       "id": "artel_api_notes_pb_file_notes_proto_init",
-      "community": 548,
+      "community": 540,
       "norm_label": "file_notes_proto_init()"
     },
     {
@@ -43819,7 +43819,7 @@
       "source_file": "internal/api/server/artel_api/auth.pb.go",
       "source_location": "L263",
       "id": "artel_api_getconfig_descriptor",
-      "community": 111,
+      "community": 97,
       "norm_label": ".descriptor()"
     },
     {
@@ -43963,7 +43963,7 @@
       "source_file": "internal/api/server/artel_api/auth.pb.go",
       "source_location": "L367",
       "id": "artel_api_getme_descriptor",
-      "community": 111,
+      "community": 97,
       "norm_label": ".descriptor()"
     },
     {
@@ -44485,7 +44485,7 @@
       "source_file": "internal/api/server/artel_api/auth.pb.go",
       "source_location": "L713",
       "id": "artel_api_getconfig_request_descriptor",
-      "community": 111,
+      "community": 97,
       "norm_label": ".descriptor()"
     },
     {
@@ -44656,7 +44656,7 @@
       "source_file": "internal/api/server/artel_api/auth.pb.go",
       "source_location": "L834",
       "id": "artel_api_getme_response_descriptor",
-      "community": 111,
+      "community": 97,
       "norm_label": ".descriptor()"
     },
     {
@@ -44710,7 +44710,7 @@
       "source_file": "internal/api/server/artel_api/auth.pb.go",
       "source_location": "L937",
       "id": "artel_api_auth_pb_file_auth_proto_rawdescgzip",
-      "community": 111,
+      "community": 97,
       "norm_label": "file_auth_proto_rawdescgzip()"
     },
     {
@@ -44917,7 +44917,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L26",
       "id": "internal_api_server_artel_api_tracts_pb_go_messagestate",
-      "community": 878,
+      "community": 734,
       "norm_label": "messagestate"
     },
     {
@@ -44935,7 +44935,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L32",
       "id": "internal_api_server_artel_api_tracts_pb_go_sizecache",
-      "community": 734,
+      "community": 878,
       "norm_label": "sizecache"
     },
     {
@@ -46546,7 +46546,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1210",
       "id": "artel_api_updatetract",
-      "community": 733,
+      "community": 786,
       "norm_label": "updatetract"
     },
     {
@@ -46555,7 +46555,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1216",
       "id": "artel_api_updatetract_reset",
-      "community": 733,
+      "community": 786,
       "norm_label": ".reset()"
     },
     {
@@ -46564,7 +46564,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1223",
       "id": "artel_api_updatetract_string",
-      "community": 733,
+      "community": 786,
       "norm_label": ".string()"
     },
     {
@@ -46573,7 +46573,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1227",
       "id": "artel_api_updatetract_protomessage",
-      "community": 733,
+      "community": 786,
       "norm_label": ".protomessage()"
     },
     {
@@ -46582,7 +46582,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1229",
       "id": "artel_api_updatetract_protoreflect",
-      "community": 733,
+      "community": 786,
       "norm_label": ".protoreflect()"
     },
     {
@@ -46591,7 +46591,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1242",
       "id": "artel_api_updatetract_descriptor",
-      "community": 733,
+      "community": 786,
       "norm_label": ".descriptor()"
     },
     {
@@ -46600,7 +46600,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1246",
       "id": "artel_api_gettract",
-      "community": 786,
+      "community": 733,
       "norm_label": "gettract"
     },
     {
@@ -46609,7 +46609,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1252",
       "id": "artel_api_gettract_reset",
-      "community": 786,
+      "community": 733,
       "norm_label": ".reset()"
     },
     {
@@ -46618,7 +46618,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1259",
       "id": "artel_api_gettract_string",
-      "community": 786,
+      "community": 733,
       "norm_label": ".string()"
     },
     {
@@ -46627,7 +46627,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1263",
       "id": "artel_api_gettract_protomessage",
-      "community": 786,
+      "community": 733,
       "norm_label": ".protomessage()"
     },
     {
@@ -46636,7 +46636,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1265",
       "id": "artel_api_gettract_protoreflect",
-      "community": 786,
+      "community": 733,
       "norm_label": ".protoreflect()"
     },
     {
@@ -46645,7 +46645,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1278",
       "id": "artel_api_gettract_descriptor",
-      "community": 786,
+      "community": 733,
       "norm_label": ".descriptor()"
     },
     {
@@ -46762,7 +46762,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1354",
       "id": "artel_api_settractenabled",
-      "community": 786,
+      "community": 733,
       "norm_label": "settractenabled"
     },
     {
@@ -46771,7 +46771,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1360",
       "id": "artel_api_settractenabled_reset",
-      "community": 786,
+      "community": 733,
       "norm_label": ".reset()"
     },
     {
@@ -46780,7 +46780,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1367",
       "id": "artel_api_settractenabled_string",
-      "community": 786,
+      "community": 733,
       "norm_label": ".string()"
     },
     {
@@ -46789,7 +46789,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1371",
       "id": "artel_api_settractenabled_protomessage",
-      "community": 786,
+      "community": 733,
       "norm_label": ".protomessage()"
     },
     {
@@ -46798,7 +46798,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1373",
       "id": "artel_api_settractenabled_protoreflect",
-      "community": 786,
+      "community": 733,
       "norm_label": ".protoreflect()"
     },
     {
@@ -46807,7 +46807,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1386",
       "id": "artel_api_settractenabled_descriptor",
-      "community": 786,
+      "community": 733,
       "norm_label": ".descriptor()"
     },
     {
@@ -46816,7 +46816,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1390",
       "id": "artel_api_runtract",
-      "community": 878,
+      "community": 724,
       "norm_label": "runtract"
     },
     {
@@ -46825,7 +46825,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1396",
       "id": "artel_api_runtract_reset",
-      "community": 878,
+      "community": 724,
       "norm_label": ".reset()"
     },
     {
@@ -46834,7 +46834,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1403",
       "id": "artel_api_runtract_string",
-      "community": 878,
+      "community": 724,
       "norm_label": ".string()"
     },
     {
@@ -46843,7 +46843,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1407",
       "id": "artel_api_runtract_protomessage",
-      "community": 878,
+      "community": 724,
       "norm_label": ".protomessage()"
     },
     {
@@ -46852,7 +46852,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1409",
       "id": "artel_api_runtract_protoreflect",
-      "community": 878,
+      "community": 724,
       "norm_label": ".protoreflect()"
     },
     {
@@ -46861,7 +46861,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1422",
       "id": "artel_api_runtract_descriptor",
-      "community": 878,
+      "community": 724,
       "norm_label": ".descriptor()"
     },
     {
@@ -46870,7 +46870,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1426",
       "id": "artel_api_listruns",
-      "community": 695,
+      "community": 784,
       "norm_label": "listruns"
     },
     {
@@ -46879,7 +46879,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1432",
       "id": "artel_api_listruns_reset",
-      "community": 695,
+      "community": 784,
       "norm_label": ".reset()"
     },
     {
@@ -46888,7 +46888,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1439",
       "id": "artel_api_listruns_string",
-      "community": 695,
+      "community": 784,
       "norm_label": ".string()"
     },
     {
@@ -46897,7 +46897,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1443",
       "id": "artel_api_listruns_protomessage",
-      "community": 695,
+      "community": 784,
       "norm_label": ".protomessage()"
     },
     {
@@ -46906,7 +46906,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1445",
       "id": "artel_api_listruns_protoreflect",
-      "community": 695,
+      "community": 784,
       "norm_label": ".protoreflect()"
     },
     {
@@ -46915,7 +46915,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1458",
       "id": "artel_api_listruns_descriptor",
-      "community": 695,
+      "community": 784,
       "norm_label": ".descriptor()"
     },
     {
@@ -46978,7 +46978,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1498",
       "id": "artel_api_listtracttools",
-      "community": 733,
+      "community": 786,
       "norm_label": "listtracttools"
     },
     {
@@ -46987,7 +46987,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1504",
       "id": "artel_api_listtracttools_reset",
-      "community": 733,
+      "community": 786,
       "norm_label": ".reset()"
     },
     {
@@ -46996,7 +46996,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1511",
       "id": "artel_api_listtracttools_string",
-      "community": 733,
+      "community": 786,
       "norm_label": ".string()"
     },
     {
@@ -47005,7 +47005,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1515",
       "id": "artel_api_listtracttools_protomessage",
-      "community": 733,
+      "community": 786,
       "norm_label": ".protomessage()"
     },
     {
@@ -47014,7 +47014,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1517",
       "id": "artel_api_listtracttools_protoreflect",
-      "community": 733,
+      "community": 786,
       "norm_label": ".protoreflect()"
     },
     {
@@ -47023,7 +47023,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1530",
       "id": "artel_api_listtracttools_descriptor",
-      "community": 733,
+      "community": 786,
       "norm_label": ".descriptor()"
     },
     {
@@ -47032,7 +47032,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1534",
       "id": "artel_api_listtriggersources",
-      "community": 791,
+      "community": 785,
       "norm_label": "listtriggersources"
     },
     {
@@ -47041,7 +47041,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1540",
       "id": "artel_api_listtriggersources_reset",
-      "community": 791,
+      "community": 785,
       "norm_label": ".reset()"
     },
     {
@@ -47050,7 +47050,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1547",
       "id": "artel_api_listtriggersources_string",
-      "community": 791,
+      "community": 785,
       "norm_label": ".string()"
     },
     {
@@ -47059,7 +47059,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1551",
       "id": "artel_api_listtriggersources_protomessage",
-      "community": 791,
+      "community": 785,
       "norm_label": ".protomessage()"
     },
     {
@@ -47068,7 +47068,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1553",
       "id": "artel_api_listtriggersources_protoreflect",
-      "community": 791,
+      "community": 785,
       "norm_label": ".protoreflect()"
     },
     {
@@ -47077,7 +47077,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1566",
       "id": "artel_api_listtriggersources_descriptor",
-      "community": 791,
+      "community": 785,
       "norm_label": ".descriptor()"
     },
     {
@@ -47140,7 +47140,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1606",
       "id": "artel_api_listtriggers",
-      "community": 734,
+      "community": 878,
       "norm_label": "listtriggers"
     },
     {
@@ -47149,7 +47149,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1612",
       "id": "artel_api_listtriggers_reset",
-      "community": 734,
+      "community": 878,
       "norm_label": ".reset()"
     },
     {
@@ -47158,7 +47158,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1619",
       "id": "artel_api_listtriggers_string",
-      "community": 734,
+      "community": 878,
       "norm_label": ".string()"
     },
     {
@@ -47167,7 +47167,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1623",
       "id": "artel_api_listtriggers_protomessage",
-      "community": 734,
+      "community": 878,
       "norm_label": ".protomessage()"
     },
     {
@@ -47176,7 +47176,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1625",
       "id": "artel_api_listtriggers_protoreflect",
-      "community": 734,
+      "community": 878,
       "norm_label": ".protoreflect()"
     },
     {
@@ -47185,7 +47185,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L1638",
       "id": "artel_api_listtriggers_descriptor",
-      "community": 734,
+      "community": 878,
       "norm_label": ".descriptor()"
     },
     {
@@ -47779,7 +47779,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2054",
       "id": "artel_api_gettract_request",
-      "community": 784,
+      "community": 695,
       "norm_label": "gettract_request"
     },
     {
@@ -47788,7 +47788,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2061",
       "id": "artel_api_gettract_request_reset",
-      "community": 784,
+      "community": 695,
       "norm_label": ".reset()"
     },
     {
@@ -47797,7 +47797,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2068",
       "id": "artel_api_gettract_request_string",
-      "community": 784,
+      "community": 695,
       "norm_label": ".string()"
     },
     {
@@ -47806,7 +47806,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2072",
       "id": "artel_api_gettract_request_protomessage",
-      "community": 784,
+      "community": 695,
       "norm_label": ".protomessage()"
     },
     {
@@ -47815,7 +47815,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2074",
       "id": "artel_api_gettract_request_protoreflect",
-      "community": 784,
+      "community": 695,
       "norm_label": ".protoreflect()"
     },
     {
@@ -47824,7 +47824,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2087",
       "id": "artel_api_gettract_request_descriptor",
-      "community": 784,
+      "community": 695,
       "norm_label": ".descriptor()"
     },
     {
@@ -47833,7 +47833,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2091",
       "id": "artel_api_gettract_request_getuuid",
-      "community": 784,
+      "community": 695,
       "norm_label": ".getuuid()"
     },
     {
@@ -47905,7 +47905,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2142",
       "id": "artel_api_listtracts_request",
-      "community": 734,
+      "community": 878,
       "norm_label": "listtracts_request"
     },
     {
@@ -47914,7 +47914,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2148",
       "id": "artel_api_listtracts_request_reset",
-      "community": 734,
+      "community": 878,
       "norm_label": ".reset()"
     },
     {
@@ -47923,7 +47923,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2155",
       "id": "artel_api_listtracts_request_string",
-      "community": 734,
+      "community": 878,
       "norm_label": ".string()"
     },
     {
@@ -47932,7 +47932,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2159",
       "id": "artel_api_listtracts_request_protomessage",
-      "community": 734,
+      "community": 878,
       "norm_label": ".protomessage()"
     },
     {
@@ -48022,7 +48022,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2222",
       "id": "artel_api_deletetract_request",
-      "community": 783,
+      "community": 786,
       "norm_label": "deletetract_request"
     },
     {
@@ -48031,7 +48031,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2229",
       "id": "artel_api_deletetract_request_reset",
-      "community": 783,
+      "community": 786,
       "norm_label": ".reset()"
     },
     {
@@ -48040,7 +48040,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2236",
       "id": "artel_api_deletetract_request_string",
-      "community": 783,
+      "community": 786,
       "norm_label": ".string()"
     },
     {
@@ -48049,7 +48049,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2240",
       "id": "artel_api_deletetract_request_protomessage",
-      "community": 783,
+      "community": 786,
       "norm_label": ".protomessage()"
     },
     {
@@ -48058,7 +48058,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2242",
       "id": "artel_api_deletetract_request_protoreflect",
-      "community": 783,
+      "community": 786,
       "norm_label": ".protoreflect()"
     },
     {
@@ -48067,7 +48067,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2255",
       "id": "artel_api_deletetract_request_descriptor",
-      "community": 783,
+      "community": 786,
       "norm_label": ".descriptor()"
     },
     {
@@ -48076,7 +48076,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2259",
       "id": "artel_api_deletetract_request_getuuid",
-      "community": 783,
+      "community": 786,
       "norm_label": ".getuuid()"
     },
     {
@@ -48085,7 +48085,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2266",
       "id": "artel_api_deletetract_response",
-      "community": 878,
+      "community": 734,
       "norm_label": "deletetract_response"
     },
     {
@@ -48094,7 +48094,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2272",
       "id": "artel_api_deletetract_response_reset",
-      "community": 878,
+      "community": 734,
       "norm_label": ".reset()"
     },
     {
@@ -48103,7 +48103,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2279",
       "id": "artel_api_deletetract_response_string",
-      "community": 878,
+      "community": 734,
       "norm_label": ".string()"
     },
     {
@@ -48112,7 +48112,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2283",
       "id": "artel_api_deletetract_response_protomessage",
-      "community": 878,
+      "community": 734,
       "norm_label": ".protomessage()"
     },
     {
@@ -48337,7 +48337,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2442",
       "id": "artel_api_runtract_response",
-      "community": 734,
+      "community": 784,
       "norm_label": "runtract_response"
     },
     {
@@ -48346,7 +48346,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2448",
       "id": "artel_api_runtract_response_reset",
-      "community": 734,
+      "community": 784,
       "norm_label": ".reset()"
     },
     {
@@ -48355,7 +48355,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2455",
       "id": "artel_api_runtract_response_string",
-      "community": 734,
+      "community": 784,
       "norm_label": ".string()"
     },
     {
@@ -48364,7 +48364,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2459",
       "id": "artel_api_runtract_response_protomessage",
-      "community": 734,
+      "community": 784,
       "norm_label": ".protomessage()"
     },
     {
@@ -48373,7 +48373,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2461",
       "id": "artel_api_runtract_response_protoreflect",
-      "community": 734,
+      "community": 784,
       "norm_label": ".protoreflect()"
     },
     {
@@ -48382,7 +48382,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2474",
       "id": "artel_api_runtract_response_descriptor",
-      "community": 734,
+      "community": 784,
       "norm_label": ".descriptor()"
     },
     {
@@ -48661,7 +48661,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2670",
       "id": "artel_api_listtracttools_request",
-      "community": 784,
+      "community": 734,
       "norm_label": "listtracttools_request"
     },
     {
@@ -48670,7 +48670,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2676",
       "id": "artel_api_listtracttools_request_reset",
-      "community": 784,
+      "community": 734,
       "norm_label": ".reset()"
     },
     {
@@ -48679,7 +48679,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2683",
       "id": "artel_api_listtracttools_request_string",
-      "community": 784,
+      "community": 734,
       "norm_label": ".string()"
     },
     {
@@ -48688,7 +48688,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2687",
       "id": "artel_api_listtracttools_request_protomessage",
-      "community": 784,
+      "community": 734,
       "norm_label": ".protomessage()"
     },
     {
@@ -48697,7 +48697,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2689",
       "id": "artel_api_listtracttools_request_protoreflect",
-      "community": 784,
+      "community": 734,
       "norm_label": ".protoreflect()"
     },
     {
@@ -48706,7 +48706,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L2702",
       "id": "artel_api_listtracttools_request_descriptor",
-      "community": 784,
+      "community": 734,
       "norm_label": ".descriptor()"
     },
     {
@@ -49255,7 +49255,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3090",
       "id": "artel_api_deletetrigger_response",
-      "community": 786,
+      "community": 733,
       "norm_label": "deletetrigger_response"
     },
     {
@@ -49264,7 +49264,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3096",
       "id": "artel_api_deletetrigger_response_reset",
-      "community": 786,
+      "community": 733,
       "norm_label": ".reset()"
     },
     {
@@ -49273,7 +49273,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3103",
       "id": "artel_api_deletetrigger_response_string",
-      "community": 786,
+      "community": 733,
       "norm_label": ".string()"
     },
     {
@@ -49282,7 +49282,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3107",
       "id": "artel_api_deletetrigger_response_protomessage",
-      "community": 786,
+      "community": 733,
       "norm_label": ".protomessage()"
     },
     {
@@ -49291,7 +49291,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3109",
       "id": "artel_api_deletetrigger_response_protoreflect",
-      "community": 786,
+      "community": 733,
       "norm_label": ".protoreflect()"
     },
     {
@@ -49300,7 +49300,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3122",
       "id": "artel_api_deletetrigger_response_descriptor",
-      "community": 786,
+      "community": 733,
       "norm_label": ".descriptor()"
     },
     {
@@ -49660,7 +49660,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3378",
       "id": "artel_api_linktrigger_response",
-      "community": 733,
+      "community": 734,
       "norm_label": "linktrigger_response"
     },
     {
@@ -49669,7 +49669,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3384",
       "id": "artel_api_linktrigger_response_reset",
-      "community": 733,
+      "community": 734,
       "norm_label": ".reset()"
     },
     {
@@ -49678,7 +49678,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3391",
       "id": "artel_api_linktrigger_response_string",
-      "community": 733,
+      "community": 734,
       "norm_label": ".string()"
     },
     {
@@ -49687,7 +49687,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3395",
       "id": "artel_api_linktrigger_response_protomessage",
-      "community": 733,
+      "community": 734,
       "norm_label": ".protomessage()"
     },
     {
@@ -49696,7 +49696,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3397",
       "id": "artel_api_linktrigger_response_protoreflect",
-      "community": 733,
+      "community": 734,
       "norm_label": ".protoreflect()"
     },
     {
@@ -49705,7 +49705,7 @@
       "source_file": "internal/api/server/artel_api/tracts.pb.go",
       "source_location": "L3410",
       "id": "artel_api_linktrigger_response_descriptor",
-      "community": 733,
+      "community": 734,
       "norm_label": ".descriptor()"
     },
     {
@@ -51883,7 +51883,7 @@
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
       "id": "internal_service_v1_mcp_create_key_go_mcp_serviceimpl",
-      "community": 837,
+      "community": 617,
       "norm_label": "serviceimpl"
     },
     {
@@ -51892,7 +51892,7 @@
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
       "id": "mcp_serviceimpl_createkey",
-      "community": 837,
+      "community": 617,
       "norm_label": ".createkey()"
     },
     {
@@ -51901,7 +51901,7 @@
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
       "id": "internal_service_v1_mcp_create_key_go_context",
-      "community": 837,
+      "community": 617,
       "norm_label": "context"
     },
     {
@@ -51910,7 +51910,7 @@
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
       "id": "internal_service_v1_mcp_create_key_go_uuid",
-      "community": 837,
+      "community": 617,
       "norm_label": "uuid"
     },
     {
@@ -51919,7 +51919,7 @@
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
       "id": "internal_service_v1_mcp_create_key_go_mcpkey",
-      "community": 837,
+      "community": 617,
       "norm_label": "mcpkey"
     },
     {
@@ -52000,7 +52000,7 @@
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
       "id": "internal_service_v1_mcp_list_keys_go_mcp_serviceimpl",
-      "community": 617,
+      "community": 558,
       "norm_label": "serviceimpl"
     },
     {
@@ -52009,7 +52009,7 @@
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
       "id": "mcp_serviceimpl_listkeys",
-      "community": 617,
+      "community": 558,
       "norm_label": ".listkeys()"
     },
     {
@@ -52018,7 +52018,7 @@
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
       "id": "internal_service_v1_mcp_list_keys_go_context",
-      "community": 617,
+      "community": 558,
       "norm_label": "context"
     },
     {
@@ -52027,7 +52027,7 @@
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
       "id": "internal_service_v1_mcp_list_keys_go_uuid",
-      "community": 617,
+      "community": 558,
       "norm_label": "uuid"
     },
     {
@@ -52036,7 +52036,7 @@
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
       "id": "internal_service_v1_mcp_list_keys_go_mcpkey",
-      "community": 617,
+      "community": 558,
       "norm_label": "mcpkey"
     },
     {
@@ -56869,7 +56869,7 @@
       "source_file": "internal/service/v1/vault/list.go",
       "source_location": "L13",
       "id": "internal_service_v1_vault_list_go_vault_service",
-      "community": 130,
+      "community": 27,
       "norm_label": "service"
     },
     {
@@ -56878,7 +56878,7 @@
       "source_file": "internal/service/v1/vault/list.go",
       "source_location": "L13",
       "id": "vault_service_listvaults",
-      "community": 130,
+      "community": 27,
       "norm_label": ".listvaults()"
     },
     {
@@ -56887,7 +56887,7 @@
       "source_file": "internal/service/v1/vault/list.go",
       "source_location": "L13",
       "id": "internal_service_v1_vault_list_go_context",
-      "community": 130,
+      "community": 27,
       "norm_label": "context"
     },
     {
@@ -56896,7 +56896,7 @@
       "source_file": "internal/service/v1/vault/list.go",
       "source_location": "L13",
       "id": "internal_service_v1_vault_list_go_vault",
-      "community": 130,
+      "community": 27,
       "norm_label": "vault"
     },
     {
@@ -59245,7 +59245,7 @@
       "source_file": "pkg/docs/swaggers/auth.swagger.json",
       "source_location": "L184",
       "id": "swaggers_auth_swagger_definitions_artel_authgetconfigresponse",
-      "community": 880,
+      "community": 791,
       "norm_label": "artel_authgetconfigresponse"
     },
     {
@@ -59254,7 +59254,7 @@
       "source_file": "pkg/docs/swaggers/auth.swagger.json",
       "source_location": "L185",
       "id": "swaggers_auth_swagger_artel_authgetconfigresponse_type",
-      "community": 880,
+      "community": 791,
       "norm_label": "type"
     },
     {
@@ -59263,7 +59263,7 @@
       "source_file": "pkg/docs/swaggers/auth.swagger.json",
       "source_location": "L186",
       "id": "swaggers_auth_swagger_artel_authgetconfigresponse_properties",
-      "community": 880,
+      "community": 791,
       "norm_label": "properties"
     },
     {
@@ -59272,7 +59272,7 @@
       "source_file": "pkg/docs/swaggers/auth.swagger.json",
       "source_location": "L187",
       "id": "swaggers_auth_swagger_properties_telegramclientid",
-      "community": 880,
+      "community": 791,
       "norm_label": "telegramclientid"
     },
     {
@@ -59281,7 +59281,7 @@
       "source_file": "pkg/docs/swaggers/auth.swagger.json",
       "source_location": "L188",
       "id": "swaggers_auth_swagger_telegramclientid_type",
-      "community": 880,
+      "community": 791,
       "norm_label": "type"
     },
     {
@@ -60298,7 +60298,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L213",
       "id": "swaggers_notes_swagger_definitions_artel_notesgetnoterequest",
-      "community": 368,
+      "community": 421,
       "norm_label": "artel_notesgetnoterequest"
     },
     {
@@ -60307,7 +60307,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L214",
       "id": "swaggers_notes_swagger_artel_notesgetnoterequest_type",
-      "community": 368,
+      "community": 421,
       "norm_label": "type"
     },
     {
@@ -60316,7 +60316,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L215",
       "id": "swaggers_notes_swagger_artel_notesgetnoterequest_properties",
-      "community": 368,
+      "community": 421,
       "norm_label": "properties"
     },
     {
@@ -60433,7 +60433,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L240",
       "id": "swaggers_notes_swagger_definitions_artel_noteslistfoldersresponse",
-      "community": 895,
+      "community": 378,
       "norm_label": "artel_noteslistfoldersresponse"
     },
     {
@@ -60442,7 +60442,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L241",
       "id": "swaggers_notes_swagger_artel_noteslistfoldersresponse_type",
-      "community": 895,
+      "community": 378,
       "norm_label": "type"
     },
     {
@@ -60451,7 +60451,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L242",
       "id": "swaggers_notes_swagger_artel_noteslistfoldersresponse_properties",
-      "community": 895,
+      "community": 378,
       "norm_label": "properties"
     },
     {
@@ -60460,7 +60460,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L243",
       "id": "swaggers_notes_swagger_properties_folders",
-      "community": 895,
+      "community": 378,
       "norm_label": "folders"
     },
     {
@@ -60469,7 +60469,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L244",
       "id": "swaggers_notes_swagger_folders_type",
-      "community": 895,
+      "community": 378,
       "norm_label": "type"
     },
     {
@@ -60478,7 +60478,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L245",
       "id": "swaggers_notes_swagger_folders_items",
-      "community": 895,
+      "community": 378,
       "norm_label": "items"
     },
     {
@@ -60613,7 +60613,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L279",
       "id": "swaggers_notes_swagger_definitions_artel_noteslisttagsresponse",
-      "community": 378,
+      "community": 790,
       "norm_label": "artel_noteslisttagsresponse"
     },
     {
@@ -60622,7 +60622,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L280",
       "id": "swaggers_notes_swagger_artel_noteslisttagsresponse_type",
-      "community": 378,
+      "community": 790,
       "norm_label": "type"
     },
     {
@@ -60631,7 +60631,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L281",
       "id": "swaggers_notes_swagger_artel_noteslisttagsresponse_properties",
-      "community": 378,
+      "community": 790,
       "norm_label": "properties"
     },
     {
@@ -60640,7 +60640,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L282",
       "id": "swaggers_notes_swagger_properties_tags",
-      "community": 378,
+      "community": 790,
       "norm_label": "tags"
     },
     {
@@ -60649,7 +60649,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L283",
       "id": "swaggers_notes_swagger_tags_type",
-      "community": 378,
+      "community": 790,
       "norm_label": "type"
     },
     {
@@ -60658,7 +60658,7 @@
       "source_file": "pkg/docs/swaggers/notes.swagger.json",
       "source_location": "L284",
       "id": "swaggers_notes_swagger_tags_items",
-      "community": 378,
+      "community": 790,
       "norm_label": "items"
     },
     {
@@ -62107,7 +62107,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L117",
       "id": "swaggers_admin_users_swagger_definitions_artel_admin_usersarteluserdetails",
-      "community": 417,
+      "community": 254,
       "norm_label": "artel_admin_usersarteluserdetails"
     },
     {
@@ -62116,7 +62116,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L118",
       "id": "swaggers_admin_users_swagger_artel_admin_usersarteluserdetails_type",
-      "community": 417,
+      "community": 254,
       "norm_label": "type"
     },
     {
@@ -62152,7 +62152,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L123",
       "id": "swaggers_admin_users_swagger_properties_username",
-      "community": 254,
+      "community": 417,
       "norm_label": "username"
     },
     {
@@ -62161,7 +62161,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L124",
       "id": "swaggers_admin_users_swagger_username_type",
-      "community": 254,
+      "community": 417,
       "norm_label": "type"
     },
     {
@@ -62170,7 +62170,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L126",
       "id": "swaggers_admin_users_swagger_properties_email",
-      "community": 254,
+      "community": 417,
       "norm_label": "email"
     },
     {
@@ -62179,7 +62179,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L127",
       "id": "swaggers_admin_users_swagger_email_type",
-      "community": 254,
+      "community": 417,
       "norm_label": "type"
     },
     {
@@ -62296,7 +62296,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L149",
       "id": "swaggers_admin_users_swagger_definitions_artel_admin_usersarteluserentry",
-      "community": 254,
+      "community": 417,
       "norm_label": "artel_admin_usersarteluserentry"
     },
     {
@@ -62305,7 +62305,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L150",
       "id": "swaggers_admin_users_swagger_artel_admin_usersarteluserentry_type",
-      "community": 254,
+      "community": 417,
       "norm_label": "type"
     },
     {
@@ -62314,7 +62314,7 @@
       "source_file": "pkg/docs/swaggers/admin_users.swagger.json",
       "source_location": "L151",
       "id": "swaggers_admin_users_swagger_artel_admin_usersarteluserentry_properties",
-      "community": 254,
+      "community": 417,
       "norm_label": "properties"
     },
     {
@@ -63043,7 +63043,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L23",
       "id": "swaggers_email_accounts_swagger_responses_200",
-      "community": 22,
+      "community": 420,
       "norm_label": "200"
     },
     {
@@ -63052,7 +63052,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L24",
       "id": "swaggers_email_accounts_swagger_200_description",
-      "community": 22,
+      "community": 420,
       "norm_label": "description"
     },
     {
@@ -63079,7 +63079,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L29",
       "id": "swaggers_email_accounts_swagger_responses_default",
-      "community": 420,
+      "community": 22,
       "norm_label": "default"
     },
     {
@@ -63088,7 +63088,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L30",
       "id": "swaggers_email_accounts_swagger_default_description",
-      "community": 420,
+      "community": 22,
       "norm_label": "description"
     },
     {
@@ -63385,7 +63385,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L182",
       "id": "swaggers_email_accounts_swagger_definitions_artel_apideleteemailaccountrequest",
-      "community": 903,
+      "community": 793,
       "norm_label": "artel_apideleteemailaccountrequest"
     },
     {
@@ -63394,7 +63394,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L183",
       "id": "swaggers_email_accounts_swagger_artel_apideleteemailaccountrequest_type",
-      "community": 903,
+      "community": 793,
       "norm_label": "type"
     },
     {
@@ -63403,7 +63403,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L184",
       "id": "swaggers_email_accounts_swagger_artel_apideleteemailaccountrequest_properties",
-      "community": 903,
+      "community": 793,
       "norm_label": "properties"
     },
     {
@@ -63412,7 +63412,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L185",
       "id": "swaggers_email_accounts_swagger_properties_id",
-      "community": 903,
+      "community": 793,
       "norm_label": "id"
     },
     {
@@ -63421,7 +63421,7 @@
       "source_file": "pkg/docs/swaggers/email_accounts.swagger.json",
       "source_location": "L186",
       "id": "swaggers_email_accounts_swagger_id_type",
-      "community": 903,
+      "community": 793,
       "norm_label": "type"
     },
     {
@@ -64636,7 +64636,7 @@
       "source_file": "pkg/docs/swaggers/s3_instances.swagger.json",
       "source_location": "L313",
       "id": "swaggers_s3_instances_swagger_definitions_artel_s3updates3instancerequest",
-      "community": 236,
+      "community": 566,
       "norm_label": "artel_s3updates3instancerequest"
     },
     {
@@ -64645,7 +64645,7 @@
       "source_file": "pkg/docs/swaggers/s3_instances.swagger.json",
       "source_location": "L314",
       "id": "swaggers_s3_instances_swagger_artel_s3updates3instancerequest_type",
-      "community": 236,
+      "community": 566,
       "norm_label": "type"
     },
     {
@@ -64807,7 +64807,7 @@
       "source_file": "pkg/docs/swaggers/s3_instances.swagger.json",
       "source_location": "L361",
       "id": "swaggers_s3_instances_swagger_properties_details",
-      "community": 796,
+      "community": 717,
       "norm_label": "details"
     },
     {
@@ -64816,7 +64816,7 @@
       "source_file": "pkg/docs/swaggers/s3_instances.swagger.json",
       "source_location": "L362",
       "id": "swaggers_s3_instances_swagger_details_type",
-      "community": 796,
+      "community": 717,
       "norm_label": "type"
     },
     {
@@ -66490,7 +66490,7 @@
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
       "source_location": "L832",
       "id": "swaggers_tracts_swagger_definitions_artel_apilisttracttoolsresponse",
-      "community": 900,
+      "community": 675,
       "norm_label": "artel_apilisttracttoolsresponse"
     },
     {
@@ -66499,7 +66499,7 @@
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
       "source_location": "L833",
       "id": "swaggers_tracts_swagger_artel_apilisttracttoolsresponse_type",
-      "community": 900,
+      "community": 675,
       "norm_label": "type"
     },
     {
@@ -66508,7 +66508,7 @@
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
       "source_location": "L834",
       "id": "swaggers_tracts_swagger_artel_apilisttracttoolsresponse_properties",
-      "community": 900,
+      "community": 675,
       "norm_label": "properties"
     },
     {
@@ -66517,7 +66517,7 @@
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
       "source_location": "L835",
       "id": "swaggers_tracts_swagger_properties_tools",
-      "community": 900,
+      "community": 675,
       "norm_label": "tools"
     },
     {
@@ -66526,7 +66526,7 @@
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
       "source_location": "L836",
       "id": "swaggers_tracts_swagger_tools_type",
-      "community": 900,
+      "community": 675,
       "norm_label": "type"
     },
     {
@@ -66535,7 +66535,7 @@
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
       "source_location": "L837",
       "id": "swaggers_tracts_swagger_tools_items",
-      "community": 900,
+      "community": 675,
       "norm_label": "items"
     },
     {
@@ -67012,7 +67012,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L1",
       "id": "pkg_docs_swaggers_external_connections_swagger_json",
-      "community": 464,
+      "community": 106,
       "norm_label": "external_connections.swagger.json"
     },
     {
@@ -67021,7 +67021,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L2",
       "id": "swaggers_external_connections_swagger_swagger",
-      "community": 464,
+      "community": 106,
       "norm_label": "swagger"
     },
     {
@@ -67030,7 +67030,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L3",
       "id": "swaggers_external_connections_swagger_info",
-      "community": 464,
+      "community": 106,
       "norm_label": "info"
     },
     {
@@ -67039,7 +67039,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L4",
       "id": "swaggers_external_connections_swagger_info_title",
-      "community": 464,
+      "community": 106,
       "norm_label": "title"
     },
     {
@@ -67048,7 +67048,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L5",
       "id": "swaggers_external_connections_swagger_info_version",
-      "community": 464,
+      "community": 106,
       "norm_label": "version"
     },
     {
@@ -67057,7 +67057,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L7",
       "id": "swaggers_external_connections_swagger_tags",
-      "community": 464,
+      "community": 106,
       "norm_label": "tags"
     },
     {
@@ -67066,7 +67066,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L12",
       "id": "swaggers_external_connections_swagger_consumes",
-      "community": 464,
+      "community": 106,
       "norm_label": "consumes"
     },
     {
@@ -67075,7 +67075,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L15",
       "id": "swaggers_external_connections_swagger_produces",
-      "community": 464,
+      "community": 106,
       "norm_label": "produces"
     },
     {
@@ -67462,7 +67462,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L382",
       "id": "swaggers_external_connections_swagger_properties_imapport",
-      "community": 873,
+      "community": 781,
       "norm_label": "imapport"
     },
     {
@@ -67471,7 +67471,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L383",
       "id": "swaggers_external_connections_swagger_imapport_type",
-      "community": 873,
+      "community": 781,
       "norm_label": "type"
     },
     {
@@ -67480,7 +67480,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L384",
       "id": "swaggers_external_connections_swagger_imapport_format",
-      "community": 873,
+      "community": 781,
       "norm_label": "format"
     },
     {
@@ -67507,7 +67507,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L389",
       "id": "swaggers_external_connections_swagger_properties_smtpport",
-      "community": 781,
+      "community": 873,
       "norm_label": "smtpport"
     },
     {
@@ -67516,7 +67516,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L390",
       "id": "swaggers_external_connections_swagger_smtpport_type",
-      "community": 781,
+      "community": 873,
       "norm_label": "type"
     },
     {
@@ -67525,7 +67525,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L391",
       "id": "swaggers_external_connections_swagger_smtpport_format",
-      "community": 781,
+      "community": 873,
       "norm_label": "format"
     },
     {
@@ -67795,7 +67795,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L444",
       "id": "swaggers_external_connections_swagger_definitions_artel_apidisconnectproviderrequest",
-      "community": 745,
+      "community": 367,
       "norm_label": "artel_apidisconnectproviderrequest"
     },
     {
@@ -67804,7 +67804,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L445",
       "id": "swaggers_external_connections_swagger_artel_apidisconnectproviderrequest_type",
-      "community": 745,
+      "community": 367,
       "norm_label": "type"
     },
     {
@@ -67813,7 +67813,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L446",
       "id": "swaggers_external_connections_swagger_artel_apidisconnectproviderrequest_properties",
-      "community": 745,
+      "community": 367,
       "norm_label": "properties"
     },
     {
@@ -67822,7 +67822,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L447",
       "id": "swaggers_external_connections_swagger_properties_provider",
-      "community": 745,
+      "community": 367,
       "norm_label": "provider"
     },
     {
@@ -67831,7 +67831,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L448",
       "id": "swaggers_external_connections_swagger_provider_type",
-      "community": 745,
+      "community": 367,
       "norm_label": "type"
     },
     {
@@ -67903,7 +67903,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L462",
       "id": "swaggers_external_connections_swagger_provider_ref",
-      "community": 745,
+      "community": 367,
       "norm_label": "$ref"
     },
     {
@@ -68299,7 +68299,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L542",
       "id": "swaggers_external_connections_swagger_definitions_artel_apilistconnectionsresponse",
-      "community": 782,
+      "community": 802,
       "norm_label": "artel_apilistconnectionsresponse"
     },
     {
@@ -68308,7 +68308,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L543",
       "id": "swaggers_external_connections_swagger_artel_apilistconnectionsresponse_type",
-      "community": 782,
+      "community": 802,
       "norm_label": "type"
     },
     {
@@ -68317,7 +68317,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L544",
       "id": "swaggers_external_connections_swagger_artel_apilistconnectionsresponse_properties",
-      "community": 782,
+      "community": 802,
       "norm_label": "properties"
     },
     {
@@ -68326,7 +68326,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L545",
       "id": "swaggers_external_connections_swagger_properties_connections",
-      "community": 782,
+      "community": 802,
       "norm_label": "connections"
     },
     {
@@ -68335,7 +68335,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L546",
       "id": "swaggers_external_connections_swagger_connections_type",
-      "community": 782,
+      "community": 802,
       "norm_label": "type"
     },
     {
@@ -68875,7 +68875,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L671",
       "id": "swaggers_external_connections_swagger_properties_details",
-      "community": 487,
+      "community": 314,
       "norm_label": "details"
     },
     {
@@ -68884,7 +68884,7 @@
       "source_file": "pkg/docs/swaggers/external_connections.swagger.json",
       "source_location": "L672",
       "id": "swaggers_external_connections_swagger_details_type",
-      "community": 487,
+      "community": 314,
       "norm_label": "type"
     },
     {
@@ -69901,7 +69901,7 @@
       "source_file": "pkg/docs/swaggers/admin_couch.swagger.json",
       "source_location": "L404",
       "id": "swaggers_admin_couch_swagger_properties_details",
-      "community": 437,
+      "community": 438,
       "norm_label": "details"
     },
     {
@@ -69910,7 +69910,7 @@
       "source_file": "pkg/docs/swaggers/admin_couch.swagger.json",
       "source_location": "L405",
       "id": "swaggers_admin_couch_swagger_details_type",
-      "community": 437,
+      "community": 438,
       "norm_label": "type"
     },
     {
@@ -72637,7 +72637,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L1",
       "id": "pkg_docs_swaggers_vaults_swagger_json",
-      "community": 558,
+      "community": 92,
       "norm_label": "vaults.swagger.json"
     },
     {
@@ -72646,7 +72646,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L2",
       "id": "swaggers_vaults_swagger_swagger",
-      "community": 558,
+      "community": 92,
       "norm_label": "swagger"
     },
     {
@@ -72655,7 +72655,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L3",
       "id": "swaggers_vaults_swagger_info",
-      "community": 558,
+      "community": 92,
       "norm_label": "info"
     },
     {
@@ -72664,7 +72664,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L4",
       "id": "swaggers_vaults_swagger_info_title",
-      "community": 558,
+      "community": 92,
       "norm_label": "title"
     },
     {
@@ -72673,7 +72673,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L5",
       "id": "swaggers_vaults_swagger_info_version",
-      "community": 558,
+      "community": 92,
       "norm_label": "version"
     },
     {
@@ -72682,7 +72682,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L7",
       "id": "swaggers_vaults_swagger_tags",
-      "community": 558,
+      "community": 92,
       "norm_label": "tags"
     },
     {
@@ -72691,7 +72691,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L12",
       "id": "swaggers_vaults_swagger_consumes",
-      "community": 558,
+      "community": 92,
       "norm_label": "consumes"
     },
     {
@@ -72700,7 +72700,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L15",
       "id": "swaggers_vaults_swagger_produces",
-      "community": 558,
+      "community": 92,
       "norm_label": "produces"
     },
     {
@@ -73150,7 +73150,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L453",
       "id": "swaggers_vaults_swagger_definitions_artel_vaultsaddmemberrequest",
-      "community": 382,
+      "community": 269,
       "norm_label": "artel_vaultsaddmemberrequest"
     },
     {
@@ -73159,7 +73159,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L454",
       "id": "swaggers_vaults_swagger_artel_vaultsaddmemberrequest_type",
-      "community": 382,
+      "community": 269,
       "norm_label": "type"
     },
     {
@@ -73168,7 +73168,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L455",
       "id": "swaggers_vaults_swagger_artel_vaultsaddmemberrequest_properties",
-      "community": 382,
+      "community": 269,
       "norm_label": "properties"
     },
     {
@@ -73195,7 +73195,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L462",
       "id": "swaggers_vaults_swagger_properties_role",
-      "community": 382,
+      "community": 269,
       "norm_label": "role"
     },
     {
@@ -73204,7 +73204,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L463",
       "id": "swaggers_vaults_swagger_role_type",
-      "community": 382,
+      "community": 269,
       "norm_label": "type"
     },
     {
@@ -73231,7 +73231,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L470",
       "id": "swaggers_vaults_swagger_definitions_artel_vaultscreateinvitelinkrequest",
-      "community": 382,
+      "community": 269,
       "norm_label": "artel_vaultscreateinvitelinkrequest"
     },
     {
@@ -73240,7 +73240,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L471",
       "id": "swaggers_vaults_swagger_artel_vaultscreateinvitelinkrequest_type",
-      "community": 382,
+      "community": 269,
       "norm_label": "type"
     },
     {
@@ -73249,7 +73249,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L472",
       "id": "swaggers_vaults_swagger_artel_vaultscreateinvitelinkrequest_properties",
-      "community": 382,
+      "community": 269,
       "norm_label": "properties"
     },
     {
@@ -73375,7 +73375,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L500",
       "id": "swaggers_vaults_swagger_properties_id",
-      "community": 55,
+      "community": 464,
       "norm_label": "id"
     },
     {
@@ -73384,7 +73384,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L501",
       "id": "swaggers_vaults_swagger_id_type",
-      "community": 55,
+      "community": 464,
       "norm_label": "type"
     },
     {
@@ -73411,7 +73411,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L511",
       "id": "swaggers_vaults_swagger_definitions_artel_vaultsdeletevaultrequest",
-      "community": 55,
+      "community": 464,
       "norm_label": "artel_vaultsdeletevaultrequest"
     },
     {
@@ -73420,7 +73420,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L512",
       "id": "swaggers_vaults_swagger_artel_vaultsdeletevaultrequest_type",
-      "community": 55,
+      "community": 464,
       "norm_label": "type"
     },
     {
@@ -73429,7 +73429,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L513",
       "id": "swaggers_vaults_swagger_artel_vaultsdeletevaultrequest_properties",
-      "community": 55,
+      "community": 464,
       "norm_label": "properties"
     },
     {
@@ -73456,7 +73456,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L522",
       "id": "swaggers_vaults_swagger_definitions_artel_vaultsgetvaultrequest",
-      "community": 55,
+      "community": 464,
       "norm_label": "artel_vaultsgetvaultrequest"
     },
     {
@@ -73465,7 +73465,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L523",
       "id": "swaggers_vaults_swagger_artel_vaultsgetvaultrequest_type",
-      "community": 55,
+      "community": 464,
       "norm_label": "type"
     },
     {
@@ -73474,7 +73474,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L524",
       "id": "swaggers_vaults_swagger_artel_vaultsgetvaultrequest_properties",
-      "community": 55,
+      "community": 464,
       "norm_label": "properties"
     },
     {
@@ -73906,7 +73906,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L636",
       "id": "swaggers_vaults_swagger_definitions_artel_vaultsrevokeinvitelinkrequest",
-      "community": 269,
+      "community": 788,
       "norm_label": "artel_vaultsrevokeinvitelinkrequest"
     },
     {
@@ -73915,7 +73915,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L637",
       "id": "swaggers_vaults_swagger_artel_vaultsrevokeinvitelinkrequest_type",
-      "community": 269,
+      "community": 788,
       "norm_label": "type"
     },
     {
@@ -73924,7 +73924,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L638",
       "id": "swaggers_vaults_swagger_artel_vaultsrevokeinvitelinkrequest_properties",
-      "community": 269,
+      "community": 788,
       "norm_label": "properties"
     },
     {
@@ -73933,7 +73933,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L642",
       "id": "swaggers_vaults_swagger_properties_inviteid",
-      "community": 269,
+      "community": 788,
       "norm_label": "inviteid"
     },
     {
@@ -73942,7 +73942,7 @@
       "source_file": "pkg/docs/swaggers/vaults.swagger.json",
       "source_location": "L643",
       "id": "swaggers_vaults_swagger_inviteid_type",
-      "community": 269,
+      "community": 788,
       "norm_label": "type"
     },
     {
@@ -75661,7 +75661,7 @@
       "source_file": "pkg/docs/swaggers/couch_instances.swagger.json",
       "source_location": "L264",
       "id": "swaggers_couch_instances_swagger_definitions_artel_couchgetcouchinstanceresponse",
-      "community": 124,
+      "community": 123,
       "norm_label": "artel_couchgetcouchinstanceresponse"
     },
     {
@@ -75670,7 +75670,7 @@
       "source_file": "pkg/docs/swaggers/couch_instances.swagger.json",
       "source_location": "L265",
       "id": "swaggers_couch_instances_swagger_artel_couchgetcouchinstanceresponse_type",
-      "community": 124,
+      "community": 123,
       "norm_label": "type"
     },
     {
@@ -77947,7 +77947,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/utils/cn.ts",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_app_utils_cn_ts",
-      "community": 107,
+      "community": 24,
       "norm_label": "cn.ts"
     },
     {
@@ -77974,7 +77974,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/utils/mailProviderIcon.ts",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_app_utils_mailprovidericon_ts",
-      "community": 107,
+      "community": 49,
       "norm_label": "mailprovidericon.ts"
     },
     {
@@ -77983,7 +77983,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/utils/mailProviderIcon.ts",
       "source_location": "L4",
       "id": "utils_mailprovidericon_mail_domain_icons",
-      "community": 107,
+      "community": 49,
       "norm_label": "mail_domain_icons"
     },
     {
@@ -77992,7 +77992,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/utils/mailProviderIcon.ts",
       "source_location": "L28",
       "id": "utils_mailprovidericon_mailprovidericon",
-      "community": 107,
+      "community": 49,
       "norm_label": "mailprovidericon()"
     },
     {
@@ -78055,7 +78055,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/hooks/Tracts.ts",
       "source_location": "L47",
       "id": "hooks_tracts_usetracts",
-      "community": 800,
+      "community": 49,
       "norm_label": "usetracts"
     },
     {
@@ -78163,7 +78163,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/hooks/Notes.ts",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_app_hooks_notes_ts",
-      "community": 35,
+      "community": 605,
       "norm_label": "notes.ts"
     },
     {
@@ -78181,7 +78181,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/hooks/Notes.ts",
       "source_location": "L9",
       "id": "hooks_notes_notesstate",
-      "community": 35,
+      "community": 605,
       "norm_label": "notesstate"
     },
     {
@@ -78343,7 +78343,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/hooks/Vaults.ts",
       "source_location": "L30",
       "id": "hooks_vaults_usevaultmutations",
-      "community": 49,
+      "community": 12,
       "norm_label": "usevaultmutations()"
     },
     {
@@ -80368,7 +80368,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L20",
       "id": "artel_external_connections_pb_externalprovider",
-      "community": 18,
+      "community": 24,
       "norm_label": "externalprovider"
     },
     {
@@ -80728,7 +80728,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L172",
       "id": "artel_external_connections_pb_externalconnectionsapi",
-      "community": 18,
+      "community": 223,
       "norm_label": "externalconnectionsapi"
     },
     {
@@ -80737,7 +80737,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L173",
       "id": "artel_external_connections_pb_externalconnectionsapi_initiategoogleoauth",
-      "community": 18,
+      "community": 223,
       "norm_label": ".initiategoogleoauth()"
     },
     {
@@ -80746,7 +80746,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L176",
       "id": "artel_external_connections_pb_externalconnectionsapi_listconnections",
-      "community": 18,
+      "community": 223,
       "norm_label": ".listconnections()"
     },
     {
@@ -80755,7 +80755,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L179",
       "id": "artel_external_connections_pb_externalconnectionsapi_disconnectprovider",
-      "community": 18,
+      "community": 223,
       "norm_label": ".disconnectprovider()"
     },
     {
@@ -80764,7 +80764,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L182",
       "id": "artel_external_connections_pb_externalconnectionsapi_getgooglepickertoken",
-      "community": 18,
+      "community": 223,
       "norm_label": ".getgooglepickertoken()"
     },
     {
@@ -80773,7 +80773,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L185",
       "id": "artel_external_connections_pb_externalconnectionsapi_addspreadsheet",
-      "community": 18,
+      "community": 223,
       "norm_label": ".addspreadsheet()"
     },
     {
@@ -80782,7 +80782,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L188",
       "id": "artel_external_connections_pb_externalconnectionsapi_listspreadsheets",
-      "community": 18,
+      "community": 223,
       "norm_label": ".listspreadsheets()"
     },
     {
@@ -80791,7 +80791,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L191",
       "id": "artel_external_connections_pb_externalconnectionsapi_removespreadsheet",
-      "community": 18,
+      "community": 223,
       "norm_label": ".removespreadsheet()"
     },
     {
@@ -80800,7 +80800,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L194",
       "id": "artel_external_connections_pb_externalconnectionsapi_addemailconnection",
-      "community": 18,
+      "community": 223,
       "norm_label": ".addemailconnection()"
     },
     {
@@ -80809,7 +80809,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L197",
       "id": "artel_external_connections_pb_externalconnectionsapi_listmailserversuggestions",
-      "community": 18,
+      "community": 223,
       "norm_label": ".listmailserversuggestions()"
     },
     {
@@ -80818,7 +80818,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L200",
       "id": "artel_external_connections_pb_externalconnectionsapi_addgitlabconnection",
-      "community": 18,
+      "community": 223,
       "norm_label": ".addgitlabconnection()"
     },
     {
@@ -80827,7 +80827,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts",
       "source_location": "L203",
       "id": "artel_external_connections_pb_externalconnectionsapi_setgitlabwebhooksecret",
-      "community": 18,
+      "community": 223,
       "norm_label": ".setgitlabwebhooksecret()"
     },
     {
@@ -80845,7 +80845,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L11",
       "id": "artel_notes_pb_noteitem",
-      "community": 35,
+      "community": 605,
       "norm_label": "noteitem"
     },
     {
@@ -81016,7 +81016,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L77",
       "id": "artel_notes_pb_notesapi",
-      "community": 35,
+      "community": 745,
       "norm_label": "notesapi"
     },
     {
@@ -81025,7 +81025,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L78",
       "id": "artel_notes_pb_notesapi_listfolders",
-      "community": 35,
+      "community": 745,
       "norm_label": ".listfolders()"
     },
     {
@@ -81034,7 +81034,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L81",
       "id": "artel_notes_pb_notesapi_listnotes",
-      "community": 35,
+      "community": 745,
       "norm_label": ".listnotes()"
     },
     {
@@ -81043,7 +81043,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L84",
       "id": "artel_notes_pb_notesapi_getnote",
-      "community": 35,
+      "community": 745,
       "norm_label": ".getnote()"
     },
     {
@@ -81052,7 +81052,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L87",
       "id": "artel_notes_pb_notesapi_listtags",
-      "community": 35,
+      "community": 745,
       "norm_label": ".listtags()"
     },
     {
@@ -81061,7 +81061,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L90",
       "id": "artel_notes_pb_notesapi_savenote",
-      "community": 35,
+      "community": 745,
       "norm_label": ".savenote()"
     },
     {
@@ -81070,7 +81070,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts",
       "source_location": "L93",
       "id": "artel_notes_pb_notesapi_movenote",
-      "community": 35,
+      "community": 745,
       "norm_label": ".movenote()"
     },
     {
@@ -82798,7 +82798,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Tracts.ts",
       "source_location": "L46",
       "id": "processes_tracts_schemaproperty",
-      "community": 800,
+      "community": 24,
       "norm_label": "schemaproperty"
     },
     {
@@ -82816,7 +82816,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Tracts.ts",
       "source_location": "L60",
       "id": "processes_tracts_tracttriggersummary",
-      "community": 800,
+      "community": 24,
       "norm_label": "tracttriggersummary"
     },
     {
@@ -82825,7 +82825,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Tracts.ts",
       "source_location": "L67",
       "id": "processes_tracts_tractlastrun",
-      "community": 616,
+      "community": 800,
       "norm_label": "tractlastrun"
     },
     {
@@ -83716,7 +83716,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/tractSteps.ts",
       "source_location": "L13",
       "id": "processes_tractsteps_root_location",
-      "community": 24,
+      "community": 800,
       "norm_label": "root_location"
     },
     {
@@ -83824,7 +83824,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/tractSteps.ts",
       "source_location": "L138",
       "id": "processes_tractsteps_collectallstepids",
-      "community": 24,
+      "community": 800,
       "norm_label": "collectallstepids()"
     },
     {
@@ -83860,7 +83860,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_processes_notes_ts",
-      "community": 35,
+      "community": 605,
       "norm_label": "notes.ts"
     },
     {
@@ -83869,7 +83869,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L4",
       "id": "processes_notes_inotesservice",
-      "community": 35,
+      "community": 605,
       "norm_label": "inotesservice"
     },
     {
@@ -83878,7 +83878,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L13",
       "id": "processes_notes_notesservice",
-      "community": 35,
+      "community": 605,
       "norm_label": "notesservice"
     },
     {
@@ -83887,7 +83887,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L14",
       "id": "processes_notes_notesservice_listfolders",
-      "community": 35,
+      "community": 605,
       "norm_label": ".listfolders()"
     },
     {
@@ -83896,7 +83896,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L19",
       "id": "processes_notes_notesservice_listnotes",
-      "community": 35,
+      "community": 605,
       "norm_label": ".listnotes()"
     },
     {
@@ -83905,7 +83905,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L24",
       "id": "processes_notes_notesservice_getnote",
-      "community": 35,
+      "community": 605,
       "norm_label": ".getnote()"
     },
     {
@@ -83914,7 +83914,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L29",
       "id": "processes_notes_notesservice_listtags",
-      "community": 35,
+      "community": 605,
       "norm_label": ".listtags()"
     },
     {
@@ -83923,7 +83923,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L34",
       "id": "processes_notes_notesservice_savenote",
-      "community": 35,
+      "community": 605,
       "norm_label": ".savenote()"
     },
     {
@@ -83932,7 +83932,7 @@
       "source_file": "pkg/client/ArtelUI/src/processes/Notes.ts",
       "source_location": "L38",
       "id": "processes_notes_notesservice_movenote",
-      "community": 35,
+      "community": 605,
       "norm_label": ".movenote()"
     },
     {
@@ -84634,7 +84634,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ManageVaultS3Section/ManageVaultS3Section.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_components_managevaults3section_managevaults3section_tsx",
-      "community": 12,
+      "community": 49,
       "norm_label": "managevaults3section.tsx"
     },
     {
@@ -84661,7 +84661,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ManageVaultS3Section/ManageVaultS3Section.tsx",
       "source_location": "L24",
       "id": "managevaults3section_managevaults3section_managevaults3section",
-      "community": 12,
+      "community": 49,
       "norm_label": "managevaults3section()"
     },
     {
@@ -84679,7 +84679,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ManageVaultS3Section/ManageVaultS3Section.tsx",
       "source_location": "L88",
       "id": "managevaults3section_managevaults3section_linkform",
-      "community": 12,
+      "community": 49,
       "norm_label": "linkform()"
     },
     {
@@ -84785,7 +84785,7 @@
       "label": "UnknownProviderIcon()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/components/ProviderIcon/ProviderIcon.tsx",
-      "source_location": "L74",
+      "source_location": "L75",
       "id": "providericon_providericon_unknownprovidericon",
       "community": 18,
       "norm_label": "unknownprovidericon()"
@@ -84823,7 +84823,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/shared/Input/Input.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_components_shared_input_input_tsx",
-      "community": 107,
+      "community": 24,
       "norm_label": "input.tsx"
     },
     {
@@ -84832,7 +84832,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/shared/Input/Input.tsx",
       "source_location": "L5",
       "id": "input_input_inputprops",
-      "community": 107,
+      "community": 24,
       "norm_label": "inputprops"
     },
     {
@@ -84841,7 +84841,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/shared/Input/Input.tsx",
       "source_location": "L7",
       "id": "input_input_input",
-      "community": 107,
+      "community": 24,
       "norm_label": "input"
     },
     {
@@ -84976,7 +84976,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_components_connectorchip_connectorchip_tsx",
-      "community": 107,
+      "community": 24,
       "norm_label": "connectorchip.tsx"
     },
     {
@@ -84985,7 +84985,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
       "source_location": "L14",
       "id": "connectorchip_connectorchip_known_mail_domain_classes",
-      "community": 107,
+      "community": 24,
       "norm_label": "known_mail_domain_classes"
     },
     {
@@ -84994,7 +84994,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
       "source_location": "L38",
       "id": "connectorchip_connectorchip_maildomainaccent",
-      "community": 107,
+      "community": 24,
       "norm_label": "maildomainaccent()"
     },
     {
@@ -85003,43 +85003,43 @@
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
       "source_location": "L49",
       "id": "connectorchip_connectorchip_provider_chip_class",
-      "community": 107,
+      "community": 24,
       "norm_label": "provider_chip_class"
     },
     {
       "label": "ConnectorChip()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
-      "source_location": "L55",
+      "source_location": "L56",
       "id": "connectorchip_connectorchip_connectorchip",
-      "community": 107,
+      "community": 24,
       "norm_label": "connectorchip()"
     },
     {
       "label": "GenericChip()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
-      "source_location": "L82",
+      "source_location": "L83",
       "id": "connectorchip_connectorchip_genericchip",
-      "community": 107,
+      "community": 24,
       "norm_label": "genericchip()"
     },
     {
       "label": "EmailChip()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
-      "source_location": "L94",
+      "source_location": "L97",
       "id": "connectorchip_connectorchip_emailchip",
-      "community": 107,
+      "community": 24,
       "norm_label": "emailchip()"
     },
     {
       "label": "ProviderChip()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx",
-      "source_location": "L123",
+      "source_location": "L126",
       "id": "connectorchip_connectorchip_providerchip",
-      "community": 107,
+      "community": 24,
       "norm_label": "providerchip()"
     },
     {
@@ -85048,7 +85048,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/connectionLabel.ts",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_components_connectorchip_connectionlabel_ts",
-      "community": 107,
+      "community": 24,
       "norm_label": "connectionlabel.ts"
     },
     {
@@ -85057,7 +85057,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/ConnectorChip/connectionLabel.ts",
       "source_location": "L3",
       "id": "connectorchip_connectionlabel_connectionlabel",
-      "community": 107,
+      "community": 24,
       "norm_label": "connectionlabel()"
     },
     {
@@ -85147,7 +85147,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_components_triggerpanel_triggerpanel_tsx",
-      "community": 800,
+      "community": 49,
       "norm_label": "triggerpanel.tsx"
     },
     {
@@ -85156,7 +85156,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L14",
       "id": "triggerpanel_triggerpanel_props",
-      "community": 800,
+      "community": 49,
       "norm_label": "props"
     },
     {
@@ -85165,7 +85165,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L19",
       "id": "triggerpanel_triggerpanel_triggerpanel",
-      "community": 800,
+      "community": 49,
       "norm_label": "triggerpanel()"
     },
     {
@@ -85174,7 +85174,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L86",
       "id": "triggerpanel_triggerpanel_triggerrow",
-      "community": 800,
+      "community": 49,
       "norm_label": "triggerrow()"
     },
     {
@@ -85183,7 +85183,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L122",
       "id": "triggerpanel_triggerpanel_tokenrevealdialog",
-      "community": 800,
+      "community": 49,
       "norm_label": "tokenrevealdialog()"
     },
     {
@@ -85192,7 +85192,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L151",
       "id": "triggerpanel_triggerpanel_addstep",
-      "community": 800,
+      "community": 49,
       "norm_label": "addstep"
     },
     {
@@ -85201,7 +85201,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L152",
       "id": "triggerpanel_triggerpanel_schemafieldrow",
-      "community": 800,
+      "community": 49,
       "norm_label": "schemafieldrow"
     },
     {
@@ -85210,7 +85210,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L153",
       "id": "triggerpanel_triggerpanel_field_types",
-      "community": 800,
+      "community": 49,
       "norm_label": "field_types"
     },
     {
@@ -85219,7 +85219,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L155",
       "id": "triggerpanel_triggerpanel_addtriggerdialog",
-      "community": 800,
+      "community": 49,
       "norm_label": "addtriggerdialog()"
     },
     {
@@ -85228,7 +85228,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L303",
       "id": "triggerpanel_triggerpanel_dialogheaderwithback",
-      "community": 800,
+      "community": 49,
       "norm_label": "dialogheaderwithback()"
     },
     {
@@ -85237,7 +85237,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L314",
       "id": "triggerpanel_triggerpanel_backchevronicon",
-      "community": 800,
+      "community": 49,
       "norm_label": "backchevronicon()"
     },
     {
@@ -85246,7 +85246,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L322",
       "id": "triggerpanel_triggerpanel_kindselect",
-      "community": 800,
+      "community": 49,
       "norm_label": "kindselect()"
     },
     {
@@ -85255,7 +85255,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx",
       "source_location": "L331",
       "id": "triggerpanel_triggerpanel_schemabuilder",
-      "community": 800,
+      "community": 49,
       "norm_label": "schemabuilder()"
     },
     {
@@ -85390,7 +85390,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_components_steppickerdialog_steppickerdialog_tsx",
-      "community": 107,
+      "community": 24,
       "norm_label": "steppickerdialog.tsx"
     },
     {
@@ -85399,7 +85399,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L16",
       "id": "steppickerdialog_steppickerdialog_stepdraft",
-      "community": 24,
+      "community": 616,
       "norm_label": "stepdraft"
     },
     {
@@ -85408,7 +85408,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L23",
       "id": "steppickerdialog_steppickerdialog_step",
-      "community": 107,
+      "community": 24,
       "norm_label": "step"
     },
     {
@@ -85417,7 +85417,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L25",
       "id": "steppickerdialog_steppickerdialog_props",
-      "community": 107,
+      "community": 24,
       "norm_label": "props"
     },
     {
@@ -85426,7 +85426,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L29",
       "id": "steppickerdialog_steppickerdialog_steppickerdialog",
-      "community": 107,
+      "community": 24,
       "norm_label": "steppickerdialog()"
     },
     {
@@ -85435,7 +85435,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L111",
       "id": "steppickerdialog_steppickerdialog_toolstep",
-      "community": 107,
+      "community": 24,
       "norm_label": "toolstep()"
     },
     {
@@ -85444,7 +85444,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx",
       "source_location": "L153",
       "id": "steppickerdialog_steppickerdialog_connectionstep",
-      "community": 107,
+      "community": 24,
       "norm_label": "connectionstep()"
     },
     {
@@ -85471,7 +85471,7 @@
       "source_file": "pkg/client/ArtelUI/src/components/RunTractDialog/RunTractDialog.tsx",
       "source_location": "L17",
       "id": "runtractdialog_runtractdialog_runtractdialog",
-      "community": 800,
+      "community": 49,
       "norm_label": "runtractdialog()"
     },
     {
@@ -85561,7 +85561,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/ManageEmailDialog.tsx",
       "source_location": "L67",
       "id": "manageemaildialog_manageemaildialog_dialoghead",
-      "community": 107,
+      "community": 49,
       "norm_label": "dialoghead()"
     },
     {
@@ -85579,7 +85579,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/ManageEmailDialog.tsx",
       "source_location": "L114",
       "id": "manageemaildialog_manageemaildialog_emailconnectionrow",
-      "community": 107,
+      "community": 49,
       "norm_label": "emailconnectionrow()"
     },
     {
@@ -85777,7 +85777,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_dialogs_connectiondetaildialog_connectiondetaildialog_tsx",
-      "community": 49,
+      "community": 18,
       "norm_label": "connectiondetaildialog.tsx"
     },
     {
@@ -85786,7 +85786,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L17",
       "id": "connectiondetaildialog_connectiondetaildialog_providerconfig",
-      "community": 49,
+      "community": 18,
       "norm_label": "providerconfig"
     },
     {
@@ -85795,7 +85795,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L23",
       "id": "connectiondetaildialog_connectiondetaildialog_provider_config",
-      "community": 49,
+      "community": 18,
       "norm_label": "provider_config"
     },
     {
@@ -85804,7 +85804,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L41",
       "id": "connectiondetaildialog_connectiondetaildialog_provider_key",
-      "community": 49,
+      "community": 18,
       "norm_label": "provider_key"
     },
     {
@@ -85813,7 +85813,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L48",
       "id": "connectiondetaildialog_connectiondetaildialog_dialoghead",
-      "community": 49,
+      "community": 18,
       "norm_label": "dialoghead()"
     },
     {
@@ -85822,7 +85822,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L66",
       "id": "connectiondetaildialog_connectiondetaildialog_notconnectedcontent",
-      "community": 49,
+      "community": 18,
       "norm_label": "notconnectedcontent()"
     },
     {
@@ -85831,7 +85831,7 @@
       "source_file": "pkg/client/ArtelUI/src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx",
       "source_location": "L89",
       "id": "connectiondetaildialog_connectiondetaildialog_connectedcontent",
-      "community": 49,
+      "community": 18,
       "norm_label": "connectedcontent()"
     },
     {
@@ -85894,7 +85894,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/home/HomePage.tsx",
       "source_location": "L17",
       "id": "home_homepage_homepage",
-      "community": 32,
+      "community": 49,
       "norm_label": "homepage()"
     },
     {
@@ -85948,7 +85948,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/join/JoinVaultPage.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_pages_join_joinvaultpage_tsx",
-      "community": 11,
+      "community": 12,
       "norm_label": "joinvaultpage.tsx"
     },
     {
@@ -85957,7 +85957,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/join/JoinVaultPage.tsx",
       "source_location": "L11",
       "id": "join_joinvaultpage_joinvaultpage",
-      "community": 49,
+      "community": 12,
       "norm_label": "joinvaultpage()"
     },
     {
@@ -86056,7 +86056,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractEditorPage.tsx",
       "source_location": "L21",
       "id": "tracts_tracteditorpage_tracteditorpage",
-      "community": 800,
+      "community": 49,
       "norm_label": "tracteditorpage()"
     },
     {
@@ -86065,7 +86065,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractEditorPage.tsx",
       "source_location": "L65",
       "id": "tracts_tracteditorpage_builder",
-      "community": 800,
+      "community": 49,
       "norm_label": "builder()"
     },
     {
@@ -86119,7 +86119,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractsPage.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_pages_tracts_tractspage_tsx",
-      "community": 800,
+      "community": 49,
       "norm_label": "tractspage.tsx"
     },
     {
@@ -86128,7 +86128,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractsPage.tsx",
       "source_location": "L15",
       "id": "tracts_tractspage_tractspage",
-      "community": 800,
+      "community": 49,
       "norm_label": "tractspage()"
     },
     {
@@ -86137,7 +86137,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractsPage.tsx",
       "source_location": "L40",
       "id": "tracts_tractspage_herosegment",
-      "community": 800,
+      "community": 49,
       "norm_label": "herosegment()"
     },
     {
@@ -86146,7 +86146,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractsPage.tsx",
       "source_location": "L63",
       "id": "tracts_tractspage_contentsegment",
-      "community": 800,
+      "community": 49,
       "norm_label": "contentsegment()"
     },
     {
@@ -86155,7 +86155,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tracts/TractsPage.tsx",
       "source_location": "L100",
       "id": "tracts_tractspage_newtractdialog",
-      "community": 800,
+      "community": 49,
       "norm_label": "newtractdialog()"
     },
     {
@@ -86173,7 +86173,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/closed-alpha/ClosedAlphaPage.tsx",
       "source_location": "L9",
       "id": "closed_alpha_closedalphapage_closedalphapage",
-      "community": 32,
+      "community": 11,
       "norm_label": "closedalphapage()"
     },
     {
@@ -86623,7 +86623,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx",
       "source_location": "L253",
       "id": "notessidebar_notessidebar_notessidebar",
-      "community": 115,
+      "community": 49,
       "norm_label": "notessidebar()"
     },
     {
@@ -87685,16 +87685,16 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_pages_tract_canvas_tractcanvasbuilderpage_tsx",
-      "community": 11,
+      "community": 32,
       "norm_label": "tractcanvasbuilderpage.tsx"
     },
     {
       "label": "TractCanvasBuilderPage()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "id": "tract_canvas_tractcanvasbuilderpage_tractcanvasbuilderpage",
-      "community": 49,
+      "community": 32,
       "norm_label": "tractcanvasbuilderpage()"
     },
     {
@@ -87703,7 +87703,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_pages_tract_canvas_processes_tractcanvaslayout_ts",
-      "community": 24,
+      "community": 800,
       "norm_label": "tractcanvaslayout.ts"
     },
     {
@@ -87712,7 +87712,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L33",
       "id": "processes_tractcanvaslayout_canvasnodekind",
-      "community": 24,
+      "community": 800,
       "norm_label": "canvasnodekind"
     },
     {
@@ -87730,7 +87730,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L54",
       "id": "processes_tractcanvaslayout_canvasedge",
-      "community": 24,
+      "community": 800,
       "norm_label": "canvasedge"
     },
     {
@@ -87739,7 +87739,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L63",
       "id": "processes_tractcanvaslayout_parallelbox",
-      "community": 24,
+      "community": 800,
       "norm_label": "parallelbox"
     },
     {
@@ -87766,7 +87766,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L93",
       "id": "processes_tractcanvaslayout_flowresult",
-      "community": 24,
+      "community": 800,
       "norm_label": "flowresult"
     },
     {
@@ -87775,7 +87775,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L102",
       "id": "processes_tractcanvaslayout_extent",
-      "community": 24,
+      "community": 800,
       "norm_label": "extent"
     },
     {
@@ -87784,7 +87784,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L109",
       "id": "processes_tractcanvaslayout_addedges",
-      "community": 24,
+      "community": 800,
       "norm_label": "addedges()"
     },
     {
@@ -87793,7 +87793,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L119",
       "id": "processes_tractcanvaslayout_measureextent",
-      "community": 24,
+      "community": 800,
       "norm_label": "measureextent()"
     },
     {
@@ -87802,7 +87802,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L145",
       "id": "processes_tractcanvaslayout_layoutflow",
-      "community": 24,
+      "community": 800,
       "norm_label": "layoutflow()"
     },
     {
@@ -87811,7 +87811,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L237",
       "id": "processes_tractcanvaslayout_layouttract",
-      "community": 24,
+      "community": 800,
       "norm_label": "layouttract()"
     },
     {
@@ -87944,7 +87944,7 @@
       "label": "NodeStatus",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L17",
+      "source_location": "L20",
       "id": "tractcanvasnode_tractcanvasnode_nodestatus",
       "community": 800,
       "norm_label": "nodestatus"
@@ -87953,7 +87953,7 @@
       "label": "Props",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L19",
+      "source_location": "L24",
       "id": "tractcanvasnode_tractcanvasnode_props",
       "community": 616,
       "norm_label": "props"
@@ -87962,7 +87962,7 @@
       "label": "TractCanvasNode()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L29",
+      "source_location": "L35",
       "id": "tractcanvasnode_tractcanvasnode_tractcanvasnode",
       "community": 616,
       "norm_label": "tractcanvasnode()"
@@ -87971,7 +87971,7 @@
       "label": "cap()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L73",
+      "source_location": "L79",
       "id": "tractcanvasnode_tractcanvasnode_cap",
       "community": 616,
       "norm_label": "cap()"
@@ -87980,7 +87980,7 @@
       "label": "NodeIcon()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L77",
+      "source_location": "L83",
       "id": "tractcanvasnode_tractcanvasnode_nodeicon",
       "community": 616,
       "norm_label": "nodeicon()"
@@ -87989,7 +87989,7 @@
       "label": "typeLabel()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L90",
+      "source_location": "L96",
       "id": "tractcanvasnode_tractcanvasnode_typelabel",
       "community": 616,
       "norm_label": "typelabel()"
@@ -87998,7 +87998,7 @@
       "label": "title()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L100",
+      "source_location": "L106",
       "id": "tractcanvasnode_tractcanvasnode_title",
       "community": 616,
       "norm_label": "title()"
@@ -88007,7 +88007,7 @@
       "label": "NodeChips()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
-      "source_location": "L107",
+      "source_location": "L113",
       "id": "tractcanvasnode_tractcanvasnode_nodechips",
       "community": 616,
       "norm_label": "nodechips()"
@@ -88025,7 +88025,7 @@
       "label": "Props",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx",
-      "source_location": "L22",
+      "source_location": "L23",
       "id": "tractcanvasbuilder_tractcanvasbuilder_props",
       "community": 800,
       "norm_label": "props"
@@ -88034,7 +88034,7 @@
       "label": "TractCanvasBuilder()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx",
-      "source_location": "L30",
+      "source_location": "L32",
       "id": "tractcanvasbuilder_tractcanvasbuilder_tractcanvasbuilder",
       "community": 800,
       "norm_label": "tractcanvasbuilder()"
@@ -88081,7 +88081,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasCard/TractCanvasCard.tsx",
       "source_location": "L16",
       "id": "tractcanvascard_tractcanvascard_tractcanvascard",
-      "community": 616,
+      "community": 49,
       "norm_label": "tractcanvascard()"
     },
     {
@@ -88115,7 +88115,7 @@
       "label": "Props",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "id": "tractcanvasarea_tractcanvasarea_props",
       "community": 800,
       "norm_label": "props"
@@ -88124,7 +88124,7 @@
       "label": "TractCanvasArea()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx",
-      "source_location": "L25",
+      "source_location": "L27",
       "id": "tractcanvasarea_tractcanvasarea_tractcanvasarea",
       "community": 800,
       "norm_label": "tractcanvasarea()"
@@ -88133,7 +88133,7 @@
       "label": "ConnectorPath()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx",
-      "source_location": "L122",
+      "source_location": "L125",
       "id": "tractcanvasarea_tractcanvasarea_connectorpath",
       "community": 800,
       "norm_label": "connectorpath()"
@@ -88151,16 +88151,16 @@
       "label": "Props",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "id": "tractblockpicker_tractblockpicker_props",
-      "community": 24,
+      "community": 616,
       "norm_label": "props"
     },
     {
       "label": "LogicOption",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "id": "tractblockpicker_tractblockpicker_logicoption",
       "community": 616,
       "norm_label": "logicoption"
@@ -88169,7 +88169,7 @@
       "label": "LOGIC_OPTIONS",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "id": "tractblockpicker_tractblockpicker_logic_options",
       "community": 616,
       "norm_label": "logic_options"
@@ -88178,16 +88178,16 @@
       "label": "TractBlockPicker()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L36",
+      "source_location": "L37",
       "id": "tractblockpicker_tractblockpicker_tractblockpicker",
-      "community": 616,
+      "community": 32,
       "norm_label": "tractblockpicker()"
     },
     {
       "label": "LogicCell()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L133",
+      "source_location": "L180",
       "id": "tractblockpicker_tractblockpicker_logiccell",
       "community": 616,
       "norm_label": "logiccell()"
@@ -88196,7 +88196,7 @@
       "label": "ToolCell()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L148",
+      "source_location": "L195",
       "id": "tractblockpicker_tractblockpicker_toolcell",
       "community": 616,
       "norm_label": "toolcell()"
@@ -88205,7 +88205,7 @@
       "label": "ConnectionStep()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
-      "source_location": "L164",
+      "source_location": "L211",
       "id": "tractblockpicker_tractblockpicker_connectionstep",
       "community": 616,
       "norm_label": "connectionstep()"
@@ -88493,7 +88493,7 @@
       "label": "TractCanvasInspector()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L51",
+      "source_location": "L52",
       "id": "tractcanvasinspector_tractcanvasinspector_tractcanvasinspector",
       "community": 24,
       "norm_label": "tractcanvasinspector()"
@@ -88502,16 +88502,25 @@
       "label": "Body()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L86",
+      "source_location": "L88",
       "id": "tractcanvasinspector_tractcanvasinspector_body",
       "community": 24,
       "norm_label": "body()"
     },
     {
+      "label": "OutputFields()",
+      "file_type": "code",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
+      "source_location": "L158",
+      "id": "tractcanvasinspector_tractcanvasinspector_outputfields",
+      "community": 24,
+      "norm_label": "outputfields()"
+    },
+    {
       "label": "Section()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L149",
+      "source_location": "L174",
       "id": "tractcanvasinspector_tractcanvasinspector_section",
       "community": 24,
       "norm_label": "section()"
@@ -88520,7 +88529,7 @@
       "label": "NameField()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L158",
+      "source_location": "L183",
       "id": "tractcanvasinspector_tractcanvasinspector_namefield",
       "community": 24,
       "norm_label": "namefield()"
@@ -88529,7 +88538,7 @@
       "label": "ActionBody()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L183",
+      "source_location": "L208",
       "id": "tractcanvasinspector_tractcanvasinspector_actionbody",
       "community": 24,
       "norm_label": "actionbody()"
@@ -88538,7 +88547,7 @@
       "label": "ConditionBody()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L274",
+      "source_location": "L295",
       "id": "tractcanvasinspector_tractcanvasinspector_conditionbody",
       "community": 24,
       "norm_label": "conditionbody()"
@@ -88547,7 +88556,7 @@
       "label": "ParallelBody()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L335",
+      "source_location": "L356",
       "id": "tractcanvasinspector_tractcanvasinspector_parallelbody",
       "community": 24,
       "norm_label": "parallelbody()"
@@ -88556,7 +88565,7 @@
       "label": "GroupBody()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L356",
+      "source_location": "L377",
       "id": "tractcanvasinspector_tractcanvasinspector_groupbody",
       "community": 24,
       "norm_label": "groupbody()"
@@ -88565,7 +88574,7 @@
       "label": "DangerZone()",
       "file_type": "code",
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
-      "source_location": "L377",
+      "source_location": "L398",
       "id": "tractcanvasinspector_tractcanvasinspector_dangerzone",
       "community": 24,
       "norm_label": "dangerzone()"
@@ -88576,7 +88585,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvastopbar_tractcanvastopbar_tsx",
-      "community": 616,
+      "community": 800,
       "norm_label": "tractcanvastopbar.tsx"
     },
     {
@@ -88585,7 +88594,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx",
       "source_location": "L7",
       "id": "tractcanvastopbar_tractcanvastopbar_props",
-      "community": 616,
+      "community": 800,
       "norm_label": "props"
     },
     {
@@ -88594,7 +88603,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx",
       "source_location": "L20",
       "id": "tractcanvastopbar_tractcanvastopbar_tractcanvastopbar",
-      "community": 616,
+      "community": 800,
       "norm_label": "tractcanvastopbar()"
     },
     {
@@ -88603,7 +88612,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_pages_tract_canvas_components_runstatusbadge_runstatusbadge_tsx",
-      "community": 616,
+      "community": 800,
       "norm_label": "runstatusbadge.tsx"
     },
     {
@@ -88612,7 +88621,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx",
       "source_location": "L3",
       "id": "runstatusbadge_runstatusbadge_props",
-      "community": 616,
+      "community": 800,
       "norm_label": "props"
     },
     {
@@ -88621,7 +88630,7 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx",
       "source_location": "L8",
       "id": "runstatusbadge_runstatusbadge_runstatusbadge",
-      "community": 616,
+      "community": 800,
       "norm_label": "runstatusbadge()"
     },
     {
@@ -88909,7 +88918,7 @@
       "source_file": "pkg/client/ArtelUI/src/widgets/TractCard/TractCard.tsx",
       "source_location": "L15",
       "id": "tractcard_tractcard_tractcard",
-      "community": 800,
+      "community": 49,
       "norm_label": "tractcard()"
     },
     {
@@ -89188,7 +89197,7 @@
       "source_file": "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.tsx",
       "source_location": "L1",
       "id": "pkg_client_artelui_src_segments_topbar_components_topbarusermenupill_topbarusermenupill_tsx",
-      "community": 107,
+      "community": 24,
       "norm_label": "topbarusermenupill.tsx"
     },
     {
@@ -89197,7 +89206,7 @@
       "source_file": "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.tsx",
       "source_location": "L6",
       "id": "topbarusermenupill_topbarusermenupill_topbarusermenupillprops",
-      "community": 107,
+      "community": 24,
       "norm_label": "topbarusermenupillprops"
     },
     {
@@ -89206,7 +89215,7 @@
       "source_file": "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.tsx",
       "source_location": "L12",
       "id": "topbarusermenupill_topbarusermenupill_topbarusermenupill",
-      "community": 107,
+      "community": 24,
       "norm_label": "topbarusermenupill()"
     },
     {
@@ -90304,7 +90313,7 @@
       "source_file": "pkg/client/ArtelUI/src/app/utils/cn.ts",
       "source_location": "L3",
       "id": "utils_cn_cn",
-      "community": 107,
+      "community": 24,
       "norm_label": "cn"
     },
     {
@@ -90879,7 +90888,7 @@
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
-      "community": 837,
+      "community": 617,
       "norm_label": "mcpserviceimpl",
       "id": "internal_service_v1_mcp_create_key_go_mcp_mcpserviceimpl"
     },
@@ -90888,7 +90897,7 @@
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/create_key.go",
       "source_location": "L18",
-      "community": 837,
+      "community": 617,
       "norm_label": ".createkey()",
       "id": "mcp_mcpserviceimpl_createkey"
     },
@@ -90915,7 +90924,7 @@
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
-      "community": 617,
+      "community": 558,
       "norm_label": "mcpserviceimpl",
       "id": "internal_service_v1_mcp_list_keys_go_mcp_mcpserviceimpl"
     },
@@ -90924,7 +90933,7 @@
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/list_keys.go",
       "source_location": "L11",
-      "community": 617,
+      "community": 558,
       "norm_label": ".listkeys()",
       "id": "mcp_mcpserviceimpl_listkeys"
     },
@@ -90969,7 +90978,7 @@
       "file_type": "code",
       "source_file": "internal/livesync/builder.go",
       "source_location": "L26",
-      "community": 130,
+      "community": 27,
       "norm_label": "livesyncconfig",
       "id": "livesync_livesyncconfig"
     },
@@ -95927,7 +95936,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 130,
+      "community": 27,
       "norm_label": "livesyncconfig",
       "id": "livesync_builder_livesyncconfig"
     },
@@ -95992,7 +96001,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 436,
+      "community": 782,
       "norm_label": "getusercontext",
       "id": "middleware_user_context_context_getusercontext"
     },
@@ -97201,7 +97210,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 159,
+      "community": 681,
       "norm_label": "mail_server_suggestions.sql",
       "id": "queries_mail_server_suggestions_sql"
     },
@@ -266738,6 +266747,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_tractcanvasbuilderpage_tsx",
+      "target": "pkg_client_artelui_src_app_hooks_mcpkeys_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "pkg/client/ArtelUI/src/widgets/McpKeyCard/McpKeyCard.tsx",
       "source_location": "L8",
       "weight": 1.0,
@@ -266969,6 +266989,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_tractcanvasbuilderpage_tsx",
+      "target": "hooks_mcpkeys_usemcpkeys"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "pkg/client/ArtelUI/src/widgets/McpKeyCard/McpKeyCard.tsx",
       "source_location": "L8",
       "weight": 1.0,
@@ -267036,10 +267067,32 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "tract_canvas_tractcanvasbuilderpage_tractcanvasbuilderpage",
+      "target": "hooks_mcpkeys_usemcpkeys"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
       "source_location": "L172",
       "weight": 1.0,
       "source": "tractblockpicker_tractblockpicker_connectionstep",
+      "target": "hooks_mcpkeys_usemcpkeys"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tractblockpicker_tractblockpicker_tractblockpicker",
       "target": "hooks_mcpkeys_usemcpkeys"
     },
     {
@@ -270269,6 +270322,50 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasarea_tractcanvasarea_tsx",
+      "target": "pkg_client_artelui_src_app_api_artel_mcp_keys_pb_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasbuilder_tractcanvasbuilder_tsx",
+      "target": "pkg_client_artelui_src_app_api_artel_mcp_keys_pb_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasinspector_tractcanvasinspector_tsx",
+      "target": "pkg_client_artelui_src_app_api_artel_mcp_keys_pb_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasnode_tractcanvasnode_tsx",
+      "target": "pkg_client_artelui_src_app_api_artel_mcp_keys_pb_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "pkg/client/ArtelUI/src/processes/McpKeys.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -270566,6 +270663,50 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasarea_tractcanvasarea_tsx",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasbuilder_tractcanvasbuilder_tsx",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasinspector_tractcanvasinspector_tsx",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasnode_tractcanvasnode_tsx",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "pkg/client/ArtelUI/src/processes/McpKeys.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -270593,6 +270734,50 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "processes_mcpkeys_mcpkeysservice_listmomcandidates",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tractcanvasarea_tractcanvasarea_props",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tractcanvasbuilder_tractcanvasbuilder_props",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tractcanvasinspector_tractcanvasinspector_props",
+      "target": "artel_mcp_keys_pb_momcandidate"
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tractcanvasnode_tractcanvasnode_props",
       "target": "artel_mcp_keys_pb_momcandidate"
     },
     {
@@ -277910,9 +278095,9 @@
       "source_file": "pkg/client/ArtelUI/src/processes/tractSteps.ts",
       "source_location": "L96",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pkg_client_artelui_src_processes_tractsteps_ts",
-      "target": "processes_tractsteps_collapsethinparallels",
-      "confidence_score": 1.0
+      "target": "processes_tractsteps_collapsethinparallels"
     },
     {
       "relation": "contains",
@@ -278326,9 +278511,9 @@
       "source_file": "pkg/client/ArtelUI/src/processes/tractSteps.ts",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "processes_tractsteps_removestepat",
-      "target": "processes_tractsteps_collapsethinparallels",
-      "confidence_score": 1.0
+      "target": "processes_tractsteps_collapsethinparallels"
     },
     {
       "relation": "imports",
@@ -280190,6 +280375,28 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractblockpicker_tractblockpicker_tsx",
+      "target": "pkg_client_artelui_src_components_providericon_providericon_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasnode_tractcanvasnode_tsx",
+      "target": "pkg_client_artelui_src_components_providericon_providericon_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "pkg/client/ArtelUI/src/widgets/EmailCard/EmailCard.tsx",
       "source_location": "L4",
       "weight": 1.0,
@@ -280898,6 +281105,17 @@
       "target": "pkg_client_artelui_src_components_connectorchip_connectionlabel_ts"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasnode_tractcanvasnode_tsx",
+      "target": "pkg_client_artelui_src_components_connectorchip_connectionlabel_ts"
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -280950,6 +281168,28 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasinspector_tractcanvasinspector_tsx",
+      "target": "connectorchip_connectionlabel_connectionlabel"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasnode_tractcanvasnode_tsx",
+      "target": "connectorchip_connectionlabel_connectionlabel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "tractcanvasnode_tractcanvasnode_nodechips",
       "target": "connectorchip_connectionlabel_connectionlabel"
     },
     {
@@ -285003,9 +285243,9 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pkg_client_artelui_src_pages_tract_canvas_processes_tractcanvaslayout_ts",
-      "target": "processes_tractcanvaslayout_extent",
-      "confidence_score": 1.0
+      "target": "processes_tractcanvaslayout_extent"
     },
     {
       "relation": "contains",
@@ -285043,9 +285283,9 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pkg_client_artelui_src_pages_tract_canvas_processes_tractcanvaslayout_ts",
-      "target": "processes_tractcanvaslayout_measureextent",
-      "confidence_score": 1.0
+      "target": "processes_tractcanvaslayout_measureextent"
     },
     {
       "relation": "contains",
@@ -285053,9 +285293,9 @@
       "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pkg_client_artelui_src_pages_tract_canvas_processes_tractcanvaslayout_ts",
-      "target": "processes_tractcanvaslayout_parallelbox",
-      "confidence_score": 1.0
+      "target": "processes_tractcanvaslayout_parallelbox"
     },
     {
       "relation": "contains",
@@ -286657,6 +286897,16 @@
       "confidence_score": 1.0,
       "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasinspector_tractcanvasinspector_tsx",
       "target": "tractcanvasinspector_tractcanvasinspector_namefield"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx",
+      "source_location": "L158",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "pkg_client_artelui_src_pages_tract_canvas_components_tractcanvasinspector_tractcanvasinspector_tsx",
+      "target": "tractcanvasinspector_tractcanvasinspector_outputfields"
     },
     {
       "relation": "contains",
@@ -296375,5 +296625,5 @@
       "source_file": "CLAUDE.md"
     }
   ],
-  "built_at_commit": "c7c6cad0ba8a451a215fa2d673cd8a2cab36ed05"
+  "built_at_commit": "667942f99f94c9c2538315b95e3dd244a5698c5f"
 }

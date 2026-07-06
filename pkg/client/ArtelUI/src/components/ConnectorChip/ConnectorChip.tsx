@@ -50,6 +50,7 @@ const PROVIDER_CHIP_CLASS: Partial<Record<ExternalProvider, string>> = {
     [ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS]: cls.SheetsChip,
     [ExternalProvider.EXTERNAL_PROVIDER_TRELLO]: cls.TrelloChip,
     [ExternalProvider.EXTERNAL_PROVIDER_MIRO]: cls.MiroChip,
+    [ExternalProvider.EXTERNAL_PROVIDER_GITLAB]: cls.GitlabChip,
 }
 
 export default function ConnectorChip({connector, connections}: {
@@ -86,6 +87,8 @@ function GenericChip({mcpName}: {mcpName?: string}) {
             data-tooltip-id="root-tooltip"
             data-tooltip-content={`${mcpName} connection`}
         >
+            {/* TODO: no dedicated icon for this connection type yet - falls back to a generic glyph */}
+            <span className={cls.ProviderChipIcon}><ProviderIcon/></span>
             {mcpName}
         </span>
     )

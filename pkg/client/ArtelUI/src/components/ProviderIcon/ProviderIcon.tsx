@@ -62,15 +62,16 @@ function EmailIcon() {
 function GitlabIcon() {
     return (
         <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M24 41L33 13H15L24 41Z" fill="#E24329"/>
-            <path d="M24 41L15 13H5L24 41Z" fill="#FC6D26"/>
-            <path d="M5 13L3 21.5L24 41L5 13Z" fill="#FCA326"/>
-            <path d="M24 41L33 13H43L24 41Z" fill="#FC6D26"/>
-            <path d="M43 13L45 21.5L24 41L43 13Z" fill="#FCA326"/>
+            <path d="M24 43L32 16H16L24 43Z" fill="#E24329"/>
+            <path d="M24 43L16 16L7 17L24 43Z" fill="#FC6D26"/>
+            <path d="M7 17L2 6L24 43L7 17Z" fill="#FCA326"/>
+            <path d="M24 43L32 16L41 17L24 43Z" fill="#FC6D26"/>
+            <path d="M41 17L46 6L24 43L41 17Z" fill="#FCA326"/>
         </svg>
     )
 }
 
+// TODO: placeholder glyph for providers without a dedicated brand icon yet - replace per-provider as icons are added.
 function UnknownProviderIcon() {
     return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"

@@ -10,7 +10,8 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {Button} from "@vervstack/chures"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
-import {BranchIcon, ForkIcon, LayersIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
+import {BranchIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 import type {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 
@@ -21,7 +22,7 @@ interface Props {
 }
 
 interface LogicOption {
-    type: "condition" | "parallel" | "group"
+    type: "condition"
     name: string
     desc: string
     Icon: (p: { className?: string }) => React.JSX.Element
@@ -29,14 +30,14 @@ interface LogicOption {
 
 const LOGIC_OPTIONS: LogicOption[] = [
     {type: "condition", name: "Condition", desc: "Route to a true/false branch", Icon: BranchIcon},
-    {type: "parallel", name: "Parallel", desc: "Run lanes concurrently", Icon: ForkIcon},
-    {type: "group", name: "Group", desc: "Nest a sequential chain", Icon: LayersIcon},
 ]
 
 export default function TractBlockPicker({onConfirm}: Props) {
     const {CloseDialog} = useDialog()
     const {tools, fetchTools} = useTracts()
+    const {momCandidates, fetchMomCandidates} = useMcpKeys()
     const [query, setQuery] = useState("")
+    const [connFilter, setConnFilter] = useState<string | null>(null)
     const [selectedTool, setSelectedTool] = useState<TractTool | null>(null)
     const [selectedConnectionId, setSelectedConnectionId] = useState("")
 
@@ -44,18 +45,40 @@ export default function TractBlockPicker({onConfirm}: Props) {
         void fetchTools()
     }, [fetchTools])
 
+    useEffect(() => {
+        void fetchMomCandidates()
+    }, [fetchMomCandidates])
+
     const q = query.trim().toLowerCase()
+
+    const connectedCandidates = useMemo(
+        () => momCandidates.filter(c => (c.connections?.length ?? 0) > 0),
+        [momCandidates],
+    )
+    const availableMcps = useMemo(
+        () => new Set(connectedCandidates.map(c => c.name)),
+        [connectedCandidates],
+    )
 
     const grouped = useMemo(() => {
         const acc: Record<string, TractTool[]> = {}
         for (const t of tools) {
+            if (connFilter && t.mcp !== connFilter) continue
             if (q && !`${t.mcp}.${t.tool}`.toLowerCase().includes(q) && !t.description?.toLowerCase().includes(q)) continue
             ;(acc[t.mcp] ??= []).push(t)
         }
         return acc
-    }, [tools, q])
+    }, [tools, q, connFilter])
 
-    const logicOptions = LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
+    const orderedGroups = useMemo(() => {
+        const rank = (mcp: string) => mcp === BUILTIN_MCP ? 0 : availableMcps.has(mcp) ? 1 : 2
+        return Object.entries(grouped).sort(([mcpA], [mcpB]) => {
+            const diff = rank(mcpA) - rank(mcpB)
+            return diff !== 0 ? diff : mcpA.localeCompare(mcpB)
+        })
+    }, [grouped, availableMcps])
+
+    const logicOptions = connFilter ? [] : LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
 
     function handleSelectTool(tool: TractTool) {
         if (tool.mcp === BUILTIN_MCP) {
@@ -98,6 +121,28 @@ export default function TractBlockPicker({onConfirm}: Props) {
                 onChange={e => setQuery(e.target.value)}
                 autoFocus
             />
+            {connectedCandidates.length > 0 && (
+                <div className={cls.FilterRow}>
+                    <button
+                        type="button"
+                        className={`${cls.FilterPill} ${!connFilter ? cls.FilterPillActive : ""}`}
+                        onClick={() => setConnFilter(null)}
+                    >
+                        All
+                    </button>
+                    {connectedCandidates.map(c => (
+                        <button
+                            type="button"
+                            key={c.name}
+                            className={`${cls.FilterPill} ${connFilter === c.name ? cls.FilterPillActive : ""}`}
+                            onClick={() => setConnFilter(c.name ?? null)}
+                        >
+                            <span className={cls.FilterPillIcon}><ProviderIcon provider={c.connections?.[0]?.provider}/></span>
+                            {c.name}
+                        </button>
+                    ))}
+                </div>
+            )}
             <div className={cls.Scroll}>
                 {logicOptions.length > 0 && (
                     <>
@@ -112,7 +157,7 @@ export default function TractBlockPicker({onConfirm}: Props) {
                         </div>
                     </>
                 )}
-                {Object.entries(grouped).map(([mcp, mcpTools]) => (
+                {orderedGroups.map(([mcp, mcpTools]) => (
                     <div className={cls.McpGroup} key={mcp}>
                         <div className={cls.CatTitle}>{mcp}</div>
                         <div className={cls.Grid}>
@@ -177,6 +222,12 @@ function ConnectionStep({mcp, selectedConnectionId, onSelect, onBack, onConfirm}
 
     const candidate = momCandidates.find(c => c.name === mcp)
     const connections = candidate?.connections ?? []
+
+    useEffect(() => {
+        if (!selectedConnectionId && connections.length > 0) {
+            onSelect(connections[0].id ?? "")
+        }
+    }, [connections, selectedConnectionId, onSelect])
 
     return (
         <div className={cls.Modal} role="dialog" aria-modal="true">

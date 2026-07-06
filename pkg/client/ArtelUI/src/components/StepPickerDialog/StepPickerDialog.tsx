@@ -14,7 +14,7 @@ import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 const BUILTIN_MCP = "artel"
 
 export interface StepDraft {
-    type: "action" | "condition" | "parallel" | "group"
+    type: "action" | "condition" | "parallel"
     mcp?: string
     tool?: string
     connectionUuid?: string
@@ -53,7 +53,7 @@ export default function StepPickerDialog({onConfirm}: Props) {
         CloseDialog()
     }
 
-    function handleSelectSimpleKind(type: "condition" | "parallel" | "group") {
+    function handleSelectSimpleKind(type: "condition" | "parallel") {
         onConfirm({type})
         CloseDialog()
     }
@@ -95,10 +95,6 @@ export default function StepPickerDialog({onConfirm}: Props) {
                 <button type="button" className={cls.KindOption} onClick={() => handleSelectSimpleKind("parallel")}>
                     <span className={cls.KindTitle}>Parallel</span>
                     <span className={cls.KindDesc}>Runs each lane concurrently. Add lanes after creating it.</span>
-                </button>
-                <button type="button" className={cls.KindOption} onClick={() => handleSelectSimpleKind("group")}>
-                    <span className={cls.KindTitle}>Group</span>
-                    <span className={cls.KindDesc}>A sequential chain nested as one visual unit.</span>
                 </button>
             </div>
             <div className={cls.DialogActions}>
@@ -166,6 +162,12 @@ function ConnectionStep({mcp, selectedConnectionId, onSelect, onBack, onConfirm}
 
     const candidate = momCandidates.find(c => c.name === mcp)
     const connections = candidate?.connections ?? []
+
+    useEffect(() => {
+        if (!selectedConnectionId && connections.length > 0) {
+            onSelect(connections[0].id ?? "")
+        }
+    }, [connections, selectedConnectionId, onSelect])
 
     return (
         <div className={cls.DialogContainer} role="dialog" aria-modal="true">

@@ -15,6 +15,7 @@ import {
 import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
+import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 export type NodeStatus = "ok" | "err" | "running" | "idle"
 
@@ -144,5 +145,10 @@ function NodeChips({node, tools, triggerInfo, momCandidates}: {
     const candidate = momCandidates.find(c => c.name === step.mcp)
     const connection = candidate?.connections?.find(c => c.id === step.connection_uuid)
     if (!connection) return <span className={`${cls.Chip} ${cls.ChipWarn}`}>no connection</span>
-    return <span className={`${cls.Chip} ${cls.ChipConn}`}>{connectionLabel(connection)}</span>
+    return (
+        <span className={`${cls.Chip} ${cls.ChipConn}`}>
+            <span className={cls.ChipIcon}><ProviderIcon provider={connection.provider}/></span>
+            {connectionLabel(connection)}
+        </span>
+    )
 }
