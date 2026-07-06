@@ -1,10 +1,10 @@
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.module.css"
 
 import {TractRun, TractRunStep} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
-import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {ChevronRightIcon, CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {Button} from "@vervstack/chures"
 
 interface Props {
@@ -16,34 +16,64 @@ interface Props {
 }
 
 export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSelectRun, onClose}: Props) {
+    const [enlarged, setEnlarged] = useState(false)
+
+    useEffect(() => {
+        if (!open) setEnlarged(false)
+    }, [open])
+
     return (
-        <div className={`${cls.Panel}${open ? ` ${cls.PanelOpen}` : ""}`}>
-            <div className={cls.Bar}>
-                <span className={cls.BarLabel}>Runs</span>
-                <Button variant="iconDanger" onClick={onClose} aria-label="Close log">
-                    <CloseIcon/>
-                </Button>
-            </div>
-            <div className={cls.Split}>
-                <div className={cls.RunList}>
-                    {runs.length === 0 && <p className={cls.Empty}>No runs yet.</p>}
-                    {runs.map(r => (
-                        <button
-                            key={r.uuid}
-                            type="button"
-                            className={`${cls.RunRow} ${r.uuid === selectedRunUuid ? cls.RunRowSelected : ""}`}
-                            onClick={() => onSelectRun(r.uuid)}
-                        >
-                            <span className={`${cls.Dot} ${dotClass(r.status, cls)}`}/>
-                            <span className={cls.RunMeta}>{r.startedBy}</span>
-                            <span className={cls.RunMeta}>{formatDate(r.createdAt)}</span>
-                        </button>
-                    ))}
+        <>
+            {open && enlarged && (
+                <div className={cls.Backdrop} onClick={() => setEnlarged(false)}/>
+            )}
+            <div className={`${cls.Panel}${open ? ` ${cls.PanelOpen}` : ""}${open && enlarged ? ` ${cls.Enlarged}` : ""}`}>
+                <LogPanelBar enlarged={enlarged} onToggleEnlarge={() => setEnlarged(e => !e)} onClose={onClose}/>
+                <div className={cls.Split}>
+                    <div className={cls.RunList}>
+                        {runs.length === 0 && <p className={cls.Empty}>No runs yet.</p>}
+                        {runs.map(r => (
+                            <button
+                                key={r.uuid}
+                                type="button"
+                                className={`${cls.RunRow} ${r.uuid === selectedRunUuid ? cls.RunRowSelected : ""}`}
+                                onClick={() => onSelectRun(r.uuid)}
+                            >
+                                <span className={`${cls.Dot} ${dotClass(r.status, cls)}`}/>
+                                <span className={cls.RunMeta}>{r.startedBy}</span>
+                                <span className={cls.RunMeta}>{formatDate(r.createdAt)}</span>
+                            </button>
+                        ))}
+                    </div>
+                    <div className={cls.LogScroll}>
+                        {selectedRunUuid ? <RunLog runUuid={selectedRunUuid}/> : <p className={cls.Empty}>Select a run to see its log.</p>}
+                    </div>
                 </div>
-                <div className={cls.LogScroll}>
-                    {selectedRunUuid ? <RunLog runUuid={selectedRunUuid}/> : <p className={cls.Empty}>Select a run to see its log.</p>}
-                </div>
             </div>
+        </>
+    )
+}
+
+function LogPanelBar({enlarged, onToggleEnlarge, onClose}: {
+    enlarged: boolean
+    onToggleEnlarge: () => void
+    onClose: () => void
+}) {
+    return (
+        <div className={cls.Bar}>
+            <Button
+                variant="ghost"
+                className={cls.EnlargeBtn}
+                onClick={onToggleEnlarge}
+                aria-label={enlarged ? "Shrink log panel" : "Enlarge log panel"}
+                aria-pressed={enlarged}
+            >
+                <ChevronRightIcon className={`${cls.EnlargeChevron} ${enlarged ? cls.EnlargeChevronOpen : ""}`}/>
+            </Button>
+            <span className={cls.BarLabel}>Runs</span>
+            <Button variant="iconDanger" onClick={onClose} aria-label="Close log">
+                <CloseIcon/>
+            </Button>
         </div>
     )
 }

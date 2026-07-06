@@ -2,8 +2,7 @@ import {useEffect, useState} from "react"
 
 import cls from "@/components/RunTractDialog/RunTractDialog.module.css"
 
-import {SchemaNode, SchemaProperty, Tract, tractsService} from "@/processes/Tracts.ts"
-import {useTracts} from "@/app/hooks/Tracts.ts"
+import {SchemaNode, SchemaProperty, Tract, TractRun, tractsService} from "@/processes/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
@@ -11,18 +10,18 @@ import {Button} from "@vervstack/chures"
 
 interface Props {
     tract?: Tract
-    tractUuid: string
+    onRun: (params: unknown) => Promise<TractRun | undefined>
 }
 
-export default function RunTractDialog({tract, tractUuid}: Props) {
+export default function RunTractDialog({tract, onRun}: Props) {
     const {CloseDialog} = useDialog()
-    const {runTract} = useTracts()
     const bakeError = useBakeError()
     const [schema, setSchema] = useState<SchemaNode | null>(null)
     const [schemaLoading, setSchemaLoading] = useState(true)
     const [paramValues, setParamValues] = useState<Record<string, string>>({})
     const [rawJson, setRawJson] = useState("{}")
     const [running, setRunning] = useState(false)
+    const [startedRun, setStartedRun] = useState<TractRun | null>(null)
 
     useEffect(() => {
         const linked = tract?.triggers ?? []
@@ -56,10 +55,24 @@ export default function RunTractDialog({tract, tractUuid}: Props) {
             return
         }
         setRunning(true)
-        runTract(tractUuid, params)
-            .then(CloseDialog)
+        onRun(params)
+            .then(run => setStartedRun(run ?? null))
             .catch(err => bakeError("Failed to run tract", err))
             .finally(() => setRunning(false))
+    }
+
+    if (startedRun) {
+        return (
+            <div className={cls.DialogContainer} role="dialog" aria-modal="true">
+                <h2 className={cls.DialogTitle}>Run started</h2>
+                <p className={cls.Empty}>
+                    Started {formatStartedAt(startedRun.createdAt)} — follow its progress in the Runs panel.
+                </p>
+                <div className={cls.DialogActions}>
+                    <Button variant="primary" onClick={CloseDialog}>View run in log ↓</Button>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -86,6 +99,12 @@ export default function RunTractDialog({tract, tractUuid}: Props) {
             </div>
         </div>
     )
+}
+
+function formatStartedAt(iso: string | undefined): string {
+    const d = iso ? new Date(iso) : null
+    if (!d || isNaN(d.getTime())) return "just now"
+    return d.toLocaleTimeString(undefined, {hour: "2-digit", minute: "2-digit", second: "2-digit"})
 }
 
 function ParamsList({schema, values, onChange}: {

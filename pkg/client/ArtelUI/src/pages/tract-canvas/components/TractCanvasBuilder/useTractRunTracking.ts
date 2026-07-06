@@ -1,7 +1,6 @@
 import {useMemo, useState} from "react"
 
 import {useTracts} from "@/app/hooks/Tracts.ts"
-import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
 import {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 import {CanvasLayout, TRIGGER_NODE_ID} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
@@ -13,7 +12,6 @@ const RUN_POLL_MAX_ATTEMPTS = 10
 
 export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
     const {runTract, fetchRuns, currentRun, currentRunSteps} = useTracts()
-    const bakeError = useBakeError()
 
     const [running, setRunning] = useState(false)
     const [logOpen, setLogOpen] = useState(false)
@@ -61,26 +59,45 @@ export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
         return useTracts.getState().runsByTract[tractUuid]?.[0]
     }
 
-    function handleRun() {
+    function toggleLog() {
+        setLogOpen(prevOpen => {
+            const next = !prevOpen
+            if (next) void fetchRuns(tractUuid)
+            return next
+        })
+    }
+
+    function closeLog() {
+        setLogOpen(false)
+    }
+
+    // Resolves as soon as the run is created and discovered (near-instant), so a caller
+    // (the run dialog) can hand the user a link to it right away — completion is tracked
+    // separately in the background via pollUntilRunFinished, which keeps `running` and the
+    // log panel's step statuses live without blocking this promise.
+    function startRun(params: unknown): Promise<TractRun | undefined> {
         setRunning(true)
-        runTract(tractUuid, {})
-            .then(() => pollUntilRunFinished())
+        return runTract(tractUuid, params)
             .then(() => {
                 const latest = latestRun()
                 if (latest) {
                     setSelectedRunUuid(latest.uuid)
                     setLogOpen(true)
                 }
+                void pollUntilRunFinished().finally(() => setRunning(false))
+                return latest
             })
-            .catch(err => bakeError("Failed to run tract", err))
-            .finally(() => setRunning(false))
+            .catch(err => {
+                setRunning(false)
+                throw err
+            })
     }
 
     return {
         running,
-        logOpen, setLogOpen,
+        logOpen, toggleLog, closeLog,
         selectedRunUuid, setSelectedRunUuid,
         activeRunSteps, lastOutputByStepId, nodeStatus, runningEdgeIds,
-        handleRun,
+        startRun,
     }
 }

@@ -14,6 +14,7 @@ import TractCanvasArea from "@/pages/tract-canvas/components/TractCanvasArea/Tra
 import TractCanvasInspector from "@/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx"
 import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
 import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts"
+import RunTractDialog from "@/components/RunTractDialog/RunTractDialog.tsx"
 
 import {buildStepFromDraft, collectAllStepIds, insertBlockAfter, Location} from "@/processes/tractSteps.ts"
 import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
@@ -69,9 +70,13 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
     const triggerSchema = triggers.find(t => linkedSummaries.some(l => l.uuid === t.uuid) && Object.keys(t.payloadSchema.properties).length > 0)?.payloadSchema
 
     const {
-        running, logOpen, setLogOpen, selectedRunUuid, setSelectedRunUuid,
-        lastOutputByStepId, nodeStatus, runningEdgeIds, handleRun,
+        running, logOpen, toggleLog, closeLog, selectedRunUuid, setSelectedRunUuid,
+        lastOutputByStepId, nodeStatus, runningEdgeIds, startRun,
     } = useTractRunTracking(tract.uuid, layout)
+
+    function openRunDialog() {
+        OpenDialog(<RunTractDialog tract={tract} onRun={startRun}/>)
+    }
 
     function handleSave() {
         setSaving(true)
@@ -113,8 +118,8 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
                 lastRunStatus={runs[0]?.status}
                 onBack={onBack}
                 onSave={handleSave}
-                onRun={handleRun}
-                onToggleLog={() => setLogOpen(o => !o)}
+                onRun={openRunDialog}
+                onToggleLog={toggleLog}
             />
             {warnings.length > 0 && (
                 <div className={cls.Warnings}>
@@ -153,7 +158,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
                 runs={runs}
                 selectedRunUuid={selectedRunUuid}
                 onSelectRun={setSelectedRunUuid}
-                onClose={() => setLogOpen(false)}
+                onClose={closeLog}
             />
         </div>
     )

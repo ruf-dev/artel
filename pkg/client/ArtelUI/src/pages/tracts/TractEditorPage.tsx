@@ -145,13 +145,18 @@ function EditorHeader({tract, onBack}: { tract?: Tract; onBack: () => void }) {
 
 function RunsPanel({tractUuid, runs, tract}: { tractUuid: string; runs: TractRun[]; tract?: Tract }) {
     const {OpenDialog} = useDialog()
+    const {runTract} = useTracts()
     const [selectedRunUuid, setSelectedRunUuid] = useState<string | null>(null)
+
+    function startRun(params: unknown): Promise<TractRun | undefined> {
+        return runTract(tractUuid, params).then(() => useTracts.getState().runsByTract[tractUuid]?.[0])
+    }
 
     return (
         <div className={cls.RunsContainer}>
             <div className={cls.RunsToolbar}>
                 <h2 className={cls.RunsTitle}>Runs</h2>
-                <Button variant="primary" onClick={() => OpenDialog(<RunTractDialog tract={tract} tractUuid={tractUuid}/>)}>
+                <Button variant="primary" onClick={() => OpenDialog(<RunTractDialog tract={tract} onRun={startRun}/>)}>
                     Run
                 </Button>
             </div>
