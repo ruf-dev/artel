@@ -113,3 +113,13 @@ splitting an existing fat page.
 - **Prefer promise chains over `try/catch`** — use `.then().catch().finally()` instead
   of `async/await` with `try/catch` blocks. Exception: best-effort fire-and-forget
   where no error surface is needed (silent `catch {}` is fine there).
+
+## Testing frontend changes
+
+- **Do not start the dev server, spin up a browser, or otherwise self-test frontend
+  changes.** Reaching an authenticated screen requires the full Go backend + DB, which
+  isn't worth spinning up for a UI change, and a headless smoke test is a poor
+  substitute for a human actually looking at it.
+- Verify with `tsc -b`/`bun run build` and lint instead, then hand the change back to
+  the user with a short note on what to click through to confirm it visually
+  (which page/component, what interaction to try).

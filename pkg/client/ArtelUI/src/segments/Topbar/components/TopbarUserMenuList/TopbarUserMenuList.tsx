@@ -6,11 +6,12 @@ interface TopbarUserMenuListProps {
     onAdmin: () => void
     onApiKeys: () => void
     onLogout: () => void
+    style?: React.CSSProperties
 }
 
-export default function TopbarUserMenuList({isAdmin, onAdmin, onApiKeys, onLogout}: TopbarUserMenuListProps) {
+export default function TopbarUserMenuList({isAdmin, onAdmin, onApiKeys, onLogout, style}: TopbarUserMenuListProps) {
     return (
-        <div className={cls.Menu} role="menu">
+        <div className={cls.Menu} role="menu" style={style}>
             {isAdmin && (
                 <TopbarUserMenuItem
                     label="Admin Panel"

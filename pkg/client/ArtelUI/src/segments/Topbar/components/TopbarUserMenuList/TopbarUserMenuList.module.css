@@ -1,7 +1,5 @@
 .Menu {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    right: 0;
+    position: fixed;
     min-width: 11.25rem;
     padding: 0.375rem;
     background: var(--color-bg-elevated);
