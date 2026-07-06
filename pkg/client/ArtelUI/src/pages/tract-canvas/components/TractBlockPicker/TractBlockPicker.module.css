@@ -116,7 +116,8 @@
     margin-top: 0.875rem;
 }
 
-.CatTitle:first-child {
+.Scroll > .CatTitle:first-child,
+.Scroll > .McpGroup:first-child .CatTitle {
     margin-top: 0;
 }
 

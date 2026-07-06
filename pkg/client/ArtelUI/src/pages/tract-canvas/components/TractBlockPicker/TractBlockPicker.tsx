@@ -63,6 +63,7 @@ export default function TractBlockPicker({onConfirm}: Props) {
     const grouped = useMemo(() => {
         const acc: Record<string, TractTool[]> = {}
         for (const t of tools) {
+            if (t.mcp === BUILTIN_MCP) continue
             if (connFilter && t.mcp !== connFilter) continue
             if (q && !`${t.mcp}.${t.tool}`.toLowerCase().includes(q) && !t.description?.toLowerCase().includes(q)) continue
             ;(acc[t.mcp] ??= []).push(t)
@@ -71,7 +72,7 @@ export default function TractBlockPicker({onConfirm}: Props) {
     }, [tools, q, connFilter])
 
     const orderedGroups = useMemo(() => {
-        const rank = (mcp: string) => mcp === BUILTIN_MCP ? 0 : availableMcps.has(mcp) ? 1 : 2
+        const rank = (mcp: string) => availableMcps.has(mcp) ? 0 : 1
         return Object.entries(grouped).sort(([mcpA], [mcpB]) => {
             const diff = rank(mcpA) - rank(mcpB)
             return diff !== 0 ? diff : mcpA.localeCompare(mcpB)
@@ -79,15 +80,6 @@ export default function TractBlockPicker({onConfirm}: Props) {
     }, [grouped, availableMcps])
 
     const logicOptions = connFilter ? [] : LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
-
-    function handleSelectTool(tool: TractTool) {
-        if (tool.mcp === BUILTIN_MCP) {
-            onConfirm({type: "action", mcp: tool.mcp, tool: tool.tool})
-            CloseDialog()
-            return
-        }
-        setSelectedTool(tool)
-    }
 
     function handleConfirmConnection() {
         if (!selectedTool || !selectedConnectionId) return
@@ -162,7 +154,7 @@ export default function TractBlockPicker({onConfirm}: Props) {
                         <div className={cls.CatTitle}>{mcp}</div>
                         <div className={cls.Grid}>
                             {mcpTools.map(t => (
-                                <ToolCell key={t.tool} tool={t} onSelect={() => handleSelectTool(t)}/>
+                                <ToolCell key={t.tool} tool={t} onSelect={() => setSelectedTool(t)}/>
                             ))}
                         </div>
                     </div>

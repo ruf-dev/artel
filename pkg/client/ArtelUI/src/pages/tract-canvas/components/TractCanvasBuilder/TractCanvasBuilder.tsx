@@ -37,6 +37,8 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
     const [seeded, setSeeded] = useState(false)
     const [name, setName] = useState(tract.name)
     const [definition, setDefinition] = useState<TractDefinition>(tract.definition)
+    const [savedName, setSavedName] = useState(tract.name)
+    const [savedDefinition, setSavedDefinition] = useState<TractDefinition>(tract.definition)
     const [saving, setSaving] = useState(false)
     const [warnings, setWarnings] = useState<string[]>([])
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
@@ -45,11 +47,18 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
         if (!seeded) {
             setName(tract.name)
             setDefinition(tract.definition)
+            setSavedName(tract.name)
+            setSavedDefinition(tract.definition)
             setSeeded(true)
         }
     }, [seeded, tract])
 
-    const isDirty = seeded && (name !== tract.name || JSON.stringify(definition) !== JSON.stringify(tract.definition))
+    // Compared against the locally-built snapshot from the last successful save, not the
+    // `tract` prop — the prop is re-derived from the server response via definitionFromProto,
+    // whose proto-default filling (e.g. an empty params map coming back as undefined instead
+    // of {}) doesn't byte-for-byte match the locally-built object, which left isDirty stuck
+    // true forever after a real save.
+    const isDirty = seeded && (name !== savedName || JSON.stringify(definition) !== JSON.stringify(savedDefinition))
 
     const layout = useMemo(() => layoutTract(definition.steps), [definition])
     const selectedNode = layout.nodes.find(n => n.id === selectedNodeId) ?? null
@@ -67,7 +76,11 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
     function handleSave() {
         setSaving(true)
         updateTract(tract.uuid, name, tract.description, definition)
-            .then(({warnings: w}) => setWarnings(w))
+            .then(({warnings: w}) => {
+                setWarnings(w)
+                setSavedName(name)
+                setSavedDefinition(definition)
+            })
             .catch(err => bakeError("Failed to save tract", err))
             .finally(() => setSaving(false))
     }

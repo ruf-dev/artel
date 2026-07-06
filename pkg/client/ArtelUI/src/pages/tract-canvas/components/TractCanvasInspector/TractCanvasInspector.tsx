@@ -127,7 +127,7 @@ function Body({node, rootSteps, tools, triggerSchema, momCandidates, lastOutputB
                 {step && node.kind === "condition" && (
                     <ConditionBody
                         rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema}
-                        onChangeSteps={onChangeSteps} onOpenAddBlock={onOpenAddBlock}
+                        onChangeSteps={onChangeSteps} onOpenAddBlock={onOpenAddBlock} enlarged={enlarged}
                     />
                 )}
                 {step && node.kind === "parallel" && (
@@ -292,13 +292,14 @@ function ActionBody({rootSteps, step, tools, triggerSchema, momCandidates, lastO
     )
 }
 
-function ConditionBody({rootSteps, step, tools, triggerSchema, onChangeSteps, onOpenAddBlock}: {
+function ConditionBody({rootSteps, step, tools, triggerSchema, onChangeSteps, onOpenAddBlock, enlarged}: {
     rootSteps: TractStep[]
     step: TractStep
     tools: TractTool[]
     triggerSchema?: SchemaNode
     onChangeSteps: (s: TractStep[]) => void
     onOpenAddBlock: (location: Location, index: number) => void
+    enlarged: boolean
 }) {
     const sources = buildSources(rootSteps, step.id, tools, triggerSchema)
     const conditions = step.conditions ?? []
@@ -322,19 +323,21 @@ function ConditionBody({rootSteps, step, tools, triggerSchema, onChangeSteps, on
             </Section>
             <Section title="Conditions (AND)">
                 {conditions.map((cond, i) => (
-                    <div className={cls.ConditionRow} key={i}>
+                    <div className={`${cls.ConditionRow} ${enlarged ? cls.ConditionRowEnlarged : ""}`} key={i}>
                         <TemplateInput value={cond.left} onChange={v => updateCondition(i, {left: v})} sources={sources} placeholder="left"/>
-                        <select className={cls.Select} value={cond.op} onChange={e => updateCondition(i, {op: e.target.value as TractCondition["op"]})}>
-                            {CONDITION_OPS.map(op => <option key={op} value={op}>{op}</option>)}
-                        </select>
+                        <div className={cls.ConditionOpRow}>
+                            <select className={cls.Select} value={cond.op} onChange={e => updateCondition(i, {op: e.target.value as TractCondition["op"]})}>
+                                {CONDITION_OPS.map(op => <option key={op} value={op}>{op}</option>)}
+                            </select>
+                            <Button
+                                variant="iconDanger"
+                                onClick={() => update(s => ({...s, conditions: (s.conditions ?? []).filter((_, xi) => xi !== i)}))}
+                                aria-label="Remove condition"
+                            >
+                                <CloseIcon/>
+                            </Button>
+                        </div>
                         <TemplateInput value={cond.right} onChange={v => updateCondition(i, {right: v})} sources={sources} placeholder="right"/>
-                        <Button
-                            variant="iconDanger"
-                            onClick={() => update(s => ({...s, conditions: (s.conditions ?? []).filter((_, xi) => xi !== i)}))}
-                            aria-label="Remove condition"
-                        >
-                            <CloseIcon/>
-                        </Button>
                     </div>
                 ))}
                 <Button variant="ghost" onClick={() => update(s => ({...s, conditions: [...(s.conditions ?? []), {left: "", op: "==", right: ""}]}))}>
