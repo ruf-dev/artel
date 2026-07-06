@@ -30,6 +30,7 @@ export default function TractCanvasArea({layout, tools, triggerInfo, selectedNod
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         if (e.button !== 0) return
+        if ((e.target as HTMLElement).closest("[data-tract-node]")) return
         const wrap = wrapRef.current
         if (!wrap) return
         dragRef.current = {startX: e.clientX, startY: e.clientY, scrollLeft: wrap.scrollLeft, scrollTop: wrap.scrollTop, moved: false}

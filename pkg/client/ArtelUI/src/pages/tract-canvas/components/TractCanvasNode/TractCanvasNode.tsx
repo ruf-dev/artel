@@ -34,6 +34,7 @@ export default function TractCanvasNode({node, tools, triggerInfo, status, selec
         <div
             className={`${cls.Node} ${selected ? cls.Selected : ""} ${node.kind === "trigger" ? cls.TriggerNode : ""}`}
             style={{left: node.x, top: node.y, width: NODE_WIDTH}}
+            data-tract-node
             onClick={e => {
                 e.stopPropagation()
                 onClick()
