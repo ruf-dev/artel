@@ -61,12 +61,20 @@ function EmailIcon() {
 
 function GitlabIcon() {
     return (
-        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M24 43L32 16H16L24 43Z" fill="#E24329"/>
-            <path d="M24 43L16 16L7 17L24 43Z" fill="#FC6D26"/>
-            <path d="M7 17L2 6L24 43L7 17Z" fill="#FCA326"/>
-            <path d="M24 43L32 16L41 17L24 43Z" fill="#FC6D26"/>
-            <path d="M41 17L46 6L24 43L41 17Z" fill="#FCA326"/>
+        <svg aria-hidden="true" role="img" className="tanuki-logo" width="25" height="24" viewBox="0 0 25 24"
+             fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path className="tanuki-shape tanuki"
+                  d="m24.507 9.5-.034-.09L21.082.562a.896.896 0 0 0-1.694.091l-2.29 7.01H7.825L5.535.653a.898.898 0 0 0-1.694-.09L.451 9.411.416 9.5a6.297 6.297 0 0 0 2.09 7.278l.012.01.03.022 5.16 3.867 2.56 1.935 1.554 1.176a1.051 1.051 0 0 0 1.268 0l1.555-1.176 2.56-1.935 5.197-3.89.014-.01A6.297 6.297 0 0 0 24.507 9.5Z"
+                  fill="#E24329"></path>
+            <path className="tanuki-shape right-cheek"
+                  d="m24.507 9.5-.034-.09a11.44 11.44 0 0 0-4.56 2.051l-7.447 5.632 4.742 3.584 5.197-3.89.014-.01A6.297 6.297 0 0 0 24.507 9.5Z"
+                  fill="#FC6D26"></path>
+            <path className="tanuki-shape chin"
+                  d="m7.707 20.677 2.56 1.935 1.555 1.176a1.051 1.051 0 0 0 1.268 0l1.555-1.176 2.56-1.935-4.743-3.584-4.755 3.584Z"
+                  fill="#FCA326"></path>
+            <path className="tanuki-shape left-cheek"
+                  d="M5.01 11.461a11.43 11.43 0 0 0-4.56-2.05L.416 9.5a6.297 6.297 0 0 0 2.09 7.278l.012.01.03.022 5.16 3.867 4.745-3.584-7.444-5.632Z"
+                  fill="#FC6D26"></path>
         </svg>
     )
 }
