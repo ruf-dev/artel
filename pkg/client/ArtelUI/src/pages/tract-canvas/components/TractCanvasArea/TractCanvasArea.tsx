@@ -1,3 +1,5 @@
+import React, {useRef, useState} from "react"
+
 import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.module.css"
 
 import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
@@ -5,6 +7,8 @@ import {Location} from "@/processes/tractSteps.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 
 import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
+
+const DRAG_THRESHOLD_PX = 4
 
 interface Props {
     layout: CanvasLayout
@@ -19,8 +23,60 @@ interface Props {
 }
 
 export default function TractCanvasArea({layout, tools, triggerInfo, selectedNodeId, onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock}: Props) {
+    const wrapRef = useRef<HTMLDivElement>(null)
+    const dragRef = useRef<{startX: number; startY: number; scrollLeft: number; scrollTop: number; moved: boolean} | null>(null)
+    const suppressClickRef = useRef(false)
+    const [panning, setPanning] = useState(false)
+
+    function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+        if (e.button !== 0) return
+        const wrap = wrapRef.current
+        if (!wrap) return
+        dragRef.current = {startX: e.clientX, startY: e.clientY, scrollLeft: wrap.scrollLeft, scrollTop: wrap.scrollTop, moved: false}
+        wrap.setPointerCapture(e.pointerId)
+    }
+
+    function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+        const drag = dragRef.current
+        const wrap = wrapRef.current
+        if (!drag || !wrap) return
+        const dx = e.clientX - drag.startX
+        const dy = e.clientY - drag.startY
+        if (!drag.moved && Math.hypot(dx, dy) > DRAG_THRESHOLD_PX) {
+            drag.moved = true
+            setPanning(true)
+        }
+        if (drag.moved) {
+            wrap.scrollLeft = drag.scrollLeft - dx
+            wrap.scrollTop = drag.scrollTop - dy
+        }
+    }
+
+    function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
+        const wrap = wrapRef.current
+        if (wrap) wrap.releasePointerCapture(e.pointerId)
+        if (dragRef.current?.moved) suppressClickRef.current = true
+        dragRef.current = null
+        setPanning(false)
+    }
+
+    function handleClickCapture(e: React.MouseEvent<HTMLDivElement>) {
+        if (suppressClickRef.current) {
+            suppressClickRef.current = false
+            e.stopPropagation()
+        }
+    }
+
     return (
-        <div className={cls.Wrap} onClick={onBackgroundClick}>
+        <div
+            ref={wrapRef}
+            className={`${cls.Wrap} ${panning ? cls.Panning : ""}`}
+            onClick={onBackgroundClick}
+            onClickCapture={handleClickCapture}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+        >
             <div className={cls.Canvas} style={{width: layout.width, height: layout.height}}>
                 <svg className={cls.Svg} width={layout.width} height={layout.height}>
                     {layout.edges.map(edge => {

@@ -1,9 +1,15 @@
 .Wrap {
     flex: 1;
     overflow: auto;
+    cursor: grab;
     background-image: radial-gradient(circle, var(--color-border-light) 1px, transparent 1px);
     background-size: 1.5rem 1.5rem;
     background-attachment: local;
+}
+
+.Panning {
+    cursor: grabbing;
+    user-select: none;
 }
 
 .Canvas {
