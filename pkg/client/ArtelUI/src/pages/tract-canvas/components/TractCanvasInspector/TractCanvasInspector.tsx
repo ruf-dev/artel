@@ -7,7 +7,7 @@ import {SchemaNode, TractCondition, TractStep, TractTool, TractTriggerSummary} f
 import {computeVisibleStepIds, findStepById} from "@/processes/tractTemplate.ts"
 import {hasChildren, Location, removeStepAt, replaceStep} from "@/processes/tractSteps.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
+import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 
 import {Button, ConfirmDialog} from "@vervstack/chures"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
@@ -40,6 +40,7 @@ interface Props {
     rootSteps: TractStep[]
     tools: TractTool[]
     triggerSchema?: SchemaNode
+    momCandidates: MomCandidate[]
     lastOutputByStepId: Record<string, unknown>
     tractUuid: string
     linkedTriggerSummaries: TractTriggerSummary[]
@@ -48,7 +49,7 @@ interface Props {
     onClose: () => void
 }
 
-export default function TractCanvasInspector({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose}: Props) {
+export default function TractCanvasInspector({node, rootSteps, tools, triggerSchema, momCandidates, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose}: Props) {
     const [enlarged, setEnlarged] = useState(false)
 
     useEffect(() => {
@@ -68,6 +69,7 @@ export default function TractCanvasInspector({node, rootSteps, tools, triggerSch
                         rootSteps={rootSteps}
                         tools={tools}
                         triggerSchema={triggerSchema}
+                        momCandidates={momCandidates}
                         lastOutputByStepId={lastOutputByStepId}
                         tractUuid={tractUuid}
                         linkedTriggerSummaries={linkedTriggerSummaries}
@@ -83,7 +85,7 @@ export default function TractCanvasInspector({node, rootSteps, tools, triggerSch
     )
 }
 
-function Body({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose, enlarged, onToggleEnlarge}: Omit<Props, "node"> & {
+function Body({node, rootSteps, tools, triggerSchema, momCandidates, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose, enlarged, onToggleEnlarge}: Omit<Props, "node"> & {
     node: CanvasNode
     enlarged: boolean
     onToggleEnlarge: () => void
@@ -117,6 +119,7 @@ function Body({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractU
                 {step && node.kind === "action" && (
                     <ActionBody
                         rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema}
+                        momCandidates={momCandidates}
                         lastOutput={lastOutputByStepId[step.id]}
                         onChangeSteps={onChangeSteps}
                     />
@@ -136,12 +139,34 @@ function Body({node, rootSteps, tools, triggerSchema, lastOutputByStepId, tractU
                 {step && (
                     <DangerZone rootSteps={rootSteps} step={step} location={node.location} onChangeSteps={onChangeSteps} onClose={onClose}/>
                 )}
-                <Section title="Flow">
-                    <Button variant="ghost" onClick={() => onOpenAddBlock(node.location, node.index + 1)}>
-                        {node.kind === "trigger" && rootSteps.length === 0 ? "+ Add first step" : "+ Add step after"}
-                    </Button>
-                </Section>
+                {node.kind === "action" || node.kind === "trigger" ? (
+                    <Section title="Output">
+                        <OutputFields schema={node.kind === "trigger" ? triggerSchema : tools.find(t => t.mcp === step?.mcp && t.tool === step?.tool)?.outputSchema}/>
+                    </Section>
+                ) : (
+                    <Section title="Flow">
+                        <Button variant="ghost" onClick={() => onOpenAddBlock(node.nextLocation, node.nextIndex)}>
+                            + Add step after
+                        </Button>
+                    </Section>
+                )}
             </div>
+        </>
+    )
+}
+
+function OutputFields({schema}: { schema?: SchemaNode }) {
+    const props = schema ? Object.entries(schema.properties) : []
+    if (props.length === 0) return <p className={cls.Empty}>No output fields.</p>
+
+    return (
+        <>
+            {props.map(([name, def]) => (
+                <div className={cls.Row} key={name}>
+                    <span className={cls.Key}>{name}</span>
+                    <span className={`${cls.Val} ${cls.ValDim}`}>{def.type}{def.description ? ` — ${def.description}` : ""}</span>
+                </div>
+            ))}
         </>
     )
 }
@@ -180,21 +205,17 @@ function NameField({step, onRename}: { step: TractStep; onRename: (name: string)
     )
 }
 
-function ActionBody({rootSteps, step, tools, triggerSchema, lastOutput, onChangeSteps}: {
+function ActionBody({rootSteps, step, tools, triggerSchema, momCandidates, lastOutput, onChangeSteps}: {
     rootSteps: TractStep[]
     step: TractStep
     tools: TractTool[]
     triggerSchema?: SchemaNode
+    momCandidates: MomCandidate[]
     lastOutput: unknown
     onChangeSteps: (s: TractStep[]) => void
 }) {
-    const {momCandidates, fetchMomCandidates} = useMcpKeys()
     const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
     const sources = buildSources(rootSteps, step.id, tools, triggerSchema)
-
-    useEffect(() => {
-        void fetchMomCandidates()
-    }, [fetchMomCandidates])
 
     function update(updater: (s: TractStep) => TractStep) {
         onChangeSteps(replaceStep(rootSteps, step.id, updater))

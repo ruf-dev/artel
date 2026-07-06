@@ -40,9 +40,15 @@ export interface CanvasNode {
     kind: CanvasNodeKind
     step?: TractStep
     /** Where this step lives in the tree (root list, or a parent's then/else/steps branch) and
-     * its index within that array — enough to insert a new step right after it. */
+     * its index within that array. Used for deletion and other node-specific lookups. */
     location: Location
     index: number
+    /** Where a "+" press on this node should insert the new step. For ordinary nodes this is
+     * just {location, index + 1}. For a node that is itself a lane inside a "parallel" step, this
+     * instead points right after the whole parallel (its own location/index in ITS containing
+     * array) — a lane has no "next" of its own, so "+" always means "join after every lane". */
+    nextLocation: Location
+    nextIndex: number
 }
 
 export interface CanvasEdge {
@@ -51,9 +57,21 @@ export interface CanvasEdge {
     toId: string
 }
 
+/** Bounding box (final pixel coords) for the soft-bordered container drawn around a non-empty
+ * "parallel" step's lanes. Clicking it selects the parallel step itself (kind "parallel" node in
+ * CanvasLayout.nodes) so its inspector (lane list, danger zone) opens like any other node. */
+export interface ParallelBox {
+    id: string
+    x: number
+    y: number
+    width: number
+    height: number
+}
+
 export interface CanvasLayout {
     nodes: CanvasNode[]
     edges: CanvasEdge[]
+    parallelBoxes: ParallelBox[]
     width: number
     height: number
 }
@@ -66,7 +84,11 @@ interface RawNode {
     step?: TractStep
     location: Location
     index: number
+    nextLocation: Location
+    nextIndex: number
 }
+
+const PARALLEL_BOX_PADDING = 16
 
 interface FlowResult {
     tipIds: string[]
@@ -128,6 +150,11 @@ function layoutFlow(
     prevIds: string[],
     nodes: RawNode[],
     edges: CanvasEdge[],
+    /** Overrides where THIS call's own nodes should send a "+" press. Set only when laying out a
+     * single lane inside a parallel step (see the "parallel" branch below) — a lane's head node
+     * has no "next" of its own within the lane array, so it borrows the enclosing parallel's own
+     * (location, index + 1) instead of computing {location, index + 1} from its own array. */
+    nextOverride?: {location: Location; index: number},
 ): FlowResult {
     let curCol = col
     let curPrevIds = prevIds
@@ -135,9 +162,11 @@ function layoutFlow(
     let maxRow = row
 
     steps.forEach((step, index) => {
+        const next = nextOverride ?? {location, index: index + 1}
+
         if (step.type === "condition") {
             const id = step.id
-            nodes.push({id, col: curCol, row, kind: "condition", step, location, index})
+            nodes.push({id, col: curCol, row, kind: "condition", step, location, index, nextLocation: next.location, nextIndex: next.index})
             addEdges(edges, curPrevIds, id)
             curCol++
 
@@ -163,7 +192,7 @@ function layoutFlow(
             const lanes = step.steps ?? []
             if (lanes.length === 0) {
                 const id = step.id
-                nodes.push({id, col: curCol, row, kind: "parallel", step, location, index})
+                nodes.push({id, col: curCol, row, kind: "parallel", step, location, index, nextLocation: next.location, nextIndex: next.index})
                 addEdges(edges, curPrevIds, id)
                 curPrevIds = [id]
                 curCol++
@@ -178,20 +207,25 @@ function layoutFlow(
                 const e = laneExtents[i]
                 const laneRow = cursor + e.above
                 cursor += e.above + e.below + ROW_GAP
-                return layoutFlow([lane], laneLoc, curCol, laneRow, curPrevIds, nodes, edges)
+                return layoutFlow([lane], laneLoc, curCol, laneRow, curPrevIds, nodes, edges, next)
             })
 
             curCol = Math.max(curCol, ...laneResults.map(r => r.maxCol))
             minRow = Math.min(minRow, ...laneResults.map(r => r.minRow))
             maxRow = Math.max(maxRow, ...laneResults.map(r => r.maxRow))
             curPrevIds = laneResults.flatMap(r => r.tipIds)
+
+            // A selectable stand-in for the parallel step itself, so its box (drawn separately,
+            // see layoutTract's parallelBoxes) can open the same inspector as any other node.
+            // Not part of the visible flow: no column advance, no edges of its own.
+            nodes.push({id: step.id, col, row, kind: "parallel", step, location, index, nextLocation: next.location, nextIndex: next.index})
             return
         }
 
         // action or group: one node each (a group's own nested steps are edited in the
         // inspector, not expanded onto the canvas)
         const id = step.id
-        nodes.push({id, col: curCol, row, kind: step.type === "group" ? "group" : "action", step, location, index})
+        nodes.push({id, col: curCol, row, kind: step.type === "group" ? "group" : "action", step, location, index, nextLocation: next.location, nextIndex: next.index})
         addEdges(edges, curPrevIds, id)
         curPrevIds = [id]
         curCol++
@@ -201,7 +235,10 @@ function layoutFlow(
 }
 
 export function layoutTract(rootSteps: TractStep[]): CanvasLayout {
-    const rawNodes: RawNode[] = [{id: TRIGGER_NODE_ID, col: 0, row: 0, kind: "trigger", location: ROOT_LOCATION, index: -1}]
+    const rawNodes: RawNode[] = [{
+        id: TRIGGER_NODE_ID, col: 0, row: 0, kind: "trigger", location: ROOT_LOCATION, index: -1,
+        nextLocation: ROOT_LOCATION, nextIndex: 0,
+    }]
     const edges: CanvasEdge[] = []
 
     const result = layoutFlow(rootSteps, ROOT_LOCATION, 1, 0, [TRIGGER_NODE_ID], rawNodes, edges)
@@ -215,10 +252,29 @@ export function layoutTract(rootSteps: TractStep[]): CanvasLayout {
         step: n.step,
         location: n.location,
         index: n.index,
+        nextLocation: n.nextLocation,
+        nextIndex: n.nextIndex,
     }))
+
+    const parallelBoxes: ParallelBox[] = []
+    for (const n of nodes) {
+        if (n.kind !== "parallel") continue
+        const laneNodes = nodes.filter(m => m.location.parentId === n.id && m.location.branch === "steps")
+        if (laneNodes.length === 0) continue // empty parallel — drawn as its own plain node, no box
+        const minX = Math.min(...laneNodes.map(m => m.x))
+        const minY = Math.min(...laneNodes.map(m => m.y))
+        const maxY = Math.max(...laneNodes.map(m => m.y + NODE_HEIGHT))
+        parallelBoxes.push({
+            id: n.id,
+            x: minX - PARALLEL_BOX_PADDING,
+            y: minY - PARALLEL_BOX_PADDING,
+            width: NODE_WIDTH + PARALLEL_BOX_PADDING * 2,
+            height: (maxY - minY) + PARALLEL_BOX_PADDING * 2,
+        })
+    }
 
     const width = MARGIN_X * 2 + NODE_WIDTH + result.maxCol * COLUMN_PITCH
     const height = MARGIN_Y * 2 + NODE_HEIGHT + (result.maxRow - result.minRow)
 
-    return {nodes, edges, width, height}
+    return {nodes, edges, parallelBoxes, width, height}
 }

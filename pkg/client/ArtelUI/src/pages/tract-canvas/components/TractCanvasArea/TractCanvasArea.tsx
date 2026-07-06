@@ -5,6 +5,7 @@ import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea
 import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Location} from "@/processes/tractSteps.ts"
 import {TractTool} from "@/processes/Tracts.ts"
+import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 
 import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 
@@ -14,6 +15,7 @@ interface Props {
     layout: CanvasLayout
     tools: TractTool[]
     triggerInfo?: {name: string; kind: string; source: string}
+    momCandidates: MomCandidate[]
     selectedNodeId: string | null
     onSelectNode: (id: string) => void
     onBackgroundClick: () => void
@@ -22,11 +24,12 @@ interface Props {
     onAddBlock: (location: Location, index: number) => void
 }
 
-export default function TractCanvasArea({layout, tools, triggerInfo, selectedNodeId, onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock}: Props) {
+export default function TractCanvasArea({layout, tools, triggerInfo, momCandidates, selectedNodeId, onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock}: Props) {
     const wrapRef = useRef<HTMLDivElement>(null)
     const dragRef = useRef<{startX: number; startY: number; scrollLeft: number; scrollTop: number; moved: boolean} | null>(null)
     const suppressClickRef = useRef(false)
     const [panning, setPanning] = useState(false)
+    const boxedNodeIds = new Set(layout.parallelBoxes.map(b => b.id))
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         if (e.button !== 0) return
@@ -87,16 +90,31 @@ export default function TractCanvasArea({layout, tools, triggerInfo, selectedNod
                         return <ConnectorPath key={edge.id} from={from} to={to} running={runningEdgeIds.has(edge.id)}/>
                     })}
                 </svg>
-                {layout.nodes.map(node => (
+                {layout.parallelBoxes.map(box => (
+                    <div
+                        key={box.id}
+                        className={`${cls.ParallelBox} ${box.id === selectedNodeId ? cls.ParallelBoxSelected : ""}`}
+                        style={{left: box.x, top: box.y, width: box.width, height: box.height}}
+                        data-tract-node
+                        onClick={e => {
+                            e.stopPropagation()
+                            onSelectNode(box.id)
+                        }}
+                        role="button"
+                        tabIndex={0}
+                    />
+                ))}
+                {layout.nodes.filter(node => !boxedNodeIds.has(node.id)).map(node => (
                     <TractCanvasNode
                         key={node.id}
                         node={node}
                         tools={tools}
                         triggerInfo={triggerInfo}
+                        momCandidates={momCandidates}
                         status={nodeStatus(node.id)}
                         selected={node.id === selectedNodeId}
                         onClick={() => onSelectNode(node.id)}
-                        onAddBlock={() => onAddBlock(node.location, node.index + 1)}
+                        onAddBlock={() => onAddBlock(node.nextLocation, node.nextIndex)}
                     />
                 ))}
             </div>

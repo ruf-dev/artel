@@ -6,6 +6,7 @@ import cls from "@/pages/tract-canvas/TractCanvasBuilderPage.module.css"
 import {Path} from "@/app/routing/Router.tsx"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
+import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import useUser from "@/hooks/user/User.ts"
 
 import {Button} from "@vervstack/chures"
@@ -17,6 +18,7 @@ export default function TractCanvasBuilderPage() {
     const {auth} = useUser()
     const {tracts, fetch, fetchRuns, runsByTract, fetchTools, tools, triggers, fetchTriggers} = useTracts()
     const {fetch: fetchConnections} = useExternalConnections()
+    const {momCandidates, fetchMomCandidates} = useMcpKeys()
 
     useEffect(() => {
         if (!auth.isAuthenticated()) navigate(Path.InitPage)
@@ -29,6 +31,7 @@ export default function TractCanvasBuilderPage() {
         void fetchTools()
         void fetchTriggers()
         void fetchConnections()
+        void fetchMomCandidates()
     }, [auth, tractUuid])
 
     const tract = tracts.find(t => t.uuid === tractUuid)
@@ -52,6 +55,7 @@ export default function TractCanvasBuilderPage() {
             tools={tools}
             triggers={triggers}
             runs={runs}
+            momCandidates={momCandidates}
             onBack={() => navigate(Path.TractsPage)}
         />
     )

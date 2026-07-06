@@ -85,7 +85,36 @@ export function insertBlockAfter(rootSteps: TractStep[], location: Location, ind
 }
 
 export function removeStepAt(rootSteps: TractStep[], location: Location, stepId: string): TractStep[] {
-    return mutateAt(rootSteps, location, arr => arr.filter(s => s.id !== stepId))
+    const removed = mutateAt(rootSteps, location, arr => arr.filter(s => s.id !== stepId))
+    return collapseThinParallels(removed)
+}
+
+/** collapseThinParallels walks the whole tree and unwraps any "parallel" step left with 0 or 1
+ * lanes (e.g. after deleting a lane down to the last one or two) — a parallel step only makes
+ * sense with 2+ concurrent lanes, so once it's thinner than that it should disappear (0 lanes) or
+ * be replaced by its sole remaining lane in place (1 lane) rather than linger as a dead wrapper. */
+export function collapseThinParallels(steps: TractStep[]): TractStep[] {
+    const result: TractStep[] = []
+    for (const step of steps) {
+        const withCollapsedChildren: TractStep = {
+            ...step,
+            then: step.then ? collapseThinParallels(step.then) : step.then,
+            else: step.else ? collapseThinParallels(step.else) : step.else,
+            steps: step.steps ? collapseThinParallels(step.steps) : step.steps,
+        }
+
+        if (withCollapsedChildren.type === "parallel") {
+            const lanes = withCollapsedChildren.steps ?? []
+            if (lanes.length === 0) continue
+            if (lanes.length === 1) {
+                result.push(lanes[0])
+                continue
+            }
+        }
+
+        result.push(withCollapsedChildren)
+    }
+    return result
 }
 
 /** replaceStep finds stepId anywhere in the tree and replaces it via updater, preserving its

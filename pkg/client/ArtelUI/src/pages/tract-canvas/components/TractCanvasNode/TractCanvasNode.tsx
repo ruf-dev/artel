@@ -1,6 +1,6 @@
 import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.module.css"
 
-import {CanvasNode, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
+import {CanvasNode, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 import {Button} from "@vervstack/chures"
 import {
@@ -13,27 +13,32 @@ import {
     WebhookIcon,
 } from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
+import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
+import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 
 export type NodeStatus = "ok" | "err" | "running" | "idle"
+
+const BUILTIN_MCP = "artel"
 
 interface Props {
     node: CanvasNode
     tools: TractTool[]
     triggerInfo?: {name: string; kind: string; source: string}
+    momCandidates: MomCandidate[]
     status: NodeStatus
     selected: boolean
     onClick: () => void
     onAddBlock: () => void
 }
 
-export default function TractCanvasNode({node, tools, triggerInfo, status, selected, onClick, onAddBlock}: Props) {
+export default function TractCanvasNode({node, tools, triggerInfo, momCandidates, status, selected, onClick, onAddBlock}: Props) {
     const step = node.step
     const color = colorForKind(node.kind, step?.mcp)
 
     return (
         <div
             className={`${cls.Node} ${selected ? cls.Selected : ""} ${node.kind === "trigger" ? cls.TriggerNode : ""}`}
-            style={{left: node.x, top: node.y, width: NODE_WIDTH}}
+            style={{left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT}}
             data-tract-node
             onClick={e => {
                 e.stopPropagation()
@@ -53,7 +58,7 @@ export default function TractCanvasNode({node, tools, triggerInfo, status, selec
                 </div>
             </div>
             <div className={cls.Chips}>
-                <NodeChips node={node} tools={tools} triggerInfo={triggerInfo}/>
+                <NodeChips node={node} tools={tools} triggerInfo={triggerInfo} momCandidates={momCandidates}/>
             </div>
             <Button
                 className={cls.AddButton}
@@ -104,10 +109,11 @@ function title(node: CanvasNode, triggerInfo?: {name: string}): string {
     return step.name || step.id
 }
 
-function NodeChips({node, tools, triggerInfo}: {
+function NodeChips({node, tools, triggerInfo, momCandidates}: {
     node: CanvasNode
     tools: TractTool[]
     triggerInfo?: {kind: string; source: string}
+    momCandidates: MomCandidate[]
 }) {
     if (node.kind === "trigger") {
         if (!triggerInfo) return <span className={cls.Chip}>unlinked</span>
@@ -133,12 +139,10 @@ function NodeChips({node, tools, triggerInfo}: {
     const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
     if (!tool) return <span className={cls.Chip}>unknown tool</span>
 
-    const inputs = Object.keys(tool.inputSchema.properties)
-    const outputs = Object.keys(tool.outputSchema.properties)
-    return (
-        <>
-            {inputs.map(n => <span key={`in-${n}`} className={`${cls.Chip} ${cls.ChipIn}`}>{n}</span>)}
-            {outputs.map(n => <span key={`out-${n}`} className={`${cls.Chip} ${cls.ChipOut}`}>{n}</span>)}
-        </>
-    )
+    if (step.mcp === BUILTIN_MCP) return <span className={cls.Chip}>built-in</span>
+
+    const candidate = momCandidates.find(c => c.name === step.mcp)
+    const connection = candidate?.connections?.find(c => c.id === step.connection_uuid)
+    if (!connection) return <span className={`${cls.Chip} ${cls.ChipWarn}`}>no connection</span>
+    return <span className={`${cls.Chip} ${cls.ChipConn}`}>{connectionLabel(connection)}</span>
 }

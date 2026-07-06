@@ -18,16 +18,18 @@ import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBu
 import {buildStepFromDraft, collectAllStepIds, insertBlockAfter, Location} from "@/processes/tractSteps.ts"
 import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
+import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 
 interface Props {
     tract: Tract
     tools: TractTool[]
     triggers: Trigger[]
     runs: TractRun[]
+    momCandidates: MomCandidate[]
     onBack: () => void
 }
 
-export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack}: Props) {
+export default function TractCanvasBuilder({tract, tools, triggers, runs, momCandidates, onBack}: Props) {
     const {updateTract} = useTracts()
     const bakeError = useBakeError()
     const {OpenDialog} = useDialog()
@@ -111,6 +113,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
                     layout={layout}
                     tools={tools}
                     triggerInfo={triggerInfo}
+                    momCandidates={momCandidates}
                     selectedNodeId={selectedNodeId}
                     onSelectNode={id => setSelectedNodeId(id)}
                     onBackgroundClick={() => setSelectedNodeId(null)}
@@ -123,6 +126,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, onBack
                     rootSteps={definition.steps}
                     tools={tools}
                     triggerSchema={triggerSchema}
+                    momCandidates={momCandidates}
                     lastOutputByStepId={lastOutputByStepId}
                     tractUuid={tract.uuid}
                     linkedTriggerSummaries={linkedSummaries}
