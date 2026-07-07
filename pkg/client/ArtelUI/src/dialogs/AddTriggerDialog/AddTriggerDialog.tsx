@@ -1,9 +1,15 @@
-import {useEffect, useState, type ReactNode} from "react"
+import {type ReactNode, useEffect, useState} from "react"
 
 import {TractCondition} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 
-import {AddTriggerDialogContext, AddTriggerDialogState, AddTriggerStep, emptySchemaField, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
+import {
+    AddTriggerDialogContext,
+    AddTriggerDialogState,
+    AddTriggerStep,
+    emptySchemaField,
+    SchemaFieldRow
+} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import ModeScreen from "@/dialogs/AddTriggerDialog/screens/ModeScreen.tsx"
 import CreateScreen from "@/dialogs/AddTriggerDialog/screens/CreateScreen.tsx"
 import LinkScreen from "@/dialogs/AddTriggerDialog/screens/LinkScreen.tsx"
