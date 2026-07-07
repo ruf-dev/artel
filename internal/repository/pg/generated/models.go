@@ -423,6 +423,24 @@ type Trigger struct {
 	SecretHash    []byte
 	Enabled       bool
 	CreatedAt     time.Time
+	Matchers      json.RawMessage
+}
+
+type TriggerPreset struct {
+	Key             string
+	Category        string
+	Label           string
+	Description     string
+	Provider        sql.NullString
+	PayloadSchema   json.RawMessage
+	DefaultMatchers json.RawMessage
+	CreatedAt       time.Time
+}
+
+type TriggerProviderLink struct {
+	TriggerID            uuid.UUID
+	ExternalConnectionID uuid.UUID
+	CreatedAt            time.Time
 }
 
 type User struct {

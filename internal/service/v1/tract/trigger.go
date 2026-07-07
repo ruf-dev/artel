@@ -17,8 +17,11 @@ import (
 
 const triggerTokenBytes = 32
 
-// CreateTrigger creates a standalone trigger and returns the raw webhook token once — only
-// its sha256 (SecretHash) is persisted.
+// CreateTrigger creates a standalone trigger and returns the raw webhook token once — only its
+// sha256 (SecretHash) is persisted. If source names a provider-linked preset (e.g. gitlab_push),
+// it instead attaches to the caller's existing connection for that provider (see
+// createProviderLinkedTrigger) and returns an empty token — there's no per-trigger secret, the
+// trigger shares the provider connection's own webhook URL/secret.
 func (s *Service) CreateTrigger(
 	ctx context.Context,
 	name string,
@@ -30,6 +33,15 @@ func (s *Service) CreateTrigger(
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return domain.Trigger{}, "", rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	preset, err := s.triggerPresets.GetByKey(ctx, source)
+	if err != nil {
+		return domain.Trigger{}, "", rerrors.Wrap(err, "error getting trigger preset")
+	}
+
+	if preset.Valid && preset.V.Provider != "" {
+		return s.createProviderLinkedTrigger(ctx, uc.UserUuid, name, kind, preset.V)
 	}
 
 	rawToken, err := generateTriggerToken()
@@ -56,6 +68,51 @@ func (s *Service) CreateTrigger(
 	}
 
 	return created, rawToken, nil
+}
+
+// createProviderLinkedTrigger resolves the caller's existing connection for preset.Provider and
+// links the new trigger to it (trigger_provider_links) instead of minting a private
+// trigger_uuid/secret_hash webhook URL — the delivery arrives at the provider's shared inbound
+// endpoint (e.g. /webhooks/gitlab/{external_connection_id}) and gitlab_webhook.Handler fans it
+// out to every trigger linked there, gated by TriggerMatchers.
+func (s *Service) createProviderLinkedTrigger(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	name string,
+	kind string,
+	preset domain.TriggerPreset,
+) (domain.Trigger, string, error) {
+	conn, err := s.externalConns.GetByUserAndProvider(ctx, userUuid, preset.Provider)
+	if err != nil {
+		return domain.Trigger{}, "", rerrors.Wrap(err, "error getting provider connection")
+	}
+
+	if !conn.Valid {
+		return domain.Trigger{}, "", rerrors.Wrap(user_errors.TriggerProviderConnectionRequired, preset.Provider)
+	}
+
+	trigger := domain.Trigger{
+		UserUuid:      userUuid,
+		Name:          name,
+		Kind:          kind,
+		Source:        preset.Key,
+		Config:        json.RawMessage(`{}`),
+		PayloadSchema: preset.PayloadSchema,
+		Matchers:      preset.DefaultMatchers,
+		Enabled:       true,
+	}
+
+	created, err := s.triggers.Create(ctx, trigger)
+	if err != nil {
+		return domain.Trigger{}, "", rerrors.Wrap(err, "error creating provider-linked trigger")
+	}
+
+	err = s.triggers.LinkToProvider(ctx, created.Uuid, conn.V.Uuid)
+	if err != nil {
+		return domain.Trigger{}, "", rerrors.Wrap(err, "error linking trigger to provider connection")
+	}
+
+	return created, "", nil
 }
 
 func generateTriggerToken() (string, error) {

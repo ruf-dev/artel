@@ -210,6 +210,13 @@ var (
 	TriggerNotOwned = rerrors.New("trigger does not belong to the caller", codes.PermissionDenied)
 	TractNotOwned   = rerrors.New("tract does not belong to the caller", codes.PermissionDenied)
 
+	// tract: provider-linked trigger presets (e.g. gitlab_push)
+	TriggerProviderConnectionRequired = rerrors.New(
+		"this trigger preset requires an existing connection for its provider - connect it first",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+
 	// tract: transport (tracts_api request fields that carry JSON-encoded strings)
 	TractRequestFieldInvalidJSON = rerrors.New(
 		"request field is not valid JSON",

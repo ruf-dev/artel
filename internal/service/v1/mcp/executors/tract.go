@@ -74,7 +74,7 @@ type TractService interface {
 	ListRuns(ctx context.Context, tractUuid uuid.UUID, limit int32) ([]domain.TractRun, error)
 	GetRun(ctx context.Context, id uuid.UUID) (domain.TractRun, []domain.TractRunStep, error)
 	ListTractTools(ctx context.Context) ([]domain.McpToolRef, error)
-	ListTriggerSources(ctx context.Context) ([]domain.TriggerSourcePreset, error)
+	ListTriggerSources(ctx context.Context) ([]domain.TriggerPreset, error)
 }
 
 // TractExecutor implements the tract-authoring builtin tools (list_tract_actions, create_tract,

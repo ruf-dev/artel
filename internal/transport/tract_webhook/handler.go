@@ -4,14 +4,12 @@ import (
 	"context"
 	"crypto/sha256"
 	"crypto/subtle"
-	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
@@ -110,67 +108,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Always 200 from here on — the response never leaks whether the trigger is disabled or
 	// which (if any) linked tracts matched their filters.
-	if !trigger.Enabled {
-		w.WriteHeader(http.StatusOK)
-
-		return
-	}
-
-	normalized, err := tract.NormalizePayload(trigger.Source, body)
+	err = tract.DispatchTrigger(ctx, h.baseCtx, h.triggers, h.tractSvc, trigger, body)
 	if err != nil {
-		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: failed to normalize payload")
-		w.WriteHeader(http.StatusOK)
-
-		return
-	}
-
-	links, err := h.triggers.ListLinksByTrigger(ctx, trigger.Uuid)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("trigger_uuid", triggerUuid.String()).
-			Msg("tract webhook: failed to list linked tracts")
-		w.WriteHeader(http.StatusOK)
-
-		return
-	}
-
-	for _, link := range links {
-		if !link.Tract.Enabled {
-			continue
-		}
-
-		matched, err := tract.EvaluateTriggerFilters(normalized, link.Filters)
-		if err != nil {
-			log.Error().
-				Err(err).
-				Str("trigger_uuid", triggerUuid.String()).
-				Str("tract_uuid", link.Tract.Uuid.String()).
-				Msg("tract webhook: failed to evaluate link filters")
-
-			continue
-		}
-
-		if !matched {
-			continue
-		}
-
-		linkedTract := link.Tract
-		go h.startRun(linkedTract, trigger.Uuid, normalized)
+		log.Error().Err(err).Str("trigger_uuid", triggerUuid.String()).Msg("tract webhook: dispatch failed")
 	}
 
 	w.WriteHeader(http.StatusOK)
-}
-
-// startRun runs against h.baseCtx (the server-lifecycle context, set at construction) rather
-// than the request context, which is cancelled the moment ServeHTTP returns.
-func (h *Handler) startRun(linkedTract domain.Tract, triggerUuid uuid.UUID, payload json.RawMessage) {
-	_, err := h.tractSvc.StartRun(h.baseCtx, linkedTract, payload, tract.StartedByWebhook, triggerUuid)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("tract_uuid", linkedTract.Uuid.String()).
-			Str("trigger_uuid", triggerUuid.String()).
-			Msg("tract webhook: run failed")
-	}
 }

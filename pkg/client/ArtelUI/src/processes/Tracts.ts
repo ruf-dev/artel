@@ -117,6 +117,9 @@ export interface TriggerSource {
     key: string
     description: string
     payloadSchema: SchemaNode
+    category: string
+    label: string
+    provider: string
 }
 
 export interface Trigger {
@@ -277,6 +280,9 @@ function toTriggerSource(item: TriggerSourceItem): TriggerSource {
         key: item.key ?? "",
         description: item.description ?? "",
         payloadSchema: parseSchema(item.payloadSchema),
+        category: item.category ?? "",
+        label: item.label ?? "",
+        provider: item.provider ?? "",
     }
 }
 

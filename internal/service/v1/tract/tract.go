@@ -30,26 +30,29 @@ var stepIdPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 
 // Service implements service.TractService and (via engine.go) the tract run engine.
 type Service struct {
-	tracts        repository.TractsRepo
-	triggers      repository.TriggersRepo
-	externalConns repository.ExternalConnectionRepo
-	mcpDefs       repository.McpDefinitionsRepo
-	toolExecutor  ToolExecutor
+	tracts         repository.TractsRepo
+	triggers       repository.TriggersRepo
+	triggerPresets repository.TriggerPresetsRepo
+	externalConns  repository.ExternalConnectionRepo
+	mcpDefs        repository.McpDefinitionsRepo
+	toolExecutor   ToolExecutor
 }
 
 func New(
 	tracts repository.TractsRepo,
 	triggers repository.TriggersRepo,
+	triggerPresets repository.TriggerPresetsRepo,
 	externalConns repository.ExternalConnectionRepo,
 	mcpDefs repository.McpDefinitionsRepo,
 	toolExecutor ToolExecutor,
 ) *Service {
 	return &Service{
-		tracts:        tracts,
-		triggers:      triggers,
-		externalConns: externalConns,
-		mcpDefs:       mcpDefs,
-		toolExecutor:  toolExecutor,
+		tracts:         tracts,
+		triggers:       triggers,
+		triggerPresets: triggerPresets,
+		externalConns:  externalConns,
+		mcpDefs:        mcpDefs,
+		toolExecutor:   toolExecutor,
 	}
 }
 

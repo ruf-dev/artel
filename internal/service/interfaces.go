@@ -235,7 +235,7 @@ type TractService interface {
 	// every mcp_tools row across every MoM.
 	ListTractTools(ctx context.Context) ([]domain.McpToolRef, error)
 	// ListTriggerSources returns the webhook preset catalog (gitlab_push, generic, ...).
-	ListTriggerSources(ctx context.Context) ([]domain.TriggerSourcePreset, error)
+	ListTriggerSources(ctx context.Context) ([]domain.TriggerPreset, error)
 }
 
 type ExternalConnectionService interface {

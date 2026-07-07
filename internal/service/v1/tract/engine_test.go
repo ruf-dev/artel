@@ -16,7 +16,7 @@ func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo
 	tracts := newFakeTractsRepo()
 	externalConns := newFakeExternalConnsRepo()
 	mcpDefs := newFakeMcpDefsRepo()
-	svc := New(tracts, nil, externalConns, mcpDefs, executor)
+	svc := New(tracts, nil, nil, externalConns, mcpDefs, executor)
 
 	return svc, tracts, externalConns
 }

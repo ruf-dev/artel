@@ -1,15 +1,47 @@
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
+import type {RefObject} from "react"
+import {createPortal} from "react-dom"
 
-import {Button, ConfirmDialog} from "@vervstack/chures"
+import {Button, ConfirmDialog, Dropdown} from "@vervstack/chures"
+import type {DropdownOption} from "@vervstack/chures"
 import cls from "@/components/TriggerPanel/TriggerPanel.module.css"
 
-import {SchemaNode, SchemaProperty, TractCondition, Trigger} from "@/processes/Tracts.ts"
+import {SchemaNode, SchemaProperty, TractCondition, Trigger, TriggerSource} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
+import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
+import ManageGitlabDialog from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx"
+
+// -- Category/provider display helpers (shared by the source picker and TriggerRow) --
+
+function categoryLabel(category: string): string {
+    switch (category) {
+        case "gitlab":
+            return "GitLab hooks"
+        case "generic":
+            return "Generic webhook"
+        default:
+            return category
+    }
+}
+
+const PROVIDER_ENUM_BY_KEY: Record<string, ExternalProvider> = {
+    gitlab: ExternalProvider.EXTERNAL_PROVIDER_GITLAB,
+}
+
+function providerLabel(provider: string): string {
+    if (provider === "gitlab") return "GitLab"
+    return provider ? provider.charAt(0).toUpperCase() + provider.slice(1) : ""
+}
+
+function providerEnumFor(provider: string): ExternalProvider | undefined {
+    return PROVIDER_ENUM_BY_KEY[provider]
+}
 
 interface Props {
     tractUuid: string
@@ -17,7 +49,7 @@ interface Props {
 }
 
 export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props) {
-    const {triggers, fetchTriggers, fetchTriggerSources, unlinkTrigger, setTriggerEnabled, rotateTriggerToken} = useTracts()
+    const {triggers, triggerSources, fetchTriggers, fetchTriggerSources, unlinkTrigger, setTriggerEnabled, rotateTriggerToken} = useTracts()
     const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
 
@@ -76,6 +108,7 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
                 <TriggerRow
                     key={t.uuid}
                     trigger={t}
+                    triggerSources={triggerSources}
                     onUnlink={() => handleUnlink(t.uuid)}
                     onToggle={enabled => setTriggerEnabled(t.uuid, enabled).catch(err => bakeError("Failed to update trigger", err))}
                     onRotate={() => handleRotate(t.uuid)}
@@ -85,14 +118,17 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
     )
 }
 
-function TriggerRow({trigger, onUnlink, onToggle, onRotate}: {
+function TriggerRow({trigger, triggerSources, onUnlink, onToggle, onRotate}: {
     trigger: Trigger
+    triggerSources: TriggerSource[]
     onUnlink: () => void
     onToggle: (enabled: boolean) => void
     onRotate: () => void
 }) {
     const [copied, setCopied] = useState(false)
-    const webhookUrl = trigger.kind === "webhook" ? `${window.location.origin}/tract/hook/${trigger.triggerUuid}` : ""
+    const preset = triggerSources.find(s => s.key === trigger.source)
+    const sharedProvider = trigger.kind === "webhook" ? preset?.provider ?? "" : ""
+    const webhookUrl = trigger.kind === "webhook" && !sharedProvider ? `${window.location.origin}/tract/hook/${trigger.triggerUuid}` : ""
 
     function handleCopy() {
         navigator.clipboard.writeText(webhookUrl).then(() => {
@@ -106,13 +142,17 @@ function TriggerRow({trigger, onUnlink, onToggle, onRotate}: {
             <span className={cls.Name}>{trigger.name}</span>
             <span className={cls.Chip}>{trigger.kind}</span>
             <span className={cls.Chip}>{trigger.source}</span>
-            {trigger.kind === "webhook" && <span className={cls.Url}>{webhookUrl}</span>}
+            {trigger.kind === "webhook" && !sharedProvider && <span className={cls.Url}>{webhookUrl}</span>}
             <div className={cls.RowActions}>
                 {trigger.kind === "webhook" && (
-                    <>
-                        <Button variant="ghost" onClick={handleCopy}>{copied ? "Copied!" : "Copy URL"}</Button>
-                        <Button variant="ghost" onClick={onRotate}>Rotate token</Button>
-                    </>
+                    sharedProvider ? (
+                        <span className={cls.Chip}>Shared · {providerLabel(sharedProvider)} connection</span>
+                    ) : (
+                        <>
+                            <Button variant="ghost" onClick={handleCopy}>{copied ? "Copied!" : "Copy URL"}</Button>
+                            <Button variant="ghost" onClick={onRotate}>Rotate token</Button>
+                        </>
+                    )
                 )}
                 <Button variant="ghost" onClick={() => onToggle(!trigger.enabled)}>{trigger.enabled ? "Enabled" : "Disabled"}</Button>
                 <Button variant="iconDanger" onClick={onUnlink} aria-label="Unlink trigger">✕</Button>
@@ -156,11 +196,20 @@ const FIELD_TYPES: SchemaProperty["type"][] = ["string", "integer", "number", "b
 
 function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedUuids: Set<string> }) {
     const {CloseDialog, OpenDialog} = useDialog()
-    const {triggers, triggerSources, createTrigger, linkTrigger} = useTracts()
+    const {triggers, triggerSources, createTrigger, linkTrigger, fetchTriggers, fetchTriggerSources} = useTracts()
+    const {connections} = useExternalConnections()
     const bakeError = useBakeError()
 
     const [step, setStep] = useState<AddStep>("mode")
     const [saving, setSaving] = useState(false)
+
+    // Refetch on every open — this dialog mounts fresh each time OpenDialog is called
+    // (see app/hooks/Dialog.ts), so a plain mount effect refreshes stale presets/triggers
+    // instead of reusing whatever TriggerPanel's own mount fetch loaded at page-load time.
+    useEffect(() => {
+        void fetchTriggerSources()
+        void fetchTriggers()
+    }, [fetchTriggerSources, fetchTriggers])
 
     // create-trigger fields
     const [name, setName] = useState("")
@@ -171,6 +220,11 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
     // link-existing fields
     const [selectedTriggerId, setSelectedTriggerId] = useState("")
     const [filters, setFilters] = useState<TractCondition[]>([])
+
+    const selectedSource = kind === "webhook" ? triggerSources.find(s => s.key === source) : undefined
+    const hasProviderConnection = selectedSource?.provider
+        ? connections.some(c => c.provider === providerEnumFor(selectedSource.provider))
+        : true
 
     function buildSchemaFromFields(): SchemaNode {
         const properties: Record<string, SchemaProperty> = {}
@@ -186,12 +240,14 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
     function handleCreate() {
         if (!name.trim()) return
         setSaving(true)
-        const payloadSchema = source === "generic" ? buildSchemaFromFields() : {properties: {}}
+        const payloadSchema = kind === "webhook" && source !== "generic"
+            ? selectedSource?.payloadSchema ?? {properties: {}}
+            : buildSchemaFromFields()
         createTrigger(name.trim(), kind, kind === "webhook" ? source : "generic", {}, payloadSchema)
             .then(result => linkTrigger(result.trigger.uuid, tractUuid, []).then(() => result))
             .then(result => {
                 CloseDialog()
-                if (kind === "webhook") {
+                if (kind === "webhook" && result.webhookToken) {
                     setTimeout(() => OpenDialog(<TokenRevealDialog webhookUrl={result.webhookUrl} webhookToken={result.webhookToken}/>), 0)
                 }
             })
@@ -222,21 +278,22 @@ function AddTriggerDialog({tractUuid, linkedUuids}: { tractUuid: string; linkedU
                         <KindSelect value={kind} onChange={setKind}/>
                     </label>
                     {kind === "webhook" && (
-                        <label className={cls.Field}>
-                            <span className={cls.FieldLabel}>Source preset</span>
-                            <select className={cls.PlainSelect} value={source} onChange={e => setSource(e.target.value)}>
-                                {triggerSources.map(s => <option key={s.key} value={s.key}>{s.key} — {s.description}</option>)}
-                                {triggerSources.length === 0 && <option value="generic">generic</option>}
-                            </select>
-                        </label>
+                        <SourcePicker triggerSources={triggerSources} source={source} onSourceChange={setSource}/>
                     )}
                     {(kind === "manual" || source === "generic") && (
                         <SchemaBuilder fields={fields} onChange={setFields}/>
                     )}
+                    {kind === "webhook" && source !== "generic" && selectedSource && (
+                        <PresetDetails
+                            preset={selectedSource}
+                            hasProviderConnection={hasProviderConnection}
+                            onConnectProvider={() => OpenDialog(<ManageGitlabDialog/>)}
+                        />
+                    )}
                 </div>
                 <div className={`${cls.DialogActions} ${cls.DialogActionsEnd}`}>
                     <Button variant="ghost" onClick={CloseDialog} disabled={saving}>Cancel</Button>
-                    <Button variant="primary" onClick={handleCreate} disabled={saving || !name.trim()}>
+                    <Button variant="primary" onClick={handleCreate} disabled={saving || !name.trim() || !hasProviderConnection}>
                         {saving ? "Creating…" : "Create & link"}
                     </Button>
                 </div>
@@ -327,6 +384,163 @@ function KindSelect({value, onChange}: { value: "webhook" | "manual"; onChange: 
             <option value="webhook">Webhook</option>
             <option value="manual">Manual</option>
         </select>
+    )
+}
+
+// Two-level webhook source picker: pick a category first, then (if the category has more
+// than one preset) pick a preset within it. Categories/presets with a single option resolve
+// immediately without a second pick.
+function SourcePicker({triggerSources, source, onSourceChange}: {
+    triggerSources: TriggerSource[]
+    source: string
+    onSourceChange: (source: string) => void
+}) {
+    const categories = Array.from(new Set(triggerSources.map(s => s.category)))
+    const selected = triggerSources.find(s => s.key === source)
+    const [pendingCategory, setPendingCategory] = useState<string | null>(null)
+    const category = pendingCategory ?? selected?.category ?? ""
+    const presetsInCategory = triggerSources.filter(s => s.category === category)
+
+    const [categoryOpen, setCategoryOpen] = useState(false)
+    const [presetOpen, setPresetOpen] = useState(false)
+    const categoryAnchorRef = useRef<HTMLDivElement>(null)
+    const presetAnchorRef = useRef<HTMLDivElement>(null)
+
+    function pickCategory(opt: DropdownOption) {
+        const key = typeof opt === "string" ? opt : opt.id
+        setCategoryOpen(false)
+        const presets = triggerSources.filter(s => s.category === key)
+        if (presets.length === 1) {
+            setPendingCategory(null)
+            onSourceChange(presets[0].key)
+        } else {
+            setPendingCategory(key)
+            onSourceChange("")
+        }
+    }
+
+    function pickPreset(opt: DropdownOption) {
+        const key = typeof opt === "string" ? opt : opt.id
+        setPresetOpen(false)
+        setPendingCategory(null)
+        onSourceChange(key)
+    }
+
+    return (
+        <>
+            <label className={cls.Field}>
+                <span className={cls.FieldLabel}>Category</span>
+                <div className={cls.PickerAnchor} ref={categoryAnchorRef}>
+                    <Button type="button" variant="secondary" className={cls.PickerButton} onClick={() => setCategoryOpen(o => !o)}>
+                        {category ? categoryLabel(category) : "Choose category…"}
+                    </Button>
+                </div>
+                {categoryOpen && (
+                    <FloatingDropdown
+                        anchorRef={categoryAnchorRef}
+                        options={categories.map(c => ({id: c, name: categoryLabel(c)}))}
+                        onPick={pickCategory}
+                        onClose={() => setCategoryOpen(false)}
+                        placeholder="Search categories…"
+                    />
+                )}
+            </label>
+            {category && presetsInCategory.length > 1 && (
+                <label className={cls.Field}>
+                    <span className={cls.FieldLabel}>Preset</span>
+                    <div className={cls.PickerAnchor} ref={presetAnchorRef}>
+                        <Button type="button" variant="secondary" className={cls.PickerButton} onClick={() => setPresetOpen(o => !o)}>
+                            {selected ? selected.label : "Choose preset…"}
+                        </Button>
+                    </div>
+                    {presetOpen && (
+                        <FloatingDropdown
+                            anchorRef={presetAnchorRef}
+                            options={presetsInCategory.map(p => ({id: p.key, name: p.label}))}
+                            onPick={pickPreset}
+                            onClose={() => setPresetOpen(false)}
+                            placeholder="Search presets…"
+                        />
+                    )}
+                </label>
+            )}
+        </>
+    )
+}
+
+// Portals a chures <Dropdown> to document.body, positioned under its anchor via
+// getBoundingClientRect — same "never use z-index" pattern as TemplateInput.tsx.
+function FloatingDropdown({anchorRef, options, onPick, onClose, placeholder}: {
+    anchorRef: RefObject<HTMLElement | null>
+    options: DropdownOption[]
+    onPick: (opt: DropdownOption) => void
+    onClose: () => void
+    placeholder?: string
+}) {
+    const [rect, setRect] = useState<{ top: number; left: number; width: number } | null>(null)
+
+    useEffect(() => {
+        function reposition() {
+            const el = anchorRef.current
+            if (!el) return
+            const box = el.getBoundingClientRect()
+            setRect({top: box.bottom + 4, left: box.left, width: box.width})
+        }
+
+        reposition()
+        window.addEventListener("scroll", reposition, true)
+        window.addEventListener("resize", reposition)
+        return () => {
+            window.removeEventListener("scroll", reposition, true)
+            window.removeEventListener("resize", reposition)
+        }
+    }, [anchorRef])
+
+    if (!rect) return null
+
+    return createPortal(
+        <div className={cls.DropdownPanel} style={{top: rect.top, left: rect.left, width: rect.width}}>
+            <Dropdown options={options} onPick={onPick} onClose={onClose} anchorRef={anchorRef} placeholder={placeholder}/>
+        </div>,
+        document.body,
+    )
+}
+
+// Read-only preview of a resolved preset: description + its payload schema fields (no inputs),
+// plus a provider-connection nudge for provider-linked presets (e.g. gitlab_push).
+function PresetDetails({preset, hasProviderConnection, onConnectProvider}: {
+    preset: TriggerSource
+    hasProviderConnection: boolean
+    onConnectProvider: () => void
+}) {
+    const propertyEntries = Object.entries(preset.payloadSchema.properties)
+
+    return (
+        <div className={cls.Field}>
+            <span className={cls.FieldLabel}>{preset.label}</span>
+            <p className={cls.Notice}>{preset.description}</p>
+            {propertyEntries.length > 0 && (
+                <div className={cls.SchemaPreview}>
+                    {propertyEntries.map(([propName, prop]) => (
+                        <div className={cls.SchemaFieldRow} key={propName}>
+                            <span className={cls.SchemaFieldName}>{propName}</span>
+                            <span className={cls.SchemaFieldTypeSelect}>{prop.type}</span>
+                            {prop.description && <span className={cls.Notice}>{prop.description}</span>}
+                        </div>
+                    ))}
+                </div>
+            )}
+            {preset.provider && (
+                hasProviderConnection ? (
+                    <p className={cls.Notice}>Uses your connected {providerLabel(preset.provider)}.</p>
+                ) : (
+                    <div className={cls.ProviderNotice}>
+                        <p className={cls.Notice}>Connect {providerLabel(preset.provider)} first to use this trigger.</p>
+                        <Button variant="secondary" onClick={onConnectProvider}>Connect {providerLabel(preset.provider)}</Button>
+                    </div>
+                )
+            )}
+        </div>
     )
 }
 

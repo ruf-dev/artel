@@ -93,7 +93,7 @@ func (f *fakeTractService) ListTractTools(_ context.Context) ([]domain.McpToolRe
 	panic("not implemented")
 }
 
-func (f *fakeTractService) ListTriggerSources(_ context.Context) ([]domain.TriggerSourcePreset, error) {
+func (f *fakeTractService) ListTriggerSources(_ context.Context) ([]domain.TriggerPreset, error) {
 	panic("not implemented")
 }
 

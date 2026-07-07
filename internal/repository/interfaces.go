@@ -35,6 +35,7 @@ type Repo interface {
 	McpConnectors() McpConnectorsRepo
 	Tracts() TractsRepo
 	Triggers() TriggersRepo
+	TriggerPresets() TriggerPresetsRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -288,6 +289,20 @@ type TriggersRepo interface {
 	// ListLinksByTrigger returns triggerUuid's linked tracts with Tract populated (Trigger left
 	// zero) — the webhook handler's fan-out: one delivery may start runs on several tracts.
 	ListLinksByTrigger(ctx context.Context, triggerUuid uuid.UUID) ([]TractTriggerLink, error)
+
+	// LinkToProvider attaches triggerId to a shared provider connection (see
+	// trigger_provider_links) instead of it minting its own trigger_uuid/secret_hash webhook URL.
+	LinkToProvider(ctx context.Context, triggerId uuid.UUID, externalConnectionId uuid.UUID) error
+	// ListByExternalConnection returns every trigger (Matchers populated) linked to one shared
+	// provider connection - the gitlab_webhook handler's fan-out lookup.
+	ListByExternalConnection(ctx context.Context, externalConnectionId uuid.UUID) ([]domain.Trigger, error)
+}
+
+// TriggerPresetsRepo is the pure-DB read layer for the trigger_presets catalog table - see
+// domain.TriggerPreset doc comment.
+type TriggerPresetsRepo interface {
+	List(ctx context.Context) ([]domain.TriggerPreset, error)
+	GetByKey(ctx context.Context, key string) (sql.Null[domain.TriggerPreset], error)
 }
 
 // TractTriggerLink is a read-side join projection — see TriggersRepo doc comments above for

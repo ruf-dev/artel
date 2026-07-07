@@ -123,8 +123,26 @@ type Trigger struct {
 	Config        json.RawMessage
 	PayloadSchema ToolSchema
 	SecretHash    []byte
-	Enabled       bool
-	CreatedAt     time.Time
+	// Matchers gates which triggers (among possibly several sharing one provider link, see
+	// trigger_provider_links) actually fire for a given inbound delivery. Seeded from the chosen
+	// TriggerPreset's DefaultMatchers at creation time; empty always matches (standalone
+	// triggers, which are the only recipient of their own webhook URL anyway).
+	Matchers  TriggerMatchers
+	Enabled   bool
+	CreatedAt time.Time
+}
+
+// TriggerMatchers decides whether an inbound delivery should fire a given trigger. Only
+// CheckHeaders exists today (AND semantics across entries, same philosophy as
+// EvaluateTriggerFilters); future check kinds (body field match, mail subject/from match) extend
+// this struct the same way TractCondition covers filter ops.
+type TriggerMatchers struct {
+	CheckHeaders []HeaderMatcher
+}
+
+type HeaderMatcher struct {
+	Header string
+	Equals string
 }
 
 // TriggerTractLink links triggerUuid to tractUuid with filter conditions (AND semantics) that
@@ -135,10 +153,17 @@ type TriggerTractLink struct {
 	Filters     []TractCondition
 }
 
-// TriggerSourcePreset describes one webhook trigger source (e.g. "gitlab_push") — read-only
-// catalog type, not persisted.
-type TriggerSourcePreset struct {
-	Key           string
-	Description   string
-	PayloadSchema ToolSchema
+// TriggerPreset describes one webhook trigger source (e.g. "gitlab_push") — backed by the
+// trigger_presets table (seeded via migration, see 038_trigger_presets_and_links.sql), not
+// hardcoded Go. Provider is the external_connections.provider a trigger created from this preset
+// attaches to (see trigger_provider_links); empty means standalone (own trigger_uuid/secret_hash
+// webhook URL, user-declared PayloadSchema).
+type TriggerPreset struct {
+	Key             string
+	Category        string
+	Label           string
+	Description     string
+	Provider        string
+	PayloadSchema   ToolSchema
+	DefaultMatchers TriggerMatchers
 }

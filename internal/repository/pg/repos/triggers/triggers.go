@@ -35,6 +35,11 @@ func (r *Repo) Create(ctx context.Context, trigger domain.Trigger) (domain.Trigg
 		return domain.Trigger{}, err
 	}
 
+	matchersJSON, err := marshalMatchers(trigger.Matchers)
+	if err != nil {
+		return domain.Trigger{}, err
+	}
+
 	params := artel_q.InsertTriggerParams{
 		UserID:        trigger.UserUuid,
 		Name:          trigger.Name,
@@ -43,6 +48,7 @@ func (r *Repo) Create(ctx context.Context, trigger domain.Trigger) (domain.Trigg
 		Config:        config,
 		PayloadSchema: schemaJSON,
 		SecretHash:    trigger.SecretHash,
+		Matchers:      matchersJSON,
 		Enabled:       trigger.Enabled,
 	}
 
@@ -217,6 +223,11 @@ func (r *Repo) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]rep
 			return nil, convErr
 		}
 
+		matchers, convErr := unmarshalMatchers(row.Matchers)
+		if convErr != nil {
+			return nil, convErr
+		}
+
 		trigger := domain.Trigger{
 			Uuid:          row.ID,
 			TriggerUuid:   row.TriggerUuid,
@@ -227,6 +238,7 @@ func (r *Repo) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]rep
 			Config:        row.Config,
 			PayloadSchema: schema,
 			SecretHash:    row.SecretHash,
+			Matchers:      matchers,
 			Enabled:       row.Enabled,
 			CreatedAt:     row.CreatedAt,
 		}
@@ -245,6 +257,44 @@ func (r *Repo) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]rep
 	}
 
 	return links, nil
+}
+
+// LinkToProvider attaches triggerId to a shared provider connection (see trigger_provider_links)
+// instead of it minting its own trigger_uuid/secret_hash webhook URL.
+func (r *Repo) LinkToProvider(ctx context.Context, triggerId uuid.UUID, externalConnectionId uuid.UUID) error {
+	params := artel_q.InsertTriggerProviderLinkParams{
+		TriggerID:            triggerId,
+		ExternalConnectionID: externalConnectionId,
+	}
+
+	err := r.q.InsertTriggerProviderLink(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error linking trigger to provider connection")
+	}
+
+	return nil
+}
+
+// ListByExternalConnection returns every trigger (Matchers populated) linked to one shared
+// provider connection — the gitlab_webhook handler's fan-out lookup.
+func (r *Repo) ListByExternalConnection(ctx context.Context, externalConnectionId uuid.UUID) ([]domain.Trigger, error) {
+	rows, err := r.q.ListTriggersByExternalConnection(ctx, externalConnectionId)
+	if err != nil {
+		return nil, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error listing triggers by external connection")
+	}
+
+	triggers := make([]domain.Trigger, len(rows))
+
+	for i, row := range rows {
+		trigger, convErr := triggerToDomain(row)
+		if convErr != nil {
+			return nil, convErr
+		}
+
+		triggers[i] = trigger
+	}
+
+	return triggers, nil
 }
 
 // ListLinksByTrigger returns triggerUuid's linked tracts with Tract populated (Trigger left
@@ -298,6 +348,11 @@ func triggerToDomain(row artel_q.Trigger) (domain.Trigger, error) {
 		return domain.Trigger{}, err
 	}
 
+	matchers, err := unmarshalMatchers(row.Matchers)
+	if err != nil {
+		return domain.Trigger{}, err
+	}
+
 	trigger := domain.Trigger{
 		Uuid:          row.ID,
 		TriggerUuid:   row.TriggerUuid,
@@ -308,6 +363,7 @@ func triggerToDomain(row artel_q.Trigger) (domain.Trigger, error) {
 		Config:        row.Config,
 		PayloadSchema: schema,
 		SecretHash:    row.SecretHash,
+		Matchers:      matchers,
 		Enabled:       row.Enabled,
 		CreatedAt:     row.CreatedAt,
 	}
@@ -417,6 +473,56 @@ type toolPropertyRow struct {
 	Properties  map[string]toolPropertyRow `json:"properties,omitempty"`
 	Items       *toolPropertyRow           `json:"items,omitempty"`
 	Required    []string                   `json:"required,omitempty"`
+}
+
+// matchers (de)serialization — mirrors the toolSchemaRow pattern above so domain.TriggerMatchers
+// stays free of persistence JSON tags.
+
+func marshalMatchers(matchers domain.TriggerMatchers) (json.RawMessage, error) {
+	row := triggerMatchersRow{
+		CheckHeaders: make([]headerMatcherRow, len(matchers.CheckHeaders)),
+	}
+	for i, m := range matchers.CheckHeaders {
+		row.CheckHeaders[i] = headerMatcherRow{Header: m.Header, Equals: m.Equals}
+	}
+
+	data, err := json.Marshal(row)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error marshaling trigger matchers")
+	}
+
+	return data, nil
+}
+
+func unmarshalMatchers(raw json.RawMessage) (domain.TriggerMatchers, error) {
+	if len(raw) == 0 {
+		return domain.TriggerMatchers{}, nil
+	}
+
+	var row triggerMatchersRow
+
+	err := json.Unmarshal(raw, &row)
+	if err != nil {
+		return domain.TriggerMatchers{}, rerrors.Wrap(err, "error unmarshaling trigger matchers")
+	}
+
+	matchers := domain.TriggerMatchers{
+		CheckHeaders: make([]domain.HeaderMatcher, len(row.CheckHeaders)),
+	}
+	for i, m := range row.CheckHeaders {
+		matchers.CheckHeaders[i] = domain.HeaderMatcher{Header: m.Header, Equals: m.Equals}
+	}
+
+	return matchers, nil
+}
+
+type triggerMatchersRow struct {
+	CheckHeaders []headerMatcherRow `json:"check_headers,omitempty"`
+}
+
+type headerMatcherRow struct {
+	Header string `json:"header"`
+	Equals string `json:"equals"`
 }
 
 // filters (de)serialization — domain.TractCondition already carries json tags (see

@@ -10,7 +10,10 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-// Webhook trigger source presets — see the Trigger.Source doc comment in domain/tract.go.
+// Webhook trigger source presets — see the Trigger.Source doc comment in domain/tract.go. Preset
+// metadata (description/schema/category/provider/default matchers) lives in the trigger_presets
+// table (migration 038); these keys are just the stable identifiers NormalizePayload's Go switch
+// dispatches on for the presets that need a normalizer.
 const (
 	SourceGitlabPush = "gitlab_push"
 	SourceGeneric    = "generic"
@@ -18,27 +21,16 @@ const (
 	gitlabRefBranchPrefix = "refs/heads/"
 )
 
-// ListTriggerSources returns the webhook preset catalog backing the ListTriggerSources RPC —
-// pure Go data, no repo access. vault_event/schedule/chat_keyword presets are future `kind`s,
-// not sources, and are not listed here.
-func ListTriggerSources() []domain.TriggerSourcePreset {
-	return []domain.TriggerSourcePreset{
-		{
-			Key:           SourceGitlabPush,
-			Description:   "GitLab push event webhook",
-			PayloadSchema: gitlabPushPayloadSchema(),
-		},
-		{
-			Key:           SourceGeneric,
-			Description:   "Generic webhook — payload shape is declared per-trigger (payload_schema), passed through unchanged",
-			PayloadSchema: domain.ToolSchema{},
-		},
+// ListTriggerSources returns the webhook preset catalog backing the ListTriggerSources RPC, read
+// from the trigger_presets table (seeded via migration) rather than hardcoded Go data — see
+// domain.TriggerPreset.
+func (s *Service) ListTriggerSources(ctx context.Context) ([]domain.TriggerPreset, error) {
+	presets, err := s.triggerPresets.List(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error listing trigger presets")
 	}
-}
 
-// ListTriggerSources exposes the package-level preset catalog through service.TractService.
-func (s *Service) ListTriggerSources(_ context.Context) ([]domain.TriggerSourcePreset, error) {
-	return ListTriggerSources(), nil
+	return presets, nil
 }
 
 // NormalizePayload applies the source-specific payload normalizer — currently only
@@ -76,53 +68,4 @@ func normalizeGitlabPush(raw json.RawMessage) (json.RawMessage, error) {
 	}
 
 	return normalized, nil
-}
-
-// gitlabPushPayloadSchema describes the shape NormalizePayload produces for a gitlab_push
-// trigger: ref/branch/user_name/project{id,name,path}/commits[]{id,message,url,author{name,
-// email}}/total_commits_count.
-func gitlabPushPayloadSchema() domain.ToolSchema {
-	author := domain.ToolProperty{
-		Type: schemaTypeObject,
-		Properties: map[string]domain.ToolProperty{
-			fieldName: {Type: "string"},
-			"email":   {Type: "string"},
-		},
-	}
-
-	commitItem := domain.ToolProperty{
-		Type: schemaTypeObject,
-		Properties: map[string]domain.ToolProperty{
-			"id":         {Type: "string", Description: "commit sha"},
-			fieldMessage: {Type: "string"},
-			"url":        {Type: "string"},
-			"author":     author,
-		},
-	}
-
-	project := domain.ToolProperty{
-		Type: schemaTypeObject,
-		Properties: map[string]domain.ToolProperty{
-			"id":      {Type: "integer"},
-			fieldName: {Type: "string"},
-			"path":    {Type: "string"},
-		},
-	}
-
-	schema := domain.ToolSchema{
-		Properties: map[string]domain.ToolProperty{
-			fieldRef: {Type: "string", Description: "full git ref, e.g. refs/heads/feature-x"},
-			fieldBranch: {
-				Type:        "string",
-				Description: "ref with refs/heads/ trimmed (added by the normalizer)",
-			},
-			"user_name":           {Type: "string"},
-			"project":             project,
-			"commits":             {Type: "array", Items: &commitItem},
-			"total_commits_count": {Type: "integer"},
-		},
-		Required: []string{fieldRef, fieldBranch},
-	}
-
-	return schema
 }

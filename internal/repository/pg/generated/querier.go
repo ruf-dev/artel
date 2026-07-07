@@ -60,6 +60,7 @@ type Querier interface {
 	GetTrigger(ctx context.Context, id uuid.UUID) (Trigger, error)
 	// Webhook routing lookup: the fired webhook only knows the trigger's rotatable routing id.
 	GetTriggerByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (Trigger, error)
+	GetTriggerPresetByKey(ctx context.Context, key string) (TriggerPreset, error)
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
@@ -76,6 +77,7 @@ type Querier interface {
 	InsertTractRun(ctx context.Context, arg InsertTractRunParams) (TractRun, error)
 	InsertTractRunStep(ctx context.Context, arg InsertTractRunStepParams) (TractRunStep, error)
 	InsertTrigger(ctx context.Context, arg InsertTriggerParams) (Trigger, error)
+	InsertTriggerProviderLink(ctx context.Context, arg InsertTriggerProviderLinkParams) error
 	LinkTriggerToTract(ctx context.Context, arg LinkTriggerToTractParams) error
 	LinkVaultS3Bucket(ctx context.Context, arg LinkVaultS3BucketParams) error
 	ListActiveMcpKeys(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
@@ -99,6 +101,9 @@ type Querier interface {
 	ListTriggerLinksByTract(ctx context.Context, tractID uuid.UUID) ([]ListTriggerLinksByTractRow, error)
 	// triggerUuid's linked tracts, Tract populated — the webhook handler's fan-out lookup.
 	ListTriggerLinksByTrigger(ctx context.Context, triggerID uuid.UUID) ([]ListTriggerLinksByTriggerRow, error)
+	ListTriggerPresets(ctx context.Context) ([]TriggerPreset, error)
+	// The gitlab_webhook handler's fan-out lookup: every trigger sharing one provider connection.
+	ListTriggersByExternalConnection(ctx context.Context, externalConnectionID uuid.UUID) ([]Trigger, error)
 	ListTriggersByUser(ctx context.Context, userID uuid.UUID) ([]Trigger, error)
 	ListVaultInvites(ctx context.Context, vaultID uuid.UUID) ([]VaultInvite, error)
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)

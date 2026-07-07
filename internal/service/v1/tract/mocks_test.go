@@ -202,9 +202,17 @@ func (f *fakeExternalConnsRepo) GetByID(_ context.Context, id uuid.UUID) (domain
 
 func (f *fakeExternalConnsRepo) GetByUserAndProvider(
 	_ context.Context,
-	_ uuid.UUID,
-	_ string,
+	userUuid uuid.UUID,
+	provider string,
 ) (sql.Null[domain.ExternalConnection], error) {
+	for _, conn := range f.conns {
+		if conn.UserUuid == userUuid && conn.Provider == provider {
+			result := sql.Null[domain.ExternalConnection]{V: conn, Valid: true}
+
+			return result, nil
+		}
+	}
+
 	return sql.Null[domain.ExternalConnection]{}, nil
 }
 
@@ -271,10 +279,155 @@ func (f *fakeMcpDefsRepo) ListAllTools(_ context.Context) ([]domain.McpToolRef, 
 	return nil, nil
 }
 
+// fakeTriggersRepo is a minimal in-memory repository.TriggersRepo used by trigger tests.
+type fakeTriggersRepo struct {
+	mu             sync.Mutex
+	triggers       map[uuid.UUID]domain.Trigger
+	providerLinks  map[uuid.UUID]uuid.UUID // triggerId -> externalConnectionId
+	linksByTrigger map[uuid.UUID][]repository.TractTriggerLink
+}
+
+func newFakeTriggersRepo() *fakeTriggersRepo {
+	repo := &fakeTriggersRepo{
+		triggers:       map[uuid.UUID]domain.Trigger{},
+		providerLinks:  map[uuid.UUID]uuid.UUID{},
+		linksByTrigger: map[uuid.UUID][]repository.TractTriggerLink{},
+	}
+
+	return repo
+}
+
+func (f *fakeTriggersRepo) Create(_ context.Context, trigger domain.Trigger) (domain.Trigger, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	trigger.Uuid = uuid.New()
+	trigger.TriggerUuid = uuid.New()
+	f.triggers[trigger.Uuid] = trigger
+
+	return trigger, nil
+}
+
+func (f *fakeTriggersRepo) Get(_ context.Context, id uuid.UUID) (sql.Null[domain.Trigger], error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	trigger, ok := f.triggers[id]
+	if !ok {
+		return sql.Null[domain.Trigger]{}, nil
+	}
+
+	result := sql.Null[domain.Trigger]{V: trigger, Valid: true}
+
+	return result, nil
+}
+
+func (f *fakeTriggersRepo) GetByTriggerUuid(_ context.Context, _ uuid.UUID) (sql.Null[domain.Trigger], error) {
+	return sql.Null[domain.Trigger]{}, nil
+}
+
+func (f *fakeTriggersRepo) ListByUser(_ context.Context, _ uuid.UUID) ([]domain.Trigger, error) {
+	return nil, nil
+}
+
+func (f *fakeTriggersRepo) SetEnabled(_ context.Context, _ uuid.UUID, _ bool) error {
+	return nil
+}
+
+func (f *fakeTriggersRepo) Delete(_ context.Context, _ uuid.UUID) error {
+	return nil
+}
+
+func (f *fakeTriggersRepo) RotateSecret(
+	_ context.Context, _ uuid.UUID, _ uuid.UUID, _ []byte,
+) (domain.Trigger, error) {
+	return domain.Trigger{}, nil
+}
+
+func (f *fakeTriggersRepo) Link(_ context.Context, _ domain.TriggerTractLink) error {
+	return nil
+}
+
+func (f *fakeTriggersRepo) Unlink(_ context.Context, _ uuid.UUID, _ uuid.UUID) error {
+	return nil
+}
+
+func (f *fakeTriggersRepo) ListLinksByTract(_ context.Context, _ uuid.UUID) ([]repository.TractTriggerLink, error) {
+	return nil, nil
+}
+
+func (f *fakeTriggersRepo) ListLinksByTrigger(_ context.Context, triggerUuid uuid.UUID) ([]repository.TractTriggerLink, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	return f.linksByTrigger[triggerUuid], nil
+}
+
+func (f *fakeTriggersRepo) LinkToProvider(_ context.Context, triggerId uuid.UUID, externalConnectionId uuid.UUID) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	f.providerLinks[triggerId] = externalConnectionId
+
+	return nil
+}
+
+func (f *fakeTriggersRepo) ListByExternalConnection(_ context.Context, externalConnectionId uuid.UUID) ([]domain.Trigger, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	var triggers []domain.Trigger
+
+	for triggerId, connId := range f.providerLinks {
+		if connId == externalConnectionId {
+			triggers = append(triggers, f.triggers[triggerId])
+		}
+	}
+
+	return triggers, nil
+}
+
+// fakeTriggerPresetsRepo is a minimal in-memory repository.TriggerPresetsRepo.
+type fakeTriggerPresetsRepo struct {
+	presets map[string]domain.TriggerPreset
+}
+
+func newFakeTriggerPresetsRepo() *fakeTriggerPresetsRepo {
+	repo := &fakeTriggerPresetsRepo{presets: map[string]domain.TriggerPreset{}}
+
+	return repo
+}
+
+func (f *fakeTriggerPresetsRepo) addPreset(preset domain.TriggerPreset) {
+	f.presets[preset.Key] = preset
+}
+
+func (f *fakeTriggerPresetsRepo) List(_ context.Context) ([]domain.TriggerPreset, error) {
+	presets := make([]domain.TriggerPreset, 0, len(f.presets))
+	for _, preset := range f.presets {
+		presets = append(presets, preset)
+	}
+
+	return presets, nil
+}
+
+func (f *fakeTriggerPresetsRepo) GetByKey(_ context.Context, key string) (sql.Null[domain.TriggerPreset], error) {
+	preset, ok := f.presets[key]
+	if !ok {
+		return sql.Null[domain.TriggerPreset]{}, nil
+	}
+
+	result := sql.Null[domain.TriggerPreset]{V: preset, Valid: true}
+
+	return result, nil
+}
+
 var (
 	_ repository.TractsRepo             = (*fakeTractsRepo)(nil)
 	_ repository.ExternalConnectionRepo = (*fakeExternalConnsRepo)(nil)
 	_ repository.McpDefinitionsRepo     = (*fakeMcpDefsRepo)(nil)
+	_ repository.TriggersRepo           = (*fakeTriggersRepo)(nil)
+	_ repository.TriggerPresetsRepo     = (*fakeTriggerPresetsRepo)(nil)
 )
 
 // fakeToolExecutor is a controllable ToolExecutor for engine/validation tests.

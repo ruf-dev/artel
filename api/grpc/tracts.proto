@@ -242,6 +242,9 @@ message TriggerSourceItem {
   string key            = 1;
   string description    = 2;
   string payload_schema = 3; // JSON-encoded {"properties": {...}, "required": [...]}
+  string category       = 4; // UI grouping, e.g. "gitlab" | "generic"
+  string label          = 5; // UI display name, e.g. "Branch push"
+  string provider       = 6; // external_connections.provider this preset attaches to; "" = standalone
 }
 
 message TriggerItem {

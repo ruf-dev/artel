@@ -1222,6 +1222,18 @@
         "payloadSchema": {
           "type": "string",
           "title": "JSON-encoded {\"properties\": {...}, \"required\": [...]}"
+        },
+        "category": {
+          "type": "string",
+          "title": "UI grouping, e.g. \"gitlab\" | \"generic\""
+        },
+        "label": {
+          "type": "string",
+          "title": "UI display name, e.g. \"Branch push\""
+        },
+        "provider": {
+          "type": "string",
+          "title": "external_connections.provider this preset attaches to; \"\" = standalone"
         }
       }
     },

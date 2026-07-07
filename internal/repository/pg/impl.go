@@ -20,6 +20,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tasktrackers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tracts"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggerpresets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
@@ -51,6 +52,7 @@ type Repos struct {
 	mcpConnectors         repository.McpConnectorsRepo
 	tracts                repository.TractsRepo
 	triggers              repository.TriggersRepo
+	triggerPresets        repository.TriggerPresetsRepo
 
 	txManager tx_manager.TxManager
 }
@@ -143,6 +145,10 @@ func (r Repos) Triggers() repository.TriggersRepo {
 	return r.triggers
 }
 
+func (r Repos) TriggerPresets() repository.TriggerPresetsRepo {
+	return r.triggerPresets
+}
+
 func New(db *sql.DB, encryptionKey []byte) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 	txManager := tx_manager.New(db)
@@ -170,6 +176,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		mcpConnectors:         mcpconnectors.New(q),
 		tracts:                tracts.New(q, txManager),
 		triggers:              triggers.New(q),
+		triggerPresets:        triggerpresets.New(q),
 
 		txManager: txManager,
 	}

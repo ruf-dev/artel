@@ -271,7 +271,7 @@ func newTestService(
 	externalConns *fakeExternalConnsRepo,
 	executor *fakeToolExecutor,
 ) *Service {
-	svc := New(nil, nil, externalConns, mcpDefs, executor)
+	svc := New(nil, nil, nil, externalConns, mcpDefs, executor)
 
 	return svc
 }

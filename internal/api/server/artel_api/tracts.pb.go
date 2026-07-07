@@ -1008,6 +1008,9 @@ type TriggerSourceItem struct {
 	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	PayloadSchema string                 `protobuf:"bytes,3,opt,name=payload_schema,json=payloadSchema,proto3" json:"payload_schema,omitempty"` // JSON-encoded {"properties": {...}, "required": [...]}
+	Category      string                 `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`                                // UI grouping, e.g. "gitlab" | "generic"
+	Label         string                 `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty"`                                      // UI display name, e.g. "Branch push"
+	Provider      string                 `protobuf:"bytes,6,opt,name=provider,proto3" json:"provider,omitempty"`                                // external_connections.provider this preset attaches to; "" = standalone
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1059,6 +1062,27 @@ func (x *TriggerSourceItem) GetDescription() string {
 func (x *TriggerSourceItem) GetPayloadSchema() string {
 	if x != nil {
 		return x.PayloadSchema
+	}
+	return ""
+}
+
+func (x *TriggerSourceItem) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *TriggerSourceItem) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *TriggerSourceItem) GetProvider() string {
+	if x != nil {
+		return x.Provider
 	}
 	return ""
 }
@@ -3591,11 +3615,14 @@ const file_tracts_proto_rawDesc = "" +
 	"\x04tool\x18\x02 \x01(\tR\x04tool\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12!\n" +
 	"\finput_schema\x18\x04 \x01(\tR\vinputSchema\x12#\n" +
-	"\routput_schema\x18\x05 \x01(\tR\foutputSchema\"n\n" +
+	"\routput_schema\x18\x05 \x01(\tR\foutputSchema\"\xbc\x01\n" +
 	"\x11TriggerSourceItem\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12%\n" +
-	"\x0epayload_schema\x18\x03 \x01(\tR\rpayloadSchema\"\xfc\x01\n" +
+	"\x0epayload_schema\x18\x03 \x01(\tR\rpayloadSchema\x12\x1a\n" +
+	"\bcategory\x18\x04 \x01(\tR\bcategory\x12\x14\n" +
+	"\x05label\x18\x05 \x01(\tR\x05label\x12\x1a\n" +
+	"\bprovider\x18\x06 \x01(\tR\bprovider\"\xfc\x01\n" +
 	"\vTriggerItem\x12\x12\n" +
 	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +

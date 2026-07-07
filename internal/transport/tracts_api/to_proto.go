@@ -150,17 +150,20 @@ func toolRefsToProto(refs []domain.McpToolRef) []*pb.TractToolItem {
 	return items
 }
 
-func triggerSourceToProto(p domain.TriggerSourcePreset) *pb.TriggerSourceItem {
+func triggerSourceToProto(p domain.TriggerPreset) *pb.TriggerSourceItem {
 	item := &pb.TriggerSourceItem{
 		Key:           p.Key,
 		Description:   p.Description,
 		PayloadSchema: schemaToJSON(p.PayloadSchema),
+		Category:      p.Category,
+		Label:         p.Label,
+		Provider:      p.Provider,
 	}
 
 	return item
 }
 
-func triggerSourcesToProto(presets []domain.TriggerSourcePreset) []*pb.TriggerSourceItem {
+func triggerSourcesToProto(presets []domain.TriggerPreset) []*pb.TriggerSourceItem {
 	items := make([]*pb.TriggerSourceItem, len(presets))
 	for i, p := range presets {
 		items[i] = triggerSourceToProto(p)

@@ -1,6 +1,7 @@
 package gitlab_webhook
 
 import (
+	"context"
 	"crypto/subtle"
 	"encoding/json"
 	"io"
@@ -13,6 +14,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/utils"
 	"go.redsock.ru/rerrors"
 )
@@ -23,15 +25,34 @@ const (
 	loggedPayloadBytes = 500
 )
 
+// Handler serves POST /webhooks/gitlab/{external_connection_id} — the shared inbound endpoint
+// for every trigger linked to one GitLab connection (see trigger_provider_links). Unlike
+// tract_webhook.Handler (one trigger, its own secret/URL), auth here is against the connection's
+// own webhook secret, and a single delivery may fan out to N triggers, each gated by its own
+// TriggerMatchers (tract.MatchesRequest) — e.g. a gitlab_push trigger only fires on
+// X-Gitlab-Event: Push Hook, so a Merge Request delivery to the same connection URL doesn't
+// misfire it.
 type Handler struct {
 	externalConns repository.ExternalConnectionRepo
+	triggers      repository.TriggersRepo
 	momSvc        service.MomService
+	tractSvc      service.TractService
+	baseCtx       context.Context
 }
 
-func New(externalConns repository.ExternalConnectionRepo, momSvc service.MomService) *Handler {
+func New(
+	baseCtx context.Context,
+	externalConns repository.ExternalConnectionRepo,
+	triggers repository.TriggersRepo,
+	momSvc service.MomService,
+	tractSvc service.TractService,
+) *Handler {
 	return &Handler{
 		externalConns: externalConns,
+		triggers:      triggers,
 		momSvc:        momSvc,
+		tractSvc:      tractSvc,
+		baseCtx:       baseCtx,
 	}
 }
 
@@ -131,6 +152,33 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Str("event", event).
 		Bytes("payload_preview", payloadPreview).
 		Msg("gitlab webhook: payload received")
+
+	// Always 200 from here on — same "never leak internal state" posture as tract_webhook.
+	linkedTriggers, err := h.triggers.ListByExternalConnection(ctx, exConnId)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("external_connection_id", exConnId.String()).
+			Msg("gitlab webhook: failed to list linked triggers")
+		w.WriteHeader(http.StatusOK)
+
+		return
+	}
+
+	for _, trigger := range linkedTriggers {
+		if !tract.MatchesRequest(trigger.Matchers, r.Header) {
+			continue
+		}
+
+		dispatchErr := tract.DispatchTrigger(ctx, h.baseCtx, h.triggers, h.tractSvc, trigger, body)
+		if dispatchErr != nil {
+			log.Error().
+				Err(dispatchErr).
+				Str("external_connection_id", exConnId.String()).
+				Str("trigger_uuid", trigger.Uuid.String()).
+				Msg("gitlab webhook: dispatch failed")
+		}
+	}
 
 	w.WriteHeader(http.StatusOK)
 }

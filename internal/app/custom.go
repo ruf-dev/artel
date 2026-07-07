@@ -68,7 +68,9 @@ func (c *Custom) Init(a *App) error {
 	// Tract is constructed here (not in svcv1.New) because its ToolExecutor composes the
 	// already-built Mcp and Mom services — mcp must exist first, then tract.
 	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
-	services.Tract = tract.New(repo.Tracts(), repo.Triggers(), repo.ExternalConnections(), repo.McpDefinitions(), tractToolExecutor)
+	services.Tract = tract.New(
+		repo.Tracts(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(), repo.McpDefinitions(), tractToolExecutor,
+	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that
 	// TractService exists — breaks the construction-order cycle without Mcp importing Tract.
@@ -97,7 +99,9 @@ func (c *Custom) Init(a *App) error {
 	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
 	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.MomService())
-	gitlabWebhookHandler := gitlab_webhook.New(repo.ExternalConnections(), services.MomService())
+	gitlabWebhookHandler := gitlab_webhook.New(
+		a.Ctx, repo.ExternalConnections(), repo.Triggers(), services.MomService(), services.TractService(),
+	)
 	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
 	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())

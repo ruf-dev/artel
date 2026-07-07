@@ -122,6 +122,9 @@ export type TriggerSourceItem = {
   key?: string;
   description?: string;
   payloadSchema?: string;
+  category?: string;
+  label?: string;
+  provider?: string;
 };
 
 export type TriggerItem = {

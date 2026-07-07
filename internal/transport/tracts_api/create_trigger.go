@@ -34,7 +34,13 @@ func (t *TractsImpl) CreateTrigger(
 		return nil, rerrors.Wrap(err, "error creating trigger")
 	}
 
-	webhookUrl := webhookBaseURL(ctx) + webhookPathPrefix + created.TriggerUuid.String()
+	// rawToken is empty for provider-linked triggers (see Service.CreateTrigger) — they share the
+	// provider connection's own webhook URL/secret, already shown to the user on the connection
+	// management dialog (e.g. ManageGitlabDialog), so there is no fresh URL to reveal here.
+	var webhookUrl string
+	if rawToken != "" {
+		webhookUrl = webhookBaseURL(ctx) + webhookPathPrefix + created.TriggerUuid.String()
+	}
 
 	resp := &pb.CreateTrigger_Response{
 		Trigger:      triggerToProto(created),
