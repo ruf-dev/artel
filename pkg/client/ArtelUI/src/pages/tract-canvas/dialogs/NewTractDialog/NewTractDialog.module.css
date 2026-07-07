@@ -1,0 +1,52 @@
+.NewTractDialogContainer {
+    width: clamp(360px, 30vw, 480px);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: 1.125rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    animation: dialogIn 280ms cubic-bezier(.2,.7,.2,1) both;
+
+    .DialogTitle {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--color-fg-primary);
+        margin-bottom: 1rem;
+    }
+
+    .DialogInput {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.5625rem 0.75rem;
+        border-radius: 0.5625rem;
+        border: 1px solid var(--color-border-light);
+        background: var(--color-bg-input);
+        color: var(--color-fg-primary);
+        font-size: 0.8125rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 160ms ease;
+
+        &:focus {
+            border-color: var(--coral);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
+    .DialogActions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.625rem;
+        margin-top: 1.5rem;
+    }
+}
+
+@keyframes dialogIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
