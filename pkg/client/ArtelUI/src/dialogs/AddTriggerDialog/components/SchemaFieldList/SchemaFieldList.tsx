@@ -16,6 +16,9 @@ export default function SchemaFieldList({fields, onChange}: { fields: SchemaFiel
                     field={f}
                     onChange={patch => update(i, patch)}
                     onRemove={() => onChange(fields.filter((_, fi) => fi !== i))}
+                    renderNestedList={(nestedFields, nestedOnChange) => (
+                        <SchemaFieldList fields={nestedFields} onChange={nestedOnChange}/>
+                    )}
                 />
             ))}
             <Button variant="ghost" onClick={() => onChange([...fields, emptySchemaField()])}>

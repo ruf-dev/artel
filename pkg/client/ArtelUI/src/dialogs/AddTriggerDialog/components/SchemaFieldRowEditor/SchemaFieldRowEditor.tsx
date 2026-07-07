@@ -1,16 +1,17 @@
+import {type ReactNode} from "react"
 import {Button} from "@vervstack/chures"
 import cls from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.module.css"
 
 import {cn} from "@/app/utils/cn.ts"
 import {SchemaProperty} from "@/processes/Tracts.ts"
 import {emptySchemaField, FIELD_TYPES, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
-import SchemaFieldList from "@/dialogs/AddTriggerDialog/components/SchemaFieldList/SchemaFieldList.tsx"
 
-export default function SchemaFieldRowEditor({field, onChange, onRemove, hideName}: {
+export default function SchemaFieldRowEditor({field, onChange, onRemove, hideName, renderNestedList}: {
     field: SchemaFieldRow
     onChange: (patch: Partial<SchemaFieldRow>) => void
     onRemove?: () => void
     hideName?: boolean
+    renderNestedList: (fields: SchemaFieldRow[], onChange: (fields: SchemaFieldRow[]) => void) => ReactNode
 }) {
     return (
         <div className={cls.SchemaFieldRowEditorContainer}>
@@ -36,7 +37,7 @@ export default function SchemaFieldRowEditor({field, onChange, onRemove, hideNam
             </div>
             {field.type === "object" && (
                 <div className={cls.NestedFields}>
-                    <SchemaFieldList fields={field.properties ?? []} onChange={properties => onChange({properties})}/>
+                    {renderNestedList(field.properties ?? [], properties => onChange({properties}))}
                 </div>
             )}
             {field.type === "array" && (
@@ -45,6 +46,7 @@ export default function SchemaFieldRowEditor({field, onChange, onRemove, hideNam
                         field={field.items ?? emptySchemaField()}
                         onChange={patch => onChange({items: {...(field.items ?? emptySchemaField()), ...patch}})}
                         hideName
+                        renderNestedList={renderNestedList}
                     />
                 </div>
             )}
