@@ -9,7 +9,7 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
-import {useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
+import {useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import DialogHeaderWithClose from "@/dialogs/AddTriggerDialog/components/DialogHeaderWithClose.tsx"
 
 export default function LinkScreen() {

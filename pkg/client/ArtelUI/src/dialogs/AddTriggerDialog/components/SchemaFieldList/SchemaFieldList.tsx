@@ -1,6 +1,6 @@
 import {Button} from "@vervstack/chures"
 
-import {emptySchemaField, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
+import {emptySchemaField, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import SchemaFieldRowEditor from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.tsx"
 
 export default function SchemaFieldList({fields, onChange}: { fields: SchemaFieldRow[]; onChange: (fields: SchemaFieldRow[]) => void }) {

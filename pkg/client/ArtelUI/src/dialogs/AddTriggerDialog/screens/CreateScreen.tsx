@@ -11,7 +11,7 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {providerEnumFor} from "@/components/TriggerPanel/triggerLabels.ts"
 
 import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
-import {fieldsToSchemaNode, useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
+import {fieldsToSchemaNode, useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import DialogHeaderWithClose from "@/dialogs/AddTriggerDialog/components/DialogHeaderWithClose.tsx"
 import WebhookPicker from "@/components/WebhookPicker/WebhookPicker.tsx"
 import SchemaBuilder from "@/dialogs/AddTriggerDialog/screens/SchemaBuilder.tsx"

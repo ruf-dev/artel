@@ -4,7 +4,7 @@ import cls from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/Sche
 
 import {cn} from "@/app/utils/cn.ts"
 import {SchemaProperty} from "@/processes/Tracts.ts"
-import {emptySchemaField, FIELD_TYPES, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
+import {emptySchemaField, FIELD_TYPES, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 
 export default function SchemaFieldRowEditor({field, onChange, onRemove, hideName, renderNestedList}: {
     field: SchemaFieldRow

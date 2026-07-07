@@ -2,7 +2,7 @@ import {useState} from "react"
 import {Button} from "@vervstack/chures"
 import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 
-import {SchemaFieldRow, fieldsToSchemaNode} from "@/dialogs/AddTriggerDialog/AddTriggerDialogContext.ts"
+import {SchemaFieldRow, fieldsToSchemaNode} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import {useTriggerSources} from "@/app/hooks/Tracts.ts"
 import CodeIcon from "@/icons/common/CodeIcon.tsx"
 import JsonView from "@/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.tsx"
