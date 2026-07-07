@@ -1,0 +1,70 @@
+.ActionBodyContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .Row {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        padding: 0.4375rem 0;
+        border-bottom: 1px solid var(--color-border);
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .Key {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        color: var(--color-fg-secondary);
+        width: 5rem;
+        flex-shrink: 0;
+    }
+
+    .Val {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        color: var(--color-fg-primary);
+        flex: 1;
+        word-break: break-all;
+    }
+
+    .ValDim {
+        color: var(--color-fg-tertiary);
+    }
+
+    .Select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.375rem 0.5625rem;
+        border-radius: 0.4375rem;
+        border: 1px solid var(--color-border-light);
+        background: var(--color-bg-input);
+        color: var(--color-fg-primary);
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        outline: none;
+        transition: border-color 140ms ease;
+
+        &:focus {
+            border-color: var(--coral);
+        }
+    }
+
+    .InputInvalid {
+        border-color: var(--color-error);
+    }
+
+    .Empty {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+    }
+
+    .ParamRow {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}

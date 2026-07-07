@@ -81,7 +81,7 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
             </div>
             <p className={cls.VaultName}>{vault.name}</p>
 
-            <section className={cls.Section}>
+            <section className={cls.ManageVaultSection}>
                 <div className={cls.SectionHead}>
                     <span className={cls.SectionTitle}>Members</span>
                 </div>
@@ -98,7 +98,7 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
                 </div>
             </section>
 
-            <section className={cls.Section}>
+            <section className={cls.ManageVaultSection}>
                 <div className={cls.SectionHead}>
                     <span className={cls.SectionTitle}>Invite links</span>
                     <Button variant="secondary" onClick={openCreateInviteDialog}>

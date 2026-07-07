@@ -1,0 +1,39 @@
+.TractCanvasInspectorContainer {
+    display: contents;
+
+    .Backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .Panel {
+        width: 0;
+        flex-shrink: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid transparent;
+        background: var(--color-bg-card);
+        transition: width 220ms cubic-bezier(.2,.7,.2,1), border-color 220ms ease;
+
+        &.Open {
+            width: 20rem;
+            border-left-color: var(--color-border);
+        }
+
+        &.Enlarged {
+            position: absolute;
+            inset: 0;
+            left: auto;
+            width: 80%;
+            box-shadow: -2rem 0 4rem -1.5rem rgba(0, 0, 0, 0.5);
+        }
+    }
+}
+
+[data-theme="light"] .TractCanvasInspectorContainer .Backdrop {
+    background: rgba(0, 0, 0, 0.16);
+}

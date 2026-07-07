@@ -1,0 +1,4 @@
+.GroupBodyContainer {
+    display: flex;
+    flex-direction: column;
+}

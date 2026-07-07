@@ -1,0 +1,85 @@
+.TractCanvasInspectorBodyContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .Head {
+        flex-shrink: 0;
+        padding: 0.625rem 0.875rem 0.75rem;
+        border-bottom: 1px solid var(--color-border);
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto auto;
+        column-gap: 0.5rem;
+        row-gap: 0.25rem;
+
+        .EnlargeBtn {
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: start;
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+            padding: 0 !important;
+            border: 0 !important;
+            border-radius: 0.375rem;
+            background: transparent !important;
+            color: var(--color-fg-secondary) !important;
+            transition: background 140ms ease, color 140ms ease;
+
+            &:hover {
+                background: var(--color-bg-hover) !important;
+                color: var(--color-fg-primary) !important;
+            }
+        }
+
+        .EnlargeChevron {
+            width: 0.875rem;
+            height: 0.875rem;
+            transform: rotate(180deg);
+            transition: transform 220ms cubic-bezier(.2,.7,.2,1);
+        }
+
+        .EnlargeChevronOpen {
+            transform: rotate(0deg);
+        }
+
+        .CloseBtn {
+            grid-column: 3;
+            grid-row: 1 / span 2;
+            justify-self: end;
+            align-self: start;
+        }
+
+        .Titles {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+            min-width: 0;
+
+            .Title {
+                font-weight: 600;
+                font-size: 0.875rem;
+                letter-spacing: -0.01em;
+                color: var(--color-fg-primary);
+                white-space: nowrap;
+            }
+
+            .Sub {
+                font-family: var(--font-mono);
+                font-size: 0.625rem;
+                color: var(--color-fg-tertiary);
+                margin-top: 0.125rem;
+            }
+        }
+    }
+
+    .Body {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0.75rem 0.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        box-sizing: border-box;
+    }
+}

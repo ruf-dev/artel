@@ -1,0 +1,23 @@
+.SectionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .SectionTitle {
+        font-family: var(--font-mono);
+        font-size: 0.59375rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-fg-tertiary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--color-border);
+        }
+    }
+}

@@ -11,7 +11,7 @@ import {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 
 import TractCanvasTopBar from "@/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx"
 import TractCanvasArea from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx"
-import TractCanvasInspector from "@/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx"
+import TractCanvasInspector from "@/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.tsx"
 import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
 import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts"
 import RunTractDialog from "@/components/RunTractDialog/RunTractDialog.tsx"
