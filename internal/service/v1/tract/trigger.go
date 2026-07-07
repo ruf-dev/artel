@@ -59,6 +59,7 @@ func (s *Service) CreateTrigger(
 		Config:        config,
 		PayloadSchema: payloadSchema,
 		SecretHash:    hash[:],
+		TokenSuffix:   tokenSuffix(rawToken),
 		Enabled:       true,
 	}
 
@@ -124,6 +125,18 @@ func generateTriggerToken() (string, error) {
 	}
 
 	return hex.EncodeToString(buf), nil
+}
+
+// tokenSuffix returns the last 4 chars of a raw webhook token, for the UI's masked "hook info"
+// display — kept in plaintext alongside SecretHash, unlike the token itself.
+const tokenSuffixLen = 4
+
+func tokenSuffix(rawToken string) string {
+	if len(rawToken) < tokenSuffixLen {
+		return rawToken
+	}
+
+	return rawToken[len(rawToken)-tokenSuffixLen:]
 }
 
 func (s *Service) GetTrigger(ctx context.Context, id uuid.UUID) (domain.Trigger, error) {
@@ -216,7 +229,7 @@ func (s *Service) RotateTriggerToken(ctx context.Context, id uuid.UUID) (domain.
 	hash := sha256.Sum256([]byte(rawToken))
 	newTriggerUuid := uuid.New()
 
-	rotated, err := s.triggers.RotateSecret(ctx, id, newTriggerUuid, hash[:])
+	rotated, err := s.triggers.RotateSecret(ctx, id, newTriggerUuid, hash[:], tokenSuffix(rawToken))
 	if err != nil {
 		return domain.Trigger{}, "", rerrors.Wrap(err, "error rotating trigger token")
 	}

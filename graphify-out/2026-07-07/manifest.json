@@ -1955,8 +1955,8 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/ManageVaultDialog/ManageVaultDialog.tsx": {
-    "mtime": 1783276137.9336228,
-    "ast_hash": "0dec3e29988bbeb41e2c2697f0b7e4cf",
+    "mtime": 1783455270.6138499,
+    "ast_hash": "e4e65942cbabf10799ffe98c2e439766",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/ManageEmailDialog.tsx": {
@@ -2575,8 +2575,8 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasListPage.tsx": {
-    "mtime": 1783453826.8506298,
-    "ast_hash": "779e45a9bc27c404c7dcbcb338200760",
+    "mtime": 1783454196.7160697,
+    "ast_hash": "95e44b1b8d927a0920110a38ef46e0f8",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx": {
@@ -2600,13 +2600,13 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx": {
-    "mtime": 1783353363.416067,
-    "ast_hash": "885e80f22d5cf1c230f4c7cffc71d6a4",
+    "mtime": 1783455087.1494186,
+    "ast_hash": "888241883e1686c019da30d97aa4515f",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx": {
-    "mtime": 1783359567.2359276,
-    "ast_hash": "64f2a8620c105ddafc009e78ee092d32",
+    "mtime": 1783455822.811419,
+    "ast_hash": "aebefe893b438e6d83ca89afd778b39b",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx": {
@@ -2627,11 +2627,6 @@
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractIcons/TractIcons.tsx": {
     "mtime": 1783151307.5293052,
     "ast_hash": "d937019cf99049a2c264ae9c1eebe5fc",
-    "semantic_hash": ""
-  },
-  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspector/TractCanvasInspector.tsx": {
-    "mtime": 1783356089.5802507,
-    "ast_hash": "06f660746bb4016ef7bf94ecb00394bd",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx": {
@@ -2905,18 +2900,18 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/SchemaBuilder.tsx": {
-    "mtime": 1783451763.2442043,
-    "ast_hash": "229f8600eeaf84f49e048edb841d1d1e",
+    "mtime": 1783454381.009872,
+    "ast_hash": "4704ce79543e40edc4fb7d11874ca44f",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/LinkScreen.tsx": {
-    "mtime": 1783423857.5202644,
-    "ast_hash": "a06561cd5cb1e6b638329747ee1b0e81",
+    "mtime": 1783454381.0092146,
+    "ast_hash": "9c951765f90ed5e1fbc2b4e5cb881105",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/CreateScreen.tsx": {
-    "mtime": 1783428486.1060143,
-    "ast_hash": "8d3887bed22f7d1334c4a2fedaeb3f2c",
+    "mtime": 1783454381.009586,
+    "ast_hash": "af13a845d0e91d82abb5dc3b8cbeb057",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/PresetDetails.tsx": {
@@ -2925,8 +2920,8 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/ModeScreen.tsx": {
-    "mtime": 1783423819.1308665,
-    "ast_hash": "c24097751dbf1a25ec9e3d6ffac9d202",
+    "mtime": 1783454381.010312,
+    "ast_hash": "54b27294f16ca290d116ab52ca5534ee",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/icons/common/CloseIcon.tsx": {
@@ -2950,18 +2945,18 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.tsx": {
-    "mtime": 1783451135.5677764,
-    "ast_hash": "4adedefa0226411bf323e2f394cf0368",
+    "mtime": 1783454381.010875,
+    "ast_hash": "b2eae578f18c242af9d4a4dad827dc72",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/components/SchemaFieldList/SchemaFieldList.tsx": {
-    "mtime": 1783451946.122445,
-    "ast_hash": "16cc9968c31517f576269e652670433f",
+    "mtime": 1783454381.0106602,
+    "ast_hash": "0ab698c334a51e2f904995e81e77a6dc",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.tsx": {
-    "mtime": 1783451941.7138097,
-    "ast_hash": "a2340af89fed6cb527a00bc8f4bf6a36",
+    "mtime": 1783454381.0110924,
+    "ast_hash": "fccd5e96b0a9cab4b81dc1fc4b0a1212",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.tsx": {
@@ -2985,8 +2980,93 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.tsx": {
-    "mtime": 1783452750.888712,
-    "ast_hash": "a8c915d49e5ef7b6efc6372a514df9dd",
+    "mtime": 1783454636.1348755,
+    "ast_hash": "6c9589326c5373c3c0c9db372be8fa86",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/processes/inspectorSources.ts": {
+    "mtime": 1783455531.1914592,
+    "ast_hash": "13b71f233ebee5c8e2465755a0e90572",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/Section/Section.tsx": {
+    "mtime": 1783455532.6151834,
+    "ast_hash": "2d59b1ef8242124fbf5e461108a23b2e",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/GroupBody/GroupBody.tsx": {
+    "mtime": 1783455734.1506732,
+    "ast_hash": "adc8e719caf2ab06d12ed183c304789b",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/NodeChips/NodeChips.tsx": {
+    "mtime": 1783455064.0801322,
+    "ast_hash": "84e6eca7704ca0ca1ce1ad938108a480",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/ActionBody/ActionBody.tsx": {
+    "mtime": 1783455703.327813,
+    "ast_hash": "baac5ecef811c0cf386fc91670c41414",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/tractCanvasNode.ts": {
+    "mtime": 1783455075.6435587,
+    "ast_hash": "ab5aa61fcbd5bc13af33316bc00cd109",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/OutputFields/OutputFields.tsx": {
+    "mtime": 1783455549.446779,
+    "ast_hash": "8116414f1df76e3e8df0659656c0af69",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/DangerZone/DangerZone.tsx": {
+    "mtime": 1783455739.2046032,
+    "ast_hash": "867ed6afd8002b90e52fe0229bb69795",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/NameField/NameField.tsx": {
+    "mtime": 1783455555.2060223,
+    "ast_hash": "e4f4a40e5afdf31f627bca36a0a5d57d",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/ConditionBody/ConditionBody.tsx": {
+    "mtime": 1783455721.7847066,
+    "ast_hash": "d1fad7ce37303db9915591cb2e15439a",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/ParallelBody/ParallelBody.tsx": {
+    "mtime": 1783455728.6943104,
+    "ast_hash": "e2245e5ba658a3670423da3aa0c4ef17",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.tsx": {
+    "mtime": 1783455773.6370292,
+    "ast_hash": "e2e6712471b5e06475b39db63c0293a2",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/icons/NodeIcon/NodeIcon.tsx": {
+    "mtime": 1783455054.0397162,
+    "ast_hash": "d807ac563982e4465b8a8b0c9a094b70",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.tsx": {
+    "mtime": 1783454160.6717074,
+    "ast_hash": "52b49d5d282c7dfb9686b625cf444964",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.tsx": {
+    "mtime": 1783455792.441468,
+    "ast_hash": "27633a9727fbf9aaf92b63b58cdddfb3",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/segments/ContentSegment/ContentSegment.tsx": {
+    "mtime": 1783454186.092727,
+    "ast_hash": "eb24deace93ef737dad87737bb3563f6",
+    "semantic_hash": ""
+  },
+  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/pages/tract-canvas/segments/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783454172.3867123,
+    "ast_hash": "db730c5c8410bd8f6c0e2250fd62cdbf",
     "semantic_hash": ""
   }
 }

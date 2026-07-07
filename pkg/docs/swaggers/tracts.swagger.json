@@ -1207,6 +1207,10 @@
         },
         "createdAt": {
           "type": "string"
+        },
+        "tokenSuffix": {
+          "type": "string",
+          "title": "last 4 hex chars of the raw webhook token; \"\" if none (manual/provider-linked)"
         }
       }
     },

@@ -48,6 +48,7 @@ func (r *Repo) Create(ctx context.Context, trigger domain.Trigger) (domain.Trigg
 		Config:        config,
 		PayloadSchema: schemaJSON,
 		SecretHash:    trigger.SecretHash,
+		TokenSuffix:   sql.NullString{String: trigger.TokenSuffix, Valid: trigger.TokenSuffix != ""},
 		Matchers:      matchersJSON,
 		Enabled:       trigger.Enabled,
 	}
@@ -156,11 +157,13 @@ func (r *Repo) RotateSecret(
 	id uuid.UUID,
 	newTriggerUuid uuid.UUID,
 	secretHash []byte,
+	tokenSuffix string,
 ) (domain.Trigger, error) {
 	params := artel_q.RotateTriggerSecretParams{
 		ID:          id,
 		TriggerUuid: newTriggerUuid,
 		SecretHash:  secretHash,
+		TokenSuffix: sql.NullString{String: tokenSuffix, Valid: tokenSuffix != ""},
 	}
 
 	row, err := r.q.RotateTriggerSecret(ctx, params)
@@ -238,6 +241,7 @@ func (r *Repo) ListLinksByTract(ctx context.Context, tractUuid uuid.UUID) ([]rep
 			Config:        row.Config,
 			PayloadSchema: schema,
 			SecretHash:    row.SecretHash,
+			TokenSuffix:   row.TokenSuffix.String,
 			Matchers:      matchers,
 			Enabled:       row.Enabled,
 			CreatedAt:     row.CreatedAt,
@@ -363,6 +367,7 @@ func triggerToDomain(row artel_q.Trigger) (domain.Trigger, error) {
 		Config:        row.Config,
 		PayloadSchema: schema,
 		SecretHash:    row.SecretHash,
+		TokenSuffix:   row.TokenSuffix.String,
 		Matchers:      matchers,
 		Enabled:       row.Enabled,
 		CreatedAt:     row.CreatedAt,

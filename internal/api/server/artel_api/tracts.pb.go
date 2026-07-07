@@ -1098,6 +1098,7 @@ type TriggerItem struct {
 	TriggerUuid   string                 `protobuf:"bytes,7,opt,name=trigger_uuid,json=triggerUuid,proto3" json:"trigger_uuid,omitempty"`       // webhook routing key
 	Enabled       bool                   `protobuf:"varint,8,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	CreatedAt     string                 `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	TokenSuffix   string                 `protobuf:"bytes,10,opt,name=token_suffix,json=tokenSuffix,proto3" json:"token_suffix,omitempty"` // last 4 hex chars of the raw webhook token; "" if none (manual/provider-linked)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1191,6 +1192,13 @@ func (x *TriggerItem) GetEnabled() bool {
 func (x *TriggerItem) GetCreatedAt() string {
 	if x != nil {
 		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *TriggerItem) GetTokenSuffix() string {
+	if x != nil {
+		return x.TokenSuffix
 	}
 	return ""
 }
@@ -3622,7 +3630,7 @@ const file_tracts_proto_rawDesc = "" +
 	"\x0epayload_schema\x18\x03 \x01(\tR\rpayloadSchema\x12\x1a\n" +
 	"\bcategory\x18\x04 \x01(\tR\bcategory\x12\x14\n" +
 	"\x05label\x18\x05 \x01(\tR\x05label\x12\x1a\n" +
-	"\bprovider\x18\x06 \x01(\tR\bprovider\"\xfc\x01\n" +
+	"\bprovider\x18\x06 \x01(\tR\bprovider\"\x9f\x02\n" +
 	"\vTriggerItem\x12\x12\n" +
 	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
@@ -3633,7 +3641,9 @@ const file_tracts_proto_rawDesc = "" +
 	"\ftrigger_uuid\x18\a \x01(\tR\vtriggerUuid\x12\x18\n" +
 	"\aenabled\x18\b \x01(\bR\aenabled\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\t \x01(\tR\tcreatedAt\"\xde\x01\n" +
+	"created_at\x18\t \x01(\tR\tcreatedAt\x12!\n" +
+	"\ftoken_suffix\x18\n" +
+	" \x01(\tR\vtokenSuffix\"\xde\x01\n" +
 	"\vCreateTract\x1a{\n" +
 	"\aRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +

@@ -115,8 +115,8 @@ type Querier interface {
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	RevokeVaultInvite(ctx context.Context, id uuid.UUID) error
-	// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid and
-	// secret_hash in place, keyed by the trigger's stable primary key id.
+	// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid,
+	// secret_hash, and token_suffix in place, keyed by the trigger's stable primary key id.
 	RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecretParams) (Trigger, error)
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
 	SetTractEnabled(ctx context.Context, arg SetTractEnabledParams) error

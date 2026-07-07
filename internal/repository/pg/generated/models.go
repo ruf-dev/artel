@@ -424,6 +424,7 @@ type Trigger struct {
 	Enabled       bool
 	CreatedAt     time.Time
 	Matchers      json.RawMessage
+	TokenSuffix   sql.NullString
 }
 
 type TriggerPreset struct {

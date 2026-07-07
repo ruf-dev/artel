@@ -24,6 +24,26 @@ export function useTriggerSources() {
     }
 }
 
+export const triggersQueryKey = ['triggers'] as const
+
+export function useTrigger(uuid: string) {
+    const {auth} = useUser()
+
+    const q = useQuery({
+        queryKey: triggersQueryKey,
+        queryFn: () => tractsService.listTriggers(),
+        enabled: auth.isAuthenticated() && !!uuid,
+        select: (triggers) => triggers.find(t => t.uuid === uuid),
+        retry: retryOnStatus(),
+    })
+
+    return {
+        trigger: q.data,
+        isLoading: q.isLoading,
+        error: q.error,
+    }
+}
+
 interface TractsState {
     tracts: Tract[]
     loading: boolean

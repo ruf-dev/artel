@@ -7,6 +7,7 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"time"
 
@@ -24,7 +25,7 @@ func (q *Queries) DeleteTrigger(ctx context.Context, id uuid.UUID) error {
 }
 
 const getTrigger = `-- name: GetTrigger :one
-SELECT id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers
+SELECT id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers, token_suffix
 FROM triggers
 WHERE id = $1
 `
@@ -45,12 +46,13 @@ func (q *Queries) GetTrigger(ctx context.Context, id uuid.UUID) (Trigger, error)
 		&i.Enabled,
 		&i.CreatedAt,
 		&i.Matchers,
+		&i.TokenSuffix,
 	)
 	return i, err
 }
 
 const getTriggerByTriggerUuid = `-- name: GetTriggerByTriggerUuid :one
-SELECT id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers
+SELECT id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers, token_suffix
 FROM triggers
 WHERE trigger_uuid = $1
 `
@@ -72,14 +74,15 @@ func (q *Queries) GetTriggerByTriggerUuid(ctx context.Context, triggerUuid uuid.
 		&i.Enabled,
 		&i.CreatedAt,
 		&i.Matchers,
+		&i.TokenSuffix,
 	)
 	return i, err
 }
 
 const insertTrigger = `-- name: InsertTrigger :one
-INSERT INTO triggers (user_id, name, kind, source, config, payload_schema, secret_hash, matchers, enabled)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-RETURNING id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers
+INSERT INTO triggers (user_id, name, kind, source, config, payload_schema, secret_hash, token_suffix, matchers, enabled)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+RETURNING id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers, token_suffix
 `
 
 type InsertTriggerParams struct {
@@ -90,6 +93,7 @@ type InsertTriggerParams struct {
 	Config        json.RawMessage
 	PayloadSchema json.RawMessage
 	SecretHash    []byte
+	TokenSuffix   sql.NullString
 	Matchers      json.RawMessage
 	Enabled       bool
 }
@@ -103,6 +107,7 @@ func (q *Queries) InsertTrigger(ctx context.Context, arg InsertTriggerParams) (T
 		arg.Config,
 		arg.PayloadSchema,
 		arg.SecretHash,
+		arg.TokenSuffix,
 		arg.Matchers,
 		arg.Enabled,
 	)
@@ -120,6 +125,7 @@ func (q *Queries) InsertTrigger(ctx context.Context, arg InsertTriggerParams) (T
 		&i.Enabled,
 		&i.CreatedAt,
 		&i.Matchers,
+		&i.TokenSuffix,
 	)
 	return i, err
 }
@@ -160,7 +166,7 @@ func (q *Queries) LinkTriggerToTract(ctx context.Context, arg LinkTriggerToTract
 
 const listTriggerLinksByTract = `-- name: ListTriggerLinksByTract :many
 SELECT t.id, t.trigger_uuid, t.user_id, t.name, t.kind, t.source, t.config, t.payload_schema,
-       t.secret_hash, t.enabled, t.created_at, t.matchers, l.filters
+       t.secret_hash, t.enabled, t.created_at, t.matchers, t.token_suffix, l.filters
 FROM tract_trigger_links l
          JOIN triggers t ON t.id = l.trigger_id
 WHERE l.tract_id = $1
@@ -179,6 +185,7 @@ type ListTriggerLinksByTractRow struct {
 	Enabled       bool
 	CreatedAt     time.Time
 	Matchers      json.RawMessage
+	TokenSuffix   sql.NullString
 	Filters       json.RawMessage
 }
 
@@ -205,6 +212,7 @@ func (q *Queries) ListTriggerLinksByTract(ctx context.Context, tractID uuid.UUID
 			&i.Enabled,
 			&i.CreatedAt,
 			&i.Matchers,
+			&i.TokenSuffix,
 			&i.Filters,
 		); err != nil {
 			return nil, err
@@ -275,7 +283,7 @@ func (q *Queries) ListTriggerLinksByTrigger(ctx context.Context, triggerID uuid.
 
 const listTriggersByExternalConnection = `-- name: ListTriggersByExternalConnection :many
 SELECT t.id, t.trigger_uuid, t.user_id, t.name, t.kind, t.source, t.config, t.payload_schema,
-       t.secret_hash, t.enabled, t.created_at, t.matchers
+       t.secret_hash, t.enabled, t.created_at, t.matchers, t.token_suffix
 FROM trigger_provider_links l
          JOIN triggers t ON t.id = l.trigger_id
 WHERE l.external_connection_id = $1
@@ -304,6 +312,7 @@ func (q *Queries) ListTriggersByExternalConnection(ctx context.Context, external
 			&i.Enabled,
 			&i.CreatedAt,
 			&i.Matchers,
+			&i.TokenSuffix,
 		); err != nil {
 			return nil, err
 		}
@@ -319,7 +328,7 @@ func (q *Queries) ListTriggersByExternalConnection(ctx context.Context, external
 }
 
 const listTriggersByUser = `-- name: ListTriggersByUser :many
-SELECT id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers
+SELECT id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers, token_suffix
 FROM triggers
 WHERE user_id = $1
 ORDER BY created_at DESC
@@ -347,6 +356,7 @@ func (q *Queries) ListTriggersByUser(ctx context.Context, userID uuid.UUID) ([]T
 			&i.Enabled,
 			&i.CreatedAt,
 			&i.Matchers,
+			&i.TokenSuffix,
 		); err != nil {
 			return nil, err
 		}
@@ -364,21 +374,28 @@ func (q *Queries) ListTriggersByUser(ctx context.Context, userID uuid.UUID) ([]T
 const rotateTriggerSecret = `-- name: RotateTriggerSecret :one
 UPDATE triggers
 SET trigger_uuid = $2,
-    secret_hash   = $3
+    secret_hash   = $3,
+    token_suffix  = $4
 WHERE id = $1
-RETURNING id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers
+RETURNING id, trigger_uuid, user_id, name, kind, source, config, payload_schema, secret_hash, enabled, created_at, matchers, token_suffix
 `
 
 type RotateTriggerSecretParams struct {
 	ID          uuid.UUID
 	TriggerUuid uuid.UUID
 	SecretHash  []byte
+	TokenSuffix sql.NullString
 }
 
-// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid and
-// secret_hash in place, keyed by the trigger's stable primary key id.
+// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid,
+// secret_hash, and token_suffix in place, keyed by the trigger's stable primary key id.
 func (q *Queries) RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecretParams) (Trigger, error) {
-	row := q.db.QueryRowContext(ctx, rotateTriggerSecret, arg.ID, arg.TriggerUuid, arg.SecretHash)
+	row := q.db.QueryRowContext(ctx, rotateTriggerSecret,
+		arg.ID,
+		arg.TriggerUuid,
+		arg.SecretHash,
+		arg.TokenSuffix,
+	)
 	var i Trigger
 	err := row.Scan(
 		&i.ID,
@@ -393,6 +410,7 @@ func (q *Queries) RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecr
 		&i.Enabled,
 		&i.CreatedAt,
 		&i.Matchers,
+		&i.TokenSuffix,
 	)
 	return i, err
 }

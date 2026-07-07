@@ -276,10 +276,10 @@ type TriggersRepo interface {
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Trigger, error)
 	SetEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	// RotateSecret overwrites trigger_uuid and secret_hash in place, keyed by the trigger's stable
-	// primary key id — invalidates the trigger's current webhook URL/token without touching
-	// anything else about the trigger or its tract links.
-	RotateSecret(ctx context.Context, id uuid.UUID, newTriggerUuid uuid.UUID, secretHash []byte) (domain.Trigger, error)
+	// RotateSecret overwrites trigger_uuid, secret_hash, and token_suffix in place, keyed by the
+	// trigger's stable primary key id — invalidates the trigger's current webhook URL/token
+	// without touching anything else about the trigger or its tract links.
+	RotateSecret(ctx context.Context, id uuid.UUID, newTriggerUuid uuid.UUID, secretHash []byte, tokenSuffix string) (domain.Trigger, error)
 
 	Link(ctx context.Context, link domain.TriggerTractLink) error
 	Unlink(ctx context.Context, triggerUuid uuid.UUID, tractUuid uuid.UUID) error

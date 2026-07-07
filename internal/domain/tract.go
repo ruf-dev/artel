@@ -123,6 +123,10 @@ type Trigger struct {
 	Config        json.RawMessage
 	PayloadSchema ToolSchema
 	SecretHash    []byte
+	// TokenSuffix is the last 4 hex chars of the raw webhook token, kept in plaintext (unlike
+	// SecretHash) purely so the UI can render a persistent "••••1234" reminder; never enough to
+	// reconstruct the token. Empty for manual/provider-linked triggers.
+	TokenSuffix string
 	// Matchers gates which triggers (among possibly several sharing one provider link, see
 	// trigger_provider_links) actually fire for a given inbound delivery. Seeded from the chosen
 	// TriggerPreset's DefaultMatchers at creation time; empty always matches (standalone

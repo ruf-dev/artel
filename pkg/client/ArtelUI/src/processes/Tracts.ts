@@ -132,6 +132,7 @@ export interface Trigger {
     triggerUuid: string
     enabled: boolean
     createdAt: string
+    tokenSuffix: string
 }
 
 export interface CreatedTrigger {
@@ -297,6 +298,7 @@ function toTrigger(item: TriggerItem): Trigger {
         triggerUuid: item.triggerUuid ?? "",
         enabled: item.enabled ?? false,
         createdAt: item.createdAt ?? "",
+        tokenSuffix: item.tokenSuffix ?? "",
     }
 }
 

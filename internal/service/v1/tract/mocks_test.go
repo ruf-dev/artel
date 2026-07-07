@@ -339,7 +339,7 @@ func (f *fakeTriggersRepo) Delete(_ context.Context, _ uuid.UUID) error {
 }
 
 func (f *fakeTriggersRepo) RotateSecret(
-	_ context.Context, _ uuid.UUID, _ uuid.UUID, _ []byte,
+	_ context.Context, _ uuid.UUID, _ uuid.UUID, _ []byte, _ string,
 ) (domain.Trigger, error) {
 	return domain.Trigger{}, nil
 }

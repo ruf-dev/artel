@@ -50,6 +50,25 @@
     word-break: break-all;
 }
 
+.TokenLabel {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-fg-secondary);
+    margin-top: 1.25rem;
+    margin-bottom: 0.375rem;
+}
+
+.TokenBox {
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fg-primary);
+    word-break: break-all;
+}
+
 .Notice {
     font-size: 0.75rem;
     color: var(--color-fg-secondary);

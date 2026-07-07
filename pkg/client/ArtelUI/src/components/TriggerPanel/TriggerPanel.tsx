@@ -8,7 +8,6 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
 import AddTriggerDialog from "@/dialogs/AddTriggerDialog/AddTriggerDialog.tsx"
-import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
 import TriggerRow from "@/components/TriggerPanel/TriggerRow.tsx"
 
 interface Props {
@@ -17,7 +16,7 @@ interface Props {
 }
 
 export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props) {
-    const {triggers, fetchTriggers, unlinkTrigger, setTriggerEnabled, rotateTriggerToken} = useTracts()
+    const {triggers, fetchTriggers, unlinkTrigger} = useTracts()
     const {OpenDialog, CloseDialog} = useDialog()
     const bakeError = useBakeError()
 
@@ -41,23 +40,6 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
         )
     }
 
-    function handleRotate(triggerUuid: string) {
-        OpenDialog(
-            <ConfirmDialog
-                title="Rotate webhook token"
-                message="The old webhook URL stops working immediately."
-                confirmLabel="Rotate"
-                danger
-                onClose={CloseDialog}
-                onConfirm={() => rotateTriggerToken(triggerUuid)
-                    .then(result => {
-                        setTimeout(() => OpenDialog(<TokenRevealDialog webhookUrl={result.webhookUrl} webhookToken={result.webhookToken}/>), 0)
-                    })
-                    .catch(err => bakeError("Failed to rotate token", err))}
-            />
-        )
-    }
-
     return (
         <div className={cls.Panel}>
             <div className={cls.PanelHeader}>
@@ -76,8 +58,6 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
                     key={t.uuid}
                     trigger={t}
                     onUnlink={() => handleUnlink(t.uuid)}
-                    onToggle={enabled => setTriggerEnabled(t.uuid, enabled).catch(err => bakeError("Failed to update trigger", err))}
-                    onRotate={() => handleRotate(t.uuid)}
                 />
             ))}
         </div>

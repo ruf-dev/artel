@@ -183,6 +183,7 @@ func triggerToProto(t domain.Trigger) *pb.TriggerItem {
 		TriggerUuid:   t.TriggerUuid.String(),
 		Enabled:       t.Enabled,
 		CreatedAt:     t.CreatedAt.UTC().Format(timeFormat),
+		TokenSuffix:   t.TokenSuffix,
 	}
 
 	return item

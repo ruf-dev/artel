@@ -137,6 +137,7 @@ export type TriggerItem = {
   triggerUuid?: string;
   enabled?: boolean;
   createdAt?: string;
+  tokenSuffix?: string;
 };
 
 export type CreateTractRequest = {
