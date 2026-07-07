@@ -42,6 +42,11 @@ directory.
   across modules rather than inventing a shared global stylesheet — this matches the
   existing `HomePage.module.css` / `ManageVaultDialog.module.css` precedent and keeps
   each file self-contained and movable.
+- **Combining multiple/conditional classes**: never build `className` with a template
+  literal (`` `${cls.Foo} ${cond ? cls.Bar : ""}` ``) — use `cn()` from
+  `@/app/utils/cn.ts` (a `classnames` wrapper) instead, e.g.
+  `cn(cls.Foo, cond && cls.Bar)`. Enforced by the `no-restricted-syntax` ESLint rule
+  banning template literals in `className`.
 
 ## Reference example
 
@@ -58,8 +63,13 @@ splitting an existing fat page.
 - **Never create components with more than 3 levels of HTML nesting** — split into
   smaller components instead. This is enforced by the `react/jsx-max-depth` ESLint rule
   (`max: 3`).
-- Top-level container element's style class must be named `***Container` (e.g.,
-  `HeaderContainer`)
+- Top-level container element's style class must be named `{ComponentName}Container`
+  (e.g., `VaultCardHeaderContainer` in `VaultCardHeader.tsx`) — never a generic name
+  like `Field` or `Root`.
+- All other classes in that component's `.module.css` must be nested inside the
+  `{ComponentName}Container` rule using native CSS nesting (`&`), following the
+  DOM structure — no top-level sibling classes. See `VaultCardHeader.module.css`
+  for the reference pattern.
 - When wrapping another component with a styled div, use `***Wrapper` for that div's
   style (e.g., `ButtonWrapper`)
 

@@ -413,22 +413,25 @@ func (s *Service) AddGitlabConnection(
 	return toMeta(saved, username), nil
 }
 
-func (s *Service) SetGitlabWebhookSecret(
+// GenerateGitlabWebhookSecret mints a fresh random secret for the caller's GitLab connection and
+// returns it once — only the connection's encrypted credentials retain it after this call. The
+// caller pastes the returned value into GitLab's own webhook config; gitlab_webhook.Handler
+// compares inbound X-Gitlab-Token deliveries against the stored value.
+func (s *Service) GenerateGitlabWebhookSecret(
 	ctx context.Context,
-	webhookSecret string,
-) (domain.ExternalConnectionMeta, error) {
+) (domain.ExternalConnectionMeta, string, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
-		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+		return domain.ExternalConnectionMeta{}, "", user_errors.Unauthenticated
 	}
 
 	result, err := s.connections.GetByUserAndProvider(ctx, uc.UserUuid, domain.ProviderGitlab)
 	if err != nil {
-		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error getting gitlab connection")
+		return domain.ExternalConnectionMeta{}, "", rerrors.Wrap(err, "error getting gitlab connection")
 	}
 
 	if !result.Valid {
-		return domain.ExternalConnectionMeta{}, user_errors.GitlabConnectionNotFound
+		return domain.ExternalConnectionMeta{}, "", user_errors.GitlabConnectionNotFound
 	}
 
 	conn := result.V
@@ -437,28 +440,29 @@ func (s *Service) SetGitlabWebhookSecret(
 
 	err = json.Unmarshal(conn.CredentialsJSON, &creds)
 	if err != nil {
-		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing gitlab credentials")
+		return domain.ExternalConnectionMeta{}, "", rerrors.Wrap(err, "error parsing gitlab credentials")
 	}
 
+	webhookSecret := randomHex(32)
 	creds.WebhookSecret = webhookSecret
 
 	credJSON, err := json.Marshal(creds)
 	if err != nil {
-		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab credentials")
+		return domain.ExternalConnectionMeta{}, "", rerrors.Wrap(err, "marshal gitlab credentials")
 	}
 
 	var meta gitlabConnectionMeta
 
 	err = json.Unmarshal(conn.Metadata, &meta)
 	if err != nil {
-		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error parsing gitlab meta")
+		return domain.ExternalConnectionMeta{}, "", rerrors.Wrap(err, "error parsing gitlab meta")
 	}
 
 	meta.WebhookSecretSet = "true"
 
 	metaJSON, err := json.Marshal(meta)
 	if err != nil {
-		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal gitlab meta")
+		return domain.ExternalConnectionMeta{}, "", rerrors.Wrap(err, "marshal gitlab meta")
 	}
 
 	conn.CredentialsJSON = json.RawMessage(credJSON)
@@ -466,10 +470,10 @@ func (s *Service) SetGitlabWebhookSecret(
 
 	saved, err := s.connections.Upsert(ctx, conn)
 	if err != nil {
-		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save gitlab connection")
+		return domain.ExternalConnectionMeta{}, "", rerrors.Wrap(err, "save gitlab connection")
 	}
 
-	return toMeta(saved, meta.Username), nil
+	return toMeta(saved, meta.Username), webhookSecret, nil
 }
 
 // normalizeGitlabInstanceURL defaults to gitlab.com when blank, strips a trailing slash,

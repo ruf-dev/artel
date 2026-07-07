@@ -1,0 +1,37 @@
+.Row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.875rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.625rem;
+    flex-wrap: wrap;
+}
+
+.Chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    background: var(--color-bg-hover);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-fg-secondary);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.Name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-fg-primary);
+}
+
+.RowActions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}

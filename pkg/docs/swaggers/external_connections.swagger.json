@@ -146,12 +146,12 @@
     },
     "/api/external-connections/gitlab/webhook-secret": {
       "post": {
-        "operationId": "ExternalConnectionsAPI_SetGitlabWebhookSecret",
+        "operationId": "ExternalConnectionsAPI_GenerateGitlabWebhookSecret",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/artel_apiSetGitlabWebhookSecretResponse"
+              "$ref": "#/definitions/artel_apiGenerateGitlabWebhookSecretResponse"
             }
           },
           "default": {
@@ -167,7 +167,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_apiSetGitlabWebhookSecretRequest"
+              "$ref": "#/definitions/artel_apiGenerateGitlabWebhookSecretRequest"
             }
           }
         ],
@@ -487,6 +487,21 @@
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },
+    "artel_apiGenerateGitlabWebhookSecretRequest": {
+      "type": "object"
+    },
+    "artel_apiGenerateGitlabWebhookSecretResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        },
+        "webhookSecret": {
+          "type": "string",
+          "title": "one-time reveal; never retrievable again after this response"
+        }
+      }
+    },
     "artel_apiGenericConnection": {
       "type": "object",
       "properties": {
@@ -618,22 +633,6 @@
     },
     "artel_apiRemoveSpreadsheetResponse": {
       "type": "object"
-    },
-    "artel_apiSetGitlabWebhookSecretRequest": {
-      "type": "object",
-      "properties": {
-        "webhookSecret": {
-          "type": "string"
-        }
-      }
-    },
-    "artel_apiSetGitlabWebhookSecretResponse": {
-      "type": "object",
-      "properties": {
-        "connection": {
-          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
-        }
-      }
     },
     "artel_apiSpreadsheet": {
       "type": "object",

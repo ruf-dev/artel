@@ -1,6 +1,28 @@
 import {create} from 'zustand'
+import {useQuery} from '@tanstack/react-query'
 
-import {Tract, TractCondition, TractDefinition, TractRun, TractRunStep, TractTool, tractsService, Trigger, TriggerSource} from "@/processes/Tracts.ts"
+import {CreatedTrigger, Tract, TractDefinition, TractRun, TractRunStep, TractTool, tractsService, Trigger} from "@/processes/Tracts.ts"
+import {retryOnStatus} from "@/processes/grpcErrors.ts"
+import useUser from "@/hooks/user/User.ts"
+
+export const triggerSourcesQueryKey = ['triggerSources'] as const
+
+export function useTriggerSources() {
+    const {auth} = useUser()
+
+    const q = useQuery({
+        queryKey: triggerSourcesQueryKey,
+        queryFn: () => tractsService.listTriggerSources(),
+        enabled: auth.isAuthenticated(),
+        retry: retryOnStatus(),
+    })
+
+    return {
+        triggerSources: q.data ?? [],
+        isLoading: q.isLoading,
+        error: q.error,
+    }
+}
 
 interface TractsState {
     tracts: Tract[]
@@ -15,8 +37,6 @@ interface TractsState {
 
     tools: TractTool[]
     toolsLoading: boolean
-    triggerSources: TriggerSource[]
-    triggerSourcesLoading: boolean
 
     triggers: Trigger[]
     triggersLoading: boolean
@@ -33,14 +53,12 @@ interface TractsState {
     clearCurrentRun: () => void
 
     fetchTools: () => Promise<void>
-    fetchTriggerSources: () => Promise<void>
 
     fetchTriggers: () => Promise<void>
-    createTrigger: (name: string, kind: string, source: string, config: unknown, payloadSchema: unknown) => Promise<{ trigger: Trigger; webhookUrl: string; webhookToken: string }>
+    createAndLinkTrigger: (name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string) => Promise<CreatedTrigger>
     deleteTrigger: (uuid: string) => Promise<void>
     setTriggerEnabled: (uuid: string, enabled: boolean) => Promise<void>
     rotateTriggerToken: (uuid: string) => Promise<{ trigger: Trigger; webhookUrl: string; webhookToken: string }>
-    linkTrigger: (triggerUuid: string, tractUuid: string, filters: TractCondition[]) => Promise<void>
     unlinkTrigger: (triggerUuid: string, tractUuid: string) => Promise<void>
 }
 
@@ -57,8 +75,6 @@ export const useTracts = create<TractsState>((set, get) => ({
 
     tools: [],
     toolsLoading: false,
-    triggerSources: [],
-    triggerSourcesLoading: false,
 
     triggers: [],
     triggersLoading: false,
@@ -133,16 +149,6 @@ export const useTracts = create<TractsState>((set, get) => ({
         }
     },
 
-    fetchTriggerSources: async () => {
-        set({triggerSourcesLoading: true})
-        try {
-            const triggerSources = await tractsService.listTriggerSources()
-            set({triggerSources})
-        } finally {
-            set({triggerSourcesLoading: false})
-        }
-    },
-
     fetchTriggers: async () => {
         set({triggersLoading: true})
         try {
@@ -153,9 +159,10 @@ export const useTracts = create<TractsState>((set, get) => ({
         }
     },
 
-    createTrigger: async (name: string, kind: string, source: string, config: unknown, payloadSchema: unknown) => {
-        const result = await tractsService.createTrigger(name, kind, source, config, payloadSchema)
-        await get().fetchTriggers()
+    createAndLinkTrigger: async (name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string) => {
+        const result = await tractsService.createTrigger(name, kind, source, {}, payloadSchema)
+        await tractsService.linkTrigger(result.trigger.uuid, tractUuid, [])
+        await Promise.all([get().fetchTriggers(), get().fetch()])
         return result
     },
 
@@ -174,11 +181,6 @@ export const useTracts = create<TractsState>((set, get) => ({
         const result = await tractsService.rotateTriggerToken(uuid)
         await get().fetchTriggers()
         return result
-    },
-
-    linkTrigger: async (triggerUuid: string, tractUuid: string, filters: TractCondition[]) => {
-        await tractsService.linkTrigger(triggerUuid, tractUuid, filters)
-        await get().fetch()
     },
 
     unlinkTrigger: async (triggerUuid: string, tractUuid: string) => {

@@ -77,7 +77,7 @@ service ExternalConnectionsAPI {
     };
   }
 
-  rpc SetGitlabWebhookSecret(SetGitlabWebhookSecret.Request) returns (SetGitlabWebhookSecret.Response) {
+  rpc GenerateGitlabWebhookSecret(GenerateGitlabWebhookSecret.Request) returns (GenerateGitlabWebhookSecret.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/gitlab/webhook-secret"
       body: "*"
@@ -215,11 +215,11 @@ message AddGitlabConnection {
   }
 }
 
-message SetGitlabWebhookSecret {
+message GenerateGitlabWebhookSecret {
   message Request {
-    string webhook_secret = 1;
   }
   message Response {
     ExternalConnectionInfo connection = 1;
+    string webhook_secret = 2; // one-time reveal; never retrievable again after this response
   }
 }

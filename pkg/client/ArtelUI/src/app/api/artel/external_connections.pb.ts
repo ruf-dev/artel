@@ -159,15 +159,14 @@ export type AddGitlabConnectionResponse = {
 
 export type AddGitlabConnection = Record<string, never>;
 
-export type SetGitlabWebhookSecretRequest = {
+export type GenerateGitlabWebhookSecretRequest = Record<string, never>;
+
+export type GenerateGitlabWebhookSecretResponse = {
+  connection?: ExternalConnectionInfo;
   webhookSecret?: string;
 };
 
-export type SetGitlabWebhookSecretResponse = {
-  connection?: ExternalConnectionInfo;
-};
-
-export type SetGitlabWebhookSecret = Record<string, never>;
+export type GenerateGitlabWebhookSecret = Record<string, never>;
 
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
@@ -200,7 +199,7 @@ export class ExternalConnectionsAPI {
   static AddGitlabConnection(this:void, req: AddGitlabConnectionRequest, initReq?: fm.InitReq): Promise<AddGitlabConnectionResponse> {
     return fm.fetchRequest<AddGitlabConnectionResponse>(`/api/external-connections/gitlab/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
-  static SetGitlabWebhookSecret(this:void, req: SetGitlabWebhookSecretRequest, initReq?: fm.InitReq): Promise<SetGitlabWebhookSecretResponse> {
-    return fm.fetchRequest<SetGitlabWebhookSecretResponse>(`/api/external-connections/gitlab/webhook-secret`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  static GenerateGitlabWebhookSecret(this:void, req: GenerateGitlabWebhookSecretRequest, initReq?: fm.InitReq): Promise<GenerateGitlabWebhookSecretResponse> {
+    return fm.fetchRequest<GenerateGitlabWebhookSecretResponse>(`/api/external-connections/gitlab/webhook-secret`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

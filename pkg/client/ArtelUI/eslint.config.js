@@ -37,6 +37,10 @@ export default tseslint.config([
                     selector: 'Property[key.name="zIndex"]',
                     message: 'Never use z-index — rely on DOM order or a portal to document.body instead (see pkg/client/ArtelUI/CLAUDE.md).',
                 },
+                {
+                    selector: 'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
+                    message: 'Do not build className with a template literal — use cn() from @/app/utils/cn instead.',
+                },
             ],
         },
     },

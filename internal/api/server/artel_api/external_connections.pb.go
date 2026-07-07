@@ -786,26 +786,26 @@ func (*AddGitlabConnection) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{14}
 }
 
-type SetGitlabWebhookSecret struct {
+type GenerateGitlabWebhookSecret struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SetGitlabWebhookSecret) Reset() {
-	*x = SetGitlabWebhookSecret{}
+func (x *GenerateGitlabWebhookSecret) Reset() {
+	*x = GenerateGitlabWebhookSecret{}
 	mi := &file_external_connections_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SetGitlabWebhookSecret) String() string {
+func (x *GenerateGitlabWebhookSecret) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SetGitlabWebhookSecret) ProtoMessage() {}
+func (*GenerateGitlabWebhookSecret) ProtoMessage() {}
 
-func (x *SetGitlabWebhookSecret) ProtoReflect() protoreflect.Message {
+func (x *GenerateGitlabWebhookSecret) ProtoReflect() protoreflect.Message {
 	mi := &file_external_connections_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -817,8 +817,8 @@ func (x *SetGitlabWebhookSecret) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SetGitlabWebhookSecret.ProtoReflect.Descriptor instead.
-func (*SetGitlabWebhookSecret) Descriptor() ([]byte, []int) {
+// Deprecated: Use GenerateGitlabWebhookSecret.ProtoReflect.Descriptor instead.
+func (*GenerateGitlabWebhookSecret) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{15}
 }
 
@@ -1718,27 +1718,26 @@ func (x *AddGitlabConnection_Response) GetConnection() *ExternalConnectionInfo {
 	return nil
 }
 
-type SetGitlabWebhookSecret_Request struct {
+type GenerateGitlabWebhookSecret_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	WebhookSecret string                 `protobuf:"bytes,1,opt,name=webhook_secret,json=webhookSecret,proto3" json:"webhook_secret,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SetGitlabWebhookSecret_Request) Reset() {
-	*x = SetGitlabWebhookSecret_Request{}
+func (x *GenerateGitlabWebhookSecret_Request) Reset() {
+	*x = GenerateGitlabWebhookSecret_Request{}
 	mi := &file_external_connections_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SetGitlabWebhookSecret_Request) String() string {
+func (x *GenerateGitlabWebhookSecret_Request) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SetGitlabWebhookSecret_Request) ProtoMessage() {}
+func (*GenerateGitlabWebhookSecret_Request) ProtoMessage() {}
 
-func (x *SetGitlabWebhookSecret_Request) ProtoReflect() protoreflect.Message {
+func (x *GenerateGitlabWebhookSecret_Request) ProtoReflect() protoreflect.Message {
 	mi := &file_external_connections_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1750,39 +1749,33 @@ func (x *SetGitlabWebhookSecret_Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SetGitlabWebhookSecret_Request.ProtoReflect.Descriptor instead.
-func (*SetGitlabWebhookSecret_Request) Descriptor() ([]byte, []int) {
+// Deprecated: Use GenerateGitlabWebhookSecret_Request.ProtoReflect.Descriptor instead.
+func (*GenerateGitlabWebhookSecret_Request) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{15, 0}
 }
 
-func (x *SetGitlabWebhookSecret_Request) GetWebhookSecret() string {
-	if x != nil {
-		return x.WebhookSecret
-	}
-	return ""
-}
-
-type SetGitlabWebhookSecret_Response struct {
+type GenerateGitlabWebhookSecret_Response struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
 	Connection    *ExternalConnectionInfo `protobuf:"bytes,1,opt,name=connection,proto3" json:"connection,omitempty"`
+	WebhookSecret string                  `protobuf:"bytes,2,opt,name=webhook_secret,json=webhookSecret,proto3" json:"webhook_secret,omitempty"` // one-time reveal; never retrievable again after this response
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SetGitlabWebhookSecret_Response) Reset() {
-	*x = SetGitlabWebhookSecret_Response{}
+func (x *GenerateGitlabWebhookSecret_Response) Reset() {
+	*x = GenerateGitlabWebhookSecret_Response{}
 	mi := &file_external_connections_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SetGitlabWebhookSecret_Response) String() string {
+func (x *GenerateGitlabWebhookSecret_Response) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SetGitlabWebhookSecret_Response) ProtoMessage() {}
+func (*GenerateGitlabWebhookSecret_Response) ProtoMessage() {}
 
-func (x *SetGitlabWebhookSecret_Response) ProtoReflect() protoreflect.Message {
+func (x *GenerateGitlabWebhookSecret_Response) ProtoReflect() protoreflect.Message {
 	mi := &file_external_connections_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1794,16 +1787,23 @@ func (x *SetGitlabWebhookSecret_Response) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SetGitlabWebhookSecret_Response.ProtoReflect.Descriptor instead.
-func (*SetGitlabWebhookSecret_Response) Descriptor() ([]byte, []int) {
+// Deprecated: Use GenerateGitlabWebhookSecret_Response.ProtoReflect.Descriptor instead.
+func (*GenerateGitlabWebhookSecret_Response) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{15, 1}
 }
 
-func (x *SetGitlabWebhookSecret_Response) GetConnection() *ExternalConnectionInfo {
+func (x *GenerateGitlabWebhookSecret_Response) GetConnection() *ExternalConnectionInfo {
 	if x != nil {
 		return x.Connection
 	}
 	return nil
+}
+
+func (x *GenerateGitlabWebhookSecret_Response) GetWebhookSecret() string {
+	if x != nil {
+		return x.WebhookSecret
+	}
+	return ""
 }
 
 var File_external_connections_proto protoreflect.FileDescriptor
@@ -1897,21 +1897,21 @@ const file_external_connections_proto_rawDesc = "" +
 	"\bResponse\x12A\n" +
 	"\n" +
 	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
-	"connection\"\x99\x01\n" +
-	"\x16SetGitlabWebhookSecret\x1a0\n" +
-	"\aRequest\x12%\n" +
-	"\x0ewebhook_secret\x18\x01 \x01(\tR\rwebhookSecret\x1aM\n" +
+	"connection\"\x9e\x01\n" +
+	"\x1bGenerateGitlabWebhookSecret\x1a\t\n" +
+	"\aRequest\x1at\n" +
 	"\bResponse\x12A\n" +
 	"\n" +
 	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
-	"connection*\xcf\x01\n" +
+	"connection\x12%\n" +
+	"\x0ewebhook_secret\x18\x02 \x01(\tR\rwebhookSecret*\xcf\x01\n" +
 	"\x10ExternalProvider\x12!\n" +
 	"\x1dEXTERNAL_PROVIDER_UNSPECIFIED\x10\x00\x12#\n" +
 	"\x1fEXTERNAL_PROVIDER_GOOGLE_SHEETS\x10\x01\x12\x1c\n" +
 	"\x18EXTERNAL_PROVIDER_TRELLO\x10\x02\x12\x1a\n" +
 	"\x16EXTERNAL_PROVIDER_MIRO\x10\x03\x12\x1b\n" +
 	"\x17EXTERNAL_PROVIDER_EMAIL\x10\x04\x12\x1c\n" +
-	"\x18EXTERNAL_PROVIDER_GITLAB\x10\x052\xe2\r\n" +
+	"\x18EXTERNAL_PROVIDER_GITLAB\x10\x052\xf1\r\n" +
 	"\x16ExternalConnectionsAPI\x12\x9c\x01\n" +
 	"\x13InitiateGoogleOAuth\x12&.artel_api.InitiateGoogleOAuth.Request\x1a'.artel_api.InitiateGoogleOAuth.Response\"4\x82\xd3\xe4\x93\x02.:\x01*\")/api/external-connections/google/initiate\x12\x85\x01\n" +
 	"\x0fListConnections\x12\".artel_api.ListConnections.Request\x1a#.artel_api.ListConnections.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/external-connections/list\x12\x94\x01\n" +
@@ -1922,8 +1922,8 @@ const file_external_connections_proto_rawDesc = "" +
 	"\x11RemoveSpreadsheet\x12$.artel_api.RemoveSpreadsheet.Request\x1a%.artel_api.RemoveSpreadsheet.Response\"?\x82\xd3\xe4\x93\x029:\x01*\"4/api/external-connections/google/spreadsheets/remove\x12\x93\x01\n" +
 	"\x12AddEmailConnection\x12%.artel_api.AddEmailConnection.Request\x1a&.artel_api.AddEmailConnection.Response\".\x82\xd3\xe4\x93\x02(:\x01*\"#/api/external-connections/email/add\x12\xb0\x01\n" +
 	"\x19ListMailServerSuggestions\x12,.artel_api.ListMailServerSuggestions.Request\x1a-.artel_api.ListMailServerSuggestions.Response\"6\x82\xd3\xe4\x93\x020:\x01*\"+/api/external-connections/email/suggestions\x12\x97\x01\n" +
-	"\x13AddGitlabConnection\x12&.artel_api.AddGitlabConnection.Request\x1a'.artel_api.AddGitlabConnection.Response\"/\x82\xd3\xe4\x93\x02):\x01*\"$/api/external-connections/gitlab/add\x12\xab\x01\n" +
-	"\x16SetGitlabWebhookSecret\x12).artel_api.SetGitlabWebhookSecret.Request\x1a*.artel_api.SetGitlabWebhookSecret.Response\":\x82\xd3\xe4\x93\x024:\x01*\"//api/external-connections/gitlab/webhook-secretB\fZ\n" +
+	"\x13AddGitlabConnection\x12&.artel_api.AddGitlabConnection.Request\x1a'.artel_api.AddGitlabConnection.Response\"/\x82\xd3\xe4\x93\x02):\x01*\"$/api/external-connections/gitlab/add\x12\xba\x01\n" +
+	"\x1bGenerateGitlabWebhookSecret\x12..artel_api.GenerateGitlabWebhookSecret.Request\x1a/.artel_api.GenerateGitlabWebhookSecret.Response\":\x82\xd3\xe4\x93\x024:\x01*\"//api/external-connections/gitlab/webhook-secretB\fZ\n" +
 	"/artel_apib\x06proto3"
 
 var (
@@ -1941,46 +1941,46 @@ func file_external_connections_proto_rawDescGZIP() []byte {
 var file_external_connections_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_external_connections_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
 var file_external_connections_proto_goTypes = []any{
-	(ExternalProvider)(0),                      // 0: artel_api.ExternalProvider
-	(*GoogleConnectionInfo)(nil),               // 1: artel_api.GoogleConnectionInfo
-	(*GenericConnection)(nil),                  // 2: artel_api.GenericConnection
-	(*ExternalConnectionInfo)(nil),             // 3: artel_api.ExternalConnectionInfo
-	(*InitiateGoogleOAuth)(nil),                // 4: artel_api.InitiateGoogleOAuth
-	(*ListConnections)(nil),                    // 5: artel_api.ListConnections
-	(*DisconnectProvider)(nil),                 // 6: artel_api.DisconnectProvider
-	(*GooglePickerToken)(nil),                  // 7: artel_api.GooglePickerToken
-	(*Spreadsheet)(nil),                        // 8: artel_api.Spreadsheet
-	(*AddSpreadsheet)(nil),                     // 9: artel_api.AddSpreadsheet
-	(*ListSpreadsheets)(nil),                   // 10: artel_api.ListSpreadsheets
-	(*RemoveSpreadsheet)(nil),                  // 11: artel_api.RemoveSpreadsheet
-	(*AddEmailConnection)(nil),                 // 12: artel_api.AddEmailConnection
-	(*MailServerSuggestion)(nil),               // 13: artel_api.MailServerSuggestion
-	(*ListMailServerSuggestions)(nil),          // 14: artel_api.ListMailServerSuggestions
-	(*AddGitlabConnection)(nil),                // 15: artel_api.AddGitlabConnection
-	(*SetGitlabWebhookSecret)(nil),             // 16: artel_api.SetGitlabWebhookSecret
-	nil,                                        // 17: artel_api.GenericConnection.FieldsEntry
-	(*InitiateGoogleOAuth_Request)(nil),        // 18: artel_api.InitiateGoogleOAuth.Request
-	(*InitiateGoogleOAuth_Response)(nil),       // 19: artel_api.InitiateGoogleOAuth.Response
-	(*ListConnections_Request)(nil),            // 20: artel_api.ListConnections.Request
-	(*ListConnections_Response)(nil),           // 21: artel_api.ListConnections.Response
-	(*DisconnectProvider_Request)(nil),         // 22: artel_api.DisconnectProvider.Request
-	(*DisconnectProvider_Response)(nil),        // 23: artel_api.DisconnectProvider.Response
-	(*GooglePickerToken_Request)(nil),          // 24: artel_api.GooglePickerToken.Request
-	(*GooglePickerToken_Response)(nil),         // 25: artel_api.GooglePickerToken.Response
-	(*AddSpreadsheet_Request)(nil),             // 26: artel_api.AddSpreadsheet.Request
-	(*AddSpreadsheet_Response)(nil),            // 27: artel_api.AddSpreadsheet.Response
-	(*ListSpreadsheets_Request)(nil),           // 28: artel_api.ListSpreadsheets.Request
-	(*ListSpreadsheets_Response)(nil),          // 29: artel_api.ListSpreadsheets.Response
-	(*RemoveSpreadsheet_Request)(nil),          // 30: artel_api.RemoveSpreadsheet.Request
-	(*RemoveSpreadsheet_Response)(nil),         // 31: artel_api.RemoveSpreadsheet.Response
-	(*AddEmailConnection_Request)(nil),         // 32: artel_api.AddEmailConnection.Request
-	(*AddEmailConnection_Response)(nil),        // 33: artel_api.AddEmailConnection.Response
-	(*ListMailServerSuggestions_Request)(nil),  // 34: artel_api.ListMailServerSuggestions.Request
-	(*ListMailServerSuggestions_Response)(nil), // 35: artel_api.ListMailServerSuggestions.Response
-	(*AddGitlabConnection_Request)(nil),        // 36: artel_api.AddGitlabConnection.Request
-	(*AddGitlabConnection_Response)(nil),       // 37: artel_api.AddGitlabConnection.Response
-	(*SetGitlabWebhookSecret_Request)(nil),     // 38: artel_api.SetGitlabWebhookSecret.Request
-	(*SetGitlabWebhookSecret_Response)(nil),    // 39: artel_api.SetGitlabWebhookSecret.Response
+	(ExternalProvider)(0),                        // 0: artel_api.ExternalProvider
+	(*GoogleConnectionInfo)(nil),                 // 1: artel_api.GoogleConnectionInfo
+	(*GenericConnection)(nil),                    // 2: artel_api.GenericConnection
+	(*ExternalConnectionInfo)(nil),               // 3: artel_api.ExternalConnectionInfo
+	(*InitiateGoogleOAuth)(nil),                  // 4: artel_api.InitiateGoogleOAuth
+	(*ListConnections)(nil),                      // 5: artel_api.ListConnections
+	(*DisconnectProvider)(nil),                   // 6: artel_api.DisconnectProvider
+	(*GooglePickerToken)(nil),                    // 7: artel_api.GooglePickerToken
+	(*Spreadsheet)(nil),                          // 8: artel_api.Spreadsheet
+	(*AddSpreadsheet)(nil),                       // 9: artel_api.AddSpreadsheet
+	(*ListSpreadsheets)(nil),                     // 10: artel_api.ListSpreadsheets
+	(*RemoveSpreadsheet)(nil),                    // 11: artel_api.RemoveSpreadsheet
+	(*AddEmailConnection)(nil),                   // 12: artel_api.AddEmailConnection
+	(*MailServerSuggestion)(nil),                 // 13: artel_api.MailServerSuggestion
+	(*ListMailServerSuggestions)(nil),            // 14: artel_api.ListMailServerSuggestions
+	(*AddGitlabConnection)(nil),                  // 15: artel_api.AddGitlabConnection
+	(*GenerateGitlabWebhookSecret)(nil),          // 16: artel_api.GenerateGitlabWebhookSecret
+	nil,                                          // 17: artel_api.GenericConnection.FieldsEntry
+	(*InitiateGoogleOAuth_Request)(nil),          // 18: artel_api.InitiateGoogleOAuth.Request
+	(*InitiateGoogleOAuth_Response)(nil),         // 19: artel_api.InitiateGoogleOAuth.Response
+	(*ListConnections_Request)(nil),              // 20: artel_api.ListConnections.Request
+	(*ListConnections_Response)(nil),             // 21: artel_api.ListConnections.Response
+	(*DisconnectProvider_Request)(nil),           // 22: artel_api.DisconnectProvider.Request
+	(*DisconnectProvider_Response)(nil),          // 23: artel_api.DisconnectProvider.Response
+	(*GooglePickerToken_Request)(nil),            // 24: artel_api.GooglePickerToken.Request
+	(*GooglePickerToken_Response)(nil),           // 25: artel_api.GooglePickerToken.Response
+	(*AddSpreadsheet_Request)(nil),               // 26: artel_api.AddSpreadsheet.Request
+	(*AddSpreadsheet_Response)(nil),              // 27: artel_api.AddSpreadsheet.Response
+	(*ListSpreadsheets_Request)(nil),             // 28: artel_api.ListSpreadsheets.Request
+	(*ListSpreadsheets_Response)(nil),            // 29: artel_api.ListSpreadsheets.Response
+	(*RemoveSpreadsheet_Request)(nil),            // 30: artel_api.RemoveSpreadsheet.Request
+	(*RemoveSpreadsheet_Response)(nil),           // 31: artel_api.RemoveSpreadsheet.Response
+	(*AddEmailConnection_Request)(nil),           // 32: artel_api.AddEmailConnection.Request
+	(*AddEmailConnection_Response)(nil),          // 33: artel_api.AddEmailConnection.Response
+	(*ListMailServerSuggestions_Request)(nil),    // 34: artel_api.ListMailServerSuggestions.Request
+	(*ListMailServerSuggestions_Response)(nil),   // 35: artel_api.ListMailServerSuggestions.Response
+	(*AddGitlabConnection_Request)(nil),          // 36: artel_api.AddGitlabConnection.Request
+	(*AddGitlabConnection_Response)(nil),         // 37: artel_api.AddGitlabConnection.Response
+	(*GenerateGitlabWebhookSecret_Request)(nil),  // 38: artel_api.GenerateGitlabWebhookSecret.Request
+	(*GenerateGitlabWebhookSecret_Response)(nil), // 39: artel_api.GenerateGitlabWebhookSecret.Response
 }
 var file_external_connections_proto_depIdxs = []int32{
 	17, // 0: artel_api.GenericConnection.fields:type_name -> artel_api.GenericConnection.FieldsEntry
@@ -1993,7 +1993,7 @@ var file_external_connections_proto_depIdxs = []int32{
 	3,  // 7: artel_api.AddEmailConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
 	13, // 8: artel_api.ListMailServerSuggestions.Response.suggestions:type_name -> artel_api.MailServerSuggestion
 	3,  // 9: artel_api.AddGitlabConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	3,  // 10: artel_api.SetGitlabWebhookSecret.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	3,  // 10: artel_api.GenerateGitlabWebhookSecret.Response.connection:type_name -> artel_api.ExternalConnectionInfo
 	18, // 11: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
 	20, // 12: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
 	22, // 13: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
@@ -2004,7 +2004,7 @@ var file_external_connections_proto_depIdxs = []int32{
 	32, // 18: artel_api.ExternalConnectionsAPI.AddEmailConnection:input_type -> artel_api.AddEmailConnection.Request
 	34, // 19: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:input_type -> artel_api.ListMailServerSuggestions.Request
 	36, // 20: artel_api.ExternalConnectionsAPI.AddGitlabConnection:input_type -> artel_api.AddGitlabConnection.Request
-	38, // 21: artel_api.ExternalConnectionsAPI.SetGitlabWebhookSecret:input_type -> artel_api.SetGitlabWebhookSecret.Request
+	38, // 21: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:input_type -> artel_api.GenerateGitlabWebhookSecret.Request
 	19, // 22: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
 	21, // 23: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
 	23, // 24: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
@@ -2015,7 +2015,7 @@ var file_external_connections_proto_depIdxs = []int32{
 	33, // 29: artel_api.ExternalConnectionsAPI.AddEmailConnection:output_type -> artel_api.AddEmailConnection.Response
 	35, // 30: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:output_type -> artel_api.ListMailServerSuggestions.Response
 	37, // 31: artel_api.ExternalConnectionsAPI.AddGitlabConnection:output_type -> artel_api.AddGitlabConnection.Response
-	39, // 32: artel_api.ExternalConnectionsAPI.SetGitlabWebhookSecret:output_type -> artel_api.SetGitlabWebhookSecret.Response
+	39, // 32: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:output_type -> artel_api.GenerateGitlabWebhookSecret.Response
 	22, // [22:33] is the sub-list for method output_type
 	11, // [11:22] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name

@@ -19,17 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName       = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
-	ExternalConnectionsAPI_ListConnections_FullMethodName           = "/artel_api.ExternalConnectionsAPI/ListConnections"
-	ExternalConnectionsAPI_DisconnectProvider_FullMethodName        = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
-	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName      = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
-	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName            = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
-	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName          = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
-	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName         = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
-	ExternalConnectionsAPI_AddEmailConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
-	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
-	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
-	ExternalConnectionsAPI_SetGitlabWebhookSecret_FullMethodName    = "/artel_api.ExternalConnectionsAPI/SetGitlabWebhookSecret"
+	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName         = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
+	ExternalConnectionsAPI_ListConnections_FullMethodName             = "/artel_api.ExternalConnectionsAPI/ListConnections"
+	ExternalConnectionsAPI_DisconnectProvider_FullMethodName          = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
+	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName        = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
+	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName              = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
+	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName            = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
+	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName           = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
+	ExternalConnectionsAPI_AddEmailConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
+	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName   = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
+	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
+	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -46,7 +46,7 @@ type ExternalConnectionsAPIClient interface {
 	AddEmailConnection(ctx context.Context, in *AddEmailConnection_Request, opts ...grpc.CallOption) (*AddEmailConnection_Response, error)
 	ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error)
 	AddGitlabConnection(ctx context.Context, in *AddGitlabConnection_Request, opts ...grpc.CallOption) (*AddGitlabConnection_Response, error)
-	SetGitlabWebhookSecret(ctx context.Context, in *SetGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*SetGitlabWebhookSecret_Response, error)
+	GenerateGitlabWebhookSecret(ctx context.Context, in *GenerateGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*GenerateGitlabWebhookSecret_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -157,10 +157,10 @@ func (c *externalConnectionsAPIClient) AddGitlabConnection(ctx context.Context, 
 	return out, nil
 }
 
-func (c *externalConnectionsAPIClient) SetGitlabWebhookSecret(ctx context.Context, in *SetGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*SetGitlabWebhookSecret_Response, error) {
+func (c *externalConnectionsAPIClient) GenerateGitlabWebhookSecret(ctx context.Context, in *GenerateGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*GenerateGitlabWebhookSecret_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetGitlabWebhookSecret_Response)
-	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_SetGitlabWebhookSecret_FullMethodName, in, out, cOpts...)
+	out := new(GenerateGitlabWebhookSecret_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +181,7 @@ type ExternalConnectionsAPIServer interface {
 	AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error)
 	ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error)
 	AddGitlabConnection(context.Context, *AddGitlabConnection_Request) (*AddGitlabConnection_Response, error)
-	SetGitlabWebhookSecret(context.Context, *SetGitlabWebhookSecret_Request) (*SetGitlabWebhookSecret_Response, error)
+	GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -222,8 +222,8 @@ func (UnimplementedExternalConnectionsAPIServer) ListMailServerSuggestions(conte
 func (UnimplementedExternalConnectionsAPIServer) AddGitlabConnection(context.Context, *AddGitlabConnection_Request) (*AddGitlabConnection_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddGitlabConnection not implemented")
 }
-func (UnimplementedExternalConnectionsAPIServer) SetGitlabWebhookSecret(context.Context, *SetGitlabWebhookSecret_Request) (*SetGitlabWebhookSecret_Response, error) {
-	return nil, status.Error(codes.Unimplemented, "method SetGitlabWebhookSecret not implemented")
+func (UnimplementedExternalConnectionsAPIServer) GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method GenerateGitlabWebhookSecret not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -427,20 +427,20 @@ func _ExternalConnectionsAPI_AddGitlabConnection_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ExternalConnectionsAPI_SetGitlabWebhookSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetGitlabWebhookSecret_Request)
+func _ExternalConnectionsAPI_GenerateGitlabWebhookSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateGitlabWebhookSecret_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExternalConnectionsAPIServer).SetGitlabWebhookSecret(ctx, in)
+		return srv.(ExternalConnectionsAPIServer).GenerateGitlabWebhookSecret(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ExternalConnectionsAPI_SetGitlabWebhookSecret_FullMethodName,
+		FullMethod: ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExternalConnectionsAPIServer).SetGitlabWebhookSecret(ctx, req.(*SetGitlabWebhookSecret_Request))
+		return srv.(ExternalConnectionsAPIServer).GenerateGitlabWebhookSecret(ctx, req.(*GenerateGitlabWebhookSecret_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -493,8 +493,8 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ExternalConnectionsAPI_AddGitlabConnection_Handler,
 		},
 		{
-			MethodName: "SetGitlabWebhookSecret",
-			Handler:    _ExternalConnectionsAPI_SetGitlabWebhookSecret_Handler,
+			MethodName: "GenerateGitlabWebhookSecret",
+			Handler:    _ExternalConnectionsAPI_GenerateGitlabWebhookSecret_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

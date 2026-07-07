@@ -10,6 +10,7 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
 import Input from "@/components/shared/Input/Input.tsx"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
+import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
 
 export default function ManageGitlabDialog() {
     const {CloseDialog, OpenDialog} = useDialog()
@@ -120,7 +121,7 @@ function ConnectedContent({connectionId, fields, onDisconnect}: {
             <p className={cls.ModalSub}>
                 Connected as <b>@{fields.username}</b> on <b>{fields.instance_url}</b>.
             </p>
-            <WebhookSecretSection webhookSecretSet={fields.webhook_secret_set === "true"}/>
+            <WebhookSecretSection webhookSecretSet={fields.webhook_secret_set === "true"} webhookUrl={webhookUrl}/>
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Webhook URL</span>
                 <Input value={webhookUrl} readOnly/>
@@ -137,44 +138,32 @@ function ConnectedContent({connectionId, fields, onDisconnect}: {
     )
 }
 
-function WebhookSecretSection({webhookSecretSet}: { webhookSecretSet: boolean }) {
-    const [editing, setEditing] = useState(!webhookSecretSet)
-    const [saving, setSaving] = useState(false)
-    const [webhookSecret, setWebhookSecret] = useState("")
+function WebhookSecretSection({webhookSecretSet, webhookUrl}: { webhookSecretSet: boolean; webhookUrl: string }) {
+    const [generating, setGenerating] = useState(false)
 
-    const {setGitlabWebhookSecret} = useExternalConnections()
+    const {generateGitlabWebhookSecret} = useExternalConnections()
+    const {OpenDialog} = useDialog()
     const bakeError = useBakeError()
 
-    function handleSave() {
-        setSaving(true)
-        setGitlabWebhookSecret({webhookSecret})
-            .then(() => setEditing(false))
-            .catch(e => bakeError("Failed to save webhook secret", e))
-            .finally(() => setSaving(false))
-    }
-
-    if (!editing) {
-        return (
-            <div className={cls.Field}>
-                <span className={cls.FieldLabel}>Webhook secret</span>
-                <div className={cls.ModalActions}>
-                    <span>Configured</span>
-                    <Button variant="ghost" onClick={() => setEditing(true)}>Rotate</Button>
-                </div>
-            </div>
-        )
+    function handleGenerate() {
+        setGenerating(true)
+        generateGitlabWebhookSecret()
+            .then(webhookSecret => {
+                OpenDialog(<TokenRevealDialog webhookUrl={webhookUrl} webhookToken={webhookSecret}/>)
+            })
+            .catch(e => bakeError("Failed to generate webhook secret", e))
+            .finally(() => setGenerating(false))
     }
 
     return (
-        <label className={cls.Field}>
+        <div className={cls.Field}>
             <span className={cls.FieldLabel}>Webhook secret</span>
-            <Input type="password" placeholder="Verifies incoming GitLab webhooks" value={webhookSecret}
-                onChange={e => setWebhookSecret(e.target.value)} disabled={saving} autoComplete="off"/>
             <div className={cls.ModalActions}>
-                <Button variant="secondary" onClick={handleSave} disabled={saving || !webhookSecret}>
-                    {saving ? "Saving…" : "Save webhook secret"}
+                <span>{webhookSecretSet ? "Configured" : "Not configured"}</span>
+                <Button variant="ghost" onClick={handleGenerate} disabled={generating}>
+                    {generating ? "Generating…" : webhookSecretSet ? "Rotate" : "Generate"}
                 </Button>
             </div>
-        </label>
+        </div>
     )
 }
