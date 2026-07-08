@@ -4,25 +4,92 @@ This file applies to everything under `pkg/client/ArtelUI`. It is referenced fro
 repo root [CLAUDE.md](../../../CLAUDE.md) — read it whenever you touch a file in this
 directory.
 
-## Feature-Sliced Design layers
+## Component hierarchy
 
-- **`pages/<name>/<Name>Page.tsx`** — page shell only. Composes widgets/components and
-  owns page-level effects (auth redirects, top-level data fetches via `app/hooks`).
-  Small page-specific glue may stay inline in the page file *only if* it isn't reused
-  elsewhere and stays small once the heavy pieces below are extracted:
-  - a `HeroSegment`/`ContentSegment`-style layout function
-  - a one-off "create X" dialog (see `CreateVaultDialog` in `HomePage.tsx`)
-- **`widgets/<Name>/<Name>.tsx`** — the unit rendered per-item in a list/grid that owns
-  its own related data fetching (e.g. `widgets/VaultCard`, `widgets/McpKeyCard`).
-  Composes from `components/`.
-- **`components/<Name>/<Name>.tsx`** — either a reusable leaf (atom/molecule: a chip,
-  a generic option row, a form field) used in 2+ places, or a self-contained complex
-  dialog (e.g. `ManageVaultDialog`, `ManageKeyDialog`). A dialog's own wizard
-  steps/sub-rows stay as **private functions in the same file** (see
-  `MemberRow`/`InviteRow` in `ManageVaultDialog.tsx`) — don't fragment one dialog
-  across multiple files just because it has steps.
-- **`app/hooks/`** — Zustand stores / data hooks, shared across pages, widgets, and
-  components.
+Five tiers, lowest to highest. **A file may only import from its own tier or a tier
+strictly below it** — never sideways across an unrelated subtree, never upward. This
+is enforced for tiers 2-5 by `import-x/no-restricted-paths` in `eslint.config.js`
+(plus `import-x/no-cycle` catching any cycle regardless of tier); the one thing the
+linter can't check is colocation scope (below), which is a review-time rule.
+
+1. **`@vervstack/chures`** — the UI atom library: `Button`, `Input`, `Dropdown`,
+   `Toggle`, `ConfirmDialog`, `InfoDialog`, `ModalActions`, `ModalClose`, `Loader`,
+   `LoadingWrapper`, `Toaster`/`useToaster`, and the `icons/` set. Always reach for a
+   chures component instead of a raw `<input>`, `<button>`, or a bespoke
+   confirm/alert dialog. Enforced by the `no-restricted-syntax` rule banning raw
+   `<button>`/`<input>` JSX (an exception carves out `components/atoms/**`, since the
+   wrapper there has to render the primitive once).
+2. **`components/atoms/<Name>/<Name>.tsx` + `.module.css`** — thin wrappers that
+   exist *only* because chures doesn't cover the need. Every file here must open with
+   a one-line comment explaining the gap, e.g. `// TODO: chures has no multiline
+   variant yet, drop this wrapper once it does`. May only import chures and other
+   atoms (not tier-3 `components/`). `components/shared/Input` predates this
+   convention and is the folder it replaces — don't add new atoms under `shared/`,
+   and give it the TODO comment (and ideally move it under `atoms/`) next time you
+   touch it.
+3. **`components/<Name>/<Name>.tsx`** — project-wide components too specific to the
+   product to be a chures-style atom: a reusable leaf used in 2+ places (a chip, a
+   generic option row, a form field), or a self-contained complex dialog that's
+   reused (e.g. `ManageVaultDialog`, `ManageKeyDialog`). A dialog's own wizard
+   steps/sub-rows stay as **private functions in the same file** (see
+   `MemberRow`/`InviteRow` in `ManageVaultDialog.tsx`) unless they're big enough to
+   need the local colocation pattern below. May import tiers 1-2 only.
+4. **`widgets/<Name>/<Name>.tsx`** and **`segments/<Name>/<Name>.tsx`** — same tier,
+   two different roles:
+   - A **widget** is a unit reused across pages that owns its own related data
+     fetching (`widgets/VaultCard`, `widgets/McpKeyCard`).
+   - A **segment** at this top level (`src/segments/Topbar`) is global app-shell
+     chrome. Keep this set small and deliberate — it's for the handful of things
+     that are genuinely app-wide (the top bar, the global dialog mount), not a
+     general-purpose category. A segment specific to one page/dialog is a *local*
+     segment (see colocation below), not a new entry under `src/segments/`.
+
+   May import tiers 1-3 only.
+5. **`pages/<Name>/<Name>Page.tsx`** and **`dialogs/<Name>/<Name>.tsx`** — top-level
+   citizens. A page is a route; a dialog is opened via `OpenDialog(<X/>)` from
+   `@/app/hooks/Dialog`. May import tiers 1-4, plus a page may import a dialog to
+   open it — that's the one sanctioned same-tier exception (`OpenDialog(<CreateVaultDialog/>)`
+   in `HomePage.tsx`). **A dialog must never import a page** (enforced by
+   `no-restricted-paths`) — dialogs don't know who opened them.
+
+## Local colocation
+
+Any page or dialog can define its own **local** components/widgets/segments in a
+colocated subfolder: `pages/<Page>/components/`, `pages/<Page>/widgets/`,
+`pages/<Page>/segments/`, `dialogs/<Dialog>/components/`, `dialogs/<Dialog>/widgets/`.
+See `pages/tract-canvas/*` and `dialogs/AddTriggerDialog/*` for the reference shape.
+
+- These are **local by default**: only the owning page/dialog (and its own
+  descendants) may import them. Don't reach into another page's or dialog's local
+  folder from outside it — if the same piece is needed in two places, promote it to
+  the matching global tier (`src/components`, `src/widgets`) instead of importing
+  across subtrees. This isn't linter-enforced (no generic way to express "same
+  subtree only" as a static zone) — same as the `z-index` rule, catch it in review.
+- **Screens** (`dialogs/<Dialog>/screens/`) are a dialog-only concept, one level
+  below the dialog itself, for a dialog with multiple sequential steps (see
+  `AddTriggerDialog/screens/`). Same local-only rule as above.
+
+## Messy dialog/page logic
+
+If a page or dialog's `.tsx` file is accumulating non-rendering logic (data shaping,
+layout math, orchestration), extract it to a colocated `processes/<name>.ts` file
+(see `pages/tract-canvas/processes/tractCanvasLayout.ts`) instead of letting the
+component file grow — same tool as the project-wide `src/processes/` used by
+`app/hooks`, just colocated when the logic is specific to one page/dialog.
+
+## Known debt (documented, not migrated)
+
+- `ManageVaultDialog`, `RunTractDialog`, `StepPickerDialog`, `S3InstanceFormDialog`
+  are dialogs living under `src/components/` instead of `src/dialogs/` — legacy from
+  before this doc existed. Don't repeat the pattern for new dialogs; move these
+  opportunistically if you're already touching one, but it's not worth a dedicated
+  migration.
+- 105 pre-existing `no-restricted-syntax` warnings (raw `<button>`/`<input>`,
+  template-literal `className`) are a known baseline as of this rule's introduction
+  — fix the ones you touch, don't feel obligated to sweep the whole codebase.
+- The global dialog mount lives at `pages/segments/Dialog.tsx`, not `src/segments/`
+  where `Topbar` lives — two different locations for the same "app-level segment"
+  concept. New app-level segments go in `src/segments/`; don't add a third location.
 
 ## When to extract vs. keep inline
 
@@ -76,18 +143,18 @@ splitting an existing fat page.
 ## Buttons
 
 - **Never use a raw `<button>` element** — always use `Button` from
-  `@/components/shared/Button/Button.tsx`.
-- Available variants: `primary`, `secondary`, `danger`, `ghost`, `iconDanger`.
-- Pass `variant`, `disabled`, `onClick`, `aria-label`, and any standard button
-  attributes via props — the component forwards them.
+  `@vervstack/chures`. If chures' `Button` can't do what you need, wrap it as a
+  `components/atoms/` component (tier 2 above) with a TODO explaining the gap —
+  never fork the raw element inline. Enforced by `no-restricted-syntax`.
 
 ## Error and Confirmation Handling
 
-- **Never use `window.alert` or `window.confirm`** — use project-level primitives:
+- **Never use `window.alert` or `window.confirm`** — enforced by
+  `no-restricted-syntax`. Use project-level primitives instead:
   - **Errors**: `useBakeError()` from `@/app/hooks/useErrorToast` → call
-    `bakeError(title, err)` inside `catch` blocks
-  - **Confirmations**: `OpenDialog(<ConfirmDialog ... />)` from
-    `@/components/ConfirmDialog/ConfirmDialog`
+    `bakeError(title, err)` inside `catch` blocks (backed by chures' `useToaster`)
+  - **Confirmations**: `OpenDialog(<ConfirmDialog ... />)` — `ConfirmDialog` is
+    imported straight from `@vervstack/chures`, no local wrapper
 - `ConfirmDialog` props: `title`, `message`, `confirmLabel`, `cancelLabel`, `danger`
   (boolean), `onConfirm` (async callback)
 - The `onConfirm` callback is responsible for error handling; `ConfirmDialog`

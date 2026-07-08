@@ -825,9 +825,9 @@
     "semantic_hash": "3074f1b1c6c8a6863ecafd2b288ab5d9"
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/eslint.config.js": {
-    "mtime": 1783452198.7482386,
-    "ast_hash": "c42fb3ced5d4ebc3aed38de4bde78f23",
-    "semantic_hash": ""
+    "mtime": 1783525141.290477,
+    "ast_hash": "516a56c36ead263bbee72f7cc3a5f41b",
+    "semantic_hash": "516a56c36ead263bbee72f7cc3a5f41b"
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/vite.config.ts": {
     "mtime": 1783148552.4632366,
@@ -2150,9 +2150,9 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/CLAUDE.md": {
-    "mtime": 1783417990.695649,
+    "mtime": 1783525232.81258,
     "ast_hash": "e94f9759d05747ccf201f1097a90ecac",
-    "semantic_hash": ""
+    "semantic_hash": "35f5b9bb1313bf01d2fbea059d5e7650"
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/icons/mails/gmail.png": {
     "mtime": 1781694712.3123336,

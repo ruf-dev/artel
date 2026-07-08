@@ -50,6 +50,64 @@ export default tseslint.config([
                     selector: 'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
                     message: 'Do not build className with a template literal — use cn() from @/app/utils/cn instead.',
                 },
+                {
+                    selector: 'JSXOpeningElement[name.name="button"]',
+                    message: 'Never use a raw <button> — use Button from @vervstack/chures, or a components/atoms/ wrapper if chures doesn\'t cover the need.',
+                },
+                {
+                    selector: 'JSXOpeningElement[name.name="input"]',
+                    message: 'Never use a raw <input> — use Input from @vervstack/chures, or a components/atoms/ wrapper if chures doesn\'t cover the need.',
+                },
+                {
+                    selector: 'CallExpression[callee.object.name="window"][callee.property.name=/^(alert|confirm)$/]',
+                    message: 'Never use window.alert/window.confirm — use useBakeError() for errors or chures ConfirmDialog for confirmations (see pkg/client/ArtelUI/CLAUDE.md).',
+                },
+            ],
+            'import-x/no-restricted-paths': ['error', {
+                basePath: './src',
+                zones: [
+                    {
+                        target: './components/atoms',
+                        from: './components',
+                        except: ['./atoms'],
+                        message: 'components/atoms/** may only import chures and other atoms — not project-wide components.',
+                    },
+                    {
+                        target: './components',
+                        from: ['./widgets', './segments', './pages', './dialogs'],
+                        message: 'src/components/** is below widgets/segments/pages/dialogs — it may not import from them.',
+                    },
+                    {
+                        target: ['./widgets', './segments'],
+                        from: ['./pages', './dialogs'],
+                        message: 'src/widgets/** and src/segments/** are below pages/dialogs — they may not import from them.',
+                    },
+                    {
+                        target: './dialogs',
+                        from: './pages',
+                        message: 'Dialogs must not import from pages — pages open dialogs via OpenDialog(), never the other way around.',
+                    },
+                ],
+            }],
+        },
+    },
+    {
+        files: ['**/components/atoms/**/*.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'warn',
+                {
+                    selector: 'JSXOpeningElement[name.name="div"]:not(:has(JSXAttribute[name.name="className"]))',
+                    message: '<div> must have a className (use a CSS module class).',
+                },
+                {
+                    selector: 'Property[key.name="zIndex"]',
+                    message: 'Never use z-index — rely on DOM order or a portal to document.body instead (see pkg/client/ArtelUI/CLAUDE.md).',
+                },
+                {
+                    selector: 'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
+                    message: 'Do not build className with a template literal — use cn() from @/app/utils/cn instead.',
+                },
             ],
         },
     },
