@@ -8,15 +8,6 @@
     letter-spacing: 0.01em;
 }
 
-.GenericChip {
-    composes: Chip;
-    gap: 0.375rem;
-    padding: 0.1875rem 0.5rem 0.1875rem 0.1875rem;
-    background: var(--color-bg-hover);
-    border: 1px solid var(--color-border-light);
-    cursor: pointer;
-}
-
 .MailChip {
     composes: Chip;
     gap: 0.375rem;
@@ -54,29 +45,6 @@
     line-height: 1;
 }
 
-.ProviderChip {
-    composes: Chip;
-    gap: 0.375rem;
-    padding: 0.1875rem 0.5rem 0.1875rem 0.1875rem;
-    border: 1px solid var(--color-border-light);
-    cursor: default;
-}
-
-.ProviderChipIcon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 1.125rem;
-    height: 1.125rem;
-    overflow: hidden;
-}
-
-.ProviderChipIcon svg {
-    width: 100%;
-    height: 100%;
-}
-
 .AccentYandex  { --chip-accent: #FFCC00; }
 .AccentGmail   { --chip-accent: #4285F4; }
 .AccentOutlook { --chip-accent: #0078D4; }
@@ -84,27 +52,3 @@
 .AccentICloud  { --chip-accent: #A2AAAD; }
 .AccentProton  { --chip-accent: #6D4AFF; }
 .AccentYahoo   { --chip-accent: #6001D2; }
-
-.SheetsChip {
-    background: linear-gradient(135deg, #23A566 0%, #159C53 100%);
-    border-color: #159C53;
-    color: white;
-}
-
-.TrelloChip {
-    background: linear-gradient(135deg, #0052CC 0%, #2684FF 100%);
-    border-color: #0052CC;
-    color: white;
-}
-
-.MiroChip {
-    background: linear-gradient(135deg, #FFD02F 0%, #E8B800 100%);
-    border-color: #E8B800;
-    color: #050038;
-}
-
-.GitlabChip {
-    background: linear-gradient(135deg, #FC6D26 0%, #E24329 100%);
-    border-color: #E24329;
-    color: white;
-}

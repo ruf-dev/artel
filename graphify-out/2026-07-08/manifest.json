@@ -2100,8 +2100,8 @@
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/widgets/McpKeyCard/McpKeyCard.tsx": {
-    "mtime": 1783523221.2619727,
-    "ast_hash": "cee9b0ae1b514daea814a0c957a41376",
+    "mtime": 1781722746.2618842,
+    "ast_hash": "b50411a90e292c9f88a904bbd5dee338",
     "semantic_hash": ""
   },
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/widgets/GoogleSheetsConnectionContent/GoogleSheetsConnectionContent.tsx": {
@@ -3087,11 +3087,6 @@
   "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/ProviderChip/ProviderChip.tsx": {
     "mtime": 1783522440.4352388,
     "ast_hash": "1a56ac9a4886db3b16f28798795c2a67",
-    "semantic_hash": ""
-  },
-  "/Users/alexbukov/ruf/artel/pkg/client/ArtelUI/src/components/VaultChip/VaultChip.tsx": {
-    "mtime": 1783523253.9765964,
-    "ast_hash": "c6fac22a86241f031c6707da2c91b54a",
     "semantic_hash": ""
   }
 }

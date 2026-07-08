@@ -13,7 +13,11 @@ import {providerEnumFor, providerLabel} from "@/components/TriggerPanel/triggerL
 import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
 import ManageGitlabDialog from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx"
 
-export default function WebhookDetailsDialog({triggerUuid}: {triggerUuid: string}) {
+interface WebhookDetailsDialogProps {
+    triggerUuid: string
+}
+
+export default function WebhookDetailsDialog({triggerUuid}: WebhookDetailsDialogProps) {
     const {OpenDialog, CloseDialog} = useDialog()
     const {rotateTriggerToken} = useTracts()
     const {connections} = useExternalConnections()

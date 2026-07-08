@@ -1,0 +1,20 @@
+.CardHeaderContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+
+    .CardName {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        letter-spacing: -0.01em;
+    }
+
+    .CardPreview {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        letter-spacing: 0.01em;
+    }
+}
