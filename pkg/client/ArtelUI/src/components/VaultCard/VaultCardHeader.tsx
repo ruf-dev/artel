@@ -1,4 +1,5 @@
 import {Button} from "@vervstack/chures"
+
 import cls from "@/components/VaultCard/VaultCardHeader.module.css"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 

@@ -1,5 +1,7 @@
 import {useState} from "react"
 
+import Input from "@/components/shared/Input/Input.tsx"
+
 interface Props {
     label: string
     placeholder: string
@@ -12,36 +14,24 @@ interface Props {
     inputClassName?: string
 }
 
-export default function FormField({
-                                      label,
-                                      placeholder,
-                                      defaultValue,
-                                      onChange,
-                                      disabled,
-                                      maxLength,
-                                      fieldClassName,
-                                      labelClassName,
-                                      inputClassName
-                                  }: Props) {
-
-    const [value, setValue] = useState(defaultValue || "");
+export default function FormField(props: Props) {
+    const [value, setValue] = useState(props.defaultValue || "");
 
     function onValueChange(v: string) {
         setValue(v)
-        onChange(v)
+        props.onChange(v)
     }
 
     return (
-        <label className={fieldClassName}>
-            <span className={labelClassName}>{label}</span>
-            <input
-                className={inputClassName}
-                placeholder={placeholder}
+        <label className={props.fieldClassName}>
+            <span className={props.labelClassName}>{props.label}</span>
+            <Input
+                className={props.inputClassName}
+                placeholder={props.placeholder}
                 value={value}
                 onChange={e => onValueChange(e.target.value)}
-
-                disabled={disabled}
-                maxLength={maxLength}
+                disabled={props.disabled}
+                maxLength={props.maxLength}
                 autoComplete="off"
             />
         </label>

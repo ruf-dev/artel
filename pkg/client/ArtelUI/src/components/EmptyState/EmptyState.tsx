@@ -1,5 +1,6 @@
-import cls from "./EmptyState.module.css"
 import {Button} from "@vervstack/chures"
+
+import cls from "@/components/EmptyState/EmptyState.module.css"
 
 interface Props {
     onCreateClick: () => void
