@@ -1,0 +1,19 @@
+.InstancesActionBarContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .HeroSub {
+        font-size: 0.875rem;
+        color: var(--color-fg-secondary);
+        margin-top: 0.625rem;
+        letter-spacing: -0.005em;
+
+        b {
+            color: var(--color-fg-primary);
+            font-weight: 600;
+        }
+    }
+}

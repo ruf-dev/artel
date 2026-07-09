@@ -1,0 +1,43 @@
+.ArtelUserRowContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+
+    &:first-child {
+        border-top: 1px solid var(--color-border);
+    }
+
+    .RowInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 0;
+
+        .RowUrl {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--color-fg-primary);
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .RowMeta {
+            font-size: 0.75rem;
+            color: var(--color-fg-tertiary);
+            font-family: var(--font-mono);
+            letter-spacing: 0.01em;
+        }
+    }
+
+    .RowActions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+}

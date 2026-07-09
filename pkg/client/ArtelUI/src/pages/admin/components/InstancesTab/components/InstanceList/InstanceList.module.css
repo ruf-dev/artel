@@ -1,0 +1,5 @@
+.Empty {
+    color: var(--color-fg-tertiary);
+    font-size: 0.875rem;
+    padding: 2rem 0;
+}
