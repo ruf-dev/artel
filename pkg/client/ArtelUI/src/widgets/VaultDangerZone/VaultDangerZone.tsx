@@ -1,10 +1,9 @@
 import {useState} from "react"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/widgets/VaultDangerZone/VaultDangerZone.module.css"
-
 import {useVaultMutations} from "@/app/hooks/Vaults.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-import {Button} from "@vervstack/chures"
 
 interface Props {
     vaultId: string

@@ -1,5 +1,4 @@
 import cls from "@/components/ProviderChip/ProviderChip.module.css"
-
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 
 export const PROVIDER_CHIP_CLASS: Partial<Record<ExternalProvider, string>> = {

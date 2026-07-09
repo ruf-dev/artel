@@ -8,7 +8,9 @@
     "build:ui": "tsc -b && vite build",
     "build": "bun run build:ui",
     "gen": "moti g && mv src/app/api/artel/@artel/api/index.ts src/app/api/artel/index.ts && rm -rf src/app/api/artel/@artel&& rm -rf src/app/api/artel/*.json",
-    "lint": "eslint .",
+    "lint": "eslint . && stylelint '**/*.{css,scss}'",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint '**/*.{css,scss}'",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -41,6 +43,10 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "stylelint": "^17.14.0",
+    "stylelint-config-css-modules": "^4.6.0",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
     "vite": "^7.3.1"

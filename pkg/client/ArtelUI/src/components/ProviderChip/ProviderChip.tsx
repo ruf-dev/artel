@@ -1,8 +1,6 @@
 import cls from "@/components/ProviderChip/ProviderChip.module.css"
 import {cn} from "@/app/utils/cn"
-
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
-
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 export default function ProviderChip({provider, variantClass, label}: {

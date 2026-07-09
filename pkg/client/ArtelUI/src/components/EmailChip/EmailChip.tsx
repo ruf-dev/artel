@@ -1,11 +1,8 @@
 import cls from "@/components/EmailChip/EmailChip.module.css"
 import {cn} from "@/app/utils/cn"
-
 import {useDialog} from "@/app/hooks/Dialog"
-
 import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
 import GenericChip from "@/components/GenericChip/GenericChip.tsx"
-
 import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
 
 const KNOWN_MAIL_DOMAIN_CLASSES: Record<string, string> = {

@@ -1,5 +1,5 @@
 import cls from "@/widgets/EmailCard/EmailCard.module.css"
-
+import {cn} from "@/app/utils/cn.ts"
 import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
@@ -29,8 +29,8 @@ export default function EmailCard({connections, loading, onClick}: {
                 </div>
             </div>
             <div className={cls.CardFooter}>
-                <span className={`${cls.StatusDot} ${isConnected ? cls.StatusDotConnected : cls.StatusDotDisconnected}`}/>
-                <span className={`${cls.StatusLabel} ${isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected}`}>
+                <span className={cn(cls.StatusDot, isConnected ? cls.StatusDotConnected : cls.StatusDotDisconnected)}/>
+                <span className={cn(cls.StatusLabel, isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected)}>
                     {loading ? "…" : isConnected ? "Connected" : "Not connected"}
                 </span>
             </div>

@@ -1,8 +1,8 @@
-import cls from "@/widgets/GenericConnectionContent/GenericConnectionContent.module.css"
+import {Button} from "@vervstack/chures"
 
+import cls from "@/widgets/GenericConnectionContent/GenericConnectionContent.module.css"
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 
-import {Button} from "@vervstack/chures"
 
 export default function GenericConnectionContent({connection, onDisconnect}: {
     connection: ExternalConnectionInfo

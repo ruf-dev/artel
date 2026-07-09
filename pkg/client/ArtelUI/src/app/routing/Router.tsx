@@ -1,9 +1,9 @@
 import {useEffect} from "react"
+import {Navigate, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
+import { Tooltip } from "react-tooltip"
+import { Toaster } from "@vervstack/chures"
 
 import cls from "@/app/routing/Router.module.css"
-
-import {Navigate, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
-
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
 import McpKeysPage from "@/pages/mcp-keys/McpKeysPage.tsx"
@@ -25,8 +25,7 @@ import {authService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
 import {useServerStatus} from "@/app/hooks/ServerStatus.ts"
 import ServiceUnavailablePage from "@/pages/service-unavailable/ServiceUnavailablePage.tsx"
-import { Tooltip } from "react-tooltip"
-import { Toaster } from "@vervstack/chures"
+
 // eslint-disable-next-line react-refresh/only-export-components
 export enum Path {
     InitPage = "/init",

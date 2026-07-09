@@ -1,8 +1,8 @@
 import {useEffect, useRef} from "react"
-
 import {Button, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/widgets/GoogleSheetsConnectionContent/GoogleSheetsConnectionContent.module.css"
 
+import {cn} from "@/app/utils/cn.ts"
+import cls from "@/widgets/GoogleSheetsConnectionContent/GoogleSheetsConnectionContent.module.css"
 import {ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
@@ -129,15 +129,15 @@ export default function GoogleSheetsConnectionContent({connection, onDisconnect}
                 )}
                 {scopeList.length > 0 && (
                     <div className={cls.InfoRow}>
-                        <span className={`${cls.InfoLabel} ${cls.ScopesLabel}`}>
+                        <span className={cn(cls.InfoLabel, cls.ScopesLabel)}>
                             Scopes
-                            <button
-                                type="button"
+                            <Button
+                                variant="ghost"
                                 className={cls.ScopeHelp}
                                 data-tooltip-id="root-tooltip"
                                 data-tooltip-html={scopeTooltipHtml}
                                 aria-label="What are scopes?"
-                            >?</button>
+                            >?</Button>
                         </span>
                         <span className={cls.InfoValue}>{scopeList.map(trimScope).join(", ")}</span>
                     </div>

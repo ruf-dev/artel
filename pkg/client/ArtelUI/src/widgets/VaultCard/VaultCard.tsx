@@ -1,9 +1,8 @@
 import React, {useState} from "react"
 import {Button, InfoDialog} from "@vervstack/chures"
+
 import cls from "@/widgets/VaultCard/VaultCard.module.css"
-
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
-
 import VaultCardHeader from "@/components/VaultCard/VaultCardHeader.tsx";
 import VaultCardStatus from "@/components/VaultCard/VaultCardStatus.tsx";
 import VaultCardConnBar from "@/components/VaultCard/VaultCardConnBar.tsx";

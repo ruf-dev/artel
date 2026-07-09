@@ -8,6 +8,27 @@ import {createTypeScriptImportResolver} from 'eslint-import-resolver-typescript'
 import tseslint from 'typescript-eslint'
 import {globalIgnores} from 'eslint/config'
 
+const localPlugin = {
+    rules: {
+        'no-relative-imports': {
+            meta: {type: 'suggestion'},
+            create(context) {
+                return {
+                    ImportDeclaration(node) {
+                        const src = node.source.value
+                        if (src.startsWith('./') || src.startsWith('../')) {
+                            context.report({
+                                node,
+                                message: "Use '@/' path alias instead of relative imports.",
+                            })
+                        }
+                    },
+                }
+            },
+        },
+    },
+}
+
 export default tseslint.config([
     globalIgnores(['dist', '**/*.pb.ts']),
     {
@@ -21,6 +42,7 @@ export default tseslint.config([
         plugins: {
             react: reactPlugin,
             'import-x': importX,
+            local: localPlugin,
         },
         languageOptions: {
             ecmaVersion: 2020,
@@ -36,6 +58,13 @@ export default tseslint.config([
             'import-x/no-cycle': 'error',
             'no-empty': ['error', {allowEmptyCatch: true}],
             'react/jsx-max-depth': ['error', {max: 3}],
+            'local/no-relative-imports': 'error',
+            'func-style': ['warn', 'declaration', {allowArrowFunctions: false}],
+            'react/no-multi-comp': ['warn', {ignoreStateless: false}],
+            'no-console': ['warn', {allow: ['warn', 'error']}],
+            'react/forbid-component-props': ['warn', {forbid: ['style']}],
+            'max-lines': ['warn', {max: 300, skipBlankLines: true, skipComments: true}],
+            'max-lines-per-function': ['warn', {max: 100, skipBlankLines: true, skipComments: true, IIFEs: true}],
             'no-restricted-syntax': [
                 'warn',
                 {
@@ -62,7 +91,38 @@ export default tseslint.config([
                     selector: 'CallExpression[callee.object.name="window"][callee.property.name=/^(alert|confirm)$/]',
                     message: 'Never use window.alert/window.confirm — use useBakeError() for errors or chures ConfirmDialog for confirmations (see pkg/client/ArtelUI/CLAUDE.md).',
                 },
+                {
+                    selector: 'ObjectPattern[properties.length>6]',
+                    message: 'Destructuring more than 6 properties — keep the whole object as one variable (e.g. `const context = useX(...)`) instead of exploding it into separate bindings/props.',
+                },
             ],
+            'import-x/order': ['warn', {
+                groups: [
+                    ['builtin', 'external'],
+                    ['internal'],
+                    ['parent', 'sibling', 'index'],
+                    ['unknown'],
+                ],
+                pathGroups: [
+                    {
+                        pattern: 'react|react-dom|react-router-dom',
+                        group: 'builtin',
+                        position: 'before',
+                    },
+                    {
+                        pattern: '@/**',
+                        group: 'internal',
+                        position: 'before',
+                    },
+                    {
+                        pattern: '*.{css,scss}',
+                        patternOptions: {matchBase: true},
+                        group: 'index',
+                        position: 'after',
+                    },
+                ],
+                'newlines-between': 'always',
+            }],
             'import-x/no-restricted-paths': ['error', {
                 basePath: './src',
                 zones: [
@@ -107,6 +167,10 @@ export default tseslint.config([
                 {
                     selector: 'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
                     message: 'Do not build className with a template literal — use cn() from @/app/utils/cn instead.',
+                },
+                {
+                    selector: 'ObjectPattern[properties.length>6]',
+                    message: 'Destructuring more than 6 properties — keep the whole object as one variable (e.g. `const context = useX(...)`) instead of exploding it into separate bindings/props.',
                 },
             ],
         },

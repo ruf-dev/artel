@@ -1,13 +1,11 @@
 import {useState, useEffect, useCallback} from "react"
-
 import {Button, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/widgets/S3InstancesTab/S3InstancesTab.module.css"
 
+import cls from "@/widgets/S3InstancesTab/S3InstancesTab.module.css"
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
-
 import S3InstanceFormDialog from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.tsx"
 
 type TestStatus = "idle" | "testing" | "ok" | "fail"

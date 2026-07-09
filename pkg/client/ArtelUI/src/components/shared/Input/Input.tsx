@@ -1,6 +1,8 @@
 import {forwardRef} from "react"
-import cls from "./Input.module.css"
+
 import {cn} from "@/app/utils/cn"
+
+import cls from "./Input.module.css"
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement>
 

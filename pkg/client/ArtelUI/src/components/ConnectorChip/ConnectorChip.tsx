@@ -1,10 +1,8 @@
 import {McpConnectorInfo} from "@/app/api/artel/mcp_keys.pb.ts"
 import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
-
 import GenericChip from "@/components/GenericChip/GenericChip.tsx"
 import EmailChip from "@/components/EmailChip/EmailChip.tsx"
 import ProviderChip from "@/components/ProviderChip/ProviderChip.tsx"
-
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import {PROVIDER_CHIP_CLASS} from "@/components/ProviderChip/providerChipClass.ts"
 

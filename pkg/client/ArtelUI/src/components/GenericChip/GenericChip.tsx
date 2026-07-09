@@ -1,5 +1,4 @@
 import cls from "@/components/GenericChip/GenericChip.module.css"
-
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 export default function GenericChip({mcpName}: {mcpName?: string}) {
