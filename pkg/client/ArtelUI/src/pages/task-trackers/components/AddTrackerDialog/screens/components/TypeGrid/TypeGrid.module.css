@@ -1,0 +1,40 @@
+.TypeGridContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    & .TypeCard {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background: var(--color-bg-input);
+        border: 1px solid var(--color-border-light);
+        border-radius: 0.875rem;
+        cursor: pointer;
+        font-family: inherit;
+        text-align: left;
+        transition: border-color 160ms ease, background 160ms ease;
+        width: 100%;
+
+        &:hover {
+            border-color: var(--coral);
+            background: rgba(255,101,78,0.06);
+        }
+    }
+
+    & .TypeCardIcon {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.5rem;
+        background: #0052CC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: white;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+}

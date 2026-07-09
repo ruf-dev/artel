@@ -1,0 +1,19 @@
+.ContentSegmentContainer {
+    max-width: 75rem;
+    margin: 2rem auto 0;
+    padding: 0 2rem 4rem;
+    width: 100%;
+    box-sizing: border-box;
+
+    & .List {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+    }
+
+    & .Empty {
+        color: var(--color-fg-tertiary);
+        font-size: 0.875rem;
+        padding: 2rem 0;
+    }
+}

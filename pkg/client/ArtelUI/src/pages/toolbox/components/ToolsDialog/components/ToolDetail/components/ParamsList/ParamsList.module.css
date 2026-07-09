@@ -1,0 +1,17 @@
+.ParamsListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+
+    & .SectionTitle {
+        font-size: 0.6875rem;
+        font-weight: 500;
+        color: var(--color-fg-tertiary);
+        font-family: var(--font-mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.125rem;
+    }
+}

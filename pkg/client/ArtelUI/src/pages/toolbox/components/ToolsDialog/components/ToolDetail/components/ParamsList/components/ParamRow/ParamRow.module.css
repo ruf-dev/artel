@@ -1,0 +1,20 @@
+.ParamRowContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+
+    & .ParamName {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        color: var(--color-fg-primary);
+        letter-spacing: -0.01em;
+    }
+
+    & .ParamDesc {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        line-height: 1.45;
+        margin-bottom: 0.125rem;
+    }
+}

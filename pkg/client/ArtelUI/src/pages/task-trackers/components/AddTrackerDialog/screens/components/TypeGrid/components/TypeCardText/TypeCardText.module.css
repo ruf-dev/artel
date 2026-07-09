@@ -1,0 +1,16 @@
+.TypeCardTextContainer {
+    min-width: 0;
+
+    & .TypeCardLabel {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        letter-spacing: -0.01em;
+    }
+
+    & .TypeCardDesc {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        margin-top: 0.125rem;
+    }
+}
