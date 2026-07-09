@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/components/RunTractDialog/RunTractDialog.module.css"
-
 import {SchemaNode, SchemaProperty, Tract, TractRun, tractsService} from "@/processes/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import ParamsList from "@/components/RunTractDialog/components/ParamsList.tsx"
 
-import {Button} from "@vervstack/chures"
 
 interface Props {
     tract?: Tract
@@ -107,66 +107,6 @@ function formatStartedAt(iso: string | undefined): string {
     return d.toLocaleTimeString(undefined, {hour: "2-digit", minute: "2-digit", second: "2-digit"})
 }
 
-function ParamsList({schema, values, onChange}: {
-    schema: SchemaNode
-    values: Record<string, string>
-    onChange: (name: string, value: string) => void
-}) {
-    const entries = Object.entries(schema.properties)
-    if (entries.length === 0) return null
-    return (
-        <div className={cls.ParamsSection}>
-            {entries.map(([name, def]) => (
-                <ParamRow
-                    key={name}
-                    name={name}
-                    def={def}
-                    required={schema.required?.includes(name) ?? false}
-                    value={values[name] ?? ""}
-                    onChange={onChange}
-                />
-            ))}
-        </div>
-    )
-}
-
-function ParamRow({name, def, required, value, onChange}: {
-    name: string
-    def: SchemaProperty
-    required: boolean
-    value: string
-    onChange: (name: string, value: string) => void
-}) {
-    return (
-        <div className={cls.ParamRow}>
-            <span className={cls.ParamName}>{name}{required ? " *" : ""}</span>
-            {def.description && <span className={cls.ParamDesc}>{def.description}</span>}
-            <ParamInput def={def} value={value} onChange={v => onChange(name, v)}/>
-        </div>
-    )
-}
-
-function ParamInput({def, value, onChange}: {
-    def: SchemaProperty
-    value: string
-    onChange: (value: string) => void
-}) {
-    if (def.enum?.length) {
-        return (
-            <select className={cls.ParamField} value={value} onChange={e => onChange(e.target.value)}>
-                <option value="">—</option>
-                {def.enum.map(v => <option key={v} value={v}>{v}</option>)}
-            </select>
-        )
-    }
-    if (def.type === "integer" || def.type === "number") {
-        return <input className={cls.ParamField} type="number" value={value} onChange={e => onChange(e.target.value)}/>
-    }
-    if (def.type === "boolean") {
-        return <input type="checkbox" checked={value === "true"} onChange={e => onChange(String(e.target.checked))}/>
-    }
-    return <input className={cls.ParamField} type="text" value={value} onChange={e => onChange(e.target.value)}/>
-}
 
 function coerceParams(props: Record<string, SchemaProperty>, values: Record<string, string>): Record<string, unknown> {
     const out: Record<string, unknown> = {}

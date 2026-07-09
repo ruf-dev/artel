@@ -1,14 +1,14 @@
 import {useState} from "react"
-
 import {Button, ModalClose} from "@vervstack/chures"
-import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
 
+import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
-
 import FormField from "@/components/FormField/FormField.tsx"
+import Input from "@/components/shared/Input/Input.tsx"
+import S3ToggleFields from "@/components/S3InstanceFormDialog/components/S3ToggleFields.tsx"
 
 interface Props {
     initial?: GetS3InstanceResponse
@@ -90,11 +90,11 @@ export default function S3InstanceFormDialog({initial, onSaved}: Props) {
             />
             <div className={cls.Field}>
                 <span className={cls.FieldLabel}>Secret key{isEdit ? " (leave blank to keep current)" : ""}</span>
-                <input
+                <Input
                     type="password"
                     placeholder={isEdit ? "••••••••" : "secret key"}
                     className={cls.Input}
-                    onChange={e => setSecretKey(e.target.value)}
+                    onChange={e => setSecretKey(e.currentTarget.value)}
                     disabled={saving}
                     autoComplete="new-password"
                 />
@@ -112,40 +112,6 @@ export default function S3InstanceFormDialog({initial, onSaved}: Props) {
                     {saving ? "Saving…" : isEdit ? "Save changes" : "Add instance"}
                 </Button>
             </div>
-        </div>
-    )
-}
-
-function S3ToggleFields({useSsl, pathStyle, disabled, onUseSslChange, onPathStyleChange}: {
-    useSsl: boolean
-    pathStyle: boolean
-    disabled: boolean
-    onUseSslChange: (v: boolean) => void
-    onPathStyleChange: (v: boolean) => void
-}) {
-    return (
-        <div className={cls.ToggleGroup}>
-            <label className={cls.ToggleRow}>
-                <input
-                    type="checkbox"
-                    checked={useSsl}
-                    disabled={disabled}
-                    onChange={e => onUseSslChange(e.target.checked)}
-                />
-                <span className={cls.ToggleLabel}>Use SSL</span>
-            </label>
-            <label className={cls.ToggleRow}>
-                <input
-                    type="checkbox"
-                    checked={pathStyle}
-                    disabled={disabled}
-                    onChange={e => onPathStyleChange(e.target.checked)}
-                />
-                <span className={cls.ToggleLabel}>Path-style addressing</span>
-            </label>
-            <p className={cls.ToggleCaption}>
-                Required for Garage and most self-hosted S3-compatible stores.
-            </p>
         </div>
     )
 }
