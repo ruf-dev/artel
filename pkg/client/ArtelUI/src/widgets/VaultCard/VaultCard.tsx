@@ -7,8 +7,9 @@ import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import VaultCardHeader from "@/components/VaultCard/VaultCardHeader.tsx";
 import VaultCardStatus from "@/components/VaultCard/VaultCardStatus.tsx";
 import VaultCardConnBar from "@/components/VaultCard/VaultCardConnBar.tsx";
-import FastSetupDialog from "@/components/VaultCard/FastSetupDialog.tsx";
+import FastSetupDialog from "@/dialogs/FastSetupDialog/FastSetupDialog.tsx";
 import {useDialog} from "@/app/hooks/Dialog.ts";
+import {cn} from "@/app/utils/cn";
 
 interface Props {
     vault: VaultItem
@@ -20,7 +21,7 @@ export default function VaultCard({vault, onEdit}: Props) {
 
     return (
         <article className={cls.VaultCardContainer} onClick={() => setIsFlipped(!isFlipped)}>
-            <div className={`${cls.VaultCardContentWrapper} ${isFlipped ? cls.Flipped : ""}`}>
+            <div className={cn(cls.VaultCardContentWrapper, isFlipped && cls.Flipped)}>
                 <VaultCardFront vault={vault} onEdit={onEdit}/>
                 <VaultCardBack/>
             </div>
@@ -67,7 +68,7 @@ function VaultCardBack() {
                     Connect to MCP
                 </Button>
                 <Button
-                    className={`${cls.Link} ${cls.LinkBtn}`}
+                    className={cn(cls.Link, cls.LinkBtn)}
                     onClick={openSetupDialog}>
                     Fast setup
                 </Button>

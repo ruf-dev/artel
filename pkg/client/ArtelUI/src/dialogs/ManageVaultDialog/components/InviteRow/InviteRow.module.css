@@ -1,0 +1,26 @@
+.InviteRowContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.625rem;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border-light);
+
+    &.Revoked {
+        opacity: 0.45;
+    }
+
+    .InviteToken {
+        flex: 1;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--color-fg-secondary);
+    }
+
+    .RevokedLabel {
+        font-size: 0.6875rem;
+        color: var(--color-fg-disabled);
+        margin-left: auto;
+    }
+}

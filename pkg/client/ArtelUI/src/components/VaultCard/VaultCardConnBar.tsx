@@ -1,5 +1,7 @@
 import {useState} from "react"
+import {Button} from "@vervstack/chures"
 import cls from "@/components/VaultCard/VaultCardConnBar.module.css"
+import {cn} from "@/app/utils/cn"
 
 interface Props {
     dbUrl: string
@@ -47,9 +49,8 @@ function ConnBarRow({value, label, hidden = false}: RowProps) {
             <span className={cls.ConnBarLabel}>{label}</span>
             <code className={cls.ConnString} title={revealed || !hidden ? value : undefined}>{displayValue}</code>
             {hidden && (
-                <button
+                <Button
                     className={cls.CopyBtn}
-                    type="button"
                     onClick={(e) => {
                         e.stopPropagation()
                         setRevealed(r => !r)
@@ -67,11 +68,10 @@ function ConnBarRow({value, label, hidden = false}: RowProps) {
                             <circle cx="12" cy="12" r="3"/>
                         </svg>
                     )}
-                </button>
+                </Button>
             )}
-            <button
-                className={`${cls.CopyBtn} ${copied ? cls.CopyBtnCopied : ""}`}
-                type="button"
+            <Button
+                className={cn(cls.CopyBtn, copied && cls.CopyBtnCopied)}
                 onClick={(e) => {
                     e.stopPropagation()
                     handleCopy()
@@ -82,7 +82,7 @@ function ConnBarRow({value, label, hidden = false}: RowProps) {
                     <path d="M5 15V5a2 2 0 0 1 2-2h10"/>
                 </svg>
                 <span>{copied ? "Copied" : "Copy"}</span>
-            </button>
+            </Button>
         </div>
     )
 }

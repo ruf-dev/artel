@@ -74,13 +74,13 @@ export default tseslint.config([
                     },
                     {
                         target: './components',
-                        from: ['./widgets', './segments', './pages', './dialogs'],
-                        message: 'src/components/** is below widgets/segments/pages/dialogs — it may not import from them.',
+                        from: ['./widgets', './segments', './pages'],
+                        message: 'src/components/** is below widgets/segments/pages — it may not import from them (dialogs/ is exempt: any tier may import a dialog to call OpenDialog()).',
                     },
                     {
                         target: ['./widgets', './segments'],
-                        from: ['./pages', './dialogs'],
-                        message: 'src/widgets/** and src/segments/** are below pages/dialogs — they may not import from them.',
+                        from: ['./pages'],
+                        message: 'src/widgets/** and src/segments/** are below pages — they may not import from them (dialogs/ is exempt: any tier may import a dialog to call OpenDialog()).',
                     },
                     {
                         target: './dialogs',

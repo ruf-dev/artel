@@ -29,11 +29,7 @@ linter can't check is colocation scope (below), which is a review-time rule.
    touch it.
 3. **`components/<Name>/<Name>.tsx`** — project-wide components too specific to the
    product to be a chures-style atom: a reusable leaf used in 2+ places (a chip, a
-   generic option row, a form field), or a self-contained complex dialog that's
-   reused (e.g. `ManageVaultDialog`, `ManageKeyDialog`). A dialog's own wizard
-   steps/sub-rows stay as **private functions in the same file** (see
-   `MemberRow`/`InviteRow` in `ManageVaultDialog.tsx`) unless they're big enough to
-   need the local colocation pattern below. May import tiers 1-2 only.
+   generic option row, a form field). May import tiers 1-2 only.
 4. **`widgets/<Name>/<Name>.tsx`** and **`segments/<Name>/<Name>.tsx`** — same tier,
    two different roles:
    - A **widget** is a unit reused across pages that owns its own related data
@@ -48,17 +44,35 @@ linter can't check is colocation scope (below), which is a review-time rule.
 5. **`pages/<Name>/<Name>Page.tsx`** and **`dialogs/<Name>/<Name>.tsx`** — top-level
    citizens. A page is a route; a dialog is opened via `OpenDialog(<X/>)` from
    `@/app/hooks/Dialog`. May import tiers 1-4, plus a page may import a dialog to
-   open it — that's the one sanctioned same-tier exception (`OpenDialog(<CreateVaultDialog/>)`
-   in `HomePage.tsx`). **A dialog must never import a page** (enforced by
-   `no-restricted-paths`) — dialogs don't know who opened them.
+   open it (`OpenDialog(<CreateVaultDialog/>)` in `HomePage.tsx`).
+
+   **Any tier may import from `dialogs/` to call `OpenDialog(<X/>)`** — a dialog is
+   opened from wherever its trigger lives, not just from pages. A `components/` leaf,
+   a `widgets/`/`segments/` unit, or a page can all reach into `dialogs/` for this one
+   purpose (e.g. `OpenDialog(<FastSetupDialog/>)` from `widgets/VaultCard/VaultCard.tsx`).
+   This is the one sanctioned upward exception to the tier rule, carved out of
+   `import-x/no-restricted-paths` for every zone below `dialogs/`. **A dialog must
+   never import a page** (enforced by `no-restricted-paths`) — dialogs don't know who
+   opened them.
 
 ## Local colocation
 
 Any page or dialog can define its own **local** components/widgets/segments in a
 colocated subfolder: `pages/<Page>/components/`, `pages/<Page>/widgets/`,
 `pages/<Page>/segments/`, `dialogs/<Dialog>/components/`, `dialogs/<Dialog>/widgets/`.
-See `pages/tract-canvas/*` and `dialogs/AddTriggerDialog/*` for the reference shape.
+See `pages/tract-canvas/*`, `dialogs/AddTriggerDialog/*`, and
+`dialogs/ManageVaultDialog/*` for the reference shape.
 
+- **One React component per file.** A `.tsx` file renders exactly one component — no
+  private/local helper components defined inline in the same file, however small (a
+  row renderer, a badge, a sub-dialog). Split each into its own file under the
+  nearest colocation folder above. See `dialogs/ManageVaultDialog/components/*`
+  (`MemberRow`, `InviteRow`, `RoleBadge`, `DangerZoneText`, `RoleOption`,
+  `CreateInviteLinkDialog`) for the reference shape — including a dialog-local
+  sub-dialog (`CreateInviteLinkDialog`, opened via `OpenDialog` from within
+  `ManageVaultDialog`) living in the owning dialog's local `components/`, since
+  there's no separate "local dialogs" folder — a local sub-dialog is still a
+  `components/`-tier concept relative to its parent.
 - These are **local by default**: only the owning page/dialog (and its own
   descendants) may import them. Don't reach into another page's or dialog's local
   folder from outside it — if the same piece is needed in two places, promote it to
@@ -79,11 +93,10 @@ component file grow — same tool as the project-wide `src/processes/` used by
 
 ## Known debt (documented, not migrated)
 
-- `ManageVaultDialog`, `RunTractDialog`, `StepPickerDialog`, `S3InstanceFormDialog`
-  are dialogs living under `src/components/` instead of `src/dialogs/` — legacy from
-  before this doc existed. Don't repeat the pattern for new dialogs; move these
-  opportunistically if you're already touching one, but it's not worth a dedicated
-  migration.
+- `RunTractDialog`, `StepPickerDialog`, `S3InstanceFormDialog` are dialogs living
+  under `src/components/` instead of `src/dialogs/` — legacy from before this doc
+  existed. Don't repeat the pattern for new dialogs; move these opportunistically if
+  you're already touching one, but it's not worth a dedicated migration.
 - 105 pre-existing `no-restricted-syntax` warnings (raw `<button>`/`<input>`,
   template-literal `className`) are a known baseline as of this rule's introduction
   — fix the ones you touch, don't feel obligated to sweep the whole codebase.

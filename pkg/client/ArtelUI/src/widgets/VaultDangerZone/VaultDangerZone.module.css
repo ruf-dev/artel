@@ -1,0 +1,32 @@
+.VaultDangerZoneContainer {
+    margin-top: 0.25rem;
+    padding: 1rem;
+    background: rgba(193,37,61,0.06);
+    border: 1px solid rgba(193,37,61,0.25);
+    border-radius: 0.75rem;
+    margin-bottom: 1.25rem;
+
+    .VaultDangerZoneRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.875rem;
+    }
+
+    .DangerZoneTextContainer {
+        min-width: 0;
+
+        .DangerZoneTitle {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--color-fg-primary);
+            margin-bottom: 0.125rem;
+        }
+
+        .DangerZoneSub {
+            font-size: 0.75rem;
+            color: var(--color-fg-secondary);
+            line-height: 1.45;
+        }
+    }
+}

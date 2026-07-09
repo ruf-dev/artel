@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react"
 
-import {Button, ConfirmDialog} from "@vervstack/chures"
+import {Button, ConfirmDialog, Input} from "@vervstack/chures"
 import cls from "@/components/ManageVaultS3Section/ManageVaultS3Section.module.css"
 
 import {VaultItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
@@ -25,7 +25,7 @@ export default function ManageVaultS3Section({vault, onLinked}: Props) {
     const linked = !!vault.s3InstanceId
 
     return (
-        <section className={cls.SectionContainer}>
+        <section className={cls.ManageVaultS3SectionContainer}>
             <div className={cls.SectionHead}>
                 <span className={cls.SectionTitle}>S3 storage</span>
             </div>
@@ -131,11 +131,11 @@ function LinkForm({vault, onLinked}: Props) {
                     />
                 ))}
             </div>
-            <input
+            <Input
                 className={cls.Input}
-                placeholder="bucket name"
+                label="Bucket name"
                 value={bucketName}
-                onChange={e => setBucketName(e.target.value)}
+                setValue={setBucketName}
                 disabled={linking}
             />
             <Button variant="primary" onClick={handleLink} disabled={linking || !selectedId || !bucketName}>

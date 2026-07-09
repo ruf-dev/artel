@@ -5,7 +5,7 @@ import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
 
-import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
+import ManageVaultDialog from "@/dialogs/ManageVaultDialog/ManageVaultDialog.tsx"
 
 export default function VaultChip({vault}: {vault?: VaultItem}) {
     const {OpenDialog} = useDialog()

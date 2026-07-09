@@ -10,7 +10,7 @@ import useUser from "@/hooks/user/User.ts"
 import {Button, ModalClose, InfoDialog} from "@vervstack/chures"
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
-import ManageVaultDialog from "@/components/ManageVaultDialog/ManageVaultDialog.tsx"
+import ManageVaultDialog from "@/dialogs/ManageVaultDialog/ManageVaultDialog.tsx"
 import type {GrpcStatusError} from "@/processes/grpcErrors.ts";
 import {isMissingSubscription} from "@/processes/UserErrors.ts";
 
