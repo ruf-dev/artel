@@ -1,6 +1,6 @@
 import {Button} from "@vervstack/chures"
 
-import {PlayIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {PlayIcon} from "@/pages/tract-canvas/icons/PlayIcon/PlayIcon.tsx"
 
 interface Props {
     running: boolean

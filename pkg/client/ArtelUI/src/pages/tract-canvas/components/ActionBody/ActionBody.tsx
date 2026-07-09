@@ -21,15 +21,17 @@ interface Props {
     onChangeSteps: (s: TractStep[]) => void
 }
 
-export default function ActionBody({rootSteps, step, tools, triggerSchema, momCandidates, lastOutput, onChangeSteps}: Props) {
-    const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
-    const sources = buildSources(rootSteps, step.id, tools, triggerSchema)
+export default function ActionBody(props: Props) {
+    const step = props.step
+    const tool = props.tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
+    const sources = buildSources(props.rootSteps, step.id, props.tools, props.triggerSchema)
+    const lastOutput = props.lastOutput
 
     function update(updater: (s: TractStep) => TractStep) {
-        onChangeSteps(replaceStep(rootSteps, step.id, updater))
+        props.onChangeSteps(replaceStep(props.rootSteps, step.id, updater))
     }
 
-    const candidate = momCandidates.find(c => c.name === step.mcp)
+    const candidate = props.momCandidates.find(c => c.name === step.mcp)
     const stepConnections = candidate?.connections ?? []
 
     return (

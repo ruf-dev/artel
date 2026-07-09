@@ -1,5 +1,5 @@
 import {type ReactNode} from "react"
-import {Button} from "@vervstack/chures"
+import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -17,11 +17,11 @@ export default function SchemaFieldRowEditor({field, onChange, onRemove, hideNam
         <div className={cls.SchemaFieldRowEditorContainer}>
             <div className={cls.SchemaFieldRow}>
                 {!hideName && (
-                    <input
+                    <Input
                         className={cn(cls.TextInput, cls.SchemaFieldName)}
                         placeholder="field name"
                         value={field.name}
-                        onChange={e => onChange({name: e.target.value})}
+                        setValue={(newValue) => onChange({name: newValue})}
                     />
                 )}
                 <select

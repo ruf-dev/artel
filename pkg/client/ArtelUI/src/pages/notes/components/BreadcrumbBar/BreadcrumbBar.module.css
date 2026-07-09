@@ -46,36 +46,3 @@
 .RightSlot {
     flex-shrink: 0;
 }
-
-.BreadcrumbPath {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    overflow: hidden;
-}
-
-.SegmentWrapper {
-    display: inline-flex;
-    align-items: center;
-}
-
-.Separator {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.18);
-    margin: 0 4px;
-}
-
-.Segment {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.18);
-    white-space: nowrap;
-}
-
-.SegmentActive {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.92);
-    white-space: nowrap;
-}

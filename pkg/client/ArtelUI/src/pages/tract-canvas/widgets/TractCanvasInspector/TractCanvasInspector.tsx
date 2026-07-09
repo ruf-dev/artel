@@ -22,7 +22,8 @@ interface Props {
     onClose: () => void
 }
 
-export default function TractCanvasInspector({node, rootSteps, tools, triggerSchema, momCandidates, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose}: Props) {
+export default function TractCanvasInspector(props: Props) {
+    const node = props.node
     const [enlarged, setEnlarged] = useState(false)
 
     useEffect(() => {
@@ -39,16 +40,16 @@ export default function TractCanvasInspector({node, rootSteps, tools, triggerSch
                     <TractCanvasInspectorBody
                         key={node.id}
                         node={node}
-                        rootSteps={rootSteps}
-                        tools={tools}
-                        triggerSchema={triggerSchema}
-                        momCandidates={momCandidates}
-                        lastOutputByStepId={lastOutputByStepId}
-                        tractUuid={tractUuid}
-                        linkedTriggerSummaries={linkedTriggerSummaries}
-                        onChangeSteps={onChangeSteps}
-                        onOpenAddBlock={onOpenAddBlock}
-                        onClose={onClose}
+                        rootSteps={props.rootSteps}
+                        tools={props.tools}
+                        triggerSchema={props.triggerSchema}
+                        momCandidates={props.momCandidates}
+                        lastOutputByStepId={props.lastOutputByStepId}
+                        tractUuid={props.tractUuid}
+                        linkedTriggerSummaries={props.linkedTriggerSummaries}
+                        onChangeSteps={props.onChangeSteps}
+                        onOpenAddBlock={props.onOpenAddBlock}
+                        onClose={props.onClose}
                         enlarged={enlarged}
                         onToggleEnlarge={() => setEnlarged(e => !e)}
                     />

@@ -1,6 +1,6 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
-import {Button} from "@vervstack/chures"
+import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.module.css"
 import {useDialog, useDialogKeyboard} from "@/app/hooks/Dialog"
@@ -34,10 +34,10 @@ export default function NewTractDialog() {
     return (
         <div className={cls.NewTractDialogContainer} role="dialog" aria-modal="true">
             <h2 className={cls.DialogTitle}>New tract</h2>
-            <input
+            <Input
                 className={cls.DialogInput}
                 value={name}
-                onChange={e => setName(e.target.value)}
+                setValue={setName}
                 onKeyDown={onKeyDown}
                 placeholder="Tract name"
                 autoFocus

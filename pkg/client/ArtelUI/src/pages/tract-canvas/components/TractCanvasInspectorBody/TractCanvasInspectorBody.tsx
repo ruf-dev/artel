@@ -6,7 +6,8 @@ import {SchemaNode, TractStep, TractTool, TractTriggerSummary} from "@/processes
 import {Location} from "@/processes/tractSteps.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {cn} from "@/app/utils/cn.ts"
-import {ChevronRightIcon, CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {ChevronRightIcon} from "@/pages/tract-canvas/icons/ChevronRightIcon/ChevronRightIcon.tsx"
+import {CloseIcon} from "@/pages/tract-canvas/icons/CloseIcon/CloseIcon.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 import OutputFields from "@/pages/tract-canvas/components/OutputFields/OutputFields.tsx"
@@ -32,7 +33,10 @@ interface Props {
     onToggleEnlarge: () => void
 }
 
-export default function TractCanvasInspectorBody({node, rootSteps, tools, triggerSchema, momCandidates, lastOutputByStepId, tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose, enlarged, onToggleEnlarge}: Props) {
+export default function TractCanvasInspectorBody(props: Props) {
+    const {node, rootSteps, tools, triggerSchema, momCandidates, lastOutputByStepId} = props
+    const {tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose} = props
+    const {enlarged, onToggleEnlarge} = props
     const step = node.step
 
     return (

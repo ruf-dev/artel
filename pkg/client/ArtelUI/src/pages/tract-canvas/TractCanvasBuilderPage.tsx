@@ -14,7 +14,7 @@ export default function TractCanvasBuilderPage() {
     const {tractUuid} = useParams<{ tractUuid: string }>()
     const navigate = useNavigate()
     const {auth} = useUser()
-    const {tracts, fetch, fetchRuns, runsByTract, fetchTools, tools, triggers, fetchTriggers} = useTracts()
+    const tractsStore = useTracts()
     const {fetch: fetchConnections} = useExternalConnections()
     const {momCandidates, fetchMomCandidates} = useMcpKeys()
 
@@ -24,16 +24,16 @@ export default function TractCanvasBuilderPage() {
 
     useEffect(() => {
         if (!auth.isAuthenticated() || !tractUuid) return
-        if (tracts.length === 0) void fetch()
-        void fetchRuns(tractUuid)
-        void fetchTools()
-        void fetchTriggers()
+        if (tractsStore.tracts.length === 0) void tractsStore.fetch()
+        void tractsStore.fetchRuns(tractUuid)
+        void tractsStore.fetchTools()
+        void tractsStore.fetchTriggers()
         void fetchConnections()
         void fetchMomCandidates()
     }, [auth, tractUuid])
 
-    const tract = tracts.find(t => t.uuid === tractUuid)
-    const runs = tractUuid ? runsByTract[tractUuid] ?? [] : []
+    const tract = tractsStore.tracts.find(t => t.uuid === tractUuid)
+    const runs = tractUuid ? tractsStore.runsByTract[tractUuid] ?? [] : []
 
     if (!tract) {
         return (
@@ -50,8 +50,8 @@ export default function TractCanvasBuilderPage() {
     return (
         <TractCanvasBuilder
             tract={tract}
-            tools={tools}
-            triggers={triggers}
+            tools={tractsStore.tools}
+            triggers={tractsStore.triggers}
             runs={runs}
             momCandidates={momCandidates}
             onBack={() => navigate(Path.TractsPage)}

@@ -1,4 +1,4 @@
-import {Button} from "@vervstack/chures"
+import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -9,7 +9,14 @@ export default function SchemaPropertyPreview({name, prop, hideName}: { name: st
     return (
         <div className={cls.SchemaPropertyPreviewContainer}>
             <div className={cls.SchemaFieldRow}>
-                {!hideName && <input className={cn(cls.TextInput, cls.SchemaFieldName)} value={name} disabled/>}
+                {!hideName && (
+                    <Input
+                        className={cn(cls.TextInput, cls.SchemaFieldName)}
+                        value={name}
+                        setValue={() => {}}
+                        disabled
+                    />
+                )}
                 <select className={cn(cls.PlainSelect, cls.SchemaFieldTypeSelect)} value={prop.type} disabled>
                     {FIELD_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>

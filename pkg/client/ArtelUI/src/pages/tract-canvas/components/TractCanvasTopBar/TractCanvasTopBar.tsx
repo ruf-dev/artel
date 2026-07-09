@@ -1,4 +1,4 @@
-import {Button} from "@vervstack/chures"
+import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.module.css"
 import RunStatusBadge from "@/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx"
@@ -17,14 +17,15 @@ interface Props {
     onToggleLog: () => void
 }
 
-export default function TractCanvasTopBar({
-    name, onNameChange, isDirty, saving, running, lastRunStatus, onBack, onSave, onRun, onToggleLog,
-}: Props) {
+export default function TractCanvasTopBar(props: Props) {
+    const {name, onNameChange, isDirty, saving, running, lastRunStatus} = props
+    const {onBack, onSave, onRun, onToggleLog} = props
+
     return (
         <div className={cls.BarContainer}>
             <Button variant="ghost" onClick={onBack}>← Tracts</Button>
             <span className={cls.Divider}/>
-            <input className={cls.NameInput} value={name} onChange={e => onNameChange(e.target.value)}/>
+            <Input className={cls.NameInput} value={name} setValue={onNameChange}/>
             {isDirty && <span className={cls.DirtyDot} title="Unsaved changes"/>}
             <div className={cls.BarRight}>
                 <RunStatusBadge running={running} lastRunStatus={lastRunStatus}/>

@@ -1,0 +1,82 @@
+.TreeItemRowContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.84rem;
+    font-family: var(--font);
+    cursor: pointer;
+    color: var(--text-secondary);
+    background: transparent;
+    border-left: 2px solid transparent;
+    transition: background 120ms ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.035);
+    }
+
+    &:hover .FolderAddBtn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    & .TreeItemMain {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    & .TreeItemLabel {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .TreeItemSubtitle {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.25);
+        margin-top: 1px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .ArrowSpacer {
+        width: 0.56rem;
+        flex-shrink: 0;
+    }
+
+    & .FolderAddBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.2rem;
+        height: 1.2rem;
+        border: none;
+        background: transparent;
+        color: var(--text-disabled);
+        border-radius: 0.25rem;
+        padding: 0;
+        cursor: pointer;
+        flex-shrink: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 100ms ease, background 120ms ease, color 120ms ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+    }
+}
+
+.TreeItemRowActive {
+    color: var(--text-primary);
+    background: var(--coral-dim);
+    border-left: 2px solid #FF4B3E;
+
+    &:hover {
+        background: var(--coral-dim);
+    }
+}

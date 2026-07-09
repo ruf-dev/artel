@@ -1,4 +1,4 @@
-import cls from "./LineNumbers.module.css"
+import cls from "@/pages/notes/components/LineNumbers/LineNumbers.module.css"
 
 interface LineNumbersProps {
     lineCount: number

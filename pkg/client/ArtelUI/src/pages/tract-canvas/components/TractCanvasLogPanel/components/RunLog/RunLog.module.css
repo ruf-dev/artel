@@ -1,0 +1,24 @@
+.Line {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 0.125rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+}
+
+.LineT {
+    color: var(--color-fg-disabled);
+    flex-shrink: 0;
+}
+
+.LineMOk { color: var(--status-online); }
+.LineMErr { color: var(--color-error); }
+.LineMInfo { color: var(--color-fg-secondary); }
+
+.Empty {
+    color: var(--color-fg-tertiary);
+    font-size: 0.75rem;
+    padding: 0.75rem;
+}

@@ -1,0 +1,65 @@
+.DesktopNotesShellContainer {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-base);
+    font-family: var(--font);
+    color: var(--text-primary);
+
+    & .SidebarWrapper {
+        flex-shrink: 0;
+        height: 100%;
+    }
+
+    & .ViewerWrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: 100%;
+        position: relative;
+
+        & .ZoomControls {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 4px 8px;
+            backdrop-filter: blur(4px);
+
+            & .ZoomBtn {
+                width: 20px;
+                height: 20px;
+                background: none;
+                border: none;
+                color: rgba(255, 255, 255, 0.65);
+                cursor: pointer;
+                font-size: 16px;
+                line-height: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+
+                &:hover {
+                    color: rgba(255, 255, 255, 0.9);
+                }
+            }
+
+            & .ZoomLabel {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 10px;
+                color: rgba(255, 255, 255, 0.4);
+                min-width: 34px;
+                text-align: center;
+                user-select: none;
+            }
+        }
+    }
+}

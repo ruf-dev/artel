@@ -6,7 +6,7 @@ import {Location, replaceStep} from "@/processes/tractSteps.ts"
 import {buildSources} from "@/pages/tract-canvas/processes/inspectorSources.ts"
 import {cn} from "@/app/utils/cn.ts"
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
-import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
+import {CloseIcon} from "@/pages/tract-canvas/icons/CloseIcon/CloseIcon.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 import NameField from "@/pages/tract-canvas/components/NameField/NameField.tsx"
 
@@ -22,12 +22,15 @@ interface Props {
     enlarged: boolean
 }
 
-export default function ConditionBody({rootSteps, step, tools, triggerSchema, onChangeSteps, onOpenAddBlock, enlarged}: Props) {
-    const sources = buildSources(rootSteps, step.id, tools, triggerSchema)
+export default function ConditionBody(props: Props) {
+    const step = props.step
+    const sources = buildSources(props.rootSteps, step.id, props.tools, props.triggerSchema)
     const conditions = step.conditions ?? []
+    const enlarged = props.enlarged
+    const onOpenAddBlock = props.onOpenAddBlock
 
     function update(updater: (s: TractStep) => TractStep) {
-        onChangeSteps(replaceStep(rootSteps, step.id, updater))
+        props.onChangeSteps(replaceStep(props.rootSteps, step.id, updater))
     }
 
     function updateCondition(i: number, patch: Partial<TractCondition>) {

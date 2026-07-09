@@ -1,0 +1,22 @@
+.ConnectorRowWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--color-bg-hover);
+    cursor: pointer;
+
+    & .ConnectorRowActions {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        flex-shrink: 0;
+    }
+
+    & .BtnSmall {
+        padding: 0.3125rem 0.625rem;
+        font-size: 0.75rem;
+    }
+}

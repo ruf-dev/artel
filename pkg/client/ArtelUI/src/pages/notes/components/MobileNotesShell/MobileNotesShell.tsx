@@ -1,19 +1,13 @@
 import { useEffect, useRef, useState } from "react"
-import {Button} from "@vervstack/chures"
 
 import { NoteMode, useNotes } from "@/app/hooks/Notes.ts"
-import { useDialog } from "@/app/hooks/Dialog.ts"
-import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import { SaveStatus } from "@/pages/notes/components/SaveStatusIndicator/SaveStatusIndicator.tsx"
 import ModeBar from "@/pages/notes/components/ModeBar/ModeBar.tsx"
 import NoteEditor from "@/pages/notes/components/NoteEditor/NoteEditor.tsx"
 import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
-import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
-import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
-import ArtelLogoIcon from "@/pages/notes/components/icons/ArtelLogoIcon.tsx"
-import CloseIcon from "@/pages/notes/components/icons/CloseIcon.tsx"
-
-import cls from "./MobileNotesShell.module.css"
+import MobileTopBar from "@/pages/notes/components/MobileNotesShell/components/MobileTopBar/MobileTopBar.tsx"
+import MobileDrawer from "@/pages/notes/components/MobileNotesShell/components/MobileDrawer/MobileDrawer.tsx"
+import cls from "@/pages/notes/components/MobileNotesShell/MobileNotesShell.module.css"
 
 interface VaultOption {
     id: string
@@ -37,144 +31,10 @@ export interface MobileNotesShellProps {
     onRename: () => void
 }
 
-function getNoteTitle(selectedPath: string | null): string {
-    if (!selectedPath) return "No note selected"
-    const parts = selectedPath.split("/")
-    const filename = parts[parts.length - 1] || selectedPath
-    return filename.endsWith(".md") ? filename.slice(0, -3) : filename
-}
+export default function MobileNotesShell(props: MobileNotesShellProps) {
+    const { vaultOptions, noteContent, selectedPath, mode, showEditor } = props
+    const { scrollTopRef, fontScale, onModeChange, onChange, onContentClick, onEscape } = props
 
-function getNoteMeta(content: string | null): string {
-    if (!content) return ""
-    const words = content.trim() ? content.trim().split(/\s+/).length : 0
-    const links = (content.match(/\[\[.+?\]\]/g) || []).length
-    if (!words && !links) return ""
-    const parts: string[] = []
-    if (words) parts.push(`${words} words`)
-    if (links) parts.push(`${links} links`)
-    return parts.join(" · ")
-}
-
-interface MobileTopBarProps {
-    selectedPath: string | null
-    noteContent: string | null
-    sidebarOpen: boolean
-    onHamburgerClick: () => void
-}
-
-function MobileTopBar({ selectedPath, noteContent, sidebarOpen, onHamburgerClick }: MobileTopBarProps) {
-    const title = getNoteTitle(selectedPath)
-    const meta = getNoteMeta(noteContent)
-    const hamburgerClass = `${cls.HamburgerBtn}${sidebarOpen ? ` ${cls.HamburgerBtnActive}` : ""}`
-
-    return (
-        <div className={cls.TopBarContainer}>
-            <Button variant="ghost" className={hamburgerClass} onClick={onHamburgerClick} aria-label="Open sidebar">
-                <svg viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-                    <path d="M3 4.5h12M3 9h8M3 13.5h10" />
-                </svg>
-            </Button>
-            <div className={cls.NoteInfoColumn}>
-                <div className={cls.NoteTitle}>{title}</div>
-                {meta && <div className={cls.NoteMeta}>{meta}</div>}
-            </div>
-            <Button variant="ghost" className={cls.ActionBtn} aria-label="Share">
-                <svg viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                    <circle cx="14" cy="3.5" r="1.8" />
-                    <circle cx="4" cy="9" r="1.8" />
-                    <circle cx="14" cy="14.5" r="1.8" />
-                    <path d="M5.7 10l6.5 3.3M12.2 4.7L5.7 8" />
-                </svg>
-            </Button>
-            <Button variant="ghost" className={cls.ActionBtn} aria-label="More options">
-                <svg viewBox="0 0 18 18" width={16} height={16} fill="currentColor">
-                    <circle cx="9" cy="4" r="1.4" />
-                    <circle cx="9" cy="9" r="1.4" />
-                    <circle cx="9" cy="14" r="1.4" />
-                </svg>
-            </Button>
-        </div>
-    )
-}
-
-function DrawerCloseButton({onClose}: {onClose: () => void}) {
-    return (
-        <Button variant="ghost" className={cls.DrawerCloseBtn} onClick={onClose} aria-label="Close sidebar">
-            <CloseIcon/>
-        </Button>
-    )
-}
-
-interface MobileDrawerProps {
-    open: boolean
-    onClose: () => void
-    vaultOptions: VaultOption[]
-}
-
-function MobileDrawer({ open, onClose, vaultOptions }: MobileDrawerProps) {
-    const { vaultId, folders, createNote } = useNotes()
-    const { OpenDialog } = useDialog()
-    const bakeError = useBakeError()
-
-    function handleNewNote() {
-        OpenDialog(
-            <CreateNoteDialog
-                initialPath=""
-                folders={folders}
-                onConfirm={(path: string) =>
-                    createNote(path).catch(err => bakeError("Failed to create note", err))
-                }
-            />
-        )
-        onClose()
-    }
-
-    const backdropClass = `${cls.Backdrop}${open ? ` ${cls.BackdropOpen}` : ""}`
-    const panelClass = `${cls.DrawerPanel}${open ? ` ${cls.DrawerPanelOpen}` : ""}`
-
-    return (
-        <>
-            <div className={backdropClass} onClick={onClose} />
-            <div className={panelClass}>
-                <div className={cls.DrawerStatusSpacer} />
-                <div className={cls.DrawerHeader}>
-                    <ArtelLogoIcon/>
-                    <span className={cls.DrawerWordmark}>artel</span>
-                    <span className={cls.DrawerNotesLabel}>notes</span>
-                    <span className={cls.DrawerSpacer} />
-                    <DrawerCloseButton onClose={onClose}/>
-                </div>
-                <div className={cls.DrawerBody}>
-                    <NotesSidebar vaults={vaultOptions} />
-                </div>
-                {vaultId && (
-                    <div className={cls.DrawerFooter}>
-                        <Button variant="primary" className={cls.NewNoteBtn} onClick={handleNewNote}>
-                            <svg viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                                <path d="M6 1v10M1 6h10" />
-                            </svg>
-                            New Note
-                        </Button>
-                    </div>
-                )}
-            </div>
-        </>
-    )
-}
-
-export default function MobileNotesShell({
-    vaultOptions,
-    noteContent,
-    selectedPath,
-    mode,
-    showEditor,
-    scrollTopRef,
-    fontScale,
-    onModeChange,
-    onChange,
-    onContentClick,
-    onEscape,
-}: MobileNotesShellProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const { selectedPath: storeSelectedPath } = useNotes()
     const prevSelectedPath = useRef(storeSelectedPath)

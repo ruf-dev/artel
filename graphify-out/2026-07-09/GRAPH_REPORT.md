@@ -1,16 +1,16 @@
 # Graph Report - artel  (2026-07-09)
 
 ## Corpus Check
-- 657 files · ~323,062 words
+- 676 files · ~323,083 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 10563 nodes · 16322 edges · 3055 communities (640 shown, 2415 thin omitted)
+- 10527 nodes · 16346 edges · 3005 communities (645 shown, 2360 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 546 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6a318b7e`
+- Built from commit: `fdf2fe29`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -230,8 +230,11 @@
 - properties
 - post
 - type
+- .ExecuteBuiltinToolForUser
 - post
+- .RemoveConnector
 - description
+- BreadcrumbBar.tsx
 - properties
 - type
 - properties
@@ -246,8 +249,10 @@
 - resolver
 - resolver
 - properties
+- TaskTrackersPage.tsx
 - RunTract_Response
 - type
+- task_trackers.pb.ts
 - SetTractEnabled_Response
 - UpdateS3Instance
 - App
@@ -279,6 +284,7 @@
 - .ListVaults
 - .GetMcpConnector
 - Vaults.ts (hook)
+- StepRow.tsx
 - Repo
 - SessionsRepo
 - .ListTriggerSources
@@ -287,6 +293,7 @@
 - properties
 - CardMeta.tsx
 - properties
+- UnlinkTrigger
 - get
 - fakeMcpDefsRepo
 - properties
@@ -303,7 +310,6 @@
 - CreateTrigger_Request
 - Context
 - Context
-- UserIdentities
 - CreateCouchAccount query
 - CreateSessionParams
 - CreateVaultInviteParams
@@ -314,11 +320,9 @@
 - triggerToProto
 - PendingAuthCodesRepo
 - CreateTract
-- ListRuns
 - type
 - properties
 - schema
-- properties
 - properties
 - .getUserDoc
 - Config
@@ -374,7 +378,6 @@
 - AddMember_Request
 - CreateVault_Response
 - LinkS3Bucket_Request
-- .ListUserKeys
 - components/atoms Tier
 - compilerOptions
 - LinkS3Bucket
@@ -414,7 +417,6 @@
 - RunTract_Request
 - SetTractEnabled_Request
 - SizeCache
-- RegisterTractsAPIServer
 - RegisterTractsAPIHandler
 - vaults.pb.gw.go
 - RunTract
@@ -445,7 +447,6 @@
 - consumes
 - format
 - consumes
-- properties
 - properties
 - .RunTract
 - DB
@@ -504,9 +505,7 @@
 - AuthAPI
 - POST /api/email-accounts/add
 - type
-- properties
 - type
-- properties
 - properties
 - type
 - properties
@@ -553,7 +552,6 @@
 - GenerateGitlabWebhookSecret
 - GenerateGitlabWebhookSecret_Request
 - Message
-- tractActionEntry
 - ListSpreadsheets_Request
 - .ExecuteBuiltinToolForUser
 - RemoveSpreadsheet_Response
@@ -561,27 +559,22 @@
 - file_vaults_proto_rawDescGZIP
 - ListMembers
 - RevokeInviteLink_Response
-- UnlinkS3Bucket
 - .RevokeKey
 - PromptId (enum)
 - DeleteTrigger
-- CardMeta.tsx
 - ListTractTools
 - Artel Service (Obsidian Vault Provisioning)
 - github.com/ruf-dev/artel
 - CouchDB Provisioning (Per-Vault Isolation)
 - sqlc Code Generation (PostgreSQL Queries)
-- UnlinkTrigger
 - index.html - SPA entry point
 - Context
-- useTheme.ts
 - UnknownFields
 - file_mcp_keys_proto_rawDescGZIP
 - .LinkTrigger
 - JsonView.tsx
 - Action
 - protobufAny
-- properties
 - protobufAny
 - CouchInstancesAPI
 - POST /api/mcp/{vaultId}/mcp-keys
@@ -651,7 +644,6 @@
 - properties
 - schema
 - Topbar
-- properties
 - type
 - properties
 - type
@@ -661,7 +653,6 @@
 - description
 - schema
 - schema
-- properties
 - properties
 - properties
 - .DeleteTaskTracker
@@ -1230,7 +1221,6 @@
 - type
 - type
 - type
-- type
 - properties
 - type
 - type
@@ -1292,15 +1282,12 @@
 - 200
 - default
 - type
-- type
 - swagger
 - type
 - items
 - type
 - schema
 - post
-- type
-- type
 - type
 - type
 - type
@@ -1413,8 +1400,6 @@
 - type
 - type
 - type
-- type
-- type
 - properties
 - type
 - type
@@ -1498,7 +1483,6 @@
 - type
 - type
 - type
-- properties
 - type
 - type
 - properties
@@ -1532,7 +1516,6 @@
 - info
 - title
 - version
-- type
 - type
 - type
 - paths
@@ -1569,7 +1552,6 @@
 - swagger
 - type
 - type
-- type
 - delete
 - type
 - type
@@ -1601,7 +1583,6 @@
 - info
 - title
 - version
-- type
 - type
 - paths
 - /api/email-accounts/add
@@ -1636,20 +1617,16 @@
 - type
 - $ref
 - type
-- type
 - items
 - type
 - swagger
 - tags
 - type
 - post
-- post
 - type
 - type
 - type
 - properties
-- type
-- type
 - type
 - type
 - properties
@@ -1786,7 +1763,6 @@
 - @type
 - updatedAt
 - webhookSecret
-- properties
 - type
 - type
 - 200
@@ -1804,8 +1780,6 @@
 - type
 - type
 - get
-- post
-- post
 - post
 - delete
 - type
@@ -1828,7 +1802,6 @@
 - type
 - properties
 - type
-- properties
 - type
 - type
 - type
@@ -1848,7 +1821,6 @@
 - type
 - type
 - properties
-- type
 - type
 - type
 - type
@@ -1910,14 +1882,12 @@
 - type
 - type
 - type
-- type
 - $ref
 - tags
 - type
 - info
 - title
 - version
-- $ref
 - type
 - type
 - type
@@ -1996,7 +1966,6 @@
 - properties
 - type
 - $ref
-- $ref
 - swagger
 - items
 - type
@@ -2012,8 +1981,6 @@
 - properties
 - type
 - type
-- type
-- properties
 - type
 - type
 - schema
@@ -2068,7 +2035,6 @@
 - @type
 - vaultId
 - additionalProperties
-- type
 - 200
 - default
 - swagger
@@ -2079,7 +2045,6 @@
 - type
 - enum
 - type
-- type
 - definitions
 - artel_apiListPromptsRequest
 - artel_apiListPromptsResponse
@@ -2087,7 +2052,6 @@
 - artel_apiPromptItem
 - rpcStatus
 - $ref
-- type
 - info
 - title
 - version
@@ -2127,7 +2091,6 @@
 - type
 - type
 - type
-- type
 - description
 - definitions
 - artel_s3DeleteS3InstanceRequest
@@ -2150,7 +2113,6 @@
 - title
 - version
 - items
-- type
 - $ref
 - type
 - type
@@ -2211,7 +2173,6 @@
 - artel_apiTrelloBoardInfo
 - protobufAny
 - rpcStatus
-- type
 - info
 - title
 - version
@@ -2243,7 +2204,6 @@
 - type
 - 200
 - default
-- type
 - swagger
 - $ref
 - type
@@ -2254,8 +2214,6 @@
 - post
 - post
 - post
-- post
-- post
 - type
 - type
 - type
@@ -2285,14 +2243,12 @@
 - properties
 - type
 - type
-- properties
 - type
 - properties
 - type
 - type
 - type
 - properties
-- type
 - properties
 - type
 - properties
@@ -2378,7 +2334,6 @@
 - /api/tracts/triggers/unlink
 - /api/tracts/triggers/{uuid}/rotate_token
 - /api/tracts/update
-- type
 - operationId
 - parameters
 - responses
@@ -2439,7 +2394,6 @@
 - $ref
 - type
 - type
-- title
 - type
 - type
 - type
@@ -2471,8 +2425,6 @@
 - post
 - post
 - post
-- post
-- post
 - delete
 - type
 - type
@@ -2499,11 +2451,9 @@
 - type
 - type
 - type
-- type
 - properties
 - type
 - properties
-- type
 - type
 - type
 - consumes
@@ -2752,7 +2702,7 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `useDialog` - 120 edges
-2. `cn` - 88 edges
+2. `cn` - 87 edges
 3. `useBakeError()` - 75 edges
 4. `useUser` - 73 edges
 5. `file_tracts_proto_rawDescGZIP()` - 70 edges
@@ -2778,31 +2728,31 @@
 - 1-file cycle: `pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx -> pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx`
 - 3-file cycle: `pkg/client/ArtelUI/src/app/routing/Router.tsx -> pkg/client/ArtelUI/src/pages/mcp-keys/McpKeysPage.tsx -> pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/ManageKeyDialog.tsx -> pkg/client/ArtelUI/src/app/routing/Router.tsx`
 
-## Communities (3055 total, 2415 thin omitted)
+## Communities (3005 total, 2360 thin omitted)
 
 ### Community 0 - "mcp_keys.pb.ts"
-Cohesion: 0.05
-Nodes (45): Absent, AddMcpConnector, AddMcpConnectorRequest, AddMcpConnectorResponse, BaseMcpToolInfo, BaseToolParamDef, CreateMcpKey, CreateMcpKeyRequest (+37 more)
+Cohesion: 0.03
+Nodes (55): Absent, AddMcpConnector, AddMcpConnectorRequest, AddMcpConnectorResponse, BaseMcpToolInfo, BaseToolParamDef, CreateMcpKey, CreateMcpKeyRequest (+47 more)
 
 ### Community 1 - "Tracts.ts"
-Cohesion: 0.09
-Nodes (45): Props, ToolStep(), ActionCard(), Props, InsertRow(), Props, Props, SchemaTree() (+37 more)
+Cohesion: 0.16
+Nodes (29): MomCandidate, Props, TractStepTreeProps, ActionBody(), Props, CONDITION_OPS, ConditionBody(), Props (+21 more)
 
 ### Community 2 - "Tracts.ts"
-Cohesion: 0.07
-Nodes (43): triggerSourcesQueryKey, triggersQueryKey, useTracts, useTrigger(), useTriggerSources(), StepPickerDialog(), Props, Props (+35 more)
+Cohesion: 0.05
+Nodes (55): useDialogKeyboard(), triggerSourcesQueryKey, triggersQueryKey, useTracts, useTrigger(), useTriggerSources(), usePortrait(), Props (+47 more)
 
 ### Community 3 - "vaults.pb.ts"
-Cohesion: 0.07
-Nodes (5): DeleteTrigger_Response, ListTriggerSources, RunTract_Response, SetTractEnabled_Response, file_tracts_proto_rawDescGZIP()
+Cohesion: 0.09
+Nodes (5): DeleteTract_Response, DeleteTrigger_Response, ListTriggerSources, RunTract_Response, MessageState
 
 ### Community 4 - "tract.go"
-Cohesion: 0.28
-Nodes (14): TractExecutor, TractService, marshalResult(), buildWebhookUrl(), decodeInto(), Context, RawMessage, Tract (+6 more)
+Cohesion: 0.11
+Nodes (38): runRow, runStepRow, toolPropertyRow, toolSchemaRow, tractActionEntry, tractActionsResult, tractDetailRow, TractExecutor (+30 more)
 
 ### Community 5 - "useDialog"
-Cohesion: 0.05
-Nodes (54): AdminCouchAPI, GetS3InstanceResponse, S3InstancesAPI, useDialog, useBakeError(), FormField(), Props, LinkedView() (+46 more)
+Cohesion: 0.04
+Nodes (65): AdminCouchAPI, GetS3InstanceResponse, S3InstancesAPI, useDialog, useExternalConnections, useBakeError(), FormField(), Props (+57 more)
 
 ### Community 6 - "Context"
 Cohesion: 0.05
@@ -2813,8 +2763,8 @@ Cohesion: 0.29
 Nodes (46): TractsAPIClient, TractsAPIServer, Header, Context, Marshaler, Message, Request, ServerMetadata (+38 more)
 
 ### Community 8 - "index.ts (artel api barrel)"
-Cohesion: 0.07
-Nodes (23): apiPrefix(), InitReq, Options, TelegramLoginResponse, AuthAPI, pingServer(), UserState, LoginContent() (+15 more)
+Cohesion: 0.06
+Nodes (30): apiPrefix(), InitReq, Options, TelegramLoginResponse, AuthAPI, ListPrompts, ListPromptsRequest, ListPromptsResponse (+22 more)
 
 ### Community 9 - "Context"
 Cohesion: 0.06
@@ -2822,11 +2772,11 @@ Nodes (64): AuthAPIClient, AuthAPIServer, UnimplementedAuthAPIServer, UnsafeAuth
 
 ### Community 10 - "external_connections.pb.ts"
 Cohesion: 0.04
-Nodes (51): Absent, AddEmailConnection, AddEmailConnectionRequest, AddEmailConnectionResponse, AddGitlabConnection, AddGitlabConnectionRequest, AddGitlabConnectionResponse, AddSpreadsheet (+43 more)
+Nodes (47): Absent, AddEmailConnection, AddEmailConnectionRequest, AddEmailConnectionResponse, AddGitlabConnection, AddGitlabConnectionRequest, AddGitlabConnectionResponse, AddSpreadsheet (+39 more)
 
 ### Community 11 - "TractIcons.tsx"
-Cohesion: 0.08
-Nodes (36): Props, Step, StepDraft, Props, RunButton(), LOGIC_OPTIONS, LogicCell(), LogicOption (+28 more)
+Cohesion: 0.07
+Nodes (34): DialogManager, useMcpKeys, useVaults(), Path, connectionLabel(), ConnectorChip(), CardHeader(), Props (+26 more)
 
 ### Community 12 - "Context"
 Cohesion: 0.07
@@ -2841,24 +2791,24 @@ Cohesion: 0.03
 Nodes (79): Absent, ActionStep, BaseTractStep, ConditionStep, CreateTract, CreateTractRequest, CreateTractResponse, CreateTrigger (+71 more)
 
 ### Community 15 - "AdminUsersAPIClient"
-Cohesion: 0.07
-Nodes (49): AdminUsersImpl, AdminUsersAPIClient, AdminUsersAPIServer, UnimplementedAdminUsersAPIServer, UnsafeAdminUsersAPIServer, _AdminUsersAPI_GetArtelUser_Handler(), _AdminUsersAPI_GetUserSessions_Handler(), _AdminUsersAPI_ListArtelUsers_Handler() (+41 more)
+Cohesion: 0.10
+Nodes (38): AdminUsersAPIClient, AdminUsersAPIServer, UnimplementedAdminUsersAPIServer, UnsafeAdminUsersAPIServer, _AdminUsersAPI_GetArtelUser_Handler(), _AdminUsersAPI_GetUserSessions_Handler(), _AdminUsersAPI_ListArtelUsers_Handler(), ClientConnInterface (+30 more)
 
 ### Community 16 - "TaskTrackersAPIClient"
 Cohesion: 0.09
 Nodes (45): TaskTrackersAPIClient, TaskTrackersAPIServer, UnimplementedTaskTrackersAPIServer, UnsafeTaskTrackersAPIServer, AddTaskTracker_Request, AddTaskTracker_Response, ClientConnInterface, Context (+37 more)
 
 ### Community 17 - "MobileNotesShell.tsx"
-Cohesion: 0.04
-Nodes (44): useDialogKeyboard(), NoteMode, useNotes, usePortrait(), BreadcrumbBar(), BreadcrumbBarProps, Mode, CreateNoteDialog() (+36 more)
+Cohesion: 0.17
+Nodes (13): NoteMode, useNotes, ArtelLogoIcon(), CloseIcon(), getNoteMeta(), getNoteTitle(), MobileDrawer(), MobileDrawerProps (+5 more)
 
 ### Community 18 - "models.go"
 Cohesion: 0.17
-Nodes (31): CouchAccount, CouchInstance, ExternalConnection, IdentitiesTelegram, MailServerSuggestion, McpConnector, McpKey, McpSpreadsheet (+23 more)
+Nodes (32): CouchAccount, CouchInstance, ExternalConnection, IdentitiesTelegram, MailServerSuggestion, McpConnector, McpKey, McpSpreadsheet (+24 more)
 
 ### Community 19 - "NotesSidebar.tsx"
-Cohesion: 0.08
-Nodes (20): App, AuthService, ServerOption, GrpcAdminInterceptor(), ServerOption, PanicInterceptor(), AuthService, NotesService (+12 more)
+Cohesion: 0.07
+Nodes (27): App, ServerOption, PanicInterceptor(), AuthService, NotesService, TractService, VaultService, New() (+19 more)
 
 ### Community 20 - "Context"
 Cohesion: 0.07
@@ -2869,16 +2819,16 @@ Cohesion: 0.04
 Nodes (6): CreateTract_Response, GetTract_Response, ListTracts_Response, TractItem, TractLastRun, UpdateTract_Response
 
 ### Community 23 - "Context"
-Cohesion: 0.10
-Nodes (17): dispatchFakeTool(), Context, Mutex, RawMessage, Time, Tract, TractRun, TractRunStatus (+9 more)
+Cohesion: 0.09
+Nodes (19): dispatchFakeTool(), Context, ExternalConnection, Mutex, Null, RawMessage, Time, Tract (+11 more)
 
 ### Community 24 - "post"
 Cohesion: 0.18
 Nodes (19): HeaderMatcher, Tract, TractCondition, TractDefinition, TractRun, TractRunStatus, TractRunStep, TractRunStepStatus (+11 more)
 
 ### Community 26 - "McpToolDef"
-Cohesion: 0.12
-Nodes (21): HttpAction, ImapAction, ImapOperation, McpToolDef, MomCandidate, SmtpAction, SmtpOperation, ToolAction (+13 more)
+Cohesion: 0.07
+Nodes (27): Props, RunButton(), buildLogLines(), cap(), dotClass(), formatDate(), formatTime(), LogLine (+19 more)
 
 ### Community 27 - "tracts.pb.go"
 Cohesion: 0.05
@@ -2894,15 +2844,15 @@ Nodes (25): UnimplementedAdminCouchAPIServer, UnsafeAdminCouchAPIServer, _AdminC
 
 ### Community 31 - "Context"
 Cohesion: 0.10
-Nodes (25): UnimplementedCouchInstancesAPIServer, UnsafeCouchInstancesAPIServer, _CouchInstancesAPI_DeleteCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstanceStatus_Handler(), _CouchInstancesAPI_ListCouchInstances_Handler(), _CouchInstancesAPI_RegisterCouchInstance_Handler(), _CouchInstancesAPI_SetupCouchInstance_Handler() (+17 more)
+Nodes (28): CouchInstancesAPIClient, UnimplementedCouchInstancesAPIServer, UnsafeCouchInstancesAPIServer, _CouchInstancesAPI_DeleteCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstance_Handler(), _CouchInstancesAPI_GetCouchInstanceStatus_Handler(), _CouchInstancesAPI_ListCouchInstances_Handler(), _CouchInstancesAPI_RegisterCouchInstance_Handler() (+20 more)
 
 ### Community 32 - "request_PromptsAPI_ListPrompts_0"
 Cohesion: 0.11
 Nodes (28): PromptsAPIClient, PromptsAPIServer, UnimplementedPromptsAPIServer, UnsafePromptsAPIServer, ClientConnInterface, Context, ListPrompts_Request, ListPrompts_Response (+20 more)
 
 ### Community 33 - "UnwrapPgErr"
-Cohesion: 0.13
-Nodes (27): UnwrapPgErr(), Context, headerMatcherRow, Null, Queries, RawMessage, ToolProperty, toolPropertyRow (+19 more)
+Cohesion: 0.24
+Nodes (11): UnwrapPgErr(), Context, Null, Queries, TractTriggerLink, Trigger, UUID, New() (+3 more)
 
 ### Community 34 - "TokenParser"
 Cohesion: 0.19
@@ -2925,8 +2875,8 @@ Cohesion: 0.05
 Nodes (4): CreateTrigger_Response, ListTriggers_Response, RotateTriggerToken_Response, TriggerItem
 
 ### Community 41 - "GetUserContext"
-Cohesion: 0.10
-Nodes (25): ExternalConnectionMeta, gitlabConnectionMeta, gitlabUserInfo, googleUserInfo, Service, GetUserContext(), extractDisplayName(), Client (+17 more)
+Cohesion: 0.08
+Nodes (28): APIKeyCredentials, ExternalConnection, ExternalConnectionMeta, GitlabCredentials, GoogleConnectionMeta, GoogleOAuthCredentials, gitlabConnectionMeta, gitlabUserInfo (+20 more)
 
 ### Community 42 - "gRPC + grpc-gateway (REST Bridge)"
 Cohesion: 0.50
@@ -2938,7 +2888,7 @@ Nodes (77): ExternalConnectionsAPIClient, ExternalConnectionsAPIServer, Unimplem
 
 ### Community 44 - "Service"
 Cohesion: 0.15
-Nodes (14): UUID, generatePassword(), Client, Context, CouchInstance, UUID, Vault, Service (+6 more)
+Nodes (17): UUID, generatePassword(), Client, Context, CouchInstance, Repo, UUID, Vault (+9 more)
 
 ### Community 45 - "Context"
 Cohesion: 0.12
@@ -2953,8 +2903,8 @@ Cohesion: 0.38
 Nodes (5): Context, MailServerSuggestion, Queries, New(), Repo
 
 ### Community 48 - "Services"
-Cohesion: 0.11
-Nodes (15): Context, ExternalConnectionsImpl, Handler, ServiceRegistrar, New(), TaskTrackersImpl, New(), AuthService (+7 more)
+Cohesion: 0.09
+Nodes (23): ArtelIdentity, Subscription, TelegramIdentity, User, UserDetails, UserIdentities, UserPermissions, Time (+15 more)
 
 ### Community 49 - "request_ArtelAPI_Version_0"
 Cohesion: 0.12
@@ -2981,12 +2931,12 @@ Cohesion: 0.07
 Nodes (8): ExecuteMomTool_Response, ImapOperation, ImapToolAction, McpToolInfo_Imap, SmtpOperation, EnumDescriptor, EnumNumber, EnumType
 
 ### Community 57 - "Repos"
-Cohesion: 0.08
-Nodes (29): New(), Tx, New(), Context, ServiceImpl, TractService, New(), Repo (+21 more)
+Cohesion: 0.09
+Nodes (26): New(), NewTractExecutor(), T, TestUpdateTract_MissingName(), TestUpdateTract_MissingTractUuid(), TestUpdateTract_Success(), Context, ServiceImpl (+18 more)
 
 ### Community 58 - "Service"
-Cohesion: 0.23
-Nodes (14): anySchemaDeclaresField(), checkStepRefs(), checkTriggerFieldWarnings(), checkVisibility(), Context, Tract, Service, TractDefinition (+6 more)
+Cohesion: 0.21
+Nodes (16): ToolSchema, anySchemaDeclaresField(), checkStepRefs(), checkTriggerFieldWarnings(), checkVisibility(), collectTriggerFields(), Context, Tract (+8 more)
 
 ### Community 59 - "CouchInstancesImpl"
 Cohesion: 0.09
@@ -2998,27 +2948,27 @@ Nodes (19): AdminCouchImpl, ChangeCouchUserPassword_Request, ChangeCouchUserPass
 
 ### Community 61 - "CouchInstancesAPIClient"
 Cohesion: 0.43
-Nodes (23): CouchInstancesAPIClient, CouchInstancesAPIServer, Context, Marshaler, Message, Request, ServerMetadata, local_request_CouchInstancesAPI_DeleteCouchInstance_0() (+15 more)
+Nodes (22): CouchInstancesAPIServer, Context, Marshaler, Message, Request, ServerMetadata, local_request_CouchInstancesAPI_DeleteCouchInstance_0(), local_request_CouchInstancesAPI_GetCouchInstance_0() (+14 more)
 
 ### Community 62 - "Version_Response"
 Cohesion: 0.10
 Nodes (11): Version, Version_Request, Version_Response, file_artel_api_proto_init(), file_artel_api_proto_rawDescGZIP(), Message, MessageState, SizeCache (+3 more)
 
 ### Community 63 - "WithUserContext"
-Cohesion: 0.25
-Nodes (14): AuthService, Request, ResponseWriter, VaultService, jsonErr(), NewOAuthHandler(), oauthTokenError(), parseTokenRequest() (+6 more)
+Cohesion: 0.19
+Nodes (17): Context, WithUserContext(), AuthService, Request, ResponseWriter, VaultService, jsonErr(), NewOAuthHandler() (+9 more)
 
 ### Community 64 - "post"
-Cohesion: 0.08
-Nodes (39): TractsState, sleep(), ConnectorPath(), Props, TractCanvasArea(), Props, TractCanvasBuilder(), useTractRunTracking() (+31 more)
+Cohesion: 0.12
+Nodes (15): PlusIcon(), SearchIcon(), SearchIconProps, buildFolderTree(), FolderNode, FolderNodeItem(), FolderNodeItemProps, FolderSection() (+7 more)
 
 ### Community 66 - "properties"
-Cohesion: 0.11
-Nodes (19): ExternalProvider, connectionLabel(), ConnectorChip(), GenericChip(), ProviderChip(), PROVIDER_CHIP_CLASS, EmailIcon(), GitlabIcon() (+11 more)
+Cohesion: 0.18
+Nodes (5): NoteItem, NotesAPI, NotesState, INotesService, NotesService
 
 ### Community 67 - "Message"
 Cohesion: 0.07
-Nodes (5): DeleteTract, GetTract, LinkTrigger, ListTriggers, Message
+Nodes (5): GetTract, LinkTrigger, ListTractTools_Request, SetTriggerEnabled, Message
 
 ### Community 69 - "mcp_keys.pb.go"
 Cohesion: 0.08
@@ -3028,9 +2978,13 @@ Nodes (8): IntegerParam, isMcpToolInfo_Action, isToolParamDef_Kind, McpToolInfo,
 Cohesion: 0.27
 Nodes (7): AddTaskTrackerRequest, AddTaskTrackerResponse, TaskTrackerInfo, TaskTrackersAPI, TaskTrackersState, ITaskTrackersService, TaskTrackersService
 
+### Community 71 - "properties"
+Cohesion: 0.17
+Nodes (11): docDelete, docFull, docRev, docScan, docType, FileDoc, FileEntry, fileWrite (+3 more)
+
 ### Community 72 - "properties"
 Cohesion: 0.10
-Nodes (24): UserErrors, ContentSegment(), HeroSegment(), HomePage(), BadRequestDetail, DetailType, DetailTypeName, ErrorInfoDetail (+16 more)
+Nodes (25): UserErrors, ContentSegment(), HeroSegment(), HomePage(), BadRequestDetail, DetailType, DetailTypeName, ErrorInfoDetail (+17 more)
 
 ### Community 74 - "VaultSuite"
 Cohesion: 0.18
@@ -3049,20 +3003,20 @@ Cohesion: 0.19
 Nodes (16): CreateByUsernameParams, CreateByUsernameRow, CreateUserParams, CreateUserRow, GetUserByEmailRow, GetUserByIDRow, GetUserByTelegramIdRow, GetUserDetailsRow (+8 more)
 
 ### Community 78 - "properties"
-Cohesion: 0.07
-Nodes (29): ArtelIdentity, ListUsersReq, Paging, Subscription, TelegramIdentity, User, UserDetails, UserIdentities (+21 more)
+Cohesion: 0.08
+Nodes (20): VaultInviteItem, VaultMemberInfo, VaultsAPI, useVaultMutations(), vaultsQueryKey, DangerZoneText(), Props, InviteRow() (+12 more)
 
 ### Community 79 - "default"
-Cohesion: 0.11
-Nodes (16): DialogManager, MAIL_DOMAIN_ICONS, mailProviderIcon(), EmailChip(), KNOWN_MAIL_DOMAIN_CLASSES, mailDomainAccent(), DialogHead(), EmailConnectionRow() (+8 more)
+Cohesion: 0.10
+Nodes (20): ExternalProvider, MAIL_DOMAIN_ICONS, mailProviderIcon(), EmailChip(), KNOWN_MAIL_DOMAIN_CLASSES, mailDomainAccent(), GenericChip(), ProviderChip() (+12 more)
 
 ### Community 80 - "properties"
-Cohesion: 0.30
-Nodes (15): newFakeMcpDefsRepo(), actionStep(), Service, T, TractStep, newTestService(), TestCheckTriggerFieldWarnings(), TestValidateActionTool_BuiltinRules() (+7 more)
+Cohesion: 0.19
+Nodes (16): newFakeMcpDefsRepo(), actionStep(), Service, T, TractStep, newTestService(), TestCheckTriggerFieldWarnings(), TestValidateActionTool_BuiltinRules() (+8 more)
 
 ### Community 82 - "UsersRepo"
-Cohesion: 0.15
-Nodes (16): JsonBlock(), Props, Props, statusClass(), StepRow(), buildLogLines(), cap(), dotClass() (+8 more)
+Cohesion: 0.11
+Nodes (23): TractsState, sleep(), ParamInput(), Props, ParamRow(), Props, ParamsList(), Props (+15 more)
 
 ### Community 83 - "VaultInviteItem"
 Cohesion: 0.08
@@ -3074,7 +3028,7 @@ Nodes (8): Context, Listener, ServeMux, ServerOption, newGrpcServer(), GrpcImpl,
 
 ### Community 85 - "Decrypt"
 Cohesion: 0.25
-Nodes (13): Repo, Decrypt(), fromNullRawMessage(), Context, ExternalConnection, Null, NullRawMessage, Queries (+5 more)
+Nodes (12): Repo, fromNullRawMessage(), Context, ExternalConnection, Null, NullRawMessage, Queries, RawMessage (+4 more)
 
 ### Community 88 - "compilerOptions"
 Cohesion: 0.08
@@ -3085,8 +3039,8 @@ Cohesion: 0.22
 Nodes (15): CreateVaultParams, CreateVaultRow, GetVaultByIDRow, GetVaultByNameAndUserParams, GetVaultByNameAndUserRow, LinkVaultS3BucketParams, ListVaultsByMembershipRow, SetVaultLiveSyncPassphraseParams (+7 more)
 
 ### Community 91 - "s3_instances.pb.ts"
-Cohesion: 0.19
-Nodes (18): actionFromDomain(), actionToDomain(), RawMessage, ToolProperty, toolPropertyRow, toolSchemaRow, toolPropertyFromDomain(), toolPropertyToDomain() (+10 more)
+Cohesion: 0.15
+Nodes (21): ToolAction, HttpAction, ImapAction, actionFromDomain(), actionToDomain(), RawMessage, ToolProperty, toolPropertyRow (+13 more)
 
 ### Community 94 - "AdminCouchAPIClient"
 Cohesion: 0.43
@@ -3094,35 +3048,39 @@ Nodes (23): AdminCouchAPIClient, AdminCouchAPIServer, Context, Marshaler, Messag
 
 ### Community 95 - "file_tracts_proto_rawDescGZIP"
 Cohesion: 0.08
-Nodes (5): ListTracts_Request, ListTractTools_Request, RotateTriggerToken, UnlinkTrigger_Request, SizeCache
+Nodes (5): ListTracts_Request, ListTriggers_Request, UnlinkTrigger_Request, UpdateTract, SizeCache
 
 ### Community 96 - "McpConnectorInfo"
 Cohesion: 0.09
 Nodes (3): AddMcpConnector_Response, ListMcpConnectors_Response, McpConnectorInfo
 
 ### Community 97 - "Repo"
-Cohesion: 0.22
-Nodes (10): Context, NullString, NullUUID, Queries, Time, UUID, Vault, New() (+2 more)
+Cohesion: 0.25
+Nodes (9): Context, NullString, NullUUID, Queries, Time, UUID, Vault, rowToVault() (+1 more)
+
+### Community 98 - "properties"
+Cohesion: 0.13
+Nodes (19): NodeChips(), ConnectorPath(), Props, TractCanvasArea(), cap(), NodeStatus, title(), TractCanvasNode() (+11 more)
 
 ### Community 100 - "CloseWithLog"
-Cohesion: 0.11
-Nodes (17): DeleteS3Instance, DeleteS3InstanceRequest, DeleteS3InstanceResponse, GetS3Instance, GetS3InstanceRequest, ListS3Instances, ListS3InstancesRequest, ListS3InstancesResponse (+9 more)
+Cohesion: 0.32
+Nodes (5): Context, UUID, New(), Subscriptions, Service
 
 ### Community 101 - "MessageState"
-Cohesion: 0.12
-Nodes (26): Props, SourceGroups(), buildFlatList(), FilteredGroup, filterSources(), FlatEntry, FlatListItem, flattenProperty() (+18 more)
+Cohesion: 0.08
+Nodes (36): Props, SourceGroups(), buildFlatList(), FilteredGroup, filterSources(), FlatEntry, FlatListItem, flattenProperty() (+28 more)
 
 ### Community 102 - "ListRuns"
-Cohesion: 0.51
-Nodes (3): Context, UUID, Service
+Cohesion: 0.40
+Nodes (5): Context, Repo, UUID, New(), Service
 
 ### Community 103 - ".Scan"
-Cohesion: 0.10
-Nodes (10): ArtelPrompt, NullArtelPrompt, NullExternalProviderType, NullTractRunStatus, NullTractRunStepStatus, NullVaultRole, Prompt, TractRunStatus (+2 more)
+Cohesion: 0.09
+Nodes (11): ArtelPrompt, ExternalProviderType, NullArtelPrompt, NullExternalProviderType, NullTractRunStatus, NullTractRunStepStatus, NullVaultRole, Prompt (+3 more)
 
 ### Community 104 - "Context"
-Cohesion: 0.24
-Nodes (10): generateTriggerToken(), Context, RawMessage, Service, TractCondition, TractTriggerLink, Trigger, TriggerPreset (+2 more)
+Cohesion: 0.10
+Nodes (23): AuthService, ServerOption, GrpcAdminInterceptor(), GetUserContext(), Context, ServiceImpl, McpKey, Context (+15 more)
 
 ### Community 105 - "trigger_presets.go"
 Cohesion: 0.15
@@ -3130,7 +3088,7 @@ Nodes (18): Context, headerMatcherRow, Null, Queries, RawMessage, ToolProperty, 
 
 ### Community 106 - "evaluate"
 Cohesion: 0.06
-Nodes (56): compare(), compareContains(), compareEqual(), compareGlob(), compareNumeric(), compareRegex(), evaluate(), evaluateAll() (+48 more)
+Nodes (55): compare(), compareContains(), compareEqual(), compareGlob(), compareNumeric(), compareRegex(), evaluate(), evaluateAll() (+47 more)
 
 ### Community 107 - "admin_couch.pb.ts"
 Cohesion: 0.09
@@ -3138,19 +3096,19 @@ Nodes (22): ChangeCouchUserPassword, ChangeCouchUserPasswordRequest, ChangeCouch
 
 ### Community 109 - "TrelloBoard"
 Cohesion: 0.08
-Nodes (25): TrelloBoard, TrelloMember, Context, New(), AddTaskTracker_Request, AddTaskTracker_Response, Context, TaskTrackersImpl (+17 more)
+Nodes (24): TrelloBoard, TrelloMember, Context, New(), AddTaskTracker_Request, AddTaskTracker_Response, Context, TaskTrackersImpl (+16 more)
 
 ### Community 110 - ".ExecuteTool"
-Cohesion: 0.09
-Nodes (18): loggingTransport, NewLiveSyncClient(), Request, Response, RoundTripper, newLoggingTransport(), New(), Context (+10 more)
+Cohesion: 0.16
+Nodes (10): New(), Context, ListPromptsParams, Prompt, New(), New(), Repo, DB (+2 more)
 
 ### Community 111 - "UnknownFields"
-Cohesion: 0.09
-Nodes (5): GetRun, ListTriggers_Request, SetTriggerEnabled, UpdateTract, UnknownFields
+Cohesion: 0.18
+Nodes (18): InsertRow(), Props, CONDITION_OPS, ConditionCardProps, appendStep(), branchArray(), buildStepFromDraft(), collapseThinParallels() (+10 more)
 
 ### Community 113 - "mocks_test.go"
 Cohesion: 0.22
-Nodes (15): Context, WithUserContext(), TriggerPreset, newFakeExternalConnsRepo(), newFakeTriggerPresetsRepo(), newFakeTriggersRepo(), gitlabPushPreset(), Service (+7 more)
+Nodes (14): TriggerPreset, newFakeExternalConnsRepo(), newFakeTractsRepo(), newFakeTriggerPresetsRepo(), newFakeTriggersRepo(), gitlabPushPreset(), Service, T (+6 more)
 
 ### Community 114 - "auth.pb.ts"
 Cohesion: 0.09
@@ -3165,24 +3123,24 @@ Cohesion: 0.27
 Nodes (7): Context, newLoggingDB(), trimQuery(), loggingDB, Row, Rows, Stmt
 
 ### Community 119 - "TemplateInput.tsx"
-Cohesion: 0.07
-Nodes (23): GetNote, GetNoteRequest, GetNoteResponse, ListFolders, ListFoldersRequest, ListFoldersResponse, ListNotes, ListNotesRequest (+15 more)
+Cohesion: 0.11
+Nodes (18): GetNote, GetNoteRequest, GetNoteResponse, ListFolders, ListFoldersRequest, ListFoldersResponse, ListNotes, ListNotesRequest (+10 more)
 
 ### Community 120 - "Service"
-Cohesion: 0.29
-Nodes (6): Context, TaskTracker, UUID, New(), TaskTrackerRepo, Service
+Cohesion: 0.26
+Nodes (7): Context, TaskTracker, UUID, New(), TaskTrackerRepo, Service, TaskTrackerCredentials
 
 ### Community 121 - "fetch.pb.ts"
 Cohesion: 0.12
 Nodes (17): b64, b64Encode(), fetchStreamingRequest(), FlattenedRequestPayload, flattenRequestPayload(), getNewLineDelimitedJSONDecodingStream(), getNotifyEntityArrivalSink(), InitReq (+9 more)
 
 ### Community 123 - "properties"
-Cohesion: 0.27
-Nodes (7): McpDefinition, Time, Context, Null, Queries, New(), Repo
+Cohesion: 0.10
+Nodes (24): HttpAction, ImapAction, ImapOperation, McpDefinition, McpToolDef, MomCandidate, SmtpAction, SmtpOperation (+16 more)
 
 ### Community 126 - ".Init"
-Cohesion: 0.22
-Nodes (11): AuthService, Context, MD, ServerOption, Service, GrpcAuthInterceptor(), WithDebug(), WithIgnoredPathAuthOption() (+3 more)
+Cohesion: 0.23
+Nodes (10): AuthService, Context, MD, ServerOption, Service, GrpcAuthInterceptor(), WithDebug(), WithIgnoredPathAuthOption() (+2 more)
 
 ### Community 129 - "file_external_connections_proto_rawDescGZIP"
 Cohesion: 0.12
@@ -3197,15 +3155,19 @@ Cohesion: 0.37
 Nodes (17): Service, T, Tract, TractStep, UUID, newEngineTestService(), TestEngine_ActionFailureFailsRun(), TestEngine_ConditionThenElse() (+9 more)
 
 ### Community 132 - "ServiceImpl"
-Cohesion: 0.19
-Nodes (11): EmailCredentials, EmailExecutor, Context, ImapOperation, NewEmailExecutor(), Context, ExternalConnection, UUID (+3 more)
+Cohesion: 0.42
+Nodes (3): Context, ExternalConnection, UUID
 
 ### Community 134 - "type"
-Cohesion: 0.12
-Nodes (13): AdminUsersAPI, ArtelUserDetails, ArtelUserEntry, GetArtelUser, GetArtelUserRequest, GetArtelUserResponse, GetUserSessions, GetUserSessionsRequest (+5 more)
+Cohesion: 0.07
+Nodes (5): DeleteTract, ListRuns, ListTriggers, RotateTriggerToken, file_tracts_proto_rawDescGZIP()
+
+### Community 135 - "properties"
+Cohesion: 0.11
+Nodes (17): DeleteS3Instance, DeleteS3InstanceRequest, DeleteS3InstanceResponse, GetS3Instance, GetS3InstanceRequest, ListS3Instances, ListS3InstancesRequest, ListS3InstancesResponse (+9 more)
 
 ### Community 136 - "DB"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (8): App, Context, Queries, UUID, VaultMember, VaultMemberInfo, New(), Repo
 
 ### Community 139 - "ArtelUI Frontend Rules"
@@ -3217,8 +3179,8 @@ Cohesion: 0.14
 Nodes (14): dependencies, classnames, framer-motion, grpc-web, marked, react, react-dom, react-router-dom (+6 more)
 
 ### Community 141 - "Encrypt"
-Cohesion: 0.12
-Nodes (14): Repo, CouchInstance, CouchInstanceWithAccount, Encrypt(), T, TestEncryptDecryptRoundTrip(), CouchAccount, Time (+6 more)
+Cohesion: 0.16
+Nodes (11): Repo, CouchInstance, CouchInstanceWithAccount, CouchAccount, Time, UUID, Context, CouchInstance (+3 more)
 
 ### Community 142 - "actionStep"
 Cohesion: 0.12
@@ -3226,23 +3188,23 @@ Nodes (4): ExecuteMomTool, RemoveMcpConnector_Response, SetMcpKeyAccess, SizeCac
 
 ### Community 143 - "notes.pb.ts"
 Cohesion: 0.09
-Nodes (5): DeleteTract_Response, ListTriggerSources_Request, SetTractEnabled, SetTriggerEnabled_Response, MessageState
+Nodes (5): GetRun, ListTriggerSources_Request, SetTractEnabled, SetTriggerEnabled_Response, UnknownFields
 
 ### Community 144 - "TractsService"
-Cohesion: 0.06
-Nodes (10): TractsAPI, definitionToProto(), parseSchema(), safeParseJson(), toRun(), toRunStep(), toTool(), toTract() (+2 more)
+Cohesion: 0.07
+Nodes (11): TractsAPI, ITractsService, parseSchema(), safeParseJson(), toRun(), toRunStep(), toTool(), toTract() (+3 more)
 
 ### Community 145 - "post"
-Cohesion: 0.13
-Nodes (15): Config, docDelete, docFull, docRev, docScan, docType, FileDoc, FileEntry (+7 more)
+Cohesion: 0.17
+Nodes (10): Config, loggingTransport, SetupStatus, Context, Client, New(), Request, Response (+2 more)
 
 ### Community 146 - "post"
 Cohesion: 0.18
 Nodes (7): Custom, CMux, Context, Context, Listener, NewServerManager(), ServersManager
 
 ### Community 147 - "post"
-Cohesion: 0.19
-Nodes (7): useTaskTrackers, AddTrackerDialog(), ContentSegment(), HeroSegment(), Step, TaskTrackersPage(), TrelloSetupStep()
+Cohesion: 0.17
+Nodes (11): AdminUsersImpl, Context, GetArtelUser_Request, GetArtelUser_Response, GetUserSessions_Request, GetUserSessions_Response, Handler, ListArtelUsers_Request (+3 more)
 
 ### Community 149 - "UserSession"
 Cohesion: 0.13
@@ -3265,8 +3227,8 @@ Cohesion: 0.24
 Nodes (7): Context, Handler, ListPrompts_Request, ListPrompts_Response, NewPromptsImpl(), PromptsImpl, PromptService
 
 ### Community 161 - "properties"
-Cohesion: 0.13
-Nodes (13): APIKeyCredentials, ExternalConnection, GitlabCredentials, GoogleConnectionMeta, GoogleOAuthCredentials, ExternalProviderType, Client, Config (+5 more)
+Cohesion: 0.40
+Nodes (4): Client, Config, Context, New()
 
 ### Community 162 - "tools.go"
 Cohesion: 0.29
@@ -3309,16 +3271,16 @@ Cohesion: 0.24
 Nodes (9): GetCouchInstanceRow, ListCouchInstancesRow, RegisterCouchInstanceParams, UpdateCouchInstanceParams, Context, CouchInstance, Queries, Time (+1 more)
 
 ### Community 174 - "Repo"
-Cohesion: 0.28
-Nodes (6): Context, Queries, S3Instance, UUID, New(), Repo
+Cohesion: 0.17
+Nodes (10): Decrypt(), Encrypt(), T, TestEncryptDecryptRoundTrip(), Context, Queries, S3Instance, UUID (+2 more)
 
 ### Community 175 - "to_proto.go"
 Cohesion: 0.25
 Nodes (15): conditionFromProto(), conditionsFromProto(), conditionsToProto(), conditionToProto(), definitionFromProto(), definitionToProto(), toolPropertyRow, TractCondition (+7 more)
 
 ### Community 178 - "properties"
-Cohesion: 0.08
-Nodes (30): ParamInput(), Props, ParamRow(), Props, ParamsList(), Props, Props, SchemaFieldRow() (+22 more)
+Cohesion: 0.13
+Nodes (20): AddTriggerDialogContext, AddTriggerDialogState, AddTriggerStep, emptySchemaField(), FIELD_TYPES, fieldsToSchemaNode(), fieldsToSchemaProperties(), fieldToSchemaProperty() (+12 more)
 
 ### Community 180 - "Client"
 Cohesion: 0.24
@@ -3329,8 +3291,8 @@ Cohesion: 0.16
 Nodes (6): GetArtelUser, GetArtelUser_Request, GetUserSessions, MessageState, SizeCache, UnknownFields
 
 ### Community 183 - "Message"
-Cohesion: 0.17
-Nodes (11): AddTaskTracker, DeleteTaskTracker, DeleteTaskTrackerRequest, DeleteTaskTrackerResponse, ListTaskTrackers, ListTaskTrackersRequest, ListTaskTrackersResponse, ListTrelloBoards (+3 more)
+Cohesion: 0.07
+Nodes (24): useServerStatus(), applyTheme(), Theme, useTheme(), HomeLayout(), Router(), routes, queryClient (+16 more)
 
 ### Community 184 - "SizeCache"
 Cohesion: 0.18
@@ -3361,16 +3323,16 @@ Cohesion: 0.12
 Nodes (3): CreateVault, RevokeInviteLink, Message
 
 ### Community 192 - "description"
-Cohesion: 0.14
-Nodes (16): $ref, properties, description, type, type, additionalProperties, description, properties (+8 more)
+Cohesion: 0.22
+Nodes (10): $ref, description, type, additionalProperties, description, properties, type, properties (+2 more)
 
 ### Community 193 - "properties"
 Cohesion: 0.18
 Nodes (3): CreateInviteLink, ListVaults, UnknownFields
 
 ### Community 197 - "properties"
-Cohesion: 0.60
-Nodes (5): NewTractExecutor(), T, TestUpdateTract_MissingName(), TestUpdateTract_MissingTractUuid(), TestUpdateTract_Success()
+Cohesion: 0.36
+Nodes (6): EmailCredentials, EmailExecutor, Context, ImapOperation, NewEmailExecutor(), SmtpOperation
 
 ### Community 202 - "MessageState"
 Cohesion: 0.17
@@ -3409,8 +3371,20 @@ Cohesion: 0.33
 Nodes (4): ArtelAPI, Version, VersionRequest, VersionResponse
 
 ### Community 214 - "post"
+Cohesion: 0.19
+Nodes (16): headerMatcherRow, RawMessage, ToolProperty, toolPropertyRow, TractCondition, marshalFilters(), marshalMatchers(), marshalToolSchema() (+8 more)
+
+### Community 216 - ".ExecuteBuiltinToolForUser"
 Cohesion: 0.50
-Nodes (3): ListTriggerSources_Request, ListTriggerSources_Response, _TractsAPI_ListTriggerSources_Handler()
+Nodes (3): Context, ServiceImpl, UUID
+
+### Community 218 - ".RemoveConnector"
+Cohesion: 0.12
+Nodes (13): AdminUsersAPI, ArtelUserDetails, ArtelUserEntry, GetArtelUser, GetArtelUserRequest, GetArtelUserResponse, GetUserSessions, GetUserSessionsRequest (+5 more)
+
+### Community 220 - "BreadcrumbBar.tsx"
+Cohesion: 0.16
+Nodes (7): BreadcrumbBar(), BreadcrumbBarProps, Mode, SaveStatus, SaveStatusIndicatorProps, UseAutosaveOptions, UseAutosaveResult
 
 ### Community 224 - "TractE2ESuite"
 Cohesion: 0.24
@@ -3437,20 +3411,32 @@ Cohesion: 0.39
 Nodes (8): HttpExecutor, HandlerFunc, Client, NewHttpExecutor(), T, TestHttpExecutor_BodyKey_EmptyDropped(), TestHttpExecutor_Header_EmptyOmitted(), TestHttpExecutor_QueryParam_EmptyOmitted()
 
 ### Community 232 - "Service"
-Cohesion: 0.11
-Nodes (18): Service, Service, NewTokenParser(), New(), generateToken(), Context, Repo, Session (+10 more)
+Cohesion: 0.08
+Nodes (22): Service, Service, ListUsersReq, Paging, NewTokenParser(), Tx, New(), Context (+14 more)
 
 ### Community 235 - "properties"
 Cohesion: 0.14
 Nodes (14): description, minLength, type, $ref, description, minLength, type, properties (+6 more)
 
+### Community 236 - "TaskTrackersPage.tsx"
+Cohesion: 0.19
+Nodes (6): useTaskTrackers, AddTrackerDialog(), ContentSegment(), HeroSegment(), Step, TrelloSetupStep()
+
+### Community 239 - "task_trackers.pb.ts"
+Cohesion: 0.17
+Nodes (11): AddTaskTracker, DeleteTaskTracker, DeleteTaskTrackerRequest, DeleteTaskTrackerResponse, ListTaskTrackers, ListTaskTrackersRequest, ListTaskTrackersResponse, ListTrelloBoards (+3 more)
+
 ### Community 242 - "App"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (11): App, Config, Context, Listener, New(), App, App, FromContext() (+3 more)
 
 ### Community 244 - "NewTractExecutor"
-Cohesion: 0.46
-Nodes (6): MatchesRequest(), T, TestMatchesRequest_ANDSemanticsAcrossHeaders(), TestMatchesRequest_EmptyAlwaysMatches(), TestMatchesRequest_HeaderMatch(), TestMatchesRequest_HeaderMismatch()
+Cohesion: 0.24
+Nodes (6): Context, ExternalConnectionsImpl, Handler, ServiceRegistrar, New(), ExternalConnectionService
+
+### Community 246 - "fakeExternalConnsRepo"
+Cohesion: 0.20
+Nodes (10): additionalProperties, properties, required, type, ApiDescription, type, required, description (+2 more)
 
 ### Community 247 - "Repo"
 Cohesion: 0.32
@@ -3477,8 +3463,8 @@ Cohesion: 0.26
 Nodes (8): Cors, Handler, Listener, ServeMux, Server, newHttpServer(), setUpCors(), httpServer
 
 ### Community 255 - "$defs"
-Cohesion: 0.15
-Nodes (13): additionalProperties, required, type, $defs, ApiDescription, HttpAction, ToolProperty, additionalProperties (+5 more)
+Cohesion: 0.22
+Nodes (9): $defs, HttpAction, ToolProperty, additionalProperties, required, type, additionalProperties, required (+1 more)
 
 ### Community 256 - "ImapAction"
 Cohesion: 0.15
@@ -3514,7 +3500,11 @@ Nodes (7): DeleteMcpConnectorParams, GetMcpConnectorParams, InsertMcpConnectorPa
 
 ### Community 272 - "Vaults.ts (hook)"
 Cohesion: 0.04
-Nodes (56): AcceptInvite, AcceptInviteRequest, AcceptInviteResponse, AddMember, AddMemberRequest, AddMemberResponse, CreateInviteLink, CreateInviteLinkRequest (+48 more)
+Nodes (59): AcceptInvite, AcceptInviteRequest, AcceptInviteResponse, AddMember, AddMemberRequest, AddMemberResponse, CreateInviteLink, CreateInviteLinkRequest (+51 more)
+
+### Community 273 - "StepRow.tsx"
+Cohesion: 0.36
+Nodes (6): JsonBlock(), Props, Props, statusClass(), StepRow(), TractRunStep
 
 ### Community 274 - "Repo"
 Cohesion: 0.36
@@ -3540,9 +3530,9 @@ Nodes (9): Buffer, enrichCtxLogger(), Context, Handler, ResponseWriter, ServerOp
 Cohesion: 0.17
 Nodes (12): description, minLength, type, properties, enum, type, credentials, method (+4 more)
 
-### Community 280 - "CardMeta.tsx"
-Cohesion: 0.06
-Nodes (34): ImapOperation, ImapToolAction, McpToolInfo, SmtpOperation, SmtpToolAction, ToolParamDef, useExternalConnections, useMcpKeys (+26 more)
+### Community 284 - "fakeMcpDefsRepo"
+Cohesion: 0.50
+Nodes (3): UnlinkTrigger_Request, UnlinkTrigger_Response, _TractsAPI_UnlinkTrigger_Handler()
 
 ### Community 291 - "UnknownFields"
 Cohesion: 0.18
@@ -3561,16 +3551,12 @@ Cohesion: 0.18
 Nodes (3): AcceptInvite, AddMember_Response, MessageState
 
 ### Community 299 - "Context"
-Cohesion: 0.05
-Nodes (55): UnimplementedTractsAPIServer, UnsafeTractsAPIServer, Context, CreateTract_Request, CreateTract_Response, CreateTrigger_Request, CreateTrigger_Response, DeleteTract_Request (+47 more)
+Cohesion: 0.04
+Nodes (57): UnimplementedTractsAPIServer, UnsafeTractsAPIServer, Context, CreateTract_Request, CreateTract_Response, CreateTrigger_Request, CreateTrigger_Response, DeleteTract_Request (+49 more)
 
 ### Community 300 - "Context"
 Cohesion: 0.06
 Nodes (46): UnimplementedVaultsAPIServer, UnsafeVaultsAPIServer, VaultsAPIClient, AcceptInvite_Request, AcceptInvite_Response, AddMember_Request, AddMember_Response, ClientConnInterface (+38 more)
-
-### Community 301 - "UserIdentities"
-Cohesion: 0.50
-Nodes (3): Context, ServiceImpl, UUID
 
 ### Community 303 - "CreateSessionParams"
 Cohesion: 0.29
@@ -3581,8 +3567,8 @@ Cohesion: 0.36
 Nodes (5): CreateVaultInviteParams, Context, Queries, UUID, VaultInvite
 
 ### Community 305 - "McpTool"
-Cohesion: 0.31
-Nodes (6): GetMcpToolParams, McpTool, UpsertMcpToolParams, Context, Queries, RawMessage
+Cohesion: 0.29
+Nodes (5): GetMcpToolParams, UpsertMcpToolParams, Context, Queries, RawMessage
 
 ### Community 307 - "Mcp"
 Cohesion: 0.36
@@ -3624,9 +3610,13 @@ Nodes (18): Impl, ServiceRegistrar, RegisterVaultsAPIServer(), ClientConn, DialO
 Cohesion: 0.22
 Nodes (4): DeleteS3Instance, ListS3Instances, MessageState, UnknownFields
 
+### Community 333 - "MessageState"
+Cohesion: 0.25
+Nodes (3): ListFolders, file_notes_proto_init(), init()
+
 ### Community 336 - "RegisterCouchInstancesAPIHandler"
-Cohesion: 0.33
-Nodes (7): ClientConnInterface, NewCouchInstancesAPIClient(), ClientConn, DialOption, ServeMux, RegisterCouchInstancesAPIHandler(), RegisterCouchInstancesAPIHandlerFromEndpoint()
+Cohesion: 0.50
+Nodes (5): ClientConn, DialOption, ServeMux, RegisterCouchInstancesAPIHandler(), RegisterCouchInstancesAPIHandlerFromEndpoint()
 
 ### Community 337 - ".GetTaskTrackerByUuid"
 Cohesion: 0.38
@@ -3645,8 +3635,8 @@ Cohesion: 0.27
 Nodes (5): CreatePendingAuthCodeParams, Context, Queries, PendingAuthCode, Time
 
 ### Community 343 - "DispatchTrigger"
-Cohesion: 0.10
-Nodes (25): Handler, DispatchTrigger(), Context, RawMessage, Tract, TractService, Trigger, UUID (+17 more)
+Cohesion: 0.08
+Nodes (30): Handler, DispatchTrigger(), Context, RawMessage, Tract, TractService, Trigger, UUID (+22 more)
 
 ### Community 344 - "triggerSourcesToProto"
 Cohesion: 0.28
@@ -3659,10 +3649,6 @@ Nodes (8): dompurify, ContentSegment, NoteContent(), NoteViewer(), NoteViewerPro
 ### Community 359 - "admin_users.pb.go"
 Cohesion: 0.25
 Nodes (3): ListArtelUsers, file_admin_users_proto_init(), init()
-
-### Community 378 - ".ListUserKeys"
-Cohesion: 0.50
-Nodes (3): Context, ServiceImpl, McpKey
 
 ### Community 382 - "compilerOptions"
 Cohesion: 0.22
@@ -3729,8 +3715,8 @@ Cohesion: 0.28
 Nodes (6): Context, ListPromptsParams, Prompt, New(), Service, Prompts
 
 ### Community 441 - "properties"
-Cohesion: 0.50
-Nodes (3): Context, ServiceImpl, UUID
+Cohesion: 0.21
+Nodes (11): ToolExecResult, VaultExecutor, Context, Context, ServiceImpl, UUID, Context, ServiceImpl (+3 more)
 
 ### Community 465 - ".RunTract"
 Cohesion: 0.29
@@ -3757,8 +3743,8 @@ Cohesion: 0.38
 Nodes (5): DBTX, Queries, Queries, Tx, New()
 
 ### Community 518 - "ToolExecResult"
-Cohesion: 0.16
-Nodes (13): Closer, LiveSyncClient, NoteDoc, NoteEntry, ToolExecResult, VaultExecutor, extractTags(), Context (+5 more)
+Cohesion: 0.24
+Nodes (8): Closer, LiveSyncClient, NoteDoc, extractTags(), Context, MimeTypeForPath(), NewLiveSyncClient(), CloseWithLog()
 
 ### Community 519 - "MCP Connection Examples"
 Cohesion: 0.17
@@ -3784,9 +3770,9 @@ Nodes (5): Request, Response, RoundTripper, newLoggingTransport(), loggingTransp
 Cohesion: 0.27
 Nodes (7): extractToolResult(), Suite, T, mcpCall(), randomEmail(), TestTractVerify(), TractVerifySuite
 
-### Community 542 - "task_trackers.pb.go"
+### Community 541 - "ListTaskTrackers"
 Cohesion: 0.25
-Nodes (3): ListTaskTrackers_Request, file_task_trackers_proto_init(), init()
+Nodes (3): ListTaskTrackers, file_task_trackers_proto_init(), init()
 
 ### Community 547 - "admin_couch.pb.go"
 Cohesion: 0.25
@@ -3796,13 +3782,9 @@ Nodes (3): ListCouchDatabases, file_admin_couch_proto_init(), init()
 Cohesion: 0.25
 Nodes (3): ListS3Instances_Request, file_s3_instances_proto_init(), init()
 
-### Community 559 - "couch_instances.pb.go"
+### Community 561 - "ListCouchInstances"
 Cohesion: 0.25
-Nodes (3): GetCouchInstanceStatus, file_couch_instances_proto_init(), init()
-
-### Community 570 - "notes.pb.go"
-Cohesion: 0.25
-Nodes (3): ListTags, file_notes_proto_init(), init()
+Nodes (3): ListCouchInstances, file_couch_instances_proto_init(), init()
 
 ### Community 575 - "TractTriggerLink"
 Cohesion: 0.40
@@ -3811,10 +3793,6 @@ Nodes (5): Tract, TractCondition, Trigger, UUID, TractTriggerLink
 ### Community 580 - "Message"
 Cohesion: 0.12
 Nodes (3): GooglePickerToken, RemoveSpreadsheet, Message
-
-### Community 581 - "tractActionEntry"
-Cohesion: 0.13
-Nodes (24): runRow, runStepRow, toolPropertyRow, toolSchemaRow, tractActionEntry, tractActionsResult, tractDetailRow, tractRow (+16 more)
 
 ### Community 583 - ".ExecuteBuiltinToolForUser"
 Cohesion: 0.32
@@ -3828,17 +3806,9 @@ Nodes (3): ListInviteLinks, RemoveMember_Response, file_vaults_proto_rawDescGZIP
 Cohesion: 0.50
 Nodes (3): Context, ServiceImpl, UUID
 
-### Community 595 - "CardMeta.tsx"
-Cohesion: 0.08
-Nodes (20): VaultInviteItem, VaultMemberInfo, VaultsAPI, useVaultMutations(), vaultsQueryKey, DangerZoneText(), Props, InviteRow() (+12 more)
-
 ### Community 597 - "Artel Service (Obsidian Vault Provisioning)"
 Cohesion: 0.67
 Nodes (3): Artel Service (Obsidian Vault Provisioning), branch-push.yaml (CI Workflow), release.yaml (Release Workflow)
-
-### Community 606 - "useTheme.ts"
-Cohesion: 0.07
-Nodes (25): useServerStatus(), applyTheme(), Theme, useTheme(), HomeLayout(), Router(), routes, queryClient (+17 more)
 
 ### Community 609 - "UnknownFields"
 Cohesion: 0.12
@@ -3853,8 +3823,8 @@ Cohesion: 0.33
 Nodes (5): Context, LinkTrigger_Request, LinkTrigger_Response, TractsImpl, filtersFromJSON()
 
 ### Community 614 - "JsonView.tsx"
-Cohesion: 0.06
-Nodes (44): ListPrompts, ListPromptsRequest, ListPromptsResponse, PromptId, PromptItem, PromptsAPI, cn, parseScopeList() (+36 more)
+Cohesion: 0.07
+Nodes (30): cn, parseScopeList(), SCOPE_INFO, trimScope(), buildScopeTooltipHtml(), GoogleSheetsInfoRows(), CardHeader(), Props (+22 more)
 
 ### Community 615 - "Action"
 Cohesion: 0.33
@@ -4057,24 +4027,24 @@ Cohesion: 0.50
 Nodes (3): Context, Time, Service
 
 ## Knowledge Gaps
-- **3002 isolated node(s):** `github.com/ruf-dev/artel`, `UnsafeAdminCouchAPIServer`, `UnsafeAdminUsersAPIServer`, `UnsafeArtelAPIServer`, `UnsafeAuthAPIServer` (+2997 more)
+- **2947 isolated node(s):** `github.com/ruf-dev/artel`, `UnsafeAdminCouchAPIServer`, `UnsafeAdminUsersAPIServer`, `UnsafeArtelAPIServer`, `UnsafeAuthAPIServer` (+2942 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **2415 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **2360 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `DB` connect `.ExecuteTool` to `TractE2ESuite`, `GitlabTriggerE2ESuite`, `Repo`, `E2ESuite`, `ToolExecResult`, `DB`, `VaultSuite`, `Encrypt`, `Repo`, `properties`, `Repo`, `App`, `properties`, `Repos`, `TractVerifySuite`, `Repo`?**
-  _High betweenness centrality (0.096) - this node is a cross-community bridge._
+- **Why does `DB` connect `.ExecuteTool` to `TractE2ESuite`, `GitlabTriggerE2ESuite`, `E2ESuite`, `ToolExecResult`, `DB`, `Service`, `VaultSuite`, `Encrypt`, `Repo`, `Services`, `Repo`, `App`, `properties`, `Repos`, `TractVerifySuite`, `Repo`?**
+  _High betweenness centrality (0.093) - this node is a cross-community bridge._
 - **Why does `loggingDB` connect `properties` to `.ExecuteTool`?**
-  _High betweenness centrality (0.087) - this node is a cross-community bridge._
-- **Why does `Result` connect `MessageState` to `properties`?**
   _High betweenness centrality (0.085) - this node is a cross-community bridge._
+- **Why does `Result` connect `MessageState` to `properties`?**
+  _High betweenness centrality (0.082) - this node is a cross-community bridge._
 - **Are the 92 inferred relationships involving `Header` (e.g. with `request_AdminCouchAPI_ChangeCouchUserPassword_0()` and `request_AdminCouchAPI_DeleteCouchUser_0()`) actually correct?**
   _`Header` has 92 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `github.com/ruf-dev/artel`, `UnsafeAdminCouchAPIServer`, `UnsafeAdminUsersAPIServer` to the rest of the system?**
-  _3017 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2961 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `mcp_keys.pb.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.045228403437358664 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03261160117615611 - nodes in this community are weakly interconnected._
 - **Should `Tracts.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.09344262295081968 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05116279069767442 - nodes in this community are weakly interconnected._

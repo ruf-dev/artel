@@ -1,0 +1,30 @@
+.ConnectFormContainer {
+    & .ModalSub {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        margin-bottom: 1.25rem;
+        line-height: 1.55;
+    }
+
+    & .Field {
+        display: block;
+        margin-bottom: 1rem;
+        min-width: 0;
+    }
+
+    & .FieldLabel {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.005em;
+    }
+
+    & .ModalActions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.625rem;
+    }
+}

@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { Button } from "@vervstack/chures"
+import { Button, Input } from "@vervstack/chures"
 
 import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
-
-import cls from "./RenameDialog.module.css"
+import cls from "@/pages/notes/components/RenameDialog/RenameDialog.module.css"
 
 function ensureExtension(path: string): string {
     const filename = path.split("/").pop() ?? path
@@ -37,11 +36,11 @@ export default function RenameDialog({ currentPath, onConfirm }: Props) {
         <div className={cls.RenameContainer} role="dialog" aria-modal="true">
             <h2 className={cls.RenameTitle}>Rename / Move</h2>
             <p className={cls.RenameLabel}>New path</p>
-            <input
+            <Input
                 className={cls.RenameInput}
                 type="text"
                 value={newPath}
-                onChange={e => setNewPath(e.target.value)}
+                setValue={setNewPath}
                 onKeyDown={handleKeyDown}
                 disabled={loading}
                 autoFocus

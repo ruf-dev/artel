@@ -1,0 +1,45 @@
+.LogPanelBarContainer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4375rem 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+
+    & .BarLabel {
+        flex: 1;
+        font-family: var(--font-mono);
+        font-size: 0.625rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-fg-tertiary);
+    }
+
+    & .EnlargeBtn {
+        flex-shrink: 0;
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0.375rem;
+        background: transparent !important;
+        color: var(--color-fg-secondary) !important;
+        transition: background 140ms ease, color 140ms ease;
+    }
+
+    & .EnlargeBtn:hover {
+        background: var(--color-bg-hover) !important;
+        color: var(--color-fg-primary) !important;
+    }
+
+    & .EnlargeChevron {
+        width: 0.875rem;
+        height: 0.875rem;
+        transform: rotate(-90deg);
+        transition: transform 220ms cubic-bezier(.2,.7,.2,1);
+    }
+
+    & .EnlargeChevronOpen {
+        transform: rotate(90deg);
+    }
+}

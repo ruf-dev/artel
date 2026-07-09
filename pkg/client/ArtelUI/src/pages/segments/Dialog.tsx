@@ -8,7 +8,7 @@ export default function Dialog() {
     const {children, closable, CloseDialog} = useDialog()
 
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
+        function handleKeyDown(e: KeyboardEvent) {
             if (e.key === "Escape") CloseDialog()
         }
         document.addEventListener("keydown", handleKeyDown)

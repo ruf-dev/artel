@@ -7,7 +7,9 @@ export function usePortrait(): boolean {
 
     useEffect(() => {
         const mq = window.matchMedia("(orientation: portrait)")
-        const handler = (e: MediaQueryListEvent) => setPortrait(e.matches)
+        function handler(e: MediaQueryListEvent) {
+            setPortrait(e.matches)
+        }
         mq.addEventListener("change", handler)
         return () => mq.removeEventListener("change", handler)
     }, [])

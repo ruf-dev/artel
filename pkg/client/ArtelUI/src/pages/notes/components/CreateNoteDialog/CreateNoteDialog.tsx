@@ -1,37 +1,13 @@
 import { useMemo, useState } from "react"
-import { Button } from "@vervstack/chures"
+import { Button, Input } from "@vervstack/chures"
 
 import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
-import { cn } from "@/app/utils/cn"
-
-import cls from "./CreateNoteDialog.module.css"
+import cls from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.module.css"
+import SuggestionList from "@/pages/notes/components/CreateNoteDialog/components/SuggestionList/SuggestionList.tsx"
 
 function ensureExtension(path: string): string {
     const filename = path.split("/").pop() ?? path
     return filename.includes(".") ? path : path + ".md"
-}
-
-interface SuggestionListProps {
-    suggestions: string[]
-    highlightedIdx: number
-    onSelect: (s: string) => void
-}
-
-function SuggestionList({ suggestions, highlightedIdx, onSelect }: SuggestionListProps) {
-    return (
-        <div className={cls.SuggestionsDropdown}>
-            {suggestions.map((s, i) => (
-                <Button
-                    key={s}
-                    variant="ghost"
-                    className={cn(cls.SuggestionItem, i === highlightedIdx && cls.SuggestionItemHighlighted)}
-                    onMouseDown={e => { e.preventDefault(); onSelect(s) }}
-                >
-                    {s}
-                </Button>
-            ))}
-        </div>
-    )
 }
 
 interface Props {
@@ -110,12 +86,12 @@ export default function CreateNoteDialog({ onConfirm, initialPath, folders }: Pr
             <h2 className={cls.CreateNoteTitle}>New Note</h2>
             <p className={cls.CreateNoteLabel}>Path</p>
             <div className={cls.PathWrapper}>
-                <input
+                <Input
                     className={cls.CreateNoteInput}
                     type="text"
                     placeholder="folder/note-name"
                     value={path}
-                    onChange={e => { setPath(e.target.value); setHighlightedIdx(-1) }}
+                    setValue={v => { setPath(v); setHighlightedIdx(-1) }}
                     onFocus={() => setInputFocused(true)}
                     onBlur={() => setInputFocused(false)}
                     onKeyDown={handleKeyDown}

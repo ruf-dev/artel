@@ -2,11 +2,12 @@ import React, {useRef, useState} from "react"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.module.css"
 import {cn} from "@/app/utils/cn.ts"
-import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
+import {CanvasLayout} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Location} from "@/processes/tractSteps.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
+import ConnectorPath from "@/pages/tract-canvas/components/TractCanvasArea/components/ConnectorPath/ConnectorPath.tsx"
 
 const DRAG_THRESHOLD_PX = 4
 
@@ -23,7 +24,9 @@ interface Props {
     onAddBlock: (location: Location, index: number) => void
 }
 
-export default function TractCanvasArea({layout, tools, triggerInfo, momCandidates, selectedNodeId, onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock}: Props) {
+export default function TractCanvasArea(props: Props) {
+    const {layout, tools, triggerInfo, momCandidates, selectedNodeId} = props
+    const {onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock} = props
     const wrapRef = useRef<HTMLDivElement>(null)
     const dragRef = useRef<{startX: number; startY: number; scrollLeft: number; scrollTop: number; moved: boolean} | null>(null)
     const suppressClickRef = useRef(false)
@@ -119,18 +122,4 @@ export default function TractCanvasArea({layout, tools, triggerInfo, momCandidat
             </div>
         </div>
     )
-}
-
-function ConnectorPath({from, to, running}: {
-    from: {x: number; y: number}
-    to: {x: number; y: number}
-    running: boolean
-}) {
-    const sx = from.x + NODE_WIDTH
-    const sy = from.y + NODE_HEIGHT / 2
-    const tx = to.x
-    const ty = to.y + NODE_HEIGHT / 2
-    const midX = (sx + tx) / 2
-    const d = `M ${sx} ${sy} C ${midX} ${sy}, ${midX} ${ty}, ${tx} ${ty}`
-    return <path className={cn(cls.Conn, running && cls.ConnRunning)} d={d}/>
 }

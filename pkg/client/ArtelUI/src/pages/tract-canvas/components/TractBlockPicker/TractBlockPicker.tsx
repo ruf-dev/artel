@@ -1,5 +1,5 @@
-import {useEffect, useMemo, useState} from "react"
-import {Button} from "@vervstack/chures"
+import {useEffect, useState} from "react"
+import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.module.css"
 import {TractTool} from "@/processes/Tracts.ts"
@@ -7,29 +7,16 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {cn} from "@/app/utils/cn.ts"
-import SelectOption from "@/components/SelectOption/SelectOption.tsx"
-import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
-import {BranchIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
-import {colorForKind, iconForTool} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 import type {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
-
-const BUILTIN_MCP = "artel"
+import {useTractBlockPickerData} from "@/pages/tract-canvas/components/TractBlockPicker/useTractBlockPickerData.ts"
+import LogicCell from "@/pages/tract-canvas/components/TractBlockPicker/components/LogicCell/LogicCell.tsx"
+import ToolCell from "@/pages/tract-canvas/components/TractBlockPicker/components/ToolCell/ToolCell.tsx"
+import ConnectionStep from "@/pages/tract-canvas/components/TractBlockPicker/components/ConnectionStep/ConnectionStep.tsx"
 
 interface Props {
     onConfirm: (draft: StepDraft) => void
 }
-
-interface LogicOption {
-    type: "condition"
-    name: string
-    desc: string
-    Icon: (p: { className?: string }) => React.JSX.Element
-}
-
-const LOGIC_OPTIONS: LogicOption[] = [
-    {type: "condition", name: "Condition", desc: "Route to a true/false branch", Icon: BranchIcon},
-]
 
 export default function TractBlockPicker({onConfirm}: Props) {
     const {CloseDialog} = useDialog()
@@ -48,37 +35,9 @@ export default function TractBlockPicker({onConfirm}: Props) {
         void fetchMomCandidates()
     }, [fetchMomCandidates])
 
-    const q = query.trim().toLowerCase()
-
-    const connectedCandidates = useMemo(
-        () => momCandidates.filter(c => (c.connections?.length ?? 0) > 0),
-        [momCandidates],
-    )
-    const availableMcps = useMemo(
-        () => new Set(connectedCandidates.map(c => c.name)),
-        [connectedCandidates],
-    )
-
-    const grouped = useMemo(() => {
-        const acc: Record<string, TractTool[]> = {}
-        for (const t of tools) {
-            if (t.mcp === BUILTIN_MCP) continue
-            if (connFilter && t.mcp !== connFilter) continue
-            if (q && !`${t.mcp}.${t.tool}`.toLowerCase().includes(q) && !t.description?.toLowerCase().includes(q)) continue
-            ;(acc[t.mcp] ??= []).push(t)
-        }
-        return acc
-    }, [tools, q, connFilter])
-
-    const orderedGroups = useMemo(() => {
-        const rank = (mcp: string) => availableMcps.has(mcp) ? 0 : 1
-        return Object.entries(grouped).sort(([mcpA], [mcpB]) => {
-            const diff = rank(mcpA) - rank(mcpB)
-            return diff !== 0 ? diff : mcpA.localeCompare(mcpB)
-        })
-    }, [grouped, availableMcps])
-
-    const logicOptions = connFilter ? [] : LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
+    const {connectedCandidates, grouped, orderedGroups, logicOptions} = useTractBlockPickerData({
+        tools, momCandidates, query, connFilter,
+    })
 
     function handleConfirmConnection() {
         if (!selectedTool || !selectedConnectionId) return
@@ -104,12 +63,12 @@ export default function TractBlockPicker({onConfirm}: Props) {
                 <div className={cls.Title}>Add block</div>
                 <Button variant="ghost" onClick={CloseDialog} aria-label="Close">✕</Button>
             </div>
-            <input
+            <Input
                 className={cls.Search}
                 type="text"
                 placeholder="Search actions…"
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                setValue={setQuery}
                 autoFocus
             />
             {connectedCandidates.length > 0 && (
@@ -161,87 +120,6 @@ export default function TractBlockPicker({onConfirm}: Props) {
                 {logicOptions.length === 0 && Object.keys(grouped).length === 0 && (
                     <p className={cls.Empty}>No matching blocks.</p>
                 )}
-            </div>
-        </div>
-    )
-}
-
-function LogicCell({option, onSelect}: { option: LogicOption; onSelect: () => void }) {
-    const color = colorForKind(option.type)
-    return (
-        <Button variant="ghost" className={cls.Opt} onClick={onSelect}>
-            <div className={cls.OptIcon} style={{background: color.bg, borderColor: color.border, color: color.fg}}>
-                <option.Icon/>
-            </div>
-            <div className={cls.OptText}>
-                <div className={cls.OptName}>{option.name}</div>
-                <div className={cls.OptFn}>{option.desc}</div>
-            </div>
-        </Button>
-    )
-}
-
-function ToolCell({tool, onSelect}: { tool: TractTool; onSelect: () => void }) {
-    const color = colorForKind("action", tool.mcp)
-    const Icon = iconForTool(tool.mcp, tool.tool)
-    return (
-        <Button variant="ghost" className={cls.Opt} onClick={onSelect}>
-            <div className={cls.OptIcon} style={{background: color.bg, borderColor: color.border, color: color.fg}}>
-                <Icon/>
-            </div>
-            <div className={cls.OptText}>
-                <div className={cls.OptName}>{tool.tool}</div>
-                <div className={cls.OptFn}>{tool.mcp}.{tool.tool}</div>
-            </div>
-        </Button>
-    )
-}
-
-function ConnectionStep({mcp, selectedConnectionId, onSelect, onBack, onConfirm}: {
-    mcp: string
-    selectedConnectionId: string
-    onSelect: (id: string) => void
-    onBack: () => void
-    onConfirm: () => void
-}) {
-    const {CloseDialog} = useDialog()
-    const {momCandidates, fetchMomCandidates} = useMcpKeys()
-
-    useEffect(() => {
-        void fetchMomCandidates()
-    }, [fetchMomCandidates])
-
-    const candidate = momCandidates.find(c => c.name === mcp)
-    const connections = candidate?.connections ?? []
-
-    useEffect(() => {
-        if (!selectedConnectionId && connections.length > 0) {
-            onSelect(connections[0].id ?? "")
-        }
-    }, [connections, selectedConnectionId, onSelect])
-
-    return (
-        <div className={cls.Modal} role="dialog" aria-modal="true">
-            <div className={cls.Head}>
-                <div className={cls.Title}>Choose a connection</div>
-                <Button variant="ghost" onClick={CloseDialog} aria-label="Close">✕</Button>
-            </div>
-            <div className={cls.Scroll}>
-                <div className={cls.List}>
-                    {connections.map(c => (
-                        <SelectOption
-                            key={c.id}
-                            label={connectionLabel(c)}
-                            selected={c.id === selectedConnectionId}
-                            onSelect={() => onSelect(c.id ?? "")}
-                        />
-                    ))}
-                    {connections.length === 0 && <p className={cls.Empty}>No connections available for {mcp}.</p>}
-                </div>
-            </div>
-            <div className={cls.Actions}>
-                <Button variant="ghost" onClick={onBack}>Back</Button>
-                <Button variant="primary" disabled={!selectedConnectionId} onClick={onConfirm}>Add</Button>
             </div>
         </div>
     )

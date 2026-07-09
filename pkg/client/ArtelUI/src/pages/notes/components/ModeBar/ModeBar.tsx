@@ -2,8 +2,7 @@
 import { Button } from "@vervstack/chures"
 
 import { cn } from "@/app/utils/cn"
-
-import cls from "./ModeBar.module.css"
+import cls from "@/pages/notes/components/ModeBar/ModeBar.module.css"
 
 type Mode = 'edit' | 'preview' | 'read'
 

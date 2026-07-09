@@ -95,7 +95,8 @@ export default function TractStepTree(props: TractStepTreeProps) {
 // Not extracted to components/: StepCard renders TractStepTree recursively (for
 // "parallel"/"group" nested lanes), and moving it to its own file would create
 // StepCard.tsx -> TractStepTree.tsx -> StepCard.tsx, an import-x/no-cycle error.
-// Deliberately colocated with TractStepTree despite the react/no-multi-comp warning.
+// Deliberately colocated with TractStepTree.
+// eslint-disable-next-line react/no-multi-comp
 function StepCard({rootSteps, location, step, tools, triggerSchema, onChange}: {
     rootSteps: TractStep[]
     location: Location
@@ -191,6 +192,7 @@ interface ConditionCardProps {
 
 // Same recursion constraint as StepCard above: ConditionCard renders TractStepTree
 // for its "then"/"else" branches, so it can't move out without an import cycle.
+// eslint-disable-next-line react/no-multi-comp
 function ConditionCard(props: ConditionCardProps) {
     const sources = buildSourcesFor(props.rootSteps, props.step.id, props.tools, props.triggerSchema)
     const conditions = props.step.conditions ?? []

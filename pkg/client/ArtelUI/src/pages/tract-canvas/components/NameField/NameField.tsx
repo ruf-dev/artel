@@ -1,4 +1,5 @@
 import {useState} from "react"
+import {Input} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/NameField/NameField.module.css"
 import {TractStep} from "@/processes/Tracts.ts"
@@ -22,10 +23,10 @@ export default function NameField({step, onRename}: Props) {
     return (
         <div className={cls.NameFieldContainer}>
             <span className={cls.Key}>name</span>
-            <input
+            <Input
                 className={cn(cls.Input, invalid && cls.InputInvalid)}
                 value={name}
-                onChange={e => setName(e.target.value)}
+                setValue={setName}
                 onBlur={commit}
                 data-tooltip-id={invalid ? "root-tooltip" : undefined}
                 data-tooltip-content={invalid ? "Must match ^[a-z][a-z0-9_]*$ and not be \"trigger\"" : undefined}

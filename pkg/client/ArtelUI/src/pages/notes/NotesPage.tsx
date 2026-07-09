@@ -1,37 +1,19 @@
 import {useEffect, useMemo, useRef, useState} from "react"
-import {Button} from "@vervstack/chures"
 
 import {useNotes} from "@/app/hooks/Notes.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import {usePortrait} from "@/app/hooks/usePortrait.ts"
-import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
-import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
-import NoteEditor from "@/pages/notes/components/NoteEditor/NoteEditor.tsx"
-import BreadcrumbBar from "@/pages/notes/components/BreadcrumbBar/BreadcrumbBar.tsx"
 import RenameDialog from "@/pages/notes/components/RenameDialog/RenameDialog.tsx"
 import MobileNotesShell from "@/pages/notes/components/MobileNotesShell/MobileNotesShell.tsx"
+import DesktopNotesShell from "@/pages/notes/components/DesktopNotesShell/DesktopNotesShell.tsx"
 import {useAutosave} from "@/pages/notes/hooks/useAutosave.ts"
 import {NoteMode} from "@/app/hooks/Notes.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
-import cls from "./NotesPage.module.css"
-
 
 export default function NotesPage() {
-    const {
-        vaultId,
-        noteContent,
-        savedContent,
-        mode,
-        selectedPath,
-        selectVault,
-        setMode,
-        setContent,
-        setSavedContent,
-        saveNote,
-        moveNote,
-    } = useNotes()
+    const notesStore = useNotes()
     const { OpenDialog } = useDialog()
     const bakeError = useBakeError()
     const {vaults} = useVaults()
@@ -52,44 +34,44 @@ export default function NotesPage() {
 
     useEffect(() => {
         const singleVault = vaultOptions.length === 1 ? vaultOptions[0] : null
-        if (singleVault && !vaultId) {
-            void selectVault(singleVault.id)
+        if (singleVault && !notesStore.vaultId) {
+            void notesStore.selectVault(singleVault.id)
         }
-    }, [vaultOptions, vaultId, selectVault])
+    }, [vaultOptions, notesStore.vaultId, notesStore.selectVault])
 
-    useEffect(() => { setPreviewEditing(false) }, [selectedPath])
+    useEffect(() => { setPreviewEditing(false) }, [notesStore.selectedPath])
 
     useEffect(() => {
-        if (selectedPath && noteContent === '' && mode === 'preview') {
+        if (notesStore.selectedPath && notesStore.noteContent === '' && notesStore.mode === 'preview') {
             setPreviewEditing(true)
         }
-    }, [selectedPath, noteContent])
+    }, [notesStore.selectedPath, notesStore.noteContent])
 
     const { saveStatus, saveError, forceSave } = useAutosave({
-        noteId: selectedPath,
-        vaultId,
-        content: noteContent ?? '',
-        savedContent: savedContent ?? '',
-        onSave: saveNote,
-        onSavedContentChange: setSavedContent,
+        noteId: notesStore.selectedPath,
+        vaultId: notesStore.vaultId,
+        content: notesStore.noteContent ?? '',
+        savedContent: notesStore.savedContent ?? '',
+        onSave: notesStore.saveNote,
+        onSavedContentChange: notesStore.setSavedContent,
     })
 
     function handleModeChange(newMode: NoteMode) {
-        if (mode === 'edit' || (mode === 'preview' && previewEditing)) {
+        if (notesStore.mode === 'edit' || (notesStore.mode === 'preview' && previewEditing)) {
             forceSave()
         }
         setPreviewEditing(false)
-        setMode(newMode)
+        notesStore.setMode(newMode)
     }
 
     function handleRename() {
-        if (!selectedPath) return
+        if (!notesStore.selectedPath) return
         OpenDialog(
             <RenameDialog
-                currentPath={selectedPath}
+                currentPath={notesStore.selectedPath}
                 onConfirm={async (newPath: string) => {
                     try {
-                        await moveNote(newPath)
+                        await notesStore.moveNote(newPath)
                     } catch (err) {
                         bakeError("Failed to move note", err)
                     }
@@ -98,66 +80,23 @@ export default function NotesPage() {
         )
     }
 
+    const mode = notesStore.mode
+    const selectedPath = notesStore.selectedPath
     const showEditor = (mode === 'edit' || (mode === 'preview' && previewEditing)) && selectedPath !== null
 
-    if (isPortrait) {
-        return (
-            <MobileNotesShell
-                vaultOptions={vaultOptions}
-                noteContent={noteContent}
-                selectedPath={selectedPath}
-                mode={mode}
-                showEditor={showEditor}
-                saveStatus={showEditor ? saveStatus : 'idle'}
-                saveError={saveError}
-                scrollTopRef={scrollTopRef}
-                fontScale={fontScale}
-                onModeChange={handleModeChange}
-                onChange={setContent}
-                onContentClick={mode === 'preview' && selectedPath ? () => setPreviewEditing(true) : undefined}
-                onEscape={mode === 'preview' ? () => setPreviewEditing(false) : undefined}
-                onRename={handleRename}
-            />
-        )
+    const shellProps = {
+        vaultOptions, mode, selectedPath, showEditor, scrollTopRef, fontScale,
+        noteContent: notesStore.noteContent,
+        saveStatus: showEditor ? saveStatus : 'idle' as const,
+        saveError, onModeChange: handleModeChange, onChange: notesStore.setContent,
+        onContentClick: mode === 'preview' && selectedPath ? () => setPreviewEditing(true) : undefined,
+        onEscape: mode === 'preview' ? () => setPreviewEditing(false) : undefined,
+        onRename: handleRename,
     }
 
-    return (
-        <div className={cls.NotesPageContainer}>
-            <div className={cls.SidebarWrapper}>
-                <NotesSidebar vaults={vaultOptions}/>
-            </div>
-            <div className={cls.ViewerWrapper}>
-                {selectedPath && (
-                    <BreadcrumbBar
-                        path={selectedPath}
-                        mode={mode}
-                        onModeChange={handleModeChange}
-                        saveStatus={showEditor ? saveStatus : 'idle'}
-                        saveError={saveError}
-                        onRename={handleRename}
-                    />
-                )}
-                {showEditor ? (
-                    <NoteEditor
-                        content={noteContent ?? ''}
-                        onChange={setContent}
-                        scrollTopRef={scrollTopRef}
-                        fontScale={fontScale}
-                        onEscape={mode === 'preview' ? () => setPreviewEditing(false) : undefined}
-                    />
-                ) : (
-                    <NoteViewer
-                        content={noteContent}
-                        fontScale={fontScale}
-                        onContentClick={mode === 'preview' && selectedPath ? () => setPreviewEditing(true) : undefined}
-                    />
-                )}
-                <div className={cls.ZoomControls}>
-                    <Button variant="ghost" className={cls.ZoomBtn} onClick={zoomOut}>−</Button>
-                    <span className={cls.ZoomLabel}>{Math.round(fontScale * 100)}%</span>
-                    <Button variant="ghost" className={cls.ZoomBtn} onClick={zoomIn}>+</Button>
-                </div>
-            </div>
-        </div>
-    )
+    if (isPortrait) {
+        return <MobileNotesShell {...shellProps}/>
+    }
+
+    return <DesktopNotesShell {...shellProps} onZoomIn={zoomIn} onZoomOut={zoomOut}/>
 }

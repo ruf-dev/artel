@@ -82,6 +82,24 @@ interface TractsState {
     unlinkTrigger: (triggerUuid: string, tractUuid: string) => Promise<void>
 }
 
+async function handleSetTriggerEnabled(uuid: string, enabled: boolean, get: () => TractsState) {
+    await tractsService.setTriggerEnabled(uuid, enabled)
+    await get().fetchTriggers()
+}
+
+async function handleRotateTriggerToken(uuid: string, get: () => TractsState) {
+    const result = await tractsService.rotateTriggerToken(uuid)
+    await get().fetchTriggers()
+    return result
+}
+
+async function handleCreateAndLinkTrigger(name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string, get: () => TractsState) {
+    const result = await tractsService.createTrigger(name, kind, source, {}, payloadSchema)
+    await tractsService.linkTrigger(result.trigger.uuid, tractUuid, [])
+    await Promise.all([get().fetchTriggers(), get().fetch()])
+    return result
+}
+
 export const useTracts = create<TractsState>((set, get) => ({
     tracts: [],
     loading: false,
@@ -179,12 +197,7 @@ export const useTracts = create<TractsState>((set, get) => ({
         }
     },
 
-    createAndLinkTrigger: async (name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string) => {
-        const result = await tractsService.createTrigger(name, kind, source, {}, payloadSchema)
-        await tractsService.linkTrigger(result.trigger.uuid, tractUuid, [])
-        await Promise.all([get().fetchTriggers(), get().fetch()])
-        return result
-    },
+    createAndLinkTrigger: async (name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string) => handleCreateAndLinkTrigger(name, kind, source, payloadSchema, tractUuid, get),
 
     deleteTrigger: async (uuid: string) => {
         await tractsService.deleteTrigger(uuid)
@@ -192,16 +205,9 @@ export const useTracts = create<TractsState>((set, get) => ({
         await get().fetch()
     },
 
-    setTriggerEnabled: async (uuid: string, enabled: boolean) => {
-        await tractsService.setTriggerEnabled(uuid, enabled)
-        await get().fetchTriggers()
-    },
+    setTriggerEnabled: async (uuid: string, enabled: boolean) => handleSetTriggerEnabled(uuid, enabled, get),
 
-    rotateTriggerToken: async (uuid: string) => {
-        const result = await tractsService.rotateTriggerToken(uuid)
-        await get().fetchTriggers()
-        return result
-    },
+    rotateTriggerToken: async (uuid: string) => handleRotateTriggerToken(uuid, get),
 
     unlinkTrigger: async (triggerUuid: string, tractUuid: string) => {
         await tractsService.unlinkTrigger(triggerUuid, tractUuid)

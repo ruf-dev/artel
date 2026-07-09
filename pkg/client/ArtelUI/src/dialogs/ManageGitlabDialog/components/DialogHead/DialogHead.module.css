@@ -1,0 +1,53 @@
+.DialogHeadContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    & .ModalHeadLeft {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-width: 0;
+    }
+
+    & .ModalIcon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.625rem;
+        background: var(--color-bg-elevated);
+        border: 1px solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    & .ModalTitle {
+        font-size: 1.125rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--color-fg-primary);
+    }
+
+    & .ModalClose {
+        flex-shrink: 0;
+        width: 2rem;
+        height: 2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 0;
+        border-radius: 0.5rem;
+        color: var(--color-fg-tertiary);
+        cursor: pointer;
+        transition: all 140ms ease;
+
+        &:hover {
+            color: var(--color-fg-primary);
+            background: var(--color-bg-hover);
+        }
+    }
+}

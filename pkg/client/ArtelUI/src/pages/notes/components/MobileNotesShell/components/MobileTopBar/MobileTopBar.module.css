@@ -1,0 +1,70 @@
+.MobileTopBarContainer {
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 11px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-dim);
+
+    & .HamburgerBtn {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-secondary);
+        background: var(--bg-hover);
+        border: 1px solid var(--border-dim);
+        transition: color 0.2s, background 0.2s, border-color 0.2s;
+    }
+
+    & .HamburgerBtnActive {
+        color: var(--coral);
+        background: var(--coral-dim);
+        border-color: var(--coral-border);
+    }
+
+    & .NoteInfoColumn {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    & .NoteTitle {
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        letter-spacing: -0.01em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .NoteMeta {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        color: var(--text-disabled);
+        letter-spacing: 0.04em;
+    }
+
+    & .ActionBtn {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        cursor: pointer;
+        background: none;
+        border: none;
+        flex-shrink: 0;
+    }
+}

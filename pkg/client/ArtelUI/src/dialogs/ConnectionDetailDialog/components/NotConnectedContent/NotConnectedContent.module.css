@@ -1,0 +1,22 @@
+.NotConnectedContentContainer {
+    & .ModalDesc {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        line-height: 1.55;
+        margin-bottom: 1.5rem;
+    }
+
+    & .ComingSoon {
+        font-size: 0.8125rem;
+        color: var(--color-fg-tertiary);
+        font-style: italic;
+        margin-bottom: 1.5rem;
+    }
+
+    & .ModalActions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.625rem;
+    }
+}

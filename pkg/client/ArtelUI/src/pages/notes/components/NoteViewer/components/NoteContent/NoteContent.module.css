@@ -1,0 +1,111 @@
+.NoteContentContainer {
+    max-width: 100%;
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.72;
+}
+
+.NoteContentContainer :global(h1) {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: var(--font);
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+}
+
+.NoteContentContainer :global(h2) {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font);
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    margin: 26px 0 10px;
+}
+
+.NoteContentContainer :global(h3),
+.NoteContentContainer :global(h4),
+.NoteContentContainer :global(h5),
+.NoteContentContainer :global(h6) {
+    font-family: var(--font);
+    color: var(--text-primary);
+    margin: 20px 0 8px;
+}
+
+.NoteContentContainer :global(p) {
+    font-size: 14px;
+    font-family: var(--font);
+    color: var(--text-secondary);
+    line-height: 1.72;
+    margin: 0 0 14px;
+}
+
+.NoteContentContainer :global(blockquote) {
+    border-left: 2px solid rgba(255, 75, 62, 0.4);
+    padding-left: 14px;
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    font-family: var(--font);
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.72;
+}
+
+.NoteContentContainer :global(pre) {
+    background: #0d0d0d;
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.NoteContentContainer :global(pre)::-webkit-scrollbar {
+    display: none;
+}
+
+.NoteContentContainer :global(pre code) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    white-space: pre;
+    background: transparent;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.NoteContentContainer :global(code) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: #0d0d0d;
+    padding: 1px 3px;
+    border-radius: 3px;
+}
+
+.NoteContentContainer :global(ul),
+.NoteContentContainer :global(ol) {
+    margin: 0 0 14px;
+    padding-left: 20px;
+    color: var(--text-secondary);
+}
+
+.NoteContentContainer :global(li) {
+    margin-bottom: 4px;
+    line-height: 1.72;
+}
+
+.NoteContentContainer :global(a) {
+    color: var(--text-secondary);
+    text-decoration: underline;
+}
+
+.NoteContentContainer :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border-dim);
+    margin: 20px 0;
+}

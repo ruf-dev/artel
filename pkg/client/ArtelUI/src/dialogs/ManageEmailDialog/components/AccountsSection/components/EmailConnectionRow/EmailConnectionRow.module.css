@@ -1,0 +1,63 @@
+.AccountRowContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: var(--color-bg-elevated);
+    cursor: pointer;
+    transition: background 120ms ease;
+
+    &:hover {
+        background: var(--color-bg-hover);
+    }
+
+    & .AccountRowLeft {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 0;
+    }
+
+    & .AccountEmailIcon {
+        flex-shrink: 0;
+        width: 1.125rem;
+        height: 1.125rem;
+        border-radius: 0.25rem;
+        object-fit: contain;
+    }
+
+    & .AccountEmailAtBadge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 1.125rem;
+        height: 1.125rem;
+        border-radius: 0.25rem;
+        background: var(--color-bg-hover);
+        border: 1px solid var(--color-border-light);
+        color: var(--color-fg-tertiary);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    & .AccountRowActions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    & .AccountEmail {
+        font-size: 0.8125rem;
+        color: var(--color-fg-primary);
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+}
