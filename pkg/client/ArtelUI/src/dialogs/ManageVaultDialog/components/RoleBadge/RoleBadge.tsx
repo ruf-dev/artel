@@ -6,5 +6,6 @@ interface Props {
 }
 
 export default function RoleBadge({role}: Props) {
-    return <span className={cn(cls.RoleBadgeContainer, cls[`Role_${role}`])}>{role}</span>
+    const roleClass = `Role${role.charAt(0).toUpperCase()}${role.slice(1)}`
+    return <span className={cn(cls.RoleBadgeContainer, cls[roleClass])}>{role}</span>
 }

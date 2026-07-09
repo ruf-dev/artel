@@ -20,7 +20,7 @@
     justify-content: flex-end;
     padding-right: 10px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 0.625rem;
     color: rgb(255 255 255 / 18%);
     user-select: none;
 }

@@ -38,8 +38,8 @@
     border-radius: 0.25rem;
     background: linear-gradient(135deg,
         var(--chip-accent) 0%,
-        color-mix(in srgb, var(--chip-accent) 70%, black) 100%);
-    color: white;
+        color-mix(in srgb, var(--chip-accent) 70%, #000) 100%);
+    color: var(--color-fg-white);
     font-size: 0.6875rem;
     font-weight: 700;
     line-height: 1;

@@ -34,13 +34,13 @@
 .SheetsChip {
     background: linear-gradient(135deg, #23A566 0%, #159C53 100%);
     border-color: #159C53;
-    color: white;
+    color: var(--color-fg-white);
 }
 
 .TrelloChip {
     background: linear-gradient(135deg, #0052CC 0%, #2684FF 100%);
     border-color: #0052CC;
-    color: white;
+    color: var(--color-fg-white);
 }
 
 .MiroChip {
@@ -52,5 +52,5 @@
 .GitlabChip {
     background: linear-gradient(135deg, #FC6D26 0%, #E24329 100%);
     border-color: #E24329;
-    color: white;
+    color: var(--color-fg-white);
 }

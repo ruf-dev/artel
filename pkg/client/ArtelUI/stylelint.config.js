@@ -47,6 +47,13 @@ export default {
 
                 // PascalCase or camelCase class names (matches CSS Modules usage)
                 'selector-class-pattern': '^[A-Za-z][a-zA-Z0-9]*$',
+
+                // `composes` references another class by its exact (case-sensitive) name —
+                // not a lowercasable value keyword
+                'value-keyword-case': [
+                    'lower',
+                    {ignoreProperties: ['composes']},
+                ],
             },
         },
         // Global token files: hex color definitions and base sizing are the source of truth here

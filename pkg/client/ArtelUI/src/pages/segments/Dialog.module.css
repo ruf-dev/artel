@@ -17,8 +17,10 @@
         position: relative;
 
         .DialogBackground {
-            .DialogChildWrapper {
+            display: contents;
 
+            .DialogChildWrapper {
+                display: contents;
             }
         }
     }

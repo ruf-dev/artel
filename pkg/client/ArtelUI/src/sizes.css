@@ -31,7 +31,3 @@
     --header-logo-size: 1.875rem;
     --header-logo-gap:  0.625rem;
 }
-
-@media (width <= 1024px) and (aspect-ratio <= 1/1) {
-    :root {}
-}

@@ -17,7 +17,7 @@
     justify-content: center;
     height: 100%;
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: var(--text-disabled);
     letter-spacing: 0.06em;
 }

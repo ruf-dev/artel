@@ -7,7 +7,7 @@
     border-radius: 5px;
     padding: 1px 8px 1px 5px;
     font-family: var(--font);
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--text-primary);
     cursor: pointer;
     vertical-align: middle;

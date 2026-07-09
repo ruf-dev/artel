@@ -41,7 +41,7 @@
     height: 1.125rem;
     border-radius: 0.25rem;
     background: var(--coral);
-    color: white;
+    color: var(--color-fg-white);
     font-size: 0.6875rem;
     font-weight: 700;
     line-height: 1;

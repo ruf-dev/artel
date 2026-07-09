@@ -8,7 +8,7 @@
     .QRPlaceholder {
         width: 7.5rem;
         height: 7.5rem;
-        background: white;
+        background: var(--color-fg-white);
         border-radius: 0.25rem;
     }
 }

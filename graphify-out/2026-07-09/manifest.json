@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/AdminPage.tsx": {
-    "mtime": 1783576645.0613878,
-    "ast_hash": "a7918daa1d1fc4c6bea991a8e90a09d8",
+    "mtime": 1783620652.361601,
+    "ast_hash": "8573ae6bc344c3d43b5eb043e07b7be1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/mcp-keys/McpKeysPage.tsx": {
@@ -1950,8 +1950,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/ManageKeyDialog.tsx": {
-    "mtime": 1783576645.0612848,
-    "ast_hash": "ca4a4427c8b993f753cad37a312d853b",
+    "mtime": 1783621213.8416722,
+    "ast_hash": "0e3004ebe5ab9efb16c506c6ea7a5689",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx": {
@@ -3912,6 +3912,116 @@
   "handoffs/agent9-trivial-cluster.md": {
     "mtime": 1783619840.6384945,
     "ast_hash": "d44c3e24bdc1c216c18e51b7a064d812",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/processes/useManageKeyDialog.tsx": {
+    "mtime": 1783621213.8560324,
+    "ast_hash": "a778445b2391035e8ea8e08e47f65359",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/screens/AddConnectionScreen.tsx": {
+    "mtime": 1783621213.8562152,
+    "ast_hash": "12554e328a4d989c2d46f6292c2f35df",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/screens/MainScreen.tsx": {
+    "mtime": 1783621213.8563435,
+    "ast_hash": "7a8b59e4b58d84b0698a1824d1bdafc5",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/screens/SelectConnectionScreen.tsx": {
+    "mtime": 1783621213.856472,
+    "ast_hash": "db27927c01b2dcf0a2ef5849c0f7e9e0",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/screens/VaultScreen.tsx": {
+    "mtime": 1783621213.856593,
+    "ast_hash": "2a3485b83ae96752b0e2f5bee11eb651",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/ArtelUsersTab.tsx": {
+    "mtime": 1783620632.6174605,
+    "ast_hash": "b6e6a8a1815c9763a645216aa8b7b325",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.tsx": {
+    "mtime": 1783620589.7720318,
+    "ast_hash": "e7df3d1173aec498afe3876cef5d1903",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx": {
+    "mtime": 1783620568.5965734,
+    "ast_hash": "916e6dfe2813ed38fe3c7d9f9e9af90e",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserList/ArtelUserList.tsx": {
+    "mtime": 1783620616.9790647,
+    "ast_hash": "3a2c81de786057f1721cbcd2b87b6d15",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserRow/ArtelUserRow.tsx": {
+    "mtime": 1783620605.057887,
+    "ast_hash": "ab24878934029bce949a3e57fac436a0",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/InstancesTab/InstancesTab.tsx": {
+    "mtime": 1783620438.7998888,
+    "ast_hash": "ff3f803195c84ee705c68016a09086eb",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/InstancesTab/components/InstanceFormDialog/InstanceFormDialog.tsx": {
+    "mtime": 1783620410.8719935,
+    "ast_hash": "886fbcf144505cef96982f466ce7a5bb",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/InstancesTab/components/InstanceList/InstanceList.tsx": {
+    "mtime": 1783620392.7620723,
+    "ast_hash": "022c51426480165261da026e1f9caba1",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/InstancesTab/components/InstancesActionBar/InstancesActionBar.tsx": {
+    "mtime": 1783620356.1881232,
+    "ast_hash": "4530a3ee1e8328b96f2228fe61e19c08",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/UsersTab.tsx": {
+    "mtime": 1783620549.8320222,
+    "ast_hash": "fdc09d1c3fd12765cc1cfb0e74a3f931",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/ChangePasswordDialog/ChangePasswordDialog.tsx": {
+    "mtime": 1783620494.5975168,
+    "ast_hash": "7d3f105218dc569f0a7c820f558ebd79",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/InstanceSelector/InstanceSelector.tsx": {
+    "mtime": 1783620454.842224,
+    "ast_hash": "783a2e9e2e2f979e8f0b5e672e6ae331",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/ManageAccessDialog/ManageAccessDialog.tsx": {
+    "mtime": 1783620533.7960155,
+    "ast_hash": "d0f9711e599cbe4f2248ebfb26cdb6a1",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessList/DbAccessList.tsx": {
+    "mtime": 1783620519.1621053,
+    "ast_hash": "f979ad0505d17c465e026126c08afa4a",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessRow/DbAccessRow.tsx": {
+    "mtime": 1783620510.5684152,
+    "ast_hash": "9233b4a1b7d4ac28be9f1515448cee48",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/UserList/UserList.tsx": {
+    "mtime": 1783620482.709755,
+    "ast_hash": "9daac8c5211ae3a4abd8926ea4e19886",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/UsersTab/components/UserRow/UserRow.tsx": {
+    "mtime": 1783620471.4674275,
+    "ast_hash": "5f255cce2bbf94453d554aca834fffbe",
     "semantic_hash": ""
   }
 }

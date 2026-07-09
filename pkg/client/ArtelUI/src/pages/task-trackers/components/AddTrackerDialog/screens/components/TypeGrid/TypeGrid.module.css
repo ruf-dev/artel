@@ -33,7 +33,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        color: white;
+        color: var(--color-fg-white);
         font-size: 1rem;
         font-weight: 700;
     }

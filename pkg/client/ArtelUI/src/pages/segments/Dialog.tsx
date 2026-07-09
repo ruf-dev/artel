@@ -38,10 +38,7 @@ export default function Dialog() {
                     {
                         children.map((v, idx) => {
                             return (
-                                <div
-                                    key={idx}
-                                    className={cls.DialogChildWrapper}
-                                >
+                                <div key={idx} className={cls.DialogChildWrapper}>
                                     {v}
                                 </div>)
                         })

@@ -40,7 +40,7 @@
                 border: none;
                 color: rgb(255 255 255 / 65%);
                 cursor: pointer;
-                font-size: 16px;
+                font-size: 1rem;
                 line-height: 1;
                 display: flex;
                 align-items: center;
@@ -54,7 +54,7 @@
 
             & .ZoomLabel {
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 10px;
+                font-size: 0.625rem;
                 color: rgb(255 255 255 / 40%);
                 min-width: 34px;
                 text-align: center;

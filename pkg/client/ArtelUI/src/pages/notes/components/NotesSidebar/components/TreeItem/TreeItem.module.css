@@ -34,7 +34,7 @@
     }
 
     & .TreeItemSubtitle {
-        font-size: 9px;
+        font-size: 0.5625rem;
         color: rgb(255 255 255 / 25%);
         margin-top: 1px;
         overflow: hidden;

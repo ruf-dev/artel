@@ -72,7 +72,7 @@
     font-size: 0.8125rem;
     color: var(--color-fg-primary);
     white-space: pre-wrap;
-    word-break: break-word;
+    overflow-wrap: anywhere;
     line-height: 1.6;
     overflow-y: auto;
     flex: 1;

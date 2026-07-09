@@ -15,8 +15,8 @@
     transform: translateY(-1px);
 }
 
-.Selected {
-    border-color: var(--coral-border) !important;
+.Node.Selected {
+    border-color: var(--coral-border);
     box-shadow: 0 0 0 3px var(--coral-dim);
 }
 

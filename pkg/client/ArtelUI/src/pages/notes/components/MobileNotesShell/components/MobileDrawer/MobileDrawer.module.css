@@ -1,7 +1,6 @@
 .Backdrop {
     position: absolute;
     inset: 0;
-    z-index: 10;
     background: var(--overlay, rgb(0 0 0 / 58%));
     opacity: 0;
     pointer-events: none;
@@ -18,7 +17,6 @@
     top: 0;
     bottom: 0;
     width: 276px;
-    z-index: 20;
     left: -286px;
     background: var(--bg-card);
     transition: left 0.28s cubic-bezier(0.32, 0, 0, 1);
@@ -44,7 +42,7 @@
     & .DrawerWordmark {
         font-family: var(--font);
         font-weight: 700;
-        font-size: 15px;
+        font-size: 0.9375rem;
         letter-spacing: -0.02em;
         color: var(--text-primary);
         line-height: 1;
@@ -52,7 +50,7 @@
 
     & .DrawerNotesLabel {
         font-family: var(--font-mono);
-        font-size: 9px;
+        font-size: 0.5625rem;
         color: var(--text-disabled);
         letter-spacing: 0.10em;
         padding-left: 8px;
@@ -86,7 +84,7 @@
         background: var(--coral-dim);
         border: 1px solid var(--coral-border);
         font-family: var(--font-mono);
-        font-size: 12px;
+        font-size: 0.75rem;
         color: var(--coral);
         letter-spacing: 0.04em;
         cursor: pointer;
