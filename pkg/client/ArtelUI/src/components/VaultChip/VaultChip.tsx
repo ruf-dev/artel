@@ -1,10 +1,8 @@
 import cls from "@/components/VaultChip/VaultChip.module.css"
 import {cn} from "@/app/utils/cn"
-
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
-
 import ManageVaultDialog from "@/dialogs/ManageVaultDialog/ManageVaultDialog.tsx"
 
 export default function VaultChip({vault}: {vault?: VaultItem}) {

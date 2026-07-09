@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react"
-import cls from "./NoteEditor.module.css"
+
 import LineNumbers from "@/pages/notes/components/LineNumbers/LineNumbers.tsx"
 import BoldIcon from "@/pages/notes/components/icons/BoldIcon.tsx"
 import ItalicIcon from "@/pages/notes/components/icons/ItalicIcon.tsx"
 import LinkIcon from "@/pages/notes/components/icons/LinkIcon.tsx"
 import HeadingIcon from "@/pages/notes/components/icons/HeadingIcon.tsx"
 import CodeIcon from "@/pages/notes/components/icons/CodeIcon.tsx"
+
+import cls from "./NoteEditor.module.css"
 
 interface NoteEditorProps {
     content: string

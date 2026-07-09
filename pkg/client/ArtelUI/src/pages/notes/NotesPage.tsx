@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useRef, useState} from "react"
+import {Button} from "@vervstack/chures"
 
-import cls from "./NotesPage.module.css"
 import {useNotes} from "@/app/hooks/Notes.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import {usePortrait} from "@/app/hooks/usePortrait.ts"
@@ -14,6 +14,9 @@ import {useAutosave} from "@/pages/notes/hooks/useAutosave.ts"
 import {NoteMode} from "@/app/hooks/Notes.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+
+import cls from "./NotesPage.module.css"
+
 
 export default function NotesPage() {
     const {
@@ -150,9 +153,9 @@ export default function NotesPage() {
                     />
                 )}
                 <div className={cls.ZoomControls}>
-                    <button className={cls.ZoomBtn} onClick={zoomOut}>−</button>
+                    <Button variant="ghost" className={cls.ZoomBtn} onClick={zoomOut}>−</Button>
                     <span className={cls.ZoomLabel}>{Math.round(fontScale * 100)}%</span>
-                    <button className={cls.ZoomBtn} onClick={zoomIn}>+</button>
+                    <Button variant="ghost" className={cls.ZoomBtn} onClick={zoomIn}>+</Button>
                 </div>
             </div>
         </div>

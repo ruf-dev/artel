@@ -1,7 +1,7 @@
 import {useState} from "react"
 import {Button, ModalClose} from "@vervstack/chures"
-import cls from "@/dialogs/ManageVaultDialog/components/CreateInviteLinkDialog/CreateInviteLinkDialog.module.css"
 
+import cls from "@/dialogs/ManageVaultDialog/components/CreateInviteLinkDialog/CreateInviteLinkDialog.module.css"
 import {useVaultMutations, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"

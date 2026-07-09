@@ -1,12 +1,11 @@
 import React, {useRef, useState} from "react"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.module.css"
-
+import {cn} from "@/app/utils/cn.ts"
 import {CanvasLayout, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Location} from "@/processes/tractSteps.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
-
 import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 
 const DRAG_THRESHOLD_PX = 4
@@ -74,7 +73,7 @@ export default function TractCanvasArea({layout, tools, triggerInfo, momCandidat
     return (
         <div
             ref={wrapRef}
-            className={`${cls.Wrap} ${panning ? cls.Panning : ""}`}
+            className={cn(cls.Wrap, panning && cls.Panning)}
             onClick={onBackgroundClick}
             onClickCapture={handleClickCapture}
             onPointerDown={handlePointerDown}
@@ -93,7 +92,7 @@ export default function TractCanvasArea({layout, tools, triggerInfo, momCandidat
                 {layout.parallelBoxes.map(box => (
                     <div
                         key={box.id}
-                        className={`${cls.ParallelBox} ${box.id === selectedNodeId ? cls.ParallelBoxSelected : ""}`}
+                        className={cn(cls.ParallelBox, box.id === selectedNodeId && cls.ParallelBoxSelected)}
                         style={{left: box.x, top: box.y, width: box.width, height: box.height}}
                         data-tract-node
                         onClick={e => {
@@ -133,5 +132,5 @@ function ConnectorPath({from, to, running}: {
     const ty = to.y + NODE_HEIGHT / 2
     const midX = (sx + tx) / 2
     const d = `M ${sx} ${sy} C ${midX} ${sy}, ${midX} ${ty}, ${tx} ${ty}`
-    return <path className={`${cls.Conn} ${running ? cls.ConnRunning : ""}`} d={d}/>
+    return <path className={cn(cls.Conn, running && cls.ConnRunning)} d={d}/>
 }

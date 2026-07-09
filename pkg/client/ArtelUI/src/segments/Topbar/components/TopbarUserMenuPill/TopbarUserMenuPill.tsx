@@ -1,7 +1,9 @@
-import cls from "./TopbarUserMenuPill.module.css"
+import {AvatarFallbackIcon, Button, ChevronDownIcon} from "@vervstack/chures"
+
 import {cn} from "@/app/utils/cn"
 
-import {AvatarFallbackIcon, ChevronDownIcon} from "@vervstack/chures"
+import cls from "./TopbarUserMenuPill.module.css"
+
 
 interface TopbarUserMenuPillProps {
     menuOpen: boolean
@@ -11,9 +13,9 @@ interface TopbarUserMenuPillProps {
 
 export default function TopbarUserMenuPill({menuOpen, photoUrl, onClick}: TopbarUserMenuPillProps) {
     return (
-        <button
+        <Button
+            variant="ghost"
             className={cls.UserPill}
-            type="button"
             aria-expanded={menuOpen}
             aria-haspopup="menu"
             onClick={onClick}
@@ -27,6 +29,6 @@ export default function TopbarUserMenuPill({menuOpen, photoUrl, onClick}: Topbar
                 )}
             </span>
             <ChevronDownIcon className={cn(cls.Chevron, menuOpen && cls.ChevronOpen)}/>
-        </button>
+        </Button>
     )
 }

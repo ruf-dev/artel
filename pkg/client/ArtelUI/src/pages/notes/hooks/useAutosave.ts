@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+
 import { SaveStatus } from "@/pages/notes/components/SaveStatusIndicator/SaveStatusIndicator.tsx"
 
 const AUTOSAVE_DELAY = 500

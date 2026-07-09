@@ -1,6 +1,10 @@
-import cls from "./BreadcrumbBar.module.css"
+import {Button} from "@vervstack/chures"
+
 import ModeBar from "@/pages/notes/components/ModeBar/ModeBar.tsx"
 import SaveStatusIndicator, { SaveStatus } from "@/pages/notes/components/SaveStatusIndicator/SaveStatusIndicator.tsx"
+
+import cls from "./BreadcrumbBar.module.css"
+
 
 type Mode = 'edit' | 'preview' | 'read'
 
@@ -43,9 +47,9 @@ export default function BreadcrumbBar({ path, mode, onModeChange, saveStatus, sa
             <div className={cls.LeftSlot}>
                 {path && <BreadcrumbPath path={path} />}
                 {path && onRename && (
-                    <button className={cls.RenameBtn} type="button" onClick={onRename} title="Rename / Move">
+                    <Button variant="ghost" className={cls.RenameBtn} onClick={onRename} title="Rename / Move">
                         <PencilIcon />
-                    </button>
+                    </Button>
                 )}
             </div>
             <div className={cls.CenterSlot}>

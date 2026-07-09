@@ -2,14 +2,12 @@ import {useEffect} from "react"
 import {useNavigate, useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/connections/ConnectionsPage.module.css"
-
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
-
 import ConnectionDetailDialog from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx"
 import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
 import ManageGitlabDialog from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx"

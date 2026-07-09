@@ -1,5 +1,6 @@
 import {useEffect} from "react"
 import {useNavigate, useSearchParams} from "react-router-dom"
+
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
 export default function GoogleOAuthCallbackPage() {

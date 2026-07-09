@@ -1,12 +1,10 @@
 import {useEffect} from "react"
-
 import {Button, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/components/TriggerPanel/TriggerPanel.module.css"
 
+import cls from "@/components/TriggerPanel/TriggerPanel.module.css"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import AddTriggerDialog from "@/dialogs/AddTriggerDialog/AddTriggerDialog.tsx"
 import TriggerRow from "@/components/TriggerPanel/TriggerRow.tsx"
 

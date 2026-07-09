@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react"
 import {NavigateFunction, useNavigate} from "react-router-dom"
+import {useToaster, TelegramAuth, TelegramAuthData} from "@vervstack/chures"
 
 import cls from "@/pages/init/InitPage.module.css"
-
 import useUser from "@/hooks/user/User.ts"
 import {authService, Session} from "@/processes/Auth.ts"
 import {UserInfo} from "@/processes/AuthMiddleware.ts"
@@ -10,7 +10,6 @@ import {Path, REDIRECT_AFTER_LOGIN_KEY} from "@/app/routing/Router.tsx"
 import {AuthAPI} from "@/app/api/artel"
 import {apiPrefix} from "@/app/api/api.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
-import {useToaster, TelegramAuth, TelegramAuthData} from "@vervstack/chures"
 
 export default function InitPage() {
     const navigate = useNavigate()

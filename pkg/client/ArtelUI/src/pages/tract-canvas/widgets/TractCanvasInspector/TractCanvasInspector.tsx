@@ -1,13 +1,11 @@
 import {useEffect, useState} from "react"
 
 import cls from "@/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.module.css"
-
 import {CanvasNode} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {SchemaNode, TractStep, TractTool, TractTriggerSummary} from "@/processes/Tracts.ts"
 import {Location} from "@/processes/tractSteps.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {cn} from "@/app/utils/cn.ts"
-
 import TractCanvasInspectorBody from "@/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.tsx"
 
 interface Props {

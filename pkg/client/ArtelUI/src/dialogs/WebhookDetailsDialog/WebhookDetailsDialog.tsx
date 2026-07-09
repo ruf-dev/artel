@@ -1,15 +1,13 @@
 import {useState} from "react"
 import {useQueryClient} from "@tanstack/react-query"
-
 import {Button, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/dialogs/WebhookDetailsDialog/WebhookDetailsDialog.module.css"
 
+import cls from "@/dialogs/WebhookDetailsDialog/WebhookDetailsDialog.module.css"
 import {useDialog} from "@/app/hooks/Dialog"
 import {triggersQueryKey, useTracts, useTrigger, useTriggerSources} from "@/app/hooks/Tracts.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {providerEnumFor, providerLabel} from "@/components/TriggerPanel/triggerLabels.ts"
-
 import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
 import ManageGitlabDialog from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx"
 

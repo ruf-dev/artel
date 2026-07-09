@@ -1,7 +1,6 @@
 import {useMemo, useState} from "react"
 
 import {useTracts} from "@/app/hooks/Tracts.ts"
-
 import {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 import {CanvasLayout, TRIGGER_NODE_ID} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractRun} from "@/processes/Tracts.ts"

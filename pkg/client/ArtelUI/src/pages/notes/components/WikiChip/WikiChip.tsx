@@ -1,4 +1,5 @@
 import { useId } from "react"
+
 import cls from "./WikiChip.module.css"
 
 interface WikiChipProps {

@@ -1,9 +1,10 @@
 import {useState} from "react"
 import {createPortal} from "react-dom"
+import {Button, CheckmarkIcon} from "@vervstack/chures"
+
 import cls from "@/dialogs/FastSetupDialog/FastSetupDialog.module.css"
 import {PromptsAPI, PromptId} from "@/app/api/artel/prompts.pb.ts"
 import useUser from "@/hooks/user/User.ts"
-import {Button, CheckmarkIcon} from "@vervstack/chures"
 import {cn} from "@/app/utils/cn"
 
 interface Props {

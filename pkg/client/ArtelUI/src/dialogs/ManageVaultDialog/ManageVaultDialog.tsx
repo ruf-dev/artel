@@ -1,12 +1,10 @@
 import {useState} from "react"
+import {Button, ModalClose} from "@vervstack/chures"
 
 import cls from "@/dialogs/ManageVaultDialog/ManageVaultDialog.module.css"
-
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import useUser from "@/hooks/user/User.ts"
-import {Button, ModalClose} from "@vervstack/chures"
 import ManageVaultS3Section, {S3LinkPatch} from "@/components/ManageVaultS3Section/ManageVaultS3Section.tsx"
-
 import MembersSection from "@/dialogs/ManageVaultDialog/widgets/MembersSection/MembersSection.tsx"
 import InviteLinksSection from "@/dialogs/ManageVaultDialog/widgets/InviteLinksSection/InviteLinksSection.tsx"
 import VaultDangerZone from "@/widgets/VaultDangerZone/VaultDangerZone.tsx"

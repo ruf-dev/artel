@@ -1,7 +1,9 @@
-import cls from "./TopbarNav.module.css"
-import {Path} from "@/app/routing/Router.tsx"
 import {NavLink} from "react-router-dom"
+
+import {Path} from "@/app/routing/Router.tsx"
 import useUser from "@/hooks/user/User.ts"
+
+import cls from "./TopbarNav.module.css"
 
 export default function TopbarNav() {
     const {isNotesEnabled} = useUser()

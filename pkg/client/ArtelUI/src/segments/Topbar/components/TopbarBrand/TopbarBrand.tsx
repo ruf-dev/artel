@@ -1,5 +1,6 @@
-import cls from "./TopbarBrand.module.css"
 import {Path} from "@/app/routing/Router.tsx"
+
+import cls from "./TopbarBrand.module.css"
 export default function TopbarBrand() {
     return (
         <a className={cls.Brand} href={Path.HomePage} aria-label="Artel home">

@@ -1,7 +1,8 @@
 import {useEffect} from "react"
+import {ModalClose} from "@vervstack/chures"
+
 import cls from "@/pages/segments/Dialog.module.css"
 import {useDialog} from "@/app/hooks/Dialog"
-import {ModalClose} from "@vervstack/chures"
 
 export default function Dialog() {
     const {children, closable, CloseDialog} = useDialog()

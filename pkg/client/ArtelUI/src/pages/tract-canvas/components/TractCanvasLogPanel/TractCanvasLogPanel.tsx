@@ -1,11 +1,11 @@
 import {useEffect, useState} from "react"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.module.css"
-
 import {TractRun, TractRunStep} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {ChevronRightIcon, CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
-import {Button} from "@vervstack/chures"
+import {cn} from "@/app/utils/cn.ts"
 
 interface Props {
     open: boolean
@@ -27,22 +27,22 @@ export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSele
             {open && enlarged && (
                 <div className={cls.Backdrop} onClick={() => setEnlarged(false)}/>
             )}
-            <div className={`${cls.Panel}${open ? ` ${cls.PanelOpen}` : ""}${open && enlarged ? ` ${cls.Enlarged}` : ""}`}>
+            <div className={cn(cls.Panel, open && cls.PanelOpen, open && enlarged && cls.Enlarged)}>
                 <LogPanelBar enlarged={enlarged} onToggleEnlarge={() => setEnlarged(e => !e)} onClose={onClose}/>
                 <div className={cls.Split}>
                     <div className={cls.RunList}>
                         {runs.length === 0 && <p className={cls.Empty}>No runs yet.</p>}
                         {runs.map(r => (
-                            <button
+                            <Button
                                 key={r.uuid}
-                                type="button"
-                                className={`${cls.RunRow} ${r.uuid === selectedRunUuid ? cls.RunRowSelected : ""}`}
+                                variant="ghost"
+                                className={cn(cls.RunRow, r.uuid === selectedRunUuid && cls.RunRowSelected)}
                                 onClick={() => onSelectRun(r.uuid)}
                             >
-                                <span className={`${cls.Dot} ${dotClass(r.status, cls)}`}/>
+                                <span className={cn(cls.Dot, dotClass(r.status, cls))}/>
                                 <span className={cls.RunMeta}>{r.startedBy}</span>
                                 <span className={cls.RunMeta}>{formatDate(r.createdAt)}</span>
-                            </button>
+                            </Button>
                         ))}
                     </div>
                     <div className={cls.LogScroll}>
@@ -68,7 +68,7 @@ function LogPanelBar({enlarged, onToggleEnlarge, onClose}: {
                 aria-label={enlarged ? "Shrink log panel" : "Enlarge log panel"}
                 aria-pressed={enlarged}
             >
-                <ChevronRightIcon className={`${cls.EnlargeChevron} ${enlarged ? cls.EnlargeChevronOpen : ""}`}/>
+                <ChevronRightIcon className={cn(cls.EnlargeChevron, enlarged && cls.EnlargeChevronOpen)}/>
             </Button>
             <span className={cls.BarLabel}>Runs</span>
             <Button variant="iconDanger" onClick={onClose} aria-label="Close log">
@@ -150,7 +150,7 @@ function RunLog({runUuid}: { runUuid: string }) {
             {lines.map(l => (
                 <div className={cls.Line} key={l.key}>
                     <span className={cls.LineT}>{l.t}</span>
-                    <span className={`${cls.LineM} ${cls[`LineM${cap(l.kind)}`]}`}>{l.msg}</span>
+                    <span className={cn(cls.LineM, cls[`LineM${cap(l.kind)}`])}>{l.msg}</span>
                 </div>
             ))}
         </>

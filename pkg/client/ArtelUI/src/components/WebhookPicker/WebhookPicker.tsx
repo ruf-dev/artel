@@ -1,8 +1,7 @@
 import {useState} from "react"
-
 import {Button} from "@vervstack/chures"
-import cls from "@/components/WebhookPicker/WebhookPicker.module.css"
 
+import cls from "@/components/WebhookPicker/WebhookPicker.module.css"
 import {categoryLabel} from "@/components/TriggerPanel/triggerLabels.ts"
 import {useTriggerSources} from "@/app/hooks/Tracts.ts"
 

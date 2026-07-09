@@ -1,5 +1,4 @@
 import cls from "@/pages/tract-canvas/components/OutputFields/OutputFields.module.css"
-
 import {SchemaNode} from "@/processes/Tracts.ts"
 import {cn} from "@/app/utils/cn.ts"
 

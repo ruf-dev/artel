@@ -1,14 +1,17 @@
-import cls from "./TopbarThemeToggle.module.css"
+import {Button} from "@vervstack/chures"
+
 import {useTheme} from "@/app/hooks/useTheme"
+
+import cls from "./TopbarThemeToggle.module.css"
 
 export default function TopbarThemeToggle() {
     const {theme, toggleTheme} = useTheme()
     const isLight = theme === "light"
 
     return (
-        <button
+        <Button
+            variant="ghost"
             className={cls.ThemeToggle}
-            type="button"
             aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
             onClick={toggleTheme}
         >
@@ -31,6 +34,6 @@ export default function TopbarThemeToggle() {
                     <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
                 </svg>
             )}
-        </button>
+        </Button>
     )
 }

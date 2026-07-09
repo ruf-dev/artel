@@ -1,21 +1,17 @@
 import {useEffect, useMemo, useState} from "react"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.module.css"
-
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import TractBlockPicker from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx"
 import {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
-
 import TractCanvasTopBar from "@/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx"
 import TractCanvasArea from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx"
 import TractCanvasInspector from "@/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.tsx"
 import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
 import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts"
 import RunTractDialog from "@/components/RunTractDialog/RunTractDialog.tsx"
-
 import {buildStepFromDraft, collectAllStepIds, insertBlockAfter, Location} from "@/processes/tractSteps.ts"
 import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"

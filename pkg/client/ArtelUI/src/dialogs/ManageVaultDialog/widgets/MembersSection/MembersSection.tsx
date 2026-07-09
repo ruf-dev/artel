@@ -1,10 +1,8 @@
 import {useEffect, useState} from "react"
 
 import cls from "@/dialogs/ManageVaultDialog/widgets/MembersSection/MembersSection.module.css"
-
 import {useVaultMutations, VaultMemberInfo} from "@/app/hooks/Vaults.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import MemberRow from "@/dialogs/ManageVaultDialog/components/MemberRow/MemberRow.tsx"
 
 interface Props {

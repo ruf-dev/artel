@@ -1,3 +1,8 @@
+
+import { Button } from "@vervstack/chures"
+
+import { cn } from "@/app/utils/cn"
+
 import cls from "./ModeBar.module.css"
 
 type Mode = 'edit' | 'preview' | 'read'
@@ -17,13 +22,14 @@ export default function ModeBar({ active, onModeChange }: ModeBarProps) {
     return (
         <div className={cls.ModeBarContainer}>
             {MODES.map(({ key, label }) => (
-                <button
+                <Button
                     key={key}
-                    className={`${cls.Tab}${active === key ? ` ${cls.TabActive}` : ""}`}
+                    variant="ghost"
+                    className={cn(cls.Tab, active === key && cls.TabActive)}
                     onClick={() => onModeChange(key)}
                 >
                     {label}
-                </button>
+                </Button>
             ))}
         </div>
     )

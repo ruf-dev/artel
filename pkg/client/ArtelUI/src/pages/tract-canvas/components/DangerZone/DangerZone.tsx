@@ -1,10 +1,9 @@
-import cls from "@/pages/tract-canvas/components/DangerZone/DangerZone.module.css"
+import {Button, ConfirmDialog} from "@vervstack/chures"
 
+import cls from "@/pages/tract-canvas/components/DangerZone/DangerZone.module.css"
 import {TractStep} from "@/processes/Tracts.ts"
 import {hasChildren, Location, removeStepAt} from "@/processes/tractSteps.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-
-import {Button, ConfirmDialog} from "@vervstack/chures"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 
 interface Props {

@@ -1,11 +1,10 @@
-import cls from "@/pages/tract-canvas/components/ConditionBody/ConditionBody.module.css"
+import {Button} from "@vervstack/chures"
 
+import cls from "@/pages/tract-canvas/components/ConditionBody/ConditionBody.module.css"
 import {SchemaNode, TractCondition, TractStep, TractTool} from "@/processes/Tracts.ts"
 import {Location, replaceStep} from "@/processes/tractSteps.ts"
 import {buildSources} from "@/pages/tract-canvas/processes/inspectorSources.ts"
 import {cn} from "@/app/utils/cn.ts"
-
-import {Button} from "@vervstack/chures"
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
 import {CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"

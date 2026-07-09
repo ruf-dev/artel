@@ -1,6 +1,6 @@
-import cls from "@/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.module.css"
-
 import {Button} from "@vervstack/chures"
+
+import cls from "@/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.module.css"
 import RunStatusBadge from "@/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx"
 import RunButton from "@/pages/tract-canvas/components/RunButton/RunButton.tsx"
 

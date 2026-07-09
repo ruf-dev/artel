@@ -1,10 +1,10 @@
 import {useEffect} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/closed-alpha/ClosedAlphaPage.module.css"
 import {Path} from "@/app/routing/Router.tsx"
 import useUser from "@/hooks/user/User.ts"
-import {Button} from "@vervstack/chures"
 
 export default function ClosedAlphaPage() {
     const navigate = useNavigate()

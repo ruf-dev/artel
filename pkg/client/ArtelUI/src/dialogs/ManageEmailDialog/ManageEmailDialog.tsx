@@ -1,8 +1,7 @@
 import {useState, useRef, useEffect} from "react"
-
 import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/dialogs/ManageEmailDialog/ManageEmailDialog.module.css"
 
+import cls from "@/dialogs/ManageEmailDialog/ManageEmailDialog.module.css"
 import {
     AddEmailConnectionRequest,
     ExternalConnectionInfo,
@@ -13,9 +12,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
-
 import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
-
 import Input from "@/components/shared/Input/Input.tsx"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 

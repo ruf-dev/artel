@@ -1,9 +1,8 @@
-import cls from "@/pages/tract-canvas/components/ParallelBody/ParallelBody.module.css"
+import {Button} from "@vervstack/chures"
 
+import cls from "@/pages/tract-canvas/components/ParallelBody/ParallelBody.module.css"
 import {TractStep} from "@/processes/Tracts.ts"
 import {Location} from "@/processes/tractSteps.ts"
-
-import {Button} from "@vervstack/chures"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 
 interface Props {

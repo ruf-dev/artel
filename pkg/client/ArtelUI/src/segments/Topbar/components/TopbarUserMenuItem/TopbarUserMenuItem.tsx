@@ -1,4 +1,6 @@
 import {ReactNode} from "react"
+import {Button} from "@vervstack/chures"
+
 import cls from "./TopbarUserMenuItem.module.css"
 
 interface TopbarUserMenuItemProps {
@@ -10,14 +12,14 @@ interface TopbarUserMenuItemProps {
 
 export default function TopbarUserMenuItem({icon, label, onClick, danger}: TopbarUserMenuItemProps) {
     return (
-        <button
+        <Button
+            variant="ghost"
             className={danger ? `${cls.MenuItem} ${cls.MenuItemDanger}` : cls.MenuItem}
             role="menuitem"
-            type="button"
             onClick={onClick}
         >
             {icon}
             <span>{label}</span>
-        </button>
+        </Button>
     )
 }

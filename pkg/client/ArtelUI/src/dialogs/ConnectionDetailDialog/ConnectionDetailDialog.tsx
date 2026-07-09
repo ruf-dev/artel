@@ -1,15 +1,12 @@
 import {useState} from "react"
-
 import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.module.css"
 
+import cls from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.module.css"
 import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
-
 import GenericConnectionContent from "@/widgets/GenericConnectionContent/GenericConnectionContent.tsx"
 import GoogleConnectionContent from "@/widgets/GoogleConnectionContent/GoogleConnectionContent.tsx"
 import GoogleSheetsConnectionContent from "@/widgets/GoogleSheetsConnectionContent/GoogleSheetsConnectionContent.tsx"

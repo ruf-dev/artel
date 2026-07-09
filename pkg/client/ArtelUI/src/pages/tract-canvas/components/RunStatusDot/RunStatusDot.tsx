@@ -1,5 +1,4 @@
 import cls from "@/pages/tract-canvas/components/RunStatusDot/RunStatusDot.module.css"
-
 import {cn} from "@/app/utils/cn.ts"
 import {TractLastRun} from "@/processes/Tracts.ts"
 

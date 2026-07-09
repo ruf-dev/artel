@@ -1,13 +1,12 @@
 import {useEffect, useMemo, useState} from "react"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.module.css"
-
 import {TractTool} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-
-import {Button} from "@vervstack/chures"
+import {cn} from "@/app/utils/cn.ts"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
@@ -115,23 +114,23 @@ export default function TractBlockPicker({onConfirm}: Props) {
             />
             {connectedCandidates.length > 0 && (
                 <div className={cls.FilterRow}>
-                    <button
-                        type="button"
-                        className={`${cls.FilterPill} ${!connFilter ? cls.FilterPillActive : ""}`}
+                    <Button
+                        variant="ghost"
+                        className={cn(cls.FilterPill, !connFilter && cls.FilterPillActive)}
                         onClick={() => setConnFilter(null)}
                     >
                         All
-                    </button>
+                    </Button>
                     {connectedCandidates.map(c => (
-                        <button
-                            type="button"
+                        <Button
+                            variant="ghost"
                             key={c.name}
-                            className={`${cls.FilterPill} ${connFilter === c.name ? cls.FilterPillActive : ""}`}
+                            className={cn(cls.FilterPill, connFilter === c.name && cls.FilterPillActive)}
                             onClick={() => setConnFilter(c.name ?? null)}
                         >
                             <span className={cls.FilterPillIcon}><ProviderIcon provider={c.connections?.[0]?.provider}/></span>
                             {c.name}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             )}
@@ -170,7 +169,7 @@ export default function TractBlockPicker({onConfirm}: Props) {
 function LogicCell({option, onSelect}: { option: LogicOption; onSelect: () => void }) {
     const color = colorForKind(option.type)
     return (
-        <button type="button" className={cls.Opt} onClick={onSelect}>
+        <Button variant="ghost" className={cls.Opt} onClick={onSelect}>
             <div className={cls.OptIcon} style={{background: color.bg, borderColor: color.border, color: color.fg}}>
                 <option.Icon/>
             </div>
@@ -178,7 +177,7 @@ function LogicCell({option, onSelect}: { option: LogicOption; onSelect: () => vo
                 <div className={cls.OptName}>{option.name}</div>
                 <div className={cls.OptFn}>{option.desc}</div>
             </div>
-        </button>
+        </Button>
     )
 }
 
@@ -186,7 +185,7 @@ function ToolCell({tool, onSelect}: { tool: TractTool; onSelect: () => void }) {
     const color = colorForKind("action", tool.mcp)
     const Icon = iconForTool(tool.mcp, tool.tool)
     return (
-        <button type="button" className={cls.Opt} onClick={onSelect}>
+        <Button variant="ghost" className={cls.Opt} onClick={onSelect}>
             <div className={cls.OptIcon} style={{background: color.bg, borderColor: color.border, color: color.fg}}>
                 <Icon/>
             </div>
@@ -194,7 +193,7 @@ function ToolCell({tool, onSelect}: { tool: TractTool; onSelect: () => void }) {
                 <div className={cls.OptName}>{tool.tool}</div>
                 <div className={cls.OptFn}>{tool.mcp}.{tool.tool}</div>
             </div>
-        </button>
+        </Button>
     )
 }
 

@@ -1,13 +1,12 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.module.css"
-
 import {useDialog, useDialogKeyboard} from "@/app/hooks/Dialog"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 
-import {Button} from "@vervstack/chures"
 
 export default function NewTractDialog() {
     const {CloseDialog} = useDialog()

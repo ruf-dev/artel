@@ -1,10 +1,8 @@
 import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/tract-canvas/segments/ContentSegment/ContentSegment.module.css"
-
 import {useDialog} from "@/app/hooks/Dialog"
 import {useTracts} from "@/app/hooks/Tracts.ts"
-
 import TractCanvasCard from "@/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.tsx"
 import NewTractButton from "@/pages/tract-canvas/components/NewTractButton/NewTractButton.tsx"
 import NewTractDialog from "@/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.tsx"

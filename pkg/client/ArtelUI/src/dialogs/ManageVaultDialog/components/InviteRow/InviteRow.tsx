@@ -1,8 +1,8 @@
 import {useState} from "react"
 import {Button} from "@vervstack/chures"
+
 import cls from "@/dialogs/ManageVaultDialog/components/InviteRow/InviteRow.module.css"
 import {cn} from "@/app/utils/cn.ts"
-
 import {VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import RoleBadge from "@/dialogs/ManageVaultDialog/components/RoleBadge/RoleBadge.tsx"
 

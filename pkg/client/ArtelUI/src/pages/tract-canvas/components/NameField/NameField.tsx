@@ -1,7 +1,6 @@
 import {useState} from "react"
 
 import cls from "@/pages/tract-canvas/components/NameField/NameField.module.css"
-
 import {TractStep} from "@/processes/Tracts.ts"
 import {cn} from "@/app/utils/cn.ts"
 

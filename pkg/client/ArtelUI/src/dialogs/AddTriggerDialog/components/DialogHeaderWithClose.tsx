@@ -1,6 +1,6 @@
 import {Button} from "@vervstack/chures"
-import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 
+import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 import {useDialog} from "@/app/hooks/Dialog"
 import CloseIcon from "@/icons/common/CloseIcon.tsx"
 

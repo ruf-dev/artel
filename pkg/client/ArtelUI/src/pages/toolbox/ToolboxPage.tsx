@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/toolbox/ToolboxPage.module.css"
-
 import {ImapOperation, ImapToolAction, McpToolInfo, MomCandidate, SmtpOperation, SmtpToolAction, ToolParamDef} from "@/app/api/artel/mcp_keys.pb.ts"
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
@@ -10,7 +10,6 @@ import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-import {Button} from "@vervstack/chures"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 

@@ -2,8 +2,9 @@ import { useMemo } from "react"
 import { marked } from "marked"
 import DOMPurify from "dompurify"
 
-import cls from "./NoteViewer.module.css"
 import WikiChip from "@/pages/notes/components/WikiChip/WikiChip.tsx"
+
+import cls from "./NoteViewer.module.css"
 
 interface NoteViewerProps {
     content: string | null

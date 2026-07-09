@@ -1,12 +1,11 @@
 import {Button} from "@vervstack/chures"
-import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 
+import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {TractCondition, tractsService} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
 import {useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"

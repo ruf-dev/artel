@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+
 import cls from "./SaveStatusIndicator.module.css"
 
 export type SaveStatus = 'idle' | 'dirty' | 'saving' | 'saved' | 'error'

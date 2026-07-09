@@ -1,12 +1,15 @@
 import { useState } from "react"
-import cls from "./NotesSidebar.module.css"
+import {Button} from "@vervstack/chures"
+
 import { NoteItem, useNotes } from "@/app/hooks/Notes.ts"
 import { useDialog } from "@/app/hooks/Dialog.ts"
 import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
 import SearchIcon from "@/pages/notes/components/icons/SearchIcon.tsx"
-import {Button} from "@vervstack/chures"
+
+import cls from "./NotesSidebar.module.css"
+
 
 interface VaultOption {
     id: string
@@ -71,7 +74,8 @@ function TreeItem({ name, subtitle, active, depth = 0, isFolder, isOpen, onClick
                 {subtitle && <span className={cls.TreeItemSubtitle}>{subtitle}</span>}
             </div>
             {isFolder && (
-                <button
+                <Button
+                    variant="ghost"
                     className={cls.FolderAddBtn}
                     onClick={e => { e.stopPropagation(); onAddInFolder?.() }}
                     title="New note here"
@@ -79,7 +83,7 @@ function TreeItem({ name, subtitle, active, depth = 0, isFolder, isOpen, onClick
                     <svg viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
                         <path d="M6 1v10M1 6h10" />
                     </svg>
-                </button>
+                </Button>
             )}
         </div>
     )

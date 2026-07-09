@@ -1,8 +1,8 @@
 import {useState, useEffect} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button, ModalClose} from "@vervstack/chures"
 
 import cls from "@/pages/mcp-keys/McpKeysPage.module.css"
-
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
@@ -10,8 +10,6 @@ import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import useUser from "@/hooks/user/User.ts"
-
-import {Button, ModalClose} from "@vervstack/chures"
 import FormField from "@/components/FormField/FormField.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import ManageKeyDialog from "@/dialogs/ManageKeyDialog/ManageKeyDialog.tsx"

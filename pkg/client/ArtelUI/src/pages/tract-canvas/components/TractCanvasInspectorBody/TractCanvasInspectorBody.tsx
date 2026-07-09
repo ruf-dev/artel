@@ -1,12 +1,11 @@
-import cls from "@/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.module.css"
+import {Button} from "@vervstack/chures"
 
+import cls from "@/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.module.css"
 import {CanvasNode} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {SchemaNode, TractStep, TractTool, TractTriggerSummary} from "@/processes/Tracts.ts"
 import {Location} from "@/processes/tractSteps.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {cn} from "@/app/utils/cn.ts"
-
-import {Button} from "@vervstack/chures"
 import {ChevronRightIcon, CloseIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"

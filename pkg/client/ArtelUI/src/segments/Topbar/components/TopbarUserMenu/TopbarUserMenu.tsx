@@ -1,11 +1,14 @@
 import {useEffect, useRef, useState} from "react"
 import {createPortal} from "react-dom"
-import cls from "./TopbarUserMenu.module.css"
-import {Path} from "@/app/routing/Router.tsx"
 import {useNavigate} from "react-router-dom"
+
+import {Path} from "@/app/routing/Router.tsx"
 import useUser from "@/hooks/user/User.ts"
+
 import TopbarUserMenuPill from "../TopbarUserMenuPill/TopbarUserMenuPill.tsx"
 import TopbarUserMenuList from "../TopbarUserMenuList/TopbarUserMenuList.tsx"
+
+import cls from "./TopbarUserMenu.module.css"
 
 interface MenuRect {
     top: number

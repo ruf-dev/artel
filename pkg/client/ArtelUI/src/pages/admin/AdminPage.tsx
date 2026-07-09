@@ -1,16 +1,14 @@
 import {useState, useEffect, useCallback} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
 
 import cls from "@/pages/admin/AdminPage.module.css"
-
 import {AdminCouchAPI, CouchUserEntry} from "@/app/api/artel/admin_couch.pb.ts"
 import {AdminUsersAPI, ArtelUserEntry, ArtelUserDetails, UserSession} from "@/app/api/artel/admin_users.pb.ts"
 import {CouchInstancesAPI, GetCouchInstanceResponse, GetCouchInstanceStatusResponse} from "@/app/api/artel/couch_instances.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
-
-import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
 import FormField from "@/components/FormField/FormField.tsx"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import S3InstancesTab from "@/widgets/S3InstancesTab/S3InstancesTab.tsx"
@@ -75,18 +73,18 @@ function TabBar({tab, onTabChange}: {tab: Tab; onTabChange: (t: Tab) => void}) {
     const s3InstancesCls = tab === "s3_instances" ? `${cls.Tab} ${cls.TabActive}` : cls.Tab
     return (
         <div className={cls.TabBar}>
-            <button type="button" className={instancesCls} onClick={() => onTabChange("instances")}>
+            <Button variant="ghost" className={instancesCls} onClick={() => onTabChange("instances")}>
                 Instances
-            </button>
-            <button type="button" className={couchUsersCls} onClick={() => onTabChange("couch_users")}>
+            </Button>
+            <Button variant="ghost" className={couchUsersCls} onClick={() => onTabChange("couch_users")}>
                 CouchUsers
-            </button>
-            <button type="button" className={usersCls} onClick={() => onTabChange("users")}>
+            </Button>
+            <Button variant="ghost" className={usersCls} onClick={() => onTabChange("users")}>
                 Users
-            </button>
-            <button type="button" className={s3InstancesCls} onClick={() => onTabChange("s3_instances")}>
+            </Button>
+            <Button variant="ghost" className={s3InstancesCls} onClick={() => onTabChange("s3_instances")}>
                 S3 storage
-            </button>
+            </Button>
         </div>
     )
 }

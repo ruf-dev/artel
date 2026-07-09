@@ -3,7 +3,6 @@ import {useNavigate, useParams} from "react-router-dom"
 import {Button, Loader} from "@vervstack/chures"
 
 import cls from "@/pages/join/JoinVaultPage.module.css"
-
 import {useVaultMutations} from "@/app/hooks/Vaults.ts"
 import useUser from "@/hooks/user/User.ts"
 import {Path, REDIRECT_AFTER_LOGIN_KEY} from "@/app/routing/Router.tsx"

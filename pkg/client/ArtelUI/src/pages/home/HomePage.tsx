@@ -1,13 +1,11 @@
 import {useState, useEffect} from "react"
+import {Button, ModalClose, InfoDialog} from "@vervstack/chures"
 
 import cls from "@/pages/home/HomePage.module.css"
-
 import {useDialog} from "@/app/hooks/Dialog"
 import {useVaults, useVaultMutations} from "@/app/hooks/Vaults.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
-
-import {Button, ModalClose, InfoDialog} from "@vervstack/chures"
 import VaultCard from "@/widgets/VaultCard/VaultCard.tsx"
 import FormField from "@/components/FormField/FormField.tsx"
 import ManageVaultDialog from "@/dialogs/ManageVaultDialog/ManageVaultDialog.tsx"

@@ -1,15 +1,13 @@
 import {useEffect} from "react"
 import {useNavigate, useParams} from "react-router-dom"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/TractCanvasBuilderPage.module.css"
-
 import {Path} from "@/app/routing/Router.tsx"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import useUser from "@/hooks/user/User.ts"
-
-import {Button} from "@vervstack/chures"
 import TractCanvasBuilder from "@/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx"
 
 export default function TractCanvasBuilderPage() {

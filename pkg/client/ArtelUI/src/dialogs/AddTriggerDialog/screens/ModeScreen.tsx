@@ -1,6 +1,6 @@
 import {Button} from "@vervstack/chures"
-import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 
+import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"

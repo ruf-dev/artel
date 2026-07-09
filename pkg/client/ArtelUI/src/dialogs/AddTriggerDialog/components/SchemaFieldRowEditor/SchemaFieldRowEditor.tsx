@@ -1,7 +1,7 @@
 import {type ReactNode} from "react"
 import {Button} from "@vervstack/chures"
-import cls from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.module.css"
 
+import cls from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {SchemaProperty} from "@/processes/Tracts.ts"
 import {emptySchemaField, FIELD_TYPES, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"

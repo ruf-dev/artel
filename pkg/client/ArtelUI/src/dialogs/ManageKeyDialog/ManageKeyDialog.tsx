@@ -1,16 +1,14 @@
 import {useState, useEffect, type ReactNode} from "react"
 import {useNavigate} from "react-router-dom"
-
 import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
-import cls from "@/dialogs/ManageKeyDialog/ManageKeyDialog.module.css"
 
+import cls from "@/dialogs/ManageKeyDialog/ManageKeyDialog.module.css"
 import {McpKeyInfo, McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
-
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import ConnectorChip from "@/components/ConnectorChip/ConnectorChip.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
@@ -278,12 +276,12 @@ function ConnectionOptionList({available, selectedId, onSelect}: {
             {available.length === 0 && (
                 <p className={cls.Empty}>
                     No connections yet.{" "}
-                    <button className={cls.LinkBtn} type="button"
+                    <Button variant="ghost" className={cls.LinkBtn}
                             onClick={() => {
                                 CloseDialog();
                                 navigate(Path.ConnectionsPage)
                             }}>Set one up
-                    </button>
+                    </Button>
                 </p>
             )}
         </div>
@@ -354,12 +352,12 @@ function MomCandidateCard(
     }) {
     const count = candidate.connections?.length ?? 0
     return (
-        <button
+        <Button
+            variant="ghost"
             className={cls.EntityCard}
             onClick={onSelect}
             disabled={connected}
             title={connected ? "Already connected" : undefined}
-            type="button"
         >
             <div className={cls.MomCardHeader}>
                 <span className={cls.EntityCardTitle}>{candidate.name}</span>
@@ -368,7 +366,7 @@ function MomCandidateCard(
                 </span>
             </div>
             {candidate.description && <span className={cls.EntityCardDesc}>{candidate.description}</span>}
-        </button>
+        </Button>
     )
 }
 

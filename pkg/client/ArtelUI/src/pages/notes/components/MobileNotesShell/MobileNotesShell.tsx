@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import cls from "./MobileNotesShell.module.css"
+import {Button} from "@vervstack/chures"
+
 import { NoteMode, useNotes } from "@/app/hooks/Notes.ts"
 import { useDialog } from "@/app/hooks/Dialog.ts"
 import { useBakeError } from "@/app/hooks/useErrorToast.ts"
@@ -9,9 +10,10 @@ import NoteEditor from "@/pages/notes/components/NoteEditor/NoteEditor.tsx"
 import NoteViewer from "@/pages/notes/components/NoteViewer/NoteViewer.tsx"
 import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
-import {Button} from "@vervstack/chures"
 import ArtelLogoIcon from "@/pages/notes/components/icons/ArtelLogoIcon.tsx"
 import CloseIcon from "@/pages/notes/components/icons/CloseIcon.tsx"
+
+import cls from "./MobileNotesShell.module.css"
 
 interface VaultOption {
     id: string
@@ -67,30 +69,30 @@ function MobileTopBar({ selectedPath, noteContent, sidebarOpen, onHamburgerClick
 
     return (
         <div className={cls.TopBarContainer}>
-            <button type="button" className={hamburgerClass} onClick={onHamburgerClick} aria-label="Open sidebar">
+            <Button variant="ghost" className={hamburgerClass} onClick={onHamburgerClick} aria-label="Open sidebar">
                 <svg viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
                     <path d="M3 4.5h12M3 9h8M3 13.5h10" />
                 </svg>
-            </button>
+            </Button>
             <div className={cls.NoteInfoColumn}>
                 <div className={cls.NoteTitle}>{title}</div>
                 {meta && <div className={cls.NoteMeta}>{meta}</div>}
             </div>
-            <button type="button" className={cls.ActionBtn} aria-label="Share">
+            <Button variant="ghost" className={cls.ActionBtn} aria-label="Share">
                 <svg viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <circle cx="14" cy="3.5" r="1.8" />
                     <circle cx="4" cy="9" r="1.8" />
                     <circle cx="14" cy="14.5" r="1.8" />
                     <path d="M5.7 10l6.5 3.3M12.2 4.7L5.7 8" />
                 </svg>
-            </button>
-            <button type="button" className={cls.ActionBtn} aria-label="More options">
+            </Button>
+            <Button variant="ghost" className={cls.ActionBtn} aria-label="More options">
                 <svg viewBox="0 0 18 18" width={16} height={16} fill="currentColor">
                     <circle cx="9" cy="4" r="1.4" />
                     <circle cx="9" cy="9" r="1.4" />
                     <circle cx="9" cy="14" r="1.4" />
                 </svg>
-            </button>
+            </Button>
         </div>
     )
 }

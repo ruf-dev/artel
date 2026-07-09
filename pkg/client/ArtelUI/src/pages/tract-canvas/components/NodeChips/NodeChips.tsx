@@ -1,5 +1,4 @@
 import cls from "@/pages/tract-canvas/components/NodeChips/NodeChips.module.css"
-
 import {CanvasNode} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
@@ -46,7 +45,7 @@ export default function NodeChips({node, tools, triggerInfo, momCandidates}: {
 
     const candidate = momCandidates.find(c => c.name === step.mcp)
     const connection = candidate?.connections?.find(c => c.id === step.connection_uuid)
-    if (!connection) return <span className={`${cls.Chip} ${cls.ChipWarn}`}>no connection</span>
+    if (!connection) return <span className={cn(cls.Chip, cls.ChipWarn)}>no connection</span>
 
     return (
         <span className={cn(cls.Chip, cls.ChipConn)}>

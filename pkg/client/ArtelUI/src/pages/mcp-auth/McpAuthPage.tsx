@@ -1,8 +1,8 @@
 import {useEffect, useRef, useState} from "react"
 import {useSearchParams} from "react-router-dom"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/init/InitPage.module.css"
-
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import useUser from "@/hooks/user/User.ts"
 import {AuthAPI} from "@/app/api/artel"
@@ -241,12 +241,13 @@ function VaultSelect({botId, vaults, sessionToken, clientId, redirectUri, codeCh
             </p>
             {error && <div className={cls.Error}>{error}</div>}
             <VaultList vaults={vaults} loading={loading} onSelect={selectVault}/>
-            <button
+            <Button
+                variant="ghost"
                 onClick={switchAccount}
                 style={{background: "none", border: "none", color: "var(--thirdy-fg-color)", fontSize: "var(--font-size-sm)", cursor: "pointer", padding: 0}}
             >
                 Use a different account
-            </button>
+            </Button>
         </div>
     )
 }
@@ -263,14 +264,15 @@ function VaultList({vaults, loading, onSelect}: {vaults: Vault[]; loading: boole
         <div className={cls.VaultList}>
             {vaults.map(function (v) {
                 return (
-                    <button
+                    <Button
                         key={v.id}
+                        variant="ghost"
                         className={cls.SubmitBtn}
                         disabled={loading}
                         onClick={function () { onSelect(v.id) }}
                     >
                         {v.name}
-                    </button>
+                    </Button>
                 )
             })}
         </div>

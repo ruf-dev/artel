@@ -1,10 +1,10 @@
-import cls from "@/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.module.css"
+import {Button, ConfirmDialog} from "@vervstack/chures"
 
+import cls from "@/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.module.css"
 import {Tract} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import {
     ChevronRightIcon,
     ManualTriggerIcon,
@@ -12,8 +12,6 @@ import {
     WebhookIcon
 } from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import RunStatusDot from "@/pages/tract-canvas/components/RunStatusDot/RunStatusDot.tsx"
-
-import {Button, ConfirmDialog} from "@vervstack/chures"
 import {cn} from "@/app/utils/cn.ts";
 
 interface Props {
@@ -56,7 +54,7 @@ export default function TractCanvasCard({tract, onClick}: Props) {
             role="button"
             tabIndex={0}
         >
-            <div className={`${cls.IconWrap} ${isWebhook ? cls.IconWebhook : cls.IconManual}`}>
+            <div className={cn(cls.IconWrap, isWebhook ? cls.IconWebhook : cls.IconManual)}>
                 {isWebhook ? <WebhookIcon/> : <ManualTriggerIcon/>}
             </div>
             <div className={cls.Info}>

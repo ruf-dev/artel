@@ -1,6 +1,6 @@
 import {Button} from "@vervstack/chures"
-import cls from "@/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.module.css"
 
+import cls from "@/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {SchemaProperty} from "@/processes/Tracts.ts"
 import {FIELD_TYPES} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"

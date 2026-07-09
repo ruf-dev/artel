@@ -1,7 +1,5 @@
 import cls from "@/pages/tract-canvas/components/GroupBody/GroupBody.module.css"
-
 import {SchemaNode, TractStep, TractTool} from "@/processes/Tracts.ts"
-
 import TractStepTree from "@/components/TractStepTree/TractStepTree.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 

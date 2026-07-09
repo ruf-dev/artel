@@ -1,10 +1,8 @@
 import cls from "@/pages/tract-canvas/components/ActionBody/ActionBody.module.css"
-
 import {SchemaNode, TractStep, TractTool} from "@/processes/Tracts.ts"
 import {replaceStep} from "@/processes/tractSteps.ts"
 import {buildSources} from "@/pages/tract-canvas/processes/inspectorSources.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
-
 import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"

@@ -2,7 +2,6 @@ import {type ReactNode, useEffect, useState} from "react"
 
 import {TractCondition} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
-
 import {
     AddTriggerDialogContext,
     AddTriggerDialogState,

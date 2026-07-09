@@ -1,11 +1,10 @@
 import {Button} from "@vervstack/chures"
-import cls from "@/components/TriggerPanel/TriggerRow.module.css"
 
+import cls from "@/components/TriggerPanel/TriggerRow.module.css"
 import {Trigger} from "@/processes/Tracts.ts"
 import {providerLabel, triggerChipLabel} from "@/components/TriggerPanel/triggerLabels.ts"
 import {useTriggerSources} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-
 import WebhookDetailsDialog from "@/dialogs/WebhookDetailsDialog/WebhookDetailsDialog.tsx"
 
 export default function TriggerRow({trigger, onUnlink}: {

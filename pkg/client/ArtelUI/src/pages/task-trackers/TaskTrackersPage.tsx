@@ -1,15 +1,14 @@
 import {useState, useEffect} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button, ModalClose, CheckmarkIcon} from "@vervstack/chures"
 
 import cls from "@/pages/task-trackers/TaskTrackersPage.module.css"
-
 import {TaskTrackerInfo, TrelloBoardInfo} from "@/app/api/artel/task_trackers.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useTaskTrackers} from "@/app/hooks/TaskTrackers.ts"
 import useUser from "@/hooks/user/User.ts"
 
-import {Button, ModalClose, CheckmarkIcon} from "@vervstack/chures"
 
 export default function TaskTrackersPage() {
     const navigate = useNavigate()
@@ -163,10 +162,10 @@ function ChooseTypeStep({onChooseTrello, onClose}: {
 function TypeGrid({onChooseTrello}: {onChooseTrello: () => void}) {
     return (
         <div className={cls.TypeGrid}>
-            <button className={cls.TypeCard} onClick={onChooseTrello} type="button">
+            <Button variant="ghost" className={cls.TypeCard} onClick={onChooseTrello}>
                 <div className={cls.TypeCardIcon}>T</div>
                 <TypeCardText label="Trello" desc="Connect via API key and token"/>
-            </button>
+            </Button>
         </div>
     )
 }

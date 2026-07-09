@@ -1,7 +1,9 @@
 import { useState } from "react"
-import cls from "./RenameDialog.module.css"
-import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
 import { Button } from "@vervstack/chures"
+
+import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
+
+import cls from "./RenameDialog.module.css"
 
 function ensureExtension(path: string): string {
     const filename = path.split("/").pop() ?? path

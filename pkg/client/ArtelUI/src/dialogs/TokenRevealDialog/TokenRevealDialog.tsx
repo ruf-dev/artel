@@ -1,8 +1,7 @@
 import {useState} from "react"
-
 import {Button} from "@vervstack/chures"
-import cls from "@/dialogs/TokenRevealDialog/TokenRevealDialog.module.css"
 
+import cls from "@/dialogs/TokenRevealDialog/TokenRevealDialog.module.css"
 import {useDialog} from "@/app/hooks/Dialog"
 
 export default function TokenRevealDialog({webhookUrl, webhookToken}: { webhookUrl: string; webhookToken: string }) {

@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react"
-import cls from "./CreateNoteDialog.module.css"
-import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
 import { Button } from "@vervstack/chures"
+
+import { useDialog, useDialogKeyboard } from "@/app/hooks/Dialog"
+import { cn } from "@/app/utils/cn"
+
+import cls from "./CreateNoteDialog.module.css"
 
 function ensureExtension(path: string): string {
     const filename = path.split("/").pop() ?? path
@@ -18,13 +21,14 @@ function SuggestionList({ suggestions, highlightedIdx, onSelect }: SuggestionLis
     return (
         <div className={cls.SuggestionsDropdown}>
             {suggestions.map((s, i) => (
-                <button
+                <Button
                     key={s}
-                    className={`${cls.SuggestionItem}${i === highlightedIdx ? ` ${cls.SuggestionItemHighlighted}` : ""}`}
+                    variant="ghost"
+                    className={cn(cls.SuggestionItem, i === highlightedIdx && cls.SuggestionItemHighlighted)}
                     onMouseDown={e => { e.preventDefault(); onSelect(s) }}
                 >
                     {s}
-                </button>
+                </Button>
             ))}
         </div>
     )

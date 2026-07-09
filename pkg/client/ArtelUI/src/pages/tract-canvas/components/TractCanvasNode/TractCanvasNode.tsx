@@ -1,8 +1,9 @@
-import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.module.css"
+import {Button} from "@vervstack/chures"
 
+import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.module.css"
+import {cn} from "@/app/utils/cn.ts"
 import {CanvasNode, NODE_HEIGHT, NODE_WIDTH} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {TractTool} from "@/processes/Tracts.ts"
-import {Button} from "@vervstack/chures"
 import {PlusIcon} from "@/pages/tract-canvas/components/TractIcons/TractIcons.tsx"
 import {colorForKind} from "@/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
@@ -33,7 +34,7 @@ export default function TractCanvasNode(
 
     return (
         <div
-            className={`${cls.Node} ${selected ? cls.Selected : ""} ${node.kind === "trigger" ? cls.TriggerNode : ""}`}
+            className={cn(cls.Node, selected && cls.Selected, node.kind === "trigger" && cls.TriggerNode)}
             style={{left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT}}
             data-tract-node
             onClick={e => {
@@ -43,7 +44,7 @@ export default function TractCanvasNode(
             role="button"
             tabIndex={0}
         >
-            <span className={`${cls.StatusDot} ${cls[`Status${cap(status)}`]}`}/>
+            <span className={cn(cls.StatusDot, cls[`Status${cap(status)}`])}/>
 
             <div className={cls.Head}>
                 <div className={cls.IconBox}

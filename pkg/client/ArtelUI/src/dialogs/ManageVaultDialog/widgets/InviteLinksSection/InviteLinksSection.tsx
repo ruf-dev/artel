@@ -1,12 +1,10 @@
 import {useEffect, useState} from "react"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/dialogs/ManageVaultDialog/widgets/InviteLinksSection/InviteLinksSection.module.css"
-
-import {Button} from "@vervstack/chures"
 import {useVaultMutations, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-
 import InviteRow from "@/dialogs/ManageVaultDialog/components/InviteRow/InviteRow.tsx"
 import CreateInviteLinkDialog from "@/dialogs/ManageVaultDialog/components/CreateInviteLinkDialog/CreateInviteLinkDialog.tsx"
 
