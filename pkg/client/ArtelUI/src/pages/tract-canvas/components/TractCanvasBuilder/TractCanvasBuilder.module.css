@@ -21,8 +21,8 @@
 .WarningRow {
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
-    background: rgba(245,158,11,0.10);
-    border: 1px solid rgba(245,158,11,0.28);
+    background: rgb(245 158 11 / 10%);
+    border: 1px solid rgb(245 158 11 / 28%);
     color: var(--color-warning);
     font-size: 0.8125rem;
 }

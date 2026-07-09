@@ -36,7 +36,7 @@
                 width: 0.875rem;
                 height: 0.875rem;
                 border-radius: 50%;
-                border: 1px solid currentColor;
+                border: 1px solid currentcolor;
                 background: transparent;
                 color: var(--color-fg-tertiary);
                 font-size: 0.5rem;

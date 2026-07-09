@@ -13,7 +13,7 @@
     font-family: inherit;
     text-align: left;
 
-    &:hover { border-color: var(--coral); background: rgba(255,75,62,0.06); }
+    &:hover { border-color: var(--coral); background: rgb(255 75 62 / 6%); }
 
     &:disabled {
         cursor: not-allowed;

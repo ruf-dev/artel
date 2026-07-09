@@ -16,7 +16,7 @@
     background: var(--color-bg-card);
     border: 1px solid var(--color-border-light);
     border-radius: 1.25rem;
-    box-shadow: 0 32px 80px -20px rgba(0,0,0,0.8);
+    box-shadow: 0 32px 80px -20px rgb(0 0 0 / 80%);
     min-width: 18rem;
 }
 
@@ -24,8 +24,8 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    background: rgba(160, 220, 140, 0.15);
-    border: 1px solid rgba(160, 220, 140, 0.35);
+    background: rgb(160 220 140 / 15%);
+    border: 1px solid rgb(160 220 140 / 35%);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -17,8 +17,8 @@
 .OptionRow:hover { background: var(--color-bg-hover); color: var(--color-fg-primary); }
 
 .OptionRowSelected {
-    background: rgba(255,75,62,0.08);
-    border-color: rgba(255,75,62,0.3);
+    background: rgb(255 75 62 / 8%);
+    border-color: rgb(255 75 62 / 30%);
     color: var(--color-fg-primary);
 }
 

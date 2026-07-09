@@ -4,7 +4,7 @@
     .Backdrop {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.35);
+        background: rgb(0 0 0 / 35%);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
     }
@@ -29,11 +29,11 @@
             inset: 0;
             left: auto;
             width: 80%;
-            box-shadow: -2rem 0 4rem -1.5rem rgba(0, 0, 0, 0.5);
+            box-shadow: -2rem 0 4rem -1.5rem rgb(0 0 0 / 50%);
         }
     }
 }
 
 [data-theme="light"] .TractCanvasInspectorContainer .Backdrop {
-    background: rgba(0, 0, 0, 0.16);
+    background: rgb(0 0 0 / 16%);
 }

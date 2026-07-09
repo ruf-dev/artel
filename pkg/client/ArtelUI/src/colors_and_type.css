@@ -1,9 +1,9 @@
 :root {
   /* ── Coral accent (new primary accent) ─────────────────── */
   --coral:              #FF4B3E;
-  --coral-glow:         rgba(255, 75, 62, 0.35);
-  --coral-dim:          rgba(255, 75, 62, 0.12);
-  --coral-border:       rgba(255, 75, 62, 0.30);
+  --coral-glow:         rgb(255 75 62 / 35%);
+  --coral-dim:          rgb(255 75 62 / 12%);
+  --coral-border:       rgb(255 75 62 / 30%);
 
   /* ── chures package overrides (make its buttons/accents red) ── */
   --chures-accent:       var(--coral);
@@ -12,27 +12,27 @@
   --chures-btn-to:       var(--coral);
 
   /* Backgrounds */
-  --color-bg-base:        #000000;
+  --color-bg-base:        #000;
   --color-bg-secondary:   #0d0d0d;
   --color-bg-accent:      #141414;
   --color-bg-auth:        #0d0d0d;
 
   /* Foregrounds */
-  --color-fg-primary:     rgba(255,255,255,0.92);
-  --color-fg-secondary:   rgba(255,255,255,0.55);
-  --color-fg-tertiary:    rgba(255,255,255,0.32);
+  --color-fg-primary:     rgb(255 255 255 / 92%);
+  --color-fg-secondary:   rgb(255 255 255 / 55%);
+  --color-fg-tertiary:    rgb(255 255 255 / 32%);
   --color-fg-accent:      #FF4B3E;
-  --color-fg-disabled:    rgba(255,255,255,0.18);
+  --color-fg-disabled:    rgb(255 255 255 / 18%);
 
   /* Borders */
-  --color-border:         rgba(255,255,255,0.06);
-  --color-border-light:   rgba(255,255,255,0.11);
-  --color-border-bright:  rgba(255,255,255,0.22);
+  --color-border:         rgb(255 255 255 / 6%);
+  --color-border-light:   rgb(255 255 255 / 11%);
+  --color-border-bright:  rgb(255 255 255 / 22%);
 
   /* Status */
   --color-error:          #c1253d;
   --color-warning:        #ffa500;
-  --color-info:           rgba(255,255,255,0.55);
+  --color-info:           rgb(255 255 255 / 55%);
 
   /* ── Semantic Aliases (keep names, update values) ───────── */
   --main-bg-color:              var(--color-bg-base);
@@ -72,29 +72,29 @@
   /* ── Accent / Glow Variants (coral) ─────────────────────── */
   --color-accent-glow:      var(--coral-glow);
   --color-accent-dim:       var(--coral-dim);
-  --color-accent-dim-hover: rgba(255, 75, 62, 0.18);
-  --color-accent-surface:   rgba(255, 75, 62, 0.07);
+  --color-accent-dim-hover: rgb(255 75 62 / 18%);
+  --color-accent-surface:   rgb(255 75 62 / 7%);
   --color-accent-border:    var(--coral-border);
-  --color-accent-shadow:    rgba(255, 75, 62, 0.20);
+  --color-accent-shadow:    rgb(255 75 62 / 20%);
 
   /* ── Surface Variants ───────────────────────────────────── */
   --color-bg-card:       #0d0d0d;
   --color-bg-elevated:   #141414;
-  --color-bg-input:      #111111;
-  --color-bg-hover:      rgba(255,255,255,0.04);
-  --color-bg-hover-mid:  rgba(255,255,255,0.07);
-  --color-bg-submitted:  rgba(255,255,255,0.08);
-  --color-shadow-deep:   rgba(0,0,0,0.80);
-  --color-shadow-drop:   rgba(0,0,0,0.70);
+  --color-bg-input:      #111;
+  --color-bg-hover:      rgb(255 255 255 / 4%);
+  --color-bg-hover-mid:  rgb(255 255 255 / 7%);
+  --color-bg-submitted:  rgb(255 255 255 / 8%);
+  --color-shadow-deep:   rgb(0 0 0 / 80%);
+  --color-shadow-drop:   rgb(0 0 0 / 70%);
 
   /* ── Status colors ──────────────────────────────────────── */
   --status-online:       #4ade80;
-  --status-online-glow:  rgba(74,222,128,0.35);
-  --status-locked:       rgba(255,255,255,0.30);
+  --status-online-glow:  rgb(74 222 128 / 35%);
+  --status-locked:       rgb(255 255 255 / 30%);
 
   /* ── Misc ───────────────────────────────────────────────── */
-  --color-fg-white: #ffffff;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-fg-white: #fff;
+  --font-mono: 'JetBrains Mono', ui-monospace, sfmono-regular, menlo, monospace;
 
   /* ── Animation Timing ───────────────────────────────────── */
   --ease-quick:   0.125s ease-in-out;
@@ -103,43 +103,43 @@
 
   /* ── Focus / empty-state (new, theme-aware) ─────────────── */
   --color-bg-input-focus:    #131313;
-  --color-empty-icon-stroke: rgba(255,255,255,0.35);
+  --color-empty-icon-stroke: rgb(255 255 255 / 35%);
 }
 
 /* ════════════ LIGHT THEME ════════════ */
 [data-theme="light"] {
   /* Backgrounds */
   --color-bg-base:      #F8F7F5;
-  --color-bg-secondary: #FFFFFF;
+  --color-bg-secondary: #FFF;
   --color-bg-accent:    #EFEDE9;
-  --color-bg-card:      #FFFFFF;
+  --color-bg-card:      #FFF;
   --color-bg-elevated:  #EFEDE9;
   --color-bg-input:     #FAFAF9;
-  --color-bg-hover:     rgba(0,0,0,0.04);
-  --color-bg-hover-mid: rgba(0,0,0,0.06);
+  --color-bg-hover:     rgb(0 0 0 / 4%);
+  --color-bg-hover-mid: rgb(0 0 0 / 6%);
 
   /* Foregrounds */
-  --color-fg-primary:   rgba(10,8,5,0.88);
-  --color-fg-secondary: rgba(10,8,5,0.52);
-  --color-fg-tertiary:  rgba(10,8,5,0.36);
-  --color-fg-disabled:  rgba(10,8,5,0.20);
+  --color-fg-primary:   rgb(10 8 5 / 88%);
+  --color-fg-secondary: rgb(10 8 5 / 52%);
+  --color-fg-tertiary:  rgb(10 8 5 / 36%);
+  --color-fg-disabled:  rgb(10 8 5 / 20%);
 
   /* Borders */
-  --color-border:        rgba(0,0,0,0.07);
-  --color-border-light:  rgba(0,0,0,0.12);
-  --color-border-bright: rgba(0,0,0,0.22);
+  --color-border:        rgb(0 0 0 / 7%);
+  --color-border-light:  rgb(0 0 0 / 12%);
+  --color-border-bright: rgb(0 0 0 / 22%);
 
   /* Coral-derived — same hue, reduced alpha for light surfaces */
-  --coral-glow:   rgba(255,75,62,0.22);
-  --coral-dim:    rgba(255,75,62,0.08);
-  --coral-border: rgba(255,75,62,0.25);
+  --coral-glow:   rgb(255 75 62 / 22%);
+  --coral-dim:    rgb(255 75 62 / 8%);
+  --coral-border: rgb(255 75 62 / 25%);
 
   /* Status */
-  --status-online-glow: rgba(22,163,74,0.22);
+  --status-online-glow: rgb(22 163 74 / 22%);
 
   /* Focus / empty-state */
   --color-bg-input-focus:    #F5F4F2;
-  --color-empty-icon-stroke: rgba(0,0,0,0.22);
+  --color-empty-icon-stroke: rgb(0 0 0 / 22%);
 }
 
 /* ── Typography ──────────────────────────────────────────── */
@@ -149,7 +149,7 @@ html {
 }
 
 * {
-  font-family: 'Comfortaa', sans-serif;
+  font-family: Comfortaa, sans-serif;
 }
 
 .t-display {

@@ -45,7 +45,7 @@
     line-height: 1;
 }
 
-.AccentYandex  { --chip-accent: #FFCC00; }
+.AccentYandex  { --chip-accent: #FC0; }
 .AccentGmail   { --chip-accent: #4285F4; }
 .AccentOutlook { --chip-accent: #0078D4; }
 .AccentMailRu  { --chip-accent: #005FF9; }

@@ -17,6 +17,7 @@
         opacity: 0;
         transform: translateY(0.5rem);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -47,10 +48,10 @@
 }
 
 [data-theme="light"] .VaultCardContentWrapper {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.07);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 6%), 0 0 0 1px rgb(0 0 0 / 7%);
 }
 
 [data-theme="light"] .VaultCardContentWrapper:hover:not(.Flipped) {
     background: #F3F1EE;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.09);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 8%), 0 0 0 1px rgb(0 0 0 / 9%);
 }

@@ -2,7 +2,7 @@
     width: 38px;
     flex-shrink: 0;
     background: #080808;
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid rgb(255 255 255 / 6%);
     overflow: hidden;
     position: relative;
 }
@@ -21,6 +21,6 @@
     padding-right: 10px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.18);
+    color: rgb(255 255 255 / 18%);
     user-select: none;
 }

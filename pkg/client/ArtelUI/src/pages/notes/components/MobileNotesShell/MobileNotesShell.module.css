@@ -10,7 +10,7 @@
 }
 
 .StatusBarSpacer {
-    height: env(safe-area-inset-top, 0px);
+    height: env(safe-area-inset-top, 0);
     flex-shrink: 0;
 }
 

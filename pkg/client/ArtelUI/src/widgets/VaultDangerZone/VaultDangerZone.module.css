@@ -1,8 +1,8 @@
 .VaultDangerZoneContainer {
     margin-top: 0.25rem;
     padding: 1rem;
-    background: rgba(193,37,61,0.06);
-    border: 1px solid rgba(193,37,61,0.25);
+    background: rgb(193 37 61 / 6%);
+    border: 1px solid rgb(193 37 61 / 25%);
     border-radius: 0.75rem;
     margin-bottom: 1.25rem;
 

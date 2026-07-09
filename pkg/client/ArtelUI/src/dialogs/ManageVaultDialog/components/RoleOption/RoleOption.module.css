@@ -20,7 +20,7 @@
 
     &.RoleOptionSelected {
         border-color: var(--coral);
-        background: rgba(var(--coral-rgb, 220,90,70), 0.06);
+        background: rgb(var(--coral-rgb, 220,90,70), 0.06);
     }
 
     .RoleOptionLabel {

@@ -18,5 +18,5 @@
 }
 
 .WikiChipContainer:hover {
-    background: rgba(255, 75, 62, 0.14);
+    background: rgb(255 75 62 / 14%);
 }

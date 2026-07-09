@@ -6,7 +6,7 @@
 }
 
 .ConnRunning {
-    stroke: rgba(74,222,128,0.55);
+    stroke: rgb(74 222 128 / 55%);
     stroke-dasharray: 7 5;
     animation: dashFlow 0.65s linear infinite;
 }

@@ -59,14 +59,14 @@ export default tseslint.config([
             'no-empty': ['error', {allowEmptyCatch: true}],
             'react/jsx-max-depth': ['error', {max: 3}],
             'local/no-relative-imports': 'error',
-            'func-style': ['warn', 'declaration', {allowArrowFunctions: false}],
-            'react/no-multi-comp': ['warn', {ignoreStateless: false}],
-            'no-console': ['warn', {allow: ['warn', 'error']}],
-            'react/forbid-component-props': ['warn', {forbid: ['style']}],
-            'max-lines': ['warn', {max: 300, skipBlankLines: true, skipComments: true}],
-            'max-lines-per-function': ['warn', {max: 100, skipBlankLines: true, skipComments: true, IIFEs: true}],
+            'func-style': ['error', 'declaration', {allowArrowFunctions: false}],
+            'react/no-multi-comp': ['error', {ignoreStateless: false}],
+            'no-console': ['error', {allow: ['warn', 'error']}],
+            'react/forbid-component-props': ['error', {forbid: ['style']}],
+            'max-lines': ['error', {max: 300, skipBlankLines: true, skipComments: true}],
+            'max-lines-per-function': ['error', {max: 100, skipBlankLines: true, skipComments: true, IIFEs: true}],
             'no-restricted-syntax': [
-                'warn',
+                'error',
                 {
                     selector: 'JSXOpeningElement[name.name="div"]:not(:has(JSXAttribute[name.name="className"]))',
                     message: '<div> must have a className (use a CSS module class).',
@@ -96,7 +96,7 @@ export default tseslint.config([
                     message: 'Destructuring more than 6 properties — keep the whole object as one variable (e.g. `const context = useX(...)`) instead of exploding it into separate bindings/props.',
                 },
             ],
-            'import-x/order': ['warn', {
+            'import-x/order': ['error', {
                 groups: [
                     ['builtin', 'external'],
                     ['internal'],
@@ -155,7 +155,7 @@ export default tseslint.config([
         files: ['**/components/atoms/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-syntax': [
-                'warn',
+                'error',
                 {
                     selector: 'JSXOpeningElement[name.name="div"]:not(:has(JSXAttribute[name.name="className"]))',
                     message: '<div> must have a className (use a CSS module class).',

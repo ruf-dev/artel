@@ -11,7 +11,7 @@
     transition: background 120ms ease;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.035);
+        background: rgb(255 255 255 / 3.5%);
     }
 
     &:hover .FolderAddBtn {
@@ -35,7 +35,7 @@
 
     & .TreeItemSubtitle {
         font-size: 9px;
-        color: rgba(255, 255, 255, 0.25);
+        color: rgb(255 255 255 / 25%);
         margin-top: 1px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -65,7 +65,7 @@
         transition: opacity 100ms ease, background 120ms ease, color 120ms ease;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(255 255 255 / 10%);
             color: var(--text-secondary);
         }
     }

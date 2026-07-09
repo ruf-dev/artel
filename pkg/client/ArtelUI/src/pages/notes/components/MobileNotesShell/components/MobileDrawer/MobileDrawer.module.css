@@ -2,7 +2,7 @@
     position: absolute;
     inset: 0;
     z-index: 10;
-    background: var(--overlay, rgba(0, 0, 0, 0.58));
+    background: var(--overlay, rgb(0 0 0 / 58%));
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.26s ease;
@@ -27,7 +27,7 @@
     overflow: hidden;
 
     & .DrawerStatusSpacer {
-        height: env(safe-area-inset-top, 0px);
+        height: env(safe-area-inset-top, 0);
         flex-shrink: 0;
     }
 
@@ -96,5 +96,5 @@
 
 .DrawerPanelOpen {
     left: 0;
-    box-shadow: 6px 0 48px rgba(0, 0, 0, 0.35);
+    box-shadow: 6px 0 48px rgb(0 0 0 / 35%);
 }

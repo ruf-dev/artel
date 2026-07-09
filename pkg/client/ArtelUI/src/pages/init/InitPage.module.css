@@ -22,6 +22,7 @@
     .LoginButton {
         width: 100%;
         height: 2.5rem;
+
         --chures-btn-from: #2AABEE;
         --chures-btn-to: #229ED9;
     }

@@ -19,13 +19,13 @@
 .Backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgb(0 0 0 / 35%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
 [data-theme="light"] .Backdrop {
-    background: rgba(0, 0, 0, 0.16);
+    background: rgb(0 0 0 / 16%);
 }
 
 .Panel.Enlarged {
@@ -33,7 +33,7 @@
     inset: 0;
     top: auto;
     height: 85%;
-    box-shadow: 0 -2rem 4rem -1.5rem rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -2rem 4rem -1.5rem rgb(0 0 0 / 50%);
 }
 
 .Split {

@@ -1,6 +1,6 @@
 .ModeBarContainer {
     display: flex;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgb(255 255 255 / 8%);
     border-radius: 6px;
     overflow: hidden;
     flex-shrink: 0;
@@ -13,12 +13,12 @@
     cursor: pointer;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.32);
+    color: rgb(255 255 255 / 32%);
     transition: background 0.12s, color 0.12s;
     white-space: nowrap;
 }
 
 .TabActive {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.92);
+    background: rgb(255 255 255 / 8%);
+    color: rgb(255 255 255 / 92%);
 }

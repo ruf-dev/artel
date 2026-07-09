@@ -20,7 +20,7 @@
     border-color: var(--color-border-light);
     background: var(--color-bg-hover);
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px -12px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 50%);
 }
 
 .Card:hover .Chevron {
@@ -54,8 +54,8 @@
 }
 
 .IconWebhook {
-    background: rgba(96,165,250,0.10);
-    border: 1px solid rgba(96,165,250,0.28);
+    background: rgb(96 165 250 / 10%);
+    border: 1px solid rgb(96 165 250 / 28%);
     color: #60a5fa;
 }
 

@@ -16,7 +16,7 @@
 
 .VaultSelect {
     width: 100%;
-    background: rgba(255, 255, 255, 0.035);
+    background: rgb(255 255 255 / 3.5%);
     border: 1px solid var(--border-dim);
     border-radius: 0.42rem;
     padding: 0.49rem 0.7rem;
@@ -31,7 +31,7 @@
 
 .VaultSelect:focus {
     border-color: var(--border-mid);
-    background: rgba(255, 255, 255, 0.055);
+    background: rgb(255 255 255 / 5.5%);
 }
 
 .VaultSelectPlaceholder {
@@ -47,7 +47,7 @@
     display: flex;
     align-items: center;
     gap: 0.56rem;
-    background: rgba(255, 255, 255, 0.035);
+    background: rgb(255 255 255 / 3.5%);
     border: 1px solid var(--border-dim);
     border-radius: 0.42rem;
     padding: 0.49rem 0.7rem;
@@ -78,7 +78,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+    scrollbar-color: rgb(255 255 255 / 12%) transparent;
 }
 
 .ScrollArea::-webkit-scrollbar {
@@ -91,7 +91,7 @@
 }
 
 .ScrollArea::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgb(255 255 255 / 12%);
     border-radius: 2px;
 }
 

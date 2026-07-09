@@ -77,11 +77,11 @@
 
 .StatusDotConnected {
     background: #34d399;
-    box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
+    box-shadow: 0 0 6px rgb(52 211 153 / 50%);
 }
 
 .StatusDotDisconnected {
-    background: var(--color-fg-disabled, rgba(255,255,255,0.2));
+    background: var(--color-fg-disabled, rgb(255 255 255 / 20%));
 }
 
 .StatusLabel {
