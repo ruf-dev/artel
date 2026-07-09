@@ -1,18 +1,18 @@
-import TopbarUserMenuItem from "../TopbarUserMenuItem/TopbarUserMenuItem.tsx"
-
-import cls from "./TopbarUserMenuList.module.css"
+import TopbarUserMenuItem from "@/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.tsx"
+import cls from "@/segments/Topbar/components/TopbarUserMenuList/TopbarUserMenuList.module.css"
 
 interface TopbarUserMenuListProps {
     isAdmin: boolean
     onAdmin: () => void
     onApiKeys: () => void
     onLogout: () => void
-    style?: React.CSSProperties
+    top: number
+    right: number
 }
 
-export default function TopbarUserMenuList({isAdmin, onAdmin, onApiKeys, onLogout, style}: TopbarUserMenuListProps) {
+export default function TopbarUserMenuList({isAdmin, onAdmin, onApiKeys, onLogout, top, right}: TopbarUserMenuListProps) {
     return (
-        <div className={cls.Menu} role="menu" style={style}>
+        <div className={cls.Menu} role="menu" style={{top, right}}>
             {isAdmin && (
                 <TopbarUserMenuItem
                     label="Admin Panel"

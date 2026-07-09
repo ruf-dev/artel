@@ -1,5 +1,5 @@
 import {useState} from "react"
-import {Button, ModalClose} from "@vervstack/chures"
+import {Button, Input, ModalClose} from "@vervstack/chures"
 
 import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
@@ -7,7 +7,6 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import FormField from "@/components/FormField/FormField.tsx"
-import Input from "@/components/shared/Input/Input.tsx"
 import S3ToggleFields from "@/components/S3InstanceFormDialog/components/S3ToggleFields.tsx"
 
 interface Props {
@@ -94,7 +93,8 @@ export default function S3InstanceFormDialog({initial, onSaved}: Props) {
                     type="password"
                     placeholder={isEdit ? "••••••••" : "secret key"}
                     className={cls.Input}
-                    onChange={e => setSecretKey(e.currentTarget.value)}
+                    value={secretKey}
+                    setValue={setSecretKey}
                     disabled={saving}
                     autoComplete="new-password"
                 />

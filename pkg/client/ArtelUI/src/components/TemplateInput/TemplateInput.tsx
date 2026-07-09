@@ -1,9 +1,8 @@
 import {createPortal} from "react-dom"
-import {Button} from "@vervstack/chures"
+import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/components/TemplateInput/TemplateInput.module.css"
 import {cn} from "@/app/utils/cn.ts"
-import Input from "@/components/shared/Input/Input.tsx"
 import SourceGroups from "@/components/TemplateInput/components/SourceGroups.tsx"
 import {useTemplateInputController} from "@/components/TemplateInput/processes/useTemplateInputController.ts"
 import {TemplateSource} from "@/components/TemplateInput/processes/templateRefs.ts"
@@ -27,7 +26,7 @@ export default function TemplateInput({value, onChange, sources, placeholder}: P
                     ref={ctl.inputRef}
                     className={cn(cls.Input, ctl.isInvalid && cls.InputInvalid)}
                     value={value}
-                    onChange={ctl.handleChange}
+                    setValue={ctl.handleChange}
                     onKeyDown={ctl.handleKeyDown}
                     onBlur={() => setTimeout(ctl.closeDropdown, 150)}
                     placeholder={placeholder}

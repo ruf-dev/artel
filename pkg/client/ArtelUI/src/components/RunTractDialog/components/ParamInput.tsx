@@ -1,6 +1,7 @@
+import {Input, Toggle} from "@vervstack/chures"
+
 import cls from "@/components/RunTractDialog/RunTractDialog.module.css"
 import {SchemaProperty} from "@/processes/Tracts.ts"
-import Input from "@/components/shared/Input/Input.tsx"
 
 interface Props {
     def: SchemaProperty
@@ -18,10 +19,10 @@ export default function ParamInput({def, value, onChange}: Props) {
         )
     }
     if (def.type === "integer" || def.type === "number") {
-        return <Input className={cls.ParamField} type="number" value={value} onChange={e => onChange(e.currentTarget.value)}/>
+        return <Input className={cls.ParamField} type="number" value={value} setValue={onChange}/>
     }
     if (def.type === "boolean") {
-        return <Input type="checkbox" checked={value === "true"} onChange={e => onChange(String(e.currentTarget.checked))}/>
+        return <Toggle checked={value === "true"} onChange={v => onChange(String(v))}/>
     }
-    return <Input className={cls.ParamField} type="text" value={value} onChange={e => onChange(e.currentTarget.value)}/>
+    return <Input className={cls.ParamField} type="text" value={value} setValue={onChange}/>
 }

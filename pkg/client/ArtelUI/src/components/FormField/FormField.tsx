@@ -1,6 +1,5 @@
 import {useState} from "react"
-
-import Input from "@/components/shared/Input/Input.tsx"
+import {Input} from "@vervstack/chures"
 
 interface Props {
     label: string
@@ -29,7 +28,7 @@ export default function FormField(props: Props) {
                 className={props.inputClassName}
                 placeholder={props.placeholder}
                 value={value}
-                onChange={e => onValueChange(e.target.value)}
+                setValue={onValueChange}
                 disabled={props.disabled}
                 maxLength={props.maxLength}
                 autoComplete="off"

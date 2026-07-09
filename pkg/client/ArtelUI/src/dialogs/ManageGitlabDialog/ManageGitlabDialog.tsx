@@ -1,12 +1,11 @@
 import {useState} from "react"
-import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
+import {Button, ConfirmDialog, Input, ModalClose} from "@vervstack/chures"
 
 import cls from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.module.css"
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-import Input from "@/components/shared/Input/Input.tsx"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
 
@@ -83,12 +82,12 @@ function ConnectForm() {
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Personal access token</span>
                 <Input type="password" placeholder="glpat-…" value={personalAccessToken}
-                    onChange={e => setPersonalAccessToken(e.target.value)} disabled={connecting} autoComplete="off"/>
+                    setValue={setPersonalAccessToken} disabled={connecting} autoComplete="off"/>
             </label>
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Instance URL (optional)</span>
                 <Input placeholder="https://gitlab.com" value={instanceUrl}
-                    onChange={e => setInstanceUrl(e.target.value)} disabled={connecting} autoComplete="off"/>
+                    setValue={setInstanceUrl} disabled={connecting} autoComplete="off"/>
             </label>
             <div className={cls.ModalActions}>
                 <Button variant="primary" onClick={handleConnect} disabled={connecting || !personalAccessToken}>
@@ -122,7 +121,7 @@ function ConnectedContent({connectionId, fields, onDisconnect}: {
             <WebhookSecretSection webhookSecretSet={fields.webhook_secret_set === "true"} webhookUrl={webhookUrl}/>
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Webhook URL</span>
-                <Input value={webhookUrl} readOnly/>
+                <Input value={webhookUrl} setValue={() => {}} readOnly/>
             </label>
             <p className={cls.ModalSub}>
                 Add this URL as a webhook in your GitLab project settings, with the secret above, to receive merge

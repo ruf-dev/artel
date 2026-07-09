@@ -1,8 +1,7 @@
 import {Button} from "@vervstack/chures"
 
 import {useTheme} from "@/app/hooks/useTheme"
-
-import cls from "./TopbarThemeToggle.module.css"
+import cls from "@/segments/Topbar/components/TopbarThemeToggle/TopbarThemeToggle.module.css"
 
 export default function TopbarThemeToggle() {
     const {theme, toggleTheme} = useTheme()

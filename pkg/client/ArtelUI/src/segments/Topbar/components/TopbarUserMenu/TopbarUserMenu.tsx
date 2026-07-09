@@ -4,11 +4,9 @@ import {useNavigate} from "react-router-dom"
 
 import {Path} from "@/app/routing/Router.tsx"
 import useUser from "@/hooks/user/User.ts"
-
-import TopbarUserMenuPill from "../TopbarUserMenuPill/TopbarUserMenuPill.tsx"
-import TopbarUserMenuList from "../TopbarUserMenuList/TopbarUserMenuList.tsx"
-
-import cls from "./TopbarUserMenu.module.css"
+import TopbarUserMenuPill from "@/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.tsx"
+import TopbarUserMenuList from "@/segments/Topbar/components/TopbarUserMenuList/TopbarUserMenuList.tsx"
+import cls from "@/segments/Topbar/components/TopbarUserMenu/TopbarUserMenu.module.css"
 
 interface MenuRect {
     top: number
@@ -71,7 +69,7 @@ export default function TopbarUserMenu() {
                 <>
                     <div className={cls.Backdrop} onClick={() => setMenuOpen(false)}/>
                     <TopbarUserMenuList
-                        style={{top: menuRect.top, right: menuRect.right}}
+                        top={menuRect.top} right={menuRect.right}
                         isAdmin={isAdmin} onAdmin={handleAdmin} onApiKeys={handleApiKeys} onLogout={handleLogout}
                     />
                 </>,

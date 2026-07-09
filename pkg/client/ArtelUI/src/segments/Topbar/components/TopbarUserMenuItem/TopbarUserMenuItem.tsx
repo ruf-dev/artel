@@ -1,7 +1,7 @@
 import {ReactNode} from "react"
 import {Button} from "@vervstack/chures"
 
-import cls from "./TopbarUserMenuItem.module.css"
+import cls from "@/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.module.css"
 
 interface TopbarUserMenuItemProps {
     icon: ReactNode

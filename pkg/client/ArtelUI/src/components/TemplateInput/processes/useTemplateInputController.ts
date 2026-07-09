@@ -1,4 +1,4 @@
-import {useMemo, useRef, useState, RefObject, ChangeEvent, KeyboardEvent} from "react"
+import {useMemo, useRef, useState, RefObject, KeyboardEvent} from "react"
 
 import {extractRefs, validateRef} from "@/processes/tractTemplate.ts"
 import {
@@ -22,7 +22,7 @@ interface Result {
     dropdownRect: { top: number; left: number; width: number } | null
     openDropdown: (start: number | null) => void
     closeDropdown: () => void
-    handleChange: (e: ChangeEvent<HTMLInputElement>) => void
+    handleChange: (next: string) => void
     handleKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
     insertRef: (ref: string) => void
 }
@@ -66,11 +66,10 @@ export function useTemplateInputController(sources: TemplateSource[], value: str
         setTriggerStart(null)
     }
 
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        const next = e.target.value
+    function handleChange(next: string) {
         onChange(next)
 
-        const caret = e.target.selectionStart ?? next.length
+        const caret = inputRef.current?.selectionStart ?? next.length
         const upToCaret = next.slice(0, caret)
         const lastOpen = upToCaret.lastIndexOf("{{")
         const lastClose = upToCaret.lastIndexOf("}}")

@@ -1,5 +1,5 @@
 import {useState, useRef, useEffect} from "react"
-import {Button, ModalClose, ConfirmDialog} from "@vervstack/chures"
+import {Button, ConfirmDialog, Input, ModalClose} from "@vervstack/chures"
 
 import cls from "@/dialogs/ManageEmailDialog/ManageEmailDialog.module.css"
 import {
@@ -13,7 +13,6 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
-import Input from "@/components/shared/Input/Input.tsx"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
 export default function ManageEmailDialog() {
@@ -209,7 +208,7 @@ function EmailEditDialog({connection}: {connection: ExternalConnectionInfo}) {
             <p className={cls.ModalSub}>Update server settings. Re-enter your password to apply changes.</p>
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Email address</span>
-                <Input value={email} onChange={e => handleEmailChange(e.target.value)} disabled={saving} autoComplete="off"/>
+                <Input value={email} setValue={handleEmailChange} disabled={saving} autoComplete="off"/>
             </label>
             <HostPortRow
                 host={{label: "IMAP host", value: imapHost, placeholder: "imap.example.com", onChange: setImapHost}}
@@ -223,8 +222,8 @@ function EmailEditDialog({connection}: {connection: ExternalConnectionInfo}) {
             />
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Password</span>
-                <Input type="password" placeholder="App-specific password"
-                    onChange={e => setPassword(e.target.value)} disabled={saving} autoComplete="new-password"/>
+                <Input type="password" placeholder="App-specific password" value={password}
+                    setValue={setPassword} disabled={saving} autoComplete="new-password"/>
             </label>
             <div className={cls.ModalActions}>
                 <Button variant="primary" onClick={handleSave} disabled={saving}>
@@ -245,12 +244,12 @@ function HostPortRow({host, port, disabled}: {
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>{host.label}</span>
                 <Input placeholder={host.placeholder} value={host.value}
-                    onChange={e => host.onChange(e.target.value)} disabled={disabled} autoComplete="off"/>
+                    setValue={host.onChange} disabled={disabled} autoComplete="off"/>
             </label>
             <label className={cls.FieldNarrow}>
                 <span className={cls.FieldLabel}>{port.label}</span>
                 <Input placeholder={port.placeholder} value={port.value}
-                    onChange={e => port.onChange(e.target.value)} disabled={disabled} maxLength={5}
+                    setValue={port.onChange} disabled={disabled} maxLength={5}
                     autoComplete="off"/>
             </label>
         </div>
@@ -316,7 +315,7 @@ function EmailAddDialog() {
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Email address</span>
                 <Input placeholder="you@example.com" value={email}
-                    onChange={e => handleEmailChange(e.target.value)} disabled={adding} autoComplete="off"/>
+                    setValue={handleEmailChange} disabled={adding} autoComplete="off"/>
             </label>
             <HostPortRow
                 host={{label: "IMAP host", value: imapHost, placeholder: "imap.example.com", onChange: setImapHost}}
@@ -330,8 +329,8 @@ function EmailAddDialog() {
             />
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Password</span>
-                <Input type="password" placeholder="App-specific password"
-                    onChange={e => setPassword(e.target.value)} disabled={adding} autoComplete="new-password"/>
+                <Input type="password" placeholder="App-specific password" value={password}
+                    setValue={setPassword} disabled={adding} autoComplete="new-password"/>
             </label>
             <div className={cls.ModalActions}>
                 <Button variant="primary" onClick={handleAdd} disabled={adding}>

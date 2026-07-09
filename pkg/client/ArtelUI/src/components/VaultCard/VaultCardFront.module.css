@@ -1,0 +1,12 @@
+.VaultCardFrontContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    padding: 1.375rem 1.375rem 1.125rem;
+    justify-content: space-between;
+}

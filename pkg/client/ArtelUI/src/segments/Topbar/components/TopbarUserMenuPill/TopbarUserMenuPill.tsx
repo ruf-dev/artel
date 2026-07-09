@@ -1,8 +1,7 @@
 import {AvatarFallbackIcon, Button, ChevronDownIcon} from "@vervstack/chures"
 
 import {cn} from "@/app/utils/cn"
-
-import cls from "./TopbarUserMenuPill.module.css"
+import cls from "@/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.module.css"
 
 
 interface TopbarUserMenuPillProps {

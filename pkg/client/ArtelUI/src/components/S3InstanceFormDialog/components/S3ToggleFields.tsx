@@ -1,5 +1,6 @@
+import {Toggle} from "@vervstack/chures"
+
 import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
-import Input from "@/components/shared/Input/Input.tsx"
 
 interface Props {
     useSsl: boolean
@@ -12,24 +13,8 @@ interface Props {
 export default function S3ToggleFields({useSsl, pathStyle, disabled, onUseSslChange, onPathStyleChange}: Props) {
     return (
         <div className={cls.ToggleGroup}>
-            <label className={cls.ToggleRow}>
-                <Input
-                    type="checkbox"
-                    checked={useSsl}
-                    disabled={disabled}
-                    onChange={e => onUseSslChange(e.currentTarget.checked)}
-                />
-                <span className={cls.ToggleLabel}>Use SSL</span>
-            </label>
-            <label className={cls.ToggleRow}>
-                <Input
-                    type="checkbox"
-                    checked={pathStyle}
-                    disabled={disabled}
-                    onChange={e => onPathStyleChange(e.currentTarget.checked)}
-                />
-                <span className={cls.ToggleLabel}>Path-style addressing</span>
-            </label>
+            <Toggle checked={useSsl} onChange={onUseSslChange} disabled={disabled} label="Use SSL" className={cls.ToggleRow}/>
+            <Toggle checked={pathStyle} onChange={onPathStyleChange} disabled={disabled} label="Path-style addressing" className={cls.ToggleRow}/>
             <p className={cls.ToggleCaption}>
                 Required for Garage and most self-hosted S3-compatible stores.
             </p>

@@ -1,8 +1,7 @@
 import {useState} from "react"
-import {Button} from "@vervstack/chures"
+import {Button, Input} from "@vervstack/chures"
 
 import {cn} from "@/app/utils/cn.ts"
-import Input from "@/components/shared/Input/Input.tsx"
 import cls from "@/components/TractStepTree/TractStepTree.module.css"
 import {TractStep} from "@/processes/Tracts.ts"
 
@@ -35,7 +34,7 @@ export default function CardHeader({step, onUpdate, onDelete, right}: Props) {
             <Input
                 className={cn(cls.NameInput, nameInvalid && cls.NameInputInvalid)}
                 value={name}
-                onChange={e => setName(e.target.value)}
+                setValue={setName}
                 onBlur={commitName}
                 data-tooltip-id={nameInvalid ? "root-tooltip" : undefined}
                 data-tooltip-content={nameInvalid ? "Must match ^[a-z][a-z0-9_]*$ and not be \"trigger\"" : undefined}
