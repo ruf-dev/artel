@@ -2770,8 +2770,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.tsx": {
-    "mtime": 1783596390.8667486,
-    "ast_hash": "6532bb1915cc2c31ea2b0d466f9c1c55",
+    "mtime": 1783626605.2447908,
+    "ast_hash": "9b362d794a9baeef394ad2c5c5346c44",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenu/TopbarUserMenu.tsx": {

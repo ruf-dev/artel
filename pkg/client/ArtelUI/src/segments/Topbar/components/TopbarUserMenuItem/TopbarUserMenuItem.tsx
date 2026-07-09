@@ -1,6 +1,7 @@
 import {ReactNode} from "react"
 import {Button} from "@vervstack/chures"
 
+import {cn} from "@/app/utils/cn"
 import cls from "@/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.module.css"
 
 interface TopbarUserMenuItemProps {
@@ -14,7 +15,7 @@ export default function TopbarUserMenuItem({icon, label, onClick, danger}: Topba
     return (
         <Button
             variant="ghost"
-            className={danger ? `${cls.MenuItem} ${cls.MenuItemDanger}` : cls.MenuItem}
+            className={cn(cls.MenuItem, danger && cls.MenuItemDanger)}
             role="menuitem"
             onClick={onClick}
         >

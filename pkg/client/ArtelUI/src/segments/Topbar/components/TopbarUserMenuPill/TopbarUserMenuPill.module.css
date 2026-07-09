@@ -1,4 +1,6 @@
-.UserPill {
+/* Doubled selector beats chures' injected .Btn/.Ghost base styles, which tie
+   with a single-class selector and win on DOM insertion order otherwise. */
+.UserPill.UserPill {
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
