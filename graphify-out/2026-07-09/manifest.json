@@ -985,8 +985,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/mcp-auth/McpAuthPage.tsx": {
-    "mtime": 1783575504.8037078,
-    "ast_hash": "cefea05f8f3d9d96de57587f0dc7ba53",
+    "mtime": 1783256806.5101314,
+    "ast_hash": "8adb844f9eb1c0c246590628e753ca6d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/closed-alpha/ClosedAlphaPage.tsx": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/AdminPage.tsx": {
-    "mtime": 1783575481.1295886,
-    "ast_hash": "6cf45f46d9eda06bcd456a3347aa737c",
+    "mtime": 1783276393.737885,
+    "ast_hash": "999326fc4684f12b8de384375872369e",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/mcp-keys/McpKeysPage.tsx": {
@@ -1945,8 +1945,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/SelectOption/SelectOption.tsx": {
-    "mtime": 1783574554.8423154,
-    "ast_hash": "14bff9c1fdfb883073dd326fa9d3fbd9",
+    "mtime": 1781629492.0919285,
+    "ast_hash": "ffc45e00742a3a6f38047b8f886296b6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/ManageEmailDialog.tsx": {
@@ -1955,8 +1955,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageKeyDialog/ManageKeyDialog.tsx": {
-    "mtime": 1783575475.975897,
-    "ast_hash": "776cd5d51bc08d4706884a1d8a530fa5",
+    "mtime": 1783276244.5237372,
+    "ast_hash": "ca71f276c20e04da99e38205a2fdf81c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx": {
@@ -1990,13 +1990,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/NotesPage.tsx": {
-    "mtime": 1783575515.118697,
-    "ast_hash": "b06310659815336b3dfba8cd45e29157",
+    "mtime": 1782816872.5990813,
+    "ast_hash": "1e7690b9227d82021087899c0950fed6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783575535.6608849,
-    "ast_hash": "567f6e20e7666017bfcc23b5ea180934",
+    "mtime": 1783276483.6000464,
+    "ast_hash": "1cd15c2353365054ab86f49df0b0e9f9",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -2020,13 +2020,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/ModeBar/ModeBar.tsx": {
-    "mtime": 1783575373.7566369,
-    "ast_hash": "f276ddc6d30a3a794380126a5276f45e",
+    "mtime": 1781252411.798057,
+    "ast_hash": "bf0d218c853a2be3a27ce5165d11caa7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx": {
-    "mtime": 1783575363.4375188,
-    "ast_hash": "2579c377695b5cdf1907ea5d50a09335",
+    "mtime": 1783276475.9466586,
+    "ast_hash": "b3ce905adf53bc1b3011700b2868cb7a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/RenameDialog/RenameDialog.tsx": {
@@ -2040,8 +2040,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/BreadcrumbBar/BreadcrumbBar.tsx": {
-    "mtime": 1783575525.4159832,
-    "ast_hash": "bac6a53dd67d0fa07bab08e3ffd62b0e",
+    "mtime": 1781341004.9935863,
+    "ast_hash": "23f56dfed5463a4420faa5673152bc57",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/icons/HeadingIcon.tsx": {
@@ -2070,8 +2070,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/MobileNotesShell.tsx": {
-    "mtime": 1783575530.5516903,
-    "ast_hash": "6aae0eb5698f508eddd81f0aeee6065b",
+    "mtime": 1783276486.507086,
+    "ast_hash": "05a41ac2ee6ac063add87944a29a5920",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/hooks/useAutosave.ts": {
@@ -2085,8 +2085,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/task-trackers/TaskTrackersPage.tsx": {
-    "mtime": 1783575540.795613,
-    "ast_hash": "731f5e5e118fa8b0b885468ce7dbb7bb",
+    "mtime": 1783276545.5906384,
+    "ast_hash": "7a001dc31b1456bfb99916961d420734",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/McpKeyCard/McpKeyCard.tsx": {
@@ -2095,8 +2095,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/GoogleSheetsConnectionContent/GoogleSheetsConnectionContent.tsx": {
-    "mtime": 1783575440.622307,
-    "ast_hash": "75387cbaa205ed3c553335870aaaf9cf",
+    "mtime": 1783270713.5550275,
+    "ast_hash": "869a2ed3bf5ecb3b5d525a9991831969",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/GenericConnectionContent/GenericConnectionContent.tsx": {
@@ -2105,18 +2105,18 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/EmailCard/EmailCard.tsx": {
-    "mtime": 1783575330.795083,
-    "ast_hash": "2b42f377f215f5ed03d8dc79921e982b",
+    "mtime": 1781686217.7834542,
+    "ast_hash": "566515ba74a6c3a292727ee981836ea1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/ProviderCard/ProviderCard.tsx": {
-    "mtime": 1783575341.1226697,
-    "ast_hash": "c410781b29c900bf49dfed52290406d6",
+    "mtime": 1781686767.3673167,
+    "ast_hash": "57a964d9d953c65dad84b094437333a0",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/GoogleConnectionContent/GoogleConnectionContent.tsx": {
-    "mtime": 1783575430.3966103,
-    "ast_hash": "ac814846f3a715be5f200c92bd9ec093",
+    "mtime": 1783270038.142012,
+    "ast_hash": "568234a821588e1c5260fa0eac1c9cd1",
     "semantic_hash": ""
   },
   "easyp.yaml": {
@@ -2535,18 +2535,18 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TractRunTimeline/TractRunTimeline.tsx": {
-    "mtime": 1783575253.329465,
-    "ast_hash": "edc744121fd24035ade420344610fdb1",
+    "mtime": 1783148591.819856,
+    "ast_hash": "2694cf801fde1ce1ba6b7fb450d57e1f",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TractStepTree/TractStepTree.tsx": {
-    "mtime": 1783575274.0965164,
-    "ast_hash": "93aa2732e77bb470b92fba24ac907ce1",
+    "mtime": 1783270538.320062,
+    "ast_hash": "be169cb39024e8c9cf5b3d77fbc80a53",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TemplateInput/TemplateInput.tsx": {
-    "mtime": 1783575243.0511556,
-    "ast_hash": "c5f2ae632b536c15a0e259d821d13a57",
+    "mtime": 1783270038.083367,
+    "ast_hash": "b99253f8f3ebb9a00d6f8b9aa70af7aa",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TriggerPanel/TriggerPanel.tsx": {
@@ -2555,8 +2555,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/StepPickerDialog/StepPickerDialog.tsx": {
-    "mtime": 1783575464.6615455,
-    "ast_hash": "3084367ae50a9460c22648fa316ad7c5",
+    "mtime": 1783355341.2007926,
+    "ast_hash": "653fa7316c502025f7fb50c71c01b42a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/RunTractDialog/RunTractDialog.tsx": {
@@ -2585,13 +2585,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx": {
-    "mtime": 1783575420.147722,
-    "ast_hash": "c287721d40b875125060cd5c7abbd8d7",
+    "mtime": 1783359819.6204045,
+    "ast_hash": "1a92b0613081b577ed065b369731aa62",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx": {
-    "mtime": 1783575315.346608,
-    "ast_hash": "4fd1067ac4878495aba27189da43006a",
+    "mtime": 1783455087.1494186,
+    "ast_hash": "888241883e1686c019da30d97aa4515f",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx": {
@@ -2600,13 +2600,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx": {
-    "mtime": 1783575299.844565,
-    "ast_hash": "668c537d70ba16d06eacf7a4954b6c3d",
+    "mtime": 1783352469.591553,
+    "ast_hash": "6d8c482113589b02847bfc25ae5fceba",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx": {
-    "mtime": 1783575394.386989,
-    "ast_hash": "47c64beed053014074d25c176cde568d",
+    "mtime": 1783356446.6548042,
+    "ast_hash": "1faaf3d2239b4e063be8c6497b5b2472",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractIcons/tractIconHelpers.ts": {
@@ -2620,8 +2620,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx": {
-    "mtime": 1783574565.398546,
-    "ast_hash": "d8f1f243c7b2a9e167f637bd37c16fb5",
+    "mtime": 1783157030.4895732,
+    "ast_hash": "73855dd6fa091c747381054c24108508",
     "semantic_hash": ""
   },
   "handoffs/Artel Tract.html": {
@@ -2780,8 +2780,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarThemeToggle/TopbarThemeToggle.tsx": {
-    "mtime": 1783575551.1219194,
-    "ast_hash": "e060563aeb8de1ca58a5d2121cf0f2bb",
+    "mtime": 1782892054.861217,
+    "ast_hash": "b9d20d142196ca9b958b6c7b4f3bc500",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuList/TopbarUserMenuList.tsx": {
@@ -2790,8 +2790,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.tsx": {
-    "mtime": 1783575556.2309117,
-    "ast_hash": "d8c9ae1e2313e472ea6c3984c6457059",
+    "mtime": 1783260252.7709095,
+    "ast_hash": "ee3576ee6c7e073fcfb1c1326764e7a7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenu/TopbarUserMenu.tsx": {
@@ -2805,8 +2805,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.tsx": {
-    "mtime": 1783575566.5106885,
-    "ast_hash": "cdbd9703afed0424c4692c45244e645b",
+    "mtime": 1783270974.793536,
+    "ast_hash": "cedc1832e0ca67a67c227000a715a1e6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarBrand/TopbarBrand.tsx": {
@@ -2970,8 +2970,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.tsx": {
-    "mtime": 1783575320.479269,
-    "ast_hash": "f928dce39ed141040589d96dc5058f5c",
+    "mtime": 1783454636.1348755,
+    "ast_hash": "6c9589326c5373c3c0c9db372be8fa86",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/processes/inspectorSources.ts": {
@@ -2990,8 +2990,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/NodeChips/NodeChips.tsx": {
-    "mtime": 1783575279.2373643,
-    "ast_hash": "a2d6371771fb14f0e7832327e89813a6",
+    "mtime": 1783455064.0801322,
+    "ast_hash": "84e6eca7704ca0ca1ce1ad938108a480",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ActionBody/ActionBody.tsx": {
@@ -3134,14 +3134,19 @@
     "ast_hash": "9dae47f3707423325068a894cbfd9630",
     "semantic_hash": ""
   },
+  "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/FloatingDropdown.tsx": {
+    "mtime": 1783537003.8402576,
+    "ast_hash": "4d50d9cda1bce59b82c07bb3d438f072",
+    "semantic_hash": ""
+  },
   "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/KindSelect.tsx": {
     "mtime": 1783537003.8404942,
     "ast_hash": "8cb0facb8809fd98ab07213a1c2e2ff0",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/SourcePicker.tsx": {
-    "mtime": 1783573711.3768053,
-    "ast_hash": "cc10e21f9c1d03e92b7f2cc6676752fd",
+    "mtime": 1783537003.8411543,
+    "ast_hash": "76c3d826ecfbc9fdba182fdda7e64539",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/FastSetupDialog/FastSetupDialog.tsx": {
@@ -3150,13 +3155,18 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/ManageVaultDialog.tsx": {
-    "mtime": 1783574175.0578136,
-    "ast_hash": "92d26cab0653f0f91e0f15220f8ca0b4",
+    "mtime": 1783537593.1616235,
+    "ast_hash": "f7e40752cfc83e53b972cf9813daff81",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/components/CreateInviteLinkDialog/CreateInviteLinkDialog.tsx": {
     "mtime": 1783537570.5461962,
     "ast_hash": "7f96b500a6f899769a83875cd1299aaa",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/components/DangerZoneText/DangerZoneText.tsx": {
+    "mtime": 1783537540.3866506,
+    "ast_hash": "6eedf5b33d44fe77b83626f25ffaabee",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/components/InviteRow/InviteRow.tsx": {
@@ -3182,26 +3192,6 @@
   "pkg/client/ArtelUI/src/icons/common/AvatarFallbackIcon.tsx": {
     "mtime": 1783537003.8415504,
     "ast_hash": "77372c2a573a078794469ca852bd6c26",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/widgets/InviteLinksSection/InviteLinksSection.tsx": {
-    "mtime": 1783574154.3276129,
-    "ast_hash": "cf647e5130ac5838f6125a268a5973ac",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/widgets/MembersSection/MembersSection.tsx": {
-    "mtime": 1783574144.6758852,
-    "ast_hash": "b9c4b2e845cc798bc370cb1e5939dcd5",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/widgets/VaultDangerZone/VaultDangerZone.tsx": {
-    "mtime": 1783573491.879925,
-    "ast_hash": "68a58a989203bfc29f654318d96678fa",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/ZPOTIFY_PARITY_HANDOFF.md": {
-    "mtime": 1783574234.1861863,
-    "ast_hash": "3314397efd788f5ce937f42c02cd8321",
     "semantic_hash": ""
   }
 }
