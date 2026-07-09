@@ -4,6 +4,7 @@ import {Button} from "@vervstack/chures"
 import cls from "@/widgets/VaultDangerZone/VaultDangerZone.module.css"
 import {useVaultMutations} from "@/app/hooks/Vaults.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import DangerZoneText from "@/components/VaultDangerZone/DangerZoneText.tsx"
 
 interface Props {
     vaultId: string
@@ -32,14 +33,5 @@ export default function VaultDangerZone({vaultId, onDeleted}: Props) {
                 </Button>
             </div>
         </section>
-    )
-}
-
-function DangerZoneText() {
-    return (
-        <div className={cls.DangerZoneTextContainer}>
-            <div className={cls.DangerZoneTitle}>Delete this vault</div>
-            <div className={cls.DangerZoneSub}>Permanent. Connection string stops working immediately.</div>
-        </div>
     )
 }
