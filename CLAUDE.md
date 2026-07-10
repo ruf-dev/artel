@@ -84,7 +84,7 @@ Rules:
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough
   context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
-
+- After generating is done commit to repo only the graphify part
 ## Client side changes
 
 When change frontend code read pkg/client/ArtelUI/CLAUDE.md before 
