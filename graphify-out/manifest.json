@@ -3000,18 +3000,18 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ConditionBody/ConditionBody.tsx": {
-    "mtime": 1783617855.7727537,
-    "ast_hash": "e95713850413be07789e546509ee362a",
+    "mtime": 1783697257.9426787,
+    "ast_hash": "cce03a848c4b2a34ef9b5638c35370f4",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ParallelBody/ParallelBody.tsx": {
-    "mtime": 1783576645.0616903,
-    "ast_hash": "5c9a5b0e588f02cce8b7971d07dac628",
+    "mtime": 1783697279.289676,
+    "ast_hash": "2fe60024e7c0be5f36625c980a5d351e",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.tsx": {
-    "mtime": 1783617941.1464162,
-    "ast_hash": "b9e15497db0251bbf354118334d264da",
+    "mtime": 1783697235.9045572,
+    "ast_hash": "eaadf944d46d98558fc7030bba6d317f",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/icons/NodeIcon/NodeIcon.tsx": {
