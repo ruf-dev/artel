@@ -1990,8 +1990,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783693569.628335,
-    "ast_hash": "01277bb29c4c5ccbcf4a5783d5fb4cce",
+    "mtime": 1783695762.8057013,
+    "ast_hash": "2c9194a0e39f7456dab394ed200d736c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -3720,8 +3720,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileDrawer/MobileDrawer.tsx": {
-    "mtime": 1783618777.9531329,
-    "ast_hash": "f2c0dfcce11f4efd34ba881179057106",
+    "mtime": 1783695765.8519502,
+    "ast_hash": "f407af50aa1d8e91e9587f4dc74ad917",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.tsx": {
@@ -3750,8 +3750,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx": {
-    "mtime": 1783618893.0782917,
-    "ast_hash": "0acfd6285c6ba9365791aa7027e072f4",
+    "mtime": 1783695797.0107837,
+    "ast_hash": "eef21b5c1ae63263818c66d9cd0ccf87",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx": {

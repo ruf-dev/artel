@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/package.json": {
-    "mtime": 1783682676.7643003,
-    "ast_hash": "4ab2ec52987b8aa1c0700136e57c977a",
+    "mtime": 1783696678.2748013,
+    "ast_hash": "d930ea2bcfda07a34b56c871b330dc71",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/tsconfig.json": {
@@ -2020,8 +2020,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx": {
-    "mtime": 1783618678.7633836,
-    "ast_hash": "b1d32dfca699cb804f4dc1e9727e62ce",
+    "mtime": 1783696703.8576193,
+    "ast_hash": "3a9e6c7bee0c0a33bed3acf48aa41a2c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/RenameDialog/RenameDialog.tsx": {
@@ -4090,8 +4090,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx": {
-    "mtime": 1783693541.5742075,
-    "ast_hash": "bb237926dd35573247db8b3ca7cc6946",
+    "mtime": 1783696763.1872745,
+    "ast_hash": "9910689fa9ee2530b6dc46cc5451aa57",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts": {
