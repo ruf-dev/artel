@@ -3725,8 +3725,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.tsx": {
-    "mtime": 1783687558.4940078,
-    "ast_hash": "2445520cae4c09e0435a49767b3c1870",
+    "mtime": 1783688401.3990433,
+    "ast_hash": "6a1c75f88493967abfa8050fbdfb9d6f",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileTopBar/MobileTopBar.tsx": {
