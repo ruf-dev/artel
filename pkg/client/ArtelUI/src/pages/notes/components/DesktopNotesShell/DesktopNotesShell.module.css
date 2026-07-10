@@ -7,8 +7,10 @@
     color: var(--color-fg-primary);
 
     & .SidebarWrapper {
+        width: 16.8rem;
         flex-shrink: 0;
         height: 100%;
+        border-right: 1px solid var(--color-border);
     }
 
     & .ViewerWrapper {

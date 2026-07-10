@@ -16,10 +16,11 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 276px;
-    left: -286px;
+    left: 0;
+    width: 85vw;
     background: var(--color-bg-card);
-    transition: left 0.28s cubic-bezier(0.32, 0, 0, 1);
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.32, 0, 0, 1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -92,6 +93,12 @@
 }
 
 .DrawerPanelOpen {
-    left: 0;
+    transform: translateX(0);
     box-shadow: 6px 0 48px rgb(0 0 0 / 35%);
+}
+
+@media (width >= 48rem) {
+    .DrawerPanel {
+        width: 22rem;
+    }
 }
