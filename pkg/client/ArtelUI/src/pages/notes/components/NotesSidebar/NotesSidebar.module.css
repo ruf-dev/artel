@@ -1,6 +1,6 @@
 .NotesSidebarContainer {
     width: 16.8rem;
-    background: #0d0d0d;
+    background: var(--color-bg-card);
     border-right: 1px solid var(--border-dim);
     display: flex;
     flex-direction: column;

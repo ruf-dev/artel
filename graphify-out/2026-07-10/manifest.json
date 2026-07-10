@@ -1990,8 +1990,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783629154.0656853,
-    "ast_hash": "c5f5c979679650db006ec692d2959dbf",
+    "mtime": 1783618955.8561335,
+    "ast_hash": "65b4a0284cc719509e9f6da2722e455b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -4077,126 +4077,6 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolRow/ToolRow.tsx": {
     "mtime": 1783621724.5488846,
     "ast_hash": "ed3a598a36b9d8d203edde978ce5f88b",
-    "semantic_hash": ""
-  },
-  "handoff/ui/console-errors.json": {
-    "mtime": 1783628704.3022892,
-    "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/components/atoms/Input/Input.tsx": {
-    "mtime": 1783629146.797328,
-    "ast_hash": "f8fce96e02d48ad66330c7dc01b578c7",
-    "semantic_hash": ""
-  },
-  "handoff/ui/findings.md": {
-    "mtime": 1783628853.4196923,
-    "ast_hash": "4e1f94ed3a40efdb28371b32a9af54a2",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/01-home-dark.png": {
-    "mtime": 1783631417.1134925,
-    "ast_hash": "91bbe0978754539d8564b0f30e6334ec",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/01-home-light.png": {
-    "mtime": 1783628660.5936632,
-    "ast_hash": "66289f8127154058eebb123101505685",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/02-mcp-keys-dark.png": {
-    "mtime": 1783628663.8514352,
-    "ast_hash": "8e4042ecd487a328d67481250d3970db",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/02-mcp-keys-light.png": {
-    "mtime": 1783628665.4675324,
-    "ast_hash": "8294c84c75d03ec8eb12676d093a1cf3",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/03-admin-dark.png": {
-    "mtime": 1783628668.8216586,
-    "ast_hash": "0155519a926e6786f164d9413832cc82",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/03-admin-light.png": {
-    "mtime": 1783628670.4327447,
-    "ast_hash": "3c7a584361df2595ec618e37024c7b9b",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/04-task-trackers-dark.png": {
-    "mtime": 1783628673.6509426,
-    "ast_hash": "afaf2f3b9f7bd7b1a8b566c79987c00d",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/04-task-trackers-light.png": {
-    "mtime": 1783628675.2344925,
-    "ast_hash": "1dca2e48b6f8acd80ad94087a5c44001",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05-notes-dark.png": {
-    "mtime": 1783628678.4875062,
-    "ast_hash": "6506061a644a98c704fe95b75e4a65c3",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05-notes-light.png": {
-    "mtime": 1783628680.133505,
-    "ast_hash": "9078338312eead7491eb842f842f5c25",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05a-notes-sidebar-search-dark.png": {
-    "mtime": 1783628698.348925,
-    "ast_hash": "3f494f837fe0feb23dbabb8b16af73c1",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05a2-sidebar-only-dark.png": {
-    "mtime": 1783628698.4170563,
-    "ast_hash": "9a899f31483323d914874390343293f8",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05b-notes-with-vault-dark.png": {
-    "mtime": 1783628701.3002746,
-    "ast_hash": "a6cb593ef8fe1c0b17844e791dd8715c",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05c-modebar-dark.png": {
-    "mtime": 1783628701.3798473,
-    "ast_hash": "0c2bcd85bd6bd49ba79b8ec7e5f924cd",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/05d-notes-with-vault-light.png": {
-    "mtime": 1783628703.2253537,
-    "ast_hash": "12bdc5e3d865b2710d1abc4d68963816",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/06-connections-dark.png": {
-    "mtime": 1783628683.4357915,
-    "ast_hash": "d796db1461b5109144ec8c367f220397",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/06-connections-light.png": {
-    "mtime": 1783628685.053049,
-    "ast_hash": "e5aa9cdf53cc7cda76ac41cecc1cf3d1",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/07-toolbox-dark.png": {
-    "mtime": 1783628688.3035278,
-    "ast_hash": "4189fedfb103ba4b9b1108215639a796",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/07-toolbox-light.png": {
-    "mtime": 1783628689.8956156,
-    "ast_hash": "7c130c889d6e87e3f2d8c7bf200baf83",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/08-tracts-dark.png": {
-    "mtime": 1783628693.2005656,
-    "ast_hash": "cf0417ef63f972d02f498e72280a0cfa",
-    "semantic_hash": ""
-  },
-  "handoff/ui/screenshots/08-tracts-light.png": {
-    "mtime": 1783628694.7694893,
-    "ast_hash": "312488614b3af87ea565155f19d34d2a",
     "semantic_hash": ""
   }
 }
