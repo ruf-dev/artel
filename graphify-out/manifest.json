@@ -2135,8 +2135,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/CLAUDE.md": {
-    "mtime": 1783685026.0682368,
-    "ast_hash": "6c2652e11e4d34a23538542e8f766120",
+    "mtime": 1783688891.087777,
+    "ast_hash": "7dff681447331d47e41e494e11a7d3be",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/icons/mails/gmail.png": {
@@ -3725,8 +3725,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.tsx": {
-    "mtime": 1783688750.8618968,
-    "ast_hash": "2657d5245834b43a97fc464462db482b",
+    "mtime": 1783688869.4826863,
+    "ast_hash": "c5eaced01fe19fe68a47c240f4398871",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileTopBar/MobileTopBar.tsx": {

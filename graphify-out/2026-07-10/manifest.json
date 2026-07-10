@@ -3725,8 +3725,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.tsx": {
-    "mtime": 1783688401.3990433,
-    "ast_hash": "6a1c75f88493967abfa8050fbdfb9d6f",
+    "mtime": 1783688750.8618968,
+    "ast_hash": "2657d5245834b43a97fc464462db482b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileTopBar/MobileTopBar.tsx": {
@@ -4082,6 +4082,11 @@
   "pkg/client/ArtelUI/src/components/atoms/Input/Input.tsx": {
     "mtime": 1783629146.797328,
     "ast_hash": "f8fce96e02d48ad66330c7dc01b578c7",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/notes/components/icons/ChevronLeftIcon.tsx": {
+    "mtime": 1783688744.2940323,
+    "ast_hash": "a0112b0298444d5e7731fc91c837f650",
     "semantic_hash": ""
   }
 }
