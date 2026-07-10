@@ -3,9 +3,8 @@
     flex-direction: row;
     height: 100%;
     overflow: hidden;
-    background: var(--bg-base);
-    font-family: var(--font);
-    color: var(--text-primary);
+    background: var(--color-bg-base);
+    color: var(--color-fg-primary);
 
     & .SidebarWrapper {
         flex-shrink: 0;

@@ -9,7 +9,7 @@
         font-size: 0.63rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: var(--text-disabled);
+        color: var(--color-fg-disabled);
     }
 
     & .CreateNoteBtn {
@@ -20,7 +20,7 @@
         height: 1.4rem;
         border: none;
         background: transparent;
-        color: var(--text-disabled);
+        color: var(--color-fg-disabled);
         cursor: pointer;
         border-radius: 0.28rem;
         padding: 0;
@@ -29,7 +29,7 @@
 
         &:hover {
             background: rgb(255 255 255 / 7%);
-            color: var(--text-secondary);
+            color: var(--color-fg-secondary);
         }
     }
 }

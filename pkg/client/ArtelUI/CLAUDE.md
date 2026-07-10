@@ -204,6 +204,27 @@ splitting an existing fat page.
   There is no CSS linter in this project (see root CLAUDE.md — only add one if the user asks),
   so `z-index` in `.module.css` files must be caught in code review.
 
+## Never use `!important`
+
+- **`!important` is forbidden** in every `.module.css`/`.css` file — no exceptions.
+- The case that tempts it most: a component's top-level `{ComponentName}Container`
+  class is applied directly to a chures `Button` (or another chures component) and
+  needs to override one of its base/variant classes. Both are single-class selectors
+  (specificity `0-1-0`), so it's a tie — and chures injects its CSS via a `<style>`
+  tag appended to `document.head` at JS-execution time, which lands *after* this
+  project's compiled CSS in the DOM, so chures wins ties on any conflicting property.
+- Fix this by **adding a real wrapping level**, not `!important`: give the component
+  an outer `{ComponentName}Container` div (per Component Structure above) and put the
+  chures component one level deeper with its own class, nested via `&` — e.g.
+  `.DrawerCloseButtonContainer { & .CloseBtn { ... } }`. The two-class selector
+  (`0-2-0`) always outranks chures' single-class rules regardless of load order, so
+  there's no tie to lose. See `DrawerCloseButton.tsx`/`.module.css` for the pattern,
+  and `MobileTopBar.module.css`'s `.HamburgerBtn`/`.ActionBtn` (nested under
+  `.MobileTopBarContainer`) and `DesktopNotesShell.module.css`'s `.ZoomBtn` for
+  cases where the natural DOM structure already provides that extra nesting level.
+- There is no CSS linter in this project (see root CLAUDE.md — only add one if the
+  user asks), so `!important` in `.module.css` files must be caught in code review.
+
 ## Async style
 
 - **Prefer promise chains over `try/catch`** — use `.then().catch().finally()` instead

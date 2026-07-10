@@ -6,9 +6,8 @@
     border: var(--border-thickness) solid var(--coral-border);
     border-radius: 5px;
     padding: 1px 8px 1px 5px;
-    font-family: var(--font);
     font-size: 0.75rem;
-    color: var(--text-primary);
+    color: var(--color-fg-primary);
     cursor: pointer;
     vertical-align: middle;
     line-height: 1.6;

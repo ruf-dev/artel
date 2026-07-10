@@ -3,9 +3,8 @@
     align-items: center;
     gap: 0.35rem;
     font-size: 0.84rem;
-    font-family: var(--font);
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--color-fg-secondary);
     background: transparent;
     border-left: 2px solid transparent;
     transition: background 120ms ease;
@@ -55,7 +54,7 @@
         height: 1.2rem;
         border: none;
         background: transparent;
-        color: var(--text-disabled);
+        color: var(--color-fg-disabled);
         border-radius: 0.25rem;
         padding: 0;
         cursor: pointer;
@@ -66,13 +65,13 @@
 
         &:hover {
             background: rgb(255 255 255 / 10%);
-            color: var(--text-secondary);
+            color: var(--color-fg-secondary);
         }
     }
 }
 
 .TreeItemRowActive {
-    color: var(--text-primary);
+    color: var(--color-fg-primary);
     background: var(--coral-dim);
     border-left: 2px solid #FF4B3E;
 

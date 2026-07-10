@@ -1,7 +1,7 @@
 .NotesSidebarContainer {
     width: 16.8rem;
     background: var(--color-bg-card);
-    border-right: 1px solid var(--border-dim);
+    border-right: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -17,12 +17,12 @@
 .VaultSelect {
     width: 100%;
     background: rgb(255 255 255 / 3.5%);
-    border: var(--border-thickness) solid var(--border-dim);
+    border: var(--border-thickness) solid var(--color-border);
     border-radius: 0.42rem;
     padding: 0.49rem 0.7rem;
     font-family: var(--font-mono);
     font-size: 0.77rem;
-    color: var(--text-primary);
+    color: var(--color-fg-primary);
     cursor: pointer;
     appearance: none;
     outline: none;
@@ -30,12 +30,12 @@
 }
 
 .VaultSelect:focus {
-    border-color: var(--border-mid);
+    border-color: var(--color-border-light);
     background: rgb(255 255 255 / 5.5%);
 }
 
 .VaultSelectPlaceholder {
-    color: var(--text-disabled);
+    color: var(--color-fg-disabled);
 }
 
 .SearchWrapper {
@@ -48,7 +48,7 @@
     align-items: center;
     gap: 0.56rem;
     background: rgb(255 255 255 / 3.5%);
-    border: var(--border-thickness) solid var(--border-dim);
+    border: var(--border-thickness) solid var(--color-border);
     border-radius: 0.42rem;
     padding: 0.49rem 0.7rem;
 
@@ -68,7 +68,7 @@
         height: auto;
         font-family: var(--font-mono);
         font-size: 0.77rem;
-        color: var(--text-primary);
+        color: var(--color-fg-primary);
         letter-spacing: 0.04em;
 
         input {
@@ -78,13 +78,13 @@
         }
 
         input::placeholder {
-            color: var(--text-disabled);
+            color: var(--color-fg-disabled);
         }
     }
 }
 
 .SearchIcon {
-    color: var(--text-disabled);
+    color: var(--color-fg-disabled);
     flex-shrink: 0;
 }
 
@@ -114,6 +114,6 @@
     padding: 0.84rem 1.12rem;
     font-family: var(--font-mono);
     font-size: 0.77rem;
-    color: var(--text-disabled);
+    color: var(--color-fg-disabled);
     letter-spacing: 0.04em;
 }

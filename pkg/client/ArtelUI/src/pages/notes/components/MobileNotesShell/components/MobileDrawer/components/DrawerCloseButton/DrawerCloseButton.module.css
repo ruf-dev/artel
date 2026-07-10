@@ -1,13 +1,21 @@
-.DrawerCloseBtn {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--bg-hover);
-    border: var(--border-thickness) solid var(--border-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    cursor: pointer;
-    flex-shrink: 0;
+.DrawerCloseButtonContainer {
+    /*
+     * Extra wrapping level so .CloseBtn is a two-class selector — chures' Button
+     * base/variant classes are single-class, so this always outranks them on
+     * specificity instead of depending on stylesheet load order.
+     */
+    & .CloseBtn {
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+        border-radius: var(--border-radius-sm);
+        background: var(--color-bg-hover);
+        border: var(--border-thickness) solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-fg-tertiary);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
 }
