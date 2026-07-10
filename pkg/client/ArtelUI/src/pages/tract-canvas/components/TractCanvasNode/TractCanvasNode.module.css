@@ -1,7 +1,7 @@
 .Node {
     position: absolute;
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    border: var(--border-thickness) solid var(--color-border);
     border-radius: 0.8125rem;
     padding: 0.875rem;
     cursor: pointer;
@@ -55,7 +55,7 @@
     width: 2rem;
     height: 2rem;
     border-radius: 0.5625rem;
-    border: 1px solid transparent;
+    border: var(--border-thickness) solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,7 +109,7 @@
     padding: 0;
     border-radius: 999px;
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     color: var(--color-fg-secondary);
     justify-content: center;
     transform: translateY(-50%);

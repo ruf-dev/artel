@@ -1,7 +1,7 @@
 .NewTractDialogContainer {
     width: clamp(360px, 30vw, 480px);
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 1.125rem;
     padding: 1.75rem 1.75rem 1.5rem;
     box-shadow: 0 32px 80px -20px rgb(0 0 0 / 80%);
@@ -20,7 +20,7 @@
         box-sizing: border-box;
         padding: 0.5625rem 0.75rem;
         border-radius: 0.5625rem;
-        border: 1px solid var(--color-border-light);
+        border: var(--border-thickness) solid var(--color-border-light);
         background: var(--color-bg-input);
         color: var(--color-fg-primary);
         font-size: 0.8125rem;

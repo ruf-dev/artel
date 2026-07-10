@@ -32,7 +32,7 @@
             padding: 0.125rem 0.4375rem;
             border-radius: 0.375rem;
             background: var(--color-bg-hover);
-            border: 1px solid var(--color-border-light);
+            border: var(--border-thickness) solid var(--color-border-light);
             font-size: 0.6875rem;
             font-weight: 500;
             color: var(--color-fg-secondary);
@@ -45,7 +45,7 @@
             padding: 0.125rem 0.4375rem;
             border-radius: 0.375rem;
             background: rgb(74 222 128 / 12%);
-            border: 1px solid rgb(74 222 128 / 30%);
+            border: var(--border-thickness) solid rgb(74 222 128 / 30%);
             font-size: 0.6875rem;
             font-weight: 500;
             color: #4ade80;
@@ -58,7 +58,7 @@
             padding: 0.125rem 0.4375rem;
             border-radius: 0.375rem;
             background: rgb(193 37 61 / 10%);
-            border: 1px solid rgb(193 37 61 / 30%);
+            border: var(--border-thickness) solid rgb(193 37 61 / 30%);
             font-size: 0.6875rem;
             font-weight: 500;
             color: var(--color-error);

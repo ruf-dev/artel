@@ -7,7 +7,7 @@
     width: 100%;
     box-sizing: border-box;
 
-    .Tab {
+    & .Tab {
         padding: 0.625rem 1rem;
         font-size: 0.875rem;
         font-weight: 500;

@@ -19,7 +19,7 @@
         font-family: var(--font-mono);
         color: var(--color-fg-secondary);
         background: var(--color-bg-hover);
-        border: 1px solid var(--color-border-light);
+        border: var(--border-thickness) solid var(--color-border-light);
         border-radius: 0.375rem;
         padding: 0.1875rem 0.5rem;
         cursor: default;

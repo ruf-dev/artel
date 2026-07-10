@@ -19,7 +19,7 @@
         cursor: pointer;
         color: var(--text-secondary);
         background: var(--bg-hover);
-        border: 1px solid var(--border-dim);
+        border: var(--border-thickness) solid var(--border-dim);
         transition: color 0.2s, background 0.2s, border-color 0.2s;
     }
 

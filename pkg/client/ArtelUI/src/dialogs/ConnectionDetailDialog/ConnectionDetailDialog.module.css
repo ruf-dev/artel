@@ -7,7 +7,7 @@
     width: 100%;
     max-width: 30rem;
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 1.25rem;
     padding: 1.75rem 1.75rem 1.5rem;
     box-shadow: 0 32px 80px -20px rgb(0 0 0 / 80%);

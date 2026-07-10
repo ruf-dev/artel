@@ -3,7 +3,7 @@
     height: 32px;
     border-radius: 8px;
     background: var(--bg-hover);
-    border: 1px solid var(--border-dim);
+    border: var(--border-thickness) solid var(--border-dim);
     display: flex;
     align-items: center;
     justify-content: center;

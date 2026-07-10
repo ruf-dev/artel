@@ -22,9 +22,12 @@ build-local-container:
 			--platform linux/arm64 \
 			-t artel:local .
 
-lint:
-	golangci-lint run ./...
+lint: .lint-go .lint-react
 
+.lint-go:
+	golangci-lint run ./...
+.lint-react:
+	cd pkg/client/ArtelUI && bun run lint
 ### Web Client Setup
 client-setup:
 	cd pkg/client/ArtelUI && bun i

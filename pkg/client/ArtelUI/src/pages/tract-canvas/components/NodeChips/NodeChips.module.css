@@ -6,7 +6,7 @@
     padding: 0.125rem 0.375rem;
     border-radius: 0.3125rem;
     background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border);
+    border: var(--border-thickness) solid var(--color-border);
     color: var(--color-fg-tertiary);
     max-width: 100%;
     overflow: hidden;

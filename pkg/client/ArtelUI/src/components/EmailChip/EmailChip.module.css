@@ -15,7 +15,7 @@
     background: linear-gradient(135deg,
         color-mix(in srgb, var(--chip-accent) 20%, var(--color-bg-hover)) 0%,
         var(--color-bg-hover) 100%);
-    border: 1px solid color-mix(in srgb, var(--chip-accent) 55%, var(--color-border-light));
+    border: var(--border-thickness) solid color-mix(in srgb, var(--chip-accent) 55%, var(--color-border-light));
     cursor: pointer;
 }
 

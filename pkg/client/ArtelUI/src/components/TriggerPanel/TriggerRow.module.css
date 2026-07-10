@@ -4,7 +4,7 @@
     gap: 0.625rem;
     padding: 0.625rem 0.875rem;
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    border: var(--border-thickness) solid var(--color-border);
     border-radius: 0.625rem;
     flex-wrap: wrap;
 }

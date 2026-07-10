@@ -32,7 +32,7 @@
     transform-style: preserve-3d;
 
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    border: var(--border-thickness) solid var(--color-border);
     border-radius: 1.125rem;
 
     &.Flipped {

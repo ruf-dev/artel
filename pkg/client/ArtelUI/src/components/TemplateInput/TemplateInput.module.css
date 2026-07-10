@@ -14,7 +14,7 @@
     box-sizing: border-box;
     padding: 0.5rem 0.625rem;
     border-radius: 0.5rem;
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     background: var(--color-bg-input);
     color: var(--color-fg-primary);
     font-family: var(--font-mono);
@@ -51,7 +51,7 @@
     max-height: 16rem;
     overflow-y: auto;
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 0.625rem;
     box-shadow: 0 12px 32px -8px rgb(0 0 0 / 60%);
     padding: 0.375rem;

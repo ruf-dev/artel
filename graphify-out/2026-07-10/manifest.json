@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/package.json": {
-    "mtime": 1783598185.533558,
-    "ast_hash": "0a5a4228b80602bbac33aca2d2a065dd",
+    "mtime": 1783682676.7643003,
+    "ast_hash": "4ab2ec52987b8aa1c0700136e57c977a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/tsconfig.json": {
@@ -825,8 +825,8 @@
     "semantic_hash": "3074f1b1c6c8a6863ecafd2b288ab5d9"
   },
   "pkg/client/ArtelUI/eslint.config.js": {
-    "mtime": 1783622168.449203,
-    "ast_hash": "7d9502880643b86492c26d9b07f477bf",
+    "mtime": 1783684089.4481626,
+    "ast_hash": "fa5ca7b10d6681616e0e60ca48b656ac",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/vite.config.ts": {
@@ -1990,8 +1990,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783618955.8561335,
-    "ast_hash": "65b4a0284cc719509e9f6da2722e455b",
+    "mtime": 1783629154.0656853,
+    "ast_hash": "c5f5c979679650db006ec692d2959dbf",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -2015,8 +2015,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/ModeBar/ModeBar.tsx": {
-    "mtime": 1783618503.6178505,
-    "ast_hash": "062485e19e0606d391484b7f318bc365",
+    "mtime": 1783682699.685844,
+    "ast_hash": "f88d774da99bb55c3dc8c61ca650e8d1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx": {
@@ -3635,8 +3635,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/TabBar/TabBar.tsx": {
-    "mtime": 1783599439.1997905,
-    "ast_hash": "ac7804e8354e3899766da60489fe9533",
+    "mtime": 1783682756.1170259,
+    "ast_hash": "a3ab8cbec27cf7f7caedde94dbc66be5",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/components/ContentSegment/ContentSegment.tsx": {
@@ -4077,6 +4077,11 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolRow/ToolRow.tsx": {
     "mtime": 1783621724.5488846,
     "ast_hash": "ed3a598a36b9d8d203edde978ce5f88b",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/components/atoms/Input/Input.tsx": {
+    "mtime": 1783629146.797328,
+    "ast_hash": "f8fce96e02d48ad66330c7dc01b578c7",
     "semantic_hash": ""
   }
 }

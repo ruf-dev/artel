@@ -17,7 +17,7 @@
     --rt-opacity: 1;
     background-color: var(--color-bg-elevated);
     color: var(--color-fg-primary);
-    border: 1px solid var(--accent-fg-color);
+    border: var(--border-thickness) solid var(--accent-fg-color);
     border-radius: 0.5rem;
     padding: 0.375rem 0.625rem;
     font-family: Comfortaa, sans-serif;
@@ -28,5 +28,5 @@
 }
 
 .TooltipArrow {
-    border: 1px solid var(--color-border-bright);
+    border: var(--border-thickness) solid var(--color-border-bright);
 }

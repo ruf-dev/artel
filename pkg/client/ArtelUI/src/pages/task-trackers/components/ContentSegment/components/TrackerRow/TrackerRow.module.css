@@ -5,7 +5,7 @@
     gap: 1rem;
     padding: 1rem 1.25rem;
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 0.875rem;
     transition: border-color 160ms ease;
 

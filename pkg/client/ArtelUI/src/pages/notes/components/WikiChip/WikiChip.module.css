@@ -3,7 +3,7 @@
     align-items: center;
     gap: 5px;
     background: var(--coral-dim);
-    border: 1px solid var(--coral-border);
+    border: var(--border-thickness) solid var(--coral-border);
     border-radius: 5px;
     padding: 1px 8px 1px 5px;
     font-family: var(--font);

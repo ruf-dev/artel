@@ -17,7 +17,7 @@
 .VaultSelect {
     width: 100%;
     background: rgb(255 255 255 / 3.5%);
-    border: 1px solid var(--border-dim);
+    border: var(--border-thickness) solid var(--border-dim);
     border-radius: 0.42rem;
     padding: 0.49rem 0.7rem;
     font-family: var(--font-mono);
@@ -48,29 +48,44 @@
     align-items: center;
     gap: 0.56rem;
     background: rgb(255 255 255 / 3.5%);
-    border: 1px solid var(--border-dim);
+    border: var(--border-thickness) solid var(--border-dim);
     border-radius: 0.42rem;
     padding: 0.49rem 0.7rem;
+
+    /* Nested under .SearchBar (not top-level) so the compiled selector beats
+       chures' Input classes regardless of stylesheet load order. Chures'
+       Input (components/atoms/Input/Input.tsx) puts our className only on
+       its outer wrapper <div> (chures' InputContainer), never on the real
+       <input> it renders, so .SearchInput's own rules land on that wrapper
+       div — the nested `input` selector below is needed to reach the actual
+       form control and strip its own padding/border-radius/height. Same fix
+       pattern as ModeBar.module.css / BreadcrumbBar.module.css. */
+    .SearchInput {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        height: auto;
+        font-family: var(--font-mono);
+        font-size: 0.77rem;
+        color: var(--text-primary);
+        letter-spacing: 0.04em;
+
+        input {
+            padding: 0;
+            border-radius: 0;
+            height: auto;
+        }
+
+        input::placeholder {
+            color: var(--text-disabled);
+        }
+    }
 }
 
 .SearchIcon {
     color: var(--text-disabled);
     flex-shrink: 0;
-}
-
-.SearchInput {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    font-family: var(--font-mono);
-    font-size: 0.77rem;
-    color: var(--text-primary);
-    letter-spacing: 0.04em;
-}
-
-.SearchInput::placeholder {
-    color: var(--text-disabled);
 }
 
 .ScrollArea {

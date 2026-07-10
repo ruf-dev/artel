@@ -14,7 +14,7 @@
             box-sizing: border-box;
             padding: 0.5rem 0.625rem;
             border-radius: 0.5rem;
-            border: 1px solid var(--color-border-light);
+            border: var(--border-thickness) solid var(--color-border-light);
             background: var(--color-bg-input);
             color: var(--color-fg-primary);
             font-size: 0.8125rem;

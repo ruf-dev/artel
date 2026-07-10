@@ -12,7 +12,7 @@
     composes: Chip;
     gap: 0.375rem;
     padding: 0.1875rem 0.5rem 0.1875rem 0.1875rem;
-    border: 1px solid var(--color-border-light);
+    border: var(--border-thickness) solid var(--color-border-light);
     cursor: default;
 }
 

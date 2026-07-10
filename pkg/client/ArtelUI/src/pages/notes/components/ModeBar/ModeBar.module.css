@@ -1,18 +1,15 @@
 .ModeBarContainer {
     display: flex;
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: var(--border-thickness) solid rgb(255 255 255 / 8%);
     border-radius: 6px;
     overflow: hidden;
     flex-shrink: 0;
 
-    /* Nested under .ModeBarContainer (not top-level) so the compiled selector is
-       .ModeBarContainer .Tab — specificity (0,2,0) — which reliably beats chures'
-       Button ghost-variant class (0,1,0) regardless of stylesheet load order.
-       Matches the precedent in pages/admin/components/TabBar/TabBar.module.css. */
-    .Tab {
+    & .Tab {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.6875rem;
-        padding: 5px 10px;
+        font-size: 0.5rem;
+        font-weight: 400;
+        padding: 0.25rem 0.75rem;
         cursor: pointer;
         border: none;
         background: transparent;

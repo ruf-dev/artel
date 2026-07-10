@@ -100,6 +100,12 @@ component file grow — same tool as the project-wide `src/processes/` used by
 - 105 pre-existing `no-restricted-syntax` warnings (raw `<button>`/`<input>`,
   template-literal `className`) are a known baseline as of this rule's introduction
   — fix the ones you touch, don't feel obligated to sweep the whole codebase.
+- ~560 pre-existing stylelint `unit-disallowed-list` warnings (`px`/`em`/`vh`/`vw`
+  used where a `rem` size token from `sizes.css` should be) are a known baseline as
+  of this rule's introduction — same deal, fix a file's sizes when you're already
+  touching it, don't sweep the whole codebase in one pass. New code should use an
+  existing `--*` token from `sizes.css` or add a new one there rather than writing a
+  raw non-rem unit.
 - The global dialog mount lives at `pages/segments/Dialog.tsx`, not `src/segments/`
   where `Topbar` lives — two different locations for the same "app-level segment"
   concept. New app-level segments go in `src/segments/`; don't add a third location.

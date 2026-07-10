@@ -29,6 +29,14 @@ export default {
 
         // Allow more than 4 decimal places in calculated values
         'number-max-precision': null,
+
+        // Sizes must be expressed in rem — no px/em/vh/vw/etc. Warning only: ~580
+        // pre-existing occurrences are a known baseline (see sizes.css), fix the
+        // ones you touch rather than sweeping the whole codebase.
+        'unit-disallowed-list': [
+            ['px', 'em', 'ex', 'ch', 'vh', 'vw', 'vmin', 'vmax', 'cm', 'mm', 'in', 'pt', 'pc', 'q'],
+            {severity: 'warning'},
+        ],
     },
     overrides: [
         // Component CSS Modules: enforce naming and unit conventions
@@ -63,6 +71,14 @@ export default {
                 'color-named': null,
                 'declaration-property-unit-disallowed-list': null,
                 'selector-class-pattern': null,
+            },
+        },
+        // sizes.css is the one place raw px/vh/vw values are allowed — it's the
+        // source of truth that every other file's rem-based size tokens derive from
+        {
+            files: ['src/sizes.css'],
+            rules: {
+                'unit-disallowed-list': null,
             },
         },
     ],

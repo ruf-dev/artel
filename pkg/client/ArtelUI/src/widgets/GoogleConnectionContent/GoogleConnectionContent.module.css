@@ -39,7 +39,7 @@
     width: 0.875rem;
     height: 0.875rem;
     border-radius: 50%;
-    border: 1px solid currentcolor;
+    border: var(--border-thickness) solid currentcolor;
     background: transparent;
     color: var(--color-fg-tertiary);
     font-size: 0.5rem;

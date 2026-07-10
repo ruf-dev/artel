@@ -23,7 +23,7 @@ export default function ModeBar({ active, onModeChange }: ModeBarProps) {
             {MODES.map(({ key, label }) => (
                 <Button
                     key={key}
-                    variant="ghost"
+                    variant="unstyled"
                     className={cn(cls.Tab, active === key && cls.TabActive)}
                     onClick={() => onModeChange(key)}
                 >

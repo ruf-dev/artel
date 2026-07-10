@@ -13,28 +13,28 @@ export default function TabBar({tab, onTabChange}: TabBarProps) {
     return (
         <div className={cls.TabBarContainer}>
             <Button
-                variant="ghost"
+                variant="unstyled"
                 className={cn(cls.Tab, tab === "instances" && cls.TabActive)}
                 onClick={() => onTabChange("instances")}
             >
                 Instances
             </Button>
             <Button
-                variant="ghost"
+                variant="unstyled"
                 className={cn(cls.Tab, tab === "couch_users" && cls.TabActive)}
                 onClick={() => onTabChange("couch_users")}
             >
                 CouchUsers
             </Button>
             <Button
-                variant="ghost"
+                variant="unstyled"
                 className={cn(cls.Tab, tab === "users" && cls.TabActive)}
                 onClick={() => onTabChange("users")}
             >
                 Users
             </Button>
             <Button
-                variant="ghost"
+                variant="unstyled"
                 className={cn(cls.Tab, tab === "s3_instances" && cls.TabActive)}
                 onClick={() => onTabChange("s3_instances")}
             >

@@ -25,7 +25,7 @@
 
 .ParallelBox {
     position: absolute;
-    border: 1px dashed var(--color-border-light);
+    border: var(--border-thickness) dashed var(--color-border-light);
     border-radius: 0.75rem;
     background: transparent;
     cursor: pointer;
