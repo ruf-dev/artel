@@ -1,13 +1,11 @@
-import { useState } from "react"
-
-import Input from "@/components/atoms/Input/Input.tsx"
 import { useNotes } from "@/app/hooks/Notes.ts"
 import { useDialog } from "@/app/hooks/Dialog.ts"
 import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
-import SearchIcon from "@/pages/notes/components/icons/SearchIcon.tsx"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import FolderSection from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx"
+import NotesSearchBar from "@/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx"
+import { useNotesSearchQuery } from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
 import { getNoteName } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
 import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
 
@@ -25,7 +23,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
     const notesStore = useNotes()
     const { OpenDialog } = useDialog()
     const bakeError = useBakeError()
-    const [searchQuery, setSearchQuery] = useState("")
+    const [searchQuery] = useNotesSearchQuery()
 
     function handleVaultChange(e: React.ChangeEvent<HTMLSelectElement>) {
         void notesStore.selectVault(e.target.value)
@@ -70,15 +68,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
                 </select>
             </div>
             <div className={cls.SearchWrapper}>
-                <div className={cls.SearchBar}>
-                    <SearchIcon className={cls.SearchIcon}/>
-                    <Input
-                        className={cls.SearchInput}
-                        placeholder="Search notes…"
-                        value={searchQuery}
-                        setValue={setSearchQuery}
-                    />
-                </div>
+                <NotesSearchBar/>
             </div>
             <div className={cls.ScrollArea}>
                 {!vaultId && (

@@ -1,4 +1,5 @@
 import {useEffect, useMemo, useRef, useState} from "react"
+import {useLocation, useNavigate, useParams} from "react-router-dom"
 
 import {useNotes} from "@/app/hooks/Notes.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
@@ -10,6 +11,7 @@ import {useAutosave} from "@/pages/notes/hooks/useAutosave.ts"
 import {NoteMode} from "@/app/hooks/Notes.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import {buildNotesUrl, decodeNotePath} from "@/pages/notes/processes/notesUrl.ts"
 
 
 export default function NotesPage() {
@@ -21,6 +23,11 @@ export default function NotesPage() {
     const [fontScale, setFontScale] = useState(1)
     const [previewEditing, setPreviewEditing] = useState(false)
     const isPortrait = usePortrait()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const routeParams = useParams()
+    const vaultIdParam = routeParams.vaultId ?? null
+    const notePathParam = routeParams["*"] ? decodeNotePath(routeParams["*"]) : null
 
     function zoomIn()  { setFontScale(s => Math.min(2.5, +(s + 0.15).toFixed(2))) }
     function zoomOut() { setFontScale(s => Math.max(0.5, +(s - 0.15).toFixed(2))) }
@@ -33,11 +40,33 @@ export default function NotesPage() {
     )
 
     useEffect(() => {
+        if (vaultIdParam) return
         const singleVault = vaultOptions.length === 1 ? vaultOptions[0] : null
         if (singleVault && !notesStore.vaultId) {
             void notesStore.selectVault(singleVault.id)
         }
-    }, [vaultOptions, notesStore.vaultId, notesStore.selectVault])
+    }, [vaultOptions, notesStore.vaultId, notesStore.selectVault, vaultIdParam])
+
+    // URL -> store: loads the vault/note named in the URL (initial load, pasted link, back/forward).
+    useEffect(() => {
+        if (vaultIdParam && vaultIdParam !== notesStore.vaultId) {
+            void notesStore.selectVault(vaultIdParam)
+        }
+    }, [vaultIdParam])
+
+    useEffect(() => {
+        if (vaultIdParam && notePathParam && notePathParam !== notesStore.selectedPath) {
+            void notesStore.selectNote(vaultIdParam, notePathParam)
+        }
+    }, [vaultIdParam, notePathParam])
+
+    // store -> URL: keeps the address bar in sync whenever the selected vault/note changes.
+    useEffect(() => {
+        const targetPath = buildNotesUrl(notesStore.vaultId, notesStore.selectedPath)
+        if (targetPath !== location.pathname) {
+            navigate({pathname: targetPath, search: location.search}, {replace: true})
+        }
+    }, [notesStore.vaultId, notesStore.selectedPath])
 
     useEffect(() => { setPreviewEditing(false) }, [notesStore.selectedPath])
 

@@ -40,7 +40,7 @@ export const useNotes = create<NotesState>((set, get) => ({
     error: null,
 
     selectVault: async (vaultId: string) => {
-        set({loading: true, error: null})
+        set({loading: true, error: null, selectedPath: null, noteContent: null, savedContent: null, mode: 'preview'})
         try {
             const [folders, notes] = await Promise.all([
                 notesService.listFolders(vaultId),

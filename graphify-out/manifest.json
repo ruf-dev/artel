@@ -910,8 +910,8 @@
     "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
   },
   "pkg/client/ArtelUI/src/app/routing/Router.tsx": {
-    "mtime": 1783576645.0609348,
-    "ast_hash": "3d95ccfc9552ade7825fd4fe09c4e306",
+    "mtime": 1783693441.697812,
+    "ast_hash": "d4baf80a4efad3de045213f5434b05de",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/routing/HomeLayout.tsx": {
@@ -1860,8 +1860,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/Notes.ts": {
-    "mtime": 1781376317.1909676,
-    "ast_hash": "a53296f581a45e52e19f5cee944ab124",
+    "mtime": 1783693652.9492733,
+    "ast_hash": "e1e7200221eef49ff7fd79f9c2cc7b2b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/useErrorToast.ts": {
@@ -1985,13 +1985,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/NotesPage.tsx": {
-    "mtime": 1783619073.2077467,
-    "ast_hash": "d19231d8b1fbc4daec321d7501932240",
+    "mtime": 1783693460.9271173,
+    "ast_hash": "1de1f7a2b6acad7e7d263101e500bb13",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783629154.0656853,
-    "ast_hash": "c5f5c979679650db006ec692d2959dbf",
+    "mtime": 1783693569.628335,
+    "ast_hash": "01277bb29c4c5ccbcf4a5783d5fb4cce",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -4087,6 +4087,21 @@
   "pkg/client/ArtelUI/src/pages/notes/components/icons/ChevronLeftIcon.tsx": {
     "mtime": 1783688744.2940323,
     "ast_hash": "a0112b0298444d5e7731fc91c837f650",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx": {
+    "mtime": 1783693541.5742075,
+    "ast_hash": "bb237926dd35573247db8b3ca7cc6946",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts": {
+    "mtime": 1783693535.3528824,
+    "ast_hash": "21f49aa046043fd95f63c003aaffe357",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/notes/processes/notesUrl.ts": {
+    "mtime": 1783694290.849554,
+    "ast_hash": "2a9a653d97d78d1c08cffdfba4f1bae8",
     "semantic_hash": ""
   }
 }
