@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/package.json": {
-    "mtime": 1783696678.2748013,
-    "ast_hash": "d930ea2bcfda07a34b56c871b330dc71",
+    "mtime": 1783751504.0606978,
+    "ast_hash": "eac1ec8bd4a29c6f5843f9e3a5f16f2a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/tsconfig.json": {
