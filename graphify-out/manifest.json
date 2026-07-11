@@ -1860,8 +1860,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/Notes.ts": {
-    "mtime": 1783693652.9492733,
-    "ast_hash": "e1e7200221eef49ff7fd79f9c2cc7b2b",
+    "mtime": 1783782866.0434139,
+    "ast_hash": "ed4f80e8c51e0660c56d94525c99556d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/useErrorToast.ts": {
@@ -1990,8 +1990,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783782159.8412542,
-    "ast_hash": "a70f0693472a16870f7c5f288b1895ff",
+    "mtime": 1783782907.680115,
+    "ast_hash": "66eb1c1a9f23f9ac82d08e6d7e0a8dac",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -2065,8 +2065,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/MobileNotesShell.tsx": {
-    "mtime": 1783618792.6197371,
-    "ast_hash": "86f0706416941652e6ff62b46f8d0787",
+    "mtime": 1783782974.842455,
+    "ast_hash": "c11bcd82db1c61a9eda08e9096a3b7d0",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/hooks/useAutosave.ts": {
@@ -3730,8 +3730,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/MobileNotesShell/components/MobileTopBar/MobileTopBar.tsx": {
-    "mtime": 1783754826.213785,
-    "ast_hash": "123f77d1cf45820e2b20939d87b16730",
+    "mtime": 1783782961.1377418,
+    "ast_hash": "f2e4290701ccc839aef39e26d24c26d2",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/processes/noteEditorKeyHandlers.ts": {
@@ -4150,8 +4150,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts": {
-    "mtime": 1783766980.781996,
-    "ast_hash": "fb923cb7abd2615cb8b3b2543c32509b",
+    "mtime": 1783782871.9244893,
+    "ast_hash": "da7a2ecca046a196dc8ab18816b2fd74",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/icons/LocateIcon.tsx": {
