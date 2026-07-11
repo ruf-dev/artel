@@ -52,8 +52,8 @@
   /* ── Layout Tokens ──────────────────────────────────────── */
   --header-height:        3.5rem;
   --border-radius:        1rem;
-  --border-radius-pill:   999px;
-  --border-radius-circle: 999px;
+  --border-radius-pill:   62.4375rem;
+  --border-radius-circle: 62.4375rem;
   --action-button-size:   2rem;
 
   /* ── Spacing Scale ──────────────────────────────────────── */
@@ -66,7 +66,7 @@
   --space-8:  3rem;
 
   /* ── Elevation / Shadow ─────────────────────────────────── */
-  --shadow-glow-coral: 0 10px 28px -12px var(--coral-glow);
+  --shadow-glow-coral: 0 0.625rem 1.75rem -0.75rem var(--coral-glow);
   --shadow-glow-ring:  0 0 0 0 var(--coral-glow);
 
   /* ── Accent / Glow Variants (coral) ─────────────────────── */

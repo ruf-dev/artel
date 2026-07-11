@@ -24,7 +24,7 @@
     font-size: 0.75rem;
     line-height: 1.4;
     max-width: 18rem;
-    box-shadow: 0 12px 28px -8px var(--color-shadow-deep);
+    box-shadow: 0 0.75rem 1.75rem -0.5rem var(--color-shadow-deep);
 }
 
 .TooltipArrow {

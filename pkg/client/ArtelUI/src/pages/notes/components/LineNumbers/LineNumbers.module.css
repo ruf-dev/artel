@@ -1,15 +1,15 @@
 .LineNumbersContainer {
-    width: 38px;
+    width: 2.375rem;
     flex-shrink: 0;
     background: #080808;
-    border-right: 1px solid rgb(255 255 255 / 6%);
+    border-right: var(--border-thickness) solid rgb(255 255 255 / 6%);
     overflow: hidden;
     position: relative;
 }
 
 .Inner {
     position: absolute;
-    top: 28px;
+    top: 1.75rem;
     left: 0;
     right: 0;
 }
@@ -18,7 +18,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding-right: 10px;
+    padding-right: 0.625rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.625rem;
     color: rgb(255 255 255 / 18%);

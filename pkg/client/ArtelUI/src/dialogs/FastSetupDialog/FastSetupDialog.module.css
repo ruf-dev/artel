@@ -15,7 +15,7 @@
     padding: 1.25rem;
     min-width: 18rem;
     max-width: 36rem;
-    max-height: 80vh;
+    max-height: var(--dialog-max-height);
     display: flex;
     flex-direction: column;
 }

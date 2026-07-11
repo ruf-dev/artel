@@ -10,7 +10,7 @@
     font-weight: 700;
     color: var(--color-fg-primary);
     letter-spacing: -0.02em;
-    margin: 0 0 14px;
+    margin: 0 0 0.875rem;
 }
 
 .NoteContentContainer :global(h2) {
@@ -18,7 +18,7 @@
     font-weight: 600;
     color: var(--color-fg-primary);
     letter-spacing: -0.01em;
-    margin: 26px 0 10px;
+    margin: 1.625rem 0 0.625rem;
 }
 
 .NoteContentContainer :global(h3),
@@ -26,20 +26,20 @@
 .NoteContentContainer :global(h5),
 .NoteContentContainer :global(h6) {
     color: var(--color-fg-primary);
-    margin: 20px 0 8px;
+    margin: 1.25rem 0 0.5rem;
 }
 
 .NoteContentContainer :global(p) {
     font-size: 0.875rem;
     color: var(--color-fg-secondary);
     line-height: 1.72;
-    margin: 0 0 14px;
+    margin: 0 0 0.875rem;
 }
 
 .NoteContentContainer :global(blockquote) {
-    border-left: 2px solid rgb(255 75 62 / 40%);
-    padding-left: 14px;
-    margin: 0 0 14px;
+    border-left: var(--border-thickness-accent) solid rgb(255 75 62 / 40%);
+    padding-left: 0.875rem;
+    margin: 0 0 0.875rem;
     font-size: 0.84375rem;
     color: var(--color-fg-tertiary);
     font-style: italic;
@@ -49,9 +49,9 @@
 .NoteContentContainer :global(pre) {
     background: #0d0d0d;
     border: var(--border-thickness) solid var(--color-border);
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin: 12px 0 16px;
+    border-radius: 0.375rem;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0 1rem;
     overflow-x: auto;
     scrollbar-width: none;
 }
@@ -77,19 +77,19 @@
     font-size: 0.6875rem;
     color: var(--color-fg-secondary);
     background: #0d0d0d;
-    padding: 1px 3px;
-    border-radius: 3px;
+    padding: 0.0625rem 0.1875rem;
+    border-radius: 0.1875rem;
 }
 
 .NoteContentContainer :global(ul),
 .NoteContentContainer :global(ol) {
-    margin: 0 0 14px;
-    padding-left: 20px;
+    margin: 0 0 0.875rem;
+    padding-left: 1.25rem;
     color: var(--color-fg-secondary);
 }
 
 .NoteContentContainer :global(li) {
-    margin-bottom: 4px;
+    margin-bottom: 0.25rem;
     line-height: 1.72;
 }
 
@@ -100,6 +100,6 @@
 
 .NoteContentContainer :global(hr) {
     border: none;
-    border-top: 1px solid var(--color-border);
-    margin: 20px 0;
+    border-top: var(--border-thickness) solid var(--color-border);
+    margin: 1.25rem 0;
 }

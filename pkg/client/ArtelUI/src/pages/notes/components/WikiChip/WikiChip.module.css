@@ -1,11 +1,11 @@
 .WikiChipContainer {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 0.3125rem;
     background: var(--coral-dim);
     border: var(--border-thickness) solid var(--coral-border);
-    border-radius: 5px;
-    padding: 1px 8px 1px 5px;
+    border-radius: 0.3125rem;
+    padding: 0.0625rem 0.5rem 0.0625rem 0.3125rem;
     font-size: 0.75rem;
     color: var(--color-fg-primary);
     cursor: pointer;

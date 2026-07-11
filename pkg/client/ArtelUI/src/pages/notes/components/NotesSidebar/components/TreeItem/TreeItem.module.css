@@ -6,7 +6,7 @@
     cursor: pointer;
     color: var(--color-fg-secondary);
     background: transparent;
-    border-left: 2px solid transparent;
+    border-left: var(--border-thickness-accent) solid transparent;
     transition: background 120ms ease;
 
     &:hover {
@@ -35,7 +35,7 @@
     & .TreeItemSubtitle {
         font-size: 0.5625rem;
         color: rgb(255 255 255 / 25%);
-        margin-top: 1px;
+        margin-top: 0.0625rem;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -73,7 +73,7 @@
 .TreeItemRowActive {
     color: var(--color-fg-primary);
     background: var(--coral-dim);
-    border-left: 2px solid #FF4B3E;
+    border-left: var(--border-thickness-accent) solid #FF4B3E;
 
     &:hover {
         background: var(--coral-dim);

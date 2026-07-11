@@ -1,18 +1,18 @@
 .MobileTopBarContainer {
-    height: 50px;
+    height: 3.125rem;
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    padding: 0 14px;
-    gap: 11px;
+    padding: 0 0.875rem;
+    gap: 0.6875rem;
     background: var(--color-bg-elevated);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: var(--border-thickness) solid var(--color-border);
 
     & .HamburgerBtn {
-        width: 36px;
-        height: 36px;
+        width: 2.25rem;
+        height: 2.25rem;
         padding: 0;
-        border-radius: 9px;
+        border-radius: 0.5625rem;
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -35,7 +35,7 @@
         min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        gap: 0.0625rem;
     }
 
     & .NoteTitle {
@@ -56,8 +56,8 @@
     }
 
     & .ActionBtn {
-        width: 34px;
-        height: 34px;
+        width: 2.125rem;
+        height: 2.125rem;
         padding: 0;
         display: flex;
         align-items: center;

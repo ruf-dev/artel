@@ -3,7 +3,7 @@
     max-width: 75rem;
     margin: 1.5rem auto 0;
     padding: 0 2rem;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: var(--border-thickness) solid var(--color-border);
     width: 100%;
     box-sizing: border-box;
 
@@ -14,10 +14,10 @@
         color: var(--color-fg-secondary);
         background: transparent;
         border: none;
-        border-bottom: 2px solid transparent;
+        border-bottom: var(--border-thickness-accent) solid transparent;
         cursor: pointer;
         font-family: inherit;
-        margin-bottom: -1px;
+        margin-bottom: -0.0625rem;
         letter-spacing: -0.005em;
         transition: color 160ms ease, border-color 160ms ease;
 

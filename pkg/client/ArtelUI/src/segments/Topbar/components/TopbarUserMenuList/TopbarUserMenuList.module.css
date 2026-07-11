@@ -5,7 +5,7 @@
     background: var(--color-bg-elevated);
     border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 0.75rem;
-    box-shadow: 0 24px 64px -16px rgb(0 0 0 / 70%);
+    box-shadow: 0 1.5rem 4rem -1rem rgb(0 0 0 / 70%);
     animation: menuIn 160ms ease both;
 }
 

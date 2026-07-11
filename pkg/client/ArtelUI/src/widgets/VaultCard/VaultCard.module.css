@@ -7,7 +7,7 @@
     animation: fadeUp 500ms cubic-bezier(.2, .7, .2, 1) both;
     min-width: 0;
     cursor: pointer;
-    perspective: 1000px;
+    perspective: 62.5rem;
     height: 16rem;
     padding: 0;
 }
@@ -48,10 +48,10 @@
 }
 
 [data-theme="light"] .VaultCardContentWrapper {
-    box-shadow: 0 1px 3px rgb(0 0 0 / 6%), 0 0 0 1px rgb(0 0 0 / 7%);
+    box-shadow: 0 0.0625rem 0.1875rem rgb(0 0 0 / 6%), 0 0 0 0.0625rem rgb(0 0 0 / 7%);
 }
 
 [data-theme="light"] .VaultCardContentWrapper:hover:not(.Flipped) {
     background: #F3F1EE;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 8%), 0 0 0 1px rgb(0 0 0 / 9%);
+    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 8%), 0 0 0 0.0625rem rgb(0 0 0 / 9%);
 }

@@ -51,7 +51,7 @@
 
 .ScrollArea::-webkit-scrollbar {
     display: block;
-    width: 4px;
+    width: 0.25rem;
 }
 
 .ScrollArea::-webkit-scrollbar-track {
@@ -60,7 +60,7 @@
 
 .ScrollArea::-webkit-scrollbar-thumb {
     background: rgb(255 255 255 / 12%);
-    border-radius: 2px;
+    border-radius: 0.125rem;
 }
 
 .EmptyVaultHint {

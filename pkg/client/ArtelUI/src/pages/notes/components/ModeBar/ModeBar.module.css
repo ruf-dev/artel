@@ -1,7 +1,7 @@
 .ModeBarContainer {
     display: flex;
     border: var(--border-thickness) solid rgb(255 255 255 / 8%);
-    border-radius: 6px;
+    border-radius: 0.375rem;
     overflow: hidden;
     flex-shrink: 0;
 

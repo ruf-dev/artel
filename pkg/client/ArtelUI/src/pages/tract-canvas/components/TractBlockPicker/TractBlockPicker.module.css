@@ -1,14 +1,14 @@
 .Modal {
     width: 100%;
     max-width: 32.5rem;
-    max-height: 80vh;
+    max-height: var(--dialog-max-height);
     display: flex;
     flex-direction: column;
     background: var(--color-bg-card);
     border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 1.125rem;
     padding: 1.375rem;
-    box-shadow: 0 32px 80px -16px rgb(0 0 0 / 80%);
+    box-shadow: 0 2rem 5rem -1rem rgb(0 0 0 / 80%);
 }
 
 .Head {
@@ -59,7 +59,7 @@
     padding: 0.25rem 0.625rem;
     background: var(--color-bg-elevated);
     border: var(--border-thickness) solid var(--color-border);
-    border-radius: 999px;
+    border-radius: 62.4375rem;
     font: inherit;
     font-size: 0.6875rem;
     color: var(--color-fg-secondary);

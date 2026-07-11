@@ -16,7 +16,7 @@
         &::after {
             content: "";
             flex: 1;
-            height: 1px;
+            height: 0.0625rem;
             background: var(--color-border);
         }
     }

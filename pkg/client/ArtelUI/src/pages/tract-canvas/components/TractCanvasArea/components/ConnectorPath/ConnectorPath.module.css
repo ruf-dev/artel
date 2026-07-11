@@ -1,6 +1,6 @@
 .Conn {
     stroke: var(--color-border-light);
-    stroke-width: 1.5px;
+    stroke-width: 0.09375rem;
     fill: none;
     transition: stroke 280ms ease;
 }

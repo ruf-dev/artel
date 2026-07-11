@@ -1,5 +1,5 @@
 .AccountSectionContainer {
-    border-top: 1px solid var(--color-border);
+    border-top: var(--border-thickness) solid var(--color-border);
     margin: 1rem 0 1.25rem;
     padding-top: 0.875rem;
 
