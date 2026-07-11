@@ -23,7 +23,11 @@ export default function ParallelBody({step, onOpenAddBlock}: Props) {
                         <span className={cls.Val}>{lane.name || lane.id} ({lane.type})</span>
                     </div>
                 ))}
-                <Button variant="ghost" className={cls.AddLaneBtn} onClick={() => onOpenAddBlock({parentId: step.id, branch: "steps"}, lanes.length)}>
+                <Button
+                    variant="ghost"
+                    className={cls.AddLaneBtn}
+                    onClick={() => onOpenAddBlock({parentId: step.id, branch: "steps"}, lanes.length)}
+                >
                     + Add lane
                 </Button>
             </Section>

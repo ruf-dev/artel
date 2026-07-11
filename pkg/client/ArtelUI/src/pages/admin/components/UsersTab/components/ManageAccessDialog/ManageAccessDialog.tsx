@@ -6,7 +6,8 @@ import {AdminCouchAPI} from "@/app/api/artel/admin_couch.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
-import DbAccessList from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessList/DbAccessList.tsx"
+import DbAccessList
+    from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessList/DbAccessList.tsx"
 
 interface ManageAccessDialogProps {
     instanceId: string

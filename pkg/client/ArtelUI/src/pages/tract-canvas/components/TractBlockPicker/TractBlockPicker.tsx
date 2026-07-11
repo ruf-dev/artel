@@ -6,13 +6,14 @@ import {TractTool} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-import {cn} from "@/app/utils/cn.ts"
-import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 import type {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 import {useTractBlockPickerData} from "@/pages/tract-canvas/components/TractBlockPicker/useTractBlockPickerData.ts"
+import ConnectionFilterRow
+    from "@/pages/tract-canvas/components/TractBlockPicker/components/ConnectionFilterRow/ConnectionFilterRow.tsx"
 import LogicCell from "@/pages/tract-canvas/components/TractBlockPicker/components/LogicCell/LogicCell.tsx"
 import ToolCell from "@/pages/tract-canvas/components/TractBlockPicker/components/ToolCell/ToolCell.tsx"
-import ConnectionStep from "@/pages/tract-canvas/components/TractBlockPicker/components/ConnectionStep/ConnectionStep.tsx"
+import ConnectionStep
+    from "@/pages/tract-canvas/components/TractBlockPicker/components/ConnectionStep/ConnectionStep.tsx"
 
 interface Props {
     onConfirm: (draft: StepDraft) => void
@@ -36,12 +37,12 @@ export default function TractBlockPicker({onConfirm}: Props) {
     }, [fetchMomCandidates])
 
     const {connectedCandidates, grouped, orderedGroups, logicOptions} = useTractBlockPickerData({
-        tools, momCandidates, query, connFilter,
-    })
+        tools, momCandidates, query, connFilter})
 
     function handleConfirmConnection() {
         if (!selectedTool || !selectedConnectionId) return
-        onConfirm({type: "action", mcp: selectedTool.mcp, tool: selectedTool.tool, connectionUuid: selectedConnectionId})
+        onConfirm(
+            {type: "action", mcp: selectedTool.mcp, tool: selectedTool.tool, connectionUuid: selectedConnectionId})
         CloseDialog()
     }
 
@@ -51,8 +52,7 @@ export default function TractBlockPicker({onConfirm}: Props) {
                 mcp={selectedTool.mcp}
                 selectedConnectionId={selectedConnectionId}
                 onSelect={setSelectedConnectionId}
-                onBack={() => setSelectedTool(null)}
-                onConfirm={handleConfirmConnection}
+                onBack={() => setSelectedTool(null)} onConfirm={handleConfirmConnection}
             />
         )
     }
@@ -72,26 +72,11 @@ export default function TractBlockPicker({onConfirm}: Props) {
                 autoFocus
             />
             {connectedCandidates.length > 0 && (
-                <div className={cls.FilterRow}>
-                    <Button
-                        variant="ghost"
-                        className={cn(cls.FilterPill, !connFilter && cls.FilterPillActive)}
-                        onClick={() => setConnFilter(null)}
-                    >
-                        All
-                    </Button>
-                    {connectedCandidates.map(c => (
-                        <Button
-                            variant="ghost"
-                            key={c.name}
-                            className={cn(cls.FilterPill, connFilter === c.name && cls.FilterPillActive)}
-                            onClick={() => setConnFilter(c.name ?? null)}
-                        >
-                            <span className={cls.FilterPillIcon}><ProviderIcon provider={c.connections?.[0]?.provider}/></span>
-                            {c.name}
-                        </Button>
-                    ))}
-                </div>
+                <ConnectionFilterRow
+                    candidates={connectedCandidates}
+                    connFilter={connFilter}
+                    onSelect={setConnFilter}
+                />
             )}
             <div className={cls.Scroll}>
                 {logicOptions.length > 0 && (

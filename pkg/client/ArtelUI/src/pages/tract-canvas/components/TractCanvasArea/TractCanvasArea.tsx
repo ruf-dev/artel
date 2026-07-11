@@ -28,7 +28,9 @@ export default function TractCanvasArea(props: Props) {
     const {layout, tools, triggerInfo, momCandidates, selectedNodeId} = props
     const {onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock} = props
     const wrapRef = useRef<HTMLDivElement>(null)
-    const dragRef = useRef<{startX: number; startY: number; scrollLeft: number; scrollTop: number; moved: boolean} | null>(null)
+    const dragRef = useRef<
+        {startX: number; startY: number; scrollLeft: number; scrollTop: number; moved: boolean} | null
+    >(null)
     const suppressClickRef = useRef(false)
     const [panning, setPanning] = useState(false)
     const boxedNodeIds = new Set(layout.parallelBoxes.map(b => b.id))
@@ -38,7 +40,9 @@ export default function TractCanvasArea(props: Props) {
         if ((e.target as HTMLElement).closest("[data-tract-node]")) return
         const wrap = wrapRef.current
         if (!wrap) return
-        dragRef.current = {startX: e.clientX, startY: e.clientY, scrollLeft: wrap.scrollLeft, scrollTop: wrap.scrollTop, moved: false}
+        dragRef.current = {
+            startX: e.clientX, startY: e.clientY, scrollLeft: wrap.scrollLeft, scrollTop: wrap.scrollTop, moved: false,
+        }
         wrap.setPointerCapture(e.pointerId)
     }
 

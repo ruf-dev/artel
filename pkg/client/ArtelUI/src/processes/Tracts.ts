@@ -24,8 +24,12 @@ export * from "@/processes/tractsMappers.ts"
 export interface ITractsService {
     listTracts: () => Promise<Tract[]>
     getTract: (uuid: string) => Promise<Tract>
-    createTract: (name: string, description: string, definition: TractDefinition) => Promise<{ tract: Tract; warnings: string[] }>
-    updateTract: (uuid: string, name: string, description: string, definition: TractDefinition) => Promise<{ tract: Tract; warnings: string[] }>
+    createTract: (
+        name: string, description: string, definition: TractDefinition,
+    ) => Promise<{ tract: Tract; warnings: string[] }>
+    updateTract: (
+        uuid: string, name: string, description: string, definition: TractDefinition,
+    ) => Promise<{ tract: Tract; warnings: string[] }>
     deleteTract: (uuid: string) => Promise<void>
     setTractEnabled: (uuid: string, enabled: boolean) => Promise<void>
     runTract: (tractUuid: string, params: unknown) => Promise<void>
@@ -36,7 +40,9 @@ export interface ITractsService {
     listTractTools: () => Promise<TractTool[]>
     listTriggerSources: () => Promise<TriggerSource[]>
 
-    createTrigger: (name: string, kind: string, source: string, config: unknown, payloadSchema: unknown) => Promise<CreatedTrigger>
+    createTrigger: (
+        name: string, kind: string, source: string, config: unknown, payloadSchema: unknown,
+    ) => Promise<CreatedTrigger>
     listTriggers: () => Promise<Trigger[]>
     deleteTrigger: (uuid: string) => Promise<void>
     setTriggerEnabled: (uuid: string, enabled: boolean) => Promise<void>
@@ -56,7 +62,9 @@ export class TractsService implements ITractsService {
         return toTract(res.tract!)
     }
 
-    async createTract(name: string, description: string, definition: TractDefinition): Promise<{ tract: Tract; warnings: string[] }> {
+    async createTract(
+        name: string, description: string, definition: TractDefinition,
+    ): Promise<{ tract: Tract; warnings: string[] }> {
         const res = await TractsAPI.CreateTract(
             {name, description, definition: definitionToProto(definition)},
             useUser.getState().auth.getInitReq(),
@@ -64,7 +72,9 @@ export class TractsService implements ITractsService {
         return {tract: toTract(res.tract!), warnings: res.warnings ?? []}
     }
 
-    async updateTract(uuid: string, name: string, description: string, definition: TractDefinition): Promise<{ tract: Tract; warnings: string[] }> {
+    async updateTract(
+        uuid: string, name: string, description: string, definition: TractDefinition,
+    ): Promise<{ tract: Tract; warnings: string[] }> {
         const res = await TractsAPI.UpdateTract(
             {uuid, name, description, definition: definitionToProto(definition)},
             useUser.getState().auth.getInitReq(),
@@ -107,7 +117,9 @@ export class TractsService implements ITractsService {
         return (res.sources ?? []).map(toTriggerSource)
     }
 
-    async createTrigger(name: string, kind: string, source: string, config: unknown, payloadSchema: unknown): Promise<CreatedTrigger> {
+    async createTrigger(
+        name: string, kind: string, source: string, config: unknown, payloadSchema: unknown,
+    ): Promise<CreatedTrigger> {
         const req: CreateTriggerRequest = {
             name,
             kind,
@@ -116,7 +128,9 @@ export class TractsService implements ITractsService {
             payloadSchema: JSON.stringify(payloadSchema ?? {}),
         }
         const res = await TractsAPI.CreateTrigger(req, useUser.getState().auth.getInitReq())
-        return {trigger: toTrigger(res.trigger!), webhookUrl: res.webhookUrl ?? "", webhookToken: res.webhookToken ?? ""}
+        return {
+            trigger: toTrigger(res.trigger!), webhookUrl: res.webhookUrl ?? "", webhookToken: res.webhookToken ?? "",
+        }
     }
 
     async listTriggers(): Promise<Trigger[]> {
@@ -134,7 +148,9 @@ export class TractsService implements ITractsService {
 
     async rotateTriggerToken(uuid: string): Promise<CreatedTrigger> {
         const res = await TractsAPI.RotateTriggerToken({uuid}, useUser.getState().auth.getInitReq())
-        return {trigger: toTrigger(res.trigger!), webhookUrl: res.webhookUrl ?? "", webhookToken: res.webhookToken ?? ""}
+        return {
+            trigger: toTrigger(res.trigger!), webhookUrl: res.webhookUrl ?? "", webhookToken: res.webhookToken ?? "",
+        }
     }
 
     async linkTrigger(triggerUuid: string, tractUuid: string, filters: TractCondition[]): Promise<void> {

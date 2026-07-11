@@ -1,6 +1,7 @@
 import {Button} from "@vervstack/chures"
 
-import cls from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessRow/DbAccessRow.module.css"
+import cls
+    from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessRow/DbAccessRow.module.css"
 
 interface DbAccessRowProps {
     db: string

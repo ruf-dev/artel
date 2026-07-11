@@ -6,7 +6,8 @@ import {useVaultMutations, VaultInviteItem} from "@/app/hooks/Vaults.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import InviteRow from "@/dialogs/ManageVaultDialog/components/InviteRow/InviteRow.tsx"
-import CreateInviteLinkDialog from "@/dialogs/ManageVaultDialog/components/CreateInviteLinkDialog/CreateInviteLinkDialog.tsx"
+import CreateInviteLinkDialog
+    from "@/dialogs/ManageVaultDialog/components/CreateInviteLinkDialog/CreateInviteLinkDialog.tsx"
 
 interface Props {
     vaultId: string

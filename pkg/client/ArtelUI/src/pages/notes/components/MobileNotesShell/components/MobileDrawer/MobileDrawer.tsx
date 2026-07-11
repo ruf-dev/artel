@@ -6,6 +6,7 @@ import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import NotesSidebar from "@/pages/notes/components/NotesSidebar/NotesSidebar.tsx"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 import ArtelLogoIcon from "@/pages/notes/components/icons/ArtelLogoIcon.tsx"
+// eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
 import DrawerCloseButton from "@/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.tsx"
 import cls from "@/pages/notes/components/MobileNotesShell/components/MobileDrawer/MobileDrawer.module.css"
 
@@ -59,7 +60,15 @@ export default function MobileDrawer({ open, onClose, vaultOptions }: MobileDraw
                 {vaultId && (
                     <div className={cls.DrawerFooter}>
                         <Button variant="primary" className={cls.NewNoteBtn} onClick={handleNewNote}>
-                            <svg viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                            <svg
+                                viewBox="0 0 12 12"
+                                width={11}
+                                height={11}
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                            >
                                 <path d="M6 1v10M1 6h10" />
                             </svg>
                             New Note

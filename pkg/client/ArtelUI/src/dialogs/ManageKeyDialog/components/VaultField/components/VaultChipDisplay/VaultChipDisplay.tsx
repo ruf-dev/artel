@@ -1,5 +1,6 @@
 import {useVaults} from "@/app/hooks/Vaults.ts"
-import cls from "@/dialogs/ManageKeyDialog/components/VaultField/components/VaultChipDisplay/VaultChipDisplay.module.css"
+import cls
+    from "@/dialogs/ManageKeyDialog/components/VaultField/components/VaultChipDisplay/VaultChipDisplay.module.css"
 
 interface VaultChipDisplayProps {
     vault: ReturnType<typeof useVaults>["vaults"][number] | undefined

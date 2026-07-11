@@ -2,7 +2,9 @@ import {Button} from "@vervstack/chures"
 
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 import {mailProviderIcon} from "@/app/utils/mailProviderIcon"
-import cls from "@/dialogs/ManageEmailDialog/components/AccountsSection/components/EmailConnectionRow/EmailConnectionRow.module.css"
+import cls
+// eslint-disable-next-line max-len -- path too long to fit even unindented, can't shorten without changing import
+from "@/dialogs/ManageEmailDialog/components/AccountsSection/components/EmailConnectionRow/EmailConnectionRow.module.css"
 
 interface EmailConnectionRowProps {
     connection: ExternalConnectionInfo
@@ -23,7 +25,13 @@ export default function EmailConnectionRow({connection, onRemove, onEdit}: Email
                 <span className={cls.AccountEmail}>{email}</span>
             </div>
             <div className={cls.AccountRowActions}>
-                <Button variant="iconDanger" onClick={e => { e.stopPropagation(); onRemove(connection) }} aria-label="Remove">×</Button>
+                <Button
+                    variant="iconDanger"
+                    onClick={e => { e.stopPropagation(); onRemove(connection) }}
+                    aria-label="Remove"
+                >
+                    ×
+                </Button>
             </div>
         </div>
     )

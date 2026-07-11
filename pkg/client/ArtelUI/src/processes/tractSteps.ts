@@ -24,7 +24,12 @@ function withBranch(step: TractStep, branch: "then" | "else" | "steps", arr: Tra
     return {...step, steps: arr}
 }
 
-function walkAndReplaceBranch(steps: TractStep[], parentId: string, branch: "then" | "else" | "steps", updater: (arr: TractStep[]) => TractStep[]): TractStep[] {
+function walkAndReplaceBranch(
+    steps: TractStep[],
+    parentId: string,
+    branch: "then" | "else" | "steps",
+    updater: (arr: TractStep[]) => TractStep[]
+): TractStep[] {
     return steps.map(step => {
         if (step.id === parentId) {
             return withBranch(step, branch, updater(branchArray(step, branch)))
@@ -39,12 +44,16 @@ function walkAndReplaceBranch(steps: TractStep[], parentId: string, branch: "the
 }
 
 /** mutateAt applies updater to the ordered array identified by location, returning a new root tree. */
-export function mutateAt(rootSteps: TractStep[], location: Location, updater: (arr: TractStep[]) => TractStep[]): TractStep[] {
+export function mutateAt(
+    rootSteps: TractStep[], location: Location, updater: (arr: TractStep[]) => TractStep[]
+): TractStep[] {
     if (location.parentId === null) return updater(rootSteps)
     return walkAndReplaceBranch(rootSteps, location.parentId, location.branch, updater)
 }
 
-export function insertStepAt(rootSteps: TractStep[], location: Location, index: number, newStep: TractStep): TractStep[] {
+export function insertStepAt(
+    rootSteps: TractStep[], location: Location, index: number, newStep: TractStep
+): TractStep[] {
     return mutateAt(rootSteps, location, arr => {
         const copy = [...arr]
         copy.splice(index, 0, newStep)
@@ -63,7 +72,13 @@ export function appendStep(rootSteps: TractStep[], location: Location, newStep: 
  * rejoining afterward, matching the canvas's fork/join visual model (see
  * pages/tract-canvas/processes/tractCanvasLayout.ts). If the existing step at that position is
  * already a "parallel" step, newStep is added as another lane instead of nesting parallels. */
-export function insertBlockAfter(rootSteps: TractStep[], location: Location, index: number, newStep: TractStep, existingIds: Set<string>): TractStep[] {
+export function insertBlockAfter(
+    rootSteps: TractStep[],
+    location: Location,
+    index: number,
+    newStep: TractStep,
+    existingIds: Set<string>
+): TractStep[] {
     return mutateAt(rootSteps, location, arr => {
         const existing = arr[index]
         if (!existing) {
@@ -119,7 +134,9 @@ export function collapseThinParallels(steps: TractStep[]): TractStep[] {
 
 /** replaceStep finds stepId anywhere in the tree and replaces it via updater, preserving its
  * children unless updater itself changes them. */
-export function replaceStep(rootSteps: TractStep[], stepId: string, updater: (step: TractStep) => TractStep): TractStep[] {
+export function replaceStep(
+    rootSteps: TractStep[], stepId: string, updater: (step: TractStep) => TractStep
+): TractStep[] {
     return rootSteps.map(step => {
         if (step.id === stepId) return updater(step)
         return {
@@ -178,7 +195,10 @@ export function buildStepFromDraft(draft: StepDraft, existingIds: Set<string>): 
     const id = generateStepId(baseName, existingIds)
 
     if (draft.type === "action") {
-        return {id, name: id, type: "action", mcp: draft.mcp, tool: draft.tool, connection_uuid: draft.connectionUuid, params: {}}
+        return {
+            id, name: id, type: "action", mcp: draft.mcp, tool: draft.tool,
+            connection_uuid: draft.connectionUuid, params: {},
+        }
     }
     if (draft.type === "condition") {
         return {id, name: id, type: "condition", conditions: [{left: "", op: "==", right: ""}], then: [], else: []}

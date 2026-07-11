@@ -41,7 +41,12 @@ export default function CreateInviteLinkDialog({vaultId, onCreated}: Props) {
     }
 
     return (
-        <div className={cls.CreateInviteLinkDialogContainer} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
+        <div
+            className={cls.CreateInviteLinkDialogContainer}
+            onClick={e => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+        >
             <div className={cls.ModalHead}>
                 <h2 className={cls.ModalTitle}>New invite link</h2>
                 <ModalClose onClick={CloseDialog} className={cls.ModalClose}/>

@@ -12,7 +12,9 @@ export default function HeroSegment({onAddClick}: { onAddClick: () => void }) {
                 <div className={cls.Eyebrow}>Workspace</div>
                 <h1 className={cls.HeroTitle}>Task trackers</h1>
                 <p className={cls.HeroSub}>
-                    <b>{loading ? "…" : `${trackers.length} ${trackers.length === 1 ? "connection" : "connections"}`}</b>
+                    <b>
+                        {loading ? "…" : `${trackers.length} ${trackers.length === 1 ? "connection" : "connections"}`}
+                    </b>
                     {" · "}<span>connected task tracking services</span>
                 </p>
             </div>

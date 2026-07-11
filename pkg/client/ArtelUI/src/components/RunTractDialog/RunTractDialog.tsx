@@ -81,7 +81,11 @@ export default function RunTractDialog({tract, onRun}: Props) {
             {schemaLoading ? (
                 <p className={cls.Empty}>Loading…</p>
             ) : schema ? (
-                <ParamsList schema={schema} values={paramValues} onChange={(k, v) => setParamValues(p => ({...p, [k]: v}))}/>
+                <ParamsList
+                    schema={schema}
+                    values={paramValues}
+                    onChange={(k, v) => setParamValues(p => ({...p, [k]: v}))}
+                />
             ) : (
                 <textarea
                     className={cls.JsonInput}

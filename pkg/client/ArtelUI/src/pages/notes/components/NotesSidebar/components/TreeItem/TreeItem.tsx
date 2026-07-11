@@ -38,7 +38,10 @@ export default function TreeItem(props: TreeItemProps) {
                     onClick={e => { e.stopPropagation(); onAddInFolder?.() }}
                     title="New note here"
                 >
-                    <svg viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                    <svg
+                        viewBox="0 0 12 12" width={11} height={11} fill="none" stroke="currentColor"
+                        strokeWidth="1.6" strokeLinecap="round"
+                    >
                         <path d="M6 1v10M1 6h10" />
                     </svg>
                 </Button>

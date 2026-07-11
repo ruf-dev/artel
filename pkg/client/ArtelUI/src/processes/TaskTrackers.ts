@@ -1,5 +1,7 @@
 import useUser from "@/hooks/user/User.ts"
-import {TaskTrackerInfo, TaskTrackersAPI, AddTaskTrackerRequest, AddTaskTrackerResponse} from "@/app/api/artel/task_trackers.pb.ts"
+import {
+    TaskTrackerInfo, TaskTrackersAPI, AddTaskTrackerRequest, AddTaskTrackerResponse,
+} from "@/app/api/artel/task_trackers.pb.ts"
 
 export interface ITaskTrackersService {
     list: () => Promise<TaskTrackerInfo[]>

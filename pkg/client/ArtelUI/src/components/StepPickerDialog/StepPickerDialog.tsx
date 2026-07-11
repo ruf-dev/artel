@@ -46,7 +46,9 @@ export default function StepPickerDialog({onConfirm}: Props) {
 
     function handleConfirmConnection() {
         if (!selectedTool || !selectedConnectionId) return
-        onConfirm({type: "action", mcp: selectedTool.mcp, tool: selectedTool.tool, connectionUuid: selectedConnectionId})
+        onConfirm({
+            type: "action", mcp: selectedTool.mcp, tool: selectedTool.tool, connectionUuid: selectedConnectionId,
+        })
         CloseDialog()
     }
 

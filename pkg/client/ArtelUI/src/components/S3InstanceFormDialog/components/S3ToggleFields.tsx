@@ -13,8 +13,20 @@ interface Props {
 export default function S3ToggleFields({useSsl, pathStyle, disabled, onUseSslChange, onPathStyleChange}: Props) {
     return (
         <div className={cls.ToggleGroup}>
-            <Toggle checked={useSsl} onChange={onUseSslChange} disabled={disabled} label="Use SSL" className={cls.ToggleRow}/>
-            <Toggle checked={pathStyle} onChange={onPathStyleChange} disabled={disabled} label="Path-style addressing" className={cls.ToggleRow}/>
+            <Toggle
+                checked={useSsl}
+                onChange={onUseSslChange}
+                disabled={disabled}
+                label="Use SSL"
+                className={cls.ToggleRow}
+            />
+            <Toggle
+                checked={pathStyle}
+                onChange={onPathStyleChange}
+                disabled={disabled}
+                label="Path-style addressing"
+                className={cls.ToggleRow}
+            />
             <p className={cls.ToggleCaption}>
                 Required for Garage and most self-hosted S3-compatible stores.
             </p>

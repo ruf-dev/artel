@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-len -- import path itself exceeds 120 chars and cannot be wrapped
 import cls from "@/pages/task-trackers/components/AddTrackerDialog/screens/components/TypeGrid/components/TypeCardText/TypeCardText.module.css"
 
 export default function TypeCardText({label, desc}: {label: string; desc: string}) {

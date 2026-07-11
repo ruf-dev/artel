@@ -1,5 +1,8 @@
-import DbAccessRow from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessRow/DbAccessRow.tsx"
-import cls from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessList/DbAccessList.module.css"
+import DbAccessRow
+    from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessRow/DbAccessRow.tsx"
+import cls
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/components/DbAccessList/DbAccessList.module.css"
 
 interface DbAccessListProps {
     databases: string[]

@@ -6,7 +6,8 @@ import {AdminCouchAPI, CouchUserEntry} from "@/app/api/artel/admin_couch.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
-import ChangePasswordDialog from "@/pages/admin/components/UsersTab/components/ChangePasswordDialog/ChangePasswordDialog.tsx"
+import ChangePasswordDialog
+    from "@/pages/admin/components/UsersTab/components/ChangePasswordDialog/ChangePasswordDialog.tsx"
 import ManageAccessDialog from "@/pages/admin/components/UsersTab/components/ManageAccessDialog/ManageAccessDialog.tsx"
 
 interface UserRowProps {

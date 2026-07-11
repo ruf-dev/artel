@@ -1,7 +1,8 @@
 import {Button} from "@vervstack/chures"
 
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
-import EmailConnectionRow from "@/dialogs/ManageEmailDialog/components/AccountsSection/components/EmailConnectionRow/EmailConnectionRow.tsx"
+import EmailConnectionRow
+    from "@/dialogs/ManageEmailDialog/components/AccountsSection/components/EmailConnectionRow/EmailConnectionRow.tsx"
 import cls from "@/dialogs/ManageEmailDialog/components/AccountsSection/AccountsSection.module.css"
 
 interface AccountsSectionProps {

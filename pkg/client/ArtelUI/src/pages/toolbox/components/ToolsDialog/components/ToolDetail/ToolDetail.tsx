@@ -5,18 +5,27 @@ import {McpToolInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import {coerceParams} from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/processes/coerceParams.ts"
-import SmtpActionView from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/SmtpActionView/SmtpActionView.tsx"
-import ImapActionView from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ImapActionView/ImapActionView.tsx"
-import ConnectionPicker from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx"
-import ParamsList from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/ParamsList.tsx"
-import ResultPanel from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.tsx"
+import SmtpActionView
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/SmtpActionView/SmtpActionView.tsx"
+import ImapActionView
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ImapActionView/ImapActionView.tsx"
+import ConnectionPicker
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx"
+import ParamsList
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/ParamsList.tsx"
+import ResultPanel
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.tsx"
 import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.module.css"
 
-export default function ToolDetail({candidate, tool, onBack}: { candidate: MomCandidate; tool: McpToolInfo; onBack: () => void }) {
+export default function ToolDetail(
+    {candidate, tool, onBack}: { candidate: MomCandidate; tool: McpToolInfo; onBack: () => void }
+) {
     const {executeMomTool} = useMcpKeys()
     const bakeError = useBakeError()
     const connections = candidate.connections ?? []
-    const [selectedConnectionId, setSelectedConnectionId] = useState<string>(connections.length === 1 ? (connections[0].id ?? "") : "")
+    const [selectedConnectionId, setSelectedConnectionId] = useState<string>(
+        connections.length === 1 ? (connections[0].id ?? "") : ""
+    )
     const [paramValues, setParamValues] = useState<Record<string, string>>({})
     const [running, setRunning] = useState(false)
     const [result, setResult] = useState<string | null>(null)
@@ -43,7 +52,11 @@ export default function ToolDetail({candidate, tool, onBack}: { candidate: MomCa
             <div className={cls.ToolDetailBody}>
                 {tool.smtp && <SmtpActionView action={tool.smtp}/>}
                 {tool.imap && <ImapActionView action={tool.imap}/>}
-                <ConnectionPicker connections={connections} selectedId={selectedConnectionId} onSelect={setSelectedConnectionId}/>
+                <ConnectionPicker
+                    connections={connections}
+                    selectedId={selectedConnectionId}
+                    onSelect={setSelectedConnectionId}
+                />
                 {tool.params && <ParamsList params={tool.params} values={paramValues} onChange={setParam}/>}
                 {result !== null && <ResultPanel result={result}/>}
             </div>

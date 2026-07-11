@@ -48,7 +48,11 @@ export default function LoginContent({login, navigate}: LoginContentProps) {
                 }
             })
             .catch(function (err: unknown) {
-                bake({title: "Telegram login failed", description: err instanceof Error ? err.message : "Telegram login failed", level: "Error"})
+                bake({
+                    title: "Telegram login failed",
+                    description: err instanceof Error ? err.message : "Telegram login failed",
+                    level: "Error",
+                })
             })
             .finally(CloseDialog)
     }

@@ -7,7 +7,8 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import DialogHead from "@/dialogs/ConnectionDetailDialog/components/DialogHead/DialogHead.tsx"
-import NotConnectedContent from "@/dialogs/ConnectionDetailDialog/components/NotConnectedContent/NotConnectedContent.tsx"
+import NotConnectedContent
+    from "@/dialogs/ConnectionDetailDialog/components/NotConnectedContent/NotConnectedContent.tsx"
 import ConnectedContent from "@/dialogs/ConnectionDetailDialog/components/ConnectedContent/ConnectedContent.tsx"
 
 type ProviderConfig = {

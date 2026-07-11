@@ -1,7 +1,9 @@
 import {Button} from "@vervstack/chures"
 
 import ChevronLeftIcon from "@/pages/notes/components/icons/ChevronLeftIcon.tsx"
-import cls from "@/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.module.css"
+import cls
+// eslint-disable-next-line max-len -- path too long to fit even unindented, can't shorten without changing import
+from "@/pages/notes/components/MobileNotesShell/components/MobileDrawer/components/DrawerCloseButton/DrawerCloseButton.module.css"
 
 interface DrawerCloseButtonProps {
     onClose: () => void

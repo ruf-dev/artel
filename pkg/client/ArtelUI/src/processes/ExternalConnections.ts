@@ -1,4 +1,6 @@
-import {AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
+import {
+    AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
+} from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -23,7 +25,9 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     }
 
     async initiateGoogleOAuth(): Promise<string> {
-        const res = await ExternalConnectionsAPI.InitiateGoogleOAuth({origin: window.location.origin}, useUser.getState().auth.getInitReq())
+        const res = await ExternalConnectionsAPI.InitiateGoogleOAuth(
+            {origin: window.location.origin}, useUser.getState().auth.getInitReq(),
+        )
         return res.authUrl ?? ""
     }
 
@@ -46,7 +50,9 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     }
 
     async addSpreadsheet(spreadsheetId: string, name: string): Promise<Spreadsheet> {
-        const res = await ExternalConnectionsAPI.AddSpreadsheet({spreadsheetId, name}, useUser.getState().auth.getInitReq())
+        const res = await ExternalConnectionsAPI.AddSpreadsheet(
+            {spreadsheetId, name}, useUser.getState().auth.getInitReq(),
+        )
         return res.spreadsheet!
     }
 

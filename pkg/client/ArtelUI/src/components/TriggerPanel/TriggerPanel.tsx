@@ -33,7 +33,8 @@ export default function TriggerPanel({tractUuid, linkedTriggerSummaries}: Props)
                 confirmLabel="Unlink"
                 danger
                 onClose={CloseDialog}
-                onConfirm={() => unlinkTrigger(triggerUuid, tractUuid).catch(err => bakeError("Failed to unlink trigger", err))}
+                onConfirm={() => unlinkTrigger(triggerUuid, tractUuid)
+                    .catch(err => bakeError("Failed to unlink trigger", err))}
             />
         )
     }

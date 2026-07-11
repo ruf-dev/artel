@@ -1,4 +1,5 @@
-import cls from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptText/OptText.module.css"
+import cls
+    from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptText/OptText.module.css"
 
 interface OptTextProps {
     name: string

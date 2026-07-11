@@ -35,7 +35,10 @@ export default function MobileTopBar({ selectedPath, noteContent, sidebarOpen, o
     return (
         <div className={cls.MobileTopBarContainer}>
             <Button variant="ghost" className={hamburgerClass} onClick={onHamburgerClick} aria-label="Open sidebar">
-                <svg viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                <svg
+                    viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor"
+                    strokeWidth="1.6" strokeLinecap="round"
+                >
                     <path d="M3 4.5h12M3 9h8M3 13.5h10" />
                 </svg>
             </Button>
@@ -44,7 +47,10 @@ export default function MobileTopBar({ selectedPath, noteContent, sidebarOpen, o
                 {meta && <div className={cls.NoteMeta}>{meta}</div>}
             </div>
             <Button variant="ghost" className={cls.ActionBtn} aria-label="Share">
-                <svg viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <svg
+                    viewBox="0 0 18 18" width={16} height={16} fill="none" stroke="currentColor"
+                    strokeWidth="1.5" strokeLinecap="round"
+                >
                     <circle cx="14" cy="3.5" r="1.8" />
                     <circle cx="4" cy="9" r="1.8" />
                     <circle cx="14" cy="14.5" r="1.8" />

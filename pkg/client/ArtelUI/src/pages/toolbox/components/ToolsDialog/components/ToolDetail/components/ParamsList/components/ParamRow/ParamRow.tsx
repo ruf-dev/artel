@@ -1,6 +1,10 @@
 import {ToolParamDef} from "@/app/api/artel/mcp_keys.pb.ts"
-import ParamInput from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/components/ParamInput/ParamInput.tsx"
-import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/ParamRow.module.css"
+import ParamInput
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/components/ParamInput/ParamInput.tsx"
+import cls
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/ParamRow.module.css"
 
 export default function ParamRow({name, def, value, onChange}: {
     name: string

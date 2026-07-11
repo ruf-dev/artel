@@ -1,6 +1,7 @@
 import {Input} from "@vervstack/chures"
 
 import {ToolParamDef} from "@/app/api/artel/mcp_keys.pb.ts"
+// eslint-disable-next-line max-len -- deep nested import path can't be shortened without changing the import
 import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/components/ParamInput/ParamInput.module.css"
 
 export default function ParamInput({def, value, onChange}: {

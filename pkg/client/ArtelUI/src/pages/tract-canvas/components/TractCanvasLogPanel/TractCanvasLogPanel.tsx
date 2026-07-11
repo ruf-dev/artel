@@ -46,7 +46,9 @@ export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSele
                         ))}
                     </div>
                     <div className={cls.LogScroll}>
-                        {selectedRunUuid ? <RunLog runUuid={selectedRunUuid}/> : <p className={cls.Empty}>Select a run to see its log.</p>}
+                        {selectedRunUuid
+                            ? <RunLog runUuid={selectedRunUuid}/>
+                            : <p className={cls.Empty}>Select a run to see its log.</p>}
                     </div>
                 </div>
             </div>

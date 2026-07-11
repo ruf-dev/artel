@@ -52,7 +52,9 @@ export default function TractCanvasInspectorBody(props: Props) {
                     <ChevronRightIcon className={cn(cls.EnlargeChevron, enlarged && cls.EnlargeChevronOpen)}/>
                 </Button>
                 <div className={cls.Titles}>
-                    <div className={cls.Title}>{node.kind === "trigger" ? "Trigger" : step?.name || step?.id || node.kind}</div>
+                    <div className={cls.Title}>
+                        {node.kind === "trigger" ? "Trigger" : step?.name || step?.id || node.kind}
+                    </div>
                     <div className={cls.Sub}>{node.kind === "trigger" ? "trigger" : node.kind}</div>
                 </div>
                 <Button variant="iconDanger" className={cls.CloseBtn} onClick={onClose} aria-label="Close inspector">
@@ -81,18 +83,40 @@ export default function TractCanvasInspectorBody(props: Props) {
                     <ParallelBody step={step} onOpenAddBlock={onOpenAddBlock}/>
                 )}
                 {step && node.kind === "group" && (
-                    <GroupBody rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema} onChangeSteps={onChangeSteps}/>
+                    <GroupBody
+                        rootSteps={rootSteps}
+                        step={step}
+                        tools={tools}
+                        triggerSchema={triggerSchema}
+                        onChangeSteps={onChangeSteps}
+                    />
                 )}
                 {step && (
-                    <DangerZone rootSteps={rootSteps} step={step} location={node.location} onChangeSteps={onChangeSteps} onClose={onClose}/>
+                    <DangerZone
+                        rootSteps={rootSteps}
+                        step={step}
+                        location={node.location}
+                        onChangeSteps={onChangeSteps}
+                        onClose={onClose}
+                    />
                 )}
                 {node.kind === "action" || node.kind === "trigger" ? (
                     <Section title="Output">
-                        <OutputFields schema={node.kind === "trigger" ? triggerSchema : tools.find(t => t.mcp === step?.mcp && t.tool === step?.tool)?.outputSchema}/>
+                        <OutputFields
+                            schema={
+                                node.kind === "trigger"
+                                    ? triggerSchema
+                                    : tools.find(t => t.mcp === step?.mcp && t.tool === step?.tool)?.outputSchema
+                            }
+                        />
                     </Section>
                 ) : (
                     <Section title="Flow">
-                        <Button variant="ghost" className={cls.AddStepBtn} onClick={() => onOpenAddBlock(node.nextLocation, node.nextIndex)}>
+                        <Button
+                            variant="ghost"
+                            className={cls.AddStepBtn}
+                            onClick={() => onOpenAddBlock(node.nextLocation, node.nextIndex)}
+                        >
                             + Add step after
                         </Button>
                     </Section>

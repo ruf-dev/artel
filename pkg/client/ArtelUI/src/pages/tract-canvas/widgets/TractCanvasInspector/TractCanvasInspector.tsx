@@ -6,7 +6,8 @@ import {SchemaNode, TractStep, TractTool, TractTriggerSummary} from "@/processes
 import {Location} from "@/processes/tractSteps.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {cn} from "@/app/utils/cn.ts"
-import TractCanvasInspectorBody from "@/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.tsx"
+import TractCanvasInspectorBody
+    from "@/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.tsx"
 
 interface Props {
     node: CanvasNode | null

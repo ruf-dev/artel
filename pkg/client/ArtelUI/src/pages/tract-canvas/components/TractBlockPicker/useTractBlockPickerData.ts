@@ -45,7 +45,9 @@ export function useTractBlockPickerData(args: Args) {
         for (const t of args.tools) {
             if (t.mcp === BUILTIN_MCP) continue
             if (args.connFilter && t.mcp !== args.connFilter) continue
-            if (q && !`${t.mcp}.${t.tool}`.toLowerCase().includes(q) && !t.description?.toLowerCase().includes(q)) continue
+            if (
+                q && !`${t.mcp}.${t.tool}`.toLowerCase().includes(q) && !t.description?.toLowerCase().includes(q)
+            ) continue
             ;(acc[t.mcp] ??= []).push(t)
         }
         return acc
@@ -58,7 +60,9 @@ export function useTractBlockPickerData(args: Args) {
         })
     }, [grouped, availableMcps])
 
-    const logicOptions = args.connFilter ? [] : LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
+    const logicOptions = args.connFilter
+        ? []
+        : LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
 
     return {connectedCandidates, grouped, orderedGroups, logicOptions}
 }

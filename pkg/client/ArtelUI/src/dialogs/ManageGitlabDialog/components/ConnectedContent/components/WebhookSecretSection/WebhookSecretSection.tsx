@@ -5,9 +5,13 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
-import cls from "@/dialogs/ManageGitlabDialog/components/ConnectedContent/components/WebhookSecretSection/WebhookSecretSection.module.css"
+import cls
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/dialogs/ManageGitlabDialog/components/ConnectedContent/components/WebhookSecretSection/WebhookSecretSection.module.css"
 
-export default function WebhookSecretSection({webhookSecretSet, webhookUrl}: { webhookSecretSet: boolean; webhookUrl: string }) {
+export default function WebhookSecretSection(
+    {webhookSecretSet, webhookUrl}: { webhookSecretSet: boolean; webhookUrl: string },
+) {
     const [generating, setGenerating] = useState(false)
 
     const {generateGitlabWebhookSecret} = useExternalConnections()

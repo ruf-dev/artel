@@ -37,23 +37,59 @@ export default function LinkScreen() {
             <DialogHeaderWithClose title="Link existing trigger"/>
             <div className={cls.Body}>
                 {linkable.map(t => (
-                    <SelectOption key={t.uuid} label={`${t.name} (${t.kind}/${t.source})`} selected={t.uuid === context.selectedTriggerId} onSelect={() => context.setSelectedTriggerId(t.uuid)}/>
+                    <SelectOption
+                        key={t.uuid}
+                        label={`${t.name} (${t.kind}/${t.source})`}
+                        selected={t.uuid === context.selectedTriggerId}
+                        onSelect={() => context.setSelectedTriggerId(t.uuid)}
+                    />
                 ))}
-                {linkable.length === 0 && <p className={cls.Notice}>No other triggers available — create a new one instead.</p>}
+                {linkable.length === 0 && (
+                    <p className={cls.Notice}>No other triggers available — create a new one instead.</p>
+                )}
                 {selected && (
                     <div className={cls.Field}>
-                        <span className={cls.FieldLabel}>Filters (AND, optional — gate which deliveries start this tract)</span>
+                        <span className={cls.FieldLabel}>
+                            Filters (AND, optional — gate which deliveries start this tract)
+                        </span>
                         {context.filters.map((f, i) => (
                             <div className={cls.SchemaFieldRow} key={i}>
-                                <TemplateInput value={f.left} onChange={v => context.setFilters(fs => fs.map((x, xi) => xi === i ? {...x, left: v} : x))} sources={filterSources} placeholder="left"/>
-                                <select className={cls.PlainSelect} value={f.op} onChange={e => context.setFilters(fs => fs.map((x, xi) => xi === i ? {...x, op: e.target.value as TractCondition["op"]} : x))}>
-                                    {["==", "!=", ">", "<", ">=", "<=", "contains", "glob", "regex"].map(op => <option key={op} value={op}>{op}</option>)}
+                                <TemplateInput
+                                    value={f.left}
+                                    onChange={v => context.setFilters(fs => fs.map((x, xi) =>
+                                        xi === i ? {...x, left: v} : x))}
+                                    sources={filterSources}
+                                    placeholder="left"
+                                />
+                                <select
+                                    className={cls.PlainSelect}
+                                    value={f.op}
+                                    onChange={e => context.setFilters(fs => fs.map((x, xi) =>
+                                        xi === i ? {...x, op: e.target.value as TractCondition["op"]} : x))}
+                                >
+                                    {["==", "!=", ">", "<", ">=", "<=", "contains", "glob", "regex"].map(op => (
+                                        <option key={op} value={op}>{op}</option>
+                                    ))}
                                 </select>
-                                <TemplateInput value={f.right} onChange={v => context.setFilters(fs => fs.map((x, xi) => xi === i ? {...x, right: v} : x))} sources={filterSources} placeholder="right"/>
-                                <Button variant="iconDanger" className={cls.RemoveRowBtn} onClick={() => context.setFilters(fs => fs.filter((_, xi) => xi !== i))} aria-label="Remove filter">✕</Button>
+                                <TemplateInput
+                                    value={f.right}
+                                    onChange={v => context.setFilters(fs => fs.map((x, xi) =>
+                                        xi === i ? {...x, right: v} : x))}
+                                    sources={filterSources}
+                                    placeholder="right"
+                                />
+                                <Button
+                                    variant="iconDanger"
+                                    className={cls.RemoveRowBtn}
+                                    onClick={() => context.setFilters(fs => fs.filter((_, xi) => xi !== i))}
+                                    aria-label="Remove filter"
+                                >✕</Button>
                             </div>
                         ))}
-                        <Button variant="ghost" onClick={() => context.setFilters(fs => [...fs, {left: "", op: "==", right: ""}])}>+ Add filter</Button>
+                        <Button
+                            variant="ghost"
+                            onClick={() => context.setFilters(fs => [...fs, {left: "", op: "==", right: ""}])}
+                        >+ Add filter</Button>
                     </div>
                 )}
             </div>

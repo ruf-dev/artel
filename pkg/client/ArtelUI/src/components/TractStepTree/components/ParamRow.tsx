@@ -22,7 +22,12 @@ export default function ParamRow({name, def, required, value, sources, onChange}
                     {def.enum.map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
             ) : (
-                <TemplateInput value={value} onChange={v => onChange(name, v)} sources={sources} placeholder={def.type}/>
+                <TemplateInput
+                    value={value}
+                    onChange={v => onChange(name, v)}
+                    sources={sources}
+                    placeholder={def.type}
+                />
             )}
         </div>
     )

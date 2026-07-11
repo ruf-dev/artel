@@ -3,7 +3,8 @@ import {Button} from "@vervstack/chures"
 import cls from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserRow/ArtelUserRow.module.css"
 import {ArtelUserEntry} from "@/app/api/artel/admin_users.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
-import ArtelUserDetailDialog from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.tsx"
+import ArtelUserDetailDialog
+    from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.tsx"
 
 interface ArtelUserRowProps {
     user: ArtelUserEntry

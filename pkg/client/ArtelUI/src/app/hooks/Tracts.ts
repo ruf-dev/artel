@@ -1,7 +1,9 @@
 import {create} from 'zustand'
 import {useQuery} from '@tanstack/react-query'
 
-import {CreatedTrigger, Tract, TractDefinition, TractRun, TractRunStep, TractTool, tractsService, Trigger} from "@/processes/Tracts.ts"
+import {
+    CreatedTrigger, Tract, TractDefinition, TractRun, TractRunStep, TractTool, tractsService, Trigger,
+} from "@/processes/Tracts.ts"
 import {retryOnStatus} from "@/processes/grpcErrors.ts"
 import useUser from "@/hooks/user/User.ts"
 
@@ -62,8 +64,12 @@ interface TractsState {
     triggersLoading: boolean
 
     fetch: () => Promise<void>
-    createTract: (name: string, description: string, definition: TractDefinition) => Promise<{ tract: Tract; warnings: string[] }>
-    updateTract: (uuid: string, name: string, description: string, definition: TractDefinition) => Promise<{ tract: Tract; warnings: string[] }>
+    createTract: (
+        name: string, description: string, definition: TractDefinition,
+    ) => Promise<{ tract: Tract; warnings: string[] }>
+    updateTract: (
+        uuid: string, name: string, description: string, definition: TractDefinition,
+    ) => Promise<{ tract: Tract; warnings: string[] }>
     deleteTract: (uuid: string) => Promise<void>
     setEnabled: (uuid: string, enabled: boolean) => Promise<void>
     runTract: (tractUuid: string, params: unknown) => Promise<void>
@@ -75,7 +81,9 @@ interface TractsState {
     fetchTools: () => Promise<void>
 
     fetchTriggers: () => Promise<void>
-    createAndLinkTrigger: (name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string) => Promise<CreatedTrigger>
+    createAndLinkTrigger: (
+        name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string,
+    ) => Promise<CreatedTrigger>
     deleteTrigger: (uuid: string) => Promise<void>
     setTriggerEnabled: (uuid: string, enabled: boolean) => Promise<void>
     rotateTriggerToken: (uuid: string) => Promise<{ trigger: Trigger; webhookUrl: string; webhookToken: string }>
@@ -93,7 +101,9 @@ async function handleRotateTriggerToken(uuid: string, get: () => TractsState) {
     return result
 }
 
-async function handleCreateAndLinkTrigger(name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string, get: () => TractsState) {
+async function handleCreateAndLinkTrigger(
+    name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string, get: () => TractsState,
+) {
     const result = await tractsService.createTrigger(name, kind, source, {}, payloadSchema)
     await tractsService.linkTrigger(result.trigger.uuid, tractUuid, [])
     await Promise.all([get().fetchTriggers(), get().fetch()])
@@ -197,7 +207,9 @@ export const useTracts = create<TractsState>((set, get) => ({
         }
     },
 
-    createAndLinkTrigger: async (name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string) => handleCreateAndLinkTrigger(name, kind, source, payloadSchema, tractUuid, get),
+    createAndLinkTrigger: async (
+        name: string, kind: string, source: string, payloadSchema: unknown, tractUuid: string,
+    ) => handleCreateAndLinkTrigger(name, kind, source, payloadSchema, tractUuid, get),
 
     deleteTrigger: async (uuid: string) => {
         await tractsService.deleteTrigger(uuid)

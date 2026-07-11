@@ -1,6 +1,8 @@
 import {create} from 'zustand'
 
-import {AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, Spreadsheet} from "@/app/api/artel/external_connections.pb.ts"
+import {
+    AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, Spreadsheet,
+} from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
 interface ExternalConnectionsState {

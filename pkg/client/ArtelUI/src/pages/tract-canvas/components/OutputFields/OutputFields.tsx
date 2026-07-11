@@ -17,7 +17,9 @@ export default function OutputFields({schema}: Props) {
                 props.map(([name, def]) => (
                     <div className={cls.Row} key={name}>
                         <span className={cls.Key}>{name}</span>
-                        <span className={cn(cls.Val, cls.ValDim)}>{def.type}{def.description ? ` — ${def.description}` : ""}</span>
+                        <span className={cn(cls.Val, cls.ValDim)}>
+                            {def.type}{def.description ? ` — ${def.description}` : ""}
+                        </span>
                     </div>
                 ))
             )}

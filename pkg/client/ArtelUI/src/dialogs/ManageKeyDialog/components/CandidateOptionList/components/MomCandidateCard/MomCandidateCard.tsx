@@ -1,6 +1,7 @@
 import {Button} from "@vervstack/chures"
 
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
+// eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
 import cls from "@/dialogs/ManageKeyDialog/components/CandidateOptionList/components/MomCandidateCard/MomCandidateCard.module.css"
 
 interface MomCandidateCardProps {
@@ -22,7 +23,9 @@ export default function MomCandidateCard({candidate, connected, onSelect}: MomCa
             <div className={cls.MomCardHeader}>
                 <span className={cls.EntityCardTitle}>{candidate.name}</span>
                 <span className={count > 0 ? cls.Chip : `${cls.Chip} ${cls.ChipMuted}`}>
-                    {connected ? "Already connected" : count > 0 ? `${count} connection${count > 1 ? "s" : ""}` : "No connection"}
+                    {connected
+                        ? "Already connected"
+                        : count > 0 ? `${count} connection${count > 1 ? "s" : ""}` : "No connection"}
                 </span>
             </div>
             {candidate.description && <span className={cls.EntityCardDesc}>{candidate.description}</span>}

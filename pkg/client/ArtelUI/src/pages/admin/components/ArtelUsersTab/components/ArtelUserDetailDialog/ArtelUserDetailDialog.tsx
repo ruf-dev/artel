@@ -1,12 +1,15 @@
 import {useState, useEffect} from "react"
 import {Button, ModalClose} from "@vervstack/chures"
 
-import cls from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.module.css"
+import cls
+    from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.module.css"
 import {AdminUsersAPI, ArtelUserDetails} from "@/app/api/artel/admin_users.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
-import UserSessionsDialog from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx"
+import UserSessionsDialog
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx"
 
 interface ArtelUserDetailDialogProps {
     userId: string
@@ -47,7 +50,9 @@ export default function ArtelUserDetailDialog({userId}: ArtelUserDetailDialogPro
                 <p className={cls.Empty}>Loading…</p>
             ) : details ? (
                 <>
-                    <p className={cls.ModalSubtitle}><b>{details.username || "—"}</b> · {details.email || "no email"}</p>
+                    <p className={cls.ModalSubtitle}>
+                        <b>{details.username || "—"}</b> · {details.email || "no email"}
+                    </p>
                     <div className={cls.Field}>
                         <span className={cls.FieldLabel}>Permissions</span>
                         <span className={cls.RowMeta}>
@@ -55,7 +60,8 @@ export default function ArtelUserDetailDialog({userId}: ArtelUserDetailDialogPro
                             {details.hasEmails ? "Emails " : ""}
                             {details.hasTaskTrackers ? "TaskTrackers " : ""}
                             {details.hasNotes ? "Notes " : ""}
-                            {!details.isAdministrator && !details.hasEmails && !details.hasTaskTrackers && !details.hasNotes ? "none" : ""}
+                            {!details.isAdministrator && !details.hasEmails && !details.hasTaskTrackers
+                                && !details.hasNotes ? "none" : ""}
                         </span>
                     </div>
                     <div className={cls.Field}>

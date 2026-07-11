@@ -43,7 +43,12 @@ export default function FolderSection(props: FolderSectionProps) {
             <div className={cls.SectionHeaderContainer}>
                 <span className={cls.SectionLabel}>All Notes</span>
                 {showCreateButton && (
-                    <Button variant="ghost" className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
+                    <Button
+                        variant="ghost"
+                        className={cls.CreateNoteBtn}
+                        onClick={() => onCreateNote()}
+                        title="New note"
+                    >
                         <PlusIcon/>
                     </Button>
                 )}

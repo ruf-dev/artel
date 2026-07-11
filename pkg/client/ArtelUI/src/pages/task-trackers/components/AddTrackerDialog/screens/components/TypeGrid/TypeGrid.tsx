@@ -1,6 +1,8 @@
 import {Button} from "@vervstack/chures"
 
-import TypeCardText from "@/pages/task-trackers/components/AddTrackerDialog/screens/components/TypeGrid/components/TypeCardText/TypeCardText.tsx"
+import TypeCardText
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/task-trackers/components/AddTrackerDialog/screens/components/TypeGrid/components/TypeCardText/TypeCardText.tsx"
 import cls from "@/pages/task-trackers/components/AddTrackerDialog/screens/components/TypeGrid/TypeGrid.module.css"
 
 export default function TypeGrid({onChooseTrello}: {onChooseTrello: () => void}) {

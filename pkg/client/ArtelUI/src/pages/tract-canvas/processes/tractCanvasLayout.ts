@@ -166,7 +166,10 @@ function layoutFlow(
 
         if (step.type === "condition") {
             const id = step.id
-            nodes.push({id, col: curCol, row, kind: "condition", step, location, index, nextLocation: next.location, nextIndex: next.index})
+            nodes.push({
+                id, col: curCol, row, kind: "condition", step, location, index,
+                nextLocation: next.location, nextIndex: next.index,
+            })
             addEdges(edges, curPrevIds, id)
             curCol++
 
@@ -192,7 +195,10 @@ function layoutFlow(
             const lanes = step.steps ?? []
             if (lanes.length === 0) {
                 const id = step.id
-                nodes.push({id, col: curCol, row, kind: "parallel", step, location, index, nextLocation: next.location, nextIndex: next.index})
+                nodes.push({
+                    id, col: curCol, row, kind: "parallel", step, location, index,
+                    nextLocation: next.location, nextIndex: next.index,
+                })
                 addEdges(edges, curPrevIds, id)
                 curPrevIds = [id]
                 curCol++
@@ -218,14 +224,20 @@ function layoutFlow(
             // A selectable stand-in for the parallel step itself, so its box (drawn separately,
             // see layoutTract's parallelBoxes) can open the same inspector as any other node.
             // Not part of the visible flow: no column advance, no edges of its own.
-            nodes.push({id: step.id, col, row, kind: "parallel", step, location, index, nextLocation: next.location, nextIndex: next.index})
+            nodes.push({
+                id: step.id, col, row, kind: "parallel", step, location, index,
+                nextLocation: next.location, nextIndex: next.index,
+            })
             return
         }
 
         // action or group: one node each (a group's own nested steps are edited in the
         // inspector, not expanded onto the canvas)
         const id = step.id
-        nodes.push({id, col: curCol, row, kind: step.type === "group" ? "group" : "action", step, location, index, nextLocation: next.location, nextIndex: next.index})
+        nodes.push({
+            id, col: curCol, row, kind: step.type === "group" ? "group" : "action", step, location, index,
+            nextLocation: next.location, nextIndex: next.index,
+        })
         addEdges(edges, curPrevIds, id)
         curPrevIds = [id]
         curCol++

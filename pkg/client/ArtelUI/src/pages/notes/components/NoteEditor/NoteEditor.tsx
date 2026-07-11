@@ -40,11 +40,31 @@ export default function NoteEditor({ content, onChange, scrollTopRef, fontScale 
     return (
         <div className={cls.NoteEditorContainer}>
             <div className={cls.IconBar}>
-                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><BoldIcon /></div>
-                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><ItalicIcon /></div>
-                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><HeadingIcon /></div>
-                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><LinkIcon /></div>
-                <div className={cls.IconBarButton} data-tooltip-id="root-tooltip" data-tooltip-content="Still working on it"><CodeIcon /></div>
+                <div
+                    className={cls.IconBarButton}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content="Still working on it"
+                ><BoldIcon /></div>
+                <div
+                    className={cls.IconBarButton}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content="Still working on it"
+                ><ItalicIcon /></div>
+                <div
+                    className={cls.IconBarButton}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content="Still working on it"
+                ><HeadingIcon /></div>
+                <div
+                    className={cls.IconBarButton}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content="Still working on it"
+                ><LinkIcon /></div>
+                <div
+                    className={cls.IconBarButton}
+                    data-tooltip-id="root-tooltip"
+                    data-tooltip-content="Still working on it"
+                ><CodeIcon /></div>
             </div>
             <div className={cls.EditorRow}>
                 <LineNumbers lineCount={lineCount} scrollTop={scrollTop} lineHeight={21 * fontScale} />

@@ -32,7 +32,14 @@ export default function SchemaFieldRowEditor({field, onChange, onRemove, hideNam
                     {FIELD_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
                 {onRemove && (
-                    <Button variant="iconDanger" className={cls.RemoveRowBtn} onClick={onRemove} aria-label="Remove field">✕</Button>
+                    <Button
+                        variant="iconDanger"
+                        className={cls.RemoveRowBtn}
+                        onClick={onRemove}
+                        aria-label="Remove field"
+                    >
+                        ✕
+                    </Button>
                 )}
             </div>
             {field.type === "object" && (

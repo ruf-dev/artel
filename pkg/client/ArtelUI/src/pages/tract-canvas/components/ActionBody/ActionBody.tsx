@@ -66,7 +66,9 @@ export default function ActionBody(props: Props) {
                 <Section title="Inputs">
                     {Object.entries(tool.inputSchema.properties).map(([name, def]) => (
                         <div className={cls.ParamRow} key={name}>
-                            <span className={cls.Key}>{name}{tool.inputSchema.required?.includes(name) ? " *" : ""}</span>
+                            <span className={cls.Key}>
+                                {name}{tool.inputSchema.required?.includes(name) ? " *" : ""}
+                            </span>
                             {def.enum?.length ? (
                                 <select
                                     className={cls.Select}

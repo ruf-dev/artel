@@ -36,8 +36,14 @@ export interface StepColor {
 /** colorForKind mirrors the mockup's color law: coral = builtin/vault ops, blue = external
  * integrations, amber = logic/condition, purple = structural (parallel/group). */
 export function colorForKind(kind: "trigger" | "action" | "condition" | "parallel" | "group", mcp?: string): StepColor {
-    if (kind === "condition") return {bg: "var(--amber-dim)", border: "rgba(245,158,11,0.28)", fg: "var(--color-warning)"}
-    if (kind === "parallel" || kind === "group") return {bg: "rgba(167,139,250,0.12)", border: "rgba(167,139,250,0.28)", fg: "#a78bfa"}
-    if (kind === "trigger" || mcp === "artel" || !mcp) return {bg: "var(--coral-dim)", border: "var(--coral-border)", fg: "var(--coral)"}
+    if (kind === "condition") {
+        return {bg: "var(--amber-dim)", border: "rgba(245,158,11,0.28)", fg: "var(--color-warning)"}
+    }
+    if (kind === "parallel" || kind === "group") {
+        return {bg: "rgba(167,139,250,0.12)", border: "rgba(167,139,250,0.28)", fg: "#a78bfa"}
+    }
+    if (kind === "trigger" || mcp === "artel" || !mcp) {
+        return {bg: "var(--coral-dim)", border: "var(--coral-border)", fg: "var(--coral)"}
+    }
     return {bg: "rgba(96,165,250,0.12)", border: "rgba(96,165,250,0.28)", fg: "#60a5fa"}
 }

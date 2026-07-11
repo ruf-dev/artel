@@ -1,4 +1,5 @@
-import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.module.css"
+import cls
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.module.css"
 
 export default function ResultPanel({result}: { result: string }) {
     return (

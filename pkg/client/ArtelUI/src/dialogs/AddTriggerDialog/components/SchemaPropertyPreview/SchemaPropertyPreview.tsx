@@ -5,7 +5,9 @@ import {cn} from "@/app/utils/cn.ts"
 import {SchemaProperty} from "@/processes/Tracts.ts"
 import {FIELD_TYPES} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 
-export default function SchemaPropertyPreview({name, prop, hideName}: { name: string; prop: SchemaProperty; hideName?: boolean }) {
+export default function SchemaPropertyPreview(
+    {name, prop, hideName}: { name: string; prop: SchemaProperty; hideName?: boolean },
+) {
     return (
         <div className={cls.SchemaPropertyPreviewContainer}>
             <div className={cls.SchemaFieldRow}>

@@ -22,7 +22,9 @@ export default function EmailCard({connections, loading, onClick}: {
             onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onClick?.() }}
         >
             <div className={cls.CardHeader}>
-                <div className={cls.CardIcon}><ProviderIcon provider={ExternalProvider.EXTERNAL_PROVIDER_EMAIL}/></div>
+                <div className={cls.CardIcon}>
+                    <ProviderIcon provider={ExternalProvider.EXTERNAL_PROVIDER_EMAIL}/>
+                </div>
                 <div className={cls.CardTitles}>
                     <div className={cls.CardName}>Email</div>
                     {accountLabel && <div className={cls.CardAccount}>{accountLabel}</div>}
@@ -30,7 +32,11 @@ export default function EmailCard({connections, loading, onClick}: {
             </div>
             <div className={cls.CardFooter}>
                 <span className={cn(cls.StatusDot, isConnected ? cls.StatusDotConnected : cls.StatusDotDisconnected)}/>
-                <span className={cn(cls.StatusLabel, isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected)}>
+                <span
+                    className={cn(
+                        cls.StatusLabel, isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected
+                    )}
+                >
                     {loading ? "…" : isConnected ? "Connected" : "Not connected"}
                 </span>
             </div>

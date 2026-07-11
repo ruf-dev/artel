@@ -32,7 +32,11 @@ export default function SelectConnectionScreen(props: SelectConnectionScreenProp
                 <Button variant="ghost" onClick={props.onBack} disabled={props.saving}>
                     Back
                 </Button>
-                <Button variant="primary" onClick={props.onAdd} disabled={props.saving || !props.selectedExternalConnectionId}>
+                <Button
+                    variant="primary"
+                    onClick={props.onAdd}
+                    disabled={props.saving || !props.selectedExternalConnectionId}
+                >
                     {props.saving ? (props.editing ? "Saving…" : "Adding…") : (props.editing ? "Save" : "Add")}
                 </Button>
             </div>

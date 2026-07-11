@@ -33,7 +33,12 @@ export default function ProviderCard({provider, name, connections, loading, onCl
             </div>
             <div className={cls.CardFooter}>
                 <span className={cn(cls.StatusDot, isConnected ? cls.StatusDotConnected : cls.StatusDotDisconnected)}/>
-                <span className={cn(cls.StatusLabel, isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected)}>
+                <span
+                    className={cn(
+                        cls.StatusLabel,
+                        isConnected ? cls.StatusLabelConnected : cls.StatusLabelDisconnected,
+                    )}
+                >
                     {loading ? "…" : isConnected ? "Connected" : "Not connected"}
                 </span>
             </div>

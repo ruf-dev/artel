@@ -22,15 +22,30 @@ function formatTime(iso: string | undefined): string {
 function buildLogLines(run: TractRun, steps: TractRunStep[]): LogLine[] {
     const lines: LogLine[] = []
     const triggerT = formatTime(run.createdAt)
-    lines.push({key: "trigger", t: triggerT, msg: `Trigger fired (${run.startedBy}) — payload ${JSON.stringify(run.triggerPayload)}`, kind: "info"})
+    lines.push({
+        key: "trigger",
+        t: triggerT,
+        msg: `Trigger fired (${run.startedBy}) — payload ${JSON.stringify(run.triggerPayload)}`,
+        kind: "info",
+    })
 
     for (const s of steps) {
         const t = formatTime(s.startedAt)
         lines.push({key: `${s.stepId}-start`, t, msg: `${s.stepType}.${s.stepName || s.stepId} →`, kind: "info"})
         if (s.status === "done") {
-            lines.push({key: `${s.stepId}-done`, t: formatTime(s.finishedAt) || t, msg: `✓ ${s.stepName || s.stepId} → ${JSON.stringify(s.output)}`, kind: "ok"})
+            lines.push({
+                key: `${s.stepId}-done`,
+                t: formatTime(s.finishedAt) || t,
+                msg: `✓ ${s.stepName || s.stepId} → ${JSON.stringify(s.output)}`,
+                kind: "ok",
+            })
         } else if (s.status === "failed") {
-            lines.push({key: `${s.stepId}-fail`, t: formatTime(s.finishedAt) || t, msg: `✗ ${s.stepName || s.stepId} — ${s.error}`, kind: "err"})
+            lines.push({
+                key: `${s.stepId}-fail`,
+                t: formatTime(s.finishedAt) || t,
+                msg: `✗ ${s.stepName || s.stepId} — ${s.error}`,
+                kind: "err",
+            })
         } else {
             lines.push({key: `${s.stepId}-running`, t, msg: `${s.stepName || s.stepId} running…`, kind: "info"})
         }

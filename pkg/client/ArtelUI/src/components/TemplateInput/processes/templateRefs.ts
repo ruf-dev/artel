@@ -36,7 +36,10 @@ function flattenProperty(baseRef: string, name: string, prop: SchemaProperty, de
         }
     } else if (prop.type === "array" && prop.items) {
         const arrRef = `${ref}[0]`
-        out.push({key: arrRef, ref: arrRef, label: "[0]", type: prop.items.type, description: prop.items.description, depth: depth + 1})
+        out.push({
+            key: arrRef, ref: arrRef, label: "[0]", type: prop.items.type,
+            description: prop.items.description, depth: depth + 1,
+        })
         if (prop.items.type === "object" && prop.items.properties) {
             for (const [childName, childProp] of Object.entries(prop.items.properties)) {
                 flattenProperty(arrRef, childName, childProp, depth + 2, out)

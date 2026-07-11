@@ -1,6 +1,8 @@
 import { NoteItem } from "@/app/hooks/Notes.ts"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
-import { FolderNode, getDirectNotes, getNoteName } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import {
+    FolderNode, getDirectNotes, getNoteName,
+} from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
 
 interface FolderNodeItemProps {
     node: FolderNode

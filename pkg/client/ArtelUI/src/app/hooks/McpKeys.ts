@@ -18,7 +18,9 @@ interface McpKeysState {
     addConnector: (keyId: string, mcpName: string, externalConnectionId: string) => Promise<void>
     removeConnector: (keyId: string, mcpName: string) => Promise<void>
     fetchMomCandidates: () => Promise<void>
-    executeMomTool: (mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>) => Promise<string>
+    executeMomTool: (
+        mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>,
+    ) => Promise<string>
 }
 
 export const useMcpKeys = create<McpKeysState>((set, get) => ({
@@ -85,7 +87,9 @@ export const useMcpKeys = create<McpKeysState>((set, get) => ({
         }
     },
 
-    executeMomTool: (mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>) => {
+    executeMomTool: (
+        mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>,
+    ) => {
         return mcpKeysService.executeMomTool(mcpName, toolName, externalConnectionId, params)
     },
 }))

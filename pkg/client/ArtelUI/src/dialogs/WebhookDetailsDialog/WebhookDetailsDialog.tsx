@@ -28,7 +28,9 @@ export default function WebhookDetailsDialog({triggerUuid}: WebhookDetailsDialog
 
     const preset = triggerSources.find(s => s.key === trigger?.source)
     const sharedProvider = trigger?.kind === "webhook" ? preset?.provider ?? "" : ""
-    const sharedConnection = sharedProvider ? connections.find(c => c.provider === providerEnumFor(sharedProvider)) : undefined
+    const sharedConnection = sharedProvider
+        ? connections.find(c => c.provider === providerEnumFor(sharedProvider))
+        : undefined
 
     const webhookUrl = sharedProvider
         ? (sharedConnection ? `${window.location.origin}/webhooks/gitlab/${sharedConnection.id}` : "")
@@ -55,7 +57,9 @@ export default function WebhookDetailsDialog({triggerUuid}: WebhookDetailsDialog
                 onConfirm={() => rotateTriggerToken(triggerUuid)
                     .then(result => {
                         queryClient.invalidateQueries({queryKey: triggersQueryKey})
-                        setTimeout(() => OpenDialog(<TokenRevealDialog webhookUrl={result.webhookUrl} webhookToken={result.webhookToken}/>), 0)
+                        setTimeout(() => OpenDialog(
+                            <TokenRevealDialog webhookUrl={result.webhookUrl} webhookToken={result.webhookToken}/>
+                        ), 0)
                     })
                     .catch(err => bakeError("Failed to rotate token", err))}
             />

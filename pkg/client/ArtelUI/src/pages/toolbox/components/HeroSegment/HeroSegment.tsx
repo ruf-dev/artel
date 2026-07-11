@@ -10,7 +10,11 @@ export default function HeroSegment() {
                 <div className={cls.Eyebrow}>MCP</div>
                 <h1 className={cls.HeroTitle}>Toolbox</h1>
                 <p className={cls.HeroSub}>
-                    <b>{momCandidatesLoading ? "…" : `${momCandidates.length} ${momCandidates.length === 1 ? "tool" : "tools"}`}</b>
+                    <b>
+                        {momCandidatesLoading
+                            ? "…"
+                            : `${momCandidates.length} ${momCandidates.length === 1 ? "tool" : "tools"}`}
+                    </b>
                     {" · "}<span>available in this installation</span>
                 </p>
             </div>

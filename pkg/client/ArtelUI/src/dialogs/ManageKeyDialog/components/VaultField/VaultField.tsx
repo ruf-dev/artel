@@ -1,7 +1,8 @@
 import {Button} from "@vervstack/chures"
 
 import {useVaults} from "@/app/hooks/Vaults.ts"
-import VaultChipDisplay from "@/dialogs/ManageKeyDialog/components/VaultField/components/VaultChipDisplay/VaultChipDisplay.tsx"
+import VaultChipDisplay
+    from "@/dialogs/ManageKeyDialog/components/VaultField/components/VaultChipDisplay/VaultChipDisplay.tsx"
 import cls from "@/dialogs/ManageKeyDialog/components/VaultField/VaultField.module.css"
 
 interface VaultFieldProps {

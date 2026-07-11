@@ -27,7 +27,8 @@ interface Result {
     insertRef: (ref: string) => void
 }
 
-export function useTemplateInputController(sources: TemplateSource[], value: string, onChange: (value: string) => void): Result {
+export function useTemplateInputController(
+    sources: TemplateSource[], value: string, onChange: (value: string) => void): Result {
     const wrapRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const [open, setOpen] = useState(false)

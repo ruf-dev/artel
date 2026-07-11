@@ -4,9 +4,11 @@ import cls from "@/pages/admin/components/InstancesTab/InstancesTab.module.css"
 import {CouchInstancesAPI, GetCouchInstanceResponse} from "@/app/api/artel/couch_instances.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import useUser from "@/hooks/user/User.ts"
-import InstancesActionBar from "@/pages/admin/components/InstancesTab/components/InstancesActionBar/InstancesActionBar.tsx"
+import InstancesActionBar
+    from "@/pages/admin/components/InstancesTab/components/InstancesActionBar/InstancesActionBar.tsx"
 import InstanceList from "@/pages/admin/components/InstancesTab/components/InstanceList/InstanceList.tsx"
-import InstanceFormDialog from "@/pages/admin/components/InstancesTab/components/InstanceFormDialog/InstanceFormDialog.tsx"
+import InstanceFormDialog
+    from "@/pages/admin/components/InstancesTab/components/InstanceFormDialog/InstanceFormDialog.tsx"
 
 export default function InstancesTab() {
     const {auth} = useUser()

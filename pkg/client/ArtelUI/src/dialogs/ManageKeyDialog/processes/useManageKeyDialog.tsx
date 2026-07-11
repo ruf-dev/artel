@@ -81,7 +81,10 @@ export function useManageKeyDialog(mcpKey: McpKeyInfo) {
         OpenDialog(
             <ConfirmDialog
                 title="Revoke key"
-                message={`Revoke "${mcpKey.name}"? Any agents using this key will immediately lose access. This cannot be undone.`}
+                message={
+                    `Revoke "${mcpKey.name}"? Any agents using this key will immediately lose access. `
+                    + "This cannot be undone."
+                }
                 confirmLabel="Revoke"
                 danger
                 onClose={CloseDialog}

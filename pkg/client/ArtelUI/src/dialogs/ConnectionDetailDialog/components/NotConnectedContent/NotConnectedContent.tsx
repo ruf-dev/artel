@@ -10,7 +10,9 @@ interface NotConnectedContentProps {
     onConnect: () => void
 }
 
-export default function NotConnectedContent({description, canConnect, name, connecting, onConnect}: NotConnectedContentProps) {
+export default function NotConnectedContent(
+    {description, canConnect, name, connecting, onConnect}: NotConnectedContentProps,
+) {
     return (
         <div className={cls.NotConnectedContentContainer}>
             <p className={cls.ModalDesc}>{description}</p>

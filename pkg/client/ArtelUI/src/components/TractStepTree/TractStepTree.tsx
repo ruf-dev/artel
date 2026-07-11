@@ -2,17 +2,17 @@ import {Button, ConfirmDialog} from "@vervstack/chures"
 
 import {useDialog} from "@/app/hooks/Dialog"
 import {cn} from "@/app/utils/cn.ts"
-import TemplateInput from "@/components/TemplateInput/TemplateInput.tsx"
 import ActionCard from "@/components/TractStepTree/components/ActionCard.tsx"
 import CardHeader from "@/components/TractStepTree/components/CardHeader.tsx"
+import ConditionRow from "@/components/TractStepTree/components/ConditionRow.tsx"
 import InsertRow from "@/components/TractStepTree/components/InsertRow.tsx"
 import {buildSourcesFor, collectIdsFromRoot} from "@/components/TractStepTree/processes/tractStepTreeHelpers.ts"
 import StepPickerDialog, {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 import {SchemaNode, TractCondition, TractStep, TractTool} from "@/processes/Tracts.ts"
-import {appendStep, buildStepFromDraft, hasChildren, insertStepAt, Location, removeStepAt, replaceStep} from "@/processes/tractSteps.ts"
+import {
+    appendStep, buildStepFromDraft, hasChildren, insertStepAt, Location, removeStepAt, replaceStep,
+} from "@/processes/tractSteps.ts"
 import cls from "@/components/TractStepTree/TractStepTree.module.css"
-
-const CONDITION_OPS = ["==", "!=", ">", "<", ">=", "<=", "contains", "glob", "regex"] as const
 
 interface TractStepTreeProps {
     rootSteps: TractStep[]
@@ -129,7 +129,16 @@ function StepCard({rootSteps, location, step, tools, triggerSchema, onChange}: {
     }
 
     if (step.type === "action") {
-        return <ActionCard rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema} onUpdate={updateStep} onDelete={deleteStep}/>
+        return (
+            <ActionCard
+                rootSteps={rootSteps}
+                step={step}
+                tools={tools}
+                triggerSchema={triggerSchema}
+                onUpdate={updateStep}
+                onDelete={deleteStep}
+            />
+        )
     }
     if (step.type === "condition") {
         return (
@@ -218,18 +227,13 @@ function ConditionCard(props: ConditionCardProps) {
             <CardHeader step={props.step} onUpdate={props.onUpdate} onDelete={props.onDelete}/>
             <div className={cls.ConditionRows}>
                 {conditions.map((cond, i) => (
-                    <div className={cls.ConditionRow} key={i}>
-                        <TemplateInput value={cond.left} onChange={v => updateCondition(i, {left: v})} sources={sources} placeholder="left"/>
-                        <select
-                            className={cls.ConditionOp}
-                            value={cond.op}
-                            onChange={e => updateCondition(i, {op: e.target.value as TractCondition["op"]})}
-                        >
-                            {CONDITION_OPS.map(op => <option key={op} value={op}>{op}</option>)}
-                        </select>
-                        <TemplateInput value={cond.right} onChange={v => updateCondition(i, {right: v})} sources={sources} placeholder="right"/>
-                        <Button variant="iconDanger" className={cls.RemoveRowBtn} onClick={() => removeRow(i)} aria-label="Remove condition">✕</Button>
-                    </div>
+                    <ConditionRow
+                        key={i}
+                        cond={cond}
+                        sources={sources}
+                        onUpdate={patch => updateCondition(i, patch)}
+                        onRemove={() => removeRow(i)}
+                    />
                 ))}
                 <Button variant="ghost" onClick={addRow}>+ Add condition (AND)</Button>
             </div>

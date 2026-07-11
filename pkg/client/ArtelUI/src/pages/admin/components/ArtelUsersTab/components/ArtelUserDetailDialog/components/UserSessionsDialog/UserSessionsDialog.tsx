@@ -1,7 +1,9 @@
 import {useState, useEffect} from "react"
 import {Button, ModalClose} from "@vervstack/chures"
 
-import cls from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.module.css"
+import cls
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.module.css"
 import {AdminUsersAPI, UserSession} from "@/app/api/artel/admin_users.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"

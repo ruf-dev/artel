@@ -2,8 +2,10 @@ import {Button} from "@vervstack/chures"
 
 import {StepColor} from "@/pages/tract-canvas/icons/tractIconHelpers.ts"
 import {IconProps} from "@/pages/tract-canvas/icons/iconTypes.ts"
-import OptIcon from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptIcon/OptIcon.tsx"
-import OptText from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptText/OptText.tsx"
+import OptIcon
+    from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptIcon/OptIcon.tsx"
+import OptText
+    from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptText/OptText.tsx"
 import cls from "@/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/OptionCell.module.css"
 
 interface OptionCellProps {

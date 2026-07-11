@@ -1,6 +1,7 @@
 import {McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
-import MomCandidateCard from "@/dialogs/ManageKeyDialog/components/CandidateOptionList/components/MomCandidateCard/MomCandidateCard.tsx"
+import MomCandidateCard
+    from "@/dialogs/ManageKeyDialog/components/CandidateOptionList/components/MomCandidateCard/MomCandidateCard.tsx"
 import cls from "@/dialogs/ManageKeyDialog/components/CandidateOptionList/CandidateOptionList.module.css"
 
 interface CandidateOptionListProps {

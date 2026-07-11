@@ -1,5 +1,7 @@
 import {SmtpOperation, SmtpToolAction} from "@/app/api/artel/mcp_keys.pb.ts"
-import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/SmtpActionView/SmtpActionView.module.css"
+import cls
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/SmtpActionView/SmtpActionView.module.css"
 
 export default function SmtpActionView({action}: { action: SmtpToolAction }) {
     return (

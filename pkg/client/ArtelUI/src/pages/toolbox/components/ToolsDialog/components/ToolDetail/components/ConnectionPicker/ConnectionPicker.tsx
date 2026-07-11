@@ -5,7 +5,9 @@ import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts
 import {Path} from "@/app/routing/Router.tsx"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
-import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.module.css"
+import cls
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.module.css"
 
 export default function ConnectionPicker({connections, selectedId, onSelect}: {
     connections: ExternalConnectionInfo[]

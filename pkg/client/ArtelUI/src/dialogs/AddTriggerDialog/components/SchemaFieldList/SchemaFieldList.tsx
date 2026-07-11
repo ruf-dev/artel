@@ -3,7 +3,9 @@ import {Button} from "@vervstack/chures"
 import {emptySchemaField, SchemaFieldRow} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import SchemaFieldRowEditor from "@/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.tsx"
 
-export default function SchemaFieldList({fields, onChange}: { fields: SchemaFieldRow[]; onChange: (fields: SchemaFieldRow[]) => void }) {
+export default function SchemaFieldList(
+    {fields, onChange}: { fields: SchemaFieldRow[]; onChange: (fields: SchemaFieldRow[]) => void },
+) {
     function update(i: number, patch: Partial<SchemaFieldRow>) {
         onChange(fields.map((f, fi) => fi === i ? {...f, ...patch} : f))
     }

@@ -7,7 +7,8 @@ import {useTriggerSources} from "@/app/hooks/Tracts.ts"
 import CodeIcon from "@/icons/common/CodeIcon.tsx"
 import JsonView from "@/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.tsx"
 import SchemaFieldList from "@/dialogs/AddTriggerDialog/components/SchemaFieldList/SchemaFieldList.tsx"
-import SchemaPropertyPreview from "@/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.tsx"
+import SchemaPropertyPreview
+    from "@/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.tsx"
 
 interface SchemaBuilderProps {
     // Trigger source key whose payload schema should be fetched and previewed read-only.

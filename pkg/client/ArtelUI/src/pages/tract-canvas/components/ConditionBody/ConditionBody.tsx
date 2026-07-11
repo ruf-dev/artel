@@ -49,31 +49,61 @@ export default function ConditionBody(props: Props) {
             <Section title="Conditions (AND)">
                 {conditions.map((cond, i) => (
                     <div className={cn(cls.ConditionRow, enlarged && cls.ConditionRowEnlarged)} key={i}>
-                        <TemplateInput value={cond.left} onChange={v => updateCondition(i, {left: v})} sources={sources} placeholder="left"/>
+                        <TemplateInput
+                            value={cond.left}
+                            onChange={v => updateCondition(i, {left: v})}
+                            sources={sources}
+                            placeholder="left"
+                        />
                         <div className={cls.ConditionOpRow}>
-                            <select className={cls.Select} value={cond.op} onChange={e => updateCondition(i, {op: e.target.value as TractCondition["op"]})}>
+                            <select
+                                className={cls.Select}
+                                value={cond.op}
+                                onChange={e => updateCondition(i, {op: e.target.value as TractCondition["op"]})}
+                            >
                                 {CONDITION_OPS.map(op => <option key={op} value={op}>{op}</option>)}
                             </select>
                             <Button
                                 variant="iconDanger"
-                                onClick={() => update(s => ({...s, conditions: (s.conditions ?? []).filter((_, xi) => xi !== i)}))}
+                                onClick={() => update(s => (
+                                    {...s, conditions: (s.conditions ?? []).filter((_, xi) => xi !== i)}
+                                ))}
                                 aria-label="Remove condition"
                             >
                                 <CloseIcon/>
                             </Button>
                         </div>
-                        <TemplateInput value={cond.right} onChange={v => updateCondition(i, {right: v})} sources={sources} placeholder="right"/>
+                        <TemplateInput
+                            value={cond.right}
+                            onChange={v => updateCondition(i, {right: v})}
+                            sources={sources}
+                            placeholder="right"
+                        />
                     </div>
                 ))}
-                <Button variant="ghost" className={cls.AddBtn} onClick={() => update(s => ({...s, conditions: [...(s.conditions ?? []), {left: "", op: "==", right: ""}]}))}>
+                <Button
+                    variant="ghost"
+                    className={cls.AddBtn}
+                    onClick={() => update(s => (
+                        {...s, conditions: [...(s.conditions ?? []), {left: "", op: "==", right: ""}]}
+                    ))}
+                >
                     + Add condition
                 </Button>
             </Section>
             <Section title="Branches">
-                <Button variant="ghost" className={cls.AddBtn} onClick={() => onOpenAddBlock({parentId: step.id, branch: "then"}, step.then?.length ?? 0)}>
+                <Button
+                    variant="ghost"
+                    className={cls.AddBtn}
+                    onClick={() => onOpenAddBlock({parentId: step.id, branch: "then"}, step.then?.length ?? 0)}
+                >
                     ✓ Add to true branch
                 </Button>
-                <Button variant="ghost" className={cls.AddBtn} onClick={() => onOpenAddBlock({parentId: step.id, branch: "else"}, step.else?.length ?? 0)}>
+                <Button
+                    variant="ghost"
+                    className={cls.AddBtn}
+                    onClick={() => onOpenAddBlock({parentId: step.id, branch: "else"}, step.else?.length ?? 0)}
+                >
                     ✗ Add to false branch
                 </Button>
             </Section>

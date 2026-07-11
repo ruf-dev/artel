@@ -26,17 +26,38 @@ const useUser = create<UserState>((set, get) => ({
 
     login: (session: Session, userInfo?: UserInfo) => {
         get().auth.login(session, userInfo)
-        set({auth: get().auth, isAdmin: get().auth.isAdmin(), isEmailsEnabled: get().auth.hasEmailsPermission(), isTaskTrackersEnabled: get().auth.hasTaskTrackersPermission(), isNotesEnabled: get().auth.hasNotesPermission(), photoUrl: get().auth.getPhotoUrl()})
+        set({
+            auth: get().auth,
+            isAdmin: get().auth.isAdmin(),
+            isEmailsEnabled: get().auth.hasEmailsPermission(),
+            isTaskTrackersEnabled: get().auth.hasTaskTrackersPermission(),
+            isNotesEnabled: get().auth.hasNotesPermission(),
+            photoUrl: get().auth.getPhotoUrl(),
+        })
     },
 
     logout: () => {
         get().auth.logout()
-        set({auth: new AuthMiddleware(), isAdmin: false, isEmailsEnabled: false, isTaskTrackersEnabled: false, isNotesEnabled: false, photoUrl: undefined})
+        set({
+            auth: new AuthMiddleware(),
+            isAdmin: false,
+            isEmailsEnabled: false,
+            isTaskTrackersEnabled: false,
+            isNotesEnabled: false,
+            photoUrl: undefined,
+        })
     },
 
     setUserInfo: (info: UserInfo) => {
         get().auth.setUserInfo(info)
-        set({auth: get().auth, isAdmin: get().auth.isAdmin(), isEmailsEnabled: get().auth.hasEmailsPermission(), isTaskTrackersEnabled: get().auth.hasTaskTrackersPermission(), isNotesEnabled: get().auth.hasNotesPermission(), photoUrl: get().auth.getPhotoUrl()})
+        set({
+            auth: get().auth,
+            isAdmin: get().auth.isAdmin(),
+            isEmailsEnabled: get().auth.hasEmailsPermission(),
+            isTaskTrackersEnabled: get().auth.hasTaskTrackersPermission(),
+            isNotesEnabled: get().auth.hasNotesPermission(),
+            photoUrl: get().auth.getPhotoUrl(),
+        })
     },
 }))
 

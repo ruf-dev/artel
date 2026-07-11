@@ -6,7 +6,8 @@ import TractCanvasArea from "@/pages/tract-canvas/components/TractCanvasArea/Tra
 import TractCanvasInspector from "@/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.tsx"
 import TractCanvasLogPanel from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx"
 import {useTractRunTracking} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts"
-import {useTractCanvasBuilderHandlers} from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractCanvasBuilderHandlers.tsx"
+import {useTractCanvasBuilderHandlers}
+    from "@/pages/tract-canvas/components/TractCanvasBuilder/useTractCanvasBuilderHandlers.tsx"
 import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
@@ -52,8 +53,11 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
 
     const linkedSummaries = tract.triggers ?? []
     const firstLinked = linkedSummaries[0]
-    const triggerInfo = firstLinked ? {name: firstLinked.name, kind: firstLinked.kind, source: firstLinked.source} : undefined
-    const triggerSchema = triggers.find(t => linkedSummaries.some(l => l.uuid === t.uuid) && Object.keys(t.payloadSchema.properties).length > 0)?.payloadSchema
+    const triggerInfo = firstLinked
+        ? {name: firstLinked.name, kind: firstLinked.kind, source: firstLinked.source}
+        : undefined
+    const triggerSchema = triggers.find(t => linkedSummaries.some(l => l.uuid === t.uuid)
+        && Object.keys(t.payloadSchema.properties).length > 0)?.payloadSchema
 
     const runTracking = useTractRunTracking(tract.uuid, layout)
 

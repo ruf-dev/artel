@@ -1,4 +1,5 @@
 import {ImapOperation, ImapToolAction} from "@/app/api/artel/mcp_keys.pb.ts"
+// eslint-disable-next-line max-len -- path too long to wrap
 import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ImapActionView/ImapActionView.module.css"
 
 export default function ImapActionView({action}: { action: ImapToolAction }) {

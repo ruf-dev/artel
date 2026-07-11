@@ -66,8 +66,9 @@ export default tseslint.config([
             'react/no-multi-comp': ['error', {ignoreStateless: false}],
             'no-console': ['error', {allow: ['warn', 'error']}],
             'react/forbid-component-props': ['error', {forbid: ['style']}],
-            'max-lines': ['error', {max: 300, skipBlankLines: true, skipComments: true}],
+            'max-lines': ['error', {max: 250, skipBlankLines: true, skipComments: true}],
             'max-lines-per-function': ['error', {max: 100, skipBlankLines: true, skipComments: true, IIFEs: true}],
+            'max-len': ['error', {code: 120, ignoreUrls: true, ignoreStrings: false, ignoreTemplateLiterals: false}],
             'no-restricted-syntax': [
                 'error',
                 {
@@ -152,6 +153,19 @@ export default tseslint.config([
                     },
                 ],
             }],
+        },
+    },
+    {
+        files: [
+            'src/icons/**/*.tsx',
+            '**/components/icons/**/*.tsx',
+            'src/components/ProviderIcon/components/**/*.tsx',
+            'src/segments/Topbar/components/BrandMarkIcon/**/*.tsx',
+            'src/dialogs/AddTriggerDialog/BackChevronIcon.tsx',
+        ],
+        rules: {
+            // Raw SVG path `d` data can't be wrapped at 120 chars without breaking the path string.
+            'max-len': 'off',
         },
     },
     {

@@ -1,7 +1,8 @@
 import {Button, CheckmarkIcon, ModalClose} from "@vervstack/chures"
 
 import {TrelloBoardInfo} from "@/app/api/artel/task_trackers.pb.ts"
-import SuccessBannerText from "@/pages/task-trackers/components/AddTrackerDialog/screens/components/SuccessBannerText/SuccessBannerText.tsx"
+import SuccessBannerText
+    from "@/pages/task-trackers/components/AddTrackerDialog/screens/components/SuccessBannerText/SuccessBannerText.tsx"
 import cls from "@/pages/task-trackers/components/AddTrackerDialog/screens/DoneStep.module.css"
 
 export default function DoneStep({boards, onClose}: {

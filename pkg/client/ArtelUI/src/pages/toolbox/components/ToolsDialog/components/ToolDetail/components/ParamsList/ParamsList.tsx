@@ -1,6 +1,9 @@
 import {ToolParamDef} from "@/app/api/artel/mcp_keys.pb.ts"
-import ParamRow from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/ParamRow.tsx"
-import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/ParamsList.module.css"
+import ParamRow
+// eslint-disable-next-line max-len -- path too long to fit even unindented, can't shorten without changing import
+from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/ParamRow.tsx"
+import cls
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/ParamsList.module.css"
 
 export default function ParamsList({params, values, onChange}: {
     params: Record<string, ToolParamDef>

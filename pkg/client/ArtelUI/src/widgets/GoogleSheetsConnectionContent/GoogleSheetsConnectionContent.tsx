@@ -9,7 +9,8 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {parseScopeList} from "@/app/utils/googleScopes.ts"
 import {useSpreadsheetPicker} from "@/widgets/GoogleSheetsConnectionContent/processes/useSpreadsheetPicker.ts"
 import GoogleSheetsInfoRows from "@/components/GoogleSheetsConnectionContent/GoogleSheetsInfoRows.tsx"
-import GoogleSheetsSpreadsheetSection from "@/components/GoogleSheetsConnectionContent/GoogleSheetsSpreadsheetSection.tsx"
+import GoogleSheetsSpreadsheetSection
+    from "@/components/GoogleSheetsConnectionContent/GoogleSheetsSpreadsheetSection.tsx"
 
 export default function GoogleSheetsConnectionContent({connection, onDisconnect}: {
     connection: ExternalConnectionInfo
@@ -45,7 +46,9 @@ export default function GoogleSheetsConnectionContent({connection, onDisconnect}
                 cancelLabel="Cancel"
                 danger
                 onClose={CloseDialog}
-                onConfirm={() => removeSpreadsheet(sheet.id ?? "").catch(e => bakeError("Failed to remove spreadsheet", e))}
+                onConfirm={() =>
+                    removeSpreadsheet(sheet.id ?? "").catch(e => bakeError("Failed to remove spreadsheet", e))
+                }
             />
         )
     }

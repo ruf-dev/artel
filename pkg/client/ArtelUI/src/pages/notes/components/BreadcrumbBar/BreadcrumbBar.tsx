@@ -18,7 +18,9 @@ interface BreadcrumbBarProps {
     onRename?: () => void
 }
 
-export default function BreadcrumbBar({ path, mode, onModeChange, saveStatus, saveError, onRename }: BreadcrumbBarProps) {
+export default function BreadcrumbBar(
+    { path, mode, onModeChange, saveStatus, saveError, onRename }: BreadcrumbBarProps
+) {
     return (
         <div className={cls.BreadcrumbBarContainer}>
             <div className={cls.LeftSlot}>

@@ -33,8 +33,12 @@ export default function PresetDetails({preset, hasProviderConnection, onConnectP
                     <p className={cls.Notice}>Uses your connected {providerLabel(preset.provider)}.</p>
                 ) : (
                     <div className={cls.ProviderNotice}>
-                        <p className={cls.Notice}>Connect {providerLabel(preset.provider)} first to use this trigger.</p>
-                        <Button variant="secondary" onClick={onConnectProvider}>Connect {providerLabel(preset.provider)}</Button>
+                        <p className={cls.Notice}>
+                            Connect {providerLabel(preset.provider)} first to use this trigger.
+                        </p>
+                        <Button variant="secondary" onClick={onConnectProvider}>
+                            Connect {providerLabel(preset.provider)}
+                        </Button>
                     </div>
                 )
             )}
