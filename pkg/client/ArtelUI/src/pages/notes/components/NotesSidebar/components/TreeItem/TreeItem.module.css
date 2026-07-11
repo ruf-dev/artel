@@ -103,3 +103,17 @@
         background: var(--coral-dim);
     }
 }
+
+.TreeItemRowHighlight {
+    animation: tree-item-blink 1.3s ease-in-out 2;
+}
+
+@keyframes tree-item-blink {
+    0%, 100% {
+        background: transparent;
+    }
+
+    50% {
+        background: var(--coral-dim);
+    }
+}

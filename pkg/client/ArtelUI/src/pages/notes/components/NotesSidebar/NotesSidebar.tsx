@@ -1,14 +1,16 @@
+import { Button } from "@vervstack/chures"
+
 import { useNotes } from "@/app/hooks/Notes.ts"
 import { useDialog } from "@/app/hooks/Dialog.ts"
 import { useBakeError } from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
-import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import FolderSection from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx"
 import NotesSearchBar from "@/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx"
+import SearchResultsList from "@/pages/notes/components/NotesSidebar/components/SearchResultsList/SearchResultsList.tsx"
 import { useNotesSearchQuery } from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
-import { getNoteName } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import { useHighlightNote } from "@/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts"
+import LocateIcon from "@/pages/notes/components/icons/LocateIcon.tsx"
 import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
-
 
 interface VaultOption {
     id: string
@@ -24,7 +26,8 @@ export default function NotesSidebar({ vaults, showCreateButton = true }: NotesS
     const notesStore = useNotes()
     const { OpenDialog } = useDialog()
     const bakeError = useBakeError()
-    const [searchQuery] = useNotesSearchQuery()
+    const [searchQuery, setSearchQuery] = useNotesSearchQuery()
+    const { highlightedPath, scrollAreaRef, highlightNote } = useHighlightNote()
 
     function handleVaultChange(e: React.ChangeEvent<HTMLSelectElement>) {
         void notesStore.selectVault(e.target.value)
@@ -32,6 +35,13 @@ export default function NotesSidebar({ vaults, showCreateButton = true }: NotesS
 
     function handleSelectNote(vid: string, path: string) {
         void notesStore.selectNote(vid, path)
+    }
+
+    function handleFindCurrentFile() {
+        const path = notesStore.selectedPath
+        if (!path) return
+        if (searchQuery.trim()) setSearchQuery("")
+        highlightNote(path)
     }
 
     function handleCreateNote(folderPath?: string) {
@@ -69,32 +79,40 @@ export default function NotesSidebar({ vaults, showCreateButton = true }: NotesS
                 </select>
             </div>
             <div className={cls.SearchWrapper}>
-                <NotesSearchBar/>
+                <div className={cls.SearchInputFlex}>
+                    <NotesSearchBar/>
+                </div>
+                <Button
+                    variant="ghost"
+                    className={cls.FindCurrentFileBtn}
+                    onClick={handleFindCurrentFile}
+                    disabled={!notesStore.selectedPath}
+                    title="Find currently open file"
+                    aria-label="Find currently open file"
+                >
+                    <LocateIcon/>
+                </Button>
             </div>
-            <div className={cls.ScrollArea}>
+            <div className={cls.ScrollArea} ref={scrollAreaRef}>
                 {!vaultId && (
                     <div className={cls.EmptyVaultHint}>Select a vault to browse notes</div>
                 )}
-                {vaultId && searchQuery.trim() && notesStore.notes
-                    .filter(n => getNoteName(n).toLowerCase().includes(searchQuery.trim().toLowerCase()))
-                    .map(note => {
-                        const dir = note.path ? note.path.split("/").slice(0, -1).join("/") : undefined
-                        return (
-                            <TreeItem
-                                key={note.path}
-                                name={getNoteName(note)}
-                                subtitle={dir || undefined}
-                                active={notesStore.selectedPath === note.path}
-                                onClick={() => note.path && handleSelectNote(vaultId, note.path)}
-                            />
-                        )
-                    })
-                }
+                {vaultId && searchQuery.trim() && (
+                    <SearchResultsList
+                        notes={notesStore.notes}
+                        searchQuery={searchQuery}
+                        selectedPath={notesStore.selectedPath}
+                        highlightedPath={highlightedPath}
+                        onSelectNote={path => handleSelectNote(vaultId, path)}
+                    />
+                )}
                 {vaultId && !searchQuery.trim() && (
                     <FolderSection
                         folders={notesStore.folders}
                         notes={notesStore.notes}
                         selectedPath={notesStore.selectedPath}
+                        highlightedPath={highlightedPath}
+                        revealPath={highlightedPath}
                         vaultId={vaultId}
                         onSelectNote={handleSelectNote}
                         onCreateNote={folderPath => handleCreateNote(folderPath)}

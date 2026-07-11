@@ -9,6 +9,7 @@ interface FolderNodeItemProps {
     notes: NoteItem[]
     openFolders: Set<string>
     selectedPath: string | null
+    highlightedPath: string | null
     depth: number
     onToggle: (path: string) => void
     onSelectNote: (path: string) => void
@@ -16,7 +17,7 @@ interface FolderNodeItemProps {
 }
 
 export default function FolderNodeItem(props: FolderNodeItemProps) {
-    const { node, notes, openFolders, selectedPath } = props
+    const { node, notes, openFolders, selectedPath, highlightedPath } = props
     const { depth, onToggle, onSelectNote, onCreateNoteInFolder } = props
     const isOpen = openFolders.has(node.path)
     const directNotes = getDirectNotes(node.path, notes)
@@ -25,6 +26,7 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
         <>
             <TreeItem
                 name={node.name}
+                path={node.path}
                 isFolder
                 isOpen={isOpen}
                 depth={depth}
@@ -41,6 +43,7 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                             notes={notes}
                             openFolders={openFolders}
                             selectedPath={selectedPath}
+                            highlightedPath={highlightedPath}
                             depth={depth + 1}
                             onToggle={onToggle}
                             onSelectNote={onSelectNote}
@@ -51,8 +54,10 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                         <TreeItem
                             key={note.path}
                             name={getNoteName(note)}
+                            path={note.path}
                             depth={depth + 1}
                             active={selectedPath === note.path}
+                            highlighted={!!note.path && highlightedPath === note.path}
                             onClick={() => note.path && onSelectNote(note.path)}
                         />
                     ))}

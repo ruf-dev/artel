@@ -1,17 +1,21 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {Button} from "@vervstack/chures"
 
 import { NoteItem } from "@/app/hooks/Notes.ts"
 import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import FolderNodeItem from "@/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx"
-import { buildFolderTree, getNoteName } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import {
+    buildFolderTree, getAncestorFolderPaths, getNoteName,
+} from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
 import cls from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.module.css"
 
 interface FolderSectionProps {
     folders: string[]
     notes: NoteItem[]
     selectedPath: string | null
+    highlightedPath: string | null
+    revealPath: string | null
     vaultId: string
     onSelectNote: (vaultId: string, path: string) => void
     onCreateNote: (folderPath?: string) => void
@@ -19,7 +23,7 @@ interface FolderSectionProps {
 }
 
 export default function FolderSection(props: FolderSectionProps) {
-    const { folders, notes, selectedPath, vaultId } = props
+    const { folders, notes, selectedPath, highlightedPath, revealPath, vaultId } = props
     const { onSelectNote, onCreateNote, showCreateButton = true } = props
     const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
 
@@ -34,6 +38,17 @@ export default function FolderSection(props: FolderSectionProps) {
             return next
         })
     }
+
+    useEffect(() => {
+        if (!revealPath) return
+        const ancestors = getAncestorFolderPaths(revealPath)
+        if (ancestors.length === 0) return
+        setOpenFolders(prev => {
+            const next = new Set(prev)
+            ancestors.forEach(a => next.add(a))
+            return next
+        })
+    }, [revealPath])
 
     const tree = buildFolderTree(folders)
     const rootNotes = notes.filter(n => n.path && !n.path.includes("/"))
@@ -60,6 +75,7 @@ export default function FolderSection(props: FolderSectionProps) {
                     notes={notes}
                     openFolders={openFolders}
                     selectedPath={selectedPath}
+                    highlightedPath={highlightedPath}
                     depth={0}
                     onToggle={toggleFolder}
                     onSelectNote={path => onSelectNote(vaultId, path)}
@@ -70,7 +86,9 @@ export default function FolderSection(props: FolderSectionProps) {
                 <TreeItem
                     key={note.path}
                     name={getNoteName(note)}
+                    path={note.path}
                     active={selectedPath === note.path}
+                    highlighted={!!note.path && highlightedPath === note.path}
                     onClick={() => note.path && onSelectNote(vaultId, note.path)}
                 />
             ))}

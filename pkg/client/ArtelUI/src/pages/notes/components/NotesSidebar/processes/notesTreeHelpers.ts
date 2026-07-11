@@ -49,3 +49,12 @@ export function getDirectNotes(folderPath: string, notes: NoteItem[]): NoteItem[
         return !n.path.slice(prefix.length).includes("/")
     })
 }
+
+export function getAncestorFolderPaths(notePath: string): string[] {
+    const parts = notePath.split("/")
+    const ancestors: string[] = []
+    for (let i = 1; i < parts.length; i++) {
+        ancestors.push(parts.slice(0, i).join("/"))
+    }
+    return ancestors
+}
