@@ -4105,8 +4105,18 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/OptionCell.tsx": {
-    "mtime": 1783753123.3723524,
-    "ast_hash": "6458a21e95df72196134a48d9c42f739",
+    "mtime": 1783753517.2874768,
+    "ast_hash": "ddce3ab384d5c6903e2a0a18f1500d04",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptIcon/OptIcon.tsx": {
+    "mtime": 1783753502.2355335,
+    "ast_hash": "807c2fe299c630d295c4da6c0ccb932d",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/components/OptionCell/components/OptText/OptText.tsx": {
+    "mtime": 1783753508.4142542,
+    "ast_hash": "e534827528ac67e003c5c41b0fa02d80",
     "semantic_hash": ""
   }
 }
