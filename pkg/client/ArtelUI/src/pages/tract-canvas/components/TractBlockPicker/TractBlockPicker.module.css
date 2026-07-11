@@ -22,7 +22,7 @@
 .Title {
     font-size: 1.0625rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.02125rem;
     color: var(--color-fg-primary);
 }
 
@@ -105,7 +105,7 @@
 .CatTitle {
     font-family: var(--font-mono);
     font-size: 0.625rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.0625rem;
     text-transform: uppercase;
     color: var(--color-fg-tertiary);
     margin-bottom: 0.5rem;

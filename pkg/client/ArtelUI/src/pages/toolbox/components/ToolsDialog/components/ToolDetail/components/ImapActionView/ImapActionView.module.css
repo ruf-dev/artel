@@ -10,7 +10,7 @@
         font-weight: 500;
         color: var(--color-fg-tertiary);
         font-family: var(--font-mono);
-        letter-spacing: 0.04em;
+        letter-spacing: 0.03rem;
         flex-shrink: 0;
     }
 

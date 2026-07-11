@@ -21,7 +21,7 @@
 .ModalTitle {
     font-size: 1.375rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.0275rem;
     color: var(--color-fg-primary);
 }
 
@@ -57,7 +57,7 @@
     font-weight: 500;
     color: var(--color-fg-secondary);
     margin-bottom: 0.5rem;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.00375rem;
 }
 
 .Input {
@@ -69,7 +69,7 @@
     color: var(--color-fg-primary);
     font-size: 0.875rem;
     font-family: inherit;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.004375rem;
     transition: border-color 160ms ease, background 160ms ease;
     outline: none;
     box-sizing: border-box;

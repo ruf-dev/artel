@@ -10,7 +10,7 @@
     .DialogTitle {
         font-size: 1.0625rem;
         font-weight: 600;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.02125rem;
         color: var(--color-fg-primary);
         margin-bottom: 1rem;
     }

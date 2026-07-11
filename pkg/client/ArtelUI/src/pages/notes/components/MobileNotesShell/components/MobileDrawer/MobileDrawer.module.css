@@ -43,7 +43,7 @@
     & .DrawerWordmark {
         font-weight: 700;
         font-size: 0.9375rem;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01875rem;
         color: var(--color-fg-primary);
         line-height: 1;
     }
@@ -52,7 +52,7 @@
         font-family: var(--font-mono);
         font-size: 0.5625rem;
         color: var(--color-fg-disabled);
-        letter-spacing: 0.10em;
+        letter-spacing: 0.05625rem;
         padding-left: 0.5rem;
         border-left: var(--border-thickness) solid var(--color-border);
     }
@@ -86,7 +86,7 @@
         font-family: var(--font-mono);
         font-size: 0.75rem;
         color: var(--coral);
-        letter-spacing: 0.04em;
+        letter-spacing: 0.03rem;
         cursor: pointer;
         width: 100%;
     }

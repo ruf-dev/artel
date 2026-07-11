@@ -73,7 +73,7 @@
 .TypeLabel {
     font-family: var(--font-mono);
     font-size: 0.59375rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.0475rem;
     text-transform: uppercase;
     color: var(--color-fg-tertiary);
     margin-bottom: 0.125rem;
@@ -85,7 +85,7 @@
 .Title {
     font-weight: 600;
     font-size: 0.8125rem;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.008125rem;
     color: var(--color-fg-primary);
     overflow: hidden;
     text-overflow: ellipsis;

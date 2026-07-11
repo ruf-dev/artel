@@ -21,7 +21,7 @@
         color: var(--color-fg-primary);
         font-size: 0.875rem;
         font-family: inherit;
-        letter-spacing: -0.005em;
+        letter-spacing: -0.004375rem;
         transition: border-color 160ms ease, background 160ms ease;
         outline: none;
         box-sizing: border-box;

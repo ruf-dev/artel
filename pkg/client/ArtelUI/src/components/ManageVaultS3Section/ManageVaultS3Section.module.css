@@ -10,7 +10,7 @@
         .SectionTitle {
             font-size: 0.6875rem;
             font-weight: 600;
-            letter-spacing: 0.10em;
+            letter-spacing: 0.06875rem;
             text-transform: uppercase;
             color: var(--color-fg-tertiary);
         }
@@ -80,7 +80,7 @@
             color: var(--color-fg-primary);
             font-size: 0.8125rem;
             font-family: inherit;
-            letter-spacing: -0.005em;
+            letter-spacing: -0.0040625rem;
             transition: border-color 160ms ease, background 160ms ease;
             outline: none;
             box-sizing: border-box;

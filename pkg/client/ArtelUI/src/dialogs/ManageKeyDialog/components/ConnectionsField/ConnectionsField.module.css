@@ -9,7 +9,7 @@
         font-weight: 500;
         color: var(--color-fg-secondary);
         margin-bottom: 0.5rem;
-        letter-spacing: -0.005em;
+        letter-spacing: -0.00375rem;
     }
 
     & .OptionList {

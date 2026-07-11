@@ -47,7 +47,7 @@
     color: var(--color-fg-secondary);
     font-size: 0.6875rem;
     font-family: var(--font-mono);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.0275rem;
     cursor: pointer;
     text-transform: uppercase;
     transition: all 140ms ease;

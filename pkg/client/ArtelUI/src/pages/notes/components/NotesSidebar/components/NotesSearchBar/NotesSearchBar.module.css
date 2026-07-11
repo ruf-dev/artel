@@ -23,7 +23,7 @@
         font-family: var(--font-mono);
         font-size: 0.77rem;
         color: var(--color-fg-primary);
-        letter-spacing: 0.04em;
+        letter-spacing: 0.0308rem;
 
         &::placeholder {
             color: var(--color-fg-disabled);

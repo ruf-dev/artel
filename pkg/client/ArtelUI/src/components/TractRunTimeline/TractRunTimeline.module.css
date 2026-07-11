@@ -36,7 +36,7 @@
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04125rem;
     color: var(--color-fg-tertiary);
 }
 
@@ -55,7 +55,7 @@
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.0275rem;
     background: var(--color-bg-hover);
     color: var(--color-fg-secondary);
 }
@@ -98,7 +98,7 @@
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04125rem;
     color: var(--color-fg-tertiary);
 }
 

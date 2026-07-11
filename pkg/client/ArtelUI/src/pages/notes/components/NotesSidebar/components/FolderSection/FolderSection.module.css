@@ -7,7 +7,7 @@
     & .SectionLabel {
         font-family: var(--font-mono);
         font-size: 0.63rem;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.0756rem;
         text-transform: uppercase;
         color: var(--color-fg-disabled);
     }

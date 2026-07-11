@@ -58,7 +58,7 @@
             .Title {
                 font-weight: 600;
                 font-size: 0.875rem;
-                letter-spacing: -0.01em;
+                letter-spacing: -0.00875rem;
                 color: var(--color-fg-primary);
                 white-space: nowrap;
             }

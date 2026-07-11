@@ -18,7 +18,7 @@
         cursor: pointer;
         font-family: inherit;
         margin-bottom: -0.0625rem;
-        letter-spacing: -0.005em;
+        letter-spacing: -0.004375rem;
         transition: color 160ms ease, border-color 160ms ease;
 
         &:hover {

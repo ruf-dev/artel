@@ -8,7 +8,7 @@
     .Name {
         font-weight: 600;
         font-size: 1.125rem;
-        letter-spacing: -0.015em;
+        letter-spacing: -0.016875rem;
         line-height: 1.25;
         color: var(--color-fg-primary);
         overflow-wrap: anywhere;

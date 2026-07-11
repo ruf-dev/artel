@@ -10,7 +10,7 @@
         flex: 1;
         font-family: var(--font-mono);
         font-size: 0.625rem;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.0625rem;
         text-transform: uppercase;
         color: var(--color-fg-tertiary);
     }

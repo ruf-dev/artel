@@ -13,7 +13,7 @@
     & .Eyebrow {
         font-family: var(--font-mono);
         font-size: 0.6875rem;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.0825rem;
         color: var(--color-fg-tertiary);
         text-transform: uppercase;
         margin-bottom: 0.75rem;
@@ -22,7 +22,7 @@
     & .HeroTitle {
         font-weight: 600;
         font-size: 2.625rem;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.07875rem;
         line-height: 1.05;
         color: var(--color-fg-primary);
     }
@@ -31,7 +31,7 @@
         font-size: 0.875rem;
         color: var(--color-fg-secondary);
         margin-top: 0.625rem;
-        letter-spacing: -0.005em;
+        letter-spacing: -0.004375rem;
 
         & b {
             color: var(--color-fg-primary);

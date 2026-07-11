@@ -14,7 +14,7 @@
         font-size: 2rem;
         font-weight: 700;
         color: var(--accent-fg-color);
-        letter-spacing: -0.03em;
+        letter-spacing: -0.06rem;
     }
 
     & .Sub {

@@ -9,7 +9,7 @@
         font-size: 0.875rem;
         color: var(--color-fg-secondary);
         margin-top: 0.625rem;
-        letter-spacing: -0.005em;
+        letter-spacing: -0.004375rem;
 
         b {
             color: var(--color-fg-primary);

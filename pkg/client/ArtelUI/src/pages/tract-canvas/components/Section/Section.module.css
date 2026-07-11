@@ -6,7 +6,7 @@
     .SectionTitle {
         font-family: var(--font-mono);
         font-size: 0.59375rem;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.059375rem;
         text-transform: uppercase;
         color: var(--color-fg-tertiary);
         display: flex;

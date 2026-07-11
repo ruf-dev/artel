@@ -34,7 +34,7 @@
         font-size: 0.9375rem;
         font-weight: 600;
         color: var(--color-fg-primary);
-        letter-spacing: -0.01em;
+        letter-spacing: -0.009375rem;
     }
 
     & .EntityCardDesc {
@@ -53,7 +53,7 @@
         font-size: 0.75rem;
         color: var(--color-fg-secondary);
         font-family: var(--font-mono);
-        letter-spacing: 0.01em;
+        letter-spacing: 0.0075rem;
     }
 
     & .ChipMuted {

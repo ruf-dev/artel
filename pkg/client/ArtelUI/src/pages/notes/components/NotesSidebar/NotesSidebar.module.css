@@ -24,7 +24,7 @@
     cursor: pointer;
     appearance: none;
     outline: none;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.0308rem;
 }
 
 .VaultSelect:focus {
@@ -68,5 +68,5 @@
     font-family: var(--font-mono);
     font-size: 0.77rem;
     color: var(--color-fg-disabled);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.0308rem;
 }
