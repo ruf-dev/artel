@@ -1990,8 +1990,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1783767037.6004992,
-    "ast_hash": "cffadfc5fd3b55a69ca696fd4b672e01",
+    "mtime": 1783782159.8412542,
+    "ast_hash": "a70f0693472a16870f7c5f288b1895ff",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
