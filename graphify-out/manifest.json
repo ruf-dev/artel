@@ -2035,8 +2035,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/BreadcrumbBar/BreadcrumbBar.tsx": {
-    "mtime": 1783754859.4318595,
-    "ast_hash": "34e7fcd10a68d52cb546537fd2ed856f",
+    "mtime": 1783766184.30845,
+    "ast_hash": "5d5dbcafca7d895951c9f0b38b5e15b1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/icons/HeadingIcon.tsx": {
@@ -3745,8 +3745,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx": {
-    "mtime": 1783754852.337175,
-    "ast_hash": "cee86a231ac6bc074a4d09aadfca63f3",
+    "mtime": 1783766164.605567,
+    "ast_hash": "9931b0f58f330ebc7bb987dff3142e83",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx": {
@@ -3755,8 +3755,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx": {
-    "mtime": 1783754864.3405395,
-    "ast_hash": "28d114c78efeb4f90ff107dff9ec10ea",
+    "mtime": 1783766215.765869,
+    "ast_hash": "5d071f0f7683da0cbd710f695cb8abeb",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/icons/ArrowIcon.tsx": {
@@ -4137,6 +4137,11 @@
   "pkg/client/ArtelUI/src/components/SearchInput/SearchInput.tsx": {
     "mtime": 1783762336.6510725,
     "ast_hash": "5b0cda645e256d4c5d909f075684700a",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/notes/components/icons/CopyIcon.tsx": {
+    "mtime": 1783766136.1903987,
+    "ast_hash": "38bdd0bd5d07a6445395599072f11dba",
     "semantic_hash": ""
   }
 }
