@@ -1,0 +1,15 @@
+.OptIconContainer {
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.4375rem;
+    border: var(--border-thickness) solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & svg {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+}

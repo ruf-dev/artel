@@ -13,7 +13,8 @@ export default function NotesSearchBar() {
         <div className={cls.NotesSearchBarContainer}>
             <SearchIcon className={cls.SearchIcon}/>
             <Input
-                className={cls.SearchInput}
+                className={cls.SearchInputWrapper}
+                inputClassName={cls.SearchInput}
                 placeholder="Search notes…"
                 value={searchQuery}
                 setValue={setSearchQuery}

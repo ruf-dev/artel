@@ -1,0 +1,30 @@
+.OptionCellContainer {
+    /*
+     * Extra wrapping level so .OptionBtn is a two-class selector — chures' Button
+     * base classes set justify-content:center as single-class rules, so this always
+     * outranks them on specificity instead of depending on stylesheet load order.
+     */
+    & .OptionBtn {
+        display: flex;
+        justify-content: left;
+        width: 100%;
+        height: 100%;
+
+        gap: 0.625rem;
+
+        padding: 0.625rem 0.6875rem;
+        background: var(--color-bg-elevated);
+        border: var(--border-thickness) solid var(--color-border);
+        border-radius: 0.5625rem;
+        cursor: pointer;
+        text-align: left;
+        transition: all 130ms ease;
+        font: inherit;
+        color: inherit;
+
+        &:hover {
+            border-color: var(--color-border-light);
+            background: var(--color-bg-hover-mid);
+        }
+    }
+}

@@ -17,9 +17,10 @@ interface VaultOption {
 
 interface NotesSidebarProps {
     vaults: VaultOption[]
+    showCreateButton?: boolean
 }
 
-export default function NotesSidebar({ vaults }: NotesSidebarProps) {
+export default function NotesSidebar({ vaults, showCreateButton = true }: NotesSidebarProps) {
     const notesStore = useNotes()
     const { OpenDialog } = useDialog()
     const bakeError = useBakeError()
@@ -97,6 +98,7 @@ export default function NotesSidebar({ vaults }: NotesSidebarProps) {
                         vaultId={vaultId}
                         onSelectNote={handleSelectNote}
                         onCreateNote={folderPath => handleCreateNote(folderPath)}
+                        showCreateButton={showCreateButton}
                     />
                 )}
             </div>

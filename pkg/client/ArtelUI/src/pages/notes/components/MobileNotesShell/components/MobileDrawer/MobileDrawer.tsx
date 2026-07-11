@@ -54,7 +54,7 @@ export default function MobileDrawer({ open, onClose, vaultOptions }: MobileDraw
                     <DrawerCloseButton onClose={onClose}/>
                 </div>
                 <div className={cls.DrawerBody}>
-                    <NotesSidebar vaults={vaultOptions} />
+                    <NotesSidebar vaults={vaultOptions} showCreateButton={false} />
                 </div>
                 {vaultId && (
                     <div className={cls.DrawerFooter}>

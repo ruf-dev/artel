@@ -1,0 +1,17 @@
+.OptTextContainer {
+    min-width: 0;
+
+    & .OptName {
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        color: var(--color-fg-primary);
+    }
+
+    & .OptFn {
+        font-family: var(--font-mono);
+        font-size: 0.625rem;
+        color: var(--color-fg-tertiary);
+        margin-top: 0.0625rem;
+    }
+}

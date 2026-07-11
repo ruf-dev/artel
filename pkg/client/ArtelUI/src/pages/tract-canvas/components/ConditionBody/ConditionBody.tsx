@@ -65,15 +65,15 @@ export default function ConditionBody(props: Props) {
                         <TemplateInput value={cond.right} onChange={v => updateCondition(i, {right: v})} sources={sources} placeholder="right"/>
                     </div>
                 ))}
-                <Button variant="ghost" onClick={() => update(s => ({...s, conditions: [...(s.conditions ?? []), {left: "", op: "==", right: ""}]}))}>
+                <Button variant="ghost" className={cls.AddBtn} onClick={() => update(s => ({...s, conditions: [...(s.conditions ?? []), {left: "", op: "==", right: ""}]}))}>
                     + Add condition
                 </Button>
             </Section>
             <Section title="Branches">
-                <Button variant="ghost" onClick={() => onOpenAddBlock({parentId: step.id, branch: "then"}, step.then?.length ?? 0)}>
+                <Button variant="ghost" className={cls.AddBtn} onClick={() => onOpenAddBlock({parentId: step.id, branch: "then"}, step.then?.length ?? 0)}>
                     ✓ Add to true branch
                 </Button>
-                <Button variant="ghost" onClick={() => onOpenAddBlock({parentId: step.id, branch: "else"}, step.else?.length ?? 0)}>
+                <Button variant="ghost" className={cls.AddBtn} onClick={() => onOpenAddBlock({parentId: step.id, branch: "else"}, step.else?.length ?? 0)}>
                     ✗ Add to false branch
                 </Button>
             </Section>

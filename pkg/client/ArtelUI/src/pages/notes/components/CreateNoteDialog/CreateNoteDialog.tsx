@@ -87,7 +87,7 @@ export default function CreateNoteDialog({ onConfirm, initialPath, folders }: Pr
             <p className={cls.CreateNoteLabel}>Path</p>
             <div className={cls.PathWrapper}>
                 <Input
-                    className={cls.CreateNoteInput}
+                    inputClassName={cls.CreateNoteInput}
                     type="text"
                     placeholder="folder/note-name"
                     value={path}

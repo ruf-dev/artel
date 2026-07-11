@@ -31,30 +31,28 @@
 }
 
 .CreateNoteInput {
-    width: 100%;
-    box-sizing: border-box;
     padding: 0.625rem 0.875rem;
     border-radius: 0.625rem;
     border: var(--border-thickness) solid var(--color-border-light);
     background: var(--color-bg-input, var(--color-bg-card));
+    outline: none;
+    transition: border-color 160ms ease;
     color: var(--color-fg-primary);
     font-size: 0.875rem;
     font-family: inherit;
-    outline: none;
-    transition: border-color 160ms ease;
-}
 
-.CreateNoteInput:focus {
-    border-color: var(--coral);
-}
+    &::placeholder {
+        color: var(--color-fg-secondary);
+        opacity: 0.5;
+    }
 
-.CreateNoteInput:disabled {
-    opacity: 0.5;
-}
+    &:focus {
+        border-color: var(--coral);
+    }
 
-.CreateNoteInput::placeholder {
-    color: var(--color-fg-secondary);
-    opacity: 0.5;
+    &:disabled {
+        opacity: 0.5;
+    }
 }
 
 .PathWrapper {

@@ -92,7 +92,7 @@ export default function TractCanvasInspectorBody(props: Props) {
                     </Section>
                 ) : (
                     <Section title="Flow">
-                        <Button variant="ghost" onClick={() => onOpenAddBlock(node.nextLocation, node.nextIndex)}>
+                        <Button variant="ghost" className={cls.AddStepBtn} onClick={() => onOpenAddBlock(node.nextLocation, node.nextIndex)}>
                             + Add step after
                         </Button>
                     </Section>

@@ -52,4 +52,8 @@
         align-items: center;
         gap: 0.25rem;
     }
+
+    .AddBtn {
+        align-self: flex-start;
+    }
 }

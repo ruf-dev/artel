@@ -15,9 +15,12 @@ interface FolderSectionProps {
     vaultId: string
     onSelectNote: (vaultId: string, path: string) => void
     onCreateNote: (folderPath?: string) => void
+    showCreateButton?: boolean
 }
 
-export default function FolderSection({ folders, notes, selectedPath, vaultId, onSelectNote, onCreateNote }: FolderSectionProps) {
+export default function FolderSection(props: FolderSectionProps) {
+    const { folders, notes, selectedPath, vaultId } = props
+    const { onSelectNote, onCreateNote, showCreateButton = true } = props
     const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
 
     function toggleFolder(path: string) {
@@ -39,9 +42,11 @@ export default function FolderSection({ folders, notes, selectedPath, vaultId, o
         <>
             <div className={cls.SectionHeaderContainer}>
                 <span className={cls.SectionLabel}>All Notes</span>
-                <Button variant="ghost" className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
-                    <PlusIcon/>
-                </Button>
+                {showCreateButton && (
+                    <Button variant="ghost" className={cls.CreateNoteBtn} onClick={() => onCreateNote()} title="New note">
+                        <PlusIcon/>
+                    </Button>
+                )}
             </div>
             {tree.map(node => (
                 <FolderNodeItem
