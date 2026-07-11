@@ -37,6 +37,25 @@
                 background: rgb(255 255 255 / 6%);
             }
         }
+
+        & .CopyPathBtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.1875rem 0.3125rem;
+            border: none;
+            background: transparent;
+            color: rgb(255 255 255 / 25%);
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: color 160ms ease, background 160ms ease;
+            flex-shrink: 0;
+
+            &:hover {
+                color: rgb(255 255 255 / 70%);
+                background: rgb(255 255 255 / 6%);
+            }
+        }
     }
 
     & .CenterSlot {

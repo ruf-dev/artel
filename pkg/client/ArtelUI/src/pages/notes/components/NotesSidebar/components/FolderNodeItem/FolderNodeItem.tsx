@@ -30,6 +30,7 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                 depth={depth}
                 onClick={() => onToggle(node.path)}
                 onAddInFolder={() => onCreateNoteInFolder(node.path)}
+                onCopyPath={() => navigator.clipboard.writeText(node.path)}
             />
             {isOpen && (
                 <>

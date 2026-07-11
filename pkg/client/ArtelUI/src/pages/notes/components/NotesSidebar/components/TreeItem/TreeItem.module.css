@@ -13,7 +13,8 @@
         background: rgb(255 255 255 / 3.5%);
     }
 
-    &:hover .FolderAddBtn {
+    &:hover .FolderAddBtn,
+    &:hover .CopyPathBtn {
         opacity: 1;
         pointer-events: auto;
     }
@@ -47,6 +48,29 @@
     }
 
     & .FolderAddBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.2rem;
+        height: 1.2rem;
+        border: none;
+        background: transparent;
+        color: var(--color-fg-disabled);
+        border-radius: 0.25rem;
+        padding: 0;
+        cursor: pointer;
+        flex-shrink: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 100ms ease, background 120ms ease, color 120ms ease;
+
+        &:hover {
+            background: rgb(255 255 255 / 10%);
+            color: var(--color-fg-secondary);
+        }
+    }
+
+    & .CopyPathBtn {
         display: flex;
         align-items: center;
         justify-content: center;
