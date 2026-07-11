@@ -1050,8 +1050,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1783687086.7266572,
-    "ast_hash": "3aa0d352708f675cdcdcc75fc3f2f420",
+    "mtime": 1783761766.8330023,
+    "ast_hash": "56c2f06c1709d323b8a6c0acb1e23680",
     "semantic_hash": ""
   },
   "config/config.yaml": {
@@ -2600,8 +2600,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx": {
-    "mtime": 1783761670.285962,
-    "ast_hash": "e3aa2c2d40b10320ef4d15b944511591",
+    "mtime": 1783762344.3575938,
+    "ast_hash": "79581124c338c3e5ae5c260d5a7bc86a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/RunStatusBadge/RunStatusBadge.tsx": {
@@ -3875,8 +3875,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/ArtelUsersTab.tsx": {
-    "mtime": 1783620632.6174605,
-    "ast_hash": "b6e6a8a1815c9763a645216aa8b7b325",
+    "mtime": 1783762353.4102304,
+    "ast_hash": "274692035d5fe67c2474a67356334186",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.tsx": {
@@ -4132,6 +4132,11 @@
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractBlockPicker/components/ConnectionFilterRow/ConnectionFilterRow.tsx": {
     "mtime": 1783755206.9627612,
     "ast_hash": "7a23d5feb8f49805eec9178419fa83de",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/components/SearchInput/SearchInput.tsx": {
+    "mtime": 1783762336.6510725,
+    "ast_hash": "5b0cda645e256d4c5d909f075684700a",
     "semantic_hash": ""
   }
 }
