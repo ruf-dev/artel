@@ -26,23 +26,8 @@
     color: var(--color-fg-primary);
 }
 
-.Search {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.5625rem 0.75rem;
-    background: var(--color-bg-input);
-    border: var(--border-thickness) solid var(--color-border-light);
-    border-radius: 0.5625rem;
-    color: var(--color-fg-primary);
-    font: inherit;
-    font-size: 0.8125rem;
-    outline: none;
-    transition: border-color 140ms ease;
+.SearchWrapper {
     margin-bottom: 0.875rem;
-}
-
-.Search:focus {
-    border-color: var(--coral);
 }
 
 .FilterRow {

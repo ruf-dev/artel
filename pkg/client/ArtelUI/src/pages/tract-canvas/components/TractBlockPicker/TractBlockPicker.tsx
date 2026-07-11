@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react"
-import {Button, Input} from "@vervstack/chures"
+import {Button} from "@vervstack/chures"
 
+import SearchInput from "@/components/SearchInput/SearchInput.tsx"
 import cls from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.module.css"
 import {TractTool} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
@@ -63,9 +64,8 @@ export default function TractBlockPicker({onConfirm}: Props) {
                 <div className={cls.Title}>Add block</div>
                 <Button variant="ghost" onClick={CloseDialog} aria-label="Close">✕</Button>
             </div>
-            <Input
-                className={cls.Search}
-                type="text"
+            <SearchInput
+                className={cls.SearchWrapper}
                 placeholder="Search actions…"
                 value={query}
                 setValue={setQuery}

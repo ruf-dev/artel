@@ -1,0 +1,21 @@
+.SearchInputContainer {
+    width: 100%;
+
+    & .Field {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.5625rem 0.75rem;
+        background: var(--color-bg-input);
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: 0.5625rem;
+        color: var(--color-fg-primary);
+        font: inherit;
+        font-size: 0.8125rem;
+        outline: none;
+        transition: border-color 140ms ease;
+
+        &:focus {
+            border-color: var(--coral);
+        }
+    }
+}

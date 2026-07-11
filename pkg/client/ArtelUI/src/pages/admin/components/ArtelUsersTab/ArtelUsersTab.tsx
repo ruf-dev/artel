@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from "react"
-import {Input} from "@vervstack/chures"
 
+import SearchInput from "@/components/SearchInput/SearchInput.tsx"
 import cls from "@/pages/admin/components/ArtelUsersTab/ArtelUsersTab.module.css"
 import {AdminUsersAPI, ArtelUserEntry} from "@/app/api/artel/admin_users.pb.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
@@ -34,14 +34,12 @@ export default function ArtelUsersTab() {
 
     return (
         <div className={cls.ArtelUsersTabContainer}>
-            <div className={cls.Field}>
-                <Input
-                    className={cls.Input}
-                    placeholder="Search by username or email…"
-                    value={search}
-                    setValue={setSearch}
-                />
-            </div>
+            <SearchInput
+                className={cls.Field}
+                placeholder="Search by username or email…"
+                value={search}
+                setValue={setSearch}
+            />
             <ArtelUserList users={users} loading={loading} total={total} />
         </div>
     )
