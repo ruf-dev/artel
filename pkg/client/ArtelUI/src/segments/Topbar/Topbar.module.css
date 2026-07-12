@@ -14,7 +14,14 @@
 }
 
 @media (width <= 45rem) {
-    .Topbar { padding: 0.875rem 1.125rem; }
+    .Topbar {
+        padding: 0.875rem 1.125rem;
+        padding-bottom: calc(0.875rem + env(safe-area-inset-bottom, 0));
+        top: auto;
+        bottom: 0;
+        border-bottom: none;
+        border-top: var(--border-thickness) solid var(--color-border);
+    }
 }
 
 .ActionsWrapper {

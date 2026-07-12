@@ -1,20 +1,26 @@
+import {cn} from "@/app/utils/cn.ts"
 import TopbarUserMenuItem from "@/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.tsx"
 import cls from "@/segments/Topbar/components/TopbarUserMenuList/TopbarUserMenuList.module.css"
+
+interface MenuRect {
+    top?: number
+    bottom?: number
+    right: number
+}
 
 interface TopbarUserMenuListProps {
     isAdmin: boolean
     onAdmin: () => void
     onApiKeys: () => void
     onLogout: () => void
-    top: number
-    right: number
+    rect: MenuRect
 }
 
 export default function TopbarUserMenuList(
-    {isAdmin, onAdmin, onApiKeys, onLogout, top, right}: TopbarUserMenuListProps,
+    {isAdmin, onAdmin, onApiKeys, onLogout, rect}: TopbarUserMenuListProps,
 ) {
     return (
-        <div className={cls.Menu} role="menu" style={{top, right}}>
+        <div className={cn(cls.Menu, rect.bottom !== undefined && cls.MenuUpward)} role="menu" style={rect}>
             {isAdmin && (
                 <TopbarUserMenuItem
                     label="Admin Panel"

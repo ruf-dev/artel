@@ -16,13 +16,13 @@ export default function Topbar() {
     return (
         <header className={cls.Topbar}>
             <div className={cls.LeadingWrapper}>
-                {isMobile && <TopbarMobileTrigger open={drawerOpen} onClick={() => setDrawerOpen(true)}/>}
                 <TopbarBrand />
             </div>
             {!isMobile && <TopbarNav />}
             <div className={cls.ActionsWrapper}>
                 <TopbarThemeToggle />
                 <TopbarUserMenu />
+                {isMobile && <TopbarMobileTrigger open={drawerOpen} onClick={() => setDrawerOpen(true)}/>}
             </div>
             {isMobile && <TopbarMobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}/>}
         </header>

@@ -5,6 +5,15 @@
     height: 100%;
 }
 
+@media (width <= 45rem) {
+    .HomeLayoutContainer {
+        /* Mobile Topbar docks at the bottom instead of the top — Content stays
+           first in DOM (paints below), Topbar stays last (paints above/on top
+           for its sticky overlap), so plain column order puts it at the bottom. */
+        flex-direction: column;
+    }
+}
+
 .Content {
     flex: 1;
     display: flex;
