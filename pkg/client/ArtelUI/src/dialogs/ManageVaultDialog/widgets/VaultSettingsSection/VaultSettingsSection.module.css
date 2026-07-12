@@ -1,18 +1,4 @@
 .VaultSettingsSectionContainer {
-    margin-bottom: 1.5rem;
-
-    .SectionHead {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 0.625rem;
-
-        .SectionTitle {
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.06875rem;
-            text-transform: uppercase;
-            color: var(--color-fg-tertiary);
-        }
-    }
+    display: flex;
+    flex-direction: column;
 }

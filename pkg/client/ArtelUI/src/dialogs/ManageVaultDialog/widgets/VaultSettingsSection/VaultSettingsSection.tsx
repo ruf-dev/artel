@@ -45,15 +45,12 @@ export default function VaultSettingsSection({vault, onChanged}: Props) {
     const checked = isS3Available ? useCouchDb : true
 
     return (
-        <section className={cls.VaultSettingsSectionContainer}>
-            <div className={cls.SectionHead}>
-                <span className={cls.SectionTitle}>Vault settings</span>
-            </div>
+        <div className={cls.VaultSettingsSectionContainer}>
             <BinaryStorageToggle
                 checked={checked}
                 disabled={!isS3Available}
                 onChange={handleChange}
             />
-        </section>
+        </div>
     )
 }

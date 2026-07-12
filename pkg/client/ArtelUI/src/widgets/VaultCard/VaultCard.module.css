@@ -6,8 +6,6 @@
     transition: border-color 200ms ease, background 200ms ease;
     animation: fadeUp 500ms cubic-bezier(.2, .7, .2, 1) both;
     min-width: 0;
-    cursor: pointer;
-    perspective: 62.5rem;
     height: 16rem;
     padding: 0;
 }
@@ -27,23 +25,19 @@
 .VaultCardContentWrapper {
     position: relative;
     width: 100%;
+    height: 100%;
     flex: 1;
-    transition: transform 250ms ease-in;
-    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 200ms ease, background 200ms ease;
 
     background: var(--color-bg-card);
     border: var(--border-thickness) solid var(--color-border);
     border-radius: 1.125rem;
 
-    &.Flipped {
-        transform: rotateY(180deg);
-    }
-
-    &:hover:not(.Flipped) {
+    &:hover {
         border-color: var(--color-border-light);
         background: #101010;
-
-        transform: rotateY(5deg);
     }
 }
 
@@ -51,7 +45,7 @@
     box-shadow: 0 0.0625rem 0.1875rem rgb(0 0 0 / 6%), 0 0 0 0.0625rem rgb(0 0 0 / 7%);
 }
 
-[data-theme="light"] .VaultCardContentWrapper:hover:not(.Flipped) {
+[data-theme="light"] .VaultCardContentWrapper:hover {
     background: #F3F1EE;
     box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 8%), 0 0 0 0.0625rem rgb(0 0 0 / 9%);
 }
