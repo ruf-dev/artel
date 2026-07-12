@@ -1015,8 +1015,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/VaultCard/VaultCard.tsx": {
-    "mtime": 1783879005.736987,
-    "ast_hash": "58d17a93cbe17f6419ffc5c2876b70f6",
+    "mtime": 1783884573.4716783,
+    "ast_hash": "7d20c87171599c44c859d4d7f52a89c2",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/Topbar.tsx": {
@@ -3337,11 +3337,6 @@
   "pkg/client/ArtelUI/src/components/TractStepTree/processes/tractStepTreeHelpers.ts": {
     "mtime": 1783754781.1205716,
     "ast_hash": "df64e6065df43d5d1f2a3f30e630ee4f",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/components/VaultCard/VaultCardBack.tsx": {
-    "mtime": 1783879015.0651584,
-    "ast_hash": "650dbcc2698dace19144fe9563358311",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/VaultCard/VaultCardFront.tsx": {
