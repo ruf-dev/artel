@@ -1,5 +1,6 @@
 import {Button} from "@vervstack/chures"
 
+import LocateIcon from "@/pages/notes/components/icons/LocateIcon.tsx"
 import cls from "@/pages/notes/components/MobileNotesShell/components/MobileTopBar/MobileTopBar.module.css"
 
 function getNoteTitle(selectedPath: string | null): string {
@@ -25,9 +26,12 @@ interface MobileTopBarProps {
     noteContent: string | null
     sidebarOpen: boolean
     onHamburgerClick: () => void
+    onFindCurrentFile: () => void
 }
 
-export default function MobileTopBar({ selectedPath, noteContent, sidebarOpen, onHamburgerClick }: MobileTopBarProps) {
+export default function MobileTopBar(
+    { selectedPath, noteContent, sidebarOpen, onHamburgerClick, onFindCurrentFile }: MobileTopBarProps
+) {
     const title = getNoteTitle(selectedPath)
     const meta = getNoteMeta(noteContent)
     const hamburgerClass = `${cls.HamburgerBtn}${sidebarOpen ? ` ${cls.HamburgerBtnActive}` : ""}`
@@ -41,6 +45,16 @@ export default function MobileTopBar({ selectedPath, noteContent, sidebarOpen, o
                 >
                     <path d="M3 4.5h12M3 9h8M3 13.5h10" />
                 </svg>
+            </Button>
+            <Button
+                variant="ghost"
+                className={cls.FindCurrentFileBtn}
+                onClick={onFindCurrentFile}
+                disabled={!selectedPath}
+                title="Find currently open file"
+                aria-label="Find currently open file"
+            >
+                <LocateIcon/>
             </Button>
             <div className={cls.NoteInfoColumn}>
                 <div className={cls.NoteTitle}>{title}</div>

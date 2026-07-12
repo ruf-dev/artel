@@ -36,7 +36,7 @@ export default function MobileNotesShell(props: MobileNotesShellProps) {
     const { scrollTopRef, fontScale, onModeChange, onChange, onContentClick, onEscape } = props
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const { selectedPath: storeSelectedPath } = useNotes()
+    const { selectedPath: storeSelectedPath, highlightNote } = useNotes()
     const prevSelectedPath = useRef(storeSelectedPath)
 
     useEffect(() => {
@@ -45,6 +45,12 @@ export default function MobileNotesShell(props: MobileNotesShellProps) {
         }
         prevSelectedPath.current = storeSelectedPath
     }, [storeSelectedPath])
+
+    function handleFindCurrentFile() {
+        if (!storeSelectedPath) return
+        setSidebarOpen(true)
+        highlightNote(storeSelectedPath)
+    }
 
     const contentAreaClass = `${cls.ContentArea}${mode === "read" ? ` ${cls.ContentAreaRead}` : ""}`
 
@@ -56,6 +62,7 @@ export default function MobileNotesShell(props: MobileNotesShellProps) {
                 noteContent={noteContent}
                 sidebarOpen={sidebarOpen}
                 onHamburgerClick={() => setSidebarOpen(v => !v)}
+                onFindCurrentFile={handleFindCurrentFile}
             />
             <ModeBar active={mode} onModeChange={onModeChange} />
             <div className={contentAreaClass}>

@@ -105,7 +105,7 @@
 }
 
 .TreeItemRowHighlight {
-    animation: tree-item-blink 1.3s ease-in-out 2;
+    animation: tree-item-blink 0.33s ease-in-out 2;
 }
 
 @keyframes tree-item-blink {

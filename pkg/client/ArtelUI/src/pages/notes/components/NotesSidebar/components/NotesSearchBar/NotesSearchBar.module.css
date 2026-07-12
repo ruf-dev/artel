@@ -2,10 +2,11 @@
     display: flex;
     align-items: center;
     gap: 0.56rem;
+    width: 100%;
     background: var(--color-bg-input);
     border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 0.5625rem;
-    padding: 0.5625rem 0.75rem;
+    padding: 0 0.75rem;
     transition: border-color 140ms ease;
 
     &:focus-within {

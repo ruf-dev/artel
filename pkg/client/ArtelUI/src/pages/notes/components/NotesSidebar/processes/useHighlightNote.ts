@@ -1,16 +1,9 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 
-const HIGHLIGHT_DURATION_MS = 2700
 const SCROLL_LOOKUP_MAX_ATTEMPTS = 20
 
-export function useHighlightNote() {
-    const [highlightedPath, setHighlightedPath] = useState<string | null>(null)
+export function useHighlightNote(highlightedPath: string | null) {
     const scrollAreaRef = useRef<HTMLDivElement>(null)
-
-    function highlightNote(path: string) {
-        setHighlightedPath(null)
-        requestAnimationFrame(() => setHighlightedPath(path))
-    }
 
     useEffect(() => {
         if (!highlightedPath) return
@@ -37,11 +30,5 @@ export function useHighlightNote() {
         }
     }, [highlightedPath])
 
-    useEffect(() => {
-        if (!highlightedPath) return
-        const timer = setTimeout(() => setHighlightedPath(null), HIGHLIGHT_DURATION_MS)
-        return () => clearTimeout(timer)
-    }, [highlightedPath])
-
-    return { highlightedPath, scrollAreaRef, highlightNote }
+    return { scrollAreaRef }
 }

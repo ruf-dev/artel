@@ -1,15 +1,14 @@
-import { Button } from "@vervstack/chures"
+import {Dropdown} from "@vervstack/chures"
 
-import { useNotes } from "@/app/hooks/Notes.ts"
-import { useDialog } from "@/app/hooks/Dialog.ts"
-import { useBakeError } from "@/app/hooks/useErrorToast.ts"
+import {useNotes} from "@/app/hooks/Notes.ts"
+import {useDialog} from "@/app/hooks/Dialog.ts"
+import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 import FolderSection from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx"
 import NotesSearchBar from "@/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx"
 import SearchResultsList from "@/pages/notes/components/NotesSidebar/components/SearchResultsList/SearchResultsList.tsx"
-import { useNotesSearchQuery } from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
-import { useHighlightNote } from "@/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts"
-import LocateIcon from "@/pages/notes/components/icons/LocateIcon.tsx"
+import {useNotesSearchQuery} from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
+import {useHighlightNote} from "@/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts"
 import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
 
 interface VaultOption {
@@ -22,26 +21,20 @@ interface NotesSidebarProps {
     showCreateButton?: boolean
 }
 
-export default function NotesSidebar({ vaults, showCreateButton = true }: NotesSidebarProps) {
+export default function NotesSidebar({vaults, showCreateButton = true}: NotesSidebarProps) {
     const notesStore = useNotes()
-    const { OpenDialog } = useDialog()
+    const {OpenDialog} = useDialog()
     const bakeError = useBakeError()
-    const [searchQuery, setSearchQuery] = useNotesSearchQuery()
-    const { highlightedPath, scrollAreaRef, highlightNote } = useHighlightNote()
+    const [searchQuery] = useNotesSearchQuery()
+    const {scrollAreaRef} = useHighlightNote(notesStore.highlightedPath)
 
-    function handleVaultChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        void notesStore.selectVault(e.target.value)
+    function handleVaultChange(value: string[]) {
+        if (!value[0]) return
+        void notesStore.selectVault(value[0])
     }
 
     function handleSelectNote(vid: string, path: string) {
         void notesStore.selectNote(vid, path)
-    }
-
-    function handleFindCurrentFile() {
-        const path = notesStore.selectedPath
-        if (!path) return
-        if (searchQuery.trim()) setSearchQuery("")
-        highlightNote(path)
     }
 
     function handleCreateNote(folderPath?: string) {
@@ -65,33 +58,15 @@ export default function NotesSidebar({ vaults, showCreateButton = true }: NotesS
     return (
         <div className={cls.NotesSidebarContainer}>
             <div className={cls.VaultPickerWrapper}>
-                <select
-                    className={cls.VaultSelect}
-                    value={vaultId ?? ""}
+                <Dropdown
+                    placeholder="Select vault…"
+                    options={vaults}
+                    value={vaultId ? [vaultId] : []}
                     onChange={handleVaultChange}
-                >
-                    <option value="" disabled className={cls.VaultSelectPlaceholder}>
-                        Select vault…
-                    </option>
-                    {vaults.map(v => (
-                        <option key={v.id} value={v.id}>{v.name}</option>
-                    ))}
-                </select>
+                />
             </div>
             <div className={cls.SearchWrapper}>
-                <div className={cls.SearchInputFlex}>
-                    <NotesSearchBar/>
-                </div>
-                <Button
-                    variant="ghost"
-                    className={cls.FindCurrentFileBtn}
-                    onClick={handleFindCurrentFile}
-                    disabled={!notesStore.selectedPath}
-                    title="Find currently open file"
-                    aria-label="Find currently open file"
-                >
-                    <LocateIcon/>
-                </Button>
+                <NotesSearchBar/>
             </div>
             <div className={cls.ScrollArea} ref={scrollAreaRef}>
                 {!vaultId && (
@@ -102,7 +77,7 @@ export default function NotesSidebar({ vaults, showCreateButton = true }: NotesS
                         notes={notesStore.notes}
                         searchQuery={searchQuery}
                         selectedPath={notesStore.selectedPath}
-                        highlightedPath={highlightedPath}
+                        highlightedPath={notesStore.highlightedPath}
                         onSelectNote={path => handleSelectNote(vaultId, path)}
                     />
                 )}
@@ -111,8 +86,8 @@ export default function NotesSidebar({ vaults, showCreateButton = true }: NotesS
                         folders={notesStore.folders}
                         notes={notesStore.notes}
                         selectedPath={notesStore.selectedPath}
-                        highlightedPath={highlightedPath}
-                        revealPath={highlightedPath}
+                        highlightedPath={notesStore.highlightedPath}
+                        revealPath={notesStore.highlightedPath}
                         vaultId={vaultId}
                         onSelectNote={handleSelectNote}
                         onCreateNote={folderPath => handleCreateNote(folderPath)}

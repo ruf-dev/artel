@@ -6,6 +6,8 @@ import {notesService} from "@/processes/Notes.ts"
 export type {NoteItem}
 export type NoteMode = 'preview' | 'edit' | 'read'
 
+const HIGHLIGHT_DURATION_MS = 2700
+
 interface NotesState {
     vaultId: string | null
     folders: string[]
@@ -16,6 +18,7 @@ interface NotesState {
     mode: NoteMode
     loading: boolean
     error: string | null
+    highlightedPath: string | null
     selectVault: (vaultId: string) => Promise<void>
     selectNote: (vaultId: string, path: string) => Promise<void>
     setMode: (mode: NoteMode) => void
@@ -25,6 +28,7 @@ interface NotesState {
     moveNote: (newPath: string) => Promise<void>
     createNote: (path: string) => Promise<void>
     listTags: (vaultId: string) => Promise<string[]>
+    highlightNote: (path: string) => void
     reset: () => void
 }
 
@@ -38,6 +42,7 @@ export const useNotes = create<NotesState>((set, get) => ({
     mode: 'preview',
     loading: false,
     error: null,
+    highlightedPath: null,
 
     selectVault: async (vaultId: string) => {
         set({loading: true, error: null, selectedPath: null, noteContent: null, savedContent: null, mode: 'preview'})
@@ -108,6 +113,16 @@ export const useNotes = create<NotesState>((set, get) => ({
 
     listTags: (vaultId: string) => notesService.listTags(vaultId),
 
+    highlightNote: (path: string) => {
+        set({highlightedPath: null})
+        requestAnimationFrame(() => {
+            set({highlightedPath: path})
+            setTimeout(() => {
+                if (get().highlightedPath === path) set({highlightedPath: null})
+            }, HIGHLIGHT_DURATION_MS)
+        })
+    },
+
     reset: () => {
         set({
             vaultId: null,
@@ -119,6 +134,7 @@ export const useNotes = create<NotesState>((set, get) => ({
             mode: 'preview',
             loading: false,
             error: null,
+            highlightedPath: null,
         })
     },
 }))

@@ -46,4 +46,10 @@
     --dialog-max-height:        80vh;
     --dialog-max-height-lg:     90vh;
     --page-height-full:        100vh;
+
+    --chures-input-height: 2rem;
+}
+
+@media (width <= 480px) {
+    :root { --chures-input-height: 3.5rem; }
 }
