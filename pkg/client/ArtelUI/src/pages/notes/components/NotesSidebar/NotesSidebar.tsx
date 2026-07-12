@@ -7,7 +7,9 @@ import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNo
 import FolderSection from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx"
 import NotesSearchBar from "@/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx"
 import SearchResultsList from "@/pages/notes/components/NotesSidebar/components/SearchResultsList/SearchResultsList.tsx"
+import SearchResultsTree from "@/pages/notes/components/NotesSidebar/components/SearchResultsTree/SearchResultsTree.tsx"
 import {useNotesSearchQuery} from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
+import {useNotesTreeView} from "@/pages/notes/components/NotesSidebar/processes/useNotesTreeView.ts"
 import {useHighlightNote} from "@/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts"
 import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
 
@@ -26,6 +28,7 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
     const {OpenDialog} = useDialog()
     const bakeError = useBakeError()
     const [searchQuery] = useNotesSearchQuery()
+    const [treeView, toggleTreeView] = useNotesTreeView()
     const {scrollAreaRef} = useHighlightNote(notesStore.highlightedPath)
 
     function handleVaultChange(value: string[]) {
@@ -66,19 +69,30 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
                 />
             </div>
             <div className={cls.SearchWrapper}>
-                <NotesSearchBar/>
+                <NotesSearchBar treeView={treeView} onToggleTreeView={toggleTreeView}/>
             </div>
             <div className={cls.ScrollArea} ref={scrollAreaRef}>
                 {!vaultId && (
                     <div className={cls.EmptyVaultHint}>Select a vault to browse notes</div>
                 )}
-                {vaultId && searchQuery.trim() && (
+                {vaultId && searchQuery.trim() && !treeView && (
                     <SearchResultsList
                         notes={notesStore.notes}
                         searchQuery={searchQuery}
                         selectedPath={notesStore.selectedPath}
                         highlightedPath={notesStore.highlightedPath}
                         onSelectNote={path => handleSelectNote(vaultId, path)}
+                    />
+                )}
+                {vaultId && searchQuery.trim() && treeView && (
+                    <SearchResultsTree
+                        folders={notesStore.folders}
+                        notes={notesStore.notes}
+                        searchQuery={searchQuery}
+                        selectedPath={notesStore.selectedPath}
+                        highlightedPath={notesStore.highlightedPath}
+                        onSelectNote={path => handleSelectNote(vaultId, path)}
+                        onCreateNote={folderPath => handleCreateNote(folderPath)}
                     />
                 )}
                 {vaultId && !searchQuery.trim() && (

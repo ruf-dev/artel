@@ -16,6 +16,7 @@
     .SearchInputWrapper {
         flex: 1;
         min-width: 0;
+        display: flex;
     }
 
     .SearchInput {
@@ -53,6 +54,29 @@
 
         &:hover {
             color: var(--color-fg-primary);
+        }
+    }
+
+    .TreeToggleBtn {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.4rem;
+        height: 1.4rem;
+        padding: 0;
+        color: var(--color-fg-disabled);
+
+        &:hover {
+            color: var(--color-fg-primary);
+        }
+    }
+
+    .TreeToggleBtnActive {
+        color: var(--coral);
+
+        &:hover {
+            color: var(--coral);
         }
     }
 }

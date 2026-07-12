@@ -13,7 +13,7 @@ interface SearchResultsListProps {
 export default function SearchResultsList(props: SearchResultsListProps) {
     const { notes, searchQuery, selectedPath, highlightedPath, onSelectNote } = props
     const query = searchQuery.trim().toLowerCase()
-    const results = notes.filter(n => getNoteName(n).toLowerCase().includes(query))
+    const results = notes.filter(n => (n.path ?? "").toLowerCase().includes(query))
 
     return (
         <>
