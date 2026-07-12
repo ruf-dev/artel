@@ -1,0 +1,23 @@
+.TopbarMobileTriggerContainer {
+    & .HamburgerBtn {
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+        border-radius: var(--border-radius-sm);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--color-fg-secondary);
+        background: var(--color-bg-hover);
+        border: var(--border-thickness) solid var(--color-border);
+        transition: color 0.2s, background 0.2s, border-color 0.2s;
+    }
+
+    & .HamburgerBtnActive {
+        color: var(--coral);
+        background: var(--coral-dim);
+        border-color: var(--coral-border);
+    }
+}

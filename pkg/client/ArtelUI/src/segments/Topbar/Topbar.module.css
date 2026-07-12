@@ -23,6 +23,12 @@
     gap: 0.75rem;
 }
 
+.LeadingWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 [data-theme="light"] .Topbar {
     background: rgb(248 247 245 / 90%);
 }

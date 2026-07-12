@@ -1,0 +1,16 @@
+.TopbarDrawerCloseButtonContainer {
+    & .CloseBtn {
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+        border-radius: var(--border-radius-sm);
+        background: var(--color-bg-hover);
+        border: var(--border-thickness) solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-fg-tertiary);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+}
