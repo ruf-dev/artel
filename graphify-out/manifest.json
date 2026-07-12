@@ -2775,8 +2775,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarNav/TopbarNav.tsx": {
-    "mtime": 1783596470.9090548,
-    "ast_hash": "268e21cee174ccf8610e660f1e804016",
+    "mtime": 1783885023.9878485,
+    "ast_hash": "fe9a8355165c4afd4a6dc5cdfdae4172",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenuPill/TopbarUserMenuPill.tsx": {
@@ -4215,8 +4215,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileDrawer/TopbarMobileDrawer.tsx": {
-    "mtime": 1783847222.6453862,
-    "ast_hash": "493727ef57cb2d32d66a5f25793edb0b",
+    "mtime": 1783885169.5163398,
+    "ast_hash": "10221ed3c718b840354945af80f12d87",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileTrigger/TopbarMobileTrigger.tsx": {
@@ -4227,6 +4227,41 @@
   "tasks/verify-mobile-topbar-drawer.md": {
     "mtime": 1783849735.1013787,
     "ast_hash": "3f1299517ea933d228d1e62c87a860e7",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileNavLink/TopbarMobileNavLink.tsx": {
+    "mtime": 1783885148.183086,
+    "ast_hash": "27a078a48270fe0d16807c9f9ce3ff3f",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/ConnectionsIcon.tsx": {
+    "mtime": 1783885002.9573355,
+    "ast_hash": "ef57fb14e5c0763f74f7dc593c5ad117",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/NotesIcon.tsx": {
+    "mtime": 1783884998.607693,
+    "ast_hash": "7598cf0583ce71468c6efbbc0cbaa147",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/ToolboxIcon.tsx": {
+    "mtime": 1783885006.6410222,
+    "ast_hash": "e84237f81dfa50ad44369e87267872d1",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/TractsIcon.tsx": {
+    "mtime": 1783885010.2341452,
+    "ast_hash": "8ba99387880608ad37247a7eadf07b63",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/VaultsIcon.tsx": {
+    "mtime": 1783884995.063264,
+    "ast_hash": "7ffc8ba24ba6639dc3d790f10dc113bd",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/iconTypes.ts": {
+    "mtime": 1783884991.5397327,
+    "ast_hash": "895d2befc0ffd55ef9e0d91aec5f4797",
     "semantic_hash": ""
   }
 }
