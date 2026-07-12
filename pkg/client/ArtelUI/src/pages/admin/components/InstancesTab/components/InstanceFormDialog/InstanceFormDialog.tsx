@@ -1,5 +1,5 @@
 import {useState} from "react"
-import {Button, ModalClose, Input} from "@vervstack/chures"
+import {Button, ModalClose} from "@vervstack/chures"
 
 import cls from "@/pages/admin/components/InstancesTab/components/InstanceFormDialog/InstanceFormDialog.module.css"
 import {CouchInstancesAPI, GetCouchInstanceResponse} from "@/app/api/artel/couch_instances.pb.ts"
@@ -7,6 +7,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import FormField from "@/components/FormField/FormField.tsx"
+import Input from "@/components/atoms/Input/Input.tsx"
 import SetupStatusSection from "@/pages/admin/components/SetupStatusSection/SetupStatusSection.tsx"
 
 interface InstanceFormDialogProps {
@@ -69,7 +70,6 @@ export default function InstanceFormDialog({initial, onSave}: InstanceFormDialog
                 disabled={busy}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
-                inputClassName={cls.Input}
             />
             <FormField
                 label="Username"
@@ -79,14 +79,12 @@ export default function InstanceFormDialog({initial, onSave}: InstanceFormDialog
                 disabled={busy}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
-                inputClassName={cls.Input}
             />
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Password{isEdit ? " (leave blank to keep current)" : ""}</span>
                 <Input
                     type="password"
                     placeholder={isEdit ? "••••••••" : "password"}
-                    className={cls.Input}
                     value={password}
                     setValue={setPassword}
                     disabled={busy}

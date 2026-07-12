@@ -20,7 +20,11 @@ export default function ParamInput({def, value, onChange}: {
         )
     }
     if (def.integerParam) {
-        return <Input className={cls.ParamField} type="number" value={value} setValue={onChange} placeholder="integer"/>
+        return (
+            <Input
+                inputClassName={cls.ParamField} type="number" value={value} setValue={onChange} placeholder="integer"
+            />
+        )
     }
-    return <Input className={cls.ParamField} type="text" value={value} setValue={onChange} placeholder="string"/>
+    return <Input inputClassName={cls.ParamField} type="text" value={value} setValue={onChange} placeholder="string"/>
 }

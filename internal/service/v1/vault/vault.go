@@ -312,6 +312,29 @@ func (s *Service) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {
 	return nil
 }
 
+func (s *Service) SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	membership, err := s.vaultMembersRepo.Get(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get vault membership")
+	}
+
+	if membership.Role != artel_q.VaultRoleOwner {
+		return rerrors.Wrap(user_errors.NotVaultOwner)
+	}
+
+	err = s.vaultsRepo.SetUseCouchDBForBinaries(ctx, vaultID, useCouchDB)
+	if err != nil {
+		return rerrors.Wrap(err, "set vault binary storage backend")
+	}
+
+	return nil
+}
+
 func (s *Service) ensureCouchUserExists(ctx context.Context,
 	adminClient *couchdb.Client,
 	uc user_context.UserContext,

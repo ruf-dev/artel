@@ -16,6 +16,38 @@
     "application/json"
   ],
   "paths": {
+    "/api/vaults/binary-storage": {
+      "post": {
+        "operationId": "VaultsAPI_SetVaultBinaryStorage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsSetVaultBinaryStorageResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsSetVaultBinaryStorageRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
     "/api/vaults/create": {
       "post": {
         "operationId": "VaultsAPI_CreateVault",
@@ -647,6 +679,20 @@
     "artel_vaultsRevokeInviteLinkResponse": {
       "type": "object"
     },
+    "artel_vaultsSetVaultBinaryStorageRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "useCouchdb": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_vaultsSetVaultBinaryStorageResponse": {
+      "type": "object"
+    },
     "artel_vaultsUnlinkS3BucketRequest": {
       "type": "object",
       "properties": {
@@ -701,6 +747,9 @@
         },
         "s3BucketName": {
           "type": "string"
+        },
+        "useCouchdbForBinaries": {
+          "type": "boolean"
         }
       }
     },

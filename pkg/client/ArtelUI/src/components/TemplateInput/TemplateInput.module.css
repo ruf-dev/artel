@@ -9,8 +9,11 @@
     gap: 0.25rem;
 }
 
-.Input {
+.InputWrapper {
     flex: 1;
+}
+
+.Input {
     box-sizing: border-box;
     padding: 0.5rem 0.625rem;
     border-radius: 0.5rem;

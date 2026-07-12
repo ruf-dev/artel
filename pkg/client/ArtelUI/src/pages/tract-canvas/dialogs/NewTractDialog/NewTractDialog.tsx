@@ -35,7 +35,7 @@ export default function NewTractDialog() {
         <div className={cls.NewTractDialogContainer} role="dialog" aria-modal="true">
             <h2 className={cls.DialogTitle}>New tract</h2>
             <Input
-                className={cls.DialogInput}
+                inputClassName={cls.DialogInput}
                 value={name}
                 setValue={setName}
                 onKeyDown={onKeyDown}

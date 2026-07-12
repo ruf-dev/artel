@@ -89,7 +89,7 @@ func (c *Custom) Init(a *App) error {
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
-	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID)
+	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService())
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())

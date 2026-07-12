@@ -18,11 +18,12 @@
         flex-shrink: 0;
         width: 2rem;
         height: 2rem;
+        padding: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         background: transparent;
-        border: var(--border-thickness) solid transparent;
+        border: var(--border-thickness) solid var(--color-border-light);
         border-radius: 0.5rem;
         color: var(--color-fg-tertiary);
         cursor: pointer;
@@ -30,7 +31,7 @@
 
         &:hover {
             background: var(--color-bg-hover);
-            border-color: var(--color-border-light);
+            border-color: var(--color-border-bright);
             color: var(--color-fg-primary);
         }
     }

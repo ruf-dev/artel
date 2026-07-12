@@ -32,7 +32,8 @@ export default function CardHeader({step, onUpdate, onDelete, right}: Props) {
         <div className={cls.CardHeader}>
             <span className={cn(cls.CardIcon, iconClass)}>{step.type.slice(0, 1).toUpperCase()}</span>
             <Input
-                className={cn(cls.NameInput, nameInvalid && cls.NameInputInvalid)}
+                className={cls.NameInputWrapper}
+                inputClassName={cn(cls.NameInput, nameInvalid && cls.NameInputInvalid)}
                 value={name}
                 setValue={setName}
                 onBlur={commitName}

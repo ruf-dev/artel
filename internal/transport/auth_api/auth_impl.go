@@ -21,6 +21,7 @@ import (
 type authHandler struct {
 	artel_api.UnimplementedAuthAPIServer
 	authSvc          service.AuthService
+	s3InstanceSvc    service.S3InstanceService
 	telegramClientID string
 }
 
@@ -77,10 +78,18 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 }
 
 func (h *authHandler) GetConfig(
-	_ context.Context,
+	ctx context.Context,
 	_ *artel_api.GetConfig_Request,
 ) (*artel_api.GetConfig_Response, error) {
-	return &artel_api.GetConfig_Response{TelegramClientId: h.telegramClientID}, nil
+	hasS3, err := h.s3InstanceSvc.HasS3Instances(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "check s3 instances availability")
+	}
+
+	return &artel_api.GetConfig_Response{
+		TelegramClientId: h.telegramClientID,
+		IsS3Available:    hasS3,
+	}, nil
 }
 
 func (h *authHandler) Logout(ctx context.Context, req *artel_api.Logout_Request) (*artel_api.Logout_Response, error) {
@@ -140,8 +149,14 @@ type AuthImpl struct {
 	handler *authHandler
 }
 
-func NewAuthImpl(authSvc service.AuthService, telegramClientID string) *AuthImpl {
-	return &AuthImpl{handler: &authHandler{authSvc: authSvc, telegramClientID: telegramClientID}}
+func NewAuthImpl(authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService) *AuthImpl {
+	return &AuthImpl{
+		handler: &authHandler{
+			authSvc:          authSvc,
+			telegramClientID: telegramClientID,
+			s3InstanceSvc:    s3InstanceSvc,
+		},
+	}
 }
 
 func (a *AuthImpl) Register(srv grpc.ServiceRegistrar) {

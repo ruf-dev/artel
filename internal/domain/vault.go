@@ -8,17 +8,18 @@ import (
 )
 
 type Vault struct {
-	Uuid               uuid.UUID
-	UserUuid           uuid.UUID
-	CouchInstanceUuid  uuid.UUID
-	Name               string
-	CouchDBName        string
-	CouchDBURL         string
-	LiveSyncPassphrase string
-	Status             string
-	S3InstanceUuid     *uuid.UUID // nil when vault has no linked bucket
-	S3BucketName       string     // "" when S3InstanceUuid is nil
-	CreatedAt          time.Time
+	Uuid                  uuid.UUID
+	UserUuid              uuid.UUID
+	CouchInstanceUuid     uuid.UUID
+	Name                  string
+	CouchDBName           string
+	CouchDBURL            string
+	LiveSyncPassphrase    string
+	Status                string
+	S3InstanceUuid        *uuid.UUID // nil when vault has no linked bucket
+	S3BucketName          string     // "" when S3InstanceUuid is nil
+	UseCouchDBForBinaries bool
+	CreatedAt             time.Time
 }
 
 type VaultMember struct {

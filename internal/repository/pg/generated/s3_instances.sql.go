@@ -144,6 +144,17 @@ func (q *Queries) RegisterS3Instance(ctx context.Context, arg RegisterS3Instance
 	return id, err
 }
 
+const s3InstanceExists = `-- name: S3InstanceExists :one
+SELECT EXISTS(SELECT 1 FROM s3_instances)
+`
+
+func (q *Queries) S3InstanceExists(ctx context.Context) (bool, error) {
+	row := q.db.QueryRowContext(ctx, s3InstanceExists)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const updateS3Instance = `-- name: UpdateS3Instance :exec
 UPDATE s3_instances
 SET endpoint = $2, region = $3, access_key = $4, secret_key_enc = $5, use_ssl = $6, path_style = $7

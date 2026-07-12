@@ -29,6 +29,8 @@ type McpKeyContext struct {
 	CouchUser string
 	CouchPass string
 	S3        *McpKeyS3Context // nil if the vault has no linked bucket
+
+	UseCouchDBForBinaries bool
 }
 
 // McpKeyS3Context carries the resolved S3-compatible bucket credentials for the vault behind

@@ -15,6 +15,10 @@
     background: var(--color-border-light);
 }
 
+.NameInputWrapper {
+    min-width: 12rem;
+}
+
 .NameInput {
     box-sizing: border-box;
     padding: 0.25rem 0.5rem;
@@ -26,7 +30,6 @@
     font-weight: 600;
     font-family: inherit;
     outline: none;
-    min-width: 12rem;
 }
 
 .NameInput:hover, .NameInput:focus {

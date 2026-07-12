@@ -1,5 +1,5 @@
 import {useState} from "react"
-import {Button, Input, ModalClose} from "@vervstack/chures"
+import {Button, ModalClose} from "@vervstack/chures"
 
 import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
@@ -7,6 +7,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import FormField from "@/components/FormField/FormField.tsx"
+import Input from "@/components/atoms/Input/Input.tsx"
 import S3ToggleFields from "@/components/S3InstanceFormDialog/components/S3ToggleFields.tsx"
 
 interface Props {
@@ -65,7 +66,6 @@ export default function S3InstanceFormDialog({initial, onSaved}: Props) {
                 disabled={saving}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
-                inputClassName={cls.Input}
             />
             <FormField
                 label="Region (optional)"
@@ -75,7 +75,6 @@ export default function S3InstanceFormDialog({initial, onSaved}: Props) {
                 disabled={saving}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
-                inputClassName={cls.Input}
             />
             <FormField
                 label="Access key"
@@ -85,14 +84,12 @@ export default function S3InstanceFormDialog({initial, onSaved}: Props) {
                 disabled={saving}
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
-                inputClassName={cls.Input}
             />
             <div className={cls.Field}>
                 <span className={cls.FieldLabel}>Secret key{isEdit ? " (leave blank to keep current)" : ""}</span>
                 <Input
                     type="password"
                     placeholder={isEdit ? "••••••••" : "secret key"}
-                    className={cls.Input}
                     value={secretKey}
                     setValue={setSecretKey}
                     disabled={saving}

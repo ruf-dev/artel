@@ -88,6 +88,15 @@ func (s *Service) DeleteS3Instance(ctx context.Context, id string) error {
 	return nil
 }
 
+func (s *Service) HasS3Instances(ctx context.Context) (bool, error) {
+	exists, err := s.s3InstancesRepo.Exists(ctx)
+	if err != nil {
+		return false, rerrors.Wrap(err, "check s3 instances exist")
+	}
+
+	return exists, nil
+}
+
 func (s *Service) TestS3Instance(ctx context.Context, id string) error {
 	uid, err := uuid.Parse(id)
 	if err != nil {

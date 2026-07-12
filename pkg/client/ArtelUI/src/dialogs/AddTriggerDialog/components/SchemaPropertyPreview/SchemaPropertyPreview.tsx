@@ -13,7 +13,8 @@ export default function SchemaPropertyPreview(
             <div className={cls.SchemaFieldRow}>
                 {!hideName && (
                     <Input
-                        className={cn(cls.TextInput, cls.SchemaFieldName)}
+                        className={cls.SchemaFieldName}
+                        inputClassName={cls.TextInput}
                         value={name}
                         setValue={() => {}}
                         disabled

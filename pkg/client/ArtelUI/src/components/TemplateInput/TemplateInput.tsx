@@ -24,7 +24,8 @@ export default function TemplateInput({value, onChange, sources, placeholder}: P
             <div className={cls.InputRow}>
                 <Input
                     ref={ctl.inputRef}
-                    className={cn(cls.Input, ctl.isInvalid && cls.InputInvalid)}
+                    className={cls.InputWrapper}
+                    inputClassName={cn(cls.Input, ctl.isInvalid && cls.InputInvalid)}
                     value={value}
                     setValue={ctl.handleChange}
                     onKeyDown={ctl.handleKeyDown}

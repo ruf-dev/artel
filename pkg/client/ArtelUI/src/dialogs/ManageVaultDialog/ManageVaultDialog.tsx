@@ -5,6 +5,7 @@ import cls from "@/dialogs/ManageVaultDialog/ManageVaultDialog.module.css"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
 import useUser from "@/hooks/user/User.ts"
 import ManageVaultS3Section, {S3LinkPatch} from "@/components/ManageVaultS3Section/ManageVaultS3Section.tsx"
+import VaultSettingsSection from "@/dialogs/ManageVaultDialog/widgets/VaultSettingsSection/VaultSettingsSection.tsx"
 import MembersSection from "@/dialogs/ManageVaultDialog/widgets/MembersSection/MembersSection.tsx"
 import InviteLinksSection from "@/dialogs/ManageVaultDialog/widgets/InviteLinksSection/InviteLinksSection.tsx"
 import VaultDangerZone from "@/widgets/VaultDangerZone/VaultDangerZone.tsx"
@@ -20,8 +21,9 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
     const {isAdmin} = useUser()
 
     const [s3Override, setS3Override] = useState<S3LinkPatch | null>(null)
+    const [settingsOverride, setSettingsOverride] = useState<Partial<VaultItem> | null>(null)
 
-    const effectiveVault: VaultItem = s3Override ? {...vault, ...s3Override} : vault
+    const effectiveVault: VaultItem = {...vault, ...s3Override, ...settingsOverride}
 
     return (
         <div className={cls.ManageVaultDialogContainer}
@@ -33,6 +35,8 @@ export default function ManageVaultDialog({vault, currentUserId, onClose, onDele
                 <ModalClose onClick={onClose} className={cls.ModalClose}/>
             </div>
             <p className={cls.VaultName}>{vault.name}</p>
+
+            {vault.id && <VaultSettingsSection vault={effectiveVault} onChanged={setSettingsOverride}/>}
 
             {vault.id && <MembersSection vaultId={vault.id} currentUserId={currentUserId}/>}
 

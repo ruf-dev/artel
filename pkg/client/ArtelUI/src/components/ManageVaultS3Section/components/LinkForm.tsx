@@ -1,7 +1,8 @@
 import {useState, useEffect} from "react"
-import {Button, Input} from "@vervstack/chures"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/components/ManageVaultS3Section/ManageVaultS3Section.module.css"
+import Input from "@/components/atoms/Input/Input.tsx"
 import {VaultItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
 import {S3InstancesAPI, GetS3InstanceResponse} from "@/app/api/artel/s3_instances.pb.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
@@ -61,7 +62,6 @@ export default function LinkForm({vault, onLinked}: Props) {
                 ))}
             </div>
             <Input
-                className={cls.Input}
                 label="Bucket name"
                 value={bucketName}
                 setValue={setBucketName}

@@ -37,7 +37,7 @@ export default function RenameDialog({ currentPath, onConfirm }: Props) {
             <h2 className={cls.RenameTitle}>Rename / Move</h2>
             <p className={cls.RenameLabel}>New path</p>
             <Input
-                className={cls.RenameInput}
+                inputClassName={cls.RenameInput}
                 type="text"
                 value={newPath}
                 setValue={setNewPath}

@@ -19,10 +19,10 @@ export default function ParamInput({def, value, onChange}: Props) {
         )
     }
     if (def.type === "integer" || def.type === "number") {
-        return <Input className={cls.ParamField} type="number" value={value} setValue={onChange}/>
+        return <Input inputClassName={cls.ParamField} type="number" value={value} setValue={onChange}/>
     }
     if (def.type === "boolean") {
         return <Toggle checked={value === "true"} onChange={v => onChange(String(v))}/>
     }
-    return <Input className={cls.ParamField} type="text" value={value} setValue={onChange}/>
+    return <Input inputClassName={cls.ParamField} type="text" value={value} setValue={onChange}/>
 }

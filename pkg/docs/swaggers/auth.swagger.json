@@ -186,6 +186,9 @@
       "properties": {
         "telegramClientId": {
           "type": "string"
+        },
+        "isS3Available": {
+          "type": "boolean"
         }
       }
     },

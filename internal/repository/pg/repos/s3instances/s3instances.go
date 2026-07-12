@@ -141,6 +141,15 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
+func (r *Repo) Exists(ctx context.Context) (bool, error) {
+	exists, err := r.q.S3InstanceExists(ctx)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error checking s3 instance existence")
+	}
+
+	return exists, nil
+}
+
 func (r *Repo) WithTx(tx sqldb.DB) repository.S3Instances {
 	return New(tx, r.encryptionKey)
 }

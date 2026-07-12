@@ -93,24 +93,6 @@
         letter-spacing: -0.00375rem;
     }
 
-    & .Input {
-        width: 100%;
-        padding: 0.75rem 0.875rem;
-        background: var(--color-bg-input);
-        border: var(--border-thickness) solid var(--color-border-light);
-        border-radius: 0.625rem;
-        color: var(--color-fg-primary);
-        font-size: 0.875rem;
-        font-family: inherit;
-        letter-spacing: -0.004375rem;
-        transition: border-color 160ms ease, background 160ms ease;
-        outline: none;
-        box-sizing: border-box;
-    }
-
-    & .Input::placeholder { color: var(--color-fg-disabled); }
-    & .Input:focus { border-color: var(--color-border-bright); background: var(--color-bg-input-focus); }
-
     & .OptionList {
         display: flex;
         flex-direction: column;

@@ -25,7 +25,9 @@ export default function TractCanvasTopBar(props: Props) {
         <div className={cls.BarContainer}>
             <Button variant="ghost" onClick={onBack}>← Tracts</Button>
             <span className={cls.Divider}/>
-            <Input className={cls.NameInput} value={name} setValue={onNameChange}/>
+            <Input
+                className={cls.NameInputWrapper} inputClassName={cls.NameInput} value={name} setValue={onNameChange}
+            />
             {isDirty && <span className={cls.DirtyDot} title="Unsaved changes"/>}
             <div className={cls.BarRight}>
                 <RunStatusBadge running={running} lastRunStatus={lastRunStatus}/>

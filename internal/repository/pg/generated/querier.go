@@ -118,10 +118,12 @@ type Querier interface {
 	// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid,
 	// secret_hash, and token_suffix in place, keyed by the trigger's stable primary key id.
 	RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecretParams) (Trigger, error)
+	S3InstanceExists(ctx context.Context) (bool, error)
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
 	SetTractEnabled(ctx context.Context, arg SetTractEnabledParams) error
 	SetTriggerEnabled(ctx context.Context, arg SetTriggerEnabledParams) error
 	SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error
+	SetVaultUseCouchDBForBinaries(ctx context.Context, arg SetVaultUseCouchDBForBinariesParams) error
 	SweepStaleTractRunSteps(ctx context.Context, startedAt time.Time) error
 	SweepStaleTractRuns(ctx context.Context, createdAt time.Time) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error

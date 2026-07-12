@@ -1,7 +1,8 @@
 import type {ComponentType} from "react"
 import type {DropdownOption} from "@vervstack/chures"
-import {Button, Dropdown, Input} from "@vervstack/chures"
+import {Button, Dropdown} from "@vervstack/chures"
 
+import Input from "@/components/atoms/Input/Input.tsx"
 import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {useTracts, useTriggerSources} from "@/app/hooks/Tracts.ts"

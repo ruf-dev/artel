@@ -36,7 +36,10 @@ func (s *ServiceImpl) ExecuteTool(
 
 	var bucket storage.BinaryStore
 
-	if keyCtx.S3 != nil {
+	switch {
+	case keyCtx.UseCouchDBForBinaries:
+		bucket = couchdb.NewBinaryStoreAdapter(client)
+	case keyCtx.S3 != nil:
 		cfg := s3client.Config{
 			Endpoint:  keyCtx.S3.Endpoint,
 			Region:    keyCtx.S3.Region,

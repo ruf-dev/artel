@@ -137,6 +137,15 @@ export type UnlinkS3BucketResponse = Record<string, never>;
 
 export type UnlinkS3Bucket = Record<string, never>;
 
+export type SetVaultBinaryStorageRequest = {
+  vaultId?: string;
+  useCouchdb?: boolean;
+};
+
+export type SetVaultBinaryStorageResponse = Record<string, never>;
+
+export type SetVaultBinaryStorage = Record<string, never>;
+
 export type VaultItem = {
   id?: string;
   name?: string;
@@ -144,6 +153,7 @@ export type VaultItem = {
   livesyncPassphrase?: string;
   s3InstanceId?: string;
   s3BucketName?: string;
+  useCouchdbForBinaries?: boolean;
 };
 
 export type VaultMemberInfo = {
@@ -202,5 +212,8 @@ export class VaultsAPI {
   }
   static UnlinkS3Bucket(this:void, req: UnlinkS3BucketRequest, initReq?: fm.InitReq): Promise<UnlinkS3BucketResponse> {
     return fm.fetchRequest<UnlinkS3BucketResponse>(`/api/vaults/s3/unlink`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static SetVaultBinaryStorage(this:void, req: SetVaultBinaryStorageRequest, initReq?: fm.InitReq): Promise<SetVaultBinaryStorageResponse> {
+    return fm.fetchRequest<SetVaultBinaryStorageResponse>(`/api/vaults/binary-storage`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

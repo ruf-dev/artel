@@ -22,12 +22,13 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 		}
 
 		item := &pb.VaultItem{
-			Id:                 vault.Uuid.String(),
-			Name:               vault.Name,
-			DbUrl:              vault.CouchDBURL,
-			LivesyncPassphrase: vault.LiveSyncPassphrase,
-			S3InstanceId:       s3InstanceId,
-			S3BucketName:       vault.S3BucketName,
+			Id:                    vault.Uuid.String(),
+			Name:                  vault.Name,
+			DbUrl:                 vault.CouchDBURL,
+			LivesyncPassphrase:    vault.LiveSyncPassphrase,
+			S3InstanceId:          s3InstanceId,
+			S3BucketName:          vault.S3BucketName,
+			UseCouchdbForBinaries: vault.UseCouchDBForBinaries,
 		}
 		items = append(items, item)
 	}

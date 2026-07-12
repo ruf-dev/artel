@@ -87,6 +87,12 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc SetVaultBinaryStorage(SetVaultBinaryStorage.Request) returns (SetVaultBinaryStorage.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/binary-storage"
+      body: "*"
+    };
+  };
 }
 
 message CreateVault {
@@ -205,6 +211,14 @@ message UnlinkS3Bucket {
   message Response {}
 }
 
+message SetVaultBinaryStorage {
+  message Request {
+    string vault_id = 1;
+    bool use_couchdb = 2;
+  }
+  message Response {}
+}
+
 message VaultItem {
   string id = 1;
   string name = 2;
@@ -212,6 +226,7 @@ message VaultItem {
   string livesync_passphrase = 4;
   string s3_instance_id = 5;
   string s3_bucket_name = 6;
+  bool use_couchdb_for_binaries = 7;
 }
 
 message VaultMemberInfo {

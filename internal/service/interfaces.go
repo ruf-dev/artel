@@ -61,6 +61,7 @@ type VaultService interface {
 	AcceptInvite(ctx context.Context, token string) error
 	LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error
 	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
+	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error
 }
 
 type CouchInstanceService interface {
@@ -84,6 +85,7 @@ type S3InstanceService interface {
 	) error
 	DeleteS3Instance(ctx context.Context, id string) error
 	TestS3Instance(ctx context.Context, id string) error
+	HasS3Instances(ctx context.Context) (bool, error)
 }
 
 type AdminCouchService interface {

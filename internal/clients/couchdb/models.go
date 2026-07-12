@@ -28,6 +28,7 @@ type FileEntry struct {
 	Path     string
 	Mtime    int64
 	MimeType string
+	Size     int64
 }
 
 type FileDoc struct {
@@ -47,6 +48,7 @@ type docScan struct {
 	Type    string `json:"type"`
 	Deleted bool   `json:"deleted"`
 	Mtime   int64  `json:"mtime"`
+	Size    int64  `json:"size"`
 }
 
 type docFull struct {

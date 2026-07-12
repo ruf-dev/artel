@@ -1,6 +1,7 @@
 import {useState} from "react"
-import {Button, ModalClose, Input} from "@vervstack/chures"
+import {Button, ModalClose} from "@vervstack/chures"
 
+import Input from "@/components/atoms/Input/Input.tsx"
 import cls from "@/pages/admin/components/UsersTab/components/ChangePasswordDialog/ChangePasswordDialog.module.css"
 import {AdminCouchAPI} from "@/app/api/artel/admin_couch.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
@@ -44,7 +45,6 @@ export default function ChangePasswordDialog({instanceId, username}: ChangePassw
                 <Input
                     type="password"
                     placeholder="new password"
-                    className={cls.Input}
                     value={newPassword}
                     setValue={setNewPassword}
                     disabled={saving}

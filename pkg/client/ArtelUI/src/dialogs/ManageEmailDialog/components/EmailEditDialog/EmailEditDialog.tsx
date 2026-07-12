@@ -1,6 +1,7 @@
 import {useState, useRef, useEffect} from "react"
-import {Button, Input} from "@vervstack/chures"
+import {Button} from "@vervstack/chures"
 
+import Input from "@/components/atoms/Input/Input.tsx"
 import {
     AddEmailConnectionRequest,
     ExternalConnectionInfo,

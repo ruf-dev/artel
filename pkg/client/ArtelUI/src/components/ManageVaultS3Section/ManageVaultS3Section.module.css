@@ -70,29 +70,5 @@
             max-height: 10rem;
             overflow-y: auto;
         }
-
-        .Input {
-            width: 100%;
-            padding: 0.625rem 0.75rem;
-            background: var(--color-bg-input);
-            border: var(--border-thickness) solid var(--color-border-light);
-            border-radius: 0.625rem;
-            color: var(--color-fg-primary);
-            font-size: 0.8125rem;
-            font-family: inherit;
-            letter-spacing: -0.0040625rem;
-            transition: border-color 160ms ease, background 160ms ease;
-            outline: none;
-            box-sizing: border-box;
-
-            &::placeholder {
-                color: var(--color-fg-disabled);
-            }
-
-            &:focus {
-                border-color: var(--color-border-bright);
-                background: var(--color-bg-input-focus);
-            }
-        }
     }
 }

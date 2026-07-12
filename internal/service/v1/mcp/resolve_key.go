@@ -104,6 +104,8 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 		CouchUser: couchInstance.Username,
 		CouchPass: couchInstance.Password,
 		S3:        s3Ctx,
+
+		UseCouchDBForBinaries: vault.UseCouchDBForBinaries,
 	}
 
 	// context.Background() is intentional: this must outlive the request context, which

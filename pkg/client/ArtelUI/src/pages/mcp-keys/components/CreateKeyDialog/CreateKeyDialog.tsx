@@ -84,7 +84,6 @@ export default function CreateKeyDialog() {
                     disabled={creating}
                     fieldClassName={cls.Field}
                     labelClassName={cls.FieldLabel}
-                    inputClassName={cls.Input}
                 />
 
                 <div className={cls.Field}>

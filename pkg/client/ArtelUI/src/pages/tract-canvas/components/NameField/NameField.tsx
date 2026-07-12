@@ -24,7 +24,8 @@ export default function NameField({step, onRename}: Props) {
         <div className={cls.NameFieldContainer}>
             <span className={cls.Key}>name</span>
             <Input
-                className={cn(cls.Input, invalid && cls.InputInvalid)}
+                className={cls.InputWrapper}
+                inputClassName={cn(cls.Input, invalid && cls.InputInvalid)}
                 value={name}
                 setValue={setName}
                 onBlur={commit}

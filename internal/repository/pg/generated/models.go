@@ -474,6 +474,7 @@ type Vault struct {
 	LivesyncPassphraseEnc []byte
 	S3InstanceID          uuid.NullUUID
 	S3BucketName          sql.NullString
+	UseCouchdbForBinaries bool
 }
 
 type VaultInvite struct {

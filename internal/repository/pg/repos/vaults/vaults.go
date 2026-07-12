@@ -60,6 +60,7 @@ func (r *Repo) Upsert(
 		row.LivesyncPassphraseEnc,
 		row.S3InstanceID,
 		row.S3BucketName,
+		row.UseCouchdbForBinaries,
 		row.CreatedAt,
 		r.encryptionKey,
 	)
@@ -86,6 +87,7 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error) 
 		row.LivesyncPassphraseEnc,
 		row.S3InstanceID,
 		row.S3BucketName,
+		row.UseCouchdbForBinaries,
 		row.CreatedAt,
 		r.encryptionKey,
 	)
@@ -117,6 +119,7 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 		row.LivesyncPassphraseEnc,
 		row.S3InstanceID,
 		row.S3BucketName,
+		row.UseCouchdbForBinaries,
 		row.CreatedAt,
 		r.encryptionKey,
 	)
@@ -179,6 +182,7 @@ func (r *Repo) ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain
 			row.LivesyncPassphraseEnc,
 			row.S3InstanceID,
 			row.S3BucketName,
+			row.UseCouchdbForBinaries,
 			row.CreatedAt,
 			r.encryptionKey,
 		)
@@ -225,6 +229,20 @@ func (r *Repo) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {
 	return nil
 }
 
+func (r *Repo) SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, value bool) error {
+	params := artel_q.SetVaultUseCouchDBForBinariesParams{
+		ID:                    vaultID,
+		UseCouchdbForBinaries: value, // verify exact generated field name after sqlc generate
+	}
+
+	err := r.q.SetVaultUseCouchDBForBinaries(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error setting vault binary storage backend")
+	}
+
+	return nil
+}
+
 func (r *Repo) WithTx(tx sqldb.DB) repository.Vaults {
 	return New(tx, r.encryptionKey)
 }
@@ -237,16 +255,18 @@ func rowToVault(
 	passphraseEnc []byte,
 	s3InstanceID uuid.NullUUID,
 	s3BucketName sql.NullString,
+	useCouchDBForBinaries bool,
 	createdAt time.Time,
 	encryptionKey []byte,
 ) (domain.Vault, error) {
 	v := domain.Vault{
-		Uuid:        id,
-		UserUuid:    userID,
-		Name:        name,
-		CouchDBName: couchDbName,
-		Status:      status,
-		CreatedAt:   createdAt,
+		Uuid:                  id,
+		UserUuid:              userID,
+		Name:                  name,
+		CouchDBName:           couchDbName,
+		Status:                status,
+		UseCouchDBForBinaries: useCouchDBForBinaries,
+		CreatedAt:             createdAt,
 	}
 	if couchInstanceID.Valid {
 		v.CouchInstanceUuid = couchInstanceID.UUID

@@ -1,9 +1,19 @@
 .InputWrapper input {
-    background: inherit;
-    border: inherit;
-    outline: inherit;
-    font-size: inherit;
+    background: var(--color-bg-input);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-fg-primary);
+    font-size: var(--font-size-base);
     font-family: inherit;
-    color: inherit;
     letter-spacing: inherit;
+    transition: border-color 160ms ease, background 160ms ease;
+
+    &::placeholder {
+        color: var(--color-fg-disabled);
+    }
+
+    &:focus {
+        border-color: var(--color-border-bright);
+        background: var(--color-bg-input-focus);
+    }
 }

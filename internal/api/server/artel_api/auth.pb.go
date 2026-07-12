@@ -717,6 +717,7 @@ func (*GetConfig_Request) Descriptor() ([]byte, []int) {
 type GetConfig_Response struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	TelegramClientId string                 `protobuf:"bytes,1,opt,name=telegram_client_id,json=telegramClientId,proto3" json:"telegram_client_id,omitempty"`
+	IsS3Available    bool                   `protobuf:"varint,2,opt,name=is_s3_available,json=isS3Available,proto3" json:"is_s3_available,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -756,6 +757,13 @@ func (x *GetConfig_Response) GetTelegramClientId() string {
 		return x.TelegramClientId
 	}
 	return ""
+}
+
+func (x *GetConfig_Response) GetIsS3Available() bool {
+	if x != nil {
+		return x.IsS3Available
+	}
+	return false
 }
 
 type GetMe_Request struct {
@@ -901,11 +909,12 @@ const file_auth_proto_rawDesc = "" +
 	"\x06Logout\x1a\t\n" +
 	"\aRequest\x1a\n" +
 	"\n" +
-	"\bResponse\"P\n" +
+	"\bResponse\"x\n" +
 	"\tGetConfig\x1a\t\n" +
-	"\aRequest\x1a8\n" +
+	"\aRequest\x1a`\n" +
 	"\bResponse\x12,\n" +
-	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\"\xa0\x01\n" +
+	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\x12&\n" +
+	"\x0fis_s3_available\x18\x02 \x01(\bR\risS3Available\"\xa0\x01\n" +
 	"\vPermissions\x12)\n" +
 	"\x10is_administrator\x18\x01 \x01(\bR\x0fisAdministrator\x12\x1d\n" +
 	"\n" +

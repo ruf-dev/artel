@@ -19,3 +19,6 @@ WHERE id = $1;
 
 -- name: DeleteS3Instance :exec
 DELETE FROM s3_instances WHERE id = $1;
+
+-- name: S3InstanceExists :one
+SELECT EXISTS(SELECT 1 FROM s3_instances);

@@ -1,6 +1,7 @@
 import {useState} from "react"
-import {Button, Input} from "@vervstack/chures"
+import {Button} from "@vervstack/chures"
 
+import Input from "@/components/atoms/Input/Input.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"

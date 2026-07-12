@@ -83,6 +83,8 @@ type Vaults interface {
 	LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error
 	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
 
+	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, value bool) error
+
 	WithTx(tx sqldb.DB) Vaults
 }
 
@@ -156,6 +158,7 @@ type S3Instances interface {
 		useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte,
 	) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	Exists(ctx context.Context) (bool, error)
 
 	WithTx(tx sqldb.DB) S3Instances
 }

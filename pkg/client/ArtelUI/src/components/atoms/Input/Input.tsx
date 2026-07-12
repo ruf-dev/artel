@@ -1,9 +1,8 @@
-// TODO: chures' Input puts the caller-supplied className on its own outer wrapper
-// div, never on the inner <input> it renders — text-level overrides (font-size,
-// font-family, color, letter-spacing) declared against that className never reach
-// the rendered text. This wrapper forces the inner input to inherit those
-// properties from the wrapper div instead. Drop it if chures ever exposes an
-// inputClassName/inputStyle prop for the inner element.
+// The project's single themed drop-in for chures' Input — the one place to edit
+// the app's input look (border/bg/color/focus) instead of duplicating it as a
+// local override per call site. chures' `className` prop only ever lands on its
+// outer wrapper div, never on the inner <input>, so this styles the input via a
+// `.InputWrapper input` descendant selector rather than `inputClassName`.
 import { Input as ChuresInput } from "@vervstack/chures"
 import type { InputProps } from "@vervstack/chures"
 

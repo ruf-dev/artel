@@ -44,7 +44,6 @@ export default function CreateVaultDialog() {
                     maxLength={48}
                     fieldClassName={cls.Field}
                     labelClassName={cls.FieldLabel}
-                    inputClassName={cls.Input}
                 />
 
                 <div className={cls.ModalActions}>

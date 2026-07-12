@@ -1,6 +1,7 @@
 import {useState} from "react"
-import {Button, Input} from "@vervstack/chures"
+import {Button} from "@vervstack/chures"
 
+import Input from "@/components/atoms/Input/Input.tsx"
 import WebhookSecretSection
 from "@/dialogs/ManageGitlabDialog/components/ConnectedContent/components/WebhookSecretSection/WebhookSecretSection.tsx"
 import cls from "@/dialogs/ManageGitlabDialog/components/ConnectedContent/ConnectedContent.module.css"

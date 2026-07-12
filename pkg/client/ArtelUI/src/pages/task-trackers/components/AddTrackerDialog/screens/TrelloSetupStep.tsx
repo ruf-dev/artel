@@ -1,8 +1,9 @@
 import {useState} from "react"
-import {Button, Input, ModalClose} from "@vervstack/chures"
+import {Button, ModalClose} from "@vervstack/chures"
 
 import {TrelloBoardInfo} from "@/app/api/artel/task_trackers.pb.ts"
 import {useTaskTrackers} from "@/app/hooks/TaskTrackers.ts"
+import Input from "@/components/atoms/Input/Input.tsx"
 import cls from "@/pages/task-trackers/components/AddTrackerDialog/screens/TrelloSetupStep.module.css"
 
 export default function TrelloSetupStep({onSuccess, onBack, onClose}: {
@@ -53,7 +54,6 @@ export default function TrelloSetupStep({onSuccess, onBack, onClose}: {
                 <label className={cls.Field}>
                     <span className={cls.FieldLabel}>API Key</span>
                     <Input
-                        className={cls.Input}
                         placeholder="Your Trello API key"
                         value={apiKey}
                         setValue={setApiKey}
@@ -65,7 +65,6 @@ export default function TrelloSetupStep({onSuccess, onBack, onClose}: {
                 <label className={cls.Field}>
                     <span className={cls.FieldLabel}>API Token</span>
                     <Input
-                        className={cls.Input}
                         placeholder="Your Trello API token"
                         value={apiToken}
                         setValue={setApiToken}

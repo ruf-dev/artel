@@ -62,6 +62,9 @@ export function useVaultMutations() {
         revokeInvite: async (vaultId: string, inviteId: string): Promise<void> => {
             await VaultsAPI.RevokeInviteLink({vaultId, inviteId}, auth.getInitReq())
         },
+        setBinaryStorage: async (vaultId: string, useCouchDb: boolean): Promise<void> => {
+            await VaultsAPI.SetVaultBinaryStorage({vaultId, useCouchdb: useCouchDb}, auth.getInitReq())
+        },
         acceptInvite: async (token: string): Promise<string> => {
             const res = await VaultsAPI.AcceptInvite({token}, auth.getInitReq())
             return res.vaultId ?? ""

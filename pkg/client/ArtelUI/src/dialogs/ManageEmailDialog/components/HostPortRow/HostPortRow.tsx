@@ -1,5 +1,4 @@
-import {Input} from "@vervstack/chures"
-
+import Input from "@/components/atoms/Input/Input.tsx"
 import cls from "@/dialogs/ManageEmailDialog/components/HostPortRow/HostPortRow.module.css"
 
 interface HostPortRowProps {

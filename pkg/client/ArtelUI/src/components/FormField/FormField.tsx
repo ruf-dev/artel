@@ -1,5 +1,6 @@
 import {useState} from "react"
-import {Input} from "@vervstack/chures"
+
+import Input from "@/components/atoms/Input/Input.tsx"
 
 interface Props {
     label: string
@@ -10,7 +11,6 @@ interface Props {
     maxLength?: number
     fieldClassName?: string
     labelClassName?: string
-    inputClassName?: string
 }
 
 export default function FormField(props: Props) {
@@ -25,7 +25,6 @@ export default function FormField(props: Props) {
         <label className={props.fieldClassName}>
             <span className={props.labelClassName}>{props.label}</span>
             <Input
-                className={props.inputClassName}
                 placeholder={props.placeholder}
                 value={value}
                 setValue={onValueChange}

@@ -18,7 +18,8 @@ export default function SchemaFieldRowEditor({field, onChange, onRemove, hideNam
             <div className={cls.SchemaFieldRow}>
                 {!hideName && (
                     <Input
-                        className={cn(cls.TextInput, cls.SchemaFieldName)}
+                        className={cls.SchemaFieldName}
+                        inputClassName={cls.TextInput}
                         placeholder="field name"
                         value={field.name}
                         setValue={(newValue) => onChange({name: newValue})}

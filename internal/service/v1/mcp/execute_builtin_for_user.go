@@ -51,7 +51,10 @@ func (s *ServiceImpl) ExecuteBuiltinToolForUser(
 
 	var bucket storage.BinaryStore
 
-	if vault.S3InstanceUuid != nil {
+	switch {
+	case vault.UseCouchDBForBinaries:
+		bucket = couchdb.NewBinaryStoreAdapter(client)
+	case vault.S3InstanceUuid != nil:
 		var s3Instance domain.S3Instance
 		s3Instance, err = s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
 		if err != nil {

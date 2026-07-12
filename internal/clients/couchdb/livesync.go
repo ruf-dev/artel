@@ -292,7 +292,7 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 			continue
 		}
 
-		files = append(files, FileEntry{Path: id, Mtime: doc.Mtime, MimeType: mime})
+		files = append(files, FileEntry{Path: id, Mtime: doc.Mtime, MimeType: mime, Size: doc.Size})
 	}
 
 	err := rows.Err()
@@ -351,6 +351,57 @@ func (c *LiveSyncClient) ReadFile(ctx context.Context, path string) (FileDoc, er
 		Size:     couchDoc.Size,
 		Deleted:  couchDoc.Deleted,
 	}, nil
+}
+
+func (c *LiveSyncClient) WriteFile(ctx context.Context, path string, content []byte) error {
+	d := c.db.Get(ctx, path)
+	defer utils.CloseWithLog(d, "error closing write file request")
+
+	var existing docRev
+
+	rev := ""
+
+	err := d.ScanDoc(&existing)
+	if err != nil {
+		if kivik.HTTPStatus(err) != http.StatusNotFound {
+			return rerrors.Wrap(err, "get existing doc")
+		}
+	} else {
+		rev = existing.Rev
+	}
+
+	now := time.Now().UnixMilli()
+	doc := noteWrite{
+		Id:       path,
+		Rev:      rev,
+		Data:     base64.StdEncoding.EncodeToString(content),
+		Children: []string{},
+		Mtime:    now,
+		Ctime:    now,
+		Size:     int64(len(content)),
+		Type:     "plain",
+	}
+
+	_, err = c.db.Put(ctx, path, doc)
+	if err != nil {
+		return rerrors.Wrap(err, "put doc")
+	}
+
+	return nil
+}
+
+func (c *LiveSyncClient) StatFile(ctx context.Context, path string) (FileEntry, error) {
+	d := c.db.Get(ctx, path)
+	defer utils.CloseWithLog(d, "error closing stat file request")
+
+	var doc docScan
+
+	err := d.ScanDoc(&doc)
+	if err != nil {
+		return FileEntry{}, rerrors.Wrap(err, "scan doc")
+	}
+
+	return FileEntry{Path: path, Mtime: doc.Mtime, MimeType: MimeTypeForPath(path), Size: doc.Size}, nil
 }
 
 func (c *LiveSyncClient) DeleteFile(ctx context.Context, path string) error {
