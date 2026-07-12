@@ -21,6 +21,7 @@
         bottom: 0;
         border-bottom: none;
         border-top: var(--border-thickness) solid var(--color-border);
+        justify-content: flex-end;
     }
 }
 

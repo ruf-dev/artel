@@ -15,9 +15,11 @@ export default function Topbar() {
 
     return (
         <header className={cls.Topbar}>
-            <div className={cls.LeadingWrapper}>
-                <TopbarBrand />
-            </div>
+            {!isMobile && (
+                <div className={cls.LeadingWrapper}>
+                    <TopbarBrand />
+                </div>
+            )}
             {!isMobile && <TopbarNav />}
             <div className={cls.ActionsWrapper}>
                 <TopbarThemeToggle />

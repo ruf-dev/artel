@@ -1,0 +1,24 @@
+.TopbarDrawerLogoutButtonContainer {
+    & .LogoutBtn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border: 0;
+        background: transparent;
+        color: var(--color-error);
+        font-size: 0.875rem;
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    & .LogoutBtn:hover {
+        background: rgb(193 37 61 / 10%);
+    }
+
+    & .LogoutIcon {
+        width: 1.125rem;
+        height: 1.125rem;
+        flex-shrink: 0;
+    }
+}
