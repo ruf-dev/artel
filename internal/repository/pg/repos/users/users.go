@@ -263,6 +263,7 @@ func (r *UsersRepo) GetDetailsById(ctx context0.Context, id uuid.UUID) (domain.U
 		Uuid:         row.ID,
 		Username:     row.Username,
 		Email:        row.Email.String,
+		PhotoUrl:     row.PhotoUrl,
 		PasswordHash: row.PasswordHash,
 		CreatedAt:    row.CreatedAt,
 		UpdatedAt:    row.UpdatedAt,

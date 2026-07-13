@@ -112,6 +112,7 @@ type VaultInvites interface {
 type Sessions interface {
 	Create(ctx context.Context, userID uuid.UUID, token string, expiresAt time.Time) (domain.Session, error)
 	GetByToken(ctx context.Context, token string) (domain.Session, error)
+	GetByTokenWithUser(ctx context.Context, token string) (domain.Session, domain.User, error)
 	Delete(ctx context.Context, token string) error
 	GetByUserID(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error)
 }

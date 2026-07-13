@@ -183,7 +183,7 @@ func (q *Queries) GetUserByTelegramId(ctx context.Context, telegramID string) (G
 }
 
 const getUserDetails = `-- name: GetUserDetails :one
-SELECT u.id, u.username, u.email, u.created_at, u.updated_at, u.password_hash,
+SELECT u.id, u.username, u.email, u.photo_url, u.created_at, u.updated_at, u.password_hash,
        up.is_administrator, up.has_emails, up.has_task_trackers, up.has_notes,
        s.active AS subscription_active
 FROM users u
@@ -196,6 +196,7 @@ type GetUserDetailsRow struct {
 	ID                 uuid.UUID
 	Username           string
 	Email              sql.NullString
+	PhotoUrl           string
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	PasswordHash       string
@@ -213,6 +214,7 @@ func (q *Queries) GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDeta
 		&i.ID,
 		&i.Username,
 		&i.Email,
+		&i.PhotoUrl,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.PasswordHash,

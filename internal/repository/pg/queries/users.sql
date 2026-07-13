@@ -32,7 +32,7 @@ SELECT photo_url FROM users WHERE id = $1;
 UPDATE users SET photo_url = $2 WHERE id = $1;
 
 -- name: GetUserDetails :one
-SELECT u.id, u.username, u.email, u.created_at, u.updated_at, u.password_hash,
+SELECT u.id, u.username, u.email, u.photo_url, u.created_at, u.updated_at, u.password_hash,
        up.is_administrator, up.has_emails, up.has_task_trackers, up.has_notes,
        s.active AS subscription_active
 FROM users u

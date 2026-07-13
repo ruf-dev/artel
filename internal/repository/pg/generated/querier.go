@@ -52,6 +52,7 @@ type Querier interface {
 	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)
 	GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (S3Instance, error)
 	GetSessionByToken(ctx context.Context, token string) (Session, error)
+	GetSessionWithUser(ctx context.Context, token string) (GetSessionWithUserRow, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetTaskTrackerByUuid(ctx context.Context, id uuid.UUID) (TaskTracker, error)

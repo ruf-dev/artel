@@ -7,6 +7,7 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -57,6 +58,48 @@ func (q *Queries) GetSessionByToken(ctx context.Context, token string) (Session,
 		&i.Token,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getSessionWithUser = `-- name: GetSessionWithUser :one
+SELECT s.id AS session_id, s.token, s.expires_at AS session_expires_at, s.created_at AS session_created_at,
+       u.id AS user_id, u.email, u.username, u.photo_url, u.password_hash,
+       u.created_at AS user_created_at, u.updated_at AS user_updated_at
+FROM sessions s
+JOIN users u ON u.id = s.user_id
+WHERE s.token = $1
+`
+
+type GetSessionWithUserRow struct {
+	SessionID        uuid.UUID
+	Token            string
+	SessionExpiresAt time.Time
+	SessionCreatedAt time.Time
+	UserID           uuid.UUID
+	Email            sql.NullString
+	Username         string
+	PhotoUrl         string
+	PasswordHash     string
+	UserCreatedAt    time.Time
+	UserUpdatedAt    time.Time
+}
+
+func (q *Queries) GetSessionWithUser(ctx context.Context, token string) (GetSessionWithUserRow, error) {
+	row := q.db.QueryRowContext(ctx, getSessionWithUser, token)
+	var i GetSessionWithUserRow
+	err := row.Scan(
+		&i.SessionID,
+		&i.Token,
+		&i.SessionExpiresAt,
+		&i.SessionCreatedAt,
+		&i.UserID,
+		&i.Email,
+		&i.Username,
+		&i.PhotoUrl,
+		&i.PasswordHash,
+		&i.UserCreatedAt,
+		&i.UserUpdatedAt,
 	)
 	return i, err
 }

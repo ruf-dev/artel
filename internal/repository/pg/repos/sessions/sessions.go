@@ -60,6 +60,33 @@ func (r *SessionsRepo) GetByToken(ctx context.Context, token string) (domain.Ses
 	}, nil
 }
 
+func (r *SessionsRepo) GetByTokenWithUser(ctx context.Context, token string) (domain.Session, domain.User, error) {
+	row, err := r.q.GetSessionWithUser(ctx, token)
+	if err != nil {
+		return domain.Session{}, domain.User{}, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	session := domain.Session{
+		Uuid:      row.SessionID,
+		UserUuid:  row.UserID,
+		Token:     row.Token,
+		ExpiresAt: row.SessionExpiresAt,
+		CreatedAt: row.SessionCreatedAt,
+	}
+
+	user := domain.User{
+		Uuid:         row.UserID,
+		Email:        row.Email.String,
+		Username:     row.Username,
+		PhotoUrl:     row.PhotoUrl,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.UserCreatedAt,
+		UpdatedAt:    row.UserUpdatedAt,
+	}
+
+	return session, user, nil
+}
+
 func (r *SessionsRepo) Delete(ctx context.Context, token string) error {
 	err := r.q.DeleteSession(ctx, token)
 	if err != nil {

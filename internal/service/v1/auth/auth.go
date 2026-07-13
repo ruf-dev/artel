@@ -111,18 +111,13 @@ func (s *Service) Logout(ctx context.Context, token string) error {
 }
 
 func (s *Service) ValidateToken(ctx context.Context, token string) (domain.User, error) {
-	session, err := s.sessionsRepo.GetByToken(ctx, token)
+	session, user, err := s.sessionsRepo.GetByTokenWithUser(ctx, token)
 	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "get session by token")
+		return domain.User{}, rerrors.Wrap(err, "get session with user")
 	}
 
 	if time.Now().After(session.ExpiresAt) {
 		return domain.User{}, user_errors.SessionExpired
-	}
-
-	user, err := s.usersRepo.GetByID(ctx, session.UserUuid)
-	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "get user by id")
 	}
 
 	return user, nil
@@ -207,17 +202,12 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 }
 
 func (s *Service) GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, domain.UserPermissions, error) {
-	user, err := s.usersRepo.GetByID(ctx, userUuid)
+	details, err := s.usersRepo.GetDetailsById(ctx, userUuid)
 	if err != nil {
-		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user by id")
+		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user details")
 	}
 
-	perms, err := s.permissionsRepo.Get(ctx, userUuid)
-	if err != nil {
-		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user permissions")
-	}
-
-	return user, perms, nil
+	return details.User, details.Permissions, nil
 }
 
 func (s *Service) CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error {
