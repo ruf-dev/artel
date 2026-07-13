@@ -910,8 +910,8 @@
     "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
   },
   "pkg/client/ArtelUI/src/app/routing/Router.tsx": {
-    "mtime": 1783693441.697812,
-    "ast_hash": "d4baf80a4efad3de045213f5434b05de",
+    "mtime": 1783950112.0119002,
+    "ast_hash": "4cb13beaa500e0efe2873f867108dc52",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/routing/HomeLayout.tsx": {
@@ -3730,8 +3730,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx": {
-    "mtime": 1783946274.6127977,
-    "ast_hash": "9a39db4cffda456f9e6ef435ec6dd323",
+    "mtime": 1783946464.7631183,
+    "ast_hash": "5878fa782d1a49eb79088286297fe458",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx": {

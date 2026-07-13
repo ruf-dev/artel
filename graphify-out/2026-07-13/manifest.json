@@ -3730,8 +3730,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx": {
-    "mtime": 1783943247.503273,
-    "ast_hash": "6cf061966d8e7672dca56654923575c9",
+    "mtime": 1783946274.6127977,
+    "ast_hash": "9a39db4cffda456f9e6ef435ec6dd323",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx": {
@@ -4360,8 +4360,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/ImportZipDialog/ImportZipDialog.tsx": {
-    "mtime": 1783943426.9053512,
-    "ast_hash": "38fed0f129ce438e6fbdb76832364611",
+    "mtime": 1783946268.2206693,
+    "ast_hash": "82b2af24ec72d182cfd706cdde9d1b78",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/processes/useFolderActions.tsx": {
