@@ -3530,8 +3530,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/ConnectForm/ConnectForm.tsx": {
-    "mtime": 1783952700.9384506,
-    "ast_hash": "fff107c385949bf84bbbf955f29e0948",
+    "mtime": 1783953213.5080438,
+    "ast_hash": "4a18f8cb9d09fd3c85ea336cc2004e14",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/ConnectedContent/ConnectedContent.tsx": {
@@ -4380,13 +4380,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/ConnectForm/components/UseDefaultButton/UseDefaultButton.tsx": {
-    "mtime": 1783952734.426388,
-    "ast_hash": "ae8a4da72b5c0a97c3b7e0a2f65c9565",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/ConnectForm/components/UseDefaultIcon/UseDefaultIcon.tsx": {
-    "mtime": 1783952519.4524376,
-    "ast_hash": "744332e84cd57b5c1f67c0108e63ebd6",
+    "mtime": 1783953241.4277892,
+    "ast_hash": "0c4285c0eba7f8ef9cf8278e5e8592a6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/GitlabCheckButton/GitlabCheckButton.tsx": {
