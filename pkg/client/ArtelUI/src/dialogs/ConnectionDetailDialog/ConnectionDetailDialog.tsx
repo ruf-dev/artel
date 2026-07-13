@@ -23,11 +23,6 @@ const PROVIDER_CONFIG: Partial<Record<ExternalProvider, ProviderConfig>> = {
         description: "Read and write data from your Google Sheets spreadsheets.",
         canConnect: true,
     },
-    [ExternalProvider.EXTERNAL_PROVIDER_TRELLO]: {
-        name: "Trello",
-        description: "Sync tasks and boards from your Trello workspace.",
-        canConnect: false,
-    },
     [ExternalProvider.EXTERNAL_PROVIDER_MIRO]: {
         name: "Miro",
         description: "Access and embed your Miro boards.",
@@ -37,7 +32,6 @@ const PROVIDER_CONFIG: Partial<Record<ExternalProvider, ProviderConfig>> = {
 
 const PROVIDER_KEY: Partial<Record<ExternalProvider, string>> = {
     [ExternalProvider.EXTERNAL_PROVIDER_GOOGLE_SHEETS]: "google_sheets",
-    [ExternalProvider.EXTERNAL_PROVIDER_TRELLO]: "trello",
     [ExternalProvider.EXTERNAL_PROVIDER_MIRO]: "miro",
     [ExternalProvider.EXTERNAL_PROVIDER_EMAIL]: "email",
 }

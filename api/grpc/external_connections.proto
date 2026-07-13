@@ -28,6 +28,16 @@ service ExternalConnectionsAPI {
     };
   }
 
+  // DisconnectConnection removes a single connection by id, for providers (like Trello) that can
+  // hold more than one connection per user — DisconnectProvider removes the sole connection for a
+  // single-connection provider instead.
+  rpc DisconnectConnection(DisconnectConnection.Request) returns (DisconnectConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/disconnect-connection"
+      body: "*"
+    };
+  }
+
   rpc GetGooglePickerToken(GooglePickerToken.Request) returns (GooglePickerToken.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/google/picker-token"
@@ -97,6 +107,20 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddTrelloConnection(AddTrelloConnection.Request) returns (AddTrelloConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/trello/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckTrelloConnection(CheckTrelloConnection.Request) returns (CheckTrelloConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/trello/check"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -147,6 +171,13 @@ message ListConnections {
 message DisconnectProvider {
   message Request {
     string provider = 1;
+  }
+  message Response {}
+}
+
+message DisconnectConnection {
+  message Request {
+    string id = 1;
   }
   message Response {}
 }
@@ -258,5 +289,25 @@ message GenerateGitlabWebhookSecret {
   message Response {
     ExternalConnectionInfo connection = 1;
     string webhook_secret = 2; // one-time reveal; never retrievable again after this response
+  }
+}
+
+message AddTrelloConnection {
+  message Request {
+    string api_key   = 1;
+    string api_token = 2;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckTrelloConnection {
+  message Request {
+    string api_key   = 1;
+    string api_token = 2;
+  }
+  message Response {
+    string full_name = 1;
   }
 }

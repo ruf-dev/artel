@@ -19,6 +19,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/imap"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
+	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -50,6 +51,11 @@ type gitlabConnectionMeta struct {
 	Username         string `json:"username"`
 	InstanceUrl      string `json:"instance_url"`
 	WebhookSecretSet string `json:"webhook_secret_set"`
+}
+
+// trelloConnectionMeta is stored plaintext in metadata (non-sensitive display data).
+type trelloConnectionMeta struct {
+	FullName string `json:"full_name"`
 }
 
 type Service struct {
@@ -193,6 +199,28 @@ func (s *Service) DisconnectProvider(ctx context.Context, provider string) error
 	err := s.connections.Delete(ctx, uc.UserUuid, provider)
 	if err != nil {
 		return rerrors.Wrap(err, "error disconnecting provider")
+	}
+
+	return nil
+}
+
+// DisconnectConnection removes a single connection by id, unlike DisconnectProvider which removes
+// whichever single row exists for a provider — needed for providers like Trello that can hold more
+// than one connection per user.
+func (s *Service) DisconnectConnection(ctx context.Context, id string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	connUuid, err := uuid.Parse(id)
+	if err != nil {
+		return rerrors.Wrap(err, "parse uuid")
+	}
+
+	err = s.connections.DeleteByID(ctx, uc.UserUuid, connUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "error disconnecting connection")
 	}
 
 	return nil
@@ -520,6 +548,86 @@ func (s *Service) CheckGitlabConnection(
 	}
 
 	return username, nil
+}
+
+// AddTrelloConnection validates the API key/token pair against Trello, then persists it.
+func (s *Service) AddTrelloConnection(
+	ctx context.Context,
+	apiKey, apiToken string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	fullName, err := s.validateTrelloCredentials(ctx, apiKey, apiToken)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	creds := domain.APIKeyCredentials{
+		APIKey:   apiKey,
+		APIToken: apiToken,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error marshaling trello credentials")
+	}
+
+	meta := trelloConnectionMeta{
+		FullName: fullName,
+	}
+
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error marshaling trello meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderTrello,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Insert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error saving trello connection")
+	}
+
+	return toMeta(saved, fullName), nil
+}
+
+// CheckTrelloConnection pings Trello with the given credentials without persisting anything,
+// letting the caller confirm they work before committing to AddTrelloConnection.
+func (s *Service) CheckTrelloConnection(
+	ctx context.Context,
+	apiKey, apiToken string,
+) (string, error) {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return "", user_errors.Unauthenticated
+	}
+
+	fullName, err := s.validateTrelloCredentials(ctx, apiKey, apiToken)
+	if err != nil {
+		return "", err
+	}
+
+	return fullName, nil
+}
+
+// validateTrelloCredentials confirms the key/token pair actually authenticates against Trello
+// before anything is persisted, reusing the same client the task-tracker feature uses.
+func (s *Service) validateTrelloCredentials(ctx context.Context, apiKey, apiToken string) (string, error) {
+	member, err := trello.New(apiKey, apiToken).GetMember(ctx)
+	if err != nil {
+		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "error validating trello credentials")
+	}
+
+	return member.FullName, nil
 }
 
 // GenerateGitlabWebhookSecret mints a fresh random secret for the caller's GitLab connection and

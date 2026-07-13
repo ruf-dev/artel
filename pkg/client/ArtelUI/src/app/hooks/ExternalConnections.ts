@@ -1,7 +1,8 @@
 import {create} from 'zustand'
 
 import {
-    AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, Spreadsheet,
+    AddEmailConnectionRequest, AddGitlabConnectionRequest, AddTrelloConnectionRequest, ExternalConnectionInfo,
+    Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
@@ -12,6 +13,7 @@ interface ExternalConnectionsState {
     spreadsheetsLoading: boolean
     fetch: () => Promise<void>
     disconnect: (provider: string) => Promise<void>
+    disconnectConnection: (id: string) => Promise<void>
     initiateGoogleOAuth: () => Promise<string>
     getPickerToken: () => Promise<string>
     fetchSpreadsheets: () => Promise<void>
@@ -20,6 +22,7 @@ interface ExternalConnectionsState {
     addEmailConnection: (req: AddEmailConnectionRequest) => Promise<void>
     addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<void>
     generateGitlabWebhookSecret: () => Promise<string>
+    addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<void>
 }
 
 export const useExternalConnections = create<ExternalConnectionsState>((set, get) => ({
@@ -41,6 +44,11 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
     disconnect: async (provider: string) => {
         await externalConnectionsService.disconnect(provider)
         set({spreadsheets: []})
+        await get().fetch()
+    },
+
+    disconnectConnection: async (id: string) => {
+        await externalConnectionsService.disconnectConnection(id)
         await get().fetch()
     },
 
@@ -84,5 +92,10 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
         const {webhookSecret} = await externalConnectionsService.generateGitlabWebhookSecret()
         await get().fetch()
         return webhookSecret
+    },
+
+    addTrelloConnection: async (req: AddTrelloConnectionRequest) => {
+        await externalConnectionsService.addTrelloConnection(req)
+        await get().fetch()
     },
 }))

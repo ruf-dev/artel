@@ -27,6 +27,7 @@ type Querier interface {
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
 	DeleteExternalConnection(ctx context.Context, arg DeleteExternalConnectionParams) error
+	DeleteExternalConnectionByID(ctx context.Context, arg DeleteExternalConnectionByIDParams) error
 	DeleteMcpConnector(ctx context.Context, arg DeleteMcpConnectorParams) error
 	DeleteMcpDefinition(ctx context.Context, name string) error
 	DeleteMcpSpreadsheet(ctx context.Context, arg DeleteMcpSpreadsheetParams) error
@@ -70,6 +71,7 @@ type Querier interface {
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
 	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
 	InsertTaskTracker(ctx context.Context, arg InsertTaskTrackerParams) (TaskTracker, error)

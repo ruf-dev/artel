@@ -74,6 +74,14 @@ export type DisconnectProviderResponse = Record<string, never>;
 
 export type DisconnectProvider = Record<string, never>;
 
+export type DisconnectConnectionRequest = {
+  id?: string;
+};
+
+export type DisconnectConnectionResponse = Record<string, never>;
+
+export type DisconnectConnection = Record<string, never>;
+
 export type GooglePickerTokenRequest = Record<string, never>;
 
 export type GooglePickerTokenResponse = {
@@ -193,6 +201,28 @@ export type GenerateGitlabWebhookSecretResponse = {
 
 export type GenerateGitlabWebhookSecret = Record<string, never>;
 
+export type AddTrelloConnectionRequest = {
+  apiKey?: string;
+  apiToken?: string;
+};
+
+export type AddTrelloConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddTrelloConnection = Record<string, never>;
+
+export type CheckTrelloConnectionRequest = {
+  apiKey?: string;
+  apiToken?: string;
+};
+
+export type CheckTrelloConnectionResponse = {
+  fullName?: string;
+};
+
+export type CheckTrelloConnection = Record<string, never>;
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -202,6 +232,9 @@ export class ExternalConnectionsAPI {
   }
   static DisconnectProvider(this:void, req: DisconnectProviderRequest, initReq?: fm.InitReq): Promise<DisconnectProviderResponse> {
     return fm.fetchRequest<DisconnectProviderResponse>(`/api/external-connections/disconnect`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static DisconnectConnection(this:void, req: DisconnectConnectionRequest, initReq?: fm.InitReq): Promise<DisconnectConnectionResponse> {
+    return fm.fetchRequest<DisconnectConnectionResponse>(`/api/external-connections/disconnect-connection`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetGooglePickerToken(this:void, req: GooglePickerTokenRequest, initReq?: fm.InitReq): Promise<GooglePickerTokenResponse> {
     return fm.fetchRequest<GooglePickerTokenResponse>(`/api/external-connections/google/picker-token`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -232,5 +265,11 @@ export class ExternalConnectionsAPI {
   }
   static GenerateGitlabWebhookSecret(this:void, req: GenerateGitlabWebhookSecretRequest, initReq?: fm.InitReq): Promise<GenerateGitlabWebhookSecretResponse> {
     return fm.fetchRequest<GenerateGitlabWebhookSecretResponse>(`/api/external-connections/gitlab/webhook-secret`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddTrelloConnection(this:void, req: AddTrelloConnectionRequest, initReq?: fm.InitReq): Promise<AddTrelloConnectionResponse> {
+    return fm.fetchRequest<AddTrelloConnectionResponse>(`/api/external-connections/trello/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckTrelloConnection(this:void, req: CheckTrelloConnectionRequest, initReq?: fm.InitReq): Promise<CheckTrelloConnectionResponse> {
+    return fm.fetchRequest<CheckTrelloConnectionResponse>(`/api/external-connections/trello/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

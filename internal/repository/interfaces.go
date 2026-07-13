@@ -176,12 +176,14 @@ type UserPermissionsRepo interface {
 
 type ExternalConnectionRepo interface {
 	Upsert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error)
+	Insert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnection, error)
 	GetByUserAndProvider(
 		ctx context.Context, userUuid uuid.UUID, provider string,
 	) (sql.Null[domain.ExternalConnection], error)
 	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.ExternalConnection, error)
 	Delete(ctx context.Context, userUuid uuid.UUID, provider string) error
+	DeleteByID(ctx context.Context, userUuid uuid.UUID, id uuid.UUID) error
 }
 
 type McpSpreadsheetsRepo interface {

@@ -48,6 +48,39 @@
         ]
       }
     },
+    "/api/external-connections/disconnect-connection": {
+      "post": {
+        "summary": "DisconnectConnection removes a single connection by id, for providers (like Trello) that can\nhold more than one connection per user — DisconnectProvider removes the sole connection for a\nsingle-connection provider instead.",
+        "operationId": "ExternalConnectionsAPI_DisconnectConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDisconnectConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDisconnectConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/email/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddEmailConnection",
@@ -431,6 +464,70 @@
           "ExternalConnectionsAPI"
         ]
       }
+    },
+    "/api/external-connections/trello/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddTrelloConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddTrelloConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddTrelloConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/trello/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckTrelloConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckTrelloConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckTrelloConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
     }
   },
   "definitions": {
@@ -505,6 +602,25 @@
         }
       }
     },
+    "artel_apiAddTrelloConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        },
+        "apiToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddTrelloConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiCheckEmailConnectionRequest": {
       "type": "object",
       "properties": {
@@ -551,6 +667,36 @@
           "type": "string"
         }
       }
+    },
+    "artel_apiCheckTrelloConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        },
+        "apiToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiCheckTrelloConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDisconnectConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDisconnectConnectionResponse": {
+      "type": "object"
     },
     "artel_apiDisconnectProviderRequest": {
       "type": "object",

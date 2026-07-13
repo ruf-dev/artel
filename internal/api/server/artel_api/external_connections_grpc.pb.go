@@ -22,6 +22,7 @@ const (
 	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName         = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
 	ExternalConnectionsAPI_ListConnections_FullMethodName             = "/artel_api.ExternalConnectionsAPI/ListConnections"
 	ExternalConnectionsAPI_DisconnectProvider_FullMethodName          = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
+	ExternalConnectionsAPI_DisconnectConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/DisconnectConnection"
 	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName        = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
 	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName              = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
 	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName            = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
@@ -32,6 +33,8 @@ const (
 	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
 	ExternalConnectionsAPI_CheckGitlabConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection"
 	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
+	ExternalConnectionsAPI_AddTrelloConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddTrelloConnection"
+	ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -41,6 +44,10 @@ type ExternalConnectionsAPIClient interface {
 	InitiateGoogleOAuth(ctx context.Context, in *InitiateGoogleOAuth_Request, opts ...grpc.CallOption) (*InitiateGoogleOAuth_Response, error)
 	ListConnections(ctx context.Context, in *ListConnections_Request, opts ...grpc.CallOption) (*ListConnections_Response, error)
 	DisconnectProvider(ctx context.Context, in *DisconnectProvider_Request, opts ...grpc.CallOption) (*DisconnectProvider_Response, error)
+	// DisconnectConnection removes a single connection by id, for providers (like Trello) that can
+	// hold more than one connection per user — DisconnectProvider removes the sole connection for a
+	// single-connection provider instead.
+	DisconnectConnection(ctx context.Context, in *DisconnectConnection_Request, opts ...grpc.CallOption) (*DisconnectConnection_Response, error)
 	GetGooglePickerToken(ctx context.Context, in *GooglePickerToken_Request, opts ...grpc.CallOption) (*GooglePickerToken_Response, error)
 	AddSpreadsheet(ctx context.Context, in *AddSpreadsheet_Request, opts ...grpc.CallOption) (*AddSpreadsheet_Response, error)
 	ListSpreadsheets(ctx context.Context, in *ListSpreadsheets_Request, opts ...grpc.CallOption) (*ListSpreadsheets_Response, error)
@@ -51,6 +58,8 @@ type ExternalConnectionsAPIClient interface {
 	AddGitlabConnection(ctx context.Context, in *AddGitlabConnection_Request, opts ...grpc.CallOption) (*AddGitlabConnection_Response, error)
 	CheckGitlabConnection(ctx context.Context, in *CheckGitlabConnection_Request, opts ...grpc.CallOption) (*CheckGitlabConnection_Response, error)
 	GenerateGitlabWebhookSecret(ctx context.Context, in *GenerateGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*GenerateGitlabWebhookSecret_Response, error)
+	AddTrelloConnection(ctx context.Context, in *AddTrelloConnection_Request, opts ...grpc.CallOption) (*AddTrelloConnection_Response, error)
+	CheckTrelloConnection(ctx context.Context, in *CheckTrelloConnection_Request, opts ...grpc.CallOption) (*CheckTrelloConnection_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -85,6 +94,16 @@ func (c *externalConnectionsAPIClient) DisconnectProvider(ctx context.Context, i
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DisconnectProvider_Response)
 	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_DisconnectProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) DisconnectConnection(ctx context.Context, in *DisconnectConnection_Request, opts ...grpc.CallOption) (*DisconnectConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DisconnectConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_DisconnectConnection_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -191,6 +210,26 @@ func (c *externalConnectionsAPIClient) GenerateGitlabWebhookSecret(ctx context.C
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) AddTrelloConnection(ctx context.Context, in *AddTrelloConnection_Request, opts ...grpc.CallOption) (*AddTrelloConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddTrelloConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddTrelloConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) CheckTrelloConnection(ctx context.Context, in *CheckTrelloConnection_Request, opts ...grpc.CallOption) (*CheckTrelloConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckTrelloConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility.
@@ -198,6 +237,10 @@ type ExternalConnectionsAPIServer interface {
 	InitiateGoogleOAuth(context.Context, *InitiateGoogleOAuth_Request) (*InitiateGoogleOAuth_Response, error)
 	ListConnections(context.Context, *ListConnections_Request) (*ListConnections_Response, error)
 	DisconnectProvider(context.Context, *DisconnectProvider_Request) (*DisconnectProvider_Response, error)
+	// DisconnectConnection removes a single connection by id, for providers (like Trello) that can
+	// hold more than one connection per user — DisconnectProvider removes the sole connection for a
+	// single-connection provider instead.
+	DisconnectConnection(context.Context, *DisconnectConnection_Request) (*DisconnectConnection_Response, error)
 	GetGooglePickerToken(context.Context, *GooglePickerToken_Request) (*GooglePickerToken_Response, error)
 	AddSpreadsheet(context.Context, *AddSpreadsheet_Request) (*AddSpreadsheet_Response, error)
 	ListSpreadsheets(context.Context, *ListSpreadsheets_Request) (*ListSpreadsheets_Response, error)
@@ -208,6 +251,8 @@ type ExternalConnectionsAPIServer interface {
 	AddGitlabConnection(context.Context, *AddGitlabConnection_Request) (*AddGitlabConnection_Response, error)
 	CheckGitlabConnection(context.Context, *CheckGitlabConnection_Request) (*CheckGitlabConnection_Response, error)
 	GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error)
+	AddTrelloConnection(context.Context, *AddTrelloConnection_Request) (*AddTrelloConnection_Response, error)
+	CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -226,6 +271,9 @@ func (UnimplementedExternalConnectionsAPIServer) ListConnections(context.Context
 }
 func (UnimplementedExternalConnectionsAPIServer) DisconnectProvider(context.Context, *DisconnectProvider_Request) (*DisconnectProvider_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method DisconnectProvider not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) DisconnectConnection(context.Context, *DisconnectConnection_Request) (*DisconnectConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method DisconnectConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) GetGooglePickerToken(context.Context, *GooglePickerToken_Request) (*GooglePickerToken_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetGooglePickerToken not implemented")
@@ -256,6 +304,12 @@ func (UnimplementedExternalConnectionsAPIServer) CheckGitlabConnection(context.C
 }
 func (UnimplementedExternalConnectionsAPIServer) GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method GenerateGitlabWebhookSecret not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddTrelloConnection(context.Context, *AddTrelloConnection_Request) (*AddTrelloConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddTrelloConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CheckTrelloConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -329,6 +383,24 @@ func _ExternalConnectionsAPI_DisconnectProvider_Handler(srv interface{}, ctx con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExternalConnectionsAPIServer).DisconnectProvider(ctx, req.(*DisconnectProvider_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_DisconnectConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DisconnectConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).DisconnectConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_DisconnectConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).DisconnectConnection(ctx, req.(*DisconnectConnection_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -513,6 +585,42 @@ func _ExternalConnectionsAPI_GenerateGitlabWebhookSecret_Handler(srv interface{}
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_AddTrelloConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTrelloConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddTrelloConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddTrelloConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddTrelloConnection(ctx, req.(*AddTrelloConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_CheckTrelloConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckTrelloConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).CheckTrelloConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).CheckTrelloConnection(ctx, req.(*CheckTrelloConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -531,6 +639,10 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DisconnectProvider",
 			Handler:    _ExternalConnectionsAPI_DisconnectProvider_Handler,
+		},
+		{
+			MethodName: "DisconnectConnection",
+			Handler:    _ExternalConnectionsAPI_DisconnectConnection_Handler,
 		},
 		{
 			MethodName: "GetGooglePickerToken",
@@ -571,6 +683,14 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenerateGitlabWebhookSecret",
 			Handler:    _ExternalConnectionsAPI_GenerateGitlabWebhookSecret_Handler,
+		},
+		{
+			MethodName: "AddTrelloConnection",
+			Handler:    _ExternalConnectionsAPI_AddTrelloConnection_Handler,
+		},
+		{
+			MethodName: "CheckTrelloConnection",
+			Handler:    _ExternalConnectionsAPI_CheckTrelloConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

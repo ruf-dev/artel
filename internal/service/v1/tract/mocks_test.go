@@ -191,6 +191,15 @@ func (f *fakeExternalConnsRepo) Upsert(
 	return conn, nil
 }
 
+func (f *fakeExternalConnsRepo) Insert(
+	_ context.Context,
+	conn domain.ExternalConnection,
+) (domain.ExternalConnection, error) {
+	f.conns[conn.Uuid] = conn
+
+	return conn, nil
+}
+
 func (f *fakeExternalConnsRepo) GetByID(_ context.Context, id uuid.UUID) (domain.ExternalConnection, error) {
 	conn, ok := f.conns[id]
 	if !ok {
@@ -221,6 +230,12 @@ func (f *fakeExternalConnsRepo) ListByUser(_ context.Context, _ uuid.UUID) ([]do
 }
 
 func (f *fakeExternalConnsRepo) Delete(_ context.Context, _ uuid.UUID, _ string) error {
+	return nil
+}
+
+func (f *fakeExternalConnsRepo) DeleteByID(_ context.Context, _ uuid.UUID, id uuid.UUID) error {
+	delete(f.conns, id)
+
 	return nil
 }
 

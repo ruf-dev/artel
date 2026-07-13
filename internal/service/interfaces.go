@@ -251,6 +251,7 @@ type ExternalConnectionService interface {
 	InitiateGoogleOAuth(ctx context.Context, origin string) (authURL string, err error)
 	HandleGoogleOAuthCallback(ctx context.Context, code string, state string) (domain.ExternalConnectionMeta, error)
 	DisconnectProvider(ctx context.Context, provider string) error
+	DisconnectConnection(ctx context.Context, id string) error
 	ListConnections(ctx context.Context) ([]domain.ExternalConnectionMeta, error)
 	GetGoogleClient(ctx context.Context) (*googleapi.Client, error)
 	GetPickerToken(ctx context.Context) (string, error)
@@ -269,4 +270,6 @@ type ExternalConnectionService interface {
 	) (domain.ExternalConnectionMeta, error)
 	CheckGitlabConnection(ctx context.Context, personalAccessToken, instanceUrl string) (username string, err error)
 	GenerateGitlabWebhookSecret(ctx context.Context) (domain.ExternalConnectionMeta, string, error)
+	AddTrelloConnection(ctx context.Context, apiKey, apiToken string) (domain.ExternalConnectionMeta, error)
+	CheckTrelloConnection(ctx context.Context, apiKey, apiToken string) (fullName string, err error)
 }

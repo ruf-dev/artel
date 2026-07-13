@@ -1,5 +1,6 @@
 import {
-    AddEmailConnectionRequest, AddGitlabConnectionRequest, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
+    AddEmailConnectionRequest, AddGitlabConnectionRequest, AddTrelloConnectionRequest, ExternalConnectionInfo,
+    ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -9,6 +10,7 @@ export interface IExternalConnectionsService {
     initiateGoogleOAuth: () => Promise<string>
     exchangeGoogleOAuth: (code: string, state: string) => Promise<void>
     disconnect: (provider: string) => Promise<void>
+    disconnectConnection: (id: string) => Promise<void>
     getPickerToken: () => Promise<string>
     addSpreadsheet: (spreadsheetId: string, name: string) => Promise<Spreadsheet>
     listSpreadsheets: () => Promise<Spreadsheet[]>
@@ -16,6 +18,7 @@ export interface IExternalConnectionsService {
     addEmailConnection: (req: AddEmailConnectionRequest) => Promise<ExternalConnectionInfo>
     addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<ExternalConnectionInfo>
     generateGitlabWebhookSecret: () => Promise<{connection: ExternalConnectionInfo; webhookSecret: string}>
+    addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<ExternalConnectionInfo>
 }
 
 export class ExternalConnectionsService implements IExternalConnectionsService {
@@ -42,6 +45,10 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async disconnect(provider: string): Promise<void> {
         await ExternalConnectionsAPI.DisconnectProvider({provider}, useUser.getState().auth.getInitReq())
+    }
+
+    async disconnectConnection(id: string): Promise<void> {
+        await ExternalConnectionsAPI.DisconnectConnection({id}, useUser.getState().auth.getInitReq())
     }
 
     async getPickerToken(): Promise<string> {
@@ -78,6 +85,11 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     async generateGitlabWebhookSecret(): Promise<{connection: ExternalConnectionInfo; webhookSecret: string}> {
         const res = await ExternalConnectionsAPI.GenerateGitlabWebhookSecret({}, useUser.getState().auth.getInitReq())
         return {connection: res.connection!, webhookSecret: res.webhookSecret ?? ""}
+    }
+
+    async addTrelloConnection(req: AddTrelloConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddTrelloConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
     }
 }
 

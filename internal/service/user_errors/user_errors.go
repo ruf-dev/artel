@@ -193,6 +193,13 @@ var (
 		rerrors.WithHttpStatus(http.StatusNotFound),
 	)
 
+	// trello connection.
+	TrelloValidationFailed = rerrors.New(
+		"could not verify trello credentials",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+
 	// tract: builtin execution
 	NoVaultForBuiltinTool = rerrors.New(
 		"no vault available to run a builtin tool for this tract",

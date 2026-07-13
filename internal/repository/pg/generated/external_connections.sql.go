@@ -27,6 +27,21 @@ func (q *Queries) DeleteExternalConnection(ctx context.Context, arg DeleteExtern
 	return err
 }
 
+const deleteExternalConnectionByID = `-- name: DeleteExternalConnectionByID :exec
+DELETE FROM external_connections
+WHERE id = $1 AND user_id = $2
+`
+
+type DeleteExternalConnectionByIDParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) DeleteExternalConnectionByID(ctx context.Context, arg DeleteExternalConnectionByIDParams) error {
+	_, err := q.db.ExecContext(ctx, deleteExternalConnectionByID, arg.ID, arg.UserID)
+	return err
+}
+
 const getExternalConnectionByID = `-- name: GetExternalConnectionByID :one
 SELECT id, user_id, provider, provider_type, credentials_enc, metadata, created_at, updated_at
 FROM external_connections
@@ -62,6 +77,42 @@ type GetExternalConnectionByUserAndProviderParams struct {
 
 func (q *Queries) GetExternalConnectionByUserAndProvider(ctx context.Context, arg GetExternalConnectionByUserAndProviderParams) (ExternalConnection, error) {
 	row := q.db.QueryRowContext(ctx, getExternalConnectionByUserAndProvider, arg.UserID, arg.Provider)
+	var i ExternalConnection
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Provider,
+		&i.ProviderType,
+		&i.CredentialsEnc,
+		&i.Metadata,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const insertExternalConnection = `-- name: InsertExternalConnection :one
+INSERT INTO external_connections (user_id, provider, provider_type, credentials_enc, metadata)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, user_id, provider, provider_type, credentials_enc, metadata, created_at, updated_at
+`
+
+type InsertExternalConnectionParams struct {
+	UserID         uuid.UUID
+	Provider       string
+	ProviderType   ExternalProviderType
+	CredentialsEnc []byte
+	Metadata       pqtype.NullRawMessage
+}
+
+func (q *Queries) InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error) {
+	row := q.db.QueryRowContext(ctx, insertExternalConnection,
+		arg.UserID,
+		arg.Provider,
+		arg.ProviderType,
+		arg.CredentialsEnc,
+		arg.Metadata,
+	)
 	var i ExternalConnection
 	err := row.Scan(
 		&i.ID,

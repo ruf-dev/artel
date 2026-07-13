@@ -55,6 +55,33 @@ func (r *Repo) Upsert(ctx context.Context, conn domain.ExternalConnection) (doma
 	return toDomain(row, credJSON), nil
 }
 
+func (r *Repo) Insert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error) {
+	credEnc, err := cryptoutil.Encrypt(r.encryptionKey, conn.CredentialsJSON)
+	if err != nil {
+		return domain.ExternalConnection{}, rerrors.Wrap(err, "error encrypting credentials")
+	}
+
+	params := artel_q.InsertExternalConnectionParams{
+		UserID:         conn.UserUuid,
+		Provider:       conn.Provider,
+		ProviderType:   conn.ProviderType,
+		CredentialsEnc: credEnc,
+		Metadata:       toNullRawMessage(conn.Metadata),
+	}
+
+	row, err := r.q.InsertExternalConnection(ctx, params)
+	if err != nil {
+		return domain.ExternalConnection{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error inserting external connection")
+	}
+
+	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+	if err != nil {
+		return domain.ExternalConnection{}, rerrors.Wrap(err, "error decrypting credentials")
+	}
+
+	return toDomain(row, credJSON), nil
+}
+
 func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnection, error) {
 	row, err := r.q.GetExternalConnectionByID(ctx, id)
 	if err != nil {
@@ -136,6 +163,20 @@ func (r *Repo) Delete(ctx context.Context, userUuid uuid.UUID, provider string) 
 	err := r.q.DeleteExternalConnection(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting external connection")
+	}
+
+	return nil
+}
+
+func (r *Repo) DeleteByID(ctx context.Context, userUuid uuid.UUID, id uuid.UUID) error {
+	params := artel_q.DeleteExternalConnectionByIDParams{
+		ID:     id,
+		UserID: userUuid,
+	}
+
+	err := r.q.DeleteExternalConnectionByID(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(pg_err.UnwrapPgErr(err), "error deleting external connection by id")
 	}
 
 	return nil

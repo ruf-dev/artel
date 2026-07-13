@@ -4,8 +4,7 @@
 }
 
 .ModalContainer {
-    width: 100%;
-    max-width: 30rem;
+    width: var(--dialog-width-connection);
     background: var(--color-bg-card);
     border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 1.25rem;
