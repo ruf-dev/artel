@@ -3530,8 +3530,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/ConnectForm/ConnectForm.tsx": {
-    "mtime": 1783953892.6263943,
-    "ast_hash": "4a18f8cb9d09fd3c85ea336cc2004e14",
+    "mtime": 1783954396.6863456,
+    "ast_hash": "9115cc85df9db845e791bc05b2086046",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageGitlabDialog/components/ConnectedContent/ConnectedContent.tsx": {
