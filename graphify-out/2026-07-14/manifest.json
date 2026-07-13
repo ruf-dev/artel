@@ -4443,5 +4443,10 @@
     "mtime": 1783976417.0249553,
     "ast_hash": "075e521aebdf39525598aa039bd342dc",
     "semantic_hash": ""
+  },
+  "migrations/046_trello_more_tools.sql": {
+    "mtime": 1783978225.5345104,
+    "ast_hash": "50f5e9e590f5bb50537f37e003eaef81",
+    "semantic_hash": ""
   }
 }
