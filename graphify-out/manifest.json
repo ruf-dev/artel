@@ -4410,8 +4410,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageTrelloDialog/components/ConnectForm/ConnectForm.tsx": {
-    "mtime": 1783974089.9179816,
-    "ast_hash": "89211baa96f1a45f3c988bd420c87ba2",
+    "mtime": 1783975134.6679935,
+    "ast_hash": "f9ca3aee9b6a314eaca612d741f8abc1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageTrelloDialog/components/ConnectedContent/ConnectedContent.tsx": {
