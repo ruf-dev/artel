@@ -90,8 +90,8 @@
     "semantic_hash": "986c46ce5e4b3e7642c41904045a79e7"
   },
   "internal/clients/imap/client.go": {
-    "mtime": 1783921052.0692608,
-    "ast_hash": "87de51d8c3c6fd2bd385f7473f8c5ec3",
+    "mtime": 1783201101.9569938,
+    "ast_hash": "7b007e1b5b34a0ce4ad2a09804b0d7e5",
     "semantic_hash": ""
   },
   "internal/clients/couchdb/users.go": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
-    "mtime": 1783920930.5096502,
-    "ast_hash": "5d61b5603275302a7fa9b676550bcc23",
+    "mtime": 1783364475.24404,
+    "ast_hash": "4d83144d4c3e6f6abbff04c95be30775",
     "semantic_hash": ""
   },
   "internal/domain/couch_account.go": {
@@ -1020,8 +1020,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/Topbar.tsx": {
-    "mtime": 1783885719.7453992,
-    "ast_hash": "a8a49fbe4a1833619dd96b1c5f914163",
+    "mtime": 1783857300.0461464,
+    "ast_hash": "8d5947aafa9c680ff06a23b3f09d8566",
     "semantic_hash": ""
   },
   "moti.yaml": {
@@ -1700,8 +1700,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/mcp/executors/email.go": {
-    "mtime": 1783920952.8222308,
-    "ast_hash": "6c64778c4741963e2c751ebe9b86245e",
+    "mtime": 1783195524.7685966,
+    "ast_hash": "58a353f23247a87f6452043543b4cbfd",
     "semantic_hash": ""
   },
   "internal/service/v1/mcp/executors/vault.go": {
@@ -1820,8 +1820,8 @@
     "semantic_hash": ""
   },
   "pkg/mom_examples/email.json": {
-    "mtime": 1783920977.2886994,
-    "ast_hash": "c0ea998d6ca47166ad92298ef0322a63",
+    "mtime": 1781552704.8717804,
+    "ast_hash": "90e8f87b6e7ada70f2292c66ef31b7a6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/utils/cn.ts": {
@@ -2130,8 +2130,8 @@
     "semantic_hash": ""
   },
   "pkg/mom_examples/README.md": {
-    "mtime": 1783920996.10779,
-    "ast_hash": "36ad5227f9a6b8a1cb3a040c84983ac4",
+    "mtime": 1781549733.908933,
+    "ast_hash": "7a06381de3680b9e52e85fa21aed60ad",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/CLAUDE.md": {
@@ -4215,8 +4215,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileDrawer/TopbarMobileDrawer.tsx": {
-    "mtime": 1783885861.3184316,
-    "ast_hash": "4c743234acc5969c91f97589be561359",
+    "mtime": 1783885169.5163398,
+    "ast_hash": "10221ed3c718b840354945af80f12d87",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileTrigger/TopbarMobileTrigger.tsx": {
@@ -4262,26 +4262,6 @@
   "pkg/client/ArtelUI/src/segments/Topbar/components/icons/iconTypes.ts": {
     "mtime": 1783884991.5397327,
     "ast_hash": "895d2befc0ffd55ef9e0d91aec5f4797",
-    "semantic_hash": ""
-  },
-  "internal/clients/imap/client_test.go": {
-    "mtime": 1783921007.3620117,
-    "ast_hash": "6b21b25ab72e595ac7f474134cceecd6",
-    "semantic_hash": ""
-  },
-  "migrations/042_email_list_cursor.sql": {
-    "mtime": 1783920959.547815,
-    "ast_hash": "e63b2de64edbb2bb943efae0d3693992",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarDrawerLogoutButton/TopbarDrawerLogoutButton.tsx": {
-    "mtime": 1783885808.3160412,
-    "ast_hash": "dc109d295e563b9d031606b9ce85f9f9",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/segments/Topbar/components/icons/LogoutIcon.tsx": {
-    "mtime": 1783885714.9342475,
-    "ast_hash": "bdbc7ad423bf025e3b0ffe66b79c2e83",
     "semantic_hash": ""
   }
 }
