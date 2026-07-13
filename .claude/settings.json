@@ -38,6 +38,16 @@
             "command": "ST=$(python3 -c \"import json,sys; d=json.load(sys.stdin); print(d.get('tool_input',d).get('subagent_type',''))\" 2>/dev/null || true); case \"$ST\" in Explore|general-purpose)   [ -f graphify-out/graph.json ] &&   echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"graphify: knowledge graph at graphify-out/. Before spawning this exploration agent, try graphify yourself first: run graphify query <seeded with an actual class/function/file name, not a vague phrase> (or graphify explain / graphify path). One good query often returns the whole relevant slice in seconds - cheaper than a subagent trace. Only fall back to this agent if graphify does not surface enough.\"}}'   || true ;; esac"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/validate-commit-msg.py 2>/dev/null || true",
+            "statusMessage": "Checking commit message format..."
+          }
+        ]
       }
     ],
     "PostToolUse": [

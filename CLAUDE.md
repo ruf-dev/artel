@@ -35,11 +35,9 @@ Examples:
 [Tract] Canvas: added drag-select for nodes
 ```
 
-This is enforced by `.githooks/commit-msg`, which rejects non-conforming messages. Activate it once per clone with:
-
-```bash
-git config core.hooksPath .githooks
-```
+This is enforced automatically by a `PreToolUse` hook in `.claude/settings.json` (`.claude/hooks/validate-commit-msg.py`),
+which blocks non-conforming `git commit` calls. Since `.claude/settings.json` is committed to the repo, no per-clone
+activation step is needed.
 
 ## Architecture
 
