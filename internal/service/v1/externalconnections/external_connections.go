@@ -498,6 +498,30 @@ func (s *Service) AddGitlabConnection(
 	return toMeta(saved, username), nil
 }
 
+// CheckGitlabConnection pings the instance with the given token without persisting anything,
+// letting the caller confirm the credentials work before committing to AddGitlabConnection.
+func (s *Service) CheckGitlabConnection(
+	ctx context.Context,
+	personalAccessToken, instanceUrl string,
+) (string, error) {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return "", user_errors.Unauthenticated
+	}
+
+	normalizedInstanceUrl, err := normalizeGitlabInstanceURL(instanceUrl)
+	if err != nil {
+		return "", err
+	}
+
+	username, err := s.validateGitlabToken(ctx, normalizedInstanceUrl, personalAccessToken)
+	if err != nil {
+		return "", err
+	}
+
+	return username, nil
+}
+
 // GenerateGitlabWebhookSecret mints a fresh random secret for the caller's GitLab connection and
 // returns it once — only the connection's encrypted credentials retain it after this call. The
 // caller pastes the returned value into GitLab's own webhook config; gitlab_webhook.Handler

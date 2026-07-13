@@ -84,6 +84,13 @@ service ExternalConnectionsAPI {
     };
   }
 
+  rpc CheckGitlabConnection(CheckGitlabConnection.Request) returns (CheckGitlabConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/gitlab/check"
+      body: "*"
+    };
+  }
+
   rpc GenerateGitlabWebhookSecret(GenerateGitlabWebhookSecret.Request) returns (GenerateGitlabWebhookSecret.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/gitlab/webhook-secret"
@@ -232,6 +239,16 @@ message AddGitlabConnection {
   }
   message Response {
     ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckGitlabConnection {
+  message Request {
+    string personal_access_token = 1;
+    string instance_url          = 2;
+  }
+  message Response {
+    string username = 1;
   }
 }
 

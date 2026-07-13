@@ -176,6 +176,38 @@
         ]
       }
     },
+    "/api/external-connections/gitlab/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckGitlabConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckGitlabConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckGitlabConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/gitlab/webhook-secret": {
       "post": {
         "operationId": "ExternalConnectionsAPI_GenerateGitlabWebhookSecret",
@@ -500,6 +532,25 @@
     },
     "artel_apiCheckEmailConnectionResponse": {
       "type": "object"
+    },
+    "artel_apiCheckGitlabConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "personalAccessToken": {
+          "type": "string"
+        },
+        "instanceUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiCheckGitlabConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
     },
     "artel_apiDisconnectProviderRequest": {
       "type": "object",

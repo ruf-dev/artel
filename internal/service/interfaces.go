@@ -267,5 +267,6 @@ type ExternalConnectionService interface {
 	AddGitlabConnection(
 		ctx context.Context, personalAccessToken, instanceUrl string,
 	) (domain.ExternalConnectionMeta, error)
+	CheckGitlabConnection(ctx context.Context, personalAccessToken, instanceUrl string) (username string, err error)
 	GenerateGitlabWebhookSecret(ctx context.Context) (domain.ExternalConnectionMeta, string, error)
 }
