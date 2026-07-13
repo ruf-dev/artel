@@ -185,7 +185,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/models.go": {
-    "mtime": 1783937537.3365848,
+    "mtime": 1783939351.3480701,
     "ast_hash": "c9f8b0b2c4f91a60999a0adf5a1c2e24",
     "semantic_hash": ""
   },
@@ -205,7 +205,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mail_server_suggestions.sql.go": {
-    "mtime": 1783937537.337252,
+    "mtime": 1783939351.3477106,
     "ast_hash": "24f21536c316ccc7dbe20ac0bf98c548",
     "semantic_hash": ""
   },
@@ -270,7 +270,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/mailserversuggestions/suggestions.go": {
-    "mtime": 1783937521.2189815,
+    "mtime": 1783939351.3486257,
     "ast_hash": "ead0be6912879ff8de33f861f14a3a45",
     "semantic_hash": ""
   },
@@ -365,7 +365,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/mail_server_suggestions.sql": {
-    "mtime": 1783937517.5025964,
+    "mtime": 1783939351.3484259,
     "ast_hash": "b05b069f20b812ee6422663c3171e8f5",
     "semantic_hash": ""
   },
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
-    "mtime": 1783926563.537297,
-    "ast_hash": "e9b381cf0847dfdbd53105d8631e1bd4",
+    "mtime": 1783939351.3488903,
+    "ast_hash": "9fb17b7e7f9d9944fd73fd162361b135",
     "semantic_hash": ""
   },
   "internal/domain/couch_account.go": {
@@ -1455,7 +1455,7 @@
     "semantic_hash": ""
   },
   "internal/transport/external_connections_api/list_mail_suggestions.go": {
-    "mtime": 1783937572.7834153,
+    "mtime": 1783939351.3494136,
     "ast_hash": "a2ae66e33936ba7437cde40ecd61839e",
     "semantic_hash": ""
   },
@@ -1590,7 +1590,7 @@
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/external_connections.pb.go": {
-    "mtime": 1783937537.132069,
+    "mtime": 1783939351.3471186,
     "ast_hash": "fd009777507c3d63e755735fcab11333",
     "semantic_hash": ""
   },
@@ -1710,8 +1710,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/externalconnections/external_connections.go": {
-    "mtime": 1783929706.0743368,
-    "ast_hash": "bbf180291216f9fafc915862b4ddf812",
+    "mtime": 1783939351.3491964,
+    "ast_hash": "61b862a01b738eaaefed99ffb82f8d6f",
     "semantic_hash": ""
   },
   "internal/service/v1/adminusers/adminusers.go": {
@@ -1760,7 +1760,7 @@
     "semantic_hash": ""
   },
   "internal/domain/email.go": {
-    "mtime": 1783937519.1440146,
+    "mtime": 1783939351.34747,
     "ast_hash": "62596dd7acddd280a8c94d644471019d",
     "semantic_hash": ""
   },
@@ -1800,7 +1800,7 @@
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/external_connections.swagger.json": {
-    "mtime": 1783937537.1236475,
+    "mtime": 1783939351.3519263,
     "ast_hash": "c63b1b7ea0a541116223e5c490dbf262",
     "semantic_hash": ""
   },
@@ -1870,7 +1870,7 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts": {
-    "mtime": 1783937540.7154052,
+    "mtime": 1783939351.3496652,
     "ast_hash": "19f717f440301308a8e419d5a02b22f1",
     "semantic_hash": ""
   },
@@ -3515,13 +3515,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/EmailAddDialog/EmailAddDialog.tsx": {
-    "mtime": 1783937798.7446373,
-    "ast_hash": "2be9520508bf334655d75281604e3753",
+    "mtime": 1783939351.3501072,
+    "ast_hash": "641f2c87f736e386a7cdc0b8fb02874c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/EmailEditDialog/EmailEditDialog.tsx": {
-    "mtime": 1783937810.4182236,
-    "ast_hash": "43d154778e531232334a19992ed6d623",
+    "mtime": 1783939351.3509734,
+    "ast_hash": "80c621952198850a3d6fd90a753683f6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/HostPortRow/HostPortRow.tsx": {
@@ -4290,8 +4290,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/EmailCheckButton/EmailCheckButton.tsx": {
-    "mtime": 1783926636.2284412,
-    "ast_hash": "19d98750f3c037f2a3592634331b0907",
+    "mtime": 1783939351.350524,
+    "ast_hash": "657018f434fe6963524d3c4b93e44b7f",
     "semantic_hash": ""
   },
   "migrations/043_mail_server_suggestion_app_password_url.sql": {
@@ -4300,8 +4300,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/PasswordField/PasswordField.tsx": {
-    "mtime": 1783937614.9281034,
-    "ast_hash": "4b0873a8a36d4b18d749838748e3ecc0",
+    "mtime": 1783939247.0290642,
+    "ast_hash": "b79c32d5dd40a7c17d8b9ee223f655e1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/processes/useMailServerSuggestion.ts": {
