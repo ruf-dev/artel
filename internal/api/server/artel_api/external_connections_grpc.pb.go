@@ -27,6 +27,7 @@ const (
 	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName            = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
 	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName           = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
 	ExternalConnectionsAPI_AddEmailConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
+	ExternalConnectionsAPI_CheckEmailConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/CheckEmailConnection"
 	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName   = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
 	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
 	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
@@ -44,6 +45,7 @@ type ExternalConnectionsAPIClient interface {
 	ListSpreadsheets(ctx context.Context, in *ListSpreadsheets_Request, opts ...grpc.CallOption) (*ListSpreadsheets_Response, error)
 	RemoveSpreadsheet(ctx context.Context, in *RemoveSpreadsheet_Request, opts ...grpc.CallOption) (*RemoveSpreadsheet_Response, error)
 	AddEmailConnection(ctx context.Context, in *AddEmailConnection_Request, opts ...grpc.CallOption) (*AddEmailConnection_Response, error)
+	CheckEmailConnection(ctx context.Context, in *CheckEmailConnection_Request, opts ...grpc.CallOption) (*CheckEmailConnection_Response, error)
 	ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error)
 	AddGitlabConnection(ctx context.Context, in *AddGitlabConnection_Request, opts ...grpc.CallOption) (*AddGitlabConnection_Response, error)
 	GenerateGitlabWebhookSecret(ctx context.Context, in *GenerateGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*GenerateGitlabWebhookSecret_Response, error)
@@ -137,6 +139,16 @@ func (c *externalConnectionsAPIClient) AddEmailConnection(ctx context.Context, i
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) CheckEmailConnection(ctx context.Context, in *CheckEmailConnection_Request, opts ...grpc.CallOption) (*CheckEmailConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckEmailConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_CheckEmailConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *externalConnectionsAPIClient) ListMailServerSuggestions(ctx context.Context, in *ListMailServerSuggestions_Request, opts ...grpc.CallOption) (*ListMailServerSuggestions_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListMailServerSuggestions_Response)
@@ -179,6 +191,7 @@ type ExternalConnectionsAPIServer interface {
 	ListSpreadsheets(context.Context, *ListSpreadsheets_Request) (*ListSpreadsheets_Response, error)
 	RemoveSpreadsheet(context.Context, *RemoveSpreadsheet_Request) (*RemoveSpreadsheet_Response, error)
 	AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error)
+	CheckEmailConnection(context.Context, *CheckEmailConnection_Request) (*CheckEmailConnection_Response, error)
 	ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error)
 	AddGitlabConnection(context.Context, *AddGitlabConnection_Request) (*AddGitlabConnection_Response, error)
 	GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error)
@@ -215,6 +228,9 @@ func (UnimplementedExternalConnectionsAPIServer) RemoveSpreadsheet(context.Conte
 }
 func (UnimplementedExternalConnectionsAPIServer) AddEmailConnection(context.Context, *AddEmailConnection_Request) (*AddEmailConnection_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddEmailConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) CheckEmailConnection(context.Context, *CheckEmailConnection_Request) (*CheckEmailConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CheckEmailConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) ListMailServerSuggestions(context.Context, *ListMailServerSuggestions_Request) (*ListMailServerSuggestions_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListMailServerSuggestions not implemented")
@@ -391,6 +407,24 @@ func _ExternalConnectionsAPI_AddEmailConnection_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_CheckEmailConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckEmailConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).CheckEmailConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_CheckEmailConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).CheckEmailConnection(ctx, req.(*CheckEmailConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ExternalConnectionsAPI_ListMailServerSuggestions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListMailServerSuggestions_Request)
 	if err := dec(in); err != nil {
@@ -483,6 +517,10 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddEmailConnection",
 			Handler:    _ExternalConnectionsAPI_AddEmailConnection_Handler,
+		},
+		{
+			MethodName: "CheckEmailConnection",
+			Handler:    _ExternalConnectionsAPI_CheckEmailConnection_Handler,
 		},
 		{
 			MethodName: "ListMailServerSuggestions",

@@ -3,7 +3,11 @@ package imap
 import (
 	"context"
 	"fmt"
+	"math"
+	"net"
+	"sort"
 	"strings"
+	"time"
 
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
@@ -31,7 +35,15 @@ func New(host string, port int, email, password string) *Client {
 	}
 }
 
-func (c *Client) ListEmails(_ context.Context, limit int) ([]domain.EmailMeta, error) {
+// ListEmailsOptions bounds a list_emails page. AfterUid/BeforeUid are raw UID strings (same
+// format as ReadEmail's uid param); at most one may be set by the caller.
+type ListEmailsOptions struct {
+	Limit     int
+	AfterUid  *string
+	BeforeUid *string
+}
+
+func (c *Client) ListEmails(_ context.Context, opts ListEmailsOptions) ([]domain.EmailMeta, error) {
 	conn, err := c.connect()
 	if err != nil {
 		return nil, err
@@ -47,44 +59,169 @@ func (c *Client) ListEmails(_ context.Context, limit int) ([]domain.EmailMeta, e
 		return []domain.EmailMeta{}, nil
 	}
 
-	from := uint32(1)
-	if mbox.Messages > uint32(limit) {
-		from = mbox.Messages - uint32(limit) + 1
+	var afterUid, beforeUid *uint32
+
+	if opts.AfterUid != nil {
+		v, parseErr := parseUid(*opts.AfterUid)
+		if parseErr != nil {
+			return nil, parseErr
+		}
+
+		afterUid = &v
+	}
+
+	if opts.BeforeUid != nil {
+		v, parseErr := parseUid(*opts.BeforeUid)
+		if parseErr != nil {
+			return nil, parseErr
+		}
+
+		beforeUid = &v
+	}
+
+	start, stop, hasCursor, ok := emailCursorUIDBounds(afterUid, beforeUid)
+	if hasCursor && !ok {
+		return []domain.EmailMeta{}, nil
 	}
 
 	seqSet := new(imap.SeqSet)
-	seqSet.AddRange(from, mbox.Messages)
 
-	messages := make(chan *imap.Message, limit)
+	if hasCursor {
+		seqSet.AddRange(start, stop)
+	} else {
+		from := uint32(1)
+		if mbox.Messages > uint32(opts.Limit) {
+			from = mbox.Messages - uint32(opts.Limit) + 1
+		}
 
-	err = conn.Fetch(seqSet, []imap.FetchItem{imap.FetchEnvelope, imap.FetchUid}, messages)
+		seqSet.AddRange(from, mbox.Messages)
+	}
+
+	result, err := fetchEmailMeta(conn, seqSet, hasCursor)
+	if err != nil {
+		return nil, err
+	}
+
+	if hasCursor {
+		result = trimEmailPage(result, opts.Limit, beforeUid != nil)
+	}
+
+	return result, nil
+}
+
+// emailCursorUIDBounds computes the inclusive UID range to fetch for a cursor-based list_emails
+// page. stop == 0 means unbounded ("*", up to the newest UID) — imap.SeqSet.AddRange already
+// treats 0 as that sentinel. hasCursor is false when neither bound is set (caller falls back to
+// the existing sequence-number path). ok is false when hasCursor is true but the window is
+// provably empty (no UID can be < 1, and MaxUint32 can't be exceeded), so the caller should
+// return an empty page without an IMAP round trip.
+func emailCursorUIDBounds(afterUid, beforeUid *uint32) (start, stop uint32, hasCursor, ok bool) {
+	switch {
+	case afterUid != nil:
+		if *afterUid == math.MaxUint32 {
+			return 0, 0, true, false
+		}
+
+		return *afterUid + 1, 0, true, true
+
+	case beforeUid != nil:
+		if *beforeUid <= 1 {
+			return 0, 0, true, false
+		}
+
+		return 1, *beforeUid - 1, true, true
+
+	default:
+		return 0, 0, false, false
+	}
+}
+
+// trimEmailPage bounds an ascending-UID-sorted page to at most limit entries. after_uid pages
+// keep the front (smallest UIDs — closest to the cursor, continuing the forward walk);
+// before_uid pages keep the back (largest UIDs still below the cursor — also closest to it).
+// Both keep ascending order, matching list_emails' single ordering contract.
+func trimEmailPage(emails []domain.EmailMeta, limit int, keepNewestEnd bool) []domain.EmailMeta {
+	if limit <= 0 || len(emails) <= limit {
+		return emails
+	}
+
+	if keepNewestEnd {
+		return emails[len(emails)-limit:]
+	}
+
+	return emails[:limit]
+}
+
+// parseUid parses a caller-supplied UID string (read_email's id, list_emails' after_uid/
+// before_uid) into the numeric IMAP UID it identifies.
+func parseUid(s string) (uint32, error) {
+	var uid uint32
+
+	_, err := fmt.Sscanf(s, "%d", &uid)
+	if err != nil {
+		return 0, user_errors.InvalidEmailId
+	}
+
+	return uid, nil
+}
+
+// fetchEmailMeta runs seqSet through FETCH (or UID FETCH when uid) and drains responses
+// concurrently, so it's safe regardless of how many messages seqSet matches. A fixed-size
+// buffered channel drained only after the command returns (as ReadEmail does, and as ListEmails
+// used to) deadlocks once matches exceed the buffer — a risk cursor ranges (open-ended or wide)
+// introduce, since their match count isn't known up front. ListFolders below already uses this
+// concurrent-drain pattern for the same reason. Results are sorted ascending by UID before
+// mapping, since IMAP doesn't guarantee response order.
+func fetchEmailMeta(conn *client.Client, seqSet *imap.SeqSet, uid bool) ([]domain.EmailMeta, error) {
+	fetch := conn.Fetch
+	if uid {
+		fetch = conn.UidFetch
+	}
+
+	messages := make(chan *imap.Message, 16)
+	done := make(chan error, 1)
+
+	go func() {
+		done <- fetch(seqSet, []imap.FetchItem{imap.FetchEnvelope, imap.FetchUid}, messages)
+	}()
+
+	var msgs []*imap.Message
+	for msg := range messages {
+		msgs = append(msgs, msg)
+	}
+
+	err := <-done
 	if err != nil {
 		return nil, rerrors.Wrap(err, "fetch messages")
 	}
 
-	var result []domain.EmailMeta
+	sort.Slice(msgs, func(i, j int) bool {
+		return msgs[i].Uid < msgs[j].Uid
+	})
 
-	for msg := range messages {
-		meta := domain.EmailMeta{
-			Id:      fmt.Sprintf("%d", msg.Uid),
-			Subject: msg.Envelope.Subject,
-		}
-
-		if len(msg.Envelope.From) > 0 {
-			addr := msg.Envelope.From[0]
-			meta.From = addr.Address()
-		}
-
-		if msg.Envelope.Date.IsZero() {
-			meta.Date = ""
-		} else {
-			meta.Date = msg.Envelope.Date.UTC().Format("2006-01-02T15:04:05Z")
-		}
-
-		result = append(result, meta)
+	result := make([]domain.EmailMeta, 0, len(msgs))
+	for _, msg := range msgs {
+		result = append(result, emailMetaFromMessage(msg))
 	}
 
 	return result, nil
+}
+
+func emailMetaFromMessage(msg *imap.Message) domain.EmailMeta {
+	meta := domain.EmailMeta{
+		Id:      fmt.Sprintf("%d", msg.Uid),
+		Subject: msg.Envelope.Subject,
+	}
+
+	if len(msg.Envelope.From) > 0 {
+		meta.From = msg.Envelope.From[0].Address()
+	}
+
+	if !msg.Envelope.Date.IsZero() {
+		meta.Date = msg.Envelope.Date.UTC().Format("2006-01-02T15:04:05Z")
+	}
+
+	return meta
 }
 
 func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, error) {
@@ -164,6 +301,33 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 	}
 
 	return result, nil
+}
+
+// TestConnection dials the IMAP server and logs in, then immediately logs out, to verify the
+// configured host/port/credentials work without fetching any mailbox data. Unlike connect(), the
+// dial (and the deadline covering the subsequent login) is bounded by ctx's deadline, so a host
+// that never responds fails once ctx expires instead of hanging indefinitely.
+func (c *Client) TestConnection(ctx context.Context) error {
+	dialer := &net.Dialer{}
+
+	if deadline, ok := ctx.Deadline(); ok {
+		dialer.Timeout = time.Until(deadline)
+	}
+
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	conn, err := client.DialWithDialerTLS(dialer, addr, nil)
+	if err != nil {
+		return rerrors.Wrap(err, "connect to imap server")
+	}
+	defer utils.CallWithLog(conn.Logout, "logout error during connection test")
+
+	err = conn.Login(c.email, c.password)
+	if err != nil {
+		return rerrors.Wrap(err, "imap login failed")
+	}
+
+	return nil
 }
 
 func (c *Client) ListFolders(_ context.Context) ([]string, error) {

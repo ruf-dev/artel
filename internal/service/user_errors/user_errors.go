@@ -115,6 +115,7 @@ var (
 	// imap.
 	InvalidEmailId       = rerrors.New("invalid email id", codes.InvalidArgument)
 	EmailMessageNotFound = rerrors.New("message not found", codes.NotFound)
+	EmailCursorConflict  = rerrors.New("after_uid and before_uid cannot both be set", codes.InvalidArgument)
 
 	// external connections.
 	GoogleNotConnected = rerrors.New(
@@ -126,6 +127,18 @@ var (
 		"invalid or expired oauth state",
 		codes.InvalidArgument,
 		rerrors.WithHttpStatus(http.StatusBadRequest),
+	)
+
+	// email connection.
+	EmailImapValidationFailed = rerrors.New(
+		"could not connect to the imap server with the provided settings",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	EmailSmtpValidationFailed = rerrors.New(
+		"could not connect to the smtp server with the provided settings",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
 
 	NoCouchDbInstance = rerrors.New("no storage instance",

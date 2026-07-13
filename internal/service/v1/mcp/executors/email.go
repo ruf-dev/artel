@@ -64,7 +64,27 @@ func (e *EmailExecutor) executeImap(
 			}
 		}
 
-		emails, err := imapClient.ListEmails(ctx, limit)
+		afterUid, err := optionalUidStringParam(params, "after_uid")
+		if err != nil {
+			return "", err
+		}
+
+		beforeUid, err := optionalUidStringParam(params, "before_uid")
+		if err != nil {
+			return "", err
+		}
+
+		if afterUid != nil && beforeUid != nil {
+			return "", user_errors.EmailCursorConflict
+		}
+
+		opts := imap.ListEmailsOptions{
+			Limit:     limit,
+			AfterUid:  afterUid,
+			BeforeUid: beforeUid,
+		}
+
+		emails, err := imapClient.ListEmails(ctx, opts)
 		if err != nil {
 			return "", rerrors.Wrap(err, "list emails")
 		}
@@ -124,6 +144,25 @@ func (e *EmailExecutor) executeSmtp(
 	default:
 		return "", user_errors.McpUnknownSmtpOperation
 	}
+}
+
+// optionalUidStringParam reads an optional UID-string param (after_uid/before_uid), returning
+// (nil, nil) if absent. A present-but-wrong-type value is rejected rather than silently ignored,
+// since silently dropping a cursor would produce confusing pagination behavior. Numeric-format
+// validation of the string itself happens inside imap.Client.ListEmails, matching how the id
+// param is validated for IMAP_OP_FETCH_MESSAGE today.
+func optionalUidStringParam(params map[string]interface{}, key string) (*string, error) {
+	raw, ok := params[key]
+	if !ok {
+		return nil, nil
+	}
+
+	str, ok := raw.(string)
+	if !ok {
+		return nil, user_errors.InvalidEmailId
+	}
+
+	return &str, nil
 }
 
 func marshalResult(v interface{}) (string, error) {

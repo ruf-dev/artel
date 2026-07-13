@@ -63,6 +63,13 @@ service ExternalConnectionsAPI {
     };
   }
 
+  rpc CheckEmailConnection(CheckEmailConnection.Request) returns (CheckEmailConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/email/check"
+      body: "*"
+    };
+  }
+
   rpc ListMailServerSuggestions(ListMailServerSuggestions.Request) returns (ListMailServerSuggestions.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/email/suggestions"
@@ -186,6 +193,18 @@ message AddEmailConnection {
   message Response {
     ExternalConnectionInfo connection = 1;
   }
+}
+
+message CheckEmailConnection {
+  message Request {
+    string email     = 1;
+    string imap_host = 2;
+    int32  imap_port = 3;
+    string smtp_host = 4;
+    int32  smtp_port = 5;
+    string password  = 6;
+  }
+  message Response {}
 }
 
 message MailServerSuggestion {

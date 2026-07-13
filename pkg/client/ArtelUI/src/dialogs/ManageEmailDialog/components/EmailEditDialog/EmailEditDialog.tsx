@@ -12,8 +12,22 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 import DialogHead from "@/dialogs/ManageEmailDialog/components/DialogHead/DialogHead.tsx"
+import EmailCheckButton from "@/dialogs/ManageEmailDialog/components/EmailCheckButton/EmailCheckButton.tsx"
 import HostPortRow from "@/dialogs/ManageEmailDialog/components/HostPortRow/HostPortRow.tsx"
 import cls from "@/dialogs/ManageEmailDialog/components/EmailEditDialog/EmailEditDialog.module.css"
+
+function buildEmailRequest(
+    email: string, imapHost: string, imapPort: string, smtpHost: string, smtpPort: string, password: string,
+): AddEmailConnectionRequest {
+    return {
+        email,
+        imapHost,
+        imapPort: imapPort ? parseInt(imapPort, 10) : undefined,
+        smtpHost,
+        smtpPort: smtpPort ? parseInt(smtpPort, 10) : undefined,
+        password,
+    }
+}
 
 export default function EmailEditDialog({connection}: {connection: ExternalConnectionInfo}) {
     const [saving, setSaving] = useState(false)
@@ -69,15 +83,7 @@ export default function EmailEditDialog({connection}: {connection: ExternalConne
 
     function handleSave() {
         setSaving(true)
-        const req: AddEmailConnectionRequest = {
-            email,
-            imapHost,
-            imapPort: imapPort ? parseInt(imapPort, 10) : undefined,
-            smtpHost,
-            smtpPort: smtpPort ? parseInt(smtpPort, 10) : undefined,
-            password,
-        }
-        addEmailConnection(req)
+        addEmailConnection(buildEmailRequest(email, imapHost, imapPort, smtpHost, smtpPort, password))
             .then(CloseDialog)
             .catch(e => bakeError("Error updating email", e))
             .finally(() => setSaving(false))
@@ -111,6 +117,9 @@ export default function EmailEditDialog({connection}: {connection: ExternalConne
                     setValue={setPassword} disabled={saving} autoComplete="new-password"/>
             </label>
             <div className={cls.ModalActions}>
+                <EmailCheckButton
+                    req={buildEmailRequest(email, imapHost, imapPort, smtpHost, smtpPort, password)}
+                    disabled={saving}/>
                 <Button variant="primary" onClick={handleSave} disabled={saving}>
                     {saving ? "Saving…" : "Save changes"}
                 </Button>

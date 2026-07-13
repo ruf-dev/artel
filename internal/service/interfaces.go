@@ -253,6 +253,9 @@ type ExternalConnectionService interface {
 	AddEmailConnection(
 		ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string,
 	) (domain.ExternalConnectionMeta, error)
+	CheckEmailConnection(
+		ctx context.Context, email, imapHost string, imapPort int, smtpHost string, smtpPort int, password string,
+	) error
 	ListMailServerSuggestions(ctx context.Context, domain string) ([]domain.MailServerSuggestion, error)
 	AddGitlabConnection(
 		ctx context.Context, personalAccessToken, instanceUrl string,

@@ -17,6 +17,8 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
+	"github.com/ruf-dev/artel/internal/clients/imap"
+	"github.com/ruf-dev/artel/internal/clients/smtp"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -34,6 +36,10 @@ type googleUserInfo struct {
 const gitlabDefaultInstanceURL = "https://gitlab.com"
 
 var gitlabValidationClient = &http.Client{Timeout: 10 * time.Second}
+
+// emailConnectionCheckTimeout bounds each of the IMAP/SMTP dial+auth round trips in
+// CheckEmailConnection, so a host that never responds fails fast instead of hanging the request.
+const emailConnectionCheckTimeout = 10 * time.Second
 
 type gitlabUserInfo struct {
 	Username string `json:"username"`
@@ -355,6 +361,39 @@ func (s *Service) AddEmailConnection(
 	}
 
 	return toMeta(saved, email), nil
+}
+
+// CheckEmailConnection verifies that both the IMAP and SMTP settings actually work, without
+// persisting anything — backs the "Check" button in the add/edit email account form.
+func (s *Service) CheckEmailConnection(
+	ctx context.Context,
+	email, imapHost string,
+	imapPort int,
+	smtpHost string,
+	smtpPort int,
+	password string,
+) error {
+	imapClient := imap.New(imapHost, imapPort, email, password)
+
+	imapCtx, cancelImap := context.WithTimeout(ctx, emailConnectionCheckTimeout)
+	defer cancelImap()
+
+	err := imapClient.TestConnection(imapCtx)
+	if err != nil {
+		return rerrors.Wrap(user_errors.EmailImapValidationFailed, "error connecting to imap server")
+	}
+
+	smtpClient := smtp.New(smtpHost, smtpPort, email, password)
+
+	smtpCtx, cancelSmtp := context.WithTimeout(ctx, emailConnectionCheckTimeout)
+	defer cancelSmtp()
+
+	err = smtpClient.TestConnection(smtpCtx)
+	if err != nil {
+		return rerrors.Wrap(user_errors.EmailSmtpValidationFailed, "error connecting to smtp server")
+	}
+
+	return nil
 }
 
 func (s *Service) AddGitlabConnection(

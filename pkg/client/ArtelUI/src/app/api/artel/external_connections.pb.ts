@@ -130,6 +130,19 @@ export type AddEmailConnectionResponse = {
 
 export type AddEmailConnection = Record<string, never>;
 
+export type CheckEmailConnectionRequest = {
+  email?: string;
+  imapHost?: string;
+  imapPort?: number;
+  smtpHost?: string;
+  smtpPort?: number;
+  password?: string;
+};
+
+export type CheckEmailConnectionResponse = Record<string, never>;
+
+export type CheckEmailConnection = Record<string, never>;
+
 export type MailServerSuggestion = {
   domain?: string;
   smtp?: string;
@@ -192,6 +205,9 @@ export class ExternalConnectionsAPI {
   }
   static AddEmailConnection(this:void, req: AddEmailConnectionRequest, initReq?: fm.InitReq): Promise<AddEmailConnectionResponse> {
     return fm.fetchRequest<AddEmailConnectionResponse>(`/api/external-connections/email/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckEmailConnection(this:void, req: CheckEmailConnectionRequest, initReq?: fm.InitReq): Promise<CheckEmailConnectionResponse> {
+    return fm.fetchRequest<CheckEmailConnectionResponse>(`/api/external-connections/email/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListMailServerSuggestions(this:void, req: ListMailServerSuggestionsRequest, initReq?: fm.InitReq): Promise<ListMailServerSuggestionsResponse> {
     return fm.fetchRequest<ListMailServerSuggestionsResponse>(`/api/external-connections/email/suggestions`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

@@ -11,8 +11,22 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
 import DialogHead from "@/dialogs/ManageEmailDialog/components/DialogHead/DialogHead.tsx"
+import EmailCheckButton from "@/dialogs/ManageEmailDialog/components/EmailCheckButton/EmailCheckButton.tsx"
 import HostPortRow from "@/dialogs/ManageEmailDialog/components/HostPortRow/HostPortRow.tsx"
 import cls from "@/dialogs/ManageEmailDialog/components/EmailAddDialog/EmailAddDialog.module.css"
+
+function buildEmailRequest(
+    email: string, imapHost: string, imapPort: string, smtpHost: string, smtpPort: string, password: string,
+): AddEmailConnectionRequest {
+    return {
+        email,
+        imapHost,
+        imapPort: imapPort ? parseInt(imapPort, 10) : undefined,
+        smtpHost,
+        smtpPort: smtpPort ? parseInt(smtpPort, 10) : undefined,
+        password,
+    }
+}
 
 export default function EmailAddDialog() {
     const [adding, setAdding] = useState(false)
@@ -52,15 +66,7 @@ export default function EmailAddDialog() {
 
     function handleAdd() {
         setAdding(true)
-        const req: AddEmailConnectionRequest = {
-            email,
-            imapHost,
-            imapPort: imapPort ? parseInt(imapPort, 10) : undefined,
-            smtpHost,
-            smtpPort: smtpPort ? parseInt(smtpPort, 10) : undefined,
-            password,
-        }
-        addEmailConnection(req)
+        addEmailConnection(buildEmailRequest(email, imapHost, imapPort, smtpHost, smtpPort, password))
             .then(CloseDialog)
             .catch(e => bakeError("Error adding email", e))
             .finally(() => setAdding(false))
@@ -91,6 +97,9 @@ export default function EmailAddDialog() {
                     setValue={setPassword} disabled={adding} autoComplete="new-password"/>
             </label>
             <div className={cls.ModalActions}>
+                <EmailCheckButton
+                    req={buildEmailRequest(email, imapHost, imapPort, smtpHost, smtpPort, password)}
+                    disabled={adding}/>
                 <Button variant="primary" onClick={handleAdd} disabled={adding}>
                     {adding ? "Adding…" : "Add account"}
                 </Button>

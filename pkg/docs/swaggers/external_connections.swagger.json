@@ -80,6 +80,38 @@
         ]
       }
     },
+    "/api/external-connections/email/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckEmailConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckEmailConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckEmailConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/email/suggestions": {
       "post": {
         "operationId": "ExternalConnectionsAPI_ListMailServerSuggestions",
@@ -440,6 +472,34 @@
           "$ref": "#/definitions/artel_apiSpreadsheet"
         }
       }
+    },
+    "artel_apiCheckEmailConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "imapHost": {
+          "type": "string"
+        },
+        "imapPort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "smtpHost": {
+          "type": "string"
+        },
+        "smtpPort": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiCheckEmailConnectionResponse": {
+      "type": "object"
     },
     "artel_apiDisconnectProviderRequest": {
       "type": "object",
