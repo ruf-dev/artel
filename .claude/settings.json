@@ -66,7 +66,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "git status --porcelain -- graphify-out 2>/dev/null | grep -q . && PREV=$(git log -1 --format=%s --invert-grep --grep='^\\[Graphify\\]' 2>/dev/null) && git add -- graphify-out && git commit --quiet -m \"[Graphify] update code graph after ${PREV:-source changes}\" -- graphify-out || true",
+            "command": "git status --porcelain -- graphify-out 2>/dev/null | grep -q . && PREV=$(git log -1 --format=%s --invert-grep --grep='^\\[Graphify\\]' 2>/dev/null) && git add -- graphify-out && git commit --quiet -m \"[Graphify] chore: update code graph after ${PREV:-source changes}\" -- graphify-out || true",
             "statusMessage": "Committing graphify-out..."
           }
         ]

@@ -20,6 +20,27 @@ sqlc generate   # Generate Go from SQL queries (internal/repository/pg/queries �
 make lint       # golangci-lint run ./...
 ```
 
+## Commit Message Convention
+
+Commit messages must follow `[Area] Category: description`:
+
+- `Area` — the part of the system changed, e.g. `Tract`, `Connections`, `Auth`. Free-form, pick per commit.
+- `Category` — either a fixed keyword (`bug fixed`, `refactor`, `docs`, `chore`, `perf`), or for feature work, a
+  Capitalized sub-area/feature name instead of the literal word "feature" (e.g. `Canvas`, `Connections`).
+
+Examples:
+
+```
+[Tract] bug fixed: connections created on the caller side, not the receiver
+[Tract] Canvas: added drag-select for nodes
+```
+
+This is enforced by `.githooks/commit-msg`, which rejects non-conforming messages. Activate it once per clone with:
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Architecture
 
 If touching Go backend files, read [docs/architecture.md](docs/architecture.md) for rscli structure, configuration,
