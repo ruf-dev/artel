@@ -14,11 +14,14 @@ interface FolderNodeItemProps {
     onToggle: (path: string) => void
     onSelectNote: (path: string) => void
     onCreateNoteInFolder: (path: string) => void
+    onDownloadFolder?: (path: string) => void
+    onDeleteFolder?: (path: string) => void
 }
 
 export default function FolderNodeItem(props: FolderNodeItemProps) {
     const { node, notes, openFolders, selectedPath, highlightedPath } = props
     const { depth, onToggle, onSelectNote, onCreateNoteInFolder } = props
+    const { onDownloadFolder, onDeleteFolder } = props
     const isOpen = openFolders.has(node.path)
     const directNotes = getDirectNotes(node.path, notes)
 
@@ -33,6 +36,8 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                 onClick={() => onToggle(node.path)}
                 onAddInFolder={() => onCreateNoteInFolder(node.path)}
                 onCopyPath={() => navigator.clipboard.writeText(node.path)}
+                onDownloadFolder={onDownloadFolder ? () => onDownloadFolder(node.path) : undefined}
+                onDeleteFolder={onDeleteFolder ? () => onDeleteFolder(node.path) : undefined}
             />
             {isOpen && (
                 <>
@@ -48,6 +53,8 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                             onToggle={onToggle}
                             onSelectNote={onSelectNote}
                             onCreateNoteInFolder={onCreateNoteInFolder}
+                            onDownloadFolder={onDownloadFolder}
+                            onDeleteFolder={onDeleteFolder}
                         />
                     ))}
                     {directNotes.map(note => (

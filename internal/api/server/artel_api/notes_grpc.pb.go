@@ -19,12 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NotesAPI_ListFolders_FullMethodName = "/artel_notes.NotesAPI/ListFolders"
-	NotesAPI_ListNotes_FullMethodName   = "/artel_notes.NotesAPI/ListNotes"
-	NotesAPI_GetNote_FullMethodName     = "/artel_notes.NotesAPI/GetNote"
-	NotesAPI_ListTags_FullMethodName    = "/artel_notes.NotesAPI/ListTags"
-	NotesAPI_SaveNote_FullMethodName    = "/artel_notes.NotesAPI/SaveNote"
-	NotesAPI_MoveNote_FullMethodName    = "/artel_notes.NotesAPI/MoveNote"
+	NotesAPI_ListFolders_FullMethodName          = "/artel_notes.NotesAPI/ListFolders"
+	NotesAPI_ListNotes_FullMethodName            = "/artel_notes.NotesAPI/ListNotes"
+	NotesAPI_GetNote_FullMethodName              = "/artel_notes.NotesAPI/GetNote"
+	NotesAPI_ListTags_FullMethodName             = "/artel_notes.NotesAPI/ListTags"
+	NotesAPI_SaveNote_FullMethodName             = "/artel_notes.NotesAPI/SaveNote"
+	NotesAPI_MoveNote_FullMethodName             = "/artel_notes.NotesAPI/MoveNote"
+	NotesAPI_ExportFolder_FullMethodName         = "/artel_notes.NotesAPI/ExportFolder"
+	NotesAPI_CheckImportConflicts_FullMethodName = "/artel_notes.NotesAPI/CheckImportConflicts"
+	NotesAPI_CommitImport_FullMethodName         = "/artel_notes.NotesAPI/CommitImport"
+	NotesAPI_DeleteFolder_FullMethodName         = "/artel_notes.NotesAPI/DeleteFolder"
 )
 
 // NotesAPIClient is the client API for NotesAPI service.
@@ -37,6 +41,10 @@ type NotesAPIClient interface {
 	ListTags(ctx context.Context, in *ListTags_Request, opts ...grpc.CallOption) (*ListTags_Response, error)
 	SaveNote(ctx context.Context, in *SaveNote_Request, opts ...grpc.CallOption) (*SaveNote_Response, error)
 	MoveNote(ctx context.Context, in *MoveNote_Request, opts ...grpc.CallOption) (*MoveNote_Response, error)
+	ExportFolder(ctx context.Context, in *ExportFolder_Request, opts ...grpc.CallOption) (*ExportFolder_Response, error)
+	CheckImportConflicts(ctx context.Context, in *CheckImportConflicts_Request, opts ...grpc.CallOption) (*CheckImportConflicts_Response, error)
+	CommitImport(ctx context.Context, in *CommitImport_Request, opts ...grpc.CallOption) (*CommitImport_Response, error)
+	DeleteFolder(ctx context.Context, in *DeleteFolder_Request, opts ...grpc.CallOption) (*DeleteFolder_Response, error)
 }
 
 type notesAPIClient struct {
@@ -107,6 +115,46 @@ func (c *notesAPIClient) MoveNote(ctx context.Context, in *MoveNote_Request, opt
 	return out, nil
 }
 
+func (c *notesAPIClient) ExportFolder(ctx context.Context, in *ExportFolder_Request, opts ...grpc.CallOption) (*ExportFolder_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExportFolder_Response)
+	err := c.cc.Invoke(ctx, NotesAPI_ExportFolder_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *notesAPIClient) CheckImportConflicts(ctx context.Context, in *CheckImportConflicts_Request, opts ...grpc.CallOption) (*CheckImportConflicts_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckImportConflicts_Response)
+	err := c.cc.Invoke(ctx, NotesAPI_CheckImportConflicts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *notesAPIClient) CommitImport(ctx context.Context, in *CommitImport_Request, opts ...grpc.CallOption) (*CommitImport_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CommitImport_Response)
+	err := c.cc.Invoke(ctx, NotesAPI_CommitImport_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *notesAPIClient) DeleteFolder(ctx context.Context, in *DeleteFolder_Request, opts ...grpc.CallOption) (*DeleteFolder_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteFolder_Response)
+	err := c.cc.Invoke(ctx, NotesAPI_DeleteFolder_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotesAPIServer is the server API for NotesAPI service.
 // All implementations must embed UnimplementedNotesAPIServer
 // for forward compatibility.
@@ -117,6 +165,10 @@ type NotesAPIServer interface {
 	ListTags(context.Context, *ListTags_Request) (*ListTags_Response, error)
 	SaveNote(context.Context, *SaveNote_Request) (*SaveNote_Response, error)
 	MoveNote(context.Context, *MoveNote_Request) (*MoveNote_Response, error)
+	ExportFolder(context.Context, *ExportFolder_Request) (*ExportFolder_Response, error)
+	CheckImportConflicts(context.Context, *CheckImportConflicts_Request) (*CheckImportConflicts_Response, error)
+	CommitImport(context.Context, *CommitImport_Request) (*CommitImport_Response, error)
+	DeleteFolder(context.Context, *DeleteFolder_Request) (*DeleteFolder_Response, error)
 	mustEmbedUnimplementedNotesAPIServer()
 }
 
@@ -144,6 +196,18 @@ func (UnimplementedNotesAPIServer) SaveNote(context.Context, *SaveNote_Request) 
 }
 func (UnimplementedNotesAPIServer) MoveNote(context.Context, *MoveNote_Request) (*MoveNote_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method MoveNote not implemented")
+}
+func (UnimplementedNotesAPIServer) ExportFolder(context.Context, *ExportFolder_Request) (*ExportFolder_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ExportFolder not implemented")
+}
+func (UnimplementedNotesAPIServer) CheckImportConflicts(context.Context, *CheckImportConflicts_Request) (*CheckImportConflicts_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CheckImportConflicts not implemented")
+}
+func (UnimplementedNotesAPIServer) CommitImport(context.Context, *CommitImport_Request) (*CommitImport_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CommitImport not implemented")
+}
+func (UnimplementedNotesAPIServer) DeleteFolder(context.Context, *DeleteFolder_Request) (*DeleteFolder_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteFolder not implemented")
 }
 func (UnimplementedNotesAPIServer) mustEmbedUnimplementedNotesAPIServer() {}
 func (UnimplementedNotesAPIServer) testEmbeddedByValue()                  {}
@@ -274,6 +338,78 @@ func _NotesAPI_MoveNote_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotesAPI_ExportFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExportFolder_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesAPIServer).ExportFolder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotesAPI_ExportFolder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesAPIServer).ExportFolder(ctx, req.(*ExportFolder_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NotesAPI_CheckImportConflicts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckImportConflicts_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesAPIServer).CheckImportConflicts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotesAPI_CheckImportConflicts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesAPIServer).CheckImportConflicts(ctx, req.(*CheckImportConflicts_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NotesAPI_CommitImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommitImport_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesAPIServer).CommitImport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotesAPI_CommitImport_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesAPIServer).CommitImport(ctx, req.(*CommitImport_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NotesAPI_DeleteFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteFolder_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesAPIServer).DeleteFolder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotesAPI_DeleteFolder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesAPIServer).DeleteFolder(ctx, req.(*DeleteFolder_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotesAPI_ServiceDesc is the grpc.ServiceDesc for NotesAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +440,22 @@ var NotesAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MoveNote",
 			Handler:    _NotesAPI_MoveNote_Handler,
+		},
+		{
+			MethodName: "ExportFolder",
+			Handler:    _NotesAPI_ExportFolder_Handler,
+		},
+		{
+			MethodName: "CheckImportConflicts",
+			Handler:    _NotesAPI_CheckImportConflicts_Handler,
+		},
+		{
+			MethodName: "CommitImport",
+			Handler:    _NotesAPI_CommitImport_Handler,
+		},
+		{
+			MethodName: "DeleteFolder",
+			Handler:    _NotesAPI_DeleteFolder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

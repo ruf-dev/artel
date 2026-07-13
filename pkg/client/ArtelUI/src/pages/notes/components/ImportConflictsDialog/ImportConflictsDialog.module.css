@@ -1,0 +1,39 @@
+.ImportConflictsContainer {
+    width: 100%;
+    max-width: 32rem;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 2rem 5rem -1.25rem rgb(0 0 0 / 80%);
+
+    & .ImportConflictsTitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.025rem;
+        color: var(--color-fg-primary);
+        margin-bottom: 0.75rem;
+    }
+
+    & .ImportConflictsWarning {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        background: rgb(255 75 62 / 10%);
+        border-radius: 0.625rem;
+        padding: 0.625rem 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    & .ConflictList {
+        max-height: 18rem;
+        overflow-y: auto;
+    }
+
+    & .ImportConflictsActions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.625rem;
+        margin-top: 1.5rem;
+    }
+}

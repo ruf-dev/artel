@@ -8,10 +8,8 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
-	s3client "github.com/ruf-dev/artel/internal/clients/s3"
-	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/clients/vaultbucket"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
-	"github.com/ruf-dev/artel/internal/storage"
 )
 
 // ExecuteBuiltinToolForUser runs a builtin (vault) tool as userUuid rather than through an
@@ -49,34 +47,9 @@ func (s *ServiceImpl) ExecuteBuiltinToolForUser(
 		couchInstance.Password,
 	)
 
-	var bucket storage.BinaryStore
-
-	switch {
-	case vault.UseCouchDBForBinaries:
-		bucket = couchdb.NewBinaryStoreAdapter(client)
-	case vault.S3InstanceUuid != nil:
-		var s3Instance domain.S3Instance
-		s3Instance, err = s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
-		if err != nil {
-			return "", rerrors.Wrap(err, "error getting s3 instance")
-		}
-
-		cfg := s3client.Config{
-			Endpoint:  s3Instance.Endpoint,
-			Region:    s3Instance.Region,
-			AccessKey: s3Instance.AccessKey,
-			SecretKey: s3Instance.SecretKey,
-			UseSSL:    s3Instance.UseSSL,
-			PathStyle: s3Instance.PathStyle,
-		}
-
-		var s3cli *s3client.Client
-		s3cli, err = s3client.New(cfg, vault.S3BucketName)
-		if err != nil {
-			return "", rerrors.Wrap(err, "error initializing s3 client")
-		}
-
-		bucket = s3cli
+	bucket, err := vaultbucket.Resolve(ctx, vault, client, s.s3Instances)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error resolving vault bucket")
 	}
 
 	result, err := s.vaultExecutor.Execute(ctx, toolName, client, bucket, params)

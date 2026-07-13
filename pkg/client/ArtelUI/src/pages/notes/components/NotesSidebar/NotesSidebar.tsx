@@ -11,6 +11,7 @@ import SearchResultsTree from "@/pages/notes/components/NotesSidebar/components/
 import {useNotesSearchQuery} from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
 import {useNotesTreeView} from "@/pages/notes/components/NotesSidebar/processes/useNotesTreeView.ts"
 import {useHighlightNote} from "@/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts"
+import {useFolderActions} from "@/pages/notes/components/NotesSidebar/processes/useFolderActions.tsx"
 import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
 
 interface VaultOption {
@@ -30,6 +31,7 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
     const [searchQuery] = useNotesSearchQuery()
     const [treeView, toggleTreeView] = useNotesTreeView()
     const {scrollAreaRef} = useHighlightNote(notesStore.highlightedPath)
+    const {handleDownloadFolder, handleDeleteFolder, handleUpload} = useFolderActions()
 
     function handleVaultChange(value: string[]) {
         if (!value[0]) return
@@ -105,6 +107,9 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
                         vaultId={vaultId}
                         onSelectNote={handleSelectNote}
                         onCreateNote={folderPath => handleCreateNote(folderPath)}
+                        onDownloadFolder={handleDownloadFolder}
+                        onDeleteFolder={handleDeleteFolder}
+                        onUpload={handleUpload}
                         showCreateButton={showCreateButton}
                     />
                 )}

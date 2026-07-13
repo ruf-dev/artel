@@ -12,24 +12,31 @@
         color: var(--color-fg-disabled);
     }
 
-    & .CreateNoteBtn {
+    & .SectionActions {
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 1.4rem;
-        height: 1.4rem;
-        border: none;
-        background: transparent;
-        color: var(--color-fg-disabled);
-        cursor: pointer;
-        border-radius: 0.28rem;
-        padding: 0;
-        transition: background 120ms ease, color 120ms ease;
+        gap: 0.21rem;
         flex-shrink: 0;
 
-        &:hover {
-            background: rgb(255 255 255 / 7%);
-            color: var(--color-fg-secondary);
+        & .CreateNoteBtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.4rem;
+            height: 1.4rem;
+            border: none;
+            background: transparent;
+            color: var(--color-fg-disabled);
+            cursor: pointer;
+            border-radius: 0.28rem;
+            padding: 0;
+            transition: background 120ms ease, color 120ms ease;
+            flex-shrink: 0;
+
+            &:hover {
+                background: rgb(255 255 255 / 7%);
+                color: var(--color-fg-secondary);
+            }
         }
     }
 }

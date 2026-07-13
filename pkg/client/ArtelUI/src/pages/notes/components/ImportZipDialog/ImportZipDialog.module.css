@@ -1,0 +1,56 @@
+.ImportZipContainer {
+    width: 100%;
+    max-width: 28rem;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 2rem 5rem -1.25rem rgb(0 0 0 / 80%);
+
+    & .ImportZipTitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.025rem;
+        color: var(--color-fg-primary);
+        margin-bottom: 1rem;
+    }
+
+    & .ImportZipLabel {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+        margin: 1rem 0 0.375rem;
+        letter-spacing: 0.015rem;
+        text-transform: uppercase;
+    }
+
+    & .ImportZipInput {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.625rem 0.875rem;
+        border-radius: 0.625rem;
+        border: var(--border-thickness) solid var(--color-border-light);
+        background: var(--color-bg-input, var(--color-bg-card));
+        color: var(--color-fg-primary);
+        font-size: 0.875rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 160ms ease;
+
+        &:focus {
+            border-color: var(--coral);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
+    & .ImportZipActions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.625rem;
+        margin-top: 1.5rem;
+    }
+}

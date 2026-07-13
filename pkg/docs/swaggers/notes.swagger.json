@@ -16,6 +16,70 @@
     "application/json"
   ],
   "paths": {
+    "/api/notes/export": {
+      "post": {
+        "operationId": "NotesAPI_ExportFolder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesExportFolderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesExportFolderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
+    "/api/notes/folder/delete": {
+      "post": {
+        "operationId": "NotesAPI_DeleteFolder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesDeleteFolderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesDeleteFolderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
     "/api/notes/folders": {
       "post": {
         "operationId": "NotesAPI_ListFolders",
@@ -72,6 +136,70 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/artel_notesGetNoteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
+    "/api/notes/import/check": {
+      "post": {
+        "operationId": "NotesAPI_CheckImportConflicts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesCheckImportConflictsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesCheckImportConflictsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
+    "/api/notes/import/commit": {
+      "post": {
+        "operationId": "NotesAPI_CommitImport",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesCommitImportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesCommitImportRequest"
             }
           }
         ],
@@ -210,6 +338,115 @@
     }
   },
   "definitions": {
+    "artel_notesCheckImportConflictsRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "destPath": {
+          "type": "string",
+          "title": "\"\" or \"/\" imports at vault root"
+        },
+        "zipData": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "artel_notesCheckImportConflictsResponse": {
+      "type": "object",
+      "properties": {
+        "conflictingPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_notesCommitImportRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "destPath": {
+          "type": "string"
+        },
+        "zipData": {
+          "type": "string",
+          "format": "byte"
+        },
+        "resolutions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_notesImportResolution"
+          }
+        }
+      }
+    },
+    "artel_notesCommitImportResponse": {
+      "type": "object",
+      "properties": {
+        "importedCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "skippedCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "artel_notesDeleteFolderRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_notesDeleteFolderResponse": {
+      "type": "object",
+      "properties": {
+        "deletedCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failedPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_notesExportFolderRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string",
+          "title": "folder path prefix; empty means the whole vault"
+        }
+      }
+    },
+    "artel_notesExportFolderResponse": {
+      "type": "object",
+      "properties": {
+        "zipData": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "artel_notesGetNoteRequest": {
       "type": "object",
       "properties": {
@@ -226,6 +463,31 @@
       "properties": {
         "content": {
           "type": "string"
+        }
+      }
+    },
+    "artel_notesImportConflictAction": {
+      "type": "string",
+      "enum": [
+        "SKIP",
+        "OVERWRITE",
+        "RENAME"
+      ],
+      "default": "SKIP"
+    },
+    "artel_notesImportResolution": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "title": "conflicting destination path, as reported by CheckImportConflicts"
+        },
+        "action": {
+          "$ref": "#/definitions/artel_notesImportConflictAction"
+        },
+        "renameTo": {
+          "type": "string",
+          "title": "only used when action == RENAME"
         }
       }
     },

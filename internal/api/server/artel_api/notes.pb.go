@@ -23,6 +23,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ImportConflictAction int32
+
+const (
+	ImportConflictAction_SKIP      ImportConflictAction = 0
+	ImportConflictAction_OVERWRITE ImportConflictAction = 1
+	ImportConflictAction_RENAME    ImportConflictAction = 2
+)
+
+// Enum value maps for ImportConflictAction.
+var (
+	ImportConflictAction_name = map[int32]string{
+		0: "SKIP",
+		1: "OVERWRITE",
+		2: "RENAME",
+	}
+	ImportConflictAction_value = map[string]int32{
+		"SKIP":      0,
+		"OVERWRITE": 1,
+		"RENAME":    2,
+	}
+)
+
+func (x ImportConflictAction) Enum() *ImportConflictAction {
+	p := new(ImportConflictAction)
+	*p = x
+	return p
+}
+
+func (x ImportConflictAction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ImportConflictAction) Descriptor() protoreflect.EnumDescriptor {
+	return file_notes_proto_enumTypes[0].Descriptor()
+}
+
+func (ImportConflictAction) Type() protoreflect.EnumType {
+	return &file_notes_proto_enumTypes[0]
+}
+
+func (x ImportConflictAction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ImportConflictAction.Descriptor instead.
+func (ImportConflictAction) EnumDescriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{0}
+}
+
 type NoteItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
@@ -291,6 +340,210 @@ func (*MoveNote) Descriptor() ([]byte, []int) {
 	return file_notes_proto_rawDescGZIP(), []int{6}
 }
 
+type ExportFolder struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExportFolder) Reset() {
+	*x = ExportFolder{}
+	mi := &file_notes_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExportFolder) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExportFolder) ProtoMessage() {}
+
+func (x *ExportFolder) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExportFolder.ProtoReflect.Descriptor instead.
+func (*ExportFolder) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{7}
+}
+
+type ImportResolution struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"` // conflicting destination path, as reported by CheckImportConflicts
+	Action        ImportConflictAction   `protobuf:"varint,2,opt,name=action,proto3,enum=artel_notes.ImportConflictAction" json:"action,omitempty"`
+	RenameTo      string                 `protobuf:"bytes,3,opt,name=rename_to,json=renameTo,proto3" json:"rename_to,omitempty"` // only used when action == RENAME
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportResolution) Reset() {
+	*x = ImportResolution{}
+	mi := &file_notes_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportResolution) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportResolution) ProtoMessage() {}
+
+func (x *ImportResolution) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImportResolution.ProtoReflect.Descriptor instead.
+func (*ImportResolution) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ImportResolution) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *ImportResolution) GetAction() ImportConflictAction {
+	if x != nil {
+		return x.Action
+	}
+	return ImportConflictAction_SKIP
+}
+
+func (x *ImportResolution) GetRenameTo() string {
+	if x != nil {
+		return x.RenameTo
+	}
+	return ""
+}
+
+type CheckImportConflicts struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckImportConflicts) Reset() {
+	*x = CheckImportConflicts{}
+	mi := &file_notes_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckImportConflicts) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckImportConflicts) ProtoMessage() {}
+
+func (x *CheckImportConflicts) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckImportConflicts.ProtoReflect.Descriptor instead.
+func (*CheckImportConflicts) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{9}
+}
+
+type CommitImport struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommitImport) Reset() {
+	*x = CommitImport{}
+	mi := &file_notes_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommitImport) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommitImport) ProtoMessage() {}
+
+func (x *CommitImport) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommitImport.ProtoReflect.Descriptor instead.
+func (*CommitImport) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{10}
+}
+
+type DeleteFolder struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteFolder) Reset() {
+	*x = DeleteFolder{}
+	mi := &file_notes_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteFolder) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFolder) ProtoMessage() {}
+
+func (x *DeleteFolder) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFolder.ProtoReflect.Descriptor instead.
+func (*DeleteFolder) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{11}
+}
+
 type ListFolders_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
@@ -300,7 +553,7 @@ type ListFolders_Request struct {
 
 func (x *ListFolders_Request) Reset() {
 	*x = ListFolders_Request{}
-	mi := &file_notes_proto_msgTypes[7]
+	mi := &file_notes_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -312,7 +565,7 @@ func (x *ListFolders_Request) String() string {
 func (*ListFolders_Request) ProtoMessage() {}
 
 func (x *ListFolders_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[7]
+	mi := &file_notes_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -344,7 +597,7 @@ type ListFolders_Response struct {
 
 func (x *ListFolders_Response) Reset() {
 	*x = ListFolders_Response{}
-	mi := &file_notes_proto_msgTypes[8]
+	mi := &file_notes_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -356,7 +609,7 @@ func (x *ListFolders_Response) String() string {
 func (*ListFolders_Response) ProtoMessage() {}
 
 func (x *ListFolders_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[8]
+	mi := &file_notes_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -388,7 +641,7 @@ type ListNotes_Request struct {
 
 func (x *ListNotes_Request) Reset() {
 	*x = ListNotes_Request{}
-	mi := &file_notes_proto_msgTypes[9]
+	mi := &file_notes_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -400,7 +653,7 @@ func (x *ListNotes_Request) String() string {
 func (*ListNotes_Request) ProtoMessage() {}
 
 func (x *ListNotes_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[9]
+	mi := &file_notes_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -432,7 +685,7 @@ type ListNotes_Response struct {
 
 func (x *ListNotes_Response) Reset() {
 	*x = ListNotes_Response{}
-	mi := &file_notes_proto_msgTypes[10]
+	mi := &file_notes_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -444,7 +697,7 @@ func (x *ListNotes_Response) String() string {
 func (*ListNotes_Response) ProtoMessage() {}
 
 func (x *ListNotes_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[10]
+	mi := &file_notes_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -477,7 +730,7 @@ type GetNote_Request struct {
 
 func (x *GetNote_Request) Reset() {
 	*x = GetNote_Request{}
-	mi := &file_notes_proto_msgTypes[11]
+	mi := &file_notes_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -489,7 +742,7 @@ func (x *GetNote_Request) String() string {
 func (*GetNote_Request) ProtoMessage() {}
 
 func (x *GetNote_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[11]
+	mi := &file_notes_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -528,7 +781,7 @@ type GetNote_Response struct {
 
 func (x *GetNote_Response) Reset() {
 	*x = GetNote_Response{}
-	mi := &file_notes_proto_msgTypes[12]
+	mi := &file_notes_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -540,7 +793,7 @@ func (x *GetNote_Response) String() string {
 func (*GetNote_Response) ProtoMessage() {}
 
 func (x *GetNote_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[12]
+	mi := &file_notes_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -572,7 +825,7 @@ type ListTags_Request struct {
 
 func (x *ListTags_Request) Reset() {
 	*x = ListTags_Request{}
-	mi := &file_notes_proto_msgTypes[13]
+	mi := &file_notes_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -584,7 +837,7 @@ func (x *ListTags_Request) String() string {
 func (*ListTags_Request) ProtoMessage() {}
 
 func (x *ListTags_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[13]
+	mi := &file_notes_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -616,7 +869,7 @@ type ListTags_Response struct {
 
 func (x *ListTags_Response) Reset() {
 	*x = ListTags_Response{}
-	mi := &file_notes_proto_msgTypes[14]
+	mi := &file_notes_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -628,7 +881,7 @@ func (x *ListTags_Response) String() string {
 func (*ListTags_Response) ProtoMessage() {}
 
 func (x *ListTags_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[14]
+	mi := &file_notes_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -662,7 +915,7 @@ type SaveNote_Request struct {
 
 func (x *SaveNote_Request) Reset() {
 	*x = SaveNote_Request{}
-	mi := &file_notes_proto_msgTypes[15]
+	mi := &file_notes_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -674,7 +927,7 @@ func (x *SaveNote_Request) String() string {
 func (*SaveNote_Request) ProtoMessage() {}
 
 func (x *SaveNote_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[15]
+	mi := &file_notes_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -719,7 +972,7 @@ type SaveNote_Response struct {
 
 func (x *SaveNote_Response) Reset() {
 	*x = SaveNote_Response{}
-	mi := &file_notes_proto_msgTypes[16]
+	mi := &file_notes_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -731,7 +984,7 @@ func (x *SaveNote_Response) String() string {
 func (*SaveNote_Response) ProtoMessage() {}
 
 func (x *SaveNote_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[16]
+	mi := &file_notes_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -758,7 +1011,7 @@ type MoveNote_Request struct {
 
 func (x *MoveNote_Request) Reset() {
 	*x = MoveNote_Request{}
-	mi := &file_notes_proto_msgTypes[17]
+	mi := &file_notes_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -770,7 +1023,7 @@ func (x *MoveNote_Request) String() string {
 func (*MoveNote_Request) ProtoMessage() {}
 
 func (x *MoveNote_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[17]
+	mi := &file_notes_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -815,7 +1068,7 @@ type MoveNote_Response struct {
 
 func (x *MoveNote_Response) Reset() {
 	*x = MoveNote_Response{}
-	mi := &file_notes_proto_msgTypes[18]
+	mi := &file_notes_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -827,7 +1080,7 @@ func (x *MoveNote_Response) String() string {
 func (*MoveNote_Response) ProtoMessage() {}
 
 func (x *MoveNote_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_notes_proto_msgTypes[18]
+	mi := &file_notes_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -841,6 +1094,430 @@ func (x *MoveNote_Response) ProtoReflect() protoreflect.Message {
 // Deprecated: Use MoveNote_Response.ProtoReflect.Descriptor instead.
 func (*MoveNote_Response) Descriptor() ([]byte, []int) {
 	return file_notes_proto_rawDescGZIP(), []int{6, 1}
+}
+
+type ExportFolder_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	Path          string                 `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"` // folder path prefix; empty means the whole vault
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExportFolder_Request) Reset() {
+	*x = ExportFolder_Request{}
+	mi := &file_notes_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExportFolder_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExportFolder_Request) ProtoMessage() {}
+
+func (x *ExportFolder_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExportFolder_Request.ProtoReflect.Descriptor instead.
+func (*ExportFolder_Request) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{7, 0}
+}
+
+func (x *ExportFolder_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *ExportFolder_Request) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+type ExportFolder_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ZipData       []byte                 `protobuf:"bytes,1,opt,name=zip_data,json=zipData,proto3" json:"zip_data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExportFolder_Response) Reset() {
+	*x = ExportFolder_Response{}
+	mi := &file_notes_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExportFolder_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExportFolder_Response) ProtoMessage() {}
+
+func (x *ExportFolder_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExportFolder_Response.ProtoReflect.Descriptor instead.
+func (*ExportFolder_Response) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{7, 1}
+}
+
+func (x *ExportFolder_Response) GetZipData() []byte {
+	if x != nil {
+		return x.ZipData
+	}
+	return nil
+}
+
+type CheckImportConflicts_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	DestPath      string                 `protobuf:"bytes,2,opt,name=dest_path,json=destPath,proto3" json:"dest_path,omitempty"` // "" or "/" imports at vault root
+	ZipData       []byte                 `protobuf:"bytes,3,opt,name=zip_data,json=zipData,proto3" json:"zip_data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckImportConflicts_Request) Reset() {
+	*x = CheckImportConflicts_Request{}
+	mi := &file_notes_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckImportConflicts_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckImportConflicts_Request) ProtoMessage() {}
+
+func (x *CheckImportConflicts_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckImportConflicts_Request.ProtoReflect.Descriptor instead.
+func (*CheckImportConflicts_Request) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{9, 0}
+}
+
+func (x *CheckImportConflicts_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *CheckImportConflicts_Request) GetDestPath() string {
+	if x != nil {
+		return x.DestPath
+	}
+	return ""
+}
+
+func (x *CheckImportConflicts_Request) GetZipData() []byte {
+	if x != nil {
+		return x.ZipData
+	}
+	return nil
+}
+
+type CheckImportConflicts_Response struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	ConflictingPaths []string               `protobuf:"bytes,1,rep,name=conflicting_paths,json=conflictingPaths,proto3" json:"conflicting_paths,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *CheckImportConflicts_Response) Reset() {
+	*x = CheckImportConflicts_Response{}
+	mi := &file_notes_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckImportConflicts_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckImportConflicts_Response) ProtoMessage() {}
+
+func (x *CheckImportConflicts_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckImportConflicts_Response.ProtoReflect.Descriptor instead.
+func (*CheckImportConflicts_Response) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{9, 1}
+}
+
+func (x *CheckImportConflicts_Response) GetConflictingPaths() []string {
+	if x != nil {
+		return x.ConflictingPaths
+	}
+	return nil
+}
+
+type CommitImport_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	DestPath      string                 `protobuf:"bytes,2,opt,name=dest_path,json=destPath,proto3" json:"dest_path,omitempty"`
+	ZipData       []byte                 `protobuf:"bytes,3,opt,name=zip_data,json=zipData,proto3" json:"zip_data,omitempty"`
+	Resolutions   []*ImportResolution    `protobuf:"bytes,4,rep,name=resolutions,proto3" json:"resolutions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommitImport_Request) Reset() {
+	*x = CommitImport_Request{}
+	mi := &file_notes_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommitImport_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommitImport_Request) ProtoMessage() {}
+
+func (x *CommitImport_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommitImport_Request.ProtoReflect.Descriptor instead.
+func (*CommitImport_Request) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{10, 0}
+}
+
+func (x *CommitImport_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *CommitImport_Request) GetDestPath() string {
+	if x != nil {
+		return x.DestPath
+	}
+	return ""
+}
+
+func (x *CommitImport_Request) GetZipData() []byte {
+	if x != nil {
+		return x.ZipData
+	}
+	return nil
+}
+
+func (x *CommitImport_Request) GetResolutions() []*ImportResolution {
+	if x != nil {
+		return x.Resolutions
+	}
+	return nil
+}
+
+type CommitImport_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ImportedCount int32                  `protobuf:"varint,1,opt,name=imported_count,json=importedCount,proto3" json:"imported_count,omitempty"`
+	SkippedCount  int32                  `protobuf:"varint,2,opt,name=skipped_count,json=skippedCount,proto3" json:"skipped_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommitImport_Response) Reset() {
+	*x = CommitImport_Response{}
+	mi := &file_notes_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommitImport_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommitImport_Response) ProtoMessage() {}
+
+func (x *CommitImport_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommitImport_Response.ProtoReflect.Descriptor instead.
+func (*CommitImport_Response) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{10, 1}
+}
+
+func (x *CommitImport_Response) GetImportedCount() int32 {
+	if x != nil {
+		return x.ImportedCount
+	}
+	return 0
+}
+
+func (x *CommitImport_Response) GetSkippedCount() int32 {
+	if x != nil {
+		return x.SkippedCount
+	}
+	return 0
+}
+
+type DeleteFolder_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	Path          string                 `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteFolder_Request) Reset() {
+	*x = DeleteFolder_Request{}
+	mi := &file_notes_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteFolder_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFolder_Request) ProtoMessage() {}
+
+func (x *DeleteFolder_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFolder_Request.ProtoReflect.Descriptor instead.
+func (*DeleteFolder_Request) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{11, 0}
+}
+
+func (x *DeleteFolder_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *DeleteFolder_Request) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+type DeleteFolder_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DeletedCount  int32                  `protobuf:"varint,1,opt,name=deleted_count,json=deletedCount,proto3" json:"deleted_count,omitempty"`
+	FailedPaths   []string               `protobuf:"bytes,2,rep,name=failed_paths,json=failedPaths,proto3" json:"failed_paths,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteFolder_Response) Reset() {
+	*x = DeleteFolder_Response{}
+	mi := &file_notes_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteFolder_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFolder_Response) ProtoMessage() {}
+
+func (x *DeleteFolder_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_notes_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFolder_Response.ProtoReflect.Descriptor instead.
+func (*DeleteFolder_Response) Descriptor() ([]byte, []int) {
+	return file_notes_proto_rawDescGZIP(), []int{11, 1}
+}
+
+func (x *DeleteFolder_Response) GetDeletedCount() int32 {
+	if x != nil {
+		return x.DeletedCount
+	}
+	return 0
+}
+
+func (x *DeleteFolder_Response) GetFailedPaths() []string {
+	if x != nil {
+		return x.FailedPaths
+	}
+	return nil
 }
 
 var File_notes_proto protoreflect.FileDescriptor
@@ -885,14 +1562,56 @@ const file_notes_proto_rawDesc = "" +
 	"\bold_path\x18\x02 \x01(\tR\aoldPath\x12\x19\n" +
 	"\bnew_path\x18\x03 \x01(\tR\anewPath\x1a\n" +
 	"\n" +
-	"\bResponse2\xff\x04\n" +
+	"\bResponse\"o\n" +
+	"\fExportFolder\x1a8\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x12\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\x1a%\n" +
+	"\bResponse\x12\x19\n" +
+	"\bzip_data\x18\x01 \x01(\fR\azipData\"~\n" +
+	"\x10ImportResolution\x12\x12\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path\x129\n" +
+	"\x06action\x18\x02 \x01(\x0e2!.artel_notes.ImportConflictActionR\x06action\x12\x1b\n" +
+	"\trename_to\x18\x03 \x01(\tR\brenameTo\"\xad\x01\n" +
+	"\x14CheckImportConflicts\x1a\\\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x1b\n" +
+	"\tdest_path\x18\x02 \x01(\tR\bdestPath\x12\x19\n" +
+	"\bzip_data\x18\x03 \x01(\fR\azipData\x1a7\n" +
+	"\bResponse\x12+\n" +
+	"\x11conflicting_paths\x18\x01 \x03(\tR\x10conflictingPaths\"\x86\x02\n" +
+	"\fCommitImport\x1a\x9d\x01\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x1b\n" +
+	"\tdest_path\x18\x02 \x01(\tR\bdestPath\x12\x19\n" +
+	"\bzip_data\x18\x03 \x01(\fR\azipData\x12?\n" +
+	"\vresolutions\x18\x04 \x03(\v2\x1d.artel_notes.ImportResolutionR\vresolutions\x1aV\n" +
+	"\bResponse\x12%\n" +
+	"\x0eimported_count\x18\x01 \x01(\x05R\rimportedCount\x12#\n" +
+	"\rskipped_count\x18\x02 \x01(\x05R\fskippedCount\"\x9c\x01\n" +
+	"\fDeleteFolder\x1a8\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x12\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\x1aR\n" +
+	"\bResponse\x12#\n" +
+	"\rdeleted_count\x18\x01 \x01(\x05R\fdeletedCount\x12!\n" +
+	"\ffailed_paths\x18\x02 \x03(\tR\vfailedPaths*;\n" +
+	"\x14ImportConflictAction\x12\b\n" +
+	"\x04SKIP\x10\x00\x12\r\n" +
+	"\tOVERWRITE\x10\x01\x12\n" +
+	"\n" +
+	"\x06RENAME\x10\x022\x80\t\n" +
 	"\bNotesAPI\x12q\n" +
 	"\vListFolders\x12 .artel_notes.ListFolders.Request\x1a!.artel_notes.ListFolders.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/notes/folders\x12h\n" +
 	"\tListNotes\x12\x1e.artel_notes.ListNotes.Request\x1a\x1f.artel_notes.ListNotes.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/list\x12a\n" +
 	"\aGetNote\x12\x1c.artel_notes.GetNote.Request\x1a\x1d.artel_notes.GetNote.Response\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/api/notes/get\x12e\n" +
 	"\bListTags\x12\x1d.artel_notes.ListTags.Request\x1a\x1e.artel_notes.ListTags.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/tags\x12e\n" +
 	"\bSaveNote\x12\x1d.artel_notes.SaveNote.Request\x1a\x1e.artel_notes.SaveNote.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/save\x12e\n" +
-	"\bMoveNote\x12\x1d.artel_notes.MoveNote.Request\x1a\x1e.artel_notes.MoveNote.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/moveB\x1a\x92\x82\x19\n" +
+	"\bMoveNote\x12\x1d.artel_notes.MoveNote.Request\x1a\x1e.artel_notes.MoveNote.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/notes/move\x12s\n" +
+	"\fExportFolder\x12!.artel_notes.ExportFolder.Request\x1a\".artel_notes.ExportFolder.Response\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/api/notes/export\x12\x91\x01\n" +
+	"\x14CheckImportConflicts\x12).artel_notes.CheckImportConflicts.Request\x1a*.artel_notes.CheckImportConflicts.Response\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/notes/import/check\x12z\n" +
+	"\fCommitImport\x12!.artel_notes.CommitImport.Request\x1a\".artel_notes.CommitImport.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/notes/import/commit\x12z\n" +
+	"\fDeleteFolder\x12!.artel_notes.DeleteFolder.Request\x1a\".artel_notes.DeleteFolder.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/notes/folder/deleteB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
@@ -908,47 +1627,72 @@ func file_notes_proto_rawDescGZIP() []byte {
 	return file_notes_proto_rawDescData
 }
 
-var file_notes_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_notes_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_notes_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_notes_proto_goTypes = []any{
-	(*NoteItem)(nil),             // 0: artel_notes.NoteItem
-	(*ListFolders)(nil),          // 1: artel_notes.ListFolders
-	(*ListNotes)(nil),            // 2: artel_notes.ListNotes
-	(*GetNote)(nil),              // 3: artel_notes.GetNote
-	(*ListTags)(nil),             // 4: artel_notes.ListTags
-	(*SaveNote)(nil),             // 5: artel_notes.SaveNote
-	(*MoveNote)(nil),             // 6: artel_notes.MoveNote
-	(*ListFolders_Request)(nil),  // 7: artel_notes.ListFolders.Request
-	(*ListFolders_Response)(nil), // 8: artel_notes.ListFolders.Response
-	(*ListNotes_Request)(nil),    // 9: artel_notes.ListNotes.Request
-	(*ListNotes_Response)(nil),   // 10: artel_notes.ListNotes.Response
-	(*GetNote_Request)(nil),      // 11: artel_notes.GetNote.Request
-	(*GetNote_Response)(nil),     // 12: artel_notes.GetNote.Response
-	(*ListTags_Request)(nil),     // 13: artel_notes.ListTags.Request
-	(*ListTags_Response)(nil),    // 14: artel_notes.ListTags.Response
-	(*SaveNote_Request)(nil),     // 15: artel_notes.SaveNote.Request
-	(*SaveNote_Response)(nil),    // 16: artel_notes.SaveNote.Response
-	(*MoveNote_Request)(nil),     // 17: artel_notes.MoveNote.Request
-	(*MoveNote_Response)(nil),    // 18: artel_notes.MoveNote.Response
+	(ImportConflictAction)(0),             // 0: artel_notes.ImportConflictAction
+	(*NoteItem)(nil),                      // 1: artel_notes.NoteItem
+	(*ListFolders)(nil),                   // 2: artel_notes.ListFolders
+	(*ListNotes)(nil),                     // 3: artel_notes.ListNotes
+	(*GetNote)(nil),                       // 4: artel_notes.GetNote
+	(*ListTags)(nil),                      // 5: artel_notes.ListTags
+	(*SaveNote)(nil),                      // 6: artel_notes.SaveNote
+	(*MoveNote)(nil),                      // 7: artel_notes.MoveNote
+	(*ExportFolder)(nil),                  // 8: artel_notes.ExportFolder
+	(*ImportResolution)(nil),              // 9: artel_notes.ImportResolution
+	(*CheckImportConflicts)(nil),          // 10: artel_notes.CheckImportConflicts
+	(*CommitImport)(nil),                  // 11: artel_notes.CommitImport
+	(*DeleteFolder)(nil),                  // 12: artel_notes.DeleteFolder
+	(*ListFolders_Request)(nil),           // 13: artel_notes.ListFolders.Request
+	(*ListFolders_Response)(nil),          // 14: artel_notes.ListFolders.Response
+	(*ListNotes_Request)(nil),             // 15: artel_notes.ListNotes.Request
+	(*ListNotes_Response)(nil),            // 16: artel_notes.ListNotes.Response
+	(*GetNote_Request)(nil),               // 17: artel_notes.GetNote.Request
+	(*GetNote_Response)(nil),              // 18: artel_notes.GetNote.Response
+	(*ListTags_Request)(nil),              // 19: artel_notes.ListTags.Request
+	(*ListTags_Response)(nil),             // 20: artel_notes.ListTags.Response
+	(*SaveNote_Request)(nil),              // 21: artel_notes.SaveNote.Request
+	(*SaveNote_Response)(nil),             // 22: artel_notes.SaveNote.Response
+	(*MoveNote_Request)(nil),              // 23: artel_notes.MoveNote.Request
+	(*MoveNote_Response)(nil),             // 24: artel_notes.MoveNote.Response
+	(*ExportFolder_Request)(nil),          // 25: artel_notes.ExportFolder.Request
+	(*ExportFolder_Response)(nil),         // 26: artel_notes.ExportFolder.Response
+	(*CheckImportConflicts_Request)(nil),  // 27: artel_notes.CheckImportConflicts.Request
+	(*CheckImportConflicts_Response)(nil), // 28: artel_notes.CheckImportConflicts.Response
+	(*CommitImport_Request)(nil),          // 29: artel_notes.CommitImport.Request
+	(*CommitImport_Response)(nil),         // 30: artel_notes.CommitImport.Response
+	(*DeleteFolder_Request)(nil),          // 31: artel_notes.DeleteFolder.Request
+	(*DeleteFolder_Response)(nil),         // 32: artel_notes.DeleteFolder.Response
 }
 var file_notes_proto_depIdxs = []int32{
-	0,  // 0: artel_notes.ListNotes.Response.notes:type_name -> artel_notes.NoteItem
-	7,  // 1: artel_notes.NotesAPI.ListFolders:input_type -> artel_notes.ListFolders.Request
-	9,  // 2: artel_notes.NotesAPI.ListNotes:input_type -> artel_notes.ListNotes.Request
-	11, // 3: artel_notes.NotesAPI.GetNote:input_type -> artel_notes.GetNote.Request
-	13, // 4: artel_notes.NotesAPI.ListTags:input_type -> artel_notes.ListTags.Request
-	15, // 5: artel_notes.NotesAPI.SaveNote:input_type -> artel_notes.SaveNote.Request
-	17, // 6: artel_notes.NotesAPI.MoveNote:input_type -> artel_notes.MoveNote.Request
-	8,  // 7: artel_notes.NotesAPI.ListFolders:output_type -> artel_notes.ListFolders.Response
-	10, // 8: artel_notes.NotesAPI.ListNotes:output_type -> artel_notes.ListNotes.Response
-	12, // 9: artel_notes.NotesAPI.GetNote:output_type -> artel_notes.GetNote.Response
-	14, // 10: artel_notes.NotesAPI.ListTags:output_type -> artel_notes.ListTags.Response
-	16, // 11: artel_notes.NotesAPI.SaveNote:output_type -> artel_notes.SaveNote.Response
-	18, // 12: artel_notes.NotesAPI.MoveNote:output_type -> artel_notes.MoveNote.Response
-	7,  // [7:13] is the sub-list for method output_type
-	1,  // [1:7] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	0,  // 0: artel_notes.ImportResolution.action:type_name -> artel_notes.ImportConflictAction
+	1,  // 1: artel_notes.ListNotes.Response.notes:type_name -> artel_notes.NoteItem
+	9,  // 2: artel_notes.CommitImport.Request.resolutions:type_name -> artel_notes.ImportResolution
+	13, // 3: artel_notes.NotesAPI.ListFolders:input_type -> artel_notes.ListFolders.Request
+	15, // 4: artel_notes.NotesAPI.ListNotes:input_type -> artel_notes.ListNotes.Request
+	17, // 5: artel_notes.NotesAPI.GetNote:input_type -> artel_notes.GetNote.Request
+	19, // 6: artel_notes.NotesAPI.ListTags:input_type -> artel_notes.ListTags.Request
+	21, // 7: artel_notes.NotesAPI.SaveNote:input_type -> artel_notes.SaveNote.Request
+	23, // 8: artel_notes.NotesAPI.MoveNote:input_type -> artel_notes.MoveNote.Request
+	25, // 9: artel_notes.NotesAPI.ExportFolder:input_type -> artel_notes.ExportFolder.Request
+	27, // 10: artel_notes.NotesAPI.CheckImportConflicts:input_type -> artel_notes.CheckImportConflicts.Request
+	29, // 11: artel_notes.NotesAPI.CommitImport:input_type -> artel_notes.CommitImport.Request
+	31, // 12: artel_notes.NotesAPI.DeleteFolder:input_type -> artel_notes.DeleteFolder.Request
+	14, // 13: artel_notes.NotesAPI.ListFolders:output_type -> artel_notes.ListFolders.Response
+	16, // 14: artel_notes.NotesAPI.ListNotes:output_type -> artel_notes.ListNotes.Response
+	18, // 15: artel_notes.NotesAPI.GetNote:output_type -> artel_notes.GetNote.Response
+	20, // 16: artel_notes.NotesAPI.ListTags:output_type -> artel_notes.ListTags.Response
+	22, // 17: artel_notes.NotesAPI.SaveNote:output_type -> artel_notes.SaveNote.Response
+	24, // 18: artel_notes.NotesAPI.MoveNote:output_type -> artel_notes.MoveNote.Response
+	26, // 19: artel_notes.NotesAPI.ExportFolder:output_type -> artel_notes.ExportFolder.Response
+	28, // 20: artel_notes.NotesAPI.CheckImportConflicts:output_type -> artel_notes.CheckImportConflicts.Response
+	30, // 21: artel_notes.NotesAPI.CommitImport:output_type -> artel_notes.CommitImport.Response
+	32, // 22: artel_notes.NotesAPI.DeleteFolder:output_type -> artel_notes.DeleteFolder.Response
+	13, // [13:23] is the sub-list for method output_type
+	3,  // [3:13] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_notes_proto_init() }
@@ -961,13 +1705,14 @@ func file_notes_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_notes_proto_rawDesc), len(file_notes_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   19,
+			NumEnums:      1,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_notes_proto_goTypes,
 		DependencyIndexes: file_notes_proto_depIdxs,
+		EnumInfos:         file_notes_proto_enumTypes,
 		MessageInfos:      file_notes_proto_msgTypes,
 	}.Build()
 	File_notes_proto = out.File

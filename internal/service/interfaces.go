@@ -12,6 +12,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/service/v1/notes"
 )
 
 type Service interface {
@@ -171,6 +172,12 @@ type NotesService interface {
 	ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error)
 	SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error
 	MoveNote(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) error
+	ExportFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) ([]byte, error)
+	CheckImportConflicts(ctx context.Context, vaultID uuid.UUID, destPath string, zipData []byte) ([]string, error)
+	CommitImport(
+		ctx context.Context, vaultID uuid.UUID, destPath string, zipData []byte, resolutions []notes.ImportResolution,
+	) (imported int, skipped int, err error)
+	DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) (deletedCount int, failedPaths []string, err error)
 }
 
 type MomService interface {

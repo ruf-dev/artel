@@ -45,6 +45,30 @@ service NotesAPI {
       body: "*"
     };
   };
+  rpc ExportFolder(ExportFolder.Request) returns (ExportFolder.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/export"
+      body: "*"
+    };
+  };
+  rpc CheckImportConflicts(CheckImportConflicts.Request) returns (CheckImportConflicts.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/import/check"
+      body: "*"
+    };
+  };
+  rpc CommitImport(CommitImport.Request) returns (CommitImport.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/import/commit"
+      body: "*"
+    };
+  };
+  rpc DeleteFolder(DeleteFolder.Request) returns (DeleteFolder.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/folder/delete"
+      body: "*"
+    };
+  };
 }
 
 message NoteItem {
@@ -105,4 +129,61 @@ message MoveNote {
     string new_path = 3;
   }
   message Response {}
+}
+
+message ExportFolder {
+  message Request {
+    string vault_id = 1;
+    string path = 2; // folder path prefix; empty means the whole vault
+  }
+  message Response {
+    bytes zip_data = 1;
+  }
+}
+
+enum ImportConflictAction {
+  SKIP = 0;
+  OVERWRITE = 1;
+  RENAME = 2;
+}
+
+message ImportResolution {
+  string path = 1; // conflicting destination path, as reported by CheckImportConflicts
+  ImportConflictAction action = 2;
+  string rename_to = 3; // only used when action == RENAME
+}
+
+message CheckImportConflicts {
+  message Request {
+    string vault_id = 1;
+    string dest_path = 2; // "" or "/" imports at vault root
+    bytes zip_data = 3;
+  }
+  message Response {
+    repeated string conflicting_paths = 1;
+  }
+}
+
+message CommitImport {
+  message Request {
+    string vault_id = 1;
+    string dest_path = 2;
+    bytes zip_data = 3;
+    repeated ImportResolution resolutions = 4;
+  }
+  message Response {
+    int32 imported_count = 1;
+    int32 skipped_count = 2;
+  }
+}
+
+message DeleteFolder {
+  message Request {
+    string vault_id = 1;
+    string path = 2;
+  }
+  message Response {
+    int32 deleted_count = 1;
+    repeated string failed_paths = 2;
+  }
 }

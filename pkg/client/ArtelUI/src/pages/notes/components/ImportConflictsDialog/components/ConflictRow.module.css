@@ -1,0 +1,37 @@
+.ConflictRowContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0;
+    border-bottom: var(--border-thickness) solid var(--color-border-light);
+
+    & .ConflictPath {
+        flex: 1 0 100%;
+        font-size: 0.8125rem;
+        color: var(--color-fg-primary);
+        word-break: break-all;
+    }
+
+    & .ActionBtn {
+        padding: 0.25rem 0.625rem;
+        font-size: 0.75rem;
+    }
+
+    & .RenameInputWrapper {
+        flex: 1 0 100%;
+    }
+
+    & .RenameInput {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.375rem 0.625rem;
+        border-radius: 0.5rem;
+        border: var(--border-thickness) solid var(--color-border-light);
+        background: var(--color-bg-input, var(--color-bg-card));
+        color: var(--color-fg-primary);
+        font-size: 0.8125rem;
+        font-family: inherit;
+        outline: none;
+    }
+}

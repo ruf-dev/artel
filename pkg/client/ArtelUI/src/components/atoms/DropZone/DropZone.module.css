@@ -1,0 +1,34 @@
+.DropZoneContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 6rem;
+    padding: 1rem;
+    border: var(--border-thickness-accent) dashed var(--color-border);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 120ms ease, background 120ms ease;
+
+    &:hover {
+        border-color: var(--color-fg-secondary);
+    }
+
+    & .HiddenInput {
+        position: absolute;
+        width: 0.0625rem;
+        height: 0.0625rem;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    & .DropZoneText {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+    }
+}
+
+.DropZoneContainerActive {
+    border-color: var(--coral, #ff4b3e);
+    background: rgb(255 255 255 / 3.5%);
+}

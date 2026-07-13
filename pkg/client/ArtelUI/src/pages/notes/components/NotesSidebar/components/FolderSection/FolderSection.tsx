@@ -3,6 +3,7 @@ import {Button} from "@vervstack/chures"
 
 import { NoteItem } from "@/app/hooks/Notes.ts"
 import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
+import UploadIcon from "@/pages/notes/components/icons/UploadIcon.tsx"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import FolderNodeItem from "@/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx"
 import {
@@ -19,12 +20,16 @@ interface FolderSectionProps {
     vaultId: string
     onSelectNote: (vaultId: string, path: string) => void
     onCreateNote: (folderPath?: string) => void
+    onDownloadFolder?: (path: string) => void
+    onDeleteFolder?: (path: string) => void
+    onUpload?: () => void
     showCreateButton?: boolean
 }
 
 export default function FolderSection(props: FolderSectionProps) {
     const { folders, notes, selectedPath, highlightedPath, revealPath, vaultId } = props
-    const { onSelectNote, onCreateNote, showCreateButton = true } = props
+    const { onSelectNote, onCreateNote, onDownloadFolder, onDeleteFolder, onUpload } = props
+    const { showCreateButton = true } = props
     const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
 
     function toggleFolder(path: string) {
@@ -57,16 +62,28 @@ export default function FolderSection(props: FolderSectionProps) {
         <>
             <div className={cls.SectionHeaderContainer}>
                 <span className={cls.SectionLabel}>All Notes</span>
-                {showCreateButton && (
-                    <Button
-                        variant="ghost"
-                        className={cls.CreateNoteBtn}
-                        onClick={() => onCreateNote()}
-                        title="New note"
-                    >
-                        <PlusIcon/>
-                    </Button>
-                )}
+                <div className={cls.SectionActions}>
+                    {onUpload && (
+                        <Button
+                            variant="ghost"
+                            className={cls.CreateNoteBtn}
+                            onClick={onUpload}
+                            data-tooltip-id="root-tooltip"
+                            data-tooltip-content="Upload folder from .zip"
+                        >
+                            <UploadIcon/>
+                        </Button>
+                    )}
+                    {showCreateButton && (
+                        <Button
+                            variant="ghost"
+                            className={cls.CreateNoteBtn}
+                            onClick={() => onCreateNote()}
+                        >
+                            <PlusIcon/>
+                        </Button>
+                    )}
+                </div>
             </div>
             {tree.map(node => (
                 <FolderNodeItem
@@ -80,6 +97,8 @@ export default function FolderSection(props: FolderSectionProps) {
                     onToggle={toggleFolder}
                     onSelectNote={path => onSelectNote(vaultId, path)}
                     onCreateNoteInFolder={onCreateNote}
+                    onDownloadFolder={onDownloadFolder}
+                    onDeleteFolder={onDeleteFolder}
                 />
             ))}
             {rootNotes.map(note => (

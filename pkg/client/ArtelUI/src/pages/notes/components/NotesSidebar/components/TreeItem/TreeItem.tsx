@@ -2,6 +2,7 @@ import {useState} from "react"
 import {Button} from "@vervstack/chures"
 
 import { cn } from "@/app/utils/cn.ts"
+import KebabMenu from "@/components/atoms/KebabMenu/KebabMenu.tsx"
 import ArrowIcon from "@/pages/notes/components/NotesSidebar/components/icons/ArrowIcon.tsx"
 import FileIcon from "@/pages/notes/components/NotesSidebar/components/icons/FileIcon.tsx"
 import FolderIcon from "@/pages/notes/components/NotesSidebar/components/icons/FolderIcon.tsx"
@@ -21,11 +22,14 @@ interface TreeItemProps {
     onClick?: () => void
     onAddInFolder?: () => void
     onCopyPath?: () => void
+    onDownloadFolder?: () => void
+    onDeleteFolder?: () => void
 }
 
 export default function TreeItem(props: TreeItemProps) {
     const { name, subtitle, path, active, highlighted } = props
     const { isFolder, isOpen, onClick, onAddInFolder, onCopyPath } = props
+    const { onDownloadFolder, onDeleteFolder } = props
     const [copied, setCopied] = useState(false)
     const depth = props.depth ?? 0
     const paddingLeft = 1.12 + depth * 0.84
@@ -77,6 +81,15 @@ export default function TreeItem(props: TreeItemProps) {
                         <path d="M6 1v10M1 6h10" />
                     </svg>
                 </Button>
+            )}
+            {isFolder && (onDownloadFolder || onDeleteFolder) && (
+                <KebabMenu
+                    title="Folder actions"
+                    items={[
+                        ...(onDownloadFolder ? [{ label: "Download as .zip", onClick: onDownloadFolder }] : []),
+                        ...(onDeleteFolder ? [{ label: "Delete folder", onClick: onDeleteFolder, danger: true }] : []),
+                    ]}
+                />
             )}
         </div>
     )

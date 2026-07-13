@@ -1,12 +1,36 @@
 import {create} from 'zustand'
 
 import {NoteItem} from "@/app/api/artel/notes.pb.ts"
-import {notesService} from "@/processes/Notes.ts"
+import {
+    DeleteFolderResult, ImportConflictAction, ImportResolutionInput, ImportResult, notesService,
+} from "@/processes/Notes.ts"
 
-export type {NoteItem}
+export {ImportConflictAction}
+export type {NoteItem, DeleteFolderResult, ImportResolutionInput, ImportResult}
 export type NoteMode = 'preview' | 'edit' | 'read'
 
 const HIGHLIGHT_DURATION_MS = 2700
+
+function requireVaultId(vaultId: string | null): string {
+    if (!vaultId) throw new Error("no vault selected")
+    return vaultId
+}
+
+async function commitImportAndRefresh(
+    get: () => NotesState, destPath: string, zipData: Uint8Array, resolutions: ImportResolutionInput[],
+): Promise<ImportResult> {
+    const vaultId = requireVaultId(get().vaultId)
+    const result = await notesService.commitImport(vaultId, destPath, zipData, resolutions)
+    await get().selectVault(vaultId)
+    return result
+}
+
+async function deleteFolderAndRefresh(get: () => NotesState, path: string): Promise<DeleteFolderResult> {
+    const vaultId = requireVaultId(get().vaultId)
+    const result = await notesService.deleteFolder(vaultId, path)
+    await get().selectVault(vaultId)
+    return result
+}
 
 interface NotesState {
     vaultId: string | null
@@ -28,6 +52,10 @@ interface NotesState {
     moveNote: (newPath: string) => Promise<void>
     createNote: (path: string) => Promise<void>
     listTags: (vaultId: string) => Promise<string[]>
+    downloadFolder: (path: string) => Promise<Uint8Array>
+    checkImportConflicts: (destPath: string, zipData: Uint8Array) => Promise<string[]>
+    commitImport: (destPath: string, zipData: Uint8Array, resolutions: ImportResolutionInput[]) => Promise<ImportResult>
+    deleteFolder: (path: string) => Promise<DeleteFolderResult>
     highlightNote: (path: string) => void
     reset: () => void
 }
@@ -80,13 +108,9 @@ export const useNotes = create<NotesState>((set, get) => ({
         set({mode})
     },
 
-    setContent: (content: string) => {
-        set({noteContent: content})
-    },
+    setContent: (content: string) => set({noteContent: content}),
 
-    setSavedContent: (content: string) => {
-        set({savedContent: content})
-    },
+    setSavedContent: (content: string) => set({savedContent: content}),
 
     saveNote: async (content: string) => {
         const { vaultId, selectedPath } = get()
@@ -112,6 +136,16 @@ export const useNotes = create<NotesState>((set, get) => ({
     },
 
     listTags: (vaultId: string) => notesService.listTags(vaultId),
+
+    downloadFolder: async (path: string) => notesService.exportFolder(requireVaultId(get().vaultId), path),
+
+    checkImportConflicts: (destPath: string, zipData: Uint8Array) =>
+        notesService.checkImportConflicts(requireVaultId(get().vaultId), destPath, zipData),
+
+    commitImport: (destPath: string, zipData: Uint8Array, resolutions: ImportResolutionInput[]) =>
+        commitImportAndRefresh(get, destPath, zipData, resolutions),
+
+    deleteFolder: (path: string) => deleteFolderAndRefresh(get, path),
 
     highlightNote: (path: string) => {
         set({highlightedPath: null})
