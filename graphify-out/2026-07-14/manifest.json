@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "internal/repository/interfaces.go": {
-    "mtime": 1783976168.79528,
-    "ast_hash": "2f8e7cd9cab12102281d9bd456d6eb8b",
+    "mtime": 1783977519.1567857,
+    "ast_hash": "c009fe2772c34ee566cc4c28aecd6486",
     "semantic_hash": ""
   },
   "internal/repository/pg/impl.go": {
@@ -185,72 +185,72 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/models.go": {
-    "mtime": 1783976153.0055802,
+    "mtime": 1783977478.3636906,
     "ast_hash": "c9f8b0b2c4f91a60999a0adf5a1c2e24",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/db.go": {
-    "mtime": 1783976153.008327,
+    "mtime": 1783977478.358678,
     "ast_hash": "9de76c60cbdd338abed02aaea64adea5",
     "semantic_hash": "9de76c60cbdd338abed02aaea64adea5"
   },
   "internal/repository/pg/generated/couch_accounts.sql.go": {
-    "mtime": 1783976153.008026,
+    "mtime": 1783977478.3490872,
     "ast_hash": "3bcc15a9bc8fd861b2fb2329ccdbdd6d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/sessions.sql.go": {
-    "mtime": 1783976153.0082333,
-    "ast_hash": "b0b8aa5178dcc6c9b49594c0e9f96ebf",
+    "mtime": 1783977478.348788,
+    "ast_hash": "f7c1d172f88dd5ac065f8ef5fc25e500",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mail_server_suggestions.sql.go": {
-    "mtime": 1783976153.0061693,
+    "mtime": 1783977478.3538287,
     "ast_hash": "24f21536c316ccc7dbe20ac0bf98c548",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/vaults.sql.go": {
-    "mtime": 1783976153.0051692,
+    "mtime": 1783977478.3622725,
     "ast_hash": "675c6a8938fd303b35df02be9809fe68",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/couch_instances.sql.go": {
-    "mtime": 1783976153.0068085,
+    "mtime": 1783977478.3570447,
     "ast_hash": "391f77917d25be53e3ccedd24d5210c8",
     "semantic_hash": "391f77917d25be53e3ccedd24d5210c8"
   },
   "internal/repository/pg/generated/vault_members.sql.go": {
-    "mtime": 1783976153.0076408,
+    "mtime": 1783977478.3586206,
     "ast_hash": "c53b291e580fa193cf60298e42724a13",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/subscriptions.sql.go": {
-    "mtime": 1783976153.004752,
+    "mtime": 1783977478.3585646,
     "ast_hash": "0f7f8b13c7e17aa86eb00e6b2ad825c4",
     "semantic_hash": "0f7f8b13c7e17aa86eb00e6b2ad825c4"
   },
   "internal/repository/pg/generated/querier.go": {
-    "mtime": 1783976153.0077205,
-    "ast_hash": "eccdbf772c47d88a6056050d86ae8222",
+    "mtime": 1783977478.3645697,
+    "ast_hash": "35fc0a79112c73f5f1ba5d94839ac5bc",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/users.sql.go": {
-    "mtime": 1783976153.0089953,
-    "ast_hash": "10bb4fb8996c34c5c0cb5cd87f99233a",
+    "mtime": 1783977478.3641663,
+    "ast_hash": "675ba740cda7655d9a1e55ed48927c30",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/user_permissions.sql.go": {
-    "mtime": 1783976153.0087113,
+    "mtime": 1783977478.364761,
     "ast_hash": "62d9ee6fe5ab3d75667b817d0fc5137a",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/pending_auth_codes.sql.go": {
-    "mtime": 1783976153.0057092,
+    "mtime": 1783977478.3653944,
     "ast_hash": "db138e65c0bd9793ab41270580a5c418",
     "semantic_hash": "db138e65c0bd9793ab41270580a5c418"
   },
   "internal/repository/pg/generated/mcp_keys.sql.go": {
-    "mtime": 1783976153.008769,
+    "mtime": 1783977478.3648248,
     "ast_hash": "02433b07fa0a76513ac5cba0bca04f2e",
     "semantic_hash": ""
   },
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/sessions/sessions.go": {
-    "mtime": 1783193923.4931514,
-    "ast_hash": "32c6b0296cedb420304fb6da5a77bde5",
+    "mtime": 1783977494.667897,
+    "ast_hash": "516a33578c2d14bff99072372d95ae19",
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/vaults/vaults.go": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/users/users.go": {
-    "mtime": 1783200713.0203311,
-    "ast_hash": "237afa524a45567bab8333705970545e",
+    "mtime": 1783977499.1921363,
+    "ast_hash": "7ab208f41ec7d74ab95e9d788311db95",
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/prompts/prompts.go": {
@@ -320,8 +320,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/users.sql": {
-    "mtime": 1781207314.709149,
-    "ast_hash": "b12ee28e11cc7f0cea1e61b5710d3822",
+    "mtime": 1783977475.0157156,
+    "ast_hash": "a614e32d3f2f9383f3dcab550cd1fd5a",
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/mcp_keys.sql": {
@@ -360,8 +360,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/sessions.sql": {
-    "mtime": 1781204610.70544,
-    "ast_hash": "80ecce8fec3fee7ba09ae894bd646643",
+    "mtime": 1783977470.3806007,
+    "ast_hash": "9c0a1ae02542b2b8af12a8a26c53a126",
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/mail_server_suggestions.sql": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/auth/auth.go": {
-    "mtime": 1783200803.4891508,
-    "ast_hash": "c1a2a52eb29613f4e3d55db02ce5a28a",
+    "mtime": 1783977534.623049,
+    "ast_hash": "81342573051fe93c2f9d8da33126e1ff",
     "semantic_hash": ""
   },
   "internal/service/v1/mcp/mcp.go": {
@@ -1265,32 +1265,32 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/vault_invites.sql.go": {
-    "mtime": 1783976153.0064209,
+    "mtime": 1783977478.3632483,
     "ast_hash": "01e2b4448bc07e4b22ea8cab5513c2e3",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/external_connections.sql.go": {
-    "mtime": 1783976153.0066926,
+    "mtime": 1783977478.364641,
     "ast_hash": "74600ae838c4949bb24e8061acbe3414",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_connectors.sql.go": {
-    "mtime": 1783976153.0090756,
+    "mtime": 1783977478.355379,
     "ast_hash": "f226e824352d683836f080889cbd17fa",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/task_trackers.sql.go": {
-    "mtime": 1783976153.0058138,
+    "mtime": 1783977478.363319,
     "ast_hash": "b7f8fb6d69d6701b4e14e6d3d1190fd9",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcps.sql.go": {
-    "mtime": 1783976153.007001,
+    "mtime": 1783977478.3569815,
     "ast_hash": "60fa9cd8401b8dc13c22784960b39efd",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_spreadsheets.sql.go": {
-    "mtime": 1783976153.0089262,
+    "mtime": 1783977478.3644912,
     "ast_hash": "e9042da7b4ee16acda54482c520bf412",
     "semantic_hash": ""
   },
@@ -2165,17 +2165,17 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/triggers.sql.go": {
-    "mtime": 1783976153.0063014,
+    "mtime": 1783977478.3654623,
     "ast_hash": "bb2b9fcd74d3933472c90e6e4371aa53",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/tracts.sql.go": {
-    "mtime": 1783976153.004409,
+    "mtime": 1783977478.3631372,
     "ast_hash": "8b95465d09343b2cbb3bf2aa156b65f8",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_tools.sql.go": {
-    "mtime": 1783976153.0075696,
+    "mtime": 1783977478.3657174,
     "ast_hash": "2dc3aff491ced9968797e85c44349a6e",
     "semantic_hash": ""
   },
@@ -2620,7 +2620,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/s3_instances.sql.go": {
-    "mtime": 1783976153.0085099,
+    "mtime": 1783977478.365012,
     "ast_hash": "d209c73151901f4d560cb09bc5687dda",
     "semantic_hash": ""
   },
@@ -2800,7 +2800,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/trigger_presets.sql.go": {
-    "mtime": 1783976153.0059867,
+    "mtime": 1783977478.3626046,
     "ast_hash": "e959b5ececc94e057f59a69ab399649e",
     "semantic_hash": ""
   },
