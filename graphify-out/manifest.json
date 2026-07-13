@@ -90,8 +90,8 @@
     "semantic_hash": "986c46ce5e4b3e7642c41904045a79e7"
   },
   "internal/clients/imap/client.go": {
-    "mtime": 1783921052.0692608,
-    "ast_hash": "87de51d8c3c6fd2bd385f7473f8c5ec3",
+    "mtime": 1783926525.5933323,
+    "ast_hash": "fb167d61a78a9f68c25edc073e6f6890",
     "semantic_hash": ""
   },
   "internal/clients/couchdb/users.go": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "internal/clients/smtp/client.go": {
-    "mtime": 1783187440.9605176,
-    "ast_hash": "408b3fb2671719b7993802771d48f10a",
+    "mtime": 1783926549.854811,
+    "ast_hash": "e8e57cd0ef0daa8aee43f309b5b03177",
     "semantic_hash": ""
   },
   "internal/clients/sqldb/postgres.go": {
@@ -565,98 +565,98 @@
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/vaults.pb.go": {
-    "mtime": 1783870094.2230287,
+    "mtime": 1783926482.8550472,
     "ast_hash": "07d139263a297f2437d7b5eb6899a743",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/artel_api.pb.go": {
-    "mtime": 1783870094.2164278,
+    "mtime": 1783926482.84729,
     "ast_hash": "b3597c34367ee762fbd47fb87add9c48",
     "semantic_hash": "b3597c34367ee762fbd47fb87add9c48"
   },
   "internal/api/server/artel_api/prompts.pb.gw.go": {
-    "mtime": 1783870094.2202609,
+    "mtime": 1783926482.8514748,
     "ast_hash": "f94ec64b65003acc26eeb0ba76188792",
     "semantic_hash": "f94ec64b65003acc26eeb0ba76188792"
   },
   "internal/api/server/artel_api/mcp_keys.pb.gw.go": {
-    "mtime": 1783870094.2190073,
+    "mtime": 1783926482.8502934,
     "ast_hash": "bdae5dd205b3e204d87903b2a633f294",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/prompts_grpc.pb.go": {
-    "mtime": 1783870094.2204716,
+    "mtime": 1783926482.851555,
     "ast_hash": "66cfaed910776b57b51ba6308c49f7d1",
     "semantic_hash": "66cfaed910776b57b51ba6308c49f7d1"
   },
   "internal/api/server/artel_api/mcp_keys_grpc.pb.go": {
-    "mtime": 1783870094.2191463,
+    "mtime": 1783926482.8503788,
     "ast_hash": "e7b6545432ed4daec8f614ff8e3719b8",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/vaults_grpc.pb.go": {
-    "mtime": 1783870094.2233489,
+    "mtime": 1783926482.855343,
     "ast_hash": "0f76a3d061bae9050189fdfd3a5bc554",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/couch_instances.pb.go": {
-    "mtime": 1783870094.2173004,
+    "mtime": 1783926482.84863,
     "ast_hash": "79dccc7459a572fc24c355bcf2cf27e4",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/prompts.pb.go": {
-    "mtime": 1783870094.2200596,
+    "mtime": 1783926482.8513417,
     "ast_hash": "135d3487c2ee2667e0763fd49f86c9e7",
     "semantic_hash": "135d3487c2ee2667e0763fd49f86c9e7"
   },
   "internal/api/server/artel_api/vaults.pb.gw.go": {
-    "mtime": 1783870094.223145,
+    "mtime": 1783926482.8552716,
     "ast_hash": "8b7efd48f8a94a59da092c837d15ba5f",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/mcp_keys.pb.go": {
-    "mtime": 1783870094.2187726,
+    "mtime": 1783926482.8502202,
     "ast_hash": "20bfd7c0077b86e155c56c47932ac6be",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/auth.pb.gw.go": {
-    "mtime": 1783870094.2171168,
+    "mtime": 1783926482.8479526,
     "ast_hash": "3fea7f5a3bc6fdfe2787dff9ec43f213",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/auth_grpc.pb.go": {
-    "mtime": 1783870094.2171915,
+    "mtime": 1783926482.8481908,
     "ast_hash": "b58ce815bf41f45d87ecef181b6d604f",
     "semantic_hash": "b58ce815bf41f45d87ecef181b6d604f"
   },
   "internal/api/server/artel_api/couch_instances_grpc.pb.go": {
-    "mtime": 1783870094.217626,
+    "mtime": 1783926482.849227,
     "ast_hash": "f920e75e42c9580ba194a0aef150cd67",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/artel_api.pb.gw.go": {
-    "mtime": 1783870094.2167125,
+    "mtime": 1783926482.847452,
     "ast_hash": "207510e43aac4c4091bcd51578f7b855",
     "semantic_hash": "207510e43aac4c4091bcd51578f7b855"
   },
   "internal/api/server/artel_api/auth.pb.go": {
-    "mtime": 1783870094.2170465,
+    "mtime": 1783926482.8478558,
     "ast_hash": "9b1519e9fc7e052edbf628ada1b3f813",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/artel_api_grpc.pb.go": {
-    "mtime": 1783870094.2168777,
+    "mtime": 1783926482.8475466,
     "ast_hash": "959e85a15d79cd87e6270da71e920bc7",
     "semantic_hash": "959e85a15d79cd87e6270da71e920bc7"
   },
   "internal/api/server/artel_api/couch_instances.pb.gw.go": {
-    "mtime": 1783870094.21741,
+    "mtime": 1783926482.8491259,
     "ast_hash": "45da375dea08a398feae951e27008845",
     "semantic_hash": ""
   },
   "internal/service/interfaces.go": {
-    "mtime": 1783870353.5292583,
-    "ast_hash": "750f80cfd51ac4df52dec85ff0e445d3",
+    "mtime": 1783926569.7771928,
+    "ast_hash": "87aaecb82ea5a070564a91ea83cdfb4c",
     "semantic_hash": ""
   },
   "internal/service/v1/impl.go": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
-    "mtime": 1783920930.5096502,
-    "ast_hash": "5d61b5603275302a7fa9b676550bcc23",
+    "mtime": 1783926563.537297,
+    "ast_hash": "e9b381cf0847dfdbd53105d8631e1bd4",
     "semantic_hash": ""
   },
   "internal/domain/couch_account.go": {
@@ -760,12 +760,12 @@
     "semantic_hash": ""
   },
   "pkg/docs/docs.swagger_ui.go": {
-    "mtime": 1783882341.2224805,
-    "ast_hash": "f6d8f622a493fc19f6af19d11b1c6761",
+    "mtime": 1783926482.8453836,
+    "ast_hash": "c787898e4e21fcb12b5fa304b6b28fe8",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/auth.swagger.json": {
-    "mtime": 1783870094.212696,
+    "mtime": 1783926482.8558707,
     "ast_hash": "55513d5325d6c360bd4376a3bd24f2f7",
     "semantic_hash": ""
   },
@@ -775,27 +775,27 @@
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/mcp_keys.swagger.json": {
-    "mtime": 1783870094.2134838,
+    "mtime": 1783926482.8564494,
     "ast_hash": "04fd42cfabb3479c8822e4999053d516",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/artel_api.swagger.json": {
-    "mtime": 1783870094.2126155,
+    "mtime": 1783926482.8557737,
     "ast_hash": "3a5a088fd6b63c804be784c4e796ce46",
     "semantic_hash": "3a5a088fd6b63c804be784c4e796ce46"
   },
   "pkg/docs/swaggers/vaults.swagger.json": {
-    "mtime": 1783870094.2152526,
+    "mtime": 1783926482.8575187,
     "ast_hash": "329c8020989513cabe84128037a3f533",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/prompts.swagger.json": {
-    "mtime": 1783870094.213836,
+    "mtime": 1783926482.8566096,
     "ast_hash": "ef0a3da71765445393cfd1c92e62402a",
     "semantic_hash": "ef0a3da71765445393cfd1c92e62402a"
   },
   "pkg/docs/swaggers/couch_instances.swagger.json": {
-    "mtime": 1783870094.212859,
+    "mtime": 1783926482.8559585,
     "ast_hash": "3fa8e4b6adc35d83493d0f2d1b88156a",
     "semantic_hash": ""
   },
@@ -870,42 +870,42 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/auth.pb.ts": {
-    "mtime": 1783870099.5333638,
+    "mtime": 1783926488.2584236,
     "ast_hash": "d530fbb91ecb693a87614480beafa1f1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/couch_instances.pb.ts": {
-    "mtime": 1783870099.533416,
+    "mtime": 1783926488.258476,
     "ast_hash": "90ef0d2d2aba9c3e31e1c19d679218f7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/prompts.pb.ts": {
-    "mtime": 1783870099.5342276,
+    "mtime": 1783926488.2598321,
     "ast_hash": "b6e69cd76667b8949344061bd673072b",
     "semantic_hash": "b6e69cd76667b8949344061bd673072b"
   },
   "pkg/client/ArtelUI/src/app/api/artel/mcp_keys.pb.ts": {
-    "mtime": 1783870099.533845,
+    "mtime": 1783926488.2588983,
     "ast_hash": "26dfd61190e0c4841cd7ba88e59fd58d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/artel_api.pb.ts": {
-    "mtime": 1783870099.5333033,
+    "mtime": 1783926488.2583623,
     "ast_hash": "32219109938c9fe8185d6c262945811e",
     "semantic_hash": "32219109938c9fe8185d6c262945811e"
   },
   "pkg/client/ArtelUI/src/app/api/artel/vaults.pb.ts": {
-    "mtime": 1783870099.5350862,
+    "mtime": 1783926488.2609022,
     "ast_hash": "1c39ac72310220721de6fabb5dbeea84",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/index.ts": {
-    "mtime": 1783870099.5328262,
+    "mtime": 1783926488.257925,
     "ast_hash": "5d725f1aeb2afea58b8b0cc96c6f1725",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/fetch.pb.ts": {
-    "mtime": 1783870099.5337434,
+    "mtime": 1783926488.2588007,
     "ast_hash": "611a00bd7dd14cbdfe7c5ea6170b6625",
     "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
   },
@@ -1050,8 +1050,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1783762699.7009037,
-    "ast_hash": "ceff9f1ac420a14f6af8f10223ec27cc",
+    "mtime": 1783924820.7459075,
+    "ast_hash": "127d6a2eaf27362b116c6e8579ebb07d",
     "semantic_hash": ""
   },
   "config/config.yaml": {
@@ -1540,82 +1540,82 @@
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/user_errors.pb.go": {
-    "mtime": 1783870094.2229223,
+    "mtime": 1783926482.8549268,
     "ast_hash": "0ffe1f244ef30a55ed45553d580a468c",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/admin_users.pb.go": {
-    "mtime": 1783870094.2158704,
+    "mtime": 1783926482.8468366,
     "ast_hash": "88d8b62abb3bb4279c2635571dfd6390",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/admin_couch_grpc.pb.go": {
-    "mtime": 1783870094.2157533,
+    "mtime": 1783926482.8465405,
     "ast_hash": "e5ddce2426e5bada5c4ed5df10d4712b",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/admin_users.pb.gw.go": {
-    "mtime": 1783870094.21595,
+    "mtime": 1783926482.8469296,
     "ast_hash": "0c831495379effff3a9ef801301cbb93",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/notes_grpc.pb.go": {
-    "mtime": 1783870094.2197454,
+    "mtime": 1783926482.8510072,
     "ast_hash": "efc93ec547b9fe05fc59a02d2d173f04",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/task_trackers.pb.go": {
-    "mtime": 1783870094.2211127,
+    "mtime": 1783926482.8539855,
     "ast_hash": "5ac5fb8b41956eef6b36648a92d1f06e",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/admin_couch.pb.go": {
-    "mtime": 1783870094.2154324,
+    "mtime": 1783926482.8460467,
     "ast_hash": "aad22db3e491ce4c1320afa3ece18d01",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/admin_couch.pb.gw.go": {
-    "mtime": 1783870094.2156298,
+    "mtime": 1783926482.8464098,
     "ast_hash": "76bf8293862b74773808e74628fc4eb8",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/external_connections.pb.gw.go": {
-    "mtime": 1783870094.218272,
-    "ast_hash": "18d5ba9e8652590925d0c0d703747548",
+    "mtime": 1783926482.849961,
+    "ast_hash": "7d6f3231f6aa4f89c57b813ed26ecbfb",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/admin_users_grpc.pb.go": {
-    "mtime": 1783870094.2161531,
+    "mtime": 1783926482.8471522,
     "ast_hash": "73048ba1839218a6bb01cd821ea62b9a",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/external_connections.pb.go": {
-    "mtime": 1783870094.2179513,
-    "ast_hash": "7248519c87430afdd75f6f6bab5489e7",
+    "mtime": 1783926482.8498473,
+    "ast_hash": "7cea5e256c717878309e0839e068ac75",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/notes.pb.go": {
-    "mtime": 1783870094.2192912,
+    "mtime": 1783926482.8508196,
     "ast_hash": "728cf214cf535c7335404d0dea3c1179",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/task_trackers_grpc.pb.go": {
-    "mtime": 1783870094.221464,
+    "mtime": 1783926482.8541198,
     "ast_hash": "28503cb6b5b791ea411d63e523ddfd91",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/task_trackers.pb.gw.go": {
-    "mtime": 1783870094.2213812,
+    "mtime": 1783926482.8540611,
     "ast_hash": "81777ccafc5e39a7fdb845749d18009d",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/external_connections_grpc.pb.go": {
-    "mtime": 1783870094.218504,
-    "ast_hash": "a5a17c345564632bd19fae090b144621",
+    "mtime": 1783926482.8500226,
+    "ast_hash": "528b91df95a0053297c5f5851a1309c6",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/notes.pb.gw.go": {
-    "mtime": 1783870094.219562,
+    "mtime": 1783926482.850922,
     "ast_hash": "945e5dfd77b6b5d7ddbd1d076fde97b3",
     "semantic_hash": ""
   },
@@ -1710,8 +1710,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/externalconnections/external_connections.go": {
-    "mtime": 1783431441.9641657,
-    "ast_hash": "0d531149f96e46f087ba4af71a8ef972",
+    "mtime": 1783926605.434058,
+    "ast_hash": "d8ad975fc89c6f86a67f53588cc32bcb",
     "semantic_hash": ""
   },
   "internal/service/v1/adminusers/adminusers.go": {
@@ -1785,32 +1785,32 @@
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/notes.swagger.json": {
-    "mtime": 1783870094.2135684,
+    "mtime": 1783926482.8565097,
     "ast_hash": "fd04d11dc2c3aa9099bb2ea8c4cab6f8",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/task_trackers.swagger.json": {
-    "mtime": 1783870094.2142203,
+    "mtime": 1783926482.8569493,
     "ast_hash": "e4a3ffb4797f378652ffb5bac9dfd002",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/admin_users.swagger.json": {
-    "mtime": 1783870094.2121375,
+    "mtime": 1783926482.8555565,
     "ast_hash": "ff0c29227bd7a95096a1814f4ecc40ab",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/external_connections.swagger.json": {
-    "mtime": 1783870094.2131953,
-    "ast_hash": "ec28e67da241421b4dfaf0f3b8e2f31c",
+    "mtime": 1783926482.856387,
+    "ast_hash": "efb157dde710b623330087255e2e00ff",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/admin_couch.swagger.json": {
-    "mtime": 1783870094.211732,
+    "mtime": 1783926482.855428,
     "ast_hash": "710c6596585924637fab1bb0efedd9b8",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/user_errors.swagger.json": {
-    "mtime": 1783870094.215073,
+    "mtime": 1783926482.8574347,
     "ast_hash": "d5d0df535c29b2b6a4fb38866de75dea",
     "semantic_hash": ""
   },
@@ -1870,32 +1870,32 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/external_connections.pb.ts": {
-    "mtime": 1783870099.5335927,
-    "ast_hash": "f8640e7d9f4c62c6d66ba1375d782e66",
+    "mtime": 1783926488.258698,
+    "ast_hash": "901d9441f750bb961f2af90c8df828f4",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/notes.pb.ts": {
-    "mtime": 1783870099.5340924,
+    "mtime": 1783926488.2594826,
     "ast_hash": "3dcea7f156f25c3a1c591ced66cbe828",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/task_trackers.pb.ts": {
-    "mtime": 1783870099.5345278,
+    "mtime": 1783926488.2603445,
     "ast_hash": "6e507251f3f551857b4aca3e13e5ca02",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/admin_couch.pb.ts": {
-    "mtime": 1783870099.5330505,
+    "mtime": 1783926488.2581189,
     "ast_hash": "3cf7f5a917da7c7ace9563a7d52b7484",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/user_errors.pb.ts": {
-    "mtime": 1783870099.5350351,
+    "mtime": 1783926488.2608395,
     "ast_hash": "c1fd47388488059eb04c653408a032cc",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/admin_users.pb.ts": {
-    "mtime": 1783870099.533232,
+    "mtime": 1783926488.2583065,
     "ast_hash": "75861a0582cc983302ab5c99d3d4bde7",
     "semantic_hash": ""
   },
@@ -2445,17 +2445,17 @@
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/tracts.pb.gw.go": {
-    "mtime": 1783870094.2224085,
+    "mtime": 1783926482.854771,
     "ast_hash": "1f5c8050750733064fd0399565cc1c75",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/tracts_grpc.pb.go": {
-    "mtime": 1783870094.2227395,
+    "mtime": 1783926482.8548486,
     "ast_hash": "30b2a14be9d238576ac99685b6980303",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/tracts.pb.go": {
-    "mtime": 1783870094.2217648,
+    "mtime": 1783926482.8546531,
     "ast_hash": "d422e70dd19044434cc511e60a2cef6b",
     "semantic_hash": ""
   },
@@ -2500,7 +2500,7 @@
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/tracts.swagger.json": {
-    "mtime": 1783870094.2148762,
+    "mtime": 1783926482.8571427,
     "ast_hash": "0888d38abcf2626675a80e054c4fffc5",
     "semantic_hash": ""
   },
@@ -2510,7 +2510,7 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/tracts.pb.ts": {
-    "mtime": 1783870099.5349412,
+    "mtime": 1783926488.260704,
     "ast_hash": "ee880beb82c8f8016493119870149414",
     "semantic_hash": ""
   },
@@ -2655,17 +2655,17 @@
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/s3_instances.pb.gw.go": {
-    "mtime": 1783870094.2207787,
+    "mtime": 1783926482.8521552,
     "ast_hash": "fa665473811d17ae316280a92222e0d4",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/s3_instances.pb.go": {
-    "mtime": 1783870094.220684,
+    "mtime": 1783926482.851944,
     "ast_hash": "4201350a583b3818e1ddfaef67a54d1e",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/s3_instances_grpc.pb.go": {
-    "mtime": 1783870094.2209344,
+    "mtime": 1783926482.8523138,
     "ast_hash": "91474d3cfc056ad019ec7565ff890f39",
     "semantic_hash": ""
   },
@@ -2675,12 +2675,12 @@
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/s3_instances.swagger.json": {
-    "mtime": 1783870094.2139862,
+    "mtime": 1783926482.8568163,
     "ast_hash": "7bee25bac4c165756615faceaa59b47c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/s3_instances.pb.ts": {
-    "mtime": 1783870099.5342863,
+    "mtime": 1783926488.259915,
     "ast_hash": "f3cf492e658d8a646340aeed5a45526e",
     "semantic_hash": ""
   },
@@ -3515,13 +3515,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/EmailAddDialog/EmailAddDialog.tsx": {
-    "mtime": 1783881927.1589358,
-    "ast_hash": "11028e6feb9f96ddca4a513400835868",
+    "mtime": 1783926774.5846374,
+    "ast_hash": "0ebf66d9993d6dc851d1ea4d604a701a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/EmailEditDialog/EmailEditDialog.tsx": {
-    "mtime": 1783881913.1476934,
-    "ast_hash": "761d81a9d83cbcdd0cc6facc7639af7e",
+    "mtime": 1783926749.2181594,
+    "ast_hash": "d06f60a38a2fb4d741e7ee79ead07476",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/HostPortRow/HostPortRow.tsx": {
@@ -4282,6 +4282,16 @@
   "pkg/client/ArtelUI/src/segments/Topbar/components/icons/LogoutIcon.tsx": {
     "mtime": 1783885714.9342475,
     "ast_hash": "bdbc7ad423bf025e3b0ffe66b79c2e83",
+    "semantic_hash": ""
+  },
+  "internal/transport/external_connections_api/check_email.go": {
+    "mtime": 1783926610.4606326,
+    "ast_hash": "4cb00355bf1204f4b7866a493f82e25c",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/ManageEmailDialog/components/EmailCheckButton/EmailCheckButton.tsx": {
+    "mtime": 1783926636.2284412,
+    "ast_hash": "19d98750f3c037f2a3592634331b0907",
     "semantic_hash": ""
   }
 }
