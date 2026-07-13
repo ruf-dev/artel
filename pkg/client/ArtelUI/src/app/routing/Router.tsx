@@ -109,7 +109,7 @@ export default function Router() {
             <Tooltip
                 id="root-tooltip"
                 className={cls.Tooltip}
-                classNameArrow={cls.TooltipArrow}
+                noArrow
             />
         </div>
     )
