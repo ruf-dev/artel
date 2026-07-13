@@ -39,7 +39,7 @@
     --dialog-width-run-tract:   clamp(22.5rem, 34vw, 32.5rem);
     --dialog-width-step-picker: clamp(22.5rem, 32vw, 30rem);
     --dialog-width-md:          clamp(25rem, 32vw, 32.5rem);
-    --dialog-width-email:       40vw;
+    --dialog-width-email:       clamp(min(92vw, 26rem), 40vw, 32.5rem);
     --dialog-width-note:        clamp(30rem, 40vw, 42.5rem);
     --dialog-width-new-tract:   clamp(22.5rem, 30vw, 30rem);
     --drawer-width-mobile:      85vw;

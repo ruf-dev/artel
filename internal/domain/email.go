@@ -1,11 +1,12 @@
 package domain
 
 type MailServerSuggestion struct {
-	Domain   string
-	Smtp     string
-	SmtpPort int
-	Imap     string
-	ImapPort int
+	Domain         string
+	Smtp           string
+	SmtpPort       int
+	Imap           string
+	ImapPort       int
+	AppPasswordUrl string
 }
 
 type EmailMeta struct {

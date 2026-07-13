@@ -324,6 +324,15 @@ func (s *Service) AddEmailConnection(
 		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
 	}
 
+	if password == "" {
+		var err error
+
+		password, err = s.storedEmailPassword(ctx, uc.UserUuid)
+		if err != nil {
+			return domain.ExternalConnectionMeta{}, err
+		}
+	}
+
 	creds := domain.EmailCredentials{
 		ImapHost: imapHost,
 		ImapPort: imapPort,
@@ -373,6 +382,20 @@ func (s *Service) CheckEmailConnection(
 	smtpPort int,
 	password string,
 ) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	if password == "" {
+		var err error
+
+		password, err = s.storedEmailPassword(ctx, uc.UserUuid)
+		if err != nil {
+			return err
+		}
+	}
+
 	imapClient := imap.New(imapHost, imapPort, email, password)
 
 	imapCtx, cancelImap := context.WithTimeout(ctx, emailConnectionCheckTimeout)
@@ -394,6 +417,29 @@ func (s *Service) CheckEmailConnection(
 	}
 
 	return nil
+}
+
+// storedEmailPassword resolves the password of the user's existing email connection, used to
+// fall back when the caller submits a blank password (edit forms leave it blank to mean "keep
+// the current password" for both saving and pinging).
+func (s *Service) storedEmailPassword(ctx context.Context, userUuid uuid.UUID) (string, error) {
+	existing, err := s.connections.GetByUserAndProvider(ctx, userUuid, domain.ProviderEmail)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error loading existing email connection")
+	}
+
+	if !existing.Valid {
+		return "", user_errors.EmailPasswordRequired
+	}
+
+	var creds domain.EmailCredentials
+
+	err = json.Unmarshal(existing.V.CredentialsJSON, &creds)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error parsing existing email credentials")
+	}
+
+	return creds.Password, nil
 }
 
 func (s *Service) AddGitlabConnection(

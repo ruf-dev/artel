@@ -208,11 +208,12 @@ message CheckEmailConnection {
 }
 
 message MailServerSuggestion {
-  string domain    = 1;
-  string smtp      = 2;
-  int32  smtp_port = 3;
-  string imap      = 4;
-  int32  imap_port = 5;
+  string domain           = 1;
+  string smtp             = 2;
+  int32  smtp_port        = 3;
+  string imap             = 4;
+  int32  imap_port        = 5;
+  string app_password_url = 6;
 }
 
 message ListMailServerSuggestions {

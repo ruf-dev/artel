@@ -675,14 +675,15 @@ func (*CheckEmailConnection) Descriptor() ([]byte, []int) {
 }
 
 type MailServerSuggestion struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
-	Smtp          string                 `protobuf:"bytes,2,opt,name=smtp,proto3" json:"smtp,omitempty"`
-	SmtpPort      int32                  `protobuf:"varint,3,opt,name=smtp_port,json=smtpPort,proto3" json:"smtp_port,omitempty"`
-	Imap          string                 `protobuf:"bytes,4,opt,name=imap,proto3" json:"imap,omitempty"`
-	ImapPort      int32                  `protobuf:"varint,5,opt,name=imap_port,json=imapPort,proto3" json:"imap_port,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Domain         string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
+	Smtp           string                 `protobuf:"bytes,2,opt,name=smtp,proto3" json:"smtp,omitempty"`
+	SmtpPort       int32                  `protobuf:"varint,3,opt,name=smtp_port,json=smtpPort,proto3" json:"smtp_port,omitempty"`
+	Imap           string                 `protobuf:"bytes,4,opt,name=imap,proto3" json:"imap,omitempty"`
+	ImapPort       int32                  `protobuf:"varint,5,opt,name=imap_port,json=imapPort,proto3" json:"imap_port,omitempty"`
+	AppPasswordUrl string                 `protobuf:"bytes,6,opt,name=app_password_url,json=appPasswordUrl,proto3" json:"app_password_url,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *MailServerSuggestion) Reset() {
@@ -748,6 +749,13 @@ func (x *MailServerSuggestion) GetImapPort() int32 {
 		return x.ImapPort
 	}
 	return 0
+}
+
+func (x *MailServerSuggestion) GetAppPasswordUrl() string {
+	if x != nil {
+		return x.AppPasswordUrl
+	}
+	return ""
 }
 
 type ListMailServerSuggestions struct {
@@ -2044,13 +2052,14 @@ const file_external_connections_proto_rawDesc = "" +
 	"\tsmtp_port\x18\x05 \x01(\x05R\bsmtpPort\x12\x1a\n" +
 	"\bpassword\x18\x06 \x01(\tR\bpassword\x1a\n" +
 	"\n" +
-	"\bResponse\"\x90\x01\n" +
+	"\bResponse\"\xba\x01\n" +
 	"\x14MailServerSuggestion\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x12\n" +
 	"\x04smtp\x18\x02 \x01(\tR\x04smtp\x12\x1b\n" +
 	"\tsmtp_port\x18\x03 \x01(\x05R\bsmtpPort\x12\x12\n" +
 	"\x04imap\x18\x04 \x01(\tR\x04imap\x12\x1b\n" +
-	"\timap_port\x18\x05 \x01(\x05R\bimapPort\"\x8d\x01\n" +
+	"\timap_port\x18\x05 \x01(\x05R\bimapPort\x12(\n" +
+	"\x10app_password_url\x18\x06 \x01(\tR\x0eappPasswordUrl\"\x8d\x01\n" +
 	"\x19ListMailServerSuggestions\x1a!\n" +
 	"\aRequest\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x1aM\n" +

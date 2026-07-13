@@ -265,11 +265,12 @@ type IdentitiesTelegram struct {
 }
 
 type MailServerSuggestion struct {
-	Domain   string
-	Smtp     string
-	SmtpPort int32
-	Imap     string
-	ImapPort int32
+	Domain         string
+	Smtp           string
+	SmtpPort       int32
+	Imap           string
+	ImapPort       int32
+	AppPasswordUrl sql.NullString
 }
 
 type Mcp struct {

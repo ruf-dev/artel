@@ -149,6 +149,7 @@ export type MailServerSuggestion = {
   smtpPort?: number;
   imap?: string;
   imapPort?: number;
+  appPasswordUrl?: string;
 };
 
 export type ListMailServerSuggestionsRequest = {

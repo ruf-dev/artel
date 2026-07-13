@@ -1,19 +1,19 @@
-import {useState, useRef, useEffect} from "react"
+import {useState, useEffect} from "react"
 import {Button} from "@vervstack/chures"
 
 import Input from "@/components/atoms/Input/Input.tsx"
 import {
     AddEmailConnectionRequest,
     ExternalConnectionInfo,
-    ExternalConnectionsAPI,
 } from "@/app/api/artel/external_connections.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-import useUser from "@/hooks/user/User.ts"
 import DialogHead from "@/dialogs/ManageEmailDialog/components/DialogHead/DialogHead.tsx"
 import EmailCheckButton from "@/dialogs/ManageEmailDialog/components/EmailCheckButton/EmailCheckButton.tsx"
 import HostPortRow from "@/dialogs/ManageEmailDialog/components/HostPortRow/HostPortRow.tsx"
+import PasswordField from "@/dialogs/ManageEmailDialog/components/PasswordField/PasswordField.tsx"
+import {useMailServerSuggestion} from "@/dialogs/ManageEmailDialog/processes/useMailServerSuggestion.ts"
 import cls from "@/dialogs/ManageEmailDialog/components/EmailEditDialog/EmailEditDialog.module.css"
 
 function buildEmailRequest(
@@ -33,57 +33,27 @@ export default function EmailEditDialog({connection}: {connection: ExternalConne
     const [saving, setSaving] = useState(false)
     const initialEmail = connection.generic?.fields?.username ?? connection.generic?.fields?.email ?? ""
     const [email, setEmail] = useState(initialEmail)
-    const [imapHost, setImapHost] = useState("")
-    const [imapPort, setImapPort] = useState("")
-    const [smtpHost, setSmtpHost] = useState("")
-    const [smtpPort, setSmtpPort] = useState("")
     const [password, setPassword] = useState("")
-    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const suggestion = useMailServerSuggestion()
 
     const {addEmailConnection} = useExternalConnections()
     const {CloseDialog} = useDialog()
-    const {auth} = useUser()
     const bakeError = useBakeError()
 
     useEffect(() => {
-        const domain = initialEmail.split("@")[1] ?? ""
-        if (!domain) return
-        ExternalConnectionsAPI.ListMailServerSuggestions({domain}, auth.getInitReq())
-            .then(resp => {
-                if (resp.suggestions?.length === 1) {
-                    const s = resp.suggestions[0]
-                    setImapHost(s.imap ?? "")
-                    setImapPort(s.imapPort ? String(s.imapPort) : "")
-                    setSmtpHost(s.smtp ?? "")
-                    setSmtpPort(s.smtpPort ? String(s.smtpPort) : "")
-                }
-            })
-            .catch(() => {})
+        suggestion.seedFromEmail(initialEmail)
     }, [])
 
     function handleEmailChange(value: string) {
         setEmail(value)
-        const domain = value.split("@")[1] ?? ""
-        if (!domain) return
-        if (debounceRef.current) clearTimeout(debounceRef.current)
-        debounceRef.current = setTimeout(() => {
-            ExternalConnectionsAPI.ListMailServerSuggestions({domain}, auth.getInitReq())
-                .then(resp => {
-                    if (resp.suggestions?.length === 1) {
-                        const s = resp.suggestions[0]
-                        setImapHost(s.imap ?? "")
-                        setImapPort(s.imapPort ? String(s.imapPort) : "")
-                        setSmtpHost(s.smtp ?? "")
-                        setSmtpPort(s.smtpPort ? String(s.smtpPort) : "")
-                    }
-                })
-                .catch(() => {})
-        }, 300)
+        suggestion.notifyEmailChanged(value)
     }
 
     function handleSave() {
         setSaving(true)
-        addEmailConnection(buildEmailRequest(email, imapHost, imapPort, smtpHost, smtpPort, password))
+        addEmailConnection(buildEmailRequest(
+            email, suggestion.imapHost, suggestion.imapPort, suggestion.smtpHost, suggestion.smtpPort, password,
+        ))
             .then(CloseDialog)
             .catch(e => bakeError("Error updating email", e))
             .finally(() => setSaving(false))
@@ -96,29 +66,41 @@ export default function EmailEditDialog({connection}: {connection: ExternalConne
                 onClose={CloseDialog}
                 disabled={saving}
                 email={email}/>
-            <p className={cls.ModalSub}>Update server settings. Re-enter your password to apply changes.</p>
+            <p className={cls.ModalSub}>Update server settings. Leave the password blank to keep the current one.</p>
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Email address</span>
                 <Input value={email} setValue={handleEmailChange} disabled={saving} autoComplete="off"/>
             </label>
             <HostPortRow
-                host={{label: "IMAP host", value: imapHost, placeholder: "imap.example.com", onChange: setImapHost}}
-                port={{label: "IMAP port", value: imapPort, placeholder: "993", onChange: setImapPort}}
+                host={{
+                    label: "IMAP host", value: suggestion.imapHost,
+                    placeholder: "imap.example.com", onChange: suggestion.setImapHost,
+                }}
+                port={{
+                    label: "IMAP port", value: suggestion.imapPort,
+                    placeholder: "993", onChange: suggestion.setImapPort,
+                }}
                 disabled={saving}
             />
             <HostPortRow
-                host={{label: "SMTP host", value: smtpHost, placeholder: "smtp.example.com", onChange: setSmtpHost}}
-                port={{label: "SMTP port", value: smtpPort, placeholder: "587", onChange: setSmtpPort}}
+                host={{
+                    label: "SMTP host", value: suggestion.smtpHost,
+                    placeholder: "smtp.example.com", onChange: suggestion.setSmtpHost,
+                }}
+                port={{
+                    label: "SMTP port", value: suggestion.smtpPort,
+                    placeholder: "587", onChange: suggestion.setSmtpPort,
+                }}
                 disabled={saving}
             />
-            <label className={cls.Field}>
-                <span className={cls.FieldLabel}>Password</span>
-                <Input type="password" placeholder="App-specific password" value={password}
-                    setValue={setPassword} disabled={saving} autoComplete="new-password"/>
-            </label>
+            <PasswordField value={password} onChange={setPassword} disabled={saving}
+                appPasswordUrl={suggestion.appPasswordUrl} hasStoredValue={true}/>
             <div className={cls.ModalActions}>
                 <EmailCheckButton
-                    req={buildEmailRequest(email, imapHost, imapPort, smtpHost, smtpPort, password)}
+                    req={buildEmailRequest(
+                        email, suggestion.imapHost, suggestion.imapPort,
+                        suggestion.smtpHost, suggestion.smtpPort, password,
+                    )}
                     disabled={saving}/>
                 <Button variant="primary" onClick={handleSave} disabled={saving}>
                     {saving ? "Saving…" : "Save changes"}

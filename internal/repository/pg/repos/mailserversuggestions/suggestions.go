@@ -27,11 +27,12 @@ func (r *Repo) ListByDomain(ctx context.Context, domainPrefix string) ([]domain.
 	suggestions := make([]domain.MailServerSuggestion, len(rows))
 	for i, row := range rows {
 		suggestions[i] = domain.MailServerSuggestion{
-			Domain:   row.Domain,
-			Smtp:     row.Smtp,
-			SmtpPort: int(row.SmtpPort),
-			Imap:     row.Imap,
-			ImapPort: int(row.ImapPort),
+			Domain:         row.Domain,
+			Smtp:           row.Smtp,
+			SmtpPort:       int(row.SmtpPort),
+			Imap:           row.Imap,
+			ImapPort:       int(row.ImapPort),
+			AppPasswordUrl: row.AppPasswordUrl.String,
 		}
 	}
 

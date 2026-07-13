@@ -19,11 +19,12 @@ func (e *ExternalConnectionsImpl) ListMailServerSuggestions(
 	pbSuggestions := make([]*pb.MailServerSuggestion, len(suggestions))
 	for i, s := range suggestions {
 		pbSuggestions[i] = &pb.MailServerSuggestion{
-			Domain:   s.Domain,
-			Smtp:     s.Smtp,
-			SmtpPort: int32(s.SmtpPort),
-			Imap:     s.Imap,
-			ImapPort: int32(s.ImapPort),
+			Domain:         s.Domain,
+			Smtp:           s.Smtp,
+			SmtpPort:       int32(s.SmtpPort),
+			Imap:           s.Imap,
+			ImapPort:       int32(s.ImapPort),
+			AppPasswordUrl: s.AppPasswordUrl,
 		}
 	}
 

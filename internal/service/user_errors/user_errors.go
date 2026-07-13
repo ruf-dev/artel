@@ -140,6 +140,11 @@ var (
 		codes.FailedPrecondition,
 		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
+	EmailPasswordRequired = rerrors.New(
+		"password is required to connect this email account",
+		codes.InvalidArgument,
+		rerrors.WithHttpStatus(http.StatusBadRequest),
+	)
 
 	NoCouchDbInstance = rerrors.New("no storage instance",
 		codes.FailedPrecondition,

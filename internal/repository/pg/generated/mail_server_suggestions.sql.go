@@ -11,7 +11,7 @@ import (
 )
 
 const listMailServerSuggestions = `-- name: ListMailServerSuggestions :many
-SELECT domain, smtp, smtp_port, imap, imap_port
+SELECT domain, smtp, smtp_port, imap, imap_port, app_password_url
 FROM mail_server_suggestions
 WHERE domain LIKE $1 || '%'
 ORDER BY domain
@@ -32,6 +32,7 @@ func (q *Queries) ListMailServerSuggestions(ctx context.Context, dollar_1 sql.Nu
 			&i.SmtpPort,
 			&i.Imap,
 			&i.ImapPort,
+			&i.AppPasswordUrl,
 		); err != nil {
 			return nil, err
 		}

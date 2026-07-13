@@ -680,6 +680,9 @@
         "imapPort": {
           "type": "integer",
           "format": "int32"
+        },
+        "appPasswordUrl": {
+          "type": "string"
         }
       }
     },
