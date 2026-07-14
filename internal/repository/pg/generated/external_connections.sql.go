@@ -169,7 +169,7 @@ func (q *Queries) ListExternalConnectionsByUser(ctx context.Context, userID uuid
 const upsertExternalConnection = `-- name: UpsertExternalConnection :one
 INSERT INTO external_connections (user_id, provider, provider_type, credentials_enc, metadata)
 VALUES ($1, $2, $3, $4, $5)
-ON CONFLICT (user_id, provider) DO UPDATE
+ON CONFLICT (user_id, provider) WHERE provider <> 'trello' DO UPDATE
     SET provider_type   = EXCLUDED.provider_type,
         credentials_enc = EXCLUDED.credentials_enc,
         metadata        = EXCLUDED.metadata,
