@@ -10482,7 +10482,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_external_connections_pb_go_sizecache",
-      "community": 134,
+      "community": 424,
       "norm_label": "sizecache"
     },
     {
@@ -10822,7 +10822,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "artel_api_initiategoogleoauth",
-      "community": 574,
+      "community": 403,
       "norm_label": "initiategoogleoauth"
     },
     {
@@ -10832,7 +10832,7 @@
       "source_location": "L299",
       "_origin": "ast",
       "id": "artel_api_initiategoogleoauth_reset",
-      "community": 574,
+      "community": 403,
       "norm_label": ".reset()"
     },
     {
@@ -10842,7 +10842,7 @@
       "source_location": "L306",
       "_origin": "ast",
       "id": "artel_api_initiategoogleoauth_string",
-      "community": 574,
+      "community": 403,
       "norm_label": ".string()"
     },
     {
@@ -10852,7 +10852,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "artel_api_initiategoogleoauth_protomessage",
-      "community": 574,
+      "community": 403,
       "norm_label": ".protomessage()"
     },
     {
@@ -10862,7 +10862,7 @@
       "source_location": "L312",
       "_origin": "ast",
       "id": "artel_api_initiategoogleoauth_protoreflect",
-      "community": 574,
+      "community": 403,
       "norm_label": ".protoreflect()"
     },
     {
@@ -10872,7 +10872,7 @@
       "source_location": "L325",
       "_origin": "ast",
       "id": "artel_api_initiategoogleoauth_descriptor",
-      "community": 574,
+      "community": 403,
       "norm_label": ".descriptor()"
     },
     {
@@ -10942,7 +10942,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "artel_api_disconnectprovider",
-      "community": 240,
+      "community": 143,
       "norm_label": "disconnectprovider"
     },
     {
@@ -10952,7 +10952,7 @@
       "source_location": "L371",
       "_origin": "ast",
       "id": "artel_api_disconnectprovider_reset",
-      "community": 240,
+      "community": 143,
       "norm_label": ".reset()"
     },
     {
@@ -10962,7 +10962,7 @@
       "source_location": "L378",
       "_origin": "ast",
       "id": "artel_api_disconnectprovider_string",
-      "community": 240,
+      "community": 143,
       "norm_label": ".string()"
     },
     {
@@ -10972,7 +10972,7 @@
       "source_location": "L382",
       "_origin": "ast",
       "id": "artel_api_disconnectprovider_protomessage",
-      "community": 240,
+      "community": 143,
       "norm_label": ".protomessage()"
     },
     {
@@ -10982,7 +10982,7 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "artel_api_disconnectprovider_protoreflect",
-      "community": 240,
+      "community": 143,
       "norm_label": ".protoreflect()"
     },
     {
@@ -10992,7 +10992,7 @@
       "source_location": "L397",
       "_origin": "ast",
       "id": "artel_api_disconnectprovider_descriptor",
-      "community": 240,
+      "community": 143,
       "norm_label": ".descriptor()"
     },
     {
@@ -11452,7 +11452,7 @@
       "source_location": "L677",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection",
-      "community": 273,
+      "community": 141,
       "norm_label": "checkemailconnection"
     },
     {
@@ -11462,7 +11462,7 @@
       "source_location": "L683",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_reset",
-      "community": 273,
+      "community": 141,
       "norm_label": ".reset()"
     },
     {
@@ -11472,7 +11472,7 @@
       "source_location": "L690",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_string",
-      "community": 273,
+      "community": 141,
       "norm_label": ".string()"
     },
     {
@@ -11482,7 +11482,7 @@
       "source_location": "L694",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_protomessage",
-      "community": 273,
+      "community": 141,
       "norm_label": ".protomessage()"
     },
     {
@@ -11492,7 +11492,7 @@
       "source_location": "L696",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_protoreflect",
-      "community": 273,
+      "community": 141,
       "norm_label": ".protoreflect()"
     },
     {
@@ -11502,7 +11502,7 @@
       "source_location": "L709",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_descriptor",
-      "community": 273,
+      "community": 141,
       "norm_label": ".descriptor()"
     },
     {
@@ -11752,7 +11752,7 @@
       "source_location": "L869",
       "_origin": "ast",
       "id": "artel_api_checkgitlabconnection",
-      "community": 134,
+      "community": 424,
       "norm_label": "checkgitlabconnection"
     },
     {
@@ -11762,7 +11762,7 @@
       "source_location": "L875",
       "_origin": "ast",
       "id": "artel_api_checkgitlabconnection_reset",
-      "community": 134,
+      "community": 424,
       "norm_label": ".reset()"
     },
     {
@@ -11772,7 +11772,7 @@
       "source_location": "L882",
       "_origin": "ast",
       "id": "artel_api_checkgitlabconnection_string",
-      "community": 134,
+      "community": 424,
       "norm_label": ".string()"
     },
     {
@@ -11782,7 +11782,7 @@
       "source_location": "L886",
       "_origin": "ast",
       "id": "artel_api_checkgitlabconnection_protomessage",
-      "community": 134,
+      "community": 424,
       "norm_label": ".protomessage()"
     },
     {
@@ -12132,7 +12132,7 @@
       "source_location": "L1101",
       "_origin": "ast",
       "id": "artel_api_listconnections_request",
-      "community": 134,
+      "community": 397,
       "norm_label": "listconnections_request"
     },
     {
@@ -12142,7 +12142,7 @@
       "source_location": "L1107",
       "_origin": "ast",
       "id": "artel_api_listconnections_request_reset",
-      "community": 134,
+      "community": 397,
       "norm_label": ".reset()"
     },
     {
@@ -12152,7 +12152,7 @@
       "source_location": "L1114",
       "_origin": "ast",
       "id": "artel_api_listconnections_request_string",
-      "community": 134,
+      "community": 397,
       "norm_label": ".string()"
     },
     {
@@ -12162,7 +12162,7 @@
       "source_location": "L1118",
       "_origin": "ast",
       "id": "artel_api_listconnections_request_protomessage",
-      "community": 134,
+      "community": 397,
       "norm_label": ".protomessage()"
     },
     {
@@ -12172,7 +12172,7 @@
       "source_location": "L1120",
       "_origin": "ast",
       "id": "artel_api_listconnections_request_protoreflect",
-      "community": 134,
+      "community": 397,
       "norm_label": ".protoreflect()"
     },
     {
@@ -12182,7 +12182,7 @@
       "source_location": "L1133",
       "_origin": "ast",
       "id": "artel_api_listconnections_request_descriptor",
-      "community": 134,
+      "community": 397,
       "norm_label": ".descriptor()"
     },
     {
@@ -12392,7 +12392,7 @@
       "source_location": "L1261",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request",
-      "community": 397,
+      "community": 273,
       "norm_label": "disconnectconnection_request"
     },
     {
@@ -12402,7 +12402,7 @@
       "source_location": "L1268",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request_reset",
-      "community": 397,
+      "community": 273,
       "norm_label": ".reset()"
     },
     {
@@ -12412,7 +12412,7 @@
       "source_location": "L1275",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request_string",
-      "community": 397,
+      "community": 273,
       "norm_label": ".string()"
     },
     {
@@ -12422,7 +12422,7 @@
       "source_location": "L1279",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request_protomessage",
-      "community": 397,
+      "community": 273,
       "norm_label": ".protomessage()"
     },
     {
@@ -12432,7 +12432,7 @@
       "source_location": "L1281",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request_protoreflect",
-      "community": 397,
+      "community": 273,
       "norm_label": ".protoreflect()"
     },
     {
@@ -12442,7 +12442,7 @@
       "source_location": "L1294",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request_descriptor",
-      "community": 397,
+      "community": 273,
       "norm_label": ".descriptor()"
     },
     {
@@ -12452,7 +12452,7 @@
       "source_location": "L1298",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_request_getid",
-      "community": 397,
+      "community": 273,
       "norm_label": ".getid()"
     },
     {
@@ -12462,7 +12462,7 @@
       "source_location": "L1305",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_response",
-      "community": 403,
+      "community": 424,
       "norm_label": "disconnectconnection_response"
     },
     {
@@ -12472,7 +12472,7 @@
       "source_location": "L1311",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_response_reset",
-      "community": 403,
+      "community": 424,
       "norm_label": ".reset()"
     },
     {
@@ -12482,7 +12482,7 @@
       "source_location": "L1318",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_response_string",
-      "community": 403,
+      "community": 424,
       "norm_label": ".string()"
     },
     {
@@ -12492,7 +12492,7 @@
       "source_location": "L1322",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_response_protomessage",
-      "community": 403,
+      "community": 424,
       "norm_label": ".protomessage()"
     },
     {
@@ -12502,7 +12502,7 @@
       "source_location": "L1324",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_response_protoreflect",
-      "community": 403,
+      "community": 424,
       "norm_label": ".protoreflect()"
     },
     {
@@ -12512,7 +12512,7 @@
       "source_location": "L1337",
       "_origin": "ast",
       "id": "artel_api_disconnectconnection_response_descriptor",
-      "community": 403,
+      "community": 424,
       "norm_label": ".descriptor()"
     },
     {
@@ -13372,7 +13372,7 @@
       "source_location": "L1889",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_response",
-      "community": 406,
+      "community": 240,
       "norm_label": "checkemailconnection_response"
     },
     {
@@ -13382,7 +13382,7 @@
       "source_location": "L1895",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_response_reset",
-      "community": 406,
+      "community": 240,
       "norm_label": ".reset()"
     },
     {
@@ -13392,7 +13392,7 @@
       "source_location": "L1902",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_response_string",
-      "community": 406,
+      "community": 240,
       "norm_label": ".string()"
     },
     {
@@ -13402,7 +13402,7 @@
       "source_location": "L1906",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_response_protomessage",
-      "community": 406,
+      "community": 240,
       "norm_label": ".protomessage()"
     },
     {
@@ -13412,7 +13412,7 @@
       "source_location": "L1908",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_response_protoreflect",
-      "community": 406,
+      "community": 240,
       "norm_label": ".protoreflect()"
     },
     {
@@ -13422,7 +13422,7 @@
       "source_location": "L1921",
       "_origin": "ast",
       "id": "artel_api_checkemailconnection_response_descriptor",
-      "community": 406,
+      "community": 240,
       "norm_label": ".descriptor()"
     },
     {
@@ -16192,7 +16192,7 @@
       "source_location": "L287",
       "_origin": "ast",
       "id": "artel_api_revokemcpkey",
-      "community": 609,
+      "community": 178,
       "norm_label": "revokemcpkey"
     },
     {
@@ -16202,7 +16202,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "artel_api_revokemcpkey_reset",
-      "community": 609,
+      "community": 178,
       "norm_label": ".reset()"
     },
     {
@@ -16212,7 +16212,7 @@
       "source_location": "L300",
       "_origin": "ast",
       "id": "artel_api_revokemcpkey_string",
-      "community": 609,
+      "community": 178,
       "norm_label": ".string()"
     },
     {
@@ -16222,7 +16222,7 @@
       "source_location": "L304",
       "_origin": "ast",
       "id": "artel_api_revokemcpkey_protomessage",
-      "community": 609,
+      "community": 178,
       "norm_label": ".protomessage()"
     },
     {
@@ -16232,7 +16232,7 @@
       "source_location": "L306",
       "_origin": "ast",
       "id": "artel_api_revokemcpkey_protoreflect",
-      "community": 609,
+      "community": 178,
       "norm_label": ".protoreflect()"
     },
     {
@@ -16242,7 +16242,7 @@
       "source_location": "L319",
       "_origin": "ast",
       "id": "artel_api_revokemcpkey_descriptor",
-      "community": 609,
+      "community": 178,
       "norm_label": ".descriptor()"
     },
     {
@@ -18012,7 +18012,7 @@
       "source_location": "L1415",
       "_origin": "ast",
       "id": "artel_api_listusermcpkeys_request",
-      "community": 178,
+      "community": 2,
       "norm_label": "listusermcpkeys_request"
     },
     {
@@ -18022,7 +18022,7 @@
       "source_location": "L1421",
       "_origin": "ast",
       "id": "artel_api_listusermcpkeys_request_reset",
-      "community": 178,
+      "community": 2,
       "norm_label": ".reset()"
     },
     {
@@ -18032,7 +18032,7 @@
       "source_location": "L1428",
       "_origin": "ast",
       "id": "artel_api_listusermcpkeys_request_string",
-      "community": 178,
+      "community": 2,
       "norm_label": ".string()"
     },
     {
@@ -18042,7 +18042,7 @@
       "source_location": "L1432",
       "_origin": "ast",
       "id": "artel_api_listusermcpkeys_request_protomessage",
-      "community": 178,
+      "community": 2,
       "norm_label": ".protomessage()"
     },
     {
@@ -18052,7 +18052,7 @@
       "source_location": "L1434",
       "_origin": "ast",
       "id": "artel_api_listusermcpkeys_request_protoreflect",
-      "community": 178,
+      "community": 2,
       "norm_label": ".protoreflect()"
     },
     {
@@ -18062,7 +18062,7 @@
       "source_location": "L1447",
       "_origin": "ast",
       "id": "artel_api_listusermcpkeys_request_descriptor",
-      "community": 178,
+      "community": 2,
       "norm_label": ".descriptor()"
     },
     {
@@ -18672,7 +18672,7 @@
       "source_location": "L1835",
       "_origin": "ast",
       "id": "artel_api_removemcpconnector_response",
-      "community": 2,
+      "community": 609,
       "norm_label": "removemcpconnector_response"
     },
     {
@@ -18682,7 +18682,7 @@
       "source_location": "L1841",
       "_origin": "ast",
       "id": "artel_api_removemcpconnector_response_reset",
-      "community": 2,
+      "community": 609,
       "norm_label": ".reset()"
     },
     {
@@ -18692,7 +18692,7 @@
       "source_location": "L1848",
       "_origin": "ast",
       "id": "artel_api_removemcpconnector_response_string",
-      "community": 2,
+      "community": 609,
       "norm_label": ".string()"
     },
     {
@@ -18702,7 +18702,7 @@
       "source_location": "L1852",
       "_origin": "ast",
       "id": "artel_api_removemcpconnector_response_protomessage",
-      "community": 2,
+      "community": 609,
       "norm_label": ".protomessage()"
     },
     {
@@ -18712,7 +18712,7 @@
       "source_location": "L1854",
       "_origin": "ast",
       "id": "artel_api_removemcpconnector_response_protoreflect",
-      "community": 2,
+      "community": 609,
       "norm_label": ".protoreflect()"
     },
     {
@@ -18722,7 +18722,7 @@
       "source_location": "L1867",
       "_origin": "ast",
       "id": "artel_api_removemcpconnector_response_descriptor",
-      "community": 2,
+      "community": 609,
       "norm_label": ".descriptor()"
     },
     {
@@ -24492,7 +24492,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "artel_api_lists3instances_descriptor",
-      "community": 143,
+      "community": 554,
       "norm_label": ".descriptor()"
     },
     {
@@ -24612,7 +24612,7 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_descriptor",
-      "community": 143,
+      "community": 554,
       "norm_label": ".descriptor()"
     },
     {
@@ -24622,7 +24622,7 @@
       "source_location": "L206",
       "_origin": "ast",
       "id": "artel_api_tests3instance",
-      "community": 0,
+      "community": 441,
       "norm_label": "tests3instance"
     },
     {
@@ -24632,7 +24632,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "artel_api_tests3instance_reset",
-      "community": 0,
+      "community": 441,
       "norm_label": ".reset()"
     },
     {
@@ -24642,7 +24642,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "artel_api_tests3instance_string",
-      "community": 0,
+      "community": 441,
       "norm_label": ".string()"
     },
     {
@@ -24652,7 +24652,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "artel_api_tests3instance_protomessage",
-      "community": 0,
+      "community": 441,
       "norm_label": ".protomessage()"
     },
     {
@@ -24662,7 +24662,7 @@
       "source_location": "L225",
       "_origin": "ast",
       "id": "artel_api_tests3instance_protoreflect",
-      "community": 0,
+      "community": 441,
       "norm_label": ".protoreflect()"
     },
     {
@@ -24672,7 +24672,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "artel_api_tests3instance_descriptor",
-      "community": 0,
+      "community": 441,
       "norm_label": ".descriptor()"
     },
     {
@@ -24992,7 +24992,7 @@
       "source_location": "L452",
       "_origin": "ast",
       "id": "artel_api_gets3instance_response_descriptor",
-      "community": 143,
+      "community": 554,
       "norm_label": ".descriptor()"
     },
     {
@@ -25432,7 +25432,7 @@
       "source_location": "L739",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_request_descriptor",
-      "community": 143,
+      "community": 554,
       "norm_label": ".descriptor()"
     },
     {
@@ -25452,7 +25452,7 @@
       "source_location": "L750",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_response",
-      "community": 143,
+      "community": 0,
       "norm_label": "deletes3instance_response"
     },
     {
@@ -25462,7 +25462,7 @@
       "source_location": "L756",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_response_reset",
-      "community": 143,
+      "community": 0,
       "norm_label": ".reset()"
     },
     {
@@ -25472,7 +25472,7 @@
       "source_location": "L763",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_response_string",
-      "community": 143,
+      "community": 0,
       "norm_label": ".string()"
     },
     {
@@ -25482,7 +25482,7 @@
       "source_location": "L767",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_response_protomessage",
-      "community": 143,
+      "community": 0,
       "norm_label": ".protomessage()"
     },
     {
@@ -25492,7 +25492,7 @@
       "source_location": "L769",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_response_protoreflect",
-      "community": 143,
+      "community": 0,
       "norm_label": ".protoreflect()"
     },
     {
@@ -25502,7 +25502,7 @@
       "source_location": "L782",
       "_origin": "ast",
       "id": "artel_api_deletes3instance_response_descriptor",
-      "community": 143,
+      "community": 0,
       "norm_label": ".descriptor()"
     },
     {
@@ -25642,7 +25642,7 @@
       "source_location": "L939",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_s3_instances_pb_file_s3_instances_proto_rawdescgzip",
-      "community": 143,
+      "community": 554,
       "norm_label": "file_s3_instances_proto_rawdescgzip()"
     },
     {
@@ -26352,7 +26352,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_task_trackers_pb",
-      "community": 542,
+      "community": 541,
       "norm_label": "task_trackers.pb.go"
     },
     {
@@ -26432,7 +26432,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "artel_api_tasktrackerinfo_protoreflect",
-      "community": 358,
+      "community": 543,
       "norm_label": ".protoreflect()"
     },
     {
@@ -26442,7 +26442,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_task_trackers_pb_go_message",
-      "community": 358,
+      "community": 543,
       "norm_label": "message"
     },
     {
@@ -26622,7 +26622,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "artel_api_addtasktracker_protoreflect",
-      "community": 358,
+      "community": 543,
       "norm_label": ".protoreflect()"
     },
     {
@@ -27162,7 +27162,7 @@
       "source_location": "L501",
       "_origin": "ast",
       "id": "artel_api_deletetasktracker_request_protoreflect",
-      "community": 358,
+      "community": 543,
       "norm_label": ".protoreflect()"
     },
     {
@@ -27232,7 +27232,7 @@
       "source_location": "L544",
       "_origin": "ast",
       "id": "artel_api_deletetasktracker_response_protoreflect",
-      "community": 358,
+      "community": 543,
       "norm_label": ".protoreflect()"
     },
     {
@@ -27402,7 +27402,7 @@
       "source_location": "L742",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_task_trackers_pb_init",
-      "community": 542,
+      "community": 541,
       "norm_label": "init()"
     },
     {
@@ -27412,7 +27412,7 @@
       "source_location": "L743",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_task_trackers_pb_file_task_trackers_proto_init",
-      "community": 542,
+      "community": 541,
       "norm_label": "file_task_trackers_proto_init()"
     },
     {
@@ -27982,7 +27982,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_pb_go_messagestate",
-      "community": 272,
+      "community": 115,
       "norm_label": "messagestate"
     },
     {
@@ -28002,7 +28002,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_pb_go_sizecache",
-      "community": 115,
+      "community": 272,
       "norm_label": "sizecache"
     },
     {
@@ -30002,7 +30002,7 @@
       "source_location": "L1350",
       "_origin": "ast",
       "id": "artel_api_deletetract",
-      "community": 8,
+      "community": 175,
       "norm_label": "deletetract"
     },
     {
@@ -30012,7 +30012,7 @@
       "source_location": "L1356",
       "_origin": "ast",
       "id": "artel_api_deletetract_reset",
-      "community": 8,
+      "community": 175,
       "norm_label": ".reset()"
     },
     {
@@ -30022,7 +30022,7 @@
       "source_location": "L1363",
       "_origin": "ast",
       "id": "artel_api_deletetract_string",
-      "community": 8,
+      "community": 175,
       "norm_label": ".string()"
     },
     {
@@ -30032,7 +30032,7 @@
       "source_location": "L1367",
       "_origin": "ast",
       "id": "artel_api_deletetract_protomessage",
-      "community": 8,
+      "community": 175,
       "norm_label": ".protomessage()"
     },
     {
@@ -30042,7 +30042,7 @@
       "source_location": "L1369",
       "_origin": "ast",
       "id": "artel_api_deletetract_protoreflect",
-      "community": 8,
+      "community": 175,
       "norm_label": ".protoreflect()"
     },
     {
@@ -30052,7 +30052,7 @@
       "source_location": "L1382",
       "_origin": "ast",
       "id": "artel_api_deletetract_descriptor",
-      "community": 8,
+      "community": 175,
       "norm_label": ".descriptor()"
     },
     {
@@ -30182,7 +30182,7 @@
       "source_location": "L1458",
       "_origin": "ast",
       "id": "artel_api_listruns",
-      "community": 11,
+      "community": 204,
       "norm_label": "listruns"
     },
     {
@@ -30192,7 +30192,7 @@
       "source_location": "L1464",
       "_origin": "ast",
       "id": "artel_api_listruns_reset",
-      "community": 11,
+      "community": 204,
       "norm_label": ".reset()"
     },
     {
@@ -30202,7 +30202,7 @@
       "source_location": "L1471",
       "_origin": "ast",
       "id": "artel_api_listruns_string",
-      "community": 11,
+      "community": 204,
       "norm_label": ".string()"
     },
     {
@@ -30212,7 +30212,7 @@
       "source_location": "L1475",
       "_origin": "ast",
       "id": "artel_api_listruns_protomessage",
-      "community": 11,
+      "community": 204,
       "norm_label": ".protomessage()"
     },
     {
@@ -30222,7 +30222,7 @@
       "source_location": "L1477",
       "_origin": "ast",
       "id": "artel_api_listruns_protoreflect",
-      "community": 11,
+      "community": 204,
       "norm_label": ".protoreflect()"
     },
     {
@@ -30232,7 +30232,7 @@
       "source_location": "L1490",
       "_origin": "ast",
       "id": "artel_api_listruns_descriptor",
-      "community": 11,
+      "community": 204,
       "norm_label": ".descriptor()"
     },
     {
@@ -30362,7 +30362,7 @@
       "source_location": "L1566",
       "_origin": "ast",
       "id": "artel_api_listtriggersources",
-      "community": 272,
+      "community": 8,
       "norm_label": "listtriggersources"
     },
     {
@@ -30372,7 +30372,7 @@
       "source_location": "L1572",
       "_origin": "ast",
       "id": "artel_api_listtriggersources_reset",
-      "community": 272,
+      "community": 8,
       "norm_label": ".reset()"
     },
     {
@@ -30382,7 +30382,7 @@
       "source_location": "L1579",
       "_origin": "ast",
       "id": "artel_api_listtriggersources_string",
-      "community": 272,
+      "community": 8,
       "norm_label": ".string()"
     },
     {
@@ -30392,7 +30392,7 @@
       "source_location": "L1583",
       "_origin": "ast",
       "id": "artel_api_listtriggersources_protomessage",
-      "community": 272,
+      "community": 8,
       "norm_label": ".protomessage()"
     },
     {
@@ -30402,7 +30402,7 @@
       "source_location": "L1585",
       "_origin": "ast",
       "id": "artel_api_listtriggersources_protoreflect",
-      "community": 272,
+      "community": 8,
       "norm_label": ".protoreflect()"
     },
     {
@@ -30412,7 +30412,7 @@
       "source_location": "L1598",
       "_origin": "ast",
       "id": "artel_api_listtriggersources_descriptor",
-      "community": 272,
+      "community": 8,
       "norm_label": ".descriptor()"
     },
     {
@@ -30602,7 +30602,7 @@
       "source_location": "L1710",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled",
-      "community": 115,
+      "community": 11,
       "norm_label": "settriggerenabled"
     },
     {
@@ -30612,7 +30612,7 @@
       "source_location": "L1716",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_reset",
-      "community": 115,
+      "community": 11,
       "norm_label": ".reset()"
     },
     {
@@ -30622,7 +30622,7 @@
       "source_location": "L1723",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_string",
-      "community": 115,
+      "community": 11,
       "norm_label": ".string()"
     },
     {
@@ -30632,7 +30632,7 @@
       "source_location": "L1727",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_protomessage",
-      "community": 115,
+      "community": 11,
       "norm_label": ".protomessage()"
     },
     {
@@ -30642,7 +30642,7 @@
       "source_location": "L1729",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_protoreflect",
-      "community": 115,
+      "community": 11,
       "norm_label": ".protoreflect()"
     },
     {
@@ -30652,7 +30652,7 @@
       "source_location": "L1742",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_descriptor",
-      "community": 115,
+      "community": 11,
       "norm_label": ".descriptor()"
     },
     {
@@ -30662,7 +30662,7 @@
       "source_location": "L1746",
       "_origin": "ast",
       "id": "artel_api_rotatetriggertoken",
-      "community": 248,
+      "community": 8,
       "norm_label": "rotatetriggertoken"
     },
     {
@@ -30672,7 +30672,7 @@
       "source_location": "L1752",
       "_origin": "ast",
       "id": "artel_api_rotatetriggertoken_reset",
-      "community": 248,
+      "community": 8,
       "norm_label": ".reset()"
     },
     {
@@ -30682,7 +30682,7 @@
       "source_location": "L1759",
       "_origin": "ast",
       "id": "artel_api_rotatetriggertoken_string",
-      "community": 248,
+      "community": 8,
       "norm_label": ".string()"
     },
     {
@@ -30692,7 +30692,7 @@
       "source_location": "L1763",
       "_origin": "ast",
       "id": "artel_api_rotatetriggertoken_protomessage",
-      "community": 248,
+      "community": 8,
       "norm_label": ".protomessage()"
     },
     {
@@ -30702,7 +30702,7 @@
       "source_location": "L1765",
       "_origin": "ast",
       "id": "artel_api_rotatetriggertoken_protoreflect",
-      "community": 248,
+      "community": 8,
       "norm_label": ".protoreflect()"
     },
     {
@@ -30712,7 +30712,7 @@
       "source_location": "L1778",
       "_origin": "ast",
       "id": "artel_api_rotatetriggertoken_descriptor",
-      "community": 248,
+      "community": 8,
       "norm_label": ".descriptor()"
     },
     {
@@ -30722,7 +30722,7 @@
       "source_location": "L1782",
       "_origin": "ast",
       "id": "artel_api_linktrigger",
-      "community": 272,
+      "community": 11,
       "norm_label": "linktrigger"
     },
     {
@@ -30732,7 +30732,7 @@
       "source_location": "L1788",
       "_origin": "ast",
       "id": "artel_api_linktrigger_reset",
-      "community": 272,
+      "community": 11,
       "norm_label": ".reset()"
     },
     {
@@ -30742,7 +30742,7 @@
       "source_location": "L1795",
       "_origin": "ast",
       "id": "artel_api_linktrigger_string",
-      "community": 272,
+      "community": 11,
       "norm_label": ".string()"
     },
     {
@@ -30752,7 +30752,7 @@
       "source_location": "L1799",
       "_origin": "ast",
       "id": "artel_api_linktrigger_protomessage",
-      "community": 272,
+      "community": 11,
       "norm_label": ".protomessage()"
     },
     {
@@ -30762,7 +30762,7 @@
       "source_location": "L1801",
       "_origin": "ast",
       "id": "artel_api_linktrigger_protoreflect",
-      "community": 272,
+      "community": 11,
       "norm_label": ".protoreflect()"
     },
     {
@@ -30772,7 +30772,7 @@
       "source_location": "L1814",
       "_origin": "ast",
       "id": "artel_api_linktrigger_descriptor",
-      "community": 272,
+      "community": 11,
       "norm_label": ".descriptor()"
     },
     {
@@ -31332,7 +31332,7 @@
       "source_location": "L2174",
       "_origin": "ast",
       "id": "artel_api_listtracts_request",
-      "community": 115,
+      "community": 272,
       "norm_label": "listtracts_request"
     },
     {
@@ -31342,7 +31342,7 @@
       "source_location": "L2180",
       "_origin": "ast",
       "id": "artel_api_listtracts_request_reset",
-      "community": 115,
+      "community": 272,
       "norm_label": ".reset()"
     },
     {
@@ -31352,7 +31352,7 @@
       "source_location": "L2187",
       "_origin": "ast",
       "id": "artel_api_listtracts_request_string",
-      "community": 115,
+      "community": 272,
       "norm_label": ".string()"
     },
     {
@@ -31362,7 +31362,7 @@
       "source_location": "L2191",
       "_origin": "ast",
       "id": "artel_api_listtracts_request_protomessage",
-      "community": 115,
+      "community": 272,
       "norm_label": ".protomessage()"
     },
     {
@@ -31532,7 +31532,7 @@
       "source_location": "L2298",
       "_origin": "ast",
       "id": "artel_api_deletetract_response",
-      "community": 272,
+      "community": 115,
       "norm_label": "deletetract_response"
     },
     {
@@ -31542,7 +31542,7 @@
       "source_location": "L2304",
       "_origin": "ast",
       "id": "artel_api_deletetract_response_reset",
-      "community": 272,
+      "community": 115,
       "norm_label": ".reset()"
     },
     {
@@ -31552,7 +31552,7 @@
       "source_location": "L2311",
       "_origin": "ast",
       "id": "artel_api_deletetract_response_string",
-      "community": 272,
+      "community": 115,
       "norm_label": ".string()"
     },
     {
@@ -31562,7 +31562,7 @@
       "source_location": "L2315",
       "_origin": "ast",
       "id": "artel_api_deletetract_response_protomessage",
-      "community": 272,
+      "community": 115,
       "norm_label": ".protomessage()"
     },
     {
@@ -31672,7 +31672,7 @@
       "source_location": "L2386",
       "_origin": "ast",
       "id": "artel_api_settractenabled_response",
-      "community": 11,
+      "community": 8,
       "norm_label": "settractenabled_response"
     },
     {
@@ -31682,7 +31682,7 @@
       "source_location": "L2392",
       "_origin": "ast",
       "id": "artel_api_settractenabled_response_reset",
-      "community": 11,
+      "community": 8,
       "norm_label": ".reset()"
     },
     {
@@ -31692,7 +31692,7 @@
       "source_location": "L2399",
       "_origin": "ast",
       "id": "artel_api_settractenabled_response_string",
-      "community": 11,
+      "community": 8,
       "norm_label": ".string()"
     },
     {
@@ -31702,7 +31702,7 @@
       "source_location": "L2403",
       "_origin": "ast",
       "id": "artel_api_settractenabled_response_protomessage",
-      "community": 11,
+      "community": 8,
       "norm_label": ".protomessage()"
     },
     {
@@ -31712,7 +31712,7 @@
       "source_location": "L2405",
       "_origin": "ast",
       "id": "artel_api_settractenabled_response_protoreflect",
-      "community": 11,
+      "community": 8,
       "norm_label": ".protoreflect()"
     },
     {
@@ -31722,7 +31722,7 @@
       "source_location": "L2418",
       "_origin": "ast",
       "id": "artel_api_settractenabled_response_descriptor",
-      "community": 11,
+      "community": 8,
       "norm_label": ".descriptor()"
     },
     {
@@ -31812,7 +31812,7 @@
       "source_location": "L2474",
       "_origin": "ast",
       "id": "artel_api_runtract_response",
-      "community": 8,
+      "community": 115,
       "norm_label": "runtract_response"
     },
     {
@@ -31822,7 +31822,7 @@
       "source_location": "L2480",
       "_origin": "ast",
       "id": "artel_api_runtract_response_reset",
-      "community": 8,
+      "community": 115,
       "norm_label": ".reset()"
     },
     {
@@ -31832,7 +31832,7 @@
       "source_location": "L2487",
       "_origin": "ast",
       "id": "artel_api_runtract_response_string",
-      "community": 8,
+      "community": 115,
       "norm_label": ".string()"
     },
     {
@@ -31842,7 +31842,7 @@
       "source_location": "L2491",
       "_origin": "ast",
       "id": "artel_api_runtract_response_protomessage",
-      "community": 8,
+      "community": 115,
       "norm_label": ".protomessage()"
     },
     {
@@ -31852,7 +31852,7 @@
       "source_location": "L2493",
       "_origin": "ast",
       "id": "artel_api_runtract_response_protoreflect",
-      "community": 8,
+      "community": 115,
       "norm_label": ".protoreflect()"
     },
     {
@@ -31862,7 +31862,7 @@
       "source_location": "L2506",
       "_origin": "ast",
       "id": "artel_api_runtract_response_descriptor",
-      "community": 8,
+      "community": 115,
       "norm_label": ".descriptor()"
     },
     {
@@ -32172,7 +32172,7 @@
       "source_location": "L2702",
       "_origin": "ast",
       "id": "artel_api_listtracttools_request",
-      "community": 175,
+      "community": 11,
       "norm_label": "listtracttools_request"
     },
     {
@@ -32182,7 +32182,7 @@
       "source_location": "L2708",
       "_origin": "ast",
       "id": "artel_api_listtracttools_request_reset",
-      "community": 175,
+      "community": 11,
       "norm_label": ".reset()"
     },
     {
@@ -32192,7 +32192,7 @@
       "source_location": "L2715",
       "_origin": "ast",
       "id": "artel_api_listtracttools_request_string",
-      "community": 175,
+      "community": 11,
       "norm_label": ".string()"
     },
     {
@@ -32202,7 +32202,7 @@
       "source_location": "L2719",
       "_origin": "ast",
       "id": "artel_api_listtracttools_request_protomessage",
-      "community": 175,
+      "community": 11,
       "norm_label": ".protomessage()"
     },
     {
@@ -32212,7 +32212,7 @@
       "source_location": "L2721",
       "_origin": "ast",
       "id": "artel_api_listtracttools_request_protoreflect",
-      "community": 175,
+      "community": 11,
       "norm_label": ".protoreflect()"
     },
     {
@@ -32222,7 +32222,7 @@
       "source_location": "L2734",
       "_origin": "ast",
       "id": "artel_api_listtracttools_request_descriptor",
-      "community": 175,
+      "community": 11,
       "norm_label": ".descriptor()"
     },
     {
@@ -32632,7 +32632,7 @@
       "source_location": "L2998",
       "_origin": "ast",
       "id": "artel_api_listtriggers_request",
-      "community": 11,
+      "community": 272,
       "norm_label": "listtriggers_request"
     },
     {
@@ -32642,7 +32642,7 @@
       "source_location": "L3004",
       "_origin": "ast",
       "id": "artel_api_listtriggers_request_reset",
-      "community": 11,
+      "community": 272,
       "norm_label": ".reset()"
     },
     {
@@ -32652,7 +32652,7 @@
       "source_location": "L3011",
       "_origin": "ast",
       "id": "artel_api_listtriggers_request_string",
-      "community": 11,
+      "community": 272,
       "norm_label": ".string()"
     },
     {
@@ -32662,7 +32662,7 @@
       "source_location": "L3015",
       "_origin": "ast",
       "id": "artel_api_listtriggers_request_protomessage",
-      "community": 11,
+      "community": 272,
       "norm_label": ".protomessage()"
     },
     {
@@ -32672,7 +32672,7 @@
       "source_location": "L3017",
       "_origin": "ast",
       "id": "artel_api_listtriggers_request_protoreflect",
-      "community": 11,
+      "community": 272,
       "norm_label": ".protoreflect()"
     },
     {
@@ -32682,7 +32682,7 @@
       "source_location": "L3030",
       "_origin": "ast",
       "id": "artel_api_listtriggers_request_descriptor",
-      "community": 11,
+      "community": 272,
       "norm_label": ".descriptor()"
     },
     {
@@ -32972,7 +32972,7 @@
       "source_location": "L3210",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_response",
-      "community": 8,
+      "community": 272,
       "norm_label": "settriggerenabled_response"
     },
     {
@@ -32982,7 +32982,7 @@
       "source_location": "L3216",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_response_reset",
-      "community": 8,
+      "community": 272,
       "norm_label": ".reset()"
     },
     {
@@ -32992,7 +32992,7 @@
       "source_location": "L3223",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_response_string",
-      "community": 8,
+      "community": 272,
       "norm_label": ".string()"
     },
     {
@@ -33002,7 +33002,7 @@
       "source_location": "L3227",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_response_protomessage",
-      "community": 8,
+      "community": 272,
       "norm_label": ".protomessage()"
     },
     {
@@ -33012,7 +33012,7 @@
       "source_location": "L3229",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_response_protoreflect",
-      "community": 8,
+      "community": 272,
       "norm_label": ".protoreflect()"
     },
     {
@@ -33022,7 +33022,7 @@
       "source_location": "L3242",
       "_origin": "ast",
       "id": "artel_api_settriggerenabled_response_descriptor",
-      "community": 8,
+      "community": 272,
       "norm_label": ".descriptor()"
     },
     {
@@ -34292,7 +34292,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "artel_api_tractsapiclient_getrun",
-      "community": 299,
+      "community": 574,
       "norm_label": ".getrun()"
     },
     {
@@ -34302,7 +34302,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_grpc_pb_go_getrun_request",
-      "community": 299,
+      "community": 574,
       "norm_label": "getrun_request"
     },
     {
@@ -34312,7 +34312,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_grpc_pb_go_getrun_response",
-      "community": 299,
+      "community": 574,
       "norm_label": "getrun_response"
     },
     {
@@ -34472,7 +34472,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "artel_api_tractsapiclient_settriggerenabled",
-      "community": 581,
+      "community": 299,
       "norm_label": ".settriggerenabled()"
     },
     {
@@ -34482,7 +34482,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_grpc_pb_go_settriggerenabled_request",
-      "community": 581,
+      "community": 299,
       "norm_label": "settriggerenabled_request"
     },
     {
@@ -34492,7 +34492,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_grpc_pb_go_settriggerenabled_response",
-      "community": 581,
+      "community": 299,
       "norm_label": "settriggerenabled_response"
     },
     {
@@ -34692,7 +34692,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "artel_api_unimplementedtractsapiserver_getrun",
-      "community": 299,
+      "community": 574,
       "norm_label": ".getrun()"
     },
     {
@@ -34752,7 +34752,7 @@
       "source_location": "L328",
       "_origin": "ast",
       "id": "artel_api_unimplementedtractsapiserver_settriggerenabled",
-      "community": 581,
+      "community": 299,
       "norm_label": ".settriggerenabled()"
     },
     {
@@ -34932,7 +34932,7 @@
       "source_location": "L505",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_grpc_pb_tractsapi_getrun_handler",
-      "community": 299,
+      "community": 574,
       "norm_label": "_tractsapi_getrun_handler()"
     },
     {
@@ -34992,7 +34992,7 @@
       "source_location": "L613",
       "_origin": "ast",
       "id": "internal_api_server_artel_api_tracts_grpc_pb_tractsapi_settriggerenabled_handler",
-      "community": 581,
+      "community": 299,
       "norm_label": "_tractsapi_settriggerenabled_handler()"
     },
     {
@@ -35342,7 +35342,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "artel_api_listvaults",
-      "community": 441,
+      "community": 502,
       "norm_label": "listvaults"
     },
     {
@@ -35352,7 +35352,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "artel_api_listvaults_reset",
-      "community": 441,
+      "community": 502,
       "norm_label": ".reset()"
     },
     {
@@ -35362,7 +35362,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "artel_api_listvaults_string",
-      "community": 441,
+      "community": 502,
       "norm_label": ".string()"
     },
     {
@@ -35372,7 +35372,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "artel_api_listvaults_protomessage",
-      "community": 441,
+      "community": 502,
       "norm_label": ".protomessage()"
     },
     {
@@ -35382,7 +35382,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "artel_api_listvaults_protoreflect",
-      "community": 441,
+      "community": 502,
       "norm_label": ".protoreflect()"
     },
     {
@@ -35392,7 +35392,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "artel_api_listvaults_descriptor",
-      "community": 441,
+      "community": 502,
       "norm_label": ".descriptor()"
     },
     {
@@ -35402,7 +35402,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "artel_api_deletevault",
-      "community": 204,
+      "community": 142,
       "norm_label": "deletevault"
     },
     {
@@ -35412,7 +35412,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "artel_api_deletevault_reset",
-      "community": 204,
+      "community": 142,
       "norm_label": ".reset()"
     },
     {
@@ -35422,7 +35422,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "artel_api_deletevault_string",
-      "community": 204,
+      "community": 142,
       "norm_label": ".string()"
     },
     {
@@ -35432,7 +35432,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "artel_api_deletevault_protomessage",
-      "community": 204,
+      "community": 142,
       "norm_label": ".protomessage()"
     },
     {
@@ -35442,7 +35442,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "artel_api_deletevault_protoreflect",
-      "community": 204,
+      "community": 142,
       "norm_label": ".protoreflect()"
     },
     {
@@ -35452,7 +35452,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "artel_api_deletevault_descriptor",
-      "community": 204,
+      "community": 142,
       "norm_label": ".descriptor()"
     },
     {
@@ -35762,7 +35762,7 @@
       "source_location": "L350",
       "_origin": "ast",
       "id": "artel_api_revokeinvitelink",
-      "community": 142,
+      "community": 406,
       "norm_label": "revokeinvitelink"
     },
     {
@@ -35772,7 +35772,7 @@
       "source_location": "L356",
       "_origin": "ast",
       "id": "artel_api_revokeinvitelink_reset",
-      "community": 142,
+      "community": 406,
       "norm_label": ".reset()"
     },
     {
@@ -35782,7 +35782,7 @@
       "source_location": "L363",
       "_origin": "ast",
       "id": "artel_api_revokeinvitelink_string",
-      "community": 142,
+      "community": 406,
       "norm_label": ".string()"
     },
     {
@@ -35792,7 +35792,7 @@
       "source_location": "L367",
       "_origin": "ast",
       "id": "artel_api_revokeinvitelink_protomessage",
-      "community": 142,
+      "community": 406,
       "norm_label": ".protomessage()"
     },
     {
@@ -35802,7 +35802,7 @@
       "source_location": "L369",
       "_origin": "ast",
       "id": "artel_api_revokeinvitelink_protoreflect",
-      "community": 142,
+      "community": 406,
       "norm_label": ".protoreflect()"
     },
     {
@@ -35812,7 +35812,7 @@
       "source_location": "L382",
       "_origin": "ast",
       "id": "artel_api_revokeinvitelink_descriptor",
-      "community": 142,
+      "community": 406,
       "norm_label": ".descriptor()"
     },
     {
@@ -36762,7 +36762,7 @@
       "source_location": "L1006",
       "_origin": "ast",
       "id": "artel_api_listvaults_request",
-      "community": 502,
+      "community": 248,
       "norm_label": "listvaults_request"
     },
     {
@@ -36772,7 +36772,7 @@
       "source_location": "L1012",
       "_origin": "ast",
       "id": "artel_api_listvaults_request_reset",
-      "community": 502,
+      "community": 248,
       "norm_label": ".reset()"
     },
     {
@@ -36782,7 +36782,7 @@
       "source_location": "L1019",
       "_origin": "ast",
       "id": "artel_api_listvaults_request_string",
-      "community": 502,
+      "community": 248,
       "norm_label": ".string()"
     },
     {
@@ -36792,7 +36792,7 @@
       "source_location": "L1023",
       "_origin": "ast",
       "id": "artel_api_listvaults_request_protomessage",
-      "community": 502,
+      "community": 248,
       "norm_label": ".protomessage()"
     },
     {
@@ -36802,7 +36802,7 @@
       "source_location": "L1025",
       "_origin": "ast",
       "id": "artel_api_listvaults_request_protoreflect",
-      "community": 502,
+      "community": 248,
       "norm_label": ".protoreflect()"
     },
     {
@@ -36812,7 +36812,7 @@
       "source_location": "L1038",
       "_origin": "ast",
       "id": "artel_api_listvaults_request_descriptor",
-      "community": 502,
+      "community": 248,
       "norm_label": ".descriptor()"
     },
     {
@@ -39712,7 +39712,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "internal_app_app",
-      "community": 242,
+      "community": 195,
       "norm_label": "app.go"
     },
     {
@@ -39722,7 +39722,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "internal_app_app_go_app_app",
-      "community": 242,
+      "community": 195,
       "norm_label": "app"
     },
     {
@@ -39732,7 +39732,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_app_app_go_context",
-      "community": 242,
+      "community": 195,
       "norm_label": "context"
     },
     {
@@ -39742,7 +39742,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_app_app_go_config",
-      "community": 242,
+      "community": 195,
       "norm_label": "config"
     },
     {
@@ -39752,7 +39752,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_app_app_go_listener",
-      "community": 242,
+      "community": 195,
       "norm_label": "listener"
     },
     {
@@ -39762,7 +39762,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "internal_app_app_new",
-      "community": 242,
+      "community": 195,
       "norm_label": "new()"
     },
     {
@@ -39812,7 +39812,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "internal_app_custom",
-      "community": 242,
+      "community": 195,
       "norm_label": "custom.go"
     },
     {
@@ -39822,7 +39822,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "app_custom",
-      "community": 242,
+      "community": 195,
       "norm_label": "custom"
     },
     {
@@ -39852,7 +39852,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "app_custom_start",
-      "community": 242,
+      "community": 195,
       "norm_label": ".start()"
     },
     {
@@ -39862,7 +39862,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "internal_app_custom_go_context",
-      "community": 242,
+      "community": 195,
       "norm_label": "context"
     },
     {
@@ -39872,7 +39872,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "app_custom_stop",
-      "community": 242,
+      "community": 195,
       "norm_label": ".stop()"
     },
     {
@@ -39892,7 +39892,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "internal_app_data_sources_go_app_app",
-      "community": 242,
+      "community": 195,
       "norm_label": "app"
     },
     {
@@ -39902,7 +39902,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_app_initdatasources",
-      "community": 242,
+      "community": 195,
       "norm_label": ".initdatasources()"
     },
     {
@@ -39922,7 +39922,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "internal_app_otel_go_app_app",
-      "community": 242,
+      "community": 195,
       "norm_label": "app"
     },
     {
@@ -39932,7 +39932,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_app_initotel",
-      "community": 242,
+      "community": 195,
       "norm_label": ".initotel()"
     },
     {
@@ -55979,7 +55979,7 @@
       "label": ".deleteFile()",
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L186",
+      "source_location": "L190",
       "_origin": "ast",
       "id": "executors_vaultexecutor_deletefile",
       "community": 518,
@@ -55989,7 +55989,7 @@
       "label": ".moveFile()",
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L218",
+      "source_location": "L222",
       "_origin": "ast",
       "id": "executors_vaultexecutor_movefile",
       "community": 518,
@@ -55999,7 +55999,7 @@
       "label": ".listFolders()",
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L262",
+      "source_location": "L266",
       "_origin": "ast",
       "id": "executors_vaultexecutor_listfolders",
       "community": 518,
@@ -56009,7 +56009,7 @@
       "label": ".listTags()",
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L279",
+      "source_location": "L283",
       "_origin": "ast",
       "id": "executors_vaultexecutor_listtags",
       "community": 518,
@@ -56019,7 +56019,7 @@
       "label": ".getFileMetadata()",
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L293",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "executors_vaultexecutor_getfilemetadata",
       "community": 518,
@@ -56029,7 +56029,7 @@
       "label": "VaultToolDefinitions()",
       "file_type": "code",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L360",
+      "source_location": "L364",
       "_origin": "ast",
       "id": "internal_service_v1_mcp_executors_vault_vaulttooldefinitions",
       "community": 78,
@@ -57139,7 +57139,7 @@
       "label": ".MoveNote()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L194",
+      "source_location": "L198",
       "_origin": "ast",
       "id": "notes_service_movenote",
       "community": 102,
@@ -57149,7 +57149,7 @@
       "label": "normalizeFolderPath()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L209",
+      "source_location": "L213",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_normalizefolderpath",
       "community": 102,
@@ -57159,7 +57159,7 @@
       "label": "underFolder()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L215",
+      "source_location": "L219",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_underfolder",
       "community": 102,
@@ -57169,7 +57169,7 @@
       "label": "relativeToFolder()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L225",
+      "source_location": "L229",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_relativetofolder",
       "community": 102,
@@ -57179,7 +57179,7 @@
       "label": "joinDestPath()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L235",
+      "source_location": "L239",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_joindestpath",
       "community": 102,
@@ -57189,7 +57189,7 @@
       "label": "zipEntry",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L245",
+      "source_location": "L249",
       "_origin": "ast",
       "id": "notes_zipentry",
       "community": 102,
@@ -57199,7 +57199,7 @@
       "label": "readZipFileEntry()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L250",
+      "source_location": "L254",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_readzipfileentry",
       "community": 102,
@@ -57219,7 +57219,7 @@
       "label": "readZipEntries()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L265",
+      "source_location": "L269",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_readzipentries",
       "community": 102,
@@ -57229,7 +57229,7 @@
       "label": "writeZipEntry()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L290",
+      "source_location": "L294",
       "_origin": "ast",
       "id": "internal_service_v1_notes_notes_writezipentry",
       "community": 102,
@@ -57249,7 +57249,7 @@
       "label": ".ExportFolder()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L307",
+      "source_location": "L311",
       "_origin": "ast",
       "id": "notes_service_exportfolder",
       "community": 102,
@@ -57259,7 +57259,7 @@
       "label": ".existingPaths()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L373",
+      "source_location": "L377",
       "_origin": "ast",
       "id": "notes_service_existingpaths",
       "community": 102,
@@ -57269,7 +57269,7 @@
       "label": ".CheckImportConflicts()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L403",
+      "source_location": "L407",
       "_origin": "ast",
       "id": "notes_service_checkimportconflicts",
       "community": 102,
@@ -57279,7 +57279,7 @@
       "label": ".writeImportedEntry()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L432",
+      "source_location": "L436",
       "_origin": "ast",
       "id": "notes_service_writeimportedentry",
       "community": 518,
@@ -57289,7 +57289,7 @@
       "label": ".CommitImport()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L460",
+      "source_location": "L464",
       "_origin": "ast",
       "id": "notes_service_commitimport",
       "community": 102,
@@ -57309,7 +57309,7 @@
       "label": ".DeleteFolder()",
       "file_type": "code",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L529",
+      "source_location": "L537",
       "_origin": "ast",
       "id": "notes_service_deletefolder",
       "community": 102,
@@ -73302,7 +73302,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_api_artel_notes_pb_importconflictaction",
-      "community": 141,
+      "community": 147,
       "norm_label": "importconflictaction"
     },
     {
@@ -73532,7 +73532,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_api_artel_notes_pb_importresolution",
-      "community": 141,
+      "community": 147,
       "norm_label": "importresolution"
     },
     {
@@ -75982,7 +75982,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_hooks_notes",
-      "community": 141,
+      "community": 147,
       "norm_label": "notes.ts"
     },
     {
@@ -76002,7 +76002,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_hooks_notes_requirevaultid",
-      "community": 141,
+      "community": 147,
       "norm_label": "requirevaultid()"
     },
     {
@@ -76012,7 +76012,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_hooks_notes_commitimportandrefresh",
-      "community": 141,
+      "community": 147,
       "norm_label": "commitimportandrefresh()"
     },
     {
@@ -76022,7 +76022,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_hooks_notes_deletefolderandrefresh",
-      "community": 141,
+      "community": 147,
       "norm_label": "deletefolderandrefresh()"
     },
     {
@@ -76032,7 +76032,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_app_hooks_notes_notesstate",
-      "community": 141,
+      "community": 147,
       "norm_label": "notesstate"
     },
     {
@@ -82402,7 +82402,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_importconflictsdialog",
-      "community": 141,
+      "community": 147,
       "norm_label": "importconflictsdialog.tsx"
     },
     {
@@ -82412,7 +82412,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_importconflictsdialog_props",
-      "community": 141,
+      "community": 147,
       "norm_label": "props"
     },
     {
@@ -82422,7 +82422,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_importconflictsdialog_initialresolutions",
-      "community": 141,
+      "community": 147,
       "norm_label": "initialresolutions()"
     },
     {
@@ -82432,7 +82432,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_importconflictsdialog_importconflictsdialog",
-      "community": 141,
+      "community": 147,
       "norm_label": "importconflictsdialog()"
     },
     {
@@ -82442,7 +82442,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_components_conflictrow",
-      "community": 141,
+      "community": 147,
       "norm_label": "conflictrow.tsx"
     },
     {
@@ -82452,7 +82452,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_components_conflictrow_props",
-      "community": 141,
+      "community": 147,
       "norm_label": "props"
     },
     {
@@ -82462,7 +82462,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_pages_notes_components_importconflictsdialog_components_conflictrow_conflictrow",
-      "community": 141,
+      "community": 147,
       "norm_label": "conflictrow()"
     },
     {
@@ -87092,7 +87092,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_processes_notes",
-      "community": 141,
+      "community": 147,
       "norm_label": "notes.ts"
     },
     {
@@ -87102,7 +87102,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_processes_notes_importresolutioninput",
-      "community": 141,
+      "community": 147,
       "norm_label": "importresolutioninput"
     },
     {
@@ -87112,7 +87112,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_processes_notes_importresult",
-      "community": 141,
+      "community": 147,
       "norm_label": "importresult"
     },
     {
@@ -87122,7 +87122,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "pkg_client_artelui_src_processes_notes_deletefolderresult",
-      "community": 141,
+      "community": 147,
       "norm_label": "deletefolderresult"
     },
     {
@@ -100084,15 +100084,6 @@
       "id": "pkg_docs_swaggers_tracts_swagger_definitions_artel_apilinktriggerrequest"
     },
     {
-      "label": "type",
-      "file_type": "code",
-      "source_file": "pkg/docs/swaggers/tracts.swagger.json",
-      "source_location": "L788",
-      "community": 2883,
-      "norm_label": "type",
-      "id": "pkg_docs_swaggers_tracts_swagger_artel_apilinktriggerrequest_type"
-    },
-    {
       "label": "triggerUuid",
       "file_type": "code",
       "source_file": "pkg/docs/swaggers/tracts.swagger.json",
@@ -102683,15 +102674,6 @@
       "community": 2512,
       "norm_label": "tools",
       "id": "pkg_docs_swaggers_mcp_keys_swagger_properties_tools"
-    },
-    {
-      "label": "type",
-      "file_type": "code",
-      "source_file": "pkg/docs/swaggers/mcp_keys.swagger.json",
-      "source_location": "L655",
-      "community": 2531,
-      "norm_label": "type",
-      "id": "pkg_docs_swaggers_mcp_keys_swagger_tools_type"
     },
     {
       "label": "items",
@@ -107777,7 +107759,7 @@
       "contributor": null,
       "community": 42,
       "norm_label": "config.yaml (production config)",
-      "id": "config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_yaml"
+      "id": "config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_yaml"
     },
     {
       "label": "config_template.yaml (Config Template)",
@@ -202283,7 +202265,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_deletefile",
@@ -202305,7 +202287,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L293",
+      "source_location": "L297",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_getfilemetadata",
@@ -202327,7 +202309,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L262",
+      "source_location": "L266",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_listfolders",
@@ -202338,7 +202320,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L279",
+      "source_location": "L283",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_listtags",
@@ -202349,7 +202331,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L218",
+      "source_location": "L222",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_movefile",
@@ -202426,7 +202408,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L373",
+      "source_location": "L377",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_existingpaths",
@@ -202459,7 +202441,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L432",
+      "source_location": "L436",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_writeimportedentry",
@@ -203088,7 +203070,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L178",
+      "source_location": "L182",
       "weight": 1.0,
       "source": "executors_vaultexecutor_writefile",
       "target": "internal_clients_couchdb_livesync_mimetypeforpath"
@@ -203099,7 +203081,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L448",
+      "source_location": "L452",
       "weight": 1.0,
       "source": "notes_service_writeimportedentry",
       "target": "internal_clients_couchdb_livesync_mimetypeforpath"
@@ -206875,7 +206857,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L360",
+      "source_location": "L364",
       "weight": 1.0,
       "context": "return_type",
       "source": "internal_service_v1_mcp_executors_vault_vaulttooldefinitions",
@@ -208176,7 +208158,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0,
       "context": "return_type",
       "source": "executors_vaultexecutor_deletefile",
@@ -208198,7 +208180,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L293",
+      "source_location": "L297",
       "weight": 1.0,
       "context": "return_type",
       "source": "executors_vaultexecutor_getfilemetadata",
@@ -208220,7 +208202,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L262",
+      "source_location": "L266",
       "weight": 1.0,
       "context": "return_type",
       "source": "executors_vaultexecutor_listfolders",
@@ -208231,7 +208213,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L279",
+      "source_location": "L283",
       "weight": 1.0,
       "context": "return_type",
       "source": "executors_vaultexecutor_listtags",
@@ -208242,7 +208224,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L218",
+      "source_location": "L222",
       "weight": 1.0,
       "context": "return_type",
       "source": "executors_vaultexecutor_movefile",
@@ -210581,7 +210563,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L467",
+      "source_location": "L471",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "internal_middleware_user_context_context_getusercontext"
@@ -235460,7 +235442,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L319",
+      "source_location": "L323",
       "weight": 1.0,
       "source": "executors_vaultexecutor_getfilemetadata",
       "target": "internal_service_v1_mcp_executors_email_marshalresult"
@@ -235482,7 +235464,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L271",
+      "source_location": "L275",
       "weight": 1.0,
       "source": "executors_vaultexecutor_listfolders",
       "target": "internal_service_v1_mcp_executors_email_marshalresult"
@@ -235493,7 +235475,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L285",
+      "source_location": "L289",
       "weight": 1.0,
       "source": "executors_vaultexecutor_listtags",
       "target": "internal_service_v1_mcp_executors_email_marshalresult"
@@ -238148,7 +238130,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L360",
+      "source_location": "L364",
       "weight": 1.0,
       "source": "internal_service_v1_mcp_executors_vault",
       "target": "internal_service_v1_mcp_executors_vault_vaulttooldefinitions",
@@ -238158,7 +238140,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0,
       "source": "executors_vaultexecutor",
       "target": "executors_vaultexecutor_deletefile",
@@ -238178,7 +238160,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L293",
+      "source_location": "L297",
       "weight": 1.0,
       "source": "executors_vaultexecutor",
       "target": "executors_vaultexecutor_getfilemetadata",
@@ -238198,7 +238180,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L262",
+      "source_location": "L266",
       "weight": 1.0,
       "source": "executors_vaultexecutor",
       "target": "executors_vaultexecutor_listfolders",
@@ -238208,7 +238190,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L279",
+      "source_location": "L283",
       "weight": 1.0,
       "source": "executors_vaultexecutor",
       "target": "executors_vaultexecutor_listtags",
@@ -238218,7 +238200,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L218",
+      "source_location": "L222",
       "weight": 1.0,
       "source": "executors_vaultexecutor",
       "target": "executors_vaultexecutor_movefile",
@@ -238402,7 +238384,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_deletefile",
@@ -238413,7 +238395,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L293",
+      "source_location": "L297",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_getfilemetadata",
@@ -238435,7 +238417,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L262",
+      "source_location": "L266",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_listfolders",
@@ -238446,7 +238428,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L279",
+      "source_location": "L283",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_listtags",
@@ -238457,7 +238439,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L218",
+      "source_location": "L222",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_movefile",
@@ -238525,7 +238507,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L160",
+      "source_location": "L164",
       "weight": 1.0,
       "source": "executors_vaultexecutor_writefile",
       "target": "internal_storage_route_ismarkdown"
@@ -238547,7 +238529,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L197",
+      "source_location": "L201",
       "weight": 1.0,
       "source": "executors_vaultexecutor_deletefile",
       "target": "internal_storage_route_ismarkdown"
@@ -238556,7 +238538,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_deletefile",
@@ -238569,7 +238551,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L234",
+      "source_location": "L238",
       "weight": 1.0,
       "source": "executors_vaultexecutor_movefile",
       "target": "internal_storage_route_ismarkdown"
@@ -238578,7 +238560,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L218",
+      "source_location": "L222",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_movefile",
@@ -238591,7 +238573,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L304",
+      "source_location": "L308",
       "weight": 1.0,
       "source": "executors_vaultexecutor_getfilemetadata",
       "target": "internal_storage_route_ismarkdown"
@@ -238600,7 +238582,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/mcp/executors/vault.go",
-      "source_location": "L293",
+      "source_location": "L297",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "executors_vaultexecutor_getfilemetadata",
@@ -239732,7 +239714,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L235",
+      "source_location": "L239",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_joindestpath",
@@ -239752,7 +239734,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L209",
+      "source_location": "L213",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_normalizefolderpath",
@@ -239762,7 +239744,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L265",
+      "source_location": "L269",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_readzipentries",
@@ -239772,7 +239754,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L250",
+      "source_location": "L254",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_readzipfileentry",
@@ -239782,7 +239764,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L225",
+      "source_location": "L229",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_relativetofolder",
@@ -239792,7 +239774,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L215",
+      "source_location": "L219",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_underfolder",
@@ -239802,7 +239784,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L290",
+      "source_location": "L294",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "internal_service_v1_notes_notes_writezipentry",
@@ -239822,7 +239804,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L245",
+      "source_location": "L249",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes",
       "target": "notes_zipentry",
@@ -239843,7 +239825,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L403",
+      "source_location": "L407",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_checkimportconflicts",
@@ -239863,7 +239845,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L460",
+      "source_location": "L464",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_commitimport",
@@ -239873,7 +239855,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L529",
+      "source_location": "L537",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_deletefolder",
@@ -239883,7 +239865,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L373",
+      "source_location": "L377",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_existingpaths",
@@ -239893,7 +239875,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L307",
+      "source_location": "L311",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_exportfolder",
@@ -239963,7 +239945,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L194",
+      "source_location": "L198",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_movenote",
@@ -239993,7 +239975,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L432",
+      "source_location": "L436",
       "weight": 1.0,
       "source": "notes_service",
       "target": "notes_service_writeimportedentry",
@@ -240069,7 +240051,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L403",
+      "source_location": "L407",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_checkimportconflicts",
@@ -240091,7 +240073,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L460",
+      "source_location": "L464",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_commitimport",
@@ -240102,7 +240084,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L529",
+      "source_location": "L537",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_deletefolder",
@@ -240113,7 +240095,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L373",
+      "source_location": "L377",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_existingpaths",
@@ -240124,7 +240106,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L307",
+      "source_location": "L311",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_exportfolder",
@@ -240201,7 +240183,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L194",
+      "source_location": "L198",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_movenote",
@@ -240223,7 +240205,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L432",
+      "source_location": "L436",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_writeimportedentry",
@@ -240234,7 +240216,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L403",
+      "source_location": "L407",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_checkimportconflicts",
@@ -240256,7 +240238,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L460",
+      "source_location": "L464",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_commitimport",
@@ -240267,7 +240249,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L529",
+      "source_location": "L537",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_deletefolder",
@@ -240278,7 +240260,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L307",
+      "source_location": "L311",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_exportfolder",
@@ -240344,7 +240326,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L194",
+      "source_location": "L198",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_movenote",
@@ -240444,7 +240426,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L195",
+      "source_location": "L199",
       "weight": 1.0,
       "source": "notes_service_movenote",
       "target": "notes_service_livesyncclient",
@@ -240455,7 +240437,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L176",
+      "source_location": "L180",
       "weight": 1.0,
       "source": "notes_service_savenote",
       "target": "notes_service_livesyncclient",
@@ -240466,7 +240448,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L404",
+      "source_location": "L408",
       "weight": 1.0,
       "source": "notes_service_checkimportconflicts",
       "target": "notes_service_clientandbucket",
@@ -240488,7 +240470,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L472",
+      "source_location": "L476",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "notes_service_clientandbucket",
@@ -240499,7 +240481,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L530",
+      "source_location": "L538",
       "weight": 1.0,
       "source": "notes_service_deletefolder",
       "target": "notes_service_clientandbucket",
@@ -240510,7 +240492,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L308",
+      "source_location": "L312",
       "weight": 1.0,
       "source": "notes_service_exportfolder",
       "target": "notes_service_clientandbucket",
@@ -240521,7 +240503,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L537",
+      "source_location": "L545",
       "weight": 1.0,
       "source": "notes_service_deletefolder",
       "target": "notes_service_listnotes",
@@ -240532,7 +240514,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L374",
+      "source_location": "L378",
       "weight": 1.0,
       "source": "notes_service_existingpaths",
       "target": "notes_service_listnotes",
@@ -240543,7 +240525,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L315",
+      "source_location": "L319",
       "weight": 1.0,
       "source": "notes_service_exportfolder",
       "target": "notes_service_listnotes",
@@ -240565,7 +240547,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L409",
+      "source_location": "L413",
       "weight": 1.0,
       "source": "notes_service_checkimportconflicts",
       "target": "internal_service_v1_notes_notes_normalizefolderpath",
@@ -240576,7 +240558,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L482",
+      "source_location": "L486",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "internal_service_v1_notes_notes_normalizefolderpath",
@@ -240587,7 +240569,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L535",
+      "source_location": "L543",
       "weight": 1.0,
       "source": "notes_service_deletefolder",
       "target": "internal_service_v1_notes_notes_normalizefolderpath",
@@ -240598,7 +240580,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L313",
+      "source_location": "L317",
       "weight": 1.0,
       "source": "notes_service_exportfolder",
       "target": "internal_service_v1_notes_notes_normalizefolderpath",
@@ -240620,7 +240602,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L551",
+      "source_location": "L559",
       "weight": 1.0,
       "source": "notes_service_deletefolder",
       "target": "internal_service_v1_notes_notes_underfolder",
@@ -240631,7 +240613,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L332",
+      "source_location": "L336",
       "weight": 1.0,
       "source": "notes_service_exportfolder",
       "target": "internal_service_v1_notes_notes_underfolder",
@@ -240653,7 +240635,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L342",
+      "source_location": "L346",
       "weight": 1.0,
       "source": "notes_service_exportfolder",
       "target": "internal_service_v1_notes_notes_relativetofolder",
@@ -240675,7 +240657,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L423",
+      "source_location": "L427",
       "weight": 1.0,
       "source": "notes_service_checkimportconflicts",
       "target": "internal_service_v1_notes_notes_joindestpath",
@@ -240686,7 +240668,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L495",
+      "source_location": "L499",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "internal_service_v1_notes_notes_joindestpath",
@@ -240696,7 +240678,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L265",
+      "source_location": "L269",
       "weight": 1.0,
       "context": "return_type",
       "source": "internal_service_v1_notes_notes_readzipentries",
@@ -240708,7 +240690,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L278",
+      "source_location": "L282",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes_readzipentries",
       "target": "internal_service_v1_notes_notes_readzipfileentry",
@@ -240718,7 +240700,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L250",
+      "source_location": "L254",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "internal_service_v1_notes_notes_readzipfileentry",
@@ -240731,7 +240713,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L255",
+      "source_location": "L259",
       "weight": 1.0,
       "source": "internal_service_v1_notes_notes_readzipfileentry",
       "target": "internal_utils_close_closewithlog"
@@ -240752,7 +240734,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L411",
+      "source_location": "L415",
       "weight": 1.0,
       "source": "notes_service_checkimportconflicts",
       "target": "internal_service_v1_notes_notes_readzipentries",
@@ -240763,7 +240745,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L484",
+      "source_location": "L488",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "internal_service_v1_notes_notes_readzipentries",
@@ -240773,7 +240755,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L290",
+      "source_location": "L294",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "internal_service_v1_notes_notes_writezipentry",
@@ -240785,7 +240767,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L342",
+      "source_location": "L346",
       "weight": 1.0,
       "source": "notes_service_exportfolder",
       "target": "internal_service_v1_notes_notes_writezipentry",
@@ -240796,7 +240778,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L416",
+      "source_location": "L420",
       "weight": 1.0,
       "source": "notes_service_checkimportconflicts",
       "target": "notes_service_existingpaths",
@@ -240806,7 +240788,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L373",
+      "source_location": "L377",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_existingpaths",
@@ -240818,7 +240800,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L515",
+      "source_location": "L523",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "notes_service_writeimportedentry",
@@ -240830,7 +240812,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L439",
+      "source_location": "L443",
       "weight": 1.0,
       "source": "notes_service_writeimportedentry",
       "target": "internal_storage_route_ismarkdown"
@@ -240839,7 +240821,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L432",
+      "source_location": "L436",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_writeimportedentry",
@@ -240850,7 +240832,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L460",
+      "source_location": "L464",
       "weight": 1.0,
       "context": "parameter_type",
       "source": "notes_service_commitimport",
@@ -240863,7 +240845,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "internal/service/v1/notes/notes.go",
-      "source_location": "L510",
+      "source_location": "L514",
       "weight": 1.0,
       "source": "notes_service_commitimport",
       "target": "internal_storage_route_ismarkdown"
@@ -315722,7 +315704,7 @@
       "source_file": "config/config.yaml",
       "source_location": "config/config.yaml:15",
       "weight": 1.0,
-      "source": "config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_yaml",
+      "source": "config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_yaml",
       "target": "concept_grpc_gateway"
     },
     {
@@ -315732,7 +315714,7 @@
       "source_file": "config/config.yaml",
       "source_location": "config/config.yaml:1",
       "weight": 1.0,
-      "source": "config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_yaml",
+      "source": "config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_config_yaml",
       "target": "concept_matreshka_config"
     },
     {
@@ -315777,5 +315759,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "02c4ad7db0ed4fbab7e90c5659bf4802524a8c8f"
+  "built_at_commit": "0d1c5cc98f1bf8afb23075465881d05ab623a057"
 }
