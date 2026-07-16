@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+PGDATA=/data/postgres
+mkdir -p "$PGDATA"
+chown -R postgres:postgres /data/postgres
+chmod 700 "$PGDATA"
+
+if [ ! -s "$PGDATA/PG_VERSION" ]; then
+  echo "[postgres-init] initializing database cluster"
+  su postgres -c "initdb -D $PGDATA --auth=trust --username=postgres" >/data/postgres-init.log 2>&1
+
+  echo "listen_addresses = '127.0.0.1'" >> "$PGDATA/postgresql.conf"
+
+  su postgres -c "pg_ctl -D $PGDATA -o '-c listen_addresses=127.0.0.1 -c port=5432' -w start" >>/data/postgres-init.log 2>&1
+  su postgres -c "createuser -s artel"
+  su postgres -c "createdb -O artel artel_db"
+  su postgres -c "pg_ctl -D $PGDATA -m fast -w stop" >>/data/postgres-init.log 2>&1
+  echo "[postgres-init] database cluster initialized"
+fi

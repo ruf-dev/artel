@@ -1,0 +1,31 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+marker=/data/garage/.layout-applied
+
+if [ ! -f "$marker" ]; then
+  i=0
+  until garage -c /data/garage/garage.toml status >/dev/null 2>&1; do
+    i=$((i + 1))
+    if [ "$i" -ge 60 ]; then
+      echo "[garage-layout-init] garage admin API did not come up in time" >&2
+      exit 1
+    fi
+    sleep 1
+  done
+
+  node_id=$(garage -c /data/garage/garage.toml status | awk '/^[0-9a-f]{16}/{print $1; exit}')
+  if [ -z "$node_id" ]; then
+    echo "[garage-layout-init] could not determine garage node id" >&2
+    exit 1
+  fi
+
+  echo "[garage-layout-init] assigning layout to node $node_id"
+  garage -c /data/garage/garage.toml layout assign "$node_id" -z local -c 1G
+  garage -c /data/garage/garage.toml layout apply --version 1
+
+  touch "$marker"
+  echo "[garage-layout-init] layout applied"
+fi
+
+exec sleep infinity

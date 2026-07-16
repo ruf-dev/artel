@@ -1,0 +1,37 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+mkdir -p /data/garage/meta /data/garage/data /data/secrets
+chown -R app:app /data/garage
+
+if [ ! -f /data/secrets/garage_rpc_secret ]; then
+  openssl rand -hex 32 > /data/secrets/garage_rpc_secret
+fi
+if [ ! -f /data/secrets/garage_admin_token ]; then
+  openssl rand -base64 32 > /data/secrets/garage_admin_token
+fi
+
+rpc_secret=$(cat /data/secrets/garage_rpc_secret)
+admin_token=$(cat /data/secrets/garage_admin_token)
+
+cat > /data/garage/garage.toml <<EOF
+metadata_dir = "/data/garage/meta"
+data_dir = "/data/garage/data"
+
+replication_factor = 1
+consistency_mode = "consistent"
+
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "127.0.0.1:3901"
+rpc_secret = "${rpc_secret}"
+
+[s3_api]
+s3_region = "${GARAGE_S3_REGION:-garage}"
+api_bind_addr = "[::]:3900"
+
+[admin]
+api_bind_addr = "[::]:3903"
+admin_token = "${admin_token}"
+EOF
+
+chown app:app /data/garage/garage.toml

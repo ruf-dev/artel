@@ -1,0 +1,28 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+mkdir -p /data/couchdb/data /data/couchdb/view
+chown -R couchdb:couchdb /data/couchdb
+
+if [ ! -f /data/couchdb/local.ini ]; then
+  echo "[couchdb-init] writing initial local.ini"
+  couchdb_user="${COUCHDB_USER:-admin}"
+  couchdb_password="${COUCHDB_PASSWORD:-admin}"
+
+  cat > /data/couchdb/local.ini <<EOF
+[couchdb]
+database_dir = /data/couchdb/data
+view_index_dir = /data/couchdb/view
+single_node = true
+
+[chttpd]
+bind_address = 0.0.0.0
+port = 5984
+
+[admins]
+${couchdb_user} = ${couchdb_password}
+EOF
+  chown couchdb:couchdb /data/couchdb/local.ini
+fi
+
+ln -sf /data/couchdb/local.ini /opt/couchdb/etc/local.ini

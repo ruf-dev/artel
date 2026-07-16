@@ -1,0 +1,25 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+i=0
+until pg_isready -h 127.0.0.1 -p 5432 -U artel >/dev/null 2>&1; do
+  i=$((i + 1))
+  if [ "$i" -ge 60 ]; then
+    echo "[artel] postgres did not become ready in time" >&2
+    exit 1
+  fi
+  sleep 1
+done
+
+export ENVIRONMENT_CREDS_ENCRYPTION_KEY="$(cat /data/secrets/creds_encryption_key)"
+export DATA_SOURCES_POSTGRES_HOST=127.0.0.1
+export DATA_SOURCES_POSTGRES_PORT=5432
+export DATA_SOURCES_POSTGRES_USER=artel
+export DATA_SOURCES_POSTGRES_PWD=
+export DATA_SOURCES_POSTGRES_DB_NAME=artel_db
+export DATA_SOURCES_POSTGRES_SSL_MODE=disable
+export DATA_SOURCES_POSTGRES_MIGRATIONS_FOLDER=/app/migrations
+export SERVERS_MASTER_PORT="${SERVERS_MASTER_PORT:-1551}"
+
+cd /app
+exec s6-setuidgid app /app/service

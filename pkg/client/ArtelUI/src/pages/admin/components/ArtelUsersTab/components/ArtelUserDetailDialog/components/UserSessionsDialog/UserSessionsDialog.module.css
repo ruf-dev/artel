@@ -5,7 +5,7 @@
 
 .UserSessionsDialogContainer {
     width: 100%;
-    max-width: 28.75rem;
+    max-width: 32rem;
     background: var(--color-bg-card);
     border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 1.25rem;
@@ -48,45 +48,50 @@
         }
     }
 
-    .Empty {
-        color: var(--color-fg-tertiary);
-        font-size: 0.875rem;
-        padding: 2rem 0;
-    }
+    .SessionsListContainer {
+        max-height: 18.75rem;
+        overflow-y: auto;
 
-    .RowContainer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: 1rem 0;
-        border-bottom: var(--border-thickness) solid var(--color-border);
-
-        &:first-child {
-            border-top: var(--border-thickness) solid var(--color-border);
+        .Empty {
+            color: var(--color-fg-tertiary);
+            font-size: 0.875rem;
+            padding: 2rem 0;
         }
 
-        .RowInfo {
+        .RowContainer {
             display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            min-width: 0;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: var(--border-thickness) solid var(--color-border);
 
-            .RowUrl {
-                font-size: 0.9375rem;
-                font-weight: 600;
-                color: var(--color-fg-primary);
-                letter-spacing: -0.009375rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+            &:first-child {
+                border-top: var(--border-thickness) solid var(--color-border);
             }
 
-            .RowMeta {
-                font-size: 0.75rem;
-                color: var(--color-fg-tertiary);
-                font-family: var(--font-mono);
-                letter-spacing: 0.0075rem;
+            .RowInfo {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+                min-width: 0;
+
+                .RowUrl {
+                    font-size: 0.9375rem;
+                    font-weight: 600;
+                    color: var(--color-fg-primary);
+                    letter-spacing: -0.009375rem;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .RowMeta {
+                    font-size: 0.75rem;
+                    color: var(--color-fg-tertiary);
+                    font-family: var(--font-mono);
+                    letter-spacing: 0.0075rem;
+                }
             }
         }
     }

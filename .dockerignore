@@ -1,0 +1,12 @@
+.git
+.idea
+.verv/local
+graphify-out
+local_data
+handoff
+tasks
+node_modules
+pkg/client/ArtelUI/node_modules
+pkg/client/ArtelUI/dist
+internal/transport/ui/dist
+.claude

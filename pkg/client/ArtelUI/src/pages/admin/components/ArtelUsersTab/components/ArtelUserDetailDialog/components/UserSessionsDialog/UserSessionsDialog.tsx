@@ -45,20 +45,26 @@ export default function UserSessionsDialog({userId}: UserSessionsDialogProps) {
                 <h2 className={cls.ModalTitle}>Sessions</h2>
                 <ModalClose onClick={CloseDialog} className={cls.ModalClose} />
             </div>
-            {loading ? (
-                <p className={cls.Empty}>Loading…</p>
-            ) : sessions.length === 0 ? (
-                <p className={cls.Empty}>No active sessions.</p>
-            ) : (
-                sessions.map(s => (
-                    <div key={s.sessionId} className={cls.RowContainer}>
-                        <div className={cls.RowInfo}>
-                            <span className={cls.RowUrl}>Created: {formatDate(s.createdAt as unknown as string)}</span>
-                            <span className={cls.RowMeta}>Expires: {formatDate(s.expiresAt as unknown as string)}</span>
+            <div className={cls.SessionsListContainer}>
+                {loading ? (
+                    <p className={cls.Empty}>Loading…</p>
+                ) : sessions.length === 0 ? (
+                    <p className={cls.Empty}>No active sessions.</p>
+                ) : (
+                    sessions.map(s => (
+                        <div key={s.sessionId} className={cls.RowContainer}>
+                            <div className={cls.RowInfo}>
+                                <span className={cls.RowUrl}>
+                                    Created: {formatDate(s.createdAt as unknown as string)}
+                                </span>
+                                <span className={cls.RowMeta}>
+                                    Expires: {formatDate(s.expiresAt as unknown as string)}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))
-            )}
+                    ))
+                )}
+            </div>
             <div className={cls.ModalActions}>
                 <Button variant="primary" onClick={CloseDialog}>Close</Button>
             </div>

@@ -1,0 +1,107 @@
+# All-in-one image: bundles Postgres, CouchDB, Garage (S3) and the artel app
+# together in a single container, supervised by s6-overlay. Intended for
+# personal/self-hosted use ("docker run once and the whole stack is there"),
+# not for production multi-node deployments -- see docker-compose.yaml for
+# the standard multi-container setup.
+
+# ---- Stage: UI ----
+FROM --platform=$BUILDPLATFORM oven/bun:1 AS ui-builder
+
+WORKDIR /ui
+
+COPY pkg/client/ArtelUI/package.json pkg/client/ArtelUI/bun.lock ./
+RUN bun install --frozen-lockfile
+
+COPY pkg/client/ArtelUI/ ./
+RUN bun run build
+
+# ---- Stage: Go binary ----
+FROM --platform=$BUILDPLATFORM golang:1.26.3 AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg go mod download
+
+COPY . .
+COPY --from=ui-builder /ui/dist ./internal/transport/ui/dist
+
+ARG TARGETOS
+ARG TARGETARCH
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 \
+    go build -o /deploy/service ./cmd/service/main.go
+
+# ---- Stage: garage binary source ----
+FROM dxflrs/garage:v2.3.0 AS garage-src
+
+# ---- Stage: final omnibus image ----
+FROM debian:bookworm-slim
+
+ARG TARGETARCH
+ARG S6_OVERLAY_VERSION=3.2.0.2
+ARG PG_MAJOR=18
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    S6_KEEP_ENV=1 \
+    S6_CMD_WAIT_FOR_SERVICES=1 \
+    PATH=/usr/lib/postgresql/${PG_MAJOR}/bin:$PATH
+
+# --- base packages + s6-overlay ---
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg openssl xz-utils && \
+    case "$TARGETARCH" in \
+      amd64) S6ARCH=x86_64 ;; \
+      arm64) S6ARCH=aarch64 ;; \
+      *) echo "unsupported arch: $TARGETARCH" && exit 1 ;; \
+    esac && \
+    curl -fsSLo /tmp/s6-noarch.tar.xz "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz" && \
+    curl -fsSLo /tmp/s6-arch.tar.xz "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6ARCH}.tar.xz" && \
+    tar -C / -Jxpf /tmp/s6-noarch.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-arch.tar.xz && \
+    rm -f /tmp/s6-noarch.tar.xz /tmp/s6-arch.tar.xz
+
+# --- PostgreSQL (PGDG apt repo) ---
+RUN install -d /usr/share/keyrings && \
+    curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    apt-get update && apt-get install -y --no-install-recommends "postgresql-${PG_MAJOR}" && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- CouchDB (Apache apt repo) ---
+RUN install -d /usr/share/keyrings && \
+    curl -fsSL https://couchdb.apache.org/repo/keys.asc | gpg --dearmor -o /usr/share/keyrings/couchdb.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/couchdb.gpg] https://apache.jfrog.io/artifactory/couchdb-deb/ bookworm main" > /etc/apt/sources.list.d/couchdb.list && \
+    ( echo "couchdb couchdb/mode select standalone"; \
+      echo "couchdb couchdb/bindaddress string 127.0.0.1"; \
+      echo "couchdb couchdb/cookie string omnibus"; \
+      echo "couchdb couchdb/adminpass password placeholder-overwritten-at-runtime"; \
+      echo "couchdb couchdb/adminpass_again password placeholder-overwritten-at-runtime" \
+    ) | debconf-set-selections && \
+    apt-get update && apt-get install -y --no-install-recommends couchdb && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Garage (static binary) + app user ---
+COPY --from=garage-src /garage /usr/local/bin/garage
+RUN chmod +x /usr/local/bin/garage && \
+    useradd --system --create-home --home-dir /data/app --shell /usr/sbin/nologin app
+
+# --- artel app ---
+WORKDIR /app
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /deploy/service /app/service
+COPY config /app/config
+COPY migrations /app/migrations
+RUN chown -R app:app /app
+
+# --- s6 service definitions ---
+COPY deploy/omnibus/rootfs /
+
+RUN mkdir -p /data && chmod 755 /data
+
+VOLUME ["/data"]
+
+EXPOSE 1551 5984 3900
+
+ENTRYPOINT ["/init"]

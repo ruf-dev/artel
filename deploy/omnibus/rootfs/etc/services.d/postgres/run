@@ -1,0 +1,2 @@
+#!/usr/bin/with-contenv sh
+exec s6-setuidgid postgres postgres -D /data/postgres -c listen_addresses=127.0.0.1 -c port=5432

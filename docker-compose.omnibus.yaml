@@ -1,0 +1,31 @@
+# All-in-one deployment: Postgres, CouchDB, Garage (S3) and the artel app
+# all run inside a single container. Run with:
+#
+#   docker compose -f docker-compose.omnibus.yaml up -d
+#
+# then open http://localhost:1551. All state lives in the "artel-data"
+# volume, so `docker compose down` + `up` again preserves everything.
+#
+# For a standard multi-container setup instead, see docker-compose.yaml.
+services:
+  artel:
+    build:
+      context: .
+      dockerfile: Dockerfile.omnibus
+    container_name: artel
+    restart: unless-stopped
+    environment:
+      # CouchDB admin credentials, only applied on first boot (change before
+      # first `up` if you want something other than admin/admin).
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: admin
+      SERVERS_MASTER_PORT: "1551"
+    ports:
+      - "1551:1551"   # artel API + web UI
+      - "5984:5984"   # CouchDB (Obsidian LiveSync connects here directly)
+      - "3900:3900"   # Garage S3 API (attachments / external S3 clients)
+    volumes:
+      - artel-data:/data
+
+volumes:
+  artel-data:
