@@ -1055,8 +1055,8 @@
     "semantic_hash": ""
   },
   "config/config.yaml": {
-    "mtime": 1784011201.3820632,
-    "ast_hash": "55ae712b345be527b7c4b1efe28c9a3a",
+    "mtime": 1784032629.701425,
+    "ast_hash": "def189605383414d006098b0dbe2e070",
     "semantic_hash": ""
   },
   "config/config_template.yaml": {
@@ -3865,8 +3865,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx": {
-    "mtime": 1783755010.4410908,
-    "ast_hash": "b0a25f4d047738278dc4b49db9f9ba6e",
+    "mtime": 1784227949.7093842,
+    "ast_hash": "5a744dd58a4490b642a3618b1f770210",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserList/ArtelUserList.tsx": {
@@ -4492,6 +4492,11 @@
   "migrations/048_migrate_permissions_to_subscriptions.sql": {
     "mtime": 1784010676.0577984,
     "ast_hash": "2c159d30a6f537236aba2d7d3a22ffe7",
+    "semantic_hash": ""
+  },
+  "docker-compose.omnibus.yaml": {
+    "mtime": 1784227882.999751,
+    "ast_hash": "795f1d0e89ebd54c5735342b8e8dd6c6",
     "semantic_hash": ""
   }
 }
