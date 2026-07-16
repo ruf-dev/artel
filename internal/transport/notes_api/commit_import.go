@@ -5,26 +5,26 @@ import (
 
 	"github.com/google/uuid"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
-	"github.com/ruf-dev/artel/internal/service/v1/notes"
+	"github.com/ruf-dev/artel/internal/domain"
 	"go.redsock.ru/rerrors"
 )
 
-func importActionFromPb(action pb.ImportConflictAction) notes.ImportAction {
+func importActionFromPb(action pb.ImportConflictAction) domain.ImportAction {
 	switch action {
 	case pb.ImportConflictAction_OVERWRITE:
-		return notes.ImportActionOverwrite
+		return domain.ImportActionOverwrite
 	case pb.ImportConflictAction_RENAME:
-		return notes.ImportActionRename
+		return domain.ImportActionRename
 	default:
-		return notes.ImportActionSkip
+		return domain.ImportActionSkip
 	}
 }
 
-func importResolutionsFromPb(resolutions []*pb.ImportResolution) []notes.ImportResolution {
-	result := make([]notes.ImportResolution, 0, len(resolutions))
+func importResolutionsFromPb(resolutions []*pb.ImportResolution) []domain.ImportResolution {
+	result := make([]domain.ImportResolution, 0, len(resolutions))
 
 	for _, r := range resolutions {
-		resolution := notes.ImportResolution{
+		resolution := domain.ImportResolution{
 			Path:     r.Path,
 			Action:   importActionFromPb(r.Action),
 			RenameTo: r.RenameTo,

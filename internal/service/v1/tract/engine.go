@@ -67,6 +67,11 @@ func (s *Service) StartRun(
 	startedBy string,
 	triggerUuid uuid.UUID,
 ) (domain.TractRun, error) {
+	err := s.subscriptions.CheckFeature(ctx, tract.UserUuid, domain.FeatureTract)
+	if err != nil {
+		return domain.TractRun{}, err
+	}
+
 	if len(payload) == 0 {
 		payload = json.RawMessage(`{}`)
 	}

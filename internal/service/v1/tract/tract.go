@@ -9,6 +9,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"go.redsock.ru/rerrors"
 )
@@ -36,6 +37,7 @@ type Service struct {
 	externalConns  repository.ExternalConnectionRepo
 	mcpDefs        repository.McpDefinitionsRepo
 	toolExecutor   ToolExecutor
+	subscriptions  service.SubscriptionService
 }
 
 func New(
@@ -45,15 +47,19 @@ func New(
 	externalConns repository.ExternalConnectionRepo,
 	mcpDefs repository.McpDefinitionsRepo,
 	toolExecutor ToolExecutor,
+	subscriptions service.SubscriptionService,
 ) *Service {
-	return &Service{
+	tractSvc := &Service{
 		tracts:         tracts,
 		triggers:       triggers,
 		triggerPresets: triggerPresets,
 		externalConns:  externalConns,
 		mcpDefs:        mcpDefs,
 		toolExecutor:   toolExecutor,
+		subscriptions:  subscriptions,
 	}
+
+	return tractSvc
 }
 
 // CreateTract validates def and persists a new tract owned by the caller. The returned
@@ -71,7 +77,12 @@ func (s *Service) CreateTract(
 		return domain.Tract{}, nil, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	err := validateShape(def)
+	err := s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureTract)
+	if err != nil {
+		return domain.Tract{}, nil, err
+	}
+
+	err = validateShape(def)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -271,7 +272,7 @@ func newTestService(
 	externalConns *fakeExternalConnsRepo,
 	executor *fakeToolExecutor,
 ) *Service {
-	svc := New(nil, nil, nil, externalConns, mcpDefs, executor)
+	svc := New(nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree())
 
 	return svc
 }

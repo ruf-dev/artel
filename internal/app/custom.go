@@ -69,7 +69,8 @@ func (c *Custom) Init(a *App) error {
 	// already-built Mcp and Mom services — mcp must exist first, then tract.
 	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
 	services.Tract = tract.New(
-		repo.Tracts(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(), repo.McpDefinitions(), tractToolExecutor,
+		repo.Tracts(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(), repo.McpDefinitions(),
+		tractToolExecutor, services.SubscriptionService(),
 	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that

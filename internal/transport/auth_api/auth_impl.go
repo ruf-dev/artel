@@ -123,21 +123,21 @@ func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*a
 		return nil, rerrors.Wrap(err, "validate token")
 	}
 
-	user, perms, err := h.authSvc.GetMe(ctx, validatedUser.Uuid)
+	details, err := h.authSvc.GetMe(ctx, validatedUser.Uuid)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "get me")
 	}
 
 	resp := &artel_api.GetMe_Response{
-		Id:       user.Uuid.String(),
-		Username: user.Username,
-		Email:    user.Email,
-		PhotoUrl: user.PhotoUrl,
+		Id:       details.Uuid.String(),
+		Username: details.Username,
+		Email:    details.Email,
+		PhotoUrl: details.PhotoUrl,
 		Permissions: &artel_api.Permissions{
-			IsAdministrator: perms.IsAdministrator,
-			HasEmails:       perms.HasEmails,
-			HasTaskTrackers: perms.HasTaskTrackers,
-			HasNotes:        perms.HasNotes,
+			IsAdministrator: details.Permissions.IsAdministrator,
+			HasEmails:       details.EffectiveSubscription.Features.Emails,
+			HasTaskTrackers: details.EffectiveSubscription.Features.TaskTrackers,
+			HasNotes:        details.EffectiveSubscription.Features.Notes,
 		},
 	}
 

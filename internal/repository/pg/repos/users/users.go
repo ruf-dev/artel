@@ -271,18 +271,13 @@ func (r *UsersRepo) GetDetailsById(ctx context0.Context, id uuid.UUID) (domain.U
 	permissions := domain.UserPermissions{
 		UserUuid:        row.ID,
 		IsAdministrator: row.IsAdministrator.Bool,
-		HasEmails:       row.HasEmails.Bool,
-		HasTaskTrackers: row.HasTaskTrackers.Bool,
-		HasNotes:        row.HasNotes.Bool,
 	}
-	subscription := domain.Subscription{
-		UserUuid: row.ID,
-		Active:   row.SubscriptionActive.Bool,
-	}
+	// EffectiveSubscription is left zero-valued here — callers (auth.GetMe, adminusers.GetUser)
+	// populate it via SubscriptionService.GetEffective, since it's a plan+override merge rather
+	// than a column this repo-layer query can join.
 	details := domain.UserDetails{
-		User:         u,
-		Permissions:  permissions,
-		Subscription: subscription,
+		User:        u,
+		Permissions: permissions,
 	}
 
 	return details, nil

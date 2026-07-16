@@ -20,6 +20,7 @@ type Repo interface {
 	VaultInvites() VaultInvites
 	Sessions() Sessions
 	Subscriptions() Subscriptions
+	SubscriptionPlans() SubscriptionPlansRepo
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
 	S3Instances() S3Instances
@@ -121,8 +122,20 @@ type Subscriptions interface {
 	Upsert(ctx context.Context, userID uuid.UUID, active bool) (domain.Subscription, error)
 	GetByUser(ctx context.Context, userID uuid.UUID) (domain.Subscription, error)
 	CreateDefault(ctx context.Context, userID uuid.UUID) error
+	// GetWithPlan returns the merged plan+override view — the plan's defaults with the user's
+	// feature/quota overrides applied on top.
+	GetWithPlan(ctx context.Context, userID uuid.UUID) (domain.EffectiveSubscription, error)
+	// UpsertOverrides overwrites a user's plan assignment and overrides in place — used by the
+	// migration backfill and any future admin override tooling, not a live per-request path.
+	UpsertOverrides(ctx context.Context, sub domain.Subscription) (domain.Subscription, error)
 
 	WithTx(tx *sql.Tx) Subscriptions
+}
+
+type SubscriptionPlansRepo interface {
+	Get(ctx context.Context, planKey string) (domain.SubscriptionPlan, error)
+
+	WithTx(tx *sql.Tx) SubscriptionPlansRepo
 }
 
 type CouchAccounts interface {
@@ -166,10 +179,7 @@ type S3Instances interface {
 
 type UserPermissionsRepo interface {
 	Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissions, error)
-	Upsert(
-		ctx context.Context, userUuid uuid.UUID,
-		isAdmin bool, hasEmails bool, hasTaskTrackers bool, hasNotes bool, hasSpreadsheets bool,
-	) (domain.UserPermissions, error)
+	Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (domain.UserPermissions, error)
 	CreateDefault(ctx context.Context, userUuid uuid.UUID) error
 
 	WithTx(tx *sql.Tx) UserPermissionsRepo

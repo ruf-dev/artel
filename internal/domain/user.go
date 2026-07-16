@@ -33,22 +33,16 @@ type UserIdentities struct {
 	Artel    *ArtelIdentity
 }
 
+// UserPermissions now holds only the internal admin-access flag — per-feature gating (emails,
+// notes, task trackers, spreadsheets, connectors, tract) moved to the subscription layer, see
+// SubscriptionFeature/FeatureSet in subscription.go.
 type UserPermissions struct {
 	UserUuid        uuid.UUID
 	IsAdministrator bool
-	HasEmails       bool
-	HasTaskTrackers bool
-	HasNotes        bool
-	HasSpreadsheets bool
-}
-
-type Subscription struct {
-	UserUuid uuid.UUID
-	Active   bool
 }
 
 type UserDetails struct {
 	User
-	Permissions  UserPermissions
-	Subscription Subscription
+	Permissions           UserPermissions
+	EffectiveSubscription EffectiveSubscription
 }

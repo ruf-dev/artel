@@ -87,11 +87,11 @@ func (a *AdminUsersImpl) GetArtelUser(
 		Username:           details.Username,
 		Email:              details.Email,
 		IsAdministrator:    details.Permissions.IsAdministrator,
-		HasEmails:          details.Permissions.HasEmails,
-		HasTaskTrackers:    details.Permissions.HasTaskTrackers,
-		HasNotes:           details.Permissions.HasNotes,
-		HasSpreadsheets:    details.Permissions.HasSpreadsheets,
-		SubscriptionActive: details.Subscription.Active,
+		HasEmails:          details.EffectiveSubscription.Features.Emails,
+		HasTaskTrackers:    details.EffectiveSubscription.Features.TaskTrackers,
+		HasNotes:           details.EffectiveSubscription.Features.Notes,
+		HasSpreadsheets:    details.EffectiveSubscription.Features.Spreadsheets,
+		SubscriptionActive: details.EffectiveSubscription.Active,
 	}
 	resp := &artel_api.GetArtelUser_Response{User: userDetails}
 

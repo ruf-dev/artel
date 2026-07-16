@@ -13,6 +13,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/storage"
 	"github.com/ruf-dev/artel/internal/utils"
@@ -24,19 +25,21 @@ type Service struct {
 	vaultMembers   repository.VaultMembers
 	couchInstances repository.CouchInstances
 	couchAccounts  repository.CouchAccounts
-	userPerms      repository.UserPermissionsRepo
 	s3Instances    repository.S3Instances
+	subscriptions  service.SubscriptionService
 }
 
-func New(repo repository.Repo) *Service {
-	return &Service{
+func New(repo repository.Repo, subscriptions service.SubscriptionService) *Service {
+	notesSvc := &Service{
 		vaults:         repo.Vaults(),
 		vaultMembers:   repo.VaultMembers(),
 		couchInstances: repo.CouchInstances(),
 		couchAccounts:  repo.CouchAccounts(),
-		userPerms:      repo.UserPermissions(),
 		s3Instances:    repo.S3Instances(),
+		subscriptions:  subscriptions,
 	}
+
+	return notesSvc
 }
 
 // resolveVault runs the auth/permission/membership checks shared by liveSyncClient (markdown-
@@ -48,13 +51,9 @@ func (s *Service) resolveVault(ctx context.Context, vaultID uuid.UUID) (domain.V
 		return domain.Vault{}, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	perms, err := s.userPerms.Get(ctx, uc.UserUuid)
+	err := s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureNotes)
 	if err != nil {
-		return domain.Vault{}, rerrors.Wrap(err, "error getting permissions")
-	}
-
-	if !perms.HasNotes {
-		return domain.Vault{}, rerrors.Wrap(user_errors.NotesNotEnabled)
+		return domain.Vault{}, err
 	}
 
 	_, err = s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
@@ -169,7 +168,17 @@ func (s *Service) ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, er
 }
 
 func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
 	client, err := s.liveSyncClient(ctx, vaultID)
+	if err != nil {
+		return err
+	}
+
+	err = s.subscriptions.CheckStorageQuota(ctx, uc.UserUuid)
 	if err != nil {
 		return err
 	}
@@ -420,20 +429,6 @@ func (s *Service) CheckImportConflicts(ctx context.Context, vaultID uuid.UUID, d
 	return conflicts, nil
 }
 
-type ImportAction int
-
-const (
-	ImportActionSkip ImportAction = iota
-	ImportActionOverwrite
-	ImportActionRename
-)
-
-type ImportResolution struct {
-	Path     string // conflicting destination path, as reported by CheckImportConflicts
-	Action   ImportAction
-	RenameTo string // vault-relative rename target; only used when Action == ImportActionRename
-}
-
 func (s *Service) writeImportedEntry(
 	ctx context.Context,
 	client *couchdb.LiveSyncClient,
@@ -467,9 +462,19 @@ func (s *Service) CommitImport(
 	vaultID uuid.UUID,
 	destPath string,
 	zipData []byte,
-	resolutions []ImportResolution,
+	resolutions []domain.ImportResolution,
 ) (imported int, skipped int, err error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return 0, 0, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
 	client, bucket, err := s.clientAndBucket(ctx, vaultID)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	err = s.subscriptions.CheckStorageQuota(ctx, uc.UserUuid)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -481,7 +486,7 @@ func (s *Service) CommitImport(
 		return 0, 0, err
 	}
 
-	resolutionByPath := make(map[string]ImportResolution, len(resolutions))
+	resolutionByPath := make(map[string]domain.ImportResolution, len(resolutions))
 	for _, r := range resolutions {
 		resolutionByPath[r.Path] = r
 	}
@@ -492,12 +497,12 @@ func (s *Service) CommitImport(
 
 		if resolution, ok := resolutionByPath[dest]; ok {
 			switch resolution.Action {
-			case ImportActionSkip:
+			case domain.ImportActionSkip:
 				skipped++
 				continue
-			case ImportActionRename:
+			case domain.ImportActionRename:
 				writePath = joinDestPath(destPath, resolution.RenameTo)
-			case ImportActionOverwrite:
+			case domain.ImportActionOverwrite:
 				// writePath already equals dest
 			}
 		}

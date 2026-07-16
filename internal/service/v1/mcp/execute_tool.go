@@ -32,6 +32,13 @@ func (s *ServiceImpl) ExecuteTool(
 		return s.executeTractTool(ctx, keyCtx.UserUuid, toolName, params)
 	}
 
+	if toolName == executors.ToolWriteFile {
+		err := s.subscriptions.CheckStorageQuota(ctx, keyCtx.UserUuid)
+		if err != nil {
+			return domain.ToolExecResult{}, err
+		}
+	}
+
 	client := couchdb.NewLiveSyncClient(keyCtx.CouchURL, keyCtx.CouchDb, keyCtx.CouchUser, keyCtx.CouchPass)
 
 	var bucket storage.BinaryStore

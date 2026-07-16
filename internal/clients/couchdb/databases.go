@@ -28,3 +28,14 @@ func (c *Client) DeleteDatabase(ctx context.Context, name string) error {
 
 	return nil
 }
+
+// DatabaseSize returns name's on-disk footprint in bytes (DiskSize — CouchDB's sizes.file,
+// which includes B-tree overhead rather than just live document bytes).
+func (c *Client) DatabaseSize(ctx context.Context, name string) (int64, error) {
+	stats, err := c.kivik.DB(name).Stats(ctx)
+	if err != nil {
+		return 0, rerrors.Wrap(err, "getting database stats")
+	}
+
+	return stats.DiskSize, nil
+}

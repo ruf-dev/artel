@@ -16,6 +16,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
+	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
@@ -24,11 +25,12 @@ type Service struct {
 	sessionsRepo    repository.Sessions
 	permissionsRepo repository.UserPermissionsRepo
 	subsRepo        repository.Subscriptions
+	subscriptions   service.SubscriptionService
 	txManager       tx_manager.TxManager
 	tgParser        telegram.TokenParser
 }
 
-func New(repo repository.Repo, telegramClientId string) *Service {
+func New(repo repository.Repo, telegramClientId string, subscriptions service.SubscriptionService) *Service {
 	tgParser := telegram.NewTokenParser(
 		"https://oauth.telegram.org/.well-known/jwks.json",
 		"https://oauth.telegram.org",
@@ -40,6 +42,7 @@ func New(repo repository.Repo, telegramClientId string) *Service {
 		sessionsRepo:    repo.Sessions(),
 		permissionsRepo: repo.UserPermissions(),
 		subsRepo:        repo.Subscriptions(),
+		subscriptions:   subscriptions,
 		txManager:       repo.TxManager(),
 		tgParser:        tgParser,
 	}
@@ -201,13 +204,20 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	return session, nil
 }
 
-func (s *Service) GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, domain.UserPermissions, error) {
+func (s *Service) GetMe(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error) {
 	details, err := s.usersRepo.GetDetailsById(ctx, userUuid)
 	if err != nil {
-		return domain.User{}, domain.UserPermissions{}, rerrors.Wrap(err, "get user details")
+		return domain.UserDetails{}, rerrors.Wrap(err, "get user details")
 	}
 
-	return details.User, details.Permissions, nil
+	effective, err := s.subscriptions.GetEffective(ctx, userUuid)
+	if err != nil {
+		return domain.UserDetails{}, rerrors.Wrap(err, "get effective subscription")
+	}
+
+	details.EffectiveSubscription = effective
+
+	return details, nil
 }
 
 func (s *Service) CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error {

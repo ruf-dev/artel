@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
+	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 )
 
 type fakeExternalConnectionRepo struct {
@@ -63,7 +64,7 @@ func TestListConnectionsForTracts(t *testing.T) {
 		},
 	}
 
-	svc := mcp.New(nil, nil, nil, nil, nil, nil, nil, repo)
+	svc := mcp.New(nil, nil, nil, nil, nil, nil, nil, repo, subscription.NewFree())
 
 	keyCtx := domain.McpKeyContext{UserUuid: userUuid}
 

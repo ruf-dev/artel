@@ -184,29 +184,26 @@ func (q *Queries) GetUserByTelegramId(ctx context.Context, telegramID string) (G
 
 const getUserDetails = `-- name: GetUserDetails :one
 SELECT u.id, u.username, u.email, u.photo_url, u.created_at, u.updated_at, u.password_hash,
-       up.is_administrator, up.has_emails, up.has_task_trackers, up.has_notes,
-       s.active AS subscription_active
+       up.is_administrator
 FROM users u
 LEFT JOIN user_permissions up ON up.user_id = u.id
-LEFT JOIN subscriptions s ON s.user_id = u.id
 WHERE u.id = $1
 `
 
 type GetUserDetailsRow struct {
-	ID                 uuid.UUID
-	Username           string
-	Email              sql.NullString
-	PhotoUrl           string
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
-	PasswordHash       string
-	IsAdministrator    sql.NullBool
-	HasEmails          sql.NullBool
-	HasTaskTrackers    sql.NullBool
-	HasNotes           sql.NullBool
-	SubscriptionActive sql.NullBool
+	ID              uuid.UUID
+	Username        string
+	Email           sql.NullString
+	PhotoUrl        string
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	PasswordHash    string
+	IsAdministrator sql.NullBool
 }
 
+// Feature flags and subscription state are no longer joined here — callers fetch those via
+// SubscriptionService.GetEffective, since they now come from a plan+override merge rather than
+// raw columns on this row.
 func (q *Queries) GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDetailsRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserDetails, id)
 	var i GetUserDetailsRow
@@ -219,10 +216,6 @@ func (q *Queries) GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDeta
 		&i.UpdatedAt,
 		&i.PasswordHash,
 		&i.IsAdministrator,
-		&i.HasEmails,
-		&i.HasTaskTrackers,
-		&i.HasNotes,
-		&i.SubscriptionActive,
 	)
 	return i, err
 }

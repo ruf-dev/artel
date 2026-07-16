@@ -12,7 +12,6 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
-	"github.com/ruf-dev/artel/internal/service/v1/notes"
 )
 
 type Service interface {
@@ -44,7 +43,7 @@ type AuthService interface {
 	Logout(ctx context.Context, token string) error
 	ValidateToken(ctx context.Context, token string) (domain.User, error)
 	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
-	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.User, domain.UserPermissions, error)
+	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
 	CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error
 }
 
@@ -142,8 +141,26 @@ type McpService interface {
 	SetTractService(baseCtx context.Context, ts TractService)
 }
 
+// SubscriptionService regulates access to gated functionality (feature flags previously handled
+// by UserPermissions) and storage quotas. Two implementations exist behind this interface,
+// selected by config.EnvironmentConfig.SubscriptionsEnabled: a no-op "free" implementation
+// (always allow, unlimited — used when subscriptions are disabled) and a "paid" implementation
+// enforcing each user's effective plan+overrides.
 type SubscriptionService interface {
 	CheckActive(ctx context.Context, userUuid uuid.UUID) error
+	// HasFeature reports whether userUuid's effective subscription grants feature.
+	HasFeature(ctx context.Context, userUuid uuid.UUID, feature domain.SubscriptionFeature) (bool, error)
+	// CheckFeature is HasFeature wrapped in user_errors.FeatureNotEnabled for callers that just
+	// want to gate a call.
+	CheckFeature(ctx context.Context, userUuid uuid.UUID, feature domain.SubscriptionFeature) error
+	// GetEffective returns userUuid's merged plan+override view.
+	GetEffective(ctx context.Context, userUuid uuid.UUID) (domain.EffectiveSubscription, error)
+	// GetUsage measures userUuid's current storage footprint on demand (CouchDB + S3, summed
+	// across every vault they belong to).
+	GetUsage(ctx context.Context, userUuid uuid.UUID) (domain.StorageUsage, error)
+	// CheckStorageQuota compares GetUsage against GetEffective's quotas, returning
+	// user_errors.CouchStorageQuotaExceeded / S3StorageQuotaExceeded if either is already over.
+	CheckStorageQuota(ctx context.Context, userUuid uuid.UUID) error
 }
 
 type ListPromptsParams struct {
@@ -175,7 +192,7 @@ type NotesService interface {
 	ExportFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) ([]byte, error)
 	CheckImportConflicts(ctx context.Context, vaultID uuid.UUID, destPath string, zipData []byte) ([]string, error)
 	CommitImport(
-		ctx context.Context, vaultID uuid.UUID, destPath string, zipData []byte, resolutions []notes.ImportResolution,
+		ctx context.Context, vaultID uuid.UUID, destPath string, zipData []byte, resolutions []domain.ImportResolution,
 	) (imported int, skipped int, err error)
 	DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) (deletedCount int, failedPaths []string, err error)
 }

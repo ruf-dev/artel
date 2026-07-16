@@ -7,6 +7,8 @@ package artel_q
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 
 	"github.com/google/uuid"
 )
@@ -23,13 +25,63 @@ func (q *Queries) CreateDefaultSubscription(ctx context.Context, userID uuid.UUI
 }
 
 const getSubscriptionByUser = `-- name: GetSubscriptionByUser :one
-SELECT user_id, active FROM subscriptions WHERE user_id = $1
+SELECT user_id, active, plan_key, feature_overrides, couch_quota_override_bytes, s3_quota_override_bytes
+FROM subscriptions
+WHERE user_id = $1
 `
 
 func (q *Queries) GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error) {
 	row := q.db.QueryRowContext(ctx, getSubscriptionByUser, userID)
 	var i Subscription
-	err := row.Scan(&i.UserID, &i.Active)
+	err := row.Scan(
+		&i.UserID,
+		&i.Active,
+		&i.PlanKey,
+		&i.FeatureOverrides,
+		&i.CouchQuotaOverrideBytes,
+		&i.S3QuotaOverrideBytes,
+	)
+	return i, err
+}
+
+const getSubscriptionWithPlan = `-- name: GetSubscriptionWithPlan :one
+SELECT
+    s.user_id, s.active, s.plan_key, s.feature_overrides,
+    s.couch_quota_override_bytes, s.s3_quota_override_bytes,
+    p.couch_quota_bytes AS plan_couch_quota_bytes,
+    p.s3_quota_bytes AS plan_s3_quota_bytes,
+    p.features AS plan_features
+FROM subscriptions s
+JOIN subscription_plans p ON p.plan_key = s.plan_key
+WHERE s.user_id = $1
+`
+
+type GetSubscriptionWithPlanRow struct {
+	UserID                  uuid.UUID
+	Active                  bool
+	PlanKey                 string
+	FeatureOverrides        json.RawMessage
+	CouchQuotaOverrideBytes sql.NullInt64
+	S3QuotaOverrideBytes    sql.NullInt64
+	PlanCouchQuotaBytes     int64
+	PlanS3QuotaBytes        int64
+	PlanFeatures            json.RawMessage
+}
+
+func (q *Queries) GetSubscriptionWithPlan(ctx context.Context, userID uuid.UUID) (GetSubscriptionWithPlanRow, error) {
+	row := q.db.QueryRowContext(ctx, getSubscriptionWithPlan, userID)
+	var i GetSubscriptionWithPlanRow
+	err := row.Scan(
+		&i.UserID,
+		&i.Active,
+		&i.PlanKey,
+		&i.FeatureOverrides,
+		&i.CouchQuotaOverrideBytes,
+		&i.S3QuotaOverrideBytes,
+		&i.PlanCouchQuotaBytes,
+		&i.PlanS3QuotaBytes,
+		&i.PlanFeatures,
+	)
 	return i, err
 }
 
@@ -37,7 +89,7 @@ const upsertSubscription = `-- name: UpsertSubscription :one
 INSERT INTO subscriptions (user_id, active)
 VALUES ($1, $2)
 ON CONFLICT (user_id) DO UPDATE SET active = EXCLUDED.active
-RETURNING user_id, active
+RETURNING user_id, active, plan_key, feature_overrides, couch_quota_override_bytes, s3_quota_override_bytes
 `
 
 type UpsertSubscriptionParams struct {
@@ -48,6 +100,51 @@ type UpsertSubscriptionParams struct {
 func (q *Queries) UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error) {
 	row := q.db.QueryRowContext(ctx, upsertSubscription, arg.UserID, arg.Active)
 	var i Subscription
-	err := row.Scan(&i.UserID, &i.Active)
+	err := row.Scan(
+		&i.UserID,
+		&i.Active,
+		&i.PlanKey,
+		&i.FeatureOverrides,
+		&i.CouchQuotaOverrideBytes,
+		&i.S3QuotaOverrideBytes,
+	)
+	return i, err
+}
+
+const upsertSubscriptionOverrides = `-- name: UpsertSubscriptionOverrides :one
+UPDATE subscriptions
+SET plan_key = $2,
+    feature_overrides = $3,
+    couch_quota_override_bytes = $4,
+    s3_quota_override_bytes = $5
+WHERE user_id = $1
+RETURNING user_id, active, plan_key, feature_overrides, couch_quota_override_bytes, s3_quota_override_bytes
+`
+
+type UpsertSubscriptionOverridesParams struct {
+	UserID                  uuid.UUID
+	PlanKey                 string
+	FeatureOverrides        json.RawMessage
+	CouchQuotaOverrideBytes sql.NullInt64
+	S3QuotaOverrideBytes    sql.NullInt64
+}
+
+func (q *Queries) UpsertSubscriptionOverrides(ctx context.Context, arg UpsertSubscriptionOverridesParams) (Subscription, error) {
+	row := q.db.QueryRowContext(ctx, upsertSubscriptionOverrides,
+		arg.UserID,
+		arg.PlanKey,
+		arg.FeatureOverrides,
+		arg.CouchQuotaOverrideBytes,
+		arg.S3QuotaOverrideBytes,
+	)
+	var i Subscription
+	err := row.Scan(
+		&i.UserID,
+		&i.Active,
+		&i.PlanKey,
+		&i.FeatureOverrides,
+		&i.CouchQuotaOverrideBytes,
+		&i.S3QuotaOverrideBytes,
+	)
 	return i, err
 }

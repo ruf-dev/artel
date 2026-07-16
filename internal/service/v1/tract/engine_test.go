@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +17,7 @@ func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo
 	tracts := newFakeTractsRepo()
 	externalConns := newFakeExternalConnsRepo()
 	mcpDefs := newFakeMcpDefsRepo()
-	svc := New(tracts, nil, nil, externalConns, mcpDefs, executor)
+	svc := New(tracts, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree())
 
 	return svc, tracts, externalConns
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
+	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +17,7 @@ func newTriggerTestService(
 	triggerPresets *fakeTriggerPresetsRepo,
 	externalConns *fakeExternalConnsRepo,
 ) *Service {
-	svc := New(nil, triggers, triggerPresets, externalConns, nil, nil)
+	svc := New(nil, triggers, triggerPresets, externalConns, nil, nil, subscription.NewFree())
 
 	return svc
 }

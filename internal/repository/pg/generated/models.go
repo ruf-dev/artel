@@ -354,8 +354,21 @@ type Session struct {
 }
 
 type Subscription struct {
-	UserID uuid.UUID
-	Active bool
+	UserID                  uuid.UUID
+	Active                  bool
+	PlanKey                 string
+	FeatureOverrides        json.RawMessage
+	CouchQuotaOverrideBytes sql.NullInt64
+	S3QuotaOverrideBytes    sql.NullInt64
+}
+
+type SubscriptionPlan struct {
+	PlanKey         string
+	CouchQuotaBytes int64
+	S3QuotaBytes    int64
+	Features        json.RawMessage
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 type TaskTracker struct {
@@ -458,10 +471,6 @@ type User struct {
 type UserPermission struct {
 	UserID          uuid.UUID
 	IsAdministrator bool
-	HasEmails       bool
-	HasTaskTrackers bool
-	HasNotes        bool
-	HasSpreadsheets bool
 }
 
 type Vault struct {

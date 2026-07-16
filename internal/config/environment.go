@@ -3,14 +3,15 @@
 package config
 
 type EnvironmentConfig struct {
-	CredsEncryptionKey string
-	GoogleAPIKey       string
-	GoogleClientID     string
-	GoogleClientSecret string
-	LogFormat          string
-	LogLevel           string
-	OtelEndpoint       string
-	TelegramClientID   string
+	CredsEncryptionKey   string
+	GoogleAPIKey         string
+	GoogleClientID       string
+	GoogleClientSecret   string
+	LogFormat            string
+	LogLevel             string
+	OtelEndpoint         string
+	SubscriptionsEnabled bool
+	TelegramClientID     string
 }
 
 const (

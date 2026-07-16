@@ -44,3 +44,6 @@ environment:
     - name: telegram_client_id
       type: string
       value: ""
+    - name: subscriptions_enabled
+      type: bool
+      value: false

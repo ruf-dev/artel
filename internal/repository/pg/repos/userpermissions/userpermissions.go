@@ -29,32 +29,18 @@ func (r *Repo) Get(ctx context.Context, userUuid uuid.UUID) (domain.UserPermissi
 		return domain.UserPermissions{}, rerrors.Wrap(err, "get user permissions")
 	}
 
-	return domain.UserPermissions{
+	perms := domain.UserPermissions{
 		UserUuid:        row.UserID,
 		IsAdministrator: row.IsAdministrator,
-		HasEmails:       row.HasEmails,
-		HasTaskTrackers: row.HasTaskTrackers,
-		HasNotes:        row.HasNotes,
-		HasSpreadsheets: row.HasSpreadsheets,
-	}, nil
+	}
+
+	return perms, nil
 }
 
-func (r *Repo) Upsert(
-	ctx context.Context,
-	userUuid uuid.UUID,
-	isAdmin bool,
-	hasEmails bool,
-	hasTaskTrackers bool,
-	hasNotes bool,
-	hasSpreadsheets bool,
-) (domain.UserPermissions, error) {
+func (r *Repo) Upsert(ctx context.Context, userUuid uuid.UUID, isAdmin bool) (domain.UserPermissions, error) {
 	params := artel_q.UpsertUserPermissionsParams{
 		UserID:          userUuid,
 		IsAdministrator: isAdmin,
-		HasEmails:       hasEmails,
-		HasTaskTrackers: hasTaskTrackers,
-		HasNotes:        hasNotes,
-		HasSpreadsheets: hasSpreadsheets,
 	}
 
 	row, err := r.q.UpsertUserPermissions(ctx, params)
@@ -62,14 +48,12 @@ func (r *Repo) Upsert(
 		return domain.UserPermissions{}, rerrors.Wrap(err, "upsert user permissions")
 	}
 
-	return domain.UserPermissions{
+	perms := domain.UserPermissions{
 		UserUuid:        row.UserID,
 		IsAdministrator: row.IsAdministrator,
-		HasEmails:       row.HasEmails,
-		HasTaskTrackers: row.HasTaskTrackers,
-		HasNotes:        row.HasNotes,
-		HasSpreadsheets: row.HasSpreadsheets,
-	}, nil
+	}
+
+	return perms, nil
 }
 
 func (r *Repo) CreateDefault(ctx context.Context, userUuid uuid.UUID) error {

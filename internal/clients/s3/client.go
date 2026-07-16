@@ -226,3 +226,19 @@ func (c *Client) List(ctx context.Context) ([]storage.ObjectEntry, error) {
 
 	return entries, nil
 }
+
+// TotalSize sums Size across every object in the bucket — S3 has no built-in aggregate stat, so
+// this walks the full object listing.
+func (c *Client) TotalSize(ctx context.Context) (int64, error) {
+	entries, err := c.List(ctx)
+	if err != nil {
+		return 0, rerrors.Wrap(err, "listing objects for size")
+	}
+
+	var total int64
+	for _, entry := range entries {
+		total += entry.Size
+	}
+
+	return total, nil
+}

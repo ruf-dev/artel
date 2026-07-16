@@ -35,6 +35,11 @@ func (s *Service) CreateTrigger(
 		return domain.Trigger{}, "", rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
+	err := s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureTract)
+	if err != nil {
+		return domain.Trigger{}, "", err
+	}
+
 	preset, err := s.triggerPresets.GetByKey(ctx, source)
 	if err != nil {
 		return domain.Trigger{}, "", rerrors.Wrap(err, "error getting trigger preset")

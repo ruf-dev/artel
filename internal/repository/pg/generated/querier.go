@@ -55,6 +55,8 @@ type Querier interface {
 	GetSessionWithUser(ctx context.Context, token string) (GetSessionWithUserRow, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
+	GetSubscriptionPlan(ctx context.Context, planKey string) (SubscriptionPlan, error)
+	GetSubscriptionWithPlan(ctx context.Context, userID uuid.UUID) (GetSubscriptionWithPlanRow, error)
 	GetTaskTrackerByUuid(ctx context.Context, id uuid.UUID) (TaskTracker, error)
 	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (Tract, error)
@@ -66,6 +68,9 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email sql.NullString) (GetUserByEmailRow, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error)
 	GetUserByTelegramId(ctx context.Context, telegramID string) (GetUserByTelegramIdRow, error)
+	// Feature flags and subscription state are no longer joined here — callers fetch those via
+	// SubscriptionService.GetEffective, since they now come from a plan+override merge rather than
+	// raw columns on this row.
 	GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDetailsRow, error)
 	GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error)
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
@@ -145,6 +150,7 @@ type Querier interface {
 	UpsertMcpDefinition(ctx context.Context, arg UpsertMcpDefinitionParams) (Mcp, error)
 	UpsertMcpTool(ctx context.Context, arg UpsertMcpToolParams) (McpTool, error)
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
+	UpsertSubscriptionOverrides(ctx context.Context, arg UpsertSubscriptionOverridesParams) (Subscription, error)
 	UpsertTelegramIdentity(ctx context.Context, arg UpsertTelegramIdentityParams) error
 	UpsertUserPermissions(ctx context.Context, arg UpsertUserPermissionsParams) (UserPermission, error)
 }

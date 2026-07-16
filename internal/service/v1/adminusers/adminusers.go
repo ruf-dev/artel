@@ -6,16 +6,20 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service"
 	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
-	users    repository.Users
-	sessions repository.Sessions
+	users         repository.Users
+	sessions      repository.Sessions
+	subscriptions service.SubscriptionService
 }
 
-func New(users repository.Users, sessions repository.Sessions) *Service {
-	return &Service{users: users, sessions: sessions}
+func New(users repository.Users, sessions repository.Sessions, subscriptions service.SubscriptionService) *Service {
+	adminUsers := &Service{users: users, sessions: sessions, subscriptions: subscriptions}
+
+	return adminUsers
 }
 
 func (s *Service) ListUsers(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error) {
@@ -32,6 +36,13 @@ func (s *Service) GetUser(ctx context.Context, userUuid uuid.UUID) (domain.UserD
 	if err != nil {
 		return domain.UserDetails{}, rerrors.Wrap(err, "error getting user details")
 	}
+
+	effective, err := s.subscriptions.GetEffective(ctx, userUuid)
+	if err != nil {
+		return domain.UserDetails{}, rerrors.Wrap(err, "error getting effective subscription")
+	}
+
+	details.EffectiveSubscription = effective
 
 	return details, nil
 }

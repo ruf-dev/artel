@@ -49,7 +49,24 @@ var (
 	NotAdmin = rerrors.New("not an administrator", codes.PermissionDenied)
 
 	// feature flags.
-	NotesNotEnabled = rerrors.New("notes are not enabled for your account", codes.PermissionDenied)
+	NotesNotEnabled   = rerrors.New("notes are not enabled for your account", codes.PermissionDenied)
+	FeatureNotEnabled = rerrors.New(
+		"this feature is not enabled for your account",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+
+	// subscription: storage quotas.
+	CouchStorageQuotaExceeded = rerrors.New(
+		"couchdb storage quota exceeded for your subscription",
+		codes.ResourceExhausted,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+	S3StorageQuotaExceeded = rerrors.New(
+		"s3 storage quota exceeded for your subscription",
+		codes.ResourceExhausted,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
 
 	// vault.
 	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)

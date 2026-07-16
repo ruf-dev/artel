@@ -32,10 +32,11 @@ SELECT photo_url FROM users WHERE id = $1;
 UPDATE users SET photo_url = $2 WHERE id = $1;
 
 -- name: GetUserDetails :one
+-- Feature flags and subscription state are no longer joined here — callers fetch those via
+-- SubscriptionService.GetEffective, since they now come from a plan+override merge rather than
+-- raw columns on this row.
 SELECT u.id, u.username, u.email, u.photo_url, u.created_at, u.updated_at, u.password_hash,
-       up.is_administrator, up.has_emails, up.has_task_trackers, up.has_notes,
-       s.active AS subscription_active
+       up.is_administrator
 FROM users u
 LEFT JOIN user_permissions up ON up.user_id = u.id
-LEFT JOIN subscriptions s ON s.user_id = u.id
 WHERE u.id = $1;

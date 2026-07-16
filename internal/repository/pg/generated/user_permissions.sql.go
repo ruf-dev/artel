@@ -12,8 +12,8 @@ import (
 )
 
 const createDefaultUserPermissions = `-- name: CreateDefaultUserPermissions :exec
-INSERT INTO user_permissions (user_id, is_administrator, has_emails, has_task_trackers, has_notes, has_spreadsheets)
-VALUES ($1, FALSE, FALSE, FALSE, FALSE, FALSE)
+INSERT INTO user_permissions (user_id, is_administrator)
+VALUES ($1, FALSE)
 ON CONFLICT DO NOTHING
 `
 
@@ -23,7 +23,7 @@ func (q *Queries) CreateDefaultUserPermissions(ctx context.Context, userID uuid.
 }
 
 const getUserPermissions = `-- name: GetUserPermissions :one
-SELECT user_id, is_administrator, has_emails, has_task_trackers, has_notes, has_spreadsheets
+SELECT user_id, is_administrator
 FROM user_permissions
 WHERE user_id = $1
 `
@@ -31,55 +31,26 @@ WHERE user_id = $1
 func (q *Queries) GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error) {
 	row := q.db.QueryRowContext(ctx, getUserPermissions, userID)
 	var i UserPermission
-	err := row.Scan(
-		&i.UserID,
-		&i.IsAdministrator,
-		&i.HasEmails,
-		&i.HasTaskTrackers,
-		&i.HasNotes,
-		&i.HasSpreadsheets,
-	)
+	err := row.Scan(&i.UserID, &i.IsAdministrator)
 	return i, err
 }
 
 const upsertUserPermissions = `-- name: UpsertUserPermissions :one
-INSERT INTO user_permissions (user_id, is_administrator, has_emails, has_task_trackers, has_notes, has_spreadsheets)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO user_permissions (user_id, is_administrator)
+VALUES ($1, $2)
 ON CONFLICT (user_id) DO UPDATE
-    SET is_administrator = EXCLUDED.is_administrator,
-        has_emails       = EXCLUDED.has_emails,
-        has_task_trackers = EXCLUDED.has_task_trackers,
-        has_notes        = EXCLUDED.has_notes,
-        has_spreadsheets = EXCLUDED.has_spreadsheets
-RETURNING user_id, is_administrator, has_emails, has_task_trackers, has_notes, has_spreadsheets
+    SET is_administrator = EXCLUDED.is_administrator
+RETURNING user_id, is_administrator
 `
 
 type UpsertUserPermissionsParams struct {
 	UserID          uuid.UUID
 	IsAdministrator bool
-	HasEmails       bool
-	HasTaskTrackers bool
-	HasNotes        bool
-	HasSpreadsheets bool
 }
 
 func (q *Queries) UpsertUserPermissions(ctx context.Context, arg UpsertUserPermissionsParams) (UserPermission, error) {
-	row := q.db.QueryRowContext(ctx, upsertUserPermissions,
-		arg.UserID,
-		arg.IsAdministrator,
-		arg.HasEmails,
-		arg.HasTaskTrackers,
-		arg.HasNotes,
-		arg.HasSpreadsheets,
-	)
+	row := q.db.QueryRowContext(ctx, upsertUserPermissions, arg.UserID, arg.IsAdministrator)
 	var i UserPermission
-	err := row.Scan(
-		&i.UserID,
-		&i.IsAdministrator,
-		&i.HasEmails,
-		&i.HasTaskTrackers,
-		&i.HasNotes,
-		&i.HasSpreadsheets,
-	)
+	err := row.Scan(&i.UserID, &i.IsAdministrator)
 	return i, err
 }

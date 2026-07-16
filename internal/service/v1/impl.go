@@ -53,8 +53,10 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Endpoint: googleoauth.Endpoint,
 	}
 
-	return &Services{
-		Auth:          auth.New(repo, cfg.TelegramClientID),
+	subscriptionSvc := newSubscriptionService(repo, cfg)
+
+	services := &Services{
+		Auth:          auth.New(repo, cfg.TelegramClientID, subscriptionSvc),
 		Vault:         vault.New(repo),
 		CouchInstance: couchinstances.New(repo),
 		S3Instance:    s3instances.New(repo),
@@ -68,12 +70,13 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			repo.McpConnectors(),
 			repo.McpDefinitions(),
 			repo.ExternalConnections(),
+			subscriptionSvc,
 		),
-		Subscription: subscription.New(repo.Subscriptions()),
+		Subscription: subscriptionSvc,
 		Prompt:       prompt.New(repo.Prompts()),
 		TaskTracker:  tasktracker.New(repo.TaskTrackers()),
-		Notes:        notes.New(repo),
-		AdminUsers:   adminusers.New(repo.Users(), repo.Sessions()),
+		Notes:        notes.New(repo, subscriptionSvc),
+		AdminUsers:   adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc),
 		ExternalConnections: externalconns.New(
 			repo.ExternalConnections(),
 			repo.PendingAuthCodes(),
@@ -82,7 +85,20 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			oauthCfg,
 		),
 		Mom: mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections()),
-	}, nil
+	}
+
+	return services, nil
+}
+
+// newSubscriptionService selects the subscription layer implementation: FreeService (always
+// allow, unlimited) when subscriptions are disabled, PaidService (enforces plans/overrides)
+// when enabled.
+func newSubscriptionService(repo *pg.Repos, cfg config.EnvironmentConfig) service.SubscriptionService {
+	if !cfg.SubscriptionsEnabled {
+		return subscription.NewFree()
+	}
+
+	return subscription.NewPaid(repo.Subscriptions(), repo.Vaults(), repo.CouchInstances(), repo.S3Instances())
 }
 
 func (s *Services) AuthService() service.AuthService {

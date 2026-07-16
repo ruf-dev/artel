@@ -21,6 +21,7 @@ type ServiceImpl struct {
 	mcpConnectors       repository.McpConnectorsRepo
 	mcpDefinitions      repository.McpDefinitionsRepo
 	externalConnections repository.ExternalConnectionRepo
+	subscriptions       service.SubscriptionService
 	vaultExecutor       *executors.VaultExecutor
 	tractExecutor       *executors.TractExecutor
 
@@ -41,8 +42,9 @@ func New(
 	mcpConnectors repository.McpConnectorsRepo,
 	mcpDefinitions repository.McpDefinitionsRepo,
 	externalConnections repository.ExternalConnectionRepo,
+	subscriptions service.SubscriptionService,
 ) *ServiceImpl {
-	return &ServiceImpl{
+	impl := &ServiceImpl{
 		mcpKeys:             mcpKeys,
 		vaults:              vaults,
 		vaultMembers:        vaultMembers,
@@ -51,9 +53,12 @@ func New(
 		mcpConnectors:       mcpConnectors,
 		mcpDefinitions:      mcpDefinitions,
 		externalConnections: externalConnections,
+		subscriptions:       subscriptions,
 		vaultExecutor:       executors.NewVaultExecutor(),
 		tractExecutor:       executors.NewTractExecutor(),
 	}
+
+	return impl
 }
 
 // SetTractService wires the tract service dependency and the server-lifecycle context used to
