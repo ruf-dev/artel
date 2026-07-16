@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package artel_admin_subscriptions;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service AdminSubscriptionsAPI {
+  rpc ListSubscriptionPlans(ListSubscriptionPlans.Request) returns (ListSubscriptionPlans.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_subscriptions/plans"
+      body: "*"
+    };
+  };
+  rpc GetUserSubscription(GetUserSubscription.Request) returns (GetUserSubscription.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_subscriptions/get"
+      body: "*"
+    };
+  };
+  rpc UpdateUserSubscription(UpdateUserSubscription.Request) returns (UpdateUserSubscription.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_subscriptions/update"
+      body: "*"
+    };
+  };
+}
+
+message SubscriptionPlanEntry {
+  string plan_key = 1;
+  int64 couch_quota_bytes = 2;
+  int64 s3_quota_bytes = 3;
+  map<string, bool> features = 4;
+}
+
+message ListSubscriptionPlans {
+  message Request {
+  }
+  message Response {
+    repeated SubscriptionPlanEntry plans = 1;
+  }
+}
+
+// EffectiveSubscriptionView mirrors domain.EffectiveSubscription — the plan's defaults merged
+// with the user's overrides applied on top, for display only (not editable directly).
+message EffectiveSubscriptionView {
+  bool active = 1;
+  string plan_key = 2;
+  map<string, bool> features = 3;
+  int64 couch_quota_bytes = 4;
+  int64 s3_quota_bytes = 5;
+}
+
+message GetUserSubscription {
+  message Request {
+    string user_id = 1;
+  }
+  message Response {
+    bool active = 1;
+    string plan_key = 2;
+    // feature_overrides is sparse — only features that differ from the plan default are present.
+    map<string, bool> feature_overrides = 3;
+    optional int64 couch_quota_override_bytes = 4;
+    optional int64 s3_quota_override_bytes = 5;
+    EffectiveSubscriptionView effective = 6;
+  }
+}
+
+message UpdateUserSubscription {
+  message Request {
+    string user_id = 1;
+    bool active = 2;
+    string plan_key = 3;
+    // feature_overrides is sparse — an omitted feature key means "inherit the plan's value".
+    map<string, bool> feature_overrides = 4;
+    // Absent means "use the plan's default quota".
+    optional int64 couch_quota_override_bytes = 5;
+    optional int64 s3_quota_override_bytes = 6;
+  }
+  message Response {
+    EffectiveSubscriptionView effective = 1;
+  }
+}

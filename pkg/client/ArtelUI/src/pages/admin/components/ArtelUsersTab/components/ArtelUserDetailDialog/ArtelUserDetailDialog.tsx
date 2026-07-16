@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react"
+import {useState, useEffect, useCallback} from "react"
 import {Button, ModalClose} from "@vervstack/chures"
 
 import cls
@@ -10,6 +10,9 @@ import useUser from "@/hooks/user/User.ts"
 import UserSessionsDialog
     // eslint-disable-next-line max-len -- path too long to wrap
     from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx"
+import UserSubscriptionDialog
+    // eslint-disable-next-line max-len -- path too long to wrap
+    from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/UserSubscriptionDialog.tsx"
 
 interface ArtelUserDetailDialogProps {
     userId: string
@@ -22,22 +25,26 @@ export default function ArtelUserDetailDialog({userId}: ArtelUserDetailDialogPro
     const [details, setDetails] = useState<ArtelUserDetails | null>(null)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        async function load() {
-            try {
-                const res = await AdminUsersAPI.GetArtelUser({userId}, auth.getInitReq())
-                setDetails(res.user ?? null)
-            } catch (err) {
-                bakeError("Failed to load user details", err)
-            } finally {
-                setLoading(false)
-            }
+    const load = useCallback(async () => {
+        setLoading(true)
+        try {
+            const res = await AdminUsersAPI.GetArtelUser({userId}, auth.getInitReq())
+            setDetails(res.user ?? null)
+        } catch (err) {
+            bakeError("Failed to load user details", err)
+        } finally {
+            setLoading(false)
         }
-        void load()
-    }, [auth, userId])
+    }, [auth, userId, bakeError])
+
+    useEffect(() => { void load() }, [load])
 
     function openSessions() {
         OpenDialog(<UserSessionsDialog userId={userId} />)
+    }
+
+    function openSubscription() {
+        OpenDialog(<UserSubscriptionDialog userId={userId} onUpdated={load} />)
     }
 
     return (
@@ -73,6 +80,7 @@ export default function ArtelUserDetailDialog({userId}: ArtelUserDetailDialogPro
                 <p className={cls.Empty}>User not found.</p>
             )}
             <div className={cls.ModalActions}>
+                <Button variant="secondary" onClick={openSubscription}>Subscription</Button>
                 <Button variant="secondary" onClick={openSessions}>Sessions</Button>
                 <Button variant="primary" onClick={CloseDialog}>Close</Button>
             </div>

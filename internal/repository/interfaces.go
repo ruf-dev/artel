@@ -134,6 +134,7 @@ type Subscriptions interface {
 
 type SubscriptionPlansRepo interface {
 	Get(ctx context.Context, planKey string) (domain.SubscriptionPlan, error)
+	List(ctx context.Context) ([]domain.SubscriptionPlan, error)
 
 	WithTx(tx *sql.Tx) SubscriptionPlansRepo
 }

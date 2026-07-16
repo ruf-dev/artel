@@ -1,0 +1,284 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "admin_subscriptions.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AdminSubscriptionsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/admin_subscriptions/get": {
+      "post": {
+        "operationId": "AdminSubscriptionsAPI_GetUserSubscription",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_subscriptionsGetUserSubscriptionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_subscriptionsGetUserSubscriptionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSubscriptionsAPI"
+        ]
+      }
+    },
+    "/api/admin_subscriptions/plans": {
+      "post": {
+        "operationId": "AdminSubscriptionsAPI_ListSubscriptionPlans",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_subscriptionsListSubscriptionPlansResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_subscriptionsListSubscriptionPlansRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSubscriptionsAPI"
+        ]
+      }
+    },
+    "/api/admin_subscriptions/update": {
+      "post": {
+        "operationId": "AdminSubscriptionsAPI_UpdateUserSubscription",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_subscriptionsUpdateUserSubscriptionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_subscriptionsUpdateUserSubscriptionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSubscriptionsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_admin_subscriptionsEffectiveSubscriptionView": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "planKey": {
+          "type": "string"
+        },
+        "features": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "couchQuotaBytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "s3QuotaBytes": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "EffectiveSubscriptionView mirrors domain.EffectiveSubscription — the plan's defaults merged\nwith the user's overrides applied on top, for display only (not editable directly)."
+    },
+    "artel_admin_subscriptionsGetUserSubscriptionRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_admin_subscriptionsGetUserSubscriptionResponse": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "planKey": {
+          "type": "string"
+        },
+        "featureOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "feature_overrides is sparse — only features that differ from the plan default are present."
+        },
+        "couchQuotaOverrideBytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "s3QuotaOverrideBytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "effective": {
+          "$ref": "#/definitions/artel_admin_subscriptionsEffectiveSubscriptionView"
+        }
+      }
+    },
+    "artel_admin_subscriptionsListSubscriptionPlansRequest": {
+      "type": "object"
+    },
+    "artel_admin_subscriptionsListSubscriptionPlansResponse": {
+      "type": "object",
+      "properties": {
+        "plans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_admin_subscriptionsSubscriptionPlanEntry"
+          }
+        }
+      }
+    },
+    "artel_admin_subscriptionsSubscriptionPlanEntry": {
+      "type": "object",
+      "properties": {
+        "planKey": {
+          "type": "string"
+        },
+        "couchQuotaBytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "s3QuotaBytes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "features": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "artel_admin_subscriptionsUpdateUserSubscriptionRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "planKey": {
+          "type": "string"
+        },
+        "featureOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "feature_overrides is sparse — an omitted feature key means \"inherit the plan's value\"."
+        },
+        "couchQuotaOverrideBytes": {
+          "type": "string",
+          "format": "int64",
+          "description": "Absent means \"use the plan's default quota\"."
+        },
+        "s3QuotaOverrideBytes": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "artel_admin_subscriptionsUpdateUserSubscriptionResponse": {
+      "type": "object",
+      "properties": {
+        "effective": {
+          "$ref": "#/definitions/artel_admin_subscriptionsEffectiveSubscriptionView"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

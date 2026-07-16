@@ -28,3 +28,39 @@ func (q *Queries) GetSubscriptionPlan(ctx context.Context, planKey string) (Subs
 	)
 	return i, err
 }
+
+const listSubscriptionPlans = `-- name: ListSubscriptionPlans :many
+SELECT plan_key, couch_quota_bytes, s3_quota_bytes, features, created_at, updated_at
+FROM subscription_plans
+ORDER BY plan_key
+`
+
+func (q *Queries) ListSubscriptionPlans(ctx context.Context) ([]SubscriptionPlan, error) {
+	rows, err := q.db.QueryContext(ctx, listSubscriptionPlans)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SubscriptionPlan{}
+	for rows.Next() {
+		var i SubscriptionPlan
+		if err := rows.Scan(
+			&i.PlanKey,
+			&i.CouchQuotaBytes,
+			&i.S3QuotaBytes,
+			&i.Features,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

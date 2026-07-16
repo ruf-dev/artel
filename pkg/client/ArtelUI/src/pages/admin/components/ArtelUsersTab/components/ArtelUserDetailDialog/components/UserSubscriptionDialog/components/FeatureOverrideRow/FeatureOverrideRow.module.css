@@ -1,0 +1,22 @@
+.FeatureOverrideRowContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: var(--border-thickness) solid var(--color-border);
+
+    &:first-child {
+        border-top: var(--border-thickness) solid var(--color-border);
+    }
+
+    .FeatureLabel {
+        font-size: 0.875rem;
+        color: var(--color-fg-primary);
+    }
+
+    .SegmentedControl {
+        display: flex;
+        gap: 0.375rem;
+    }
+}

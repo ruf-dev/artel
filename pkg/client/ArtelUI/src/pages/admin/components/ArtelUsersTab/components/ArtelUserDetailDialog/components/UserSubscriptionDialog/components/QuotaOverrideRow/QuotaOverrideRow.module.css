@@ -1,0 +1,28 @@
+.QuotaOverrideRowContainer {
+    padding: 0.75rem 0;
+    border-bottom: var(--border-thickness) solid var(--color-border);
+
+    &:first-child {
+        border-top: var(--border-thickness) solid var(--color-border);
+    }
+
+    .QuotaOverrideHead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .QuotaLabel {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-fg-primary);
+    }
+
+    .QuotaDefault {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        font-family: var(--font-mono);
+    }
+}

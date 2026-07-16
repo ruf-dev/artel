@@ -5,6 +5,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/admincouchsvc"
+	"github.com/ruf-dev/artel/internal/service/v1/adminsubscriptions"
 	"github.com/ruf-dev/artel/internal/service/v1/adminusers"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
@@ -33,6 +34,7 @@ type Services struct {
 	TaskTracker         service.TaskTrackerService
 	Notes               service.NotesService
 	AdminUsers          service.AdminUsersService
+	AdminSubscriptions  service.AdminSubscriptionsService
 	ExternalConnections service.ExternalConnectionService
 	Mom                 service.MomService
 	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
@@ -72,11 +74,12 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			repo.ExternalConnections(),
 			subscriptionSvc,
 		),
-		Subscription: subscriptionSvc,
-		Prompt:       prompt.New(repo.Prompts()),
-		TaskTracker:  tasktracker.New(repo.TaskTrackers()),
-		Notes:        notes.New(repo, subscriptionSvc),
-		AdminUsers:   adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc),
+		Subscription:       subscriptionSvc,
+		Prompt:             prompt.New(repo.Prompts()),
+		TaskTracker:        tasktracker.New(repo.TaskTrackers()),
+		Notes:              notes.New(repo, subscriptionSvc),
+		AdminUsers:         adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc),
+		AdminSubscriptions: adminsubscriptions.New(repo.SubscriptionPlans(), repo.Subscriptions()),
 		ExternalConnections: externalconns.New(
 			repo.ExternalConnections(),
 			repo.PendingAuthCodes(),
@@ -143,6 +146,10 @@ func (s *Services) NotesService() service.NotesService {
 
 func (s *Services) AdminUsersService() service.AdminUsersService {
 	return s.AdminUsers
+}
+
+func (s *Services) AdminSubscriptionsService() service.AdminSubscriptionsService {
+	return s.AdminSubscriptions
 }
 
 func (s *Services) ExternalConnectionService() service.ExternalConnectionService {

@@ -29,16 +29,45 @@ func (r *Repo) Get(ctx context.Context, planKey string) (domain.SubscriptionPlan
 		return domain.SubscriptionPlan{}, rerrors.Wrap(err, "error getting subscription plan")
 	}
 
-	features, err := unmarshalFeatureSet(row.Features)
+	plan, err := planFromRow(row)
 	if err != nil {
 		return domain.SubscriptionPlan{}, rerrors.Wrap(err, "error decoding plan features")
+	}
+
+	return plan, nil
+}
+
+func (r *Repo) List(ctx context.Context) ([]domain.SubscriptionPlan, error) {
+	rows, err := r.q.ListSubscriptionPlans(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error listing subscription plans")
+	}
+
+	plans := make([]domain.SubscriptionPlan, len(rows))
+
+	for i, row := range rows {
+		plan, planErr := planFromRow(row)
+		if planErr != nil {
+			return nil, rerrors.Wrap(planErr, "error decoding plan features")
+		}
+
+		plans[i] = plan
+	}
+
+	return plans, nil
+}
+
+func planFromRow(row artel_q.SubscriptionPlan) (domain.SubscriptionPlan, error) {
+	featureSet, err := unmarshalFeatureSet(row.Features)
+	if err != nil {
+		return domain.SubscriptionPlan{}, err
 	}
 
 	plan := domain.SubscriptionPlan{
 		PlanKey:         row.PlanKey,
 		CouchQuotaBytes: row.CouchQuotaBytes,
 		S3QuotaBytes:    row.S3QuotaBytes,
-		Features:        features,
+		Features:        featureSet,
 		CreatedAt:       row.CreatedAt,
 		UpdatedAt:       row.UpdatedAt,
 	}

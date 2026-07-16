@@ -101,6 +101,7 @@ type Querier interface {
 	ListMcpSpreadsheetsByUser(ctx context.Context, userID uuid.UUID) ([]McpSpreadsheet, error)
 	ListMcpToolsByMcpName(ctx context.Context, mcpName string) ([]McpTool, error)
 	ListS3Instances(ctx context.Context) ([]ListS3InstancesRow, error)
+	ListSubscriptionPlans(ctx context.Context) ([]SubscriptionPlan, error)
 	ListTaskTrackersByUser(ctx context.Context, userID uuid.UUID) ([]TaskTracker, error)
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
 	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)

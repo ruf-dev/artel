@@ -21,6 +21,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
+	"github.com/ruf-dev/artel/internal/transport/admin_subscriptions_api"
 	"github.com/ruf-dev/artel/internal/transport/admin_users_api"
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
@@ -95,6 +96,7 @@ func (c *Custom) Init(a *App) error {
 	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
 	adminUsersImpl := admin_users_api.New(services.AdminUsersService())
+	adminSubscriptionsImpl := admin_subscriptions_api.New(services.AdminSubscriptionsService())
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService())
 	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
 	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
@@ -143,9 +145,12 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminUsersAPI_ListArtelUsers_FullMethodName,
 			pb.AdminUsersAPI_GetArtelUser_FullMethodName,
 			pb.AdminUsersAPI_GetUserSessions_FullMethodName,
+			pb.AdminSubscriptionsAPI_ListSubscriptionPlans_FullMethodName,
+			pb.AdminSubscriptionsAPI_GetUserSubscription_FullMethodName,
+			pb.AdminSubscriptionsAPI_UpdateUserSubscription_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, adminCouchImpl, adminUsersImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)

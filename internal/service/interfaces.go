@@ -26,6 +26,7 @@ type Service interface {
 	TaskTrackerService() TaskTrackerService
 	NotesService() NotesService
 	AdminUsersService() AdminUsersService
+	AdminSubscriptionsService() AdminSubscriptionsService
 	ExternalConnectionService() ExternalConnectionService
 	MomService() MomService
 	TractService() TractService
@@ -35,6 +36,17 @@ type AdminUsersService interface {
 	ListUsers(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error)
 	GetUser(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
 	GetUserSessions(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error)
+}
+
+// AdminSubscriptionsService lets an admin inspect and edit a user's plan assignment and
+// overrides — orthogonal to SubscriptionService's Free/Paid enforcement-mode split, since
+// managing a subscription isn't itself an enforcement decision.
+type AdminSubscriptionsService interface {
+	ListPlans(ctx context.Context) ([]domain.SubscriptionPlan, error)
+	// GetUserSubscription returns both the raw per-user row (for editing) and the merged
+	// plan+override view (for display).
+	GetUserSubscription(ctx context.Context, userUuid uuid.UUID) (domain.Subscription, domain.EffectiveSubscription, error)
+	UpdateUserSubscription(ctx context.Context, sub domain.Subscription) (domain.EffectiveSubscription, error)
 }
 
 type AuthService interface {
