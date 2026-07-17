@@ -6,6 +6,11 @@
     width: 100%;
     overflow-y: auto;
 
+    & .SearchWrapper {
+        max-width: 24rem;
+        margin-bottom: 1.25rem;
+    }
+
     & .List {
         display: flex;
         flex-direction: column;

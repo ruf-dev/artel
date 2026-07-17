@@ -12,6 +12,30 @@
         background: var(--color-bg-hover);
     }
 
+    & .ToolHeader {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    & .ToolIcon {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 0.4375rem;
+        background: var(--color-bg-elevated);
+        border: var(--border-thickness) solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--color-fg-secondary);
+
+        & svg {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+    }
+
     & .ToolName {
         font-size: 0.875rem;
         font-weight: 600;

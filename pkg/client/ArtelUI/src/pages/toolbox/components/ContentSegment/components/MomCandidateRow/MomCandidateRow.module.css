@@ -18,6 +18,23 @@
         gap: 0.625rem;
     }
 
+    & .RowIcon {
+        width: 1.875rem;
+        height: 1.875rem;
+        border-radius: 0.5rem;
+        background: var(--color-bg-elevated);
+        border: var(--border-thickness) solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        & svg {
+            width: 1.0625rem;
+            height: 1.0625rem;
+        }
+    }
+
     & .RowName {
         font-size: 0.9375rem;
         font-weight: 600;

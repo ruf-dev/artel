@@ -1,5 +1,6 @@
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
+import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 import ToolsDialog from "@/pages/toolbox/components/ToolsDialog/ToolsDialog.tsx"
 import cls from "@/pages/toolbox/components/ContentSegment/components/MomCandidateRow/MomCandidateRow.module.css"
 
@@ -16,6 +17,9 @@ export default function MomCandidateRow({candidate}: { candidate: MomCandidate }
     return (
         <div className={cls.MomCandidateRowContainer} onClick={onToolboxClick} role="button" tabIndex={0}>
             <div className={cls.RowHeader}>
+                <div className={cls.RowIcon}>
+                    <ProviderIcon provider={candidate.connections?.[0]?.provider}/>
+                </div>
                 <span className={cls.RowName}>{candidate.name}</span>
                 {toolCount > 0 && (
                     <span className={cls.Chip}>{toolCount} {toolCount === 1 ? "tool" : "tools"}</span>
