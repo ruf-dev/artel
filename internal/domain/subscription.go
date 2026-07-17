@@ -105,3 +105,9 @@ type StorageUsage struct {
 	CouchBytes int64
 	S3Bytes    int64
 }
+
+// MaxSingleFileBytes caps the size of any single write (note content, imported entry, or MCP
+// file write), independent of plan quota. CheckStorageQuota only rejects once measured usage is
+// already at/over quota, so a user's very first write starts at zero usage and would otherwise
+// pass unchecked no matter how large — this bounds that gap.
+const MaxSingleFileBytes = 10 * 1024 * 1024

@@ -67,6 +67,11 @@ var (
 		codes.ResourceExhausted,
 		rerrors.WithHttpStatus(http.StatusForbidden),
 	)
+	FileTooLarge = rerrors.New(
+		"file exceeds the maximum allowed size",
+		codes.InvalidArgument,
+		rerrors.WithHttpStatus(http.StatusRequestEntityTooLarge),
+	)
 
 	// vault.
 	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)

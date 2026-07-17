@@ -157,6 +157,10 @@ func (e *VaultExecutor) writeFile(
 		return domain.ToolExecResult{}, user_errors.McpContentRequired
 	}
 
+	if len(content) > domain.MaxSingleFileBytes {
+		return domain.ToolExecResult{}, user_errors.FileTooLarge
+	}
+
 	if storage.IsMarkdown(path) {
 		err := client.WriteNote(ctx, path, content)
 		if err != nil {

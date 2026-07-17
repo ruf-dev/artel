@@ -173,6 +173,10 @@ func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content
 		return rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
+	if len(content) > domain.MaxSingleFileBytes {
+		return user_errors.FileTooLarge
+	}
+
 	client, err := s.liveSyncClient(ctx, vaultID)
 	if err != nil {
 		return err
@@ -510,6 +514,10 @@ func (s *Service) CommitImport(
 		if !storage.IsMarkdown(writePath) && bucket == nil {
 			skipped++
 			continue
+		}
+
+		if len(e.Content) > domain.MaxSingleFileBytes {
+			return imported, skipped, user_errors.FileTooLarge
 		}
 
 		err = s.writeImportedEntry(ctx, client, bucket, writePath, e.Content)
