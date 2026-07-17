@@ -220,7 +220,7 @@ func renderParams(rslv *resolver, params map[string]string) (map[string]interfac
 	for key, value := range params {
 		result, err := rslv.render(value)
 		if err != nil {
-			return nil, err
+			return nil, rerrors.Wrap(err, "error rendering param: "+key)
 		}
 
 		rendered[key] = result

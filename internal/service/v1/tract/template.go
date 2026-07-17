@@ -3,6 +3,7 @@ package tract
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -197,13 +198,33 @@ func (r *resolver) resolveRef(ref string) (interface{}, error) {
 	} else {
 		value, ok := r.outputs[base]
 		if !ok {
-			return nil, rerrors.Wrap(user_errors.TractStepNotFound, base)
+			msg := fmt.Sprintf(
+				"template {{ %s }} references step %q, but no step with that id has produced output yet in this run (available so far: %s) — check the step id, and that it runs before this one",
+				ref, base, availableStepIds(r.outputs),
+			)
+
+			return nil, rerrors.Wrap(user_errors.TractStepNotFound, msg)
 		}
 
 		root = value
 	}
 
-	return navigate(root, segments)
+	return navigate(root, base, segments, ref)
+}
+
+func availableStepIds(outputs map[string]interface{}) string {
+	if len(outputs) == 0 {
+		return "none yet"
+	}
+
+	ids := make([]string, 0, len(outputs))
+	for id := range outputs {
+		ids = append(ids, id)
+	}
+
+	sort.Strings(ids)
+
+	return strings.Join(ids, ", ")
 }
 
 type pathSegment struct {
@@ -282,39 +303,113 @@ func parsePathSegments(rest string) ([]pathSegment, error) {
 	return segments, nil
 }
 
-func navigate(value interface{}, segments []pathSegment) (interface{}, error) {
+// navigate walks segments starting from value (the already-resolved output of base). ref is
+// the full original reference expression (e.g. "list_prs[0].source_branch"), used only to
+// build precise error messages that quote the exact template the caller wrote; path tracks how
+// much of it has been consumed so far so an error can point at the specific step that broke,
+// not just the final segment.
+func navigate(value interface{}, base string, segments []pathSegment, ref string) (interface{}, error) {
 	cur := value
+	path := base
 
 	for _, seg := range segments {
 		if seg.isIndex {
 			arr, ok := cur.([]interface{})
 			if !ok {
-				return nil, rerrors.Wrap(user_errors.TractStepNotFound, "index access on a non-array value")
+				msg := fmt.Sprintf(
+					"template {{ %s }}: %s is %s, not a list, so [%d] cannot be applied",
+					ref, path, describeValue(cur), seg.index,
+				)
+
+				return nil, rerrors.Wrap(user_errors.TractTemplateIndexOnNonArray, msg)
 			}
 
 			if seg.index < 0 || seg.index >= len(arr) {
-				return nil, rerrors.Wrap(user_errors.TractStepNotFound, "index out of range")
+				msg := fmt.Sprintf(
+					"template {{ %s }}: %s has %d item(s), so index [%d] is out of range",
+					ref, path, len(arr), seg.index,
+				)
+
+				return nil, rerrors.Wrap(user_errors.TractTemplateIndexOutOfRange, msg)
 			}
 
 			cur = arr[seg.index]
+			path = fmt.Sprintf("%s[%d]", path, seg.index)
 
 			continue
 		}
 
 		m, ok := cur.(map[string]interface{})
 		if !ok {
-			return nil, rerrors.Wrap(user_errors.TractStepNotFound, "field access on a non-object value: "+seg.field)
+			msg := fmt.Sprintf(
+				"template {{ %s }}: %s is %s, not an object, so field %q cannot be accessed",
+				ref, path, describeValue(cur), seg.field,
+			)
+
+			return nil, rerrors.Wrap(user_errors.TractTemplateFieldOnNonObject, msg)
 		}
 
 		fieldVal, ok := m[seg.field]
 		if !ok {
-			return nil, rerrors.Wrap(user_errors.TractStepNotFound, "field not found: "+seg.field)
+			msg := fmt.Sprintf(
+				"template {{ %s }}: %s has no field %q (available fields: %s)",
+				ref, path, seg.field, availableFields(m),
+			)
+
+			return nil, rerrors.Wrap(user_errors.TractTemplateFieldNotFound, msg)
 		}
 
 		cur = fieldVal
+		path = path + "." + seg.field
 	}
 
 	return cur, nil
+}
+
+func availableFields(m map[string]interface{}) string {
+	if len(m) == 0 {
+		return "none"
+	}
+
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
+	return strings.Join(keys, ", ")
+}
+
+// describeValue renders a short, human-readable description of a resolved template value for
+// use in error messages — e.g. "a string (\"main\")" rather than a raw Go %T/%v dump.
+func describeValue(value interface{}) string {
+	switch v := value.(type) {
+	case nil:
+		return "null"
+	case string:
+		return "a string (" + truncateForError(v) + ")"
+	case float64:
+		return "a number (" + strconv.FormatFloat(v, 'f', -1, 64) + ")"
+	case bool:
+		return "a boolean (" + strconv.FormatBool(v) + ")"
+	case []interface{}:
+		return fmt.Sprintf("a list with %d item(s)", len(v))
+	case map[string]interface{}:
+		return "an object"
+	default:
+		return fmt.Sprintf("a %T", v)
+	}
+}
+
+func truncateForError(s string) string {
+	const maxLen = 40
+
+	if len(s) <= maxLen {
+		return strconv.Quote(s)
+	}
+
+	return strconv.Quote(s[:maxLen]) + "…"
 }
 
 func lengthOf(value interface{}) (interface{}, error) {

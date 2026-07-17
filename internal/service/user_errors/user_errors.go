@@ -245,6 +245,16 @@ var (
 	TractUnknownStepType   = rerrors.New("unknown step type", codes.InvalidArgument)
 	TractStepNotFound      = rerrors.New("referenced step not found in this run", codes.FailedPrecondition)
 
+	// tract: template path navigation (distinct from TractStepNotFound — the base step id was
+	// found, but a later segment of the reference path failed to resolve against its output).
+	TractTemplateIndexOnNonArray  = rerrors.New("template index used on a value that is not a list", codes.FailedPrecondition)
+	TractTemplateIndexOutOfRange  = rerrors.New("template index is out of range", codes.FailedPrecondition)
+	TractTemplateFieldOnNonObject = rerrors.New(
+		"template field access on a value that is not an object",
+		codes.FailedPrecondition,
+	)
+	TractTemplateFieldNotFound = rerrors.New("referenced field not found in step output", codes.FailedPrecondition)
+
 	// tract: ownership
 	TriggerNotFound = rerrors.New("trigger not found", codes.NotFound)
 	TriggerNotOwned = rerrors.New("trigger does not belong to the caller", codes.PermissionDenied)
