@@ -5,6 +5,13 @@
     padding-top: 0.75rem;
     margin-top: 0.25rem;
 
+    & .ResultViewHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.625rem;
+    }
+
     & .SectionTitle {
         font-size: 0.6875rem;
         font-weight: 500;

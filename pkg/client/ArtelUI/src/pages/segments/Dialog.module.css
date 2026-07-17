@@ -28,11 +28,11 @@
 
 .DialogCloseButton {
     position: absolute;
-    top: -0.75rem;
-    right: -0.75rem;
+    top: 0.75rem;
+    right: 0.75rem;
     background: var(--color-bg-card);
     border: var(--border-thickness) solid var(--color-border);
-    border-radius: 50%;
+    border-radius: var(--border-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -26,9 +26,6 @@ export default function Dialog() {
         >
             <div
                 className={cls.DialogWrapper}>
-                {closable && (
-                    <ModalClose className={cls.DialogCloseButton} onClick={CloseDialog}/>
-                )}
                 <div
                     className={cls.DialogBackground}
                     onMouseDown={(e) => {
@@ -44,6 +41,9 @@ export default function Dialog() {
                         })
                     }
                 </div>
+                {closable && (
+                    <ModalClose className={cls.DialogCloseButton} onClick={CloseDialog}/>
+                )}
             </div>
         </div>
     )

@@ -45,7 +45,7 @@ const JSON_KIND_CLASS: Record<JsonTokenKind, string | undefined> = {
 }
 
 export default function JsonView({value}: { value: unknown }) {
-    const json = JSON.stringify(value, null, 2)
+    const json = JSON.stringify(value, null, 2).replace(/[ \t]+,/g, ",")
     return (
         <pre className={cls.JsonViewContainer}>
             {tokenizeJson(json).map((t, i) => t.kind === "plain" ? t.text : (

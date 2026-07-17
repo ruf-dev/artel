@@ -1,0 +1,26 @@
+.ViewModeToggleContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.1875rem;
+    border-radius: 0.5rem;
+    background: var(--color-bg-input);
+    border: var(--border-thickness) solid var(--color-border-light);
+
+    /* Doubled selector beats chures' injected .Btn/.Unstyled base styles, which tie
+       with a single-class selector and win on DOM insertion order otherwise. */
+    & .Option.Option {
+        padding: 0.25rem 0.625rem;
+        font-size: var(--font-size-md);
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: color 160ms ease, background 160ms ease;
+
+        &.OptionActive {
+            color: var(--color-fg-primary);
+            background: var(--color-bg-card);
+        }
+    }
+}

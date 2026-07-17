@@ -1,0 +1,37 @@
+.TaskTrackerCellContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    white-space: normal;
+
+    /* Doubled selector beats chures' injected .Btn/.Unstyled base styles, which tie
+       with a single-class selector and win on DOM insertion order otherwise. */
+    & .ExpandBtn.ExpandBtn {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        max-width: 20rem;
+        color: inherit;
+        font-size: inherit;
+        cursor: pointer;
+    }
+
+    & .Chevron {
+        flex-shrink: 0;
+        color: var(--color-fg-tertiary);
+        transform: rotate(-90deg);
+        transition: transform 160ms ease;
+    }
+
+    & .ChevronOpen {
+        transform: rotate(0deg);
+    }
+
+    & .Preview {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: var(--font-mono);
+        color: var(--color-fg-secondary);
+    }
+}

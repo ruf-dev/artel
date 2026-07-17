@@ -1,6 +1,6 @@
 export interface TaskTrackerTable {
     columns: string[]
-    rows: Record<string, string>[]
+    rows: Record<string, unknown>[]
 }
 
 type TaskTrackerAdapter = (value: unknown) => TaskTrackerTable
@@ -16,7 +16,10 @@ export function buildTaskTrackerTable(source: string, value: unknown): TaskTrack
     return adapter ? adapter(value) : null
 }
 
-function stringifyCell(value: unknown): string {
+// Single-line preview for a cell's raw value — used as-is for scalars, and as the collapsed
+// preview text for object/array values (see TaskTrackerCell, which offers a pretty-printed
+// expansion for those instead of falling back to raw JSON for the whole table).
+export function stringifyCell(value: unknown): string {
     if (value === null || value === undefined) return "—"
     if (Array.isArray(value)) return value.map(stringifyCell).join(", ")
     if (typeof value === "object") return JSON.stringify(value)
@@ -30,7 +33,8 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 // Renders any JSON value as a table: an array of objects becomes one row per item with the
 // union of their keys as columns (e.g. trello's list_cards/list_boards responses). A bare
 // array or single scalar/object degrades to a single "value" column so nothing falls back
-// to raw JSON for a recognized task-tracker source.
+// to raw JSON for a recognized task-tracker source. Cell values are kept raw (not stringified)
+// so TaskTrackerCell can tell JSON values apart from scalars and offer an expand toggle.
 function toGenericTable(value: unknown): TaskTrackerTable {
     const items = Array.isArray(value) ? value : [value]
     if (items.length === 0) return {columns: [], rows: []}
@@ -38,12 +42,12 @@ function toGenericTable(value: unknown): TaskTrackerTable {
     if (items.every(isPlainObject)) {
         const objectItems = items as Record<string, unknown>[]
         const columns = Array.from(new Set(objectItems.flatMap(item => Object.keys(item))))
-        const rows = objectItems.map(item => Object.fromEntries(columns.map(c => [c, stringifyCell(item[c])])))
+        const rows = objectItems.map(item => Object.fromEntries(columns.map(c => [c, item[c]])))
         return {columns, rows}
     }
 
     return {
         columns: ["value"],
-        rows: items.map(item => ({value: stringifyCell(item)})),
+        rows: items.map(item => ({value: item})),
     }
 }

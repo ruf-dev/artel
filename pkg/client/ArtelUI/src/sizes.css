@@ -45,6 +45,8 @@
     --drawer-width-mobile:      85vw;
     --dialog-max-height:        80vh;
     --dialog-max-height-lg:     90vh;
+    --dialog-width-toolbox:     80vw;
+    --dialog-height-toolbox:    80vh;
     --page-height-full:        100vh;
 
     --chures-input-height: 2rem;
