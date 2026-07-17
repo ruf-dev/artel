@@ -2865,8 +2865,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/SchemaBuilder.tsx": {
-    "mtime": 1783754839.1742737,
-    "ast_hash": "fb0ba44ba6fcabc73b96198a366f1e75",
+    "mtime": 1784274590.277815,
+    "ast_hash": "074ef17b0037d8dde9e0e3cb482c5c47",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/screens/LinkScreen.tsx": {
@@ -2922,11 +2922,6 @@
   "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/components/SchemaFieldRowEditor/SchemaFieldRowEditor.tsx": {
     "mtime": 1783882025.326275,
     "ast_hash": "94ea723080018c5a3e30a954748a5456",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.tsx": {
-    "mtime": 1783451760.6786084,
-    "ast_hash": "8e44debd53ce903ccd46a74855da981b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/WebhookDetailsDialog/WebhookDetailsDialog.tsx": {
@@ -4540,8 +4535,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ToolResponseViewer/ToolResponseViewer.tsx": {
-    "mtime": 1784273822.8602102,
-    "ast_hash": "2f4c7a57fa7072f8d6c281351a755b6a",
+    "mtime": 1784274590.2780485,
+    "ast_hash": "1fced89be6748e243d9891095bb3d403",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/components/JsonView/JsonView.tsx": {
+    "mtime": 1784274537.4099965,
+    "ast_hash": "363730d204dd0599677e649a46b6b456",
     "semantic_hash": ""
   }
 }

@@ -3975,8 +3975,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.tsx": {
-    "mtime": 1784273848.9725463,
-    "ast_hash": "7fa79fd06eaab909db3103b48821d521",
+    "mtime": 1784276035.5571423,
+    "ast_hash": "809745defbda68ab94259d9487d07ec1",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx": {
@@ -4534,14 +4534,69 @@
     "ast_hash": "f8cec5ef7eb4659000c15e8cfd190771",
     "semantic_hash": ""
   },
-  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ToolResponseViewer/ToolResponseViewer.tsx": {
-    "mtime": 1784274590.2780485,
-    "ast_hash": "1fced89be6748e243d9891095bb3d403",
-    "semantic_hash": ""
-  },
   "pkg/client/ArtelUI/src/components/JsonView/JsonView.tsx": {
     "mtime": 1784274537.4099965,
     "ast_hash": "363730d204dd0599677e649a46b6b456",
+    "semantic_hash": ""
+  },
+  "cmd/migrate_task_trackers_to_external_connections/main.go": {
+    "mtime": 1784279463.5570085,
+    "ast_hash": "5766d61708bcd67c0cd54f4b30862192",
+    "semantic_hash": ""
+  },
+  "migrations/049_trello_card_details.sql": {
+    "mtime": 1784279393.0668056,
+    "ast_hash": "ca3c2402afcdff825eba35d25d90dba1",
+    "semantic_hash": ""
+  },
+  "migrations/050_drop_task_trackers.sql": {
+    "mtime": 1784279403.1151402,
+    "ast_hash": "2ec220e93a145589db1cf78a22aa4f25",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/components/RoadmapCanvasArea/components/RoadmapConnectorPath/RoadmapConnectorPath.tsx": {
+    "mtime": 1784279443.3499348,
+    "ast_hash": "5a8edcb786fb90d520ca716dd91ee178",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/processes/roadmapGraph.ts": {
+    "mtime": 1784279420.0762782,
+    "ast_hash": "e307401dcc8e6918df0ff04e136e915d",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/processes/roadmapLayout.ts": {
+    "mtime": 1784279436.375117,
+    "ast_hash": "cbe9d31d3caea479ffb809221528c705",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/processes/taskLinkParser.ts": {
+    "mtime": 1784279402.5073497,
+    "ast_hash": "9d82da318b72e02d8c28675f7194dabc",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/ResultView.tsx": {
+    "mtime": 1784276112.0169363,
+    "ast_hash": "5c09accf56fe2207daff03ffd0f954bf",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/DisplayTaskTrackerTables.tsx": {
+    "mtime": 1784276122.8484426,
+    "ast_hash": "ec8f6b46cfb0544dc99866db7f136dc4",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableBody/TaskTrackerTableBody.tsx": {
+    "mtime": 1784276134.4930604,
+    "ast_hash": "ba6938ec0b17bc918d65b758b73001bd",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableHead/TaskTrackerTableHead.tsx": {
+    "mtime": 1784276127.5163736,
+    "ast_hash": "e05297b0f2d3b2ab49b0da87ad6e1dcd",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/taskTrackerAdapters.ts": {
+    "mtime": 1784275977.0055423,
+    "ast_hash": "7f48d8acd5f81e0c9fc54bfa8d83d727",
     "semantic_hash": ""
   }
 }
