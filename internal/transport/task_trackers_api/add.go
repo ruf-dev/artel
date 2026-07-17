@@ -4,25 +4,18 @@ import (
 	"context"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
-	"github.com/ruf-dev/artel/internal/clients/trello"
-	"github.com/ruf-dev/artel/internal/domain"
 	"go.redsock.ru/rerrors"
 )
 
+// AddTaskTracker only ever adds a trello tracker today — req.Type is accepted for wire-shape
+// compatibility with the frontend but unused, matching AddTracker taking raw credentials rather
+// than a domain.TaskTracker (there's nothing else meaningful to set before the connection is
+// validated and persisted).
 func (t *TaskTrackersImpl) AddTaskTracker(
 	ctx context.Context,
 	req *pb.AddTaskTracker_Request,
 ) (*pb.AddTaskTracker_Response, error) {
-	tracker := domain.TaskTracker{
-		Type: req.Type,
-	}
-
-	creds := trello.TrelloCredentials{
-		ApiKey:   req.ApiKey,
-		ApiToken: req.ApiToken,
-	}
-
-	created, boards, err := t.trackerSvc.AddTracker(ctx, tracker, creds)
+	created, boards, err := t.trackerSvc.AddTracker(ctx, req.ApiKey, req.ApiToken)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error adding task tracker")
 	}

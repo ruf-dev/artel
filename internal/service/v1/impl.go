@@ -57,6 +57,18 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 
 	subscriptionSvc := newSubscriptionService(repo, cfg)
 
+	// Built ahead of the Services literal (rather than inline) because TaskTracker composes
+	// both as service.ExternalConnectionService/service.MomService — those interface values
+	// don't exist yet mid-construction of the same struct literal.
+	externalConnectionsSvc := externalconns.New(
+		repo.ExternalConnections(),
+		repo.PendingAuthCodes(),
+		repo.McpSpreadsheets(),
+		repo.MailServerSuggestions(),
+		oauthCfg,
+	)
+	momSvc := mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections())
+
 	services := &Services{
 		Auth:          auth.New(repo, cfg.TelegramClientID, subscriptionSvc),
 		Vault:         vault.New(repo),
@@ -74,20 +86,14 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			repo.ExternalConnections(),
 			subscriptionSvc,
 		),
-		Subscription:       subscriptionSvc,
-		Prompt:             prompt.New(repo.Prompts()),
-		TaskTracker:        tasktracker.New(repo.TaskTrackers()),
-		Notes:              notes.New(repo, subscriptionSvc),
-		AdminUsers:         adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc),
-		AdminSubscriptions: adminsubscriptions.New(repo.SubscriptionPlans(), repo.Subscriptions()),
-		ExternalConnections: externalconns.New(
-			repo.ExternalConnections(),
-			repo.PendingAuthCodes(),
-			repo.McpSpreadsheets(),
-			repo.MailServerSuggestions(),
-			oauthCfg,
-		),
-		Mom: mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections()),
+		Subscription:        subscriptionSvc,
+		Prompt:              prompt.New(repo.Prompts()),
+		TaskTracker:         tasktracker.New(repo.ExternalConnections(), externalConnectionsSvc, momSvc),
+		Notes:               notes.New(repo, subscriptionSvc),
+		AdminUsers:          adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc),
+		AdminSubscriptions:  adminsubscriptions.New(repo.SubscriptionPlans(), repo.Subscriptions()),
+		ExternalConnections: externalConnectionsSvc,
+		Mom:                 momSvc,
 	}
 
 	return services, nil

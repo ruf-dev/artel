@@ -29,7 +29,6 @@ type Repo interface {
 	PendingAuthCodes() PendingAuthCodes
 	MailServerSuggestions() MailServerSuggestions
 	Prompts() Prompts
-	TaskTrackers() TaskTrackerRepo
 	ExternalConnections() ExternalConnectionRepo
 	McpSpreadsheets() McpSpreadsheetsRepo
 	McpDefinitions() McpDefinitionsRepo
@@ -226,13 +225,6 @@ type PendingAuthCodes interface {
 
 type MailServerSuggestions interface {
 	ListByDomain(ctx context.Context, domainPrefix string) ([]domain.MailServerSuggestion, error)
-}
-
-type TaskTrackerRepo interface {
-	Insert(ctx context.Context, tracker domain.TaskTracker) (domain.TaskTracker, error)
-	GetByUuid(ctx context.Context, id uuid.UUID) (domain.TaskTracker, error)
-	ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.TaskTracker, error)
-	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type McpDefinitionsRepo interface {

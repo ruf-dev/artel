@@ -19,7 +19,6 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptionplans"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
-	"github.com/ruf-dev/artel/internal/repository/pg/repos/tasktrackers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tracts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggerpresets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggers"
@@ -47,7 +46,6 @@ type Repos struct {
 	pendingAuthCodes      repository.PendingAuthCodes
 	mailServerSuggestions repository.MailServerSuggestions
 	promptsRepo           repository.Prompts
-	taskTrackersRepo      repository.TaskTrackerRepo
 	externalConnections   repository.ExternalConnectionRepo
 	mcpSpreadsheets       repository.McpSpreadsheetsRepo
 	mcpDefinitions        repository.McpDefinitionsRepo
@@ -123,10 +121,6 @@ func (r Repos) Prompts() repository.Prompts {
 	return r.promptsRepo
 }
 
-func (r Repos) TaskTrackers() repository.TaskTrackerRepo {
-	return r.taskTrackersRepo
-}
-
 func (r Repos) ExternalConnections() repository.ExternalConnectionRepo {
 	return r.externalConnections
 }
@@ -176,7 +170,6 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		pendingAuthCodes:      pendingauthcodes.New(q),
 		mailServerSuggestions: mailserversuggestions.New(q),
 		promptsRepo:           prompts.New(db),
-		taskTrackersRepo:      tasktrackers.New(q, encryptionKey),
 		externalConnections:   externalconnections.New(q, encryptionKey),
 		mcpSpreadsheets:       mcpspreadsheets.New(q),
 		mcpDefinitions:        mcpdefinitions.New(q),

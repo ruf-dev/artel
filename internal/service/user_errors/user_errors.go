@@ -83,13 +83,6 @@ var (
 	NoAuthHeader        = rerrors.New("error getting auth header", codes.Unauthenticated)
 	DebugNotSupported   = rerrors.New("debug not supported", codes.Unimplemented)
 
-	// task tracker.
-	TrelloInvalidCredentials = rerrors.New(
-		"invalid trello api key or token",
-		codes.InvalidArgument,
-		rerrors.WithHttpStatus(http.StatusBadRequest),
-	)
-
 	// mcp tool argument validation.
 	McpPathRequired      = rerrors.New("path is required and must be a string", codes.InvalidArgument)
 	McpContentRequired   = rerrors.New("content is required and must be a string", codes.InvalidArgument)

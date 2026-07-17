@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
-	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -186,9 +185,7 @@ type PromptService interface {
 }
 
 type TaskTrackerService interface {
-	AddTracker(
-		ctx context.Context, tracker domain.TaskTracker, creds trello.TaskTrackerCredentials,
-	) (domain.TaskTracker, []domain.TrelloBoard, error)
+	AddTracker(ctx context.Context, apiKey, apiToken string) (domain.TaskTracker, []domain.TrelloBoard, error)
 	ListTrackers(ctx context.Context) ([]domain.TaskTracker, error)
 	DeleteTracker(ctx context.Context, trackerUuid uuid.UUID) error
 	ListTrelloBoards(ctx context.Context, trackerUuid uuid.UUID) ([]domain.TrelloBoard, error)

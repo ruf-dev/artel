@@ -19,7 +19,6 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/imap"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
-	"github.com/ruf-dev/artel/internal/clients/trello"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -37,6 +36,10 @@ type googleUserInfo struct {
 const gitlabDefaultInstanceURL = "https://gitlab.com"
 
 var gitlabValidationClient = &http.Client{Timeout: 10 * time.Second}
+
+const trelloValidationURL = "https://api.trello.com/1/members/me"
+
+var trelloValidationClient = &http.Client{Timeout: 10 * time.Second}
 
 // emailConnectionCheckTimeout bounds each of the IMAP/SMTP dial+auth round trips in
 // CheckEmailConnection, so a host that never responds fails fast instead of hanging the request.
@@ -619,12 +622,47 @@ func (s *Service) CheckTrelloConnection(
 	return fullName, nil
 }
 
+// trelloMemberResponse is Trello's GET /1/members/me response, trimmed to the one field used
+// here.
+type trelloMemberResponse struct {
+	FullName string `json:"fullName"`
+}
+
 // validateTrelloCredentials confirms the key/token pair actually authenticates against Trello
-// before anything is persisted, reusing the same client the task-tracker feature uses.
+// before anything is persisted. This can't go through the generic MoM http executor the way
+// every later trello tool call does, because that executor resolves __secrets.* from an
+// existing external_connections row — and at this point the connection doesn't exist yet (that's
+// exactly what this call is validating before we create it). So it stays a small direct request
+// here, mirroring validateGitlabToken above, rather than pulling in a dedicated client package
+// for one unauthenticated-style GET.
 func (s *Service) validateTrelloCredentials(ctx context.Context, apiKey, apiToken string) (string, error) {
-	member, err := trello.New(apiKey, apiToken).GetMember(ctx)
+	reqUrl := trelloValidationURL + "?key=" + url.QueryEscape(apiKey) + "&token=" + url.QueryEscape(apiToken)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl, nil)
 	if err != nil {
-		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "error validating trello credentials")
+		return "", rerrors.Wrap(err, "error building trello validation request")
+	}
+
+	resp, err := trelloValidationClient.Do(req)
+	if err != nil {
+		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "error connecting to trello")
+	}
+	defer utils.CloseWithLog(resp.Body, "trello validation response")
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "trello rejected the credentials")
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error reading trello validation response")
+	}
+
+	var member trelloMemberResponse
+
+	err = json.Unmarshal(body, &member)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error parsing trello validation response")
 	}
 
 	return member.FullName, nil

@@ -34,7 +34,6 @@ type Querier interface {
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteS3Instance(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, token string) error
-	DeleteTaskTracker(ctx context.Context, id uuid.UUID) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
 	DeleteTrigger(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
@@ -57,7 +56,6 @@ type Querier interface {
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetSubscriptionPlan(ctx context.Context, planKey string) (SubscriptionPlan, error)
 	GetSubscriptionWithPlan(ctx context.Context, userID uuid.UUID) (GetSubscriptionWithPlanRow, error)
-	GetTaskTrackerByUuid(ctx context.Context, id uuid.UUID) (TaskTracker, error)
 	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (Tract, error)
 	GetTractRun(ctx context.Context, id uuid.UUID) (TractRun, error)
@@ -80,7 +78,6 @@ type Querier interface {
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
 	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
-	InsertTaskTracker(ctx context.Context, arg InsertTaskTrackerParams) (TaskTracker, error)
 	InsertTract(ctx context.Context, arg InsertTractParams) (Tract, error)
 	InsertTractRun(ctx context.Context, arg InsertTractRunParams) (TractRun, error)
 	InsertTractRunStep(ctx context.Context, arg InsertTractRunStepParams) (TractRunStep, error)
@@ -102,7 +99,6 @@ type Querier interface {
 	ListMcpToolsByMcpName(ctx context.Context, mcpName string) ([]McpTool, error)
 	ListS3Instances(ctx context.Context) ([]ListS3InstancesRow, error)
 	ListSubscriptionPlans(ctx context.Context) ([]SubscriptionPlan, error)
-	ListTaskTrackersByUser(ctx context.Context, userID uuid.UUID) ([]TaskTracker, error)
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
 	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)
 	ListTractsByUser(ctx context.Context, userID uuid.UUID) ([]Tract, error)

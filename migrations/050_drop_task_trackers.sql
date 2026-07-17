@@ -1,0 +1,23 @@
+-- +goose Up
+-- IRREVERSIBLE, one-time schema cleanup. task_trackers is retired in favor of the generic
+-- external_connections + MoM path (see internal/service/v1/tasktracker). This migration only
+-- drops the now-unused table — it does NOT migrate its rows.
+--
+-- Row migration cannot be expressed as SQL: credentials_enc on both task_trackers and
+-- external_connections is AES-GCM ciphertext produced by internal/cryptoutil.Encrypt, which only
+-- exists as Go code (no pgcrypto equivalent is wired into this schema), so copying rows across
+-- with their credentials intact requires decrypting and re-encrypting in Go.
+--
+-- Before deploying this migration, run the one-off command
+-- cmd/migrate_task_trackers_to_external_connections against the target database — it reads every
+-- task_trackers row, decrypts its api_key/api_token, and inserts a matching
+-- external_connections row (provider = 'trello'). Deploying this migration before that command
+-- has run against the same database will permanently lose any task_trackers rows it hasn't
+-- copied yet.
+DROP TABLE IF EXISTS task_trackers;
+
+-- +goose Down
+-- Deliberately does NOT reconstitute task_trackers. Its rows were (if the runbook above was
+-- followed) already copied into external_connections by a Go command, not captured by this
+-- migration file, so there is no state here to restore. Recreating an empty task_trackers table
+-- would misleadingly imply data could come back — it can't via this migration.

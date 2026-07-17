@@ -371,16 +371,6 @@ type SubscriptionPlan struct {
 	UpdatedAt       time.Time
 }
 
-type TaskTracker struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	Type        string
-	Name        string
-	ApiKeyEnc   []byte
-	ApiTokenEnc []byte
-	CreatedAt   time.Time
-}
-
 type Tract struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID
