@@ -1,4 +1,4 @@
-.ResultPanelContainer {
+.ToolResponseViewerContainer {
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
@@ -15,7 +15,7 @@
         margin-bottom: 0.125rem;
     }
 
-    & .ResultPre {
+    & .ResponsePre {
         font-size: 0.75rem;
         font-family: var(--font-mono);
         color: var(--color-fg-primary);

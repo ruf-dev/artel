@@ -13,8 +13,8 @@ import ConnectionPicker
     from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx"
 import ParamsList
     from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/ParamsList.tsx"
-import ResultPanel
-    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.tsx"
+import ToolResponseViewer
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ToolResponseViewer/ToolResponseViewer.tsx"
 import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.module.css"
 
 export default function ToolDetail(
@@ -58,7 +58,7 @@ export default function ToolDetail(
                     onSelect={setSelectedConnectionId}
                 />
                 {tool.params && <ParamsList params={tool.params} values={paramValues} onChange={setParam}/>}
-                {result !== null && <ResultPanel result={result}/>}
+                {result !== null && <ToolResponseViewer result={result}/>}
             </div>
             <div className={cls.DialogActions}>
                 <Button variant="ghost" onClick={onBack}>Back</Button>
