@@ -1,5 +1,5 @@
 import {useEffect} from "react"
-import {InfoDialog} from "@vervstack/chures"
+import {Button, InfoDialog} from "@vervstack/chures"
 
 import cls from "@/pages/home/HomePage.module.css"
 import {useDialog} from "@/app/hooks/Dialog"
@@ -9,7 +9,7 @@ import useUser from "@/hooks/user/User.ts"
 import ManageVaultDialog from "@/dialogs/ManageVaultDialog/ManageVaultDialog.tsx"
 import type {GrpcStatusError} from "@/processes/grpcErrors.ts";
 import {isMissingSubscription} from "@/processes/UserErrors.ts";
-import HeroSegment from "@/pages/home/components/HeroSegment/HeroSegment.tsx"
+import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import ContentSegment from "@/pages/home/components/ContentSegment/ContentSegment.tsx"
 import CreateVaultDialog from "@/pages/home/components/CreateVaultDialog/CreateVaultDialog.tsx"
 
@@ -53,7 +53,26 @@ export default function HomePage() {
 
     return (
         <div className={cls.Root}>
-            <HeroSegment onCreateClick={() => OpenDialog(<CreateVaultDialog/>)}/>
+            <HeroSegment
+                eyebrow="Workspace"
+                title="Your vaults"
+                subtitle={
+                    <>
+                        <b>{isLoading ? "…" : `${vaults.length} ${vaults.length === 1 ? "vault" : "vaults"}`}</b>
+                        {" · "}<span>all systems operational</span>
+                    </>
+                }
+                action={
+                    <Button variant="primary" onClick={() => OpenDialog(<CreateVaultDialog/>)}>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        New vault
+                    </Button>
+                }
+            />
             <ContentSegment onEditClick={openEditDialog}/>
         </div>
     )

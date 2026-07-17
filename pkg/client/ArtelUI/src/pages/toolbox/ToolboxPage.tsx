@@ -5,13 +5,13 @@ import cls from "@/pages/toolbox/ToolboxPage.module.css"
 import {Path} from "@/app/routing/Router.tsx"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import useUser from "@/hooks/user/User.ts"
-import HeroSegment from "@/pages/toolbox/components/HeroSegment/HeroSegment.tsx"
+import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import ContentSegment from "@/pages/toolbox/components/ContentSegment/ContentSegment.tsx"
 
 export default function ToolboxPage() {
     const navigate = useNavigate()
     const {auth} = useUser()
-    const {fetchMomCandidates} = useMcpKeys()
+    const {momCandidates, momCandidatesLoading, fetchMomCandidates} = useMcpKeys()
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
@@ -27,7 +27,20 @@ export default function ToolboxPage() {
 
     return (
         <div className={cls.Root}>
-            <HeroSegment/>
+            <HeroSegment
+                eyebrow="MCP"
+                title="Toolbox"
+                subtitle={
+                    <>
+                        <b>
+                            {momCandidatesLoading
+                                ? "…"
+                                : `${momCandidates.length} ${momCandidates.length === 1 ? "tool" : "tools"}`}
+                        </b>
+                        {" · "}<span>available in this installation</span>
+                    </>
+                }
+            />
             <ContentSegment/>
         </div>
     )

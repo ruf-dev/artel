@@ -5,8 +5,14 @@
     gap: 1.5rem;
     max-width: 75rem;
     margin: 0 auto;
-    padding: 3.5rem 2rem 0;
+    padding: 0.5rem 2rem 0;
     animation: fadeUp 500ms cubic-bezier(.2,.7,.2,1) both;
+
+    &.Compact {
+        gap: 1.25rem;
+        max-width: 60rem;
+        padding: 0.5rem 1.75rem 0;
+    }
 
     & .HeroTitles {
         min-width: 0;
@@ -21,12 +27,21 @@
         margin-bottom: 0.75rem;
     }
 
+    &.Compact .Eyebrow {
+        margin-bottom: 0.625rem;
+    }
+
     & .HeroTitle {
         font-weight: 600;
         font-size: 2.625rem;
         letter-spacing: -0.07875rem;
         line-height: 1.05;
         color: var(--color-fg-primary);
+    }
+
+    &.Compact .HeroTitle {
+        font-size: 2.375rem;
+        letter-spacing: -0.07125rem;
     }
 
     & .HeroSub {
@@ -38,6 +53,23 @@
         & b {
             color: var(--color-fg-primary);
             font-weight: 600;
+        }
+    }
+
+    &.Compact .HeroSub {
+        font-size: 0.8125rem;
+        margin-top: 0.5rem;
+        letter-spacing: -0.0040625rem;
+    }
+
+    @media (width <= 45rem) {
+        &:not(.Compact) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.125rem;
+            padding: 2.25rem 1.125rem 0;
+
+            & .HeroTitle { font-size: 2rem; }
         }
     }
 }

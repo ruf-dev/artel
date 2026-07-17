@@ -1,5 +1,6 @@
 import {useEffect} from "react"
 import {useNavigate} from "react-router-dom"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/mcp-keys/McpKeysPage.module.css"
 import {Path} from "@/app/routing/Router.tsx"
@@ -7,7 +8,7 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import useUser from "@/hooks/user/User.ts"
-import HeroSegment from "@/pages/mcp-keys/components/HeroSegment/HeroSegment.tsx"
+import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import ContentSegment from "@/pages/mcp-keys/components/ContentSegment/ContentSegment.tsx"
 import CreateKeyDialog from "@/pages/mcp-keys/components/CreateKeyDialog/CreateKeyDialog.tsx"
 
@@ -15,7 +16,7 @@ export default function McpKeysPage() {
     const navigate = useNavigate()
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
-    const {fetch: fetchKeys} = useMcpKeys()
+    const {keys, loading, fetch: fetchKeys} = useMcpKeys()
     const {fetch: fetchExternalConnections} = useExternalConnections()
 
     useEffect(() => {
@@ -33,7 +34,26 @@ export default function McpKeysPage() {
 
     return (
         <div className={cls.Root}>
-            <HeroSegment onCreateClick={() => OpenDialog(<CreateKeyDialog/>)}/>
+            <HeroSegment
+                eyebrow="MCP"
+                title="API Keys"
+                subtitle={
+                    <>
+                        <b>{loading ? "…" : `${keys.length} ${keys.length === 1 ? "key" : "keys"}`}</b>
+                        {" · "}<span>bridge your MCP agents to Artel</span>
+                    </>
+                }
+                action={
+                    <Button variant="primary" onClick={() => OpenDialog(<CreateKeyDialog/>)}>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        New key
+                    </Button>
+                }
+            />
             <ContentSegment/>
         </div>
     )

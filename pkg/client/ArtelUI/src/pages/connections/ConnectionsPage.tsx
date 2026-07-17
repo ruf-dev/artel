@@ -6,13 +6,13 @@ import {Path} from "@/app/routing/Router.tsx"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
-import HeroSegment from "@/pages/connections/components/HeroSegment/HeroSegment.tsx"
+import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import ContentSegment from "@/pages/connections/components/ContentSegment/ContentSegment.tsx"
 
 export default function ConnectionsPage() {
     const navigate = useNavigate()
     const {auth} = useUser()
-    const {fetch: fetchConnections} = useExternalConnections()
+    const {connections, loading, fetch: fetchConnections} = useExternalConnections()
     const bakeError = useBakeError()
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -38,7 +38,20 @@ export default function ConnectionsPage() {
 
     return (
         <div className={cls.Root}>
-            <HeroSegment/>
+            <HeroSegment
+                eyebrow="Workspace"
+                title="Connected services"
+                subtitle={
+                    <>
+                        <b>
+                            {loading
+                                ? "…"
+                                : `${connections.length} ${connections.length === 1 ? "service" : "services"}`}
+                        </b>
+                        {" · "}<span>linked external integrations</span>
+                    </>
+                }
+            />
             <ContentSegment/>
         </div>
     )
