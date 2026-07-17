@@ -4505,8 +4505,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/JsonView/JsonView.tsx": {
-    "mtime": 1784274537.4099965,
-    "ast_hash": "363730d204dd0599677e649a46b6b456",
+    "mtime": 1784299160.0768743,
+    "ast_hash": "53d80c615d856147d6a86f8afe4cdaa2",
     "semantic_hash": ""
   },
   "cmd/migrate_task_trackers_to_external_connections/main.go": {
@@ -4622,11 +4622,6 @@
   "pkg/client/ArtelUI/src/pages/roadmap/widgets/RoadmapInspector/components/RoadmapInspectorBody/RoadmapInspectorBody.tsx": {
     "mtime": 1784280117.911917,
     "ast_hash": "b950c0cc548143540ad6b7a95b2434d4",
-    "semantic_hash": ""
-  },
-  "migrations/051_roadmap_roots.sql": {
-    "mtime": 1784293288.687157,
-    "ast_hash": "ede1d9aa78031428653791b06e6b81cb",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/roadmap/RoadmapPage.tsx": {
