@@ -1,8 +1,10 @@
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
+import {Button} from "@vervstack/chures"
 
 import {TractRun, TractRunStep} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {cn} from "@/app/utils/cn.ts"
+import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import JsonBlock from "@/components/JsonBlock/JsonBlock.tsx"
 import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/components/RunLog/RunLog.module.css"
 
@@ -75,15 +77,25 @@ function cap(s: string): string {
 
 interface RunLogProps {
     runUuid: string
+    onRetry: () => Promise<unknown>
 }
 
-export default function RunLog({runUuid}: RunLogProps) {
+export default function RunLog({runUuid, onRetry}: RunLogProps) {
     const {currentRun, currentRunSteps, currentRunLoading, fetchRun, clearCurrentRun} = useTracts()
+    const bakeError = useBakeError()
+    const [retrying, setRetrying] = useState(false)
 
     useEffect(() => {
         void fetchRun(runUuid)
         return () => clearCurrentRun()
     }, [runUuid])
+
+    function handleRetry() {
+        setRetrying(true)
+        onRetry()
+            .catch(err => bakeError("Failed to retry run", err))
+            .finally(() => setRetrying(false))
+    }
 
     if (currentRunLoading || !currentRun) {
         return <p className={cls.Empty}>Loading…</p>
@@ -106,6 +118,11 @@ export default function RunLog({runUuid}: RunLogProps) {
                     )}
                 </div>
             ))}
+            <div className={cls.RetryBar}>
+                <Button variant="ghost" onClick={handleRetry} disabled={retrying}>
+                    {retrying ? "Retrying…" : "Retry run"}
+                </Button>
+            </div>
         </>
     )
 }

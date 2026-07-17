@@ -73,6 +73,7 @@ interface TractsState {
     deleteTract: (uuid: string) => Promise<void>
     setEnabled: (uuid: string, enabled: boolean) => Promise<void>
     runTract: (tractUuid: string, params: unknown) => Promise<void>
+    retryRun: (tractUuid: string, runUuid: string) => Promise<void>
 
     fetchRuns: (tractUuid: string) => Promise<void>
     fetchRun: (runUuid: string) => Promise<void>
@@ -162,6 +163,12 @@ export const useTracts = create<TractsState>((set, get) => ({
     runTract: async (tractUuid: string, params: unknown) => {
         await tractsService.runTract(tractUuid, params)
         // RunTract's response is intentionally empty — refetch to see the new run.
+        await get().fetchRuns(tractUuid)
+    },
+
+    retryRun: async (tractUuid: string, runUuid: string) => {
+        await tractsService.retryRun(runUuid)
+        // RetryRun's response is intentionally empty — refetch to see the new run.
         await get().fetchRuns(tractUuid)
     },
 

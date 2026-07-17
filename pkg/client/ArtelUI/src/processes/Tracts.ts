@@ -33,6 +33,7 @@ export interface ITractsService {
     deleteTract: (uuid: string) => Promise<void>
     setTractEnabled: (uuid: string, enabled: boolean) => Promise<void>
     runTract: (tractUuid: string, params: unknown) => Promise<void>
+    retryRun: (runUuid: string) => Promise<void>
 
     listRuns: (tractUuid: string, limit: number) => Promise<TractRun[]>
     getRun: (runUuid: string) => Promise<{ run: TractRun; steps: TractRunStep[] }>
@@ -95,6 +96,10 @@ export class TractsService implements ITractsService {
             {tractUuid, params: JSON.stringify(params ?? {})},
             useUser.getState().auth.getInitReq(),
         )
+    }
+
+    async retryRun(runUuid: string): Promise<void> {
+        await TractsAPI.RetryRun({runUuid}, useUser.getState().auth.getInitReq())
     }
 
     async listRuns(tractUuid: string, limit: number): Promise<TractRun[]> {

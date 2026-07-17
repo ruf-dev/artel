@@ -233,6 +233,14 @@ export type GetRunResponse = {
 
 export type GetRun = Record<string, never>;
 
+export type RetryRunRequest = {
+  runUuid?: string;
+};
+
+export type RetryRunResponse = Record<string, never>;
+
+export type RetryRun = Record<string, never>;
+
 export type ListTractToolsRequest = Record<string, never>;
 
 export type ListTractToolsResponse = {
@@ -348,6 +356,9 @@ export class TractsAPI {
   }
   static GetRun(this:void, req: GetRunRequest, initReq?: fm.InitReq): Promise<GetRunResponse> {
     return fm.fetchRequest<GetRunResponse>(`/api/tracts/runs/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static RetryRun(this:void, req: RetryRunRequest, initReq?: fm.InitReq): Promise<RetryRunResponse> {
+    return fm.fetchRequest<RetryRunResponse>(`/api/tracts/runs/retry`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ListTractTools(this:void, req: ListTractToolsRequest, initReq?: fm.InitReq): Promise<ListTractToolsResponse> {
     return fm.fetchRequest<ListTractToolsResponse>(`/api/tracts/tools/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

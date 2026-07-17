@@ -119,6 +119,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
                 runs={runs}
                 selectedRunUuid={runTracking.selectedRunUuid}
                 onSelectRun={runTracking.setSelectedRunUuid}
+                onRetryRun={runTracking.retryRun}
                 onClose={runTracking.closeLog}
             />
         </div>

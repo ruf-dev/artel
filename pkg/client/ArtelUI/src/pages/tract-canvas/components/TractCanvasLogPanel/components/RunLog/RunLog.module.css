@@ -30,3 +30,11 @@
     font-size: 0.75rem;
     padding: 0.75rem;
 }
+
+.RetryBar {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: var(--border-thickness) solid var(--color-border);
+}

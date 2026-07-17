@@ -70,6 +70,13 @@ service TractsAPI {
     };
   }
 
+  rpc RetryRun(RetryRun.Request) returns (RetryRun.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/runs/retry"
+      body: "*"
+    };
+  }
+
   rpc ListTractTools(ListTractTools.Request) returns (ListTractTools.Response) {
     option (google.api.http) = {
       post: "/api/tracts/tools/list"
@@ -344,6 +351,13 @@ message GetRun {
     TractRunItem run                = 1;
     repeated TractRunStepItem steps = 2;
   }
+}
+
+message RetryRun {
+  message Request {
+    string run_uuid = 1;
+  }
+  message Response {}
 }
 
 message ListTractTools {

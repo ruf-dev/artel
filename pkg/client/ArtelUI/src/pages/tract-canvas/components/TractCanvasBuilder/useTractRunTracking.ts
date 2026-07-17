@@ -10,7 +10,7 @@ const RUN_POLL_INTERVAL_MS = 700
 const RUN_POLL_MAX_ATTEMPTS = 10
 
 export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
-    const {runTract, fetchRuns, currentRun, currentRunSteps} = useTracts()
+    const {runTract, retryRun: retryRunStore, fetchRuns, currentRun, currentRunSteps} = useTracts()
 
     const [running, setRunning] = useState(false)
     const [logOpen, setLogOpen] = useState(false)
@@ -85,12 +85,12 @@ export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
     }
 
     // Resolves as soon as the run is created and discovered (near-instant), so a caller
-    // (the run dialog) can hand the user a link to it right away — completion is tracked
-    // separately in the background via pollUntilRunFinished, which keeps `running` and the
-    // log panel's step statuses live without blocking this promise.
-    function startRun(params: unknown): Promise<TractRun | undefined> {
+    // (the run dialog / retry button) can hand the user a link to it right away — completion
+    // is tracked separately in the background via pollUntilRunFinished, which keeps `running`
+    // and the log panel's step statuses live without blocking this promise.
+    function trackNewRun(started: Promise<void>): Promise<TractRun | undefined> {
         setRunning(true)
-        return runTract(tractUuid, params)
+        return started
             .then(() => {
                 const latest = latestRun()
                 if (latest) {
@@ -106,11 +106,20 @@ export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
             })
     }
 
+    function startRun(params: unknown): Promise<TractRun | undefined> {
+        return trackNewRun(runTract(tractUuid, params))
+    }
+
+    // Replays runUuid's own trigger_uuid/trigger_payload/started_by instead of fresh manual params.
+    function retryRun(runUuid: string): Promise<TractRun | undefined> {
+        return trackNewRun(retryRunStore(tractUuid, runUuid))
+    }
+
     return {
         running,
         logOpen, toggleLog, closeLog,
         selectedRunUuid, setSelectedRunUuid,
         activeRunSteps, lastOutputByStepId, activeInputByStepId, activeTriggerPayload, nodeStatus, runningEdgeIds,
-        startRun,
+        startRun, retryRun,
     }
 }

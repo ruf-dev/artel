@@ -240,6 +240,38 @@
         ]
       }
     },
+    "/api/tracts/runs/retry": {
+      "post": {
+        "operationId": "TractsAPI_RetryRun",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiRetryRunResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiRetryRunRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
     "/api/tracts/set-enabled": {
       "post": {
         "operationId": "TractsAPI_SetTractEnabled",
@@ -897,6 +929,17 @@
           }
         }
       }
+    },
+    "artel_apiRetryRunRequest": {
+      "type": "object",
+      "properties": {
+        "runUuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiRetryRunResponse": {
+      "type": "object"
     },
     "artel_apiRotateTriggerTokenResponse": {
       "type": "object",

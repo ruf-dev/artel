@@ -28,6 +28,7 @@ const (
 	TractsAPI_RunTract_FullMethodName           = "/artel_api.TractsAPI/RunTract"
 	TractsAPI_ListRuns_FullMethodName           = "/artel_api.TractsAPI/ListRuns"
 	TractsAPI_GetRun_FullMethodName             = "/artel_api.TractsAPI/GetRun"
+	TractsAPI_RetryRun_FullMethodName           = "/artel_api.TractsAPI/RetryRun"
 	TractsAPI_ListTractTools_FullMethodName     = "/artel_api.TractsAPI/ListTractTools"
 	TractsAPI_ListTriggerSources_FullMethodName = "/artel_api.TractsAPI/ListTriggerSources"
 	TractsAPI_CreateTrigger_FullMethodName      = "/artel_api.TractsAPI/CreateTrigger"
@@ -52,6 +53,7 @@ type TractsAPIClient interface {
 	RunTract(ctx context.Context, in *RunTract_Request, opts ...grpc.CallOption) (*RunTract_Response, error)
 	ListRuns(ctx context.Context, in *ListRuns_Request, opts ...grpc.CallOption) (*ListRuns_Response, error)
 	GetRun(ctx context.Context, in *GetRun_Request, opts ...grpc.CallOption) (*GetRun_Response, error)
+	RetryRun(ctx context.Context, in *RetryRun_Request, opts ...grpc.CallOption) (*RetryRun_Response, error)
 	ListTractTools(ctx context.Context, in *ListTractTools_Request, opts ...grpc.CallOption) (*ListTractTools_Response, error)
 	ListTriggerSources(ctx context.Context, in *ListTriggerSources_Request, opts ...grpc.CallOption) (*ListTriggerSources_Response, error)
 	CreateTrigger(ctx context.Context, in *CreateTrigger_Request, opts ...grpc.CallOption) (*CreateTrigger_Response, error)
@@ -161,6 +163,16 @@ func (c *tractsAPIClient) GetRun(ctx context.Context, in *GetRun_Request, opts .
 	return out, nil
 }
 
+func (c *tractsAPIClient) RetryRun(ctx context.Context, in *RetryRun_Request, opts ...grpc.CallOption) (*RetryRun_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RetryRun_Response)
+	err := c.cc.Invoke(ctx, TractsAPI_RetryRun_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *tractsAPIClient) ListTractTools(ctx context.Context, in *ListTractTools_Request, opts ...grpc.CallOption) (*ListTractTools_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListTractTools_Response)
@@ -264,6 +276,7 @@ type TractsAPIServer interface {
 	RunTract(context.Context, *RunTract_Request) (*RunTract_Response, error)
 	ListRuns(context.Context, *ListRuns_Request) (*ListRuns_Response, error)
 	GetRun(context.Context, *GetRun_Request) (*GetRun_Response, error)
+	RetryRun(context.Context, *RetryRun_Request) (*RetryRun_Response, error)
 	ListTractTools(context.Context, *ListTractTools_Request) (*ListTractTools_Response, error)
 	ListTriggerSources(context.Context, *ListTriggerSources_Request) (*ListTriggerSources_Response, error)
 	CreateTrigger(context.Context, *CreateTrigger_Request) (*CreateTrigger_Response, error)
@@ -309,6 +322,9 @@ func (UnimplementedTractsAPIServer) ListRuns(context.Context, *ListRuns_Request)
 }
 func (UnimplementedTractsAPIServer) GetRun(context.Context, *GetRun_Request) (*GetRun_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRun not implemented")
+}
+func (UnimplementedTractsAPIServer) RetryRun(context.Context, *RetryRun_Request) (*RetryRun_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method RetryRun not implemented")
 }
 func (UnimplementedTractsAPIServer) ListTractTools(context.Context, *ListTractTools_Request) (*ListTractTools_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListTractTools not implemented")
@@ -520,6 +536,24 @@ func _TractsAPI_GetRun_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TractsAPI_RetryRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RetryRun_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TractsAPIServer).RetryRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TractsAPI_RetryRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TractsAPIServer).RetryRun(ctx, req.(*RetryRun_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _TractsAPI_ListTractTools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListTractTools_Request)
 	if err := dec(in); err != nil {
@@ -724,6 +758,10 @@ var TractsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRun",
 			Handler:    _TractsAPI_GetRun_Handler,
+		},
+		{
+			MethodName: "RetryRun",
+			Handler:    _TractsAPI_RetryRun_Handler,
 		},
 		{
 			MethodName: "ListTractTools",

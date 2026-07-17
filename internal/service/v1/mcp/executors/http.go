@@ -40,7 +40,8 @@ type HttpExecutor struct {
 
 func NewHttpExecutor() *HttpExecutor {
 	c := &http.Client{
-		Timeout: httpExecutorTimeout,
+		Timeout:   httpExecutorTimeout,
+		Transport: newLoggingTransport(),
 	}
 
 	return &HttpExecutor{

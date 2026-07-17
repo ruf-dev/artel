@@ -12,10 +12,11 @@ interface Props {
     runs: TractRun[]
     selectedRunUuid: string | null
     onSelectRun: (uuid: string) => void
+    onRetryRun: (runUuid: string) => Promise<unknown>
     onClose: () => void
 }
 
-export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSelectRun, onClose}: Props) {
+export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSelectRun, onRetryRun, onClose}: Props) {
     const [enlarged, setEnlarged] = useState(false)
 
     useEffect(() => {
@@ -47,7 +48,7 @@ export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSele
                     </div>
                     <div className={cls.LogScroll}>
                         {selectedRunUuid
-                            ? <RunLog runUuid={selectedRunUuid}/>
+                            ? <RunLog runUuid={selectedRunUuid} onRetry={() => onRetryRun(selectedRunUuid)}/>
                             : <p className={cls.Empty}>Select a run to see its log.</p>}
                     </div>
                 </div>
