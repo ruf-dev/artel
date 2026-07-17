@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/app/routing/Router.tsx": {
-    "mtime": 1783950112.0119002,
-    "ast_hash": "4cb13beaa500e0efe2873f867108dc52",
+    "mtime": 1784280347.873656,
+    "ast_hash": "7e9bfdead0da0f35b1ee3e77b0ea282b",
     "semantic_hash": ""
   },
   "src/app/utils/cn.ts": {
@@ -1815,8 +1815,8 @@
     "semantic_hash": ""
   },
   "src/pages/task-trackers/components/ContentSegment/components/TrackerRow/TrackerRow.tsx": {
-    "mtime": 1783621834.033077,
-    "ast_hash": "97f4cb45e6eae1ba1142c81858cc62af",
+    "mtime": 1784280347.8740537,
+    "ast_hash": "6216a05db6d4cd01c58f6b7246a7227d",
     "semantic_hash": ""
   },
   "src/pages/toolbox/components/ContentSegment/ContentSegment.tsx": {
@@ -2252,6 +2252,86 @@
   "stylelint-rules/dialog-scrollable.js": {
     "mtime": 1784269365.778115,
     "ast_hash": "87f3fb184bad5b45254ea3d725b2589b",
+    "semantic_hash": ""
+  },
+  "src/dialogs/AddTaskLinkDialog/AddTaskLinkDialog.tsx": {
+    "mtime": 1784280077.1906567,
+    "ast_hash": "5f8b3e365437e787587b9ba03edb1f58",
+    "semantic_hash": ""
+  },
+  "src/dialogs/SelectRoadmapRootDialog/SelectRoadmapRootDialog.tsx": {
+    "mtime": 1784280090.1850455,
+    "ast_hash": "ef8c657f1c36d56e68c84dc48bb4a928",
+    "semantic_hash": ""
+  },
+  "src/dialogs/SelectRoadmapRootDialog/processes/trelloBrowse.ts": {
+    "mtime": 1784279765.3067055,
+    "ast_hash": "127926a04e07dd44a8fa243b35621e48",
+    "semantic_hash": ""
+  },
+  "src/dialogs/SelectRoadmapRootDialog/screens/PickBoardStep.tsx": {
+    "mtime": 1784279777.320795,
+    "ast_hash": "aaf8cf3c245db66d07215a4aabc323e0",
+    "semantic_hash": ""
+  },
+  "src/dialogs/SelectRoadmapRootDialog/screens/PickCardStep.tsx": {
+    "mtime": 1784279792.752275,
+    "ast_hash": "33ba474fd665034c3326af1d9072e4da",
+    "semantic_hash": ""
+  },
+  "src/dialogs/SelectRoadmapRootDialog/screens/PickListStep.tsx": {
+    "mtime": 1784279784.2697017,
+    "ast_hash": "f03e008f7a53c49f5e48d67ba349cdfe",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/RoadmapPage.tsx": {
+    "mtime": 1784280060.3475018,
+    "ast_hash": "a646c1fef9caba4b3a6c9a922ee6163d",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/components/RoadmapCanvasArea/RoadmapCanvasArea.tsx": {
+    "mtime": 1784279586.18936,
+    "ast_hash": "02edf6049cfbc71fe08c6e7b119ee441",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/components/RoadmapCanvasArea/components/RoadmapConnectorPath/RoadmapConnectorPath.tsx": {
+    "mtime": 1784280101.6801162,
+    "ast_hash": "19fd70b0cbf75c3ac3646e1984f91d4a",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/components/RoadmapCanvasNode/RoadmapCanvasNode.tsx": {
+    "mtime": 1784279581.0972283,
+    "ast_hash": "ae9251dbfca1fe319e2043cfdebfb319",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/processes/roadmapGraph.ts": {
+    "mtime": 1784279420.0762782,
+    "ast_hash": "e307401dcc8e6918df0ff04e136e915d",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/processes/roadmapLayout.ts": {
+    "mtime": 1784279436.375117,
+    "ast_hash": "cbe9d31d3caea479ffb809221528c705",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/processes/taskLinkParser.ts": {
+    "mtime": 1784279402.5073497,
+    "ast_hash": "9d82da318b72e02d8c28675f7194dabc",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/widgets/RoadmapInspector/RoadmapInspector.tsx": {
+    "mtime": 1784279638.6903427,
+    "ast_hash": "7228f75ce6761fedf3e4c6ebcfb49ebb",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/widgets/RoadmapInspector/components/LinkRow/LinkRow.tsx": {
+    "mtime": 1784279591.4130404,
+    "ast_hash": "b597d9a41782b4896c64b80c845bd999",
+    "semantic_hash": ""
+  },
+  "src/pages/roadmap/widgets/RoadmapInspector/components/RoadmapInspectorBody/RoadmapInspectorBody.tsx": {
+    "mtime": 1784280117.911917,
+    "ast_hash": "b950c0cc548143540ad6b7a95b2434d4",
     "semantic_hash": ""
   }
 }
