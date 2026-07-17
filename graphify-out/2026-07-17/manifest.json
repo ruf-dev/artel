@@ -175,82 +175,82 @@
     "semantic_hash": ""
   },
   "internal/repository/interfaces.go": {
-    "mtime": 1784229500.4431558,
-    "ast_hash": "df31e8955d05776d725a85e3aafbb8fb",
+    "mtime": 1784279641.1310906,
+    "ast_hash": "155e92eba83621b8c32d8d7ab4a872ce",
     "semantic_hash": ""
   },
   "internal/repository/pg/impl.go": {
-    "mtime": 1784010931.43813,
-    "ast_hash": "3433a69a2256f4e920658ad944d33cf8",
+    "mtime": 1784279678.6117713,
+    "ast_hash": "106d4fcad029bc1cf175f261b6f1a24d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/models.go": {
-    "mtime": 1784229510.6562235,
-    "ast_hash": "ac36e599eef77bf368b89960fdc5f051",
+    "mtime": 1784279686.2908058,
+    "ast_hash": "78065c7aa6da87ebe6e1751eabd7bc14",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/db.go": {
-    "mtime": 1784229510.654664,
+    "mtime": 1784279686.2898042,
     "ast_hash": "9de76c60cbdd338abed02aaea64adea5",
     "semantic_hash": "9de76c60cbdd338abed02aaea64adea5"
   },
   "internal/repository/pg/generated/couch_accounts.sql.go": {
-    "mtime": 1784229510.6564019,
+    "mtime": 1784279686.2917972,
     "ast_hash": "3bcc15a9bc8fd861b2fb2329ccdbdd6d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/sessions.sql.go": {
-    "mtime": 1784229510.6557124,
+    "mtime": 1784279686.2893455,
     "ast_hash": "f7c1d172f88dd5ac065f8ef5fc25e500",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mail_server_suggestions.sql.go": {
-    "mtime": 1784229510.6475208,
+    "mtime": 1784279686.29075,
     "ast_hash": "24f21536c316ccc7dbe20ac0bf98c548",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/vaults.sql.go": {
-    "mtime": 1784229510.653756,
+    "mtime": 1784279686.293049,
     "ast_hash": "675c6a8938fd303b35df02be9809fe68",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/couch_instances.sql.go": {
-    "mtime": 1784229510.6479733,
+    "mtime": 1784279686.2894027,
     "ast_hash": "391f77917d25be53e3ccedd24d5210c8",
     "semantic_hash": "391f77917d25be53e3ccedd24d5210c8"
   },
   "internal/repository/pg/generated/vault_members.sql.go": {
-    "mtime": 1784229510.6495252,
+    "mtime": 1784279686.2881718,
     "ast_hash": "c53b291e580fa193cf60298e42724a13",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/subscriptions.sql.go": {
-    "mtime": 1784229510.652447,
+    "mtime": 1784279686.2927368,
     "ast_hash": "d0260efe27e20f7ac5faac0d1ea8863d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/querier.go": {
-    "mtime": 1784229510.659523,
-    "ast_hash": "a138ea1cfe6c6ae72b5aa6c40d212c66",
+    "mtime": 1784279686.2879071,
+    "ast_hash": "bd3af1aef2dd860393e827f53f79491d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/users.sql.go": {
-    "mtime": 1784229510.6547396,
+    "mtime": 1784279686.2918582,
     "ast_hash": "5c59b1f4c9d2fbcb0abbda44c0d14970",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/user_permissions.sql.go": {
-    "mtime": 1784229510.6478884,
+    "mtime": 1784279686.2900903,
     "ast_hash": "5c83417386f895af998b4a5d2c6a3059",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/pending_auth_codes.sql.go": {
-    "mtime": 1784229510.654587,
+    "mtime": 1784279686.292994,
     "ast_hash": "db138e65c0bd9793ab41270580a5c418",
     "semantic_hash": "db138e65c0bd9793ab41270580a5c418"
   },
   "internal/repository/pg/generated/mcp_keys.sql.go": {
-    "mtime": 1784229510.6493168,
+    "mtime": 1784279686.2928133,
     "ast_hash": "02433b07fa0a76513ac5cba0bca04f2e",
     "semantic_hash": ""
   },
@@ -655,13 +655,13 @@
     "semantic_hash": ""
   },
   "internal/service/interfaces.go": {
-    "mtime": 1784229604.582254,
-    "ast_hash": "535444ce6c2ecfc5d4668a7c60a63fec",
+    "mtime": 1784279508.1347742,
+    "ast_hash": "b14a5bbc73f6b76b66e8ded46b3532c9",
     "semantic_hash": ""
   },
   "internal/service/v1/impl.go": {
-    "mtime": 1784229650.2815325,
-    "ast_hash": "a6758f3370efeea894a5afc46c0165d9",
+    "mtime": 1784279703.4288113,
+    "ast_hash": "6f6dfbae5c94943ab877e2d7aa67c8d3",
     "semantic_hash": ""
   },
   "internal/service/v1/couchinstances/couchinstances.go": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
-    "mtime": 1784231353.623234,
-    "ast_hash": "02ffa9e67d39ba288b1bb542b7c37ab5",
+    "mtime": 1784279616.3042762,
+    "ast_hash": "e5fa914ef04b94a6c086f720d89c059f",
     "semantic_hash": ""
   },
   "internal/domain/couch_account.go": {
@@ -1239,21 +1239,6 @@
     "ast_hash": "6b90a53af969b08283ba9b7561dd95f2",
     "semantic_hash": ""
   },
-  "internal/clients/trello/models.go": {
-    "mtime": 1780315290.095819,
-    "ast_hash": "00084c65f7498564671c5ba3aedb7b2f",
-    "semantic_hash": ""
-  },
-  "internal/clients/trello/log_transport.go": {
-    "mtime": 1783193923.2563996,
-    "ast_hash": "b60e8e6d396ce95c809a1e048221718f",
-    "semantic_hash": ""
-  },
-  "internal/clients/trello/trello.go": {
-    "mtime": 1783193923.258362,
-    "ast_hash": "1646629acbcc2e26b1d5f6b56a2d604d",
-    "semantic_hash": ""
-  },
   "internal/middleware/otel_hook.go": {
     "mtime": 1783187438.61428,
     "ast_hash": "2827646ead4fea05be09d61bfb865d74",
@@ -1265,32 +1250,27 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/vault_invites.sql.go": {
-    "mtime": 1784229510.6555936,
+    "mtime": 1784279686.290425,
     "ast_hash": "01e2b4448bc07e4b22ea8cab5513c2e3",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/external_connections.sql.go": {
-    "mtime": 1784229510.65724,
+    "mtime": 1784279686.291217,
     "ast_hash": "0c38a977dcbfc64a930c297092b0b537",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_connectors.sql.go": {
-    "mtime": 1784229510.655791,
+    "mtime": 1784279686.289289,
     "ast_hash": "f226e824352d683836f080889cbd17fa",
     "semantic_hash": ""
   },
-  "internal/repository/pg/generated/task_trackers.sql.go": {
-    "mtime": 1784229510.6499844,
-    "ast_hash": "b7f8fb6d69d6701b4e14e6d3d1190fd9",
-    "semantic_hash": ""
-  },
   "internal/repository/pg/generated/mcps.sql.go": {
-    "mtime": 1784229510.656321,
+    "mtime": 1784279686.2885303,
     "ast_hash": "60fa9cd8401b8dc13c22784960b39efd",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_spreadsheets.sql.go": {
-    "mtime": 1784229510.6602163,
+    "mtime": 1784279686.2897406,
     "ast_hash": "e9042da7b4ee16acda54482c520bf412",
     "semantic_hash": ""
   },
@@ -1309,11 +1289,6 @@
     "ast_hash": "36d903fea1618aebf405959fe61e10cb",
     "semantic_hash": ""
   },
-  "internal/repository/pg/repos/tasktrackers/task_trackers.go": {
-    "mtime": 1783187441.6086173,
-    "ast_hash": "a3b11a6f135465dc3daba20147d48b0e",
-    "semantic_hash": ""
-  },
   "internal/repository/pg/repos/externalconnections/external_connections.go": {
     "mtime": 1783976181.5470088,
     "ast_hash": "3a3a83ef643d2829d440085a2ceba8b8",
@@ -1327,11 +1302,6 @@
   "internal/repository/pg/queries/external_connections.sql": {
     "mtime": 1783978813.1173406,
     "ast_hash": "c0db35b3269cf3971b25a18031d8f50a",
-    "semantic_hash": ""
-  },
-  "internal/repository/pg/queries/task_trackers.sql": {
-    "mtime": 1780313275.029055,
-    "ast_hash": "6b64a172257a90d20b0b2d466ce6e3f3",
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/mcps.sql": {
@@ -1505,8 +1475,8 @@
     "semantic_hash": ""
   },
   "internal/transport/task_trackers_api/add.go": {
-    "mtime": 1783193923.318885,
-    "ast_hash": "b828e20b22969cb0b320d9bc3f751a8e",
+    "mtime": 1784279551.7470465,
+    "ast_hash": "97eebf9606d565ea5399bf769e31d213",
     "semantic_hash": ""
   },
   "internal/transport/task_trackers_api/list.go": {
@@ -1710,8 +1680,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/externalconnections/external_connections.go": {
-    "mtime": 1783976248.8301535,
-    "ast_hash": "6b1281d324dff211dbf0d5417e885338",
+    "mtime": 1784279606.4784224,
+    "ast_hash": "90a5d5584ae5bf58e369d0410f6422a1",
     "semantic_hash": ""
   },
   "internal/service/v1/adminusers/adminusers.go": {
@@ -1730,8 +1700,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/tasktracker/tasktracker.go": {
-    "mtime": 1783193923.382656,
-    "ast_hash": "979054393761c83dc2bc3bd81f47b7aa",
+    "mtime": 1784279530.6569233,
+    "ast_hash": "d8b8a4c4881eb83107851e14f1b142ac",
     "semantic_hash": ""
   },
   "internal/domain/tool_exec_result.go": {
@@ -1765,8 +1735,8 @@
     "semantic_hash": ""
   },
   "internal/domain/task_tracker.go": {
-    "mtime": 1780313272.5544205,
-    "ast_hash": "6be37e32aea6856310a511f850fa7ded",
+    "mtime": 1784279487.3562877,
+    "ast_hash": "700700f5f32a1f0dd012b5e732956cb8",
     "semantic_hash": ""
   },
   "internal/domain/trello.go": {
@@ -2165,17 +2135,17 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/triggers.sql.go": {
-    "mtime": 1784229510.6587365,
+    "mtime": 1784279686.2922547,
     "ast_hash": "bb2b9fcd74d3933472c90e6e4371aa53",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/tracts.sql.go": {
-    "mtime": 1784229510.6515577,
+    "mtime": 1784279686.2926326,
     "ast_hash": "8b95465d09343b2cbb3bf2aa156b65f8",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_tools.sql.go": {
-    "mtime": 1784229510.6522727,
+    "mtime": 1784279686.2914634,
     "ast_hash": "2dc3aff491ced9968797e85c44349a6e",
     "semantic_hash": ""
   },
@@ -2620,7 +2590,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/s3_instances.sql.go": {
-    "mtime": 1784229510.6532524,
+    "mtime": 1784279686.2890844,
     "ast_hash": "d209c73151901f4d560cb09bc5687dda",
     "semantic_hash": ""
   },
@@ -2800,7 +2770,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/trigger_presets.sql.go": {
-    "mtime": 1784229510.652366,
+    "mtime": 1784279686.2925005,
     "ast_hash": "e959b5ececc94e057f59a69ab399649e",
     "semantic_hash": ""
   },
@@ -4420,7 +4390,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/subscription_plans.sql.go": {
-    "mtime": 1784229510.6477883,
+    "mtime": 1784279686.291667,
     "ast_hash": "4550c3af6aaeb6fd1b8dabd8bb29d0ef",
     "semantic_hash": ""
   },
@@ -4540,8 +4510,8 @@
     "semantic_hash": ""
   },
   "cmd/migrate_task_trackers_to_external_connections/main.go": {
-    "mtime": 1784279463.5570085,
-    "ast_hash": "5766d61708bcd67c0cd54f4b30862192",
+    "mtime": 1784279476.292994,
+    "ast_hash": "3f76a442ac1ec9c5748366f25ae8c5dc",
     "semantic_hash": ""
   },
   "migrations/049_trello_card_details.sql": {
@@ -4597,6 +4567,61 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/taskTrackerAdapters.ts": {
     "mtime": 1784275977.0055423,
     "ast_hash": "7f48d8acd5f81e0c9fc54bfa8d83d727",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/AddTaskLinkDialog/AddTaskLinkDialog.tsx": {
+    "mtime": 1784279846.9187157,
+    "ast_hash": "370579e0a340edca326e7b7ea9759ee7",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/SelectRoadmapRootDialog.tsx": {
+    "mtime": 1784279821.54184,
+    "ast_hash": "29f701ca22036b3e616f0928b3366548",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/processes/trelloBrowse.ts": {
+    "mtime": 1784279765.3067055,
+    "ast_hash": "127926a04e07dd44a8fa243b35621e48",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/screens/PickBoardStep.tsx": {
+    "mtime": 1784279777.320795,
+    "ast_hash": "aaf8cf3c245db66d07215a4aabc323e0",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/screens/PickCardStep.tsx": {
+    "mtime": 1784279792.752275,
+    "ast_hash": "33ba474fd665034c3326af1d9072e4da",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/screens/PickListStep.tsx": {
+    "mtime": 1784279784.2697017,
+    "ast_hash": "f03e008f7a53c49f5e48d67ba349cdfe",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/components/RoadmapCanvasArea/RoadmapCanvasArea.tsx": {
+    "mtime": 1784279586.18936,
+    "ast_hash": "02edf6049cfbc71fe08c6e7b119ee441",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/components/RoadmapCanvasNode/RoadmapCanvasNode.tsx": {
+    "mtime": 1784279581.0972283,
+    "ast_hash": "ae9251dbfca1fe319e2043cfdebfb319",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/widgets/RoadmapInspector/RoadmapInspector.tsx": {
+    "mtime": 1784279638.6903427,
+    "ast_hash": "7228f75ce6761fedf3e4c6ebcfb49ebb",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/widgets/RoadmapInspector/components/LinkRow/LinkRow.tsx": {
+    "mtime": 1784279591.4130404,
+    "ast_hash": "b597d9a41782b4896c64b80c845bd999",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/widgets/RoadmapInspector/components/RoadmapInspectorBody/RoadmapInspectorBody.tsx": {
+    "mtime": 1784279660.142331,
+    "ast_hash": "f748db865f2a453250e194714f781cd2",
     "semantic_hash": ""
   }
 }
