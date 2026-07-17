@@ -11,6 +11,16 @@
   --chures-btn-from:     var(--coral);
   --chures-btn-to:       var(--coral);
 
+  /* chures otherwise hardcodes a permanent dark theme (white text on black
+     surfaces) for Button/Toast/Dropdown/ConfirmDialog/Input — tie both its
+     foreground and its surface colors to our own theme tokens so light mode
+     doesn't produce invisible (white-on-white or black-on-black) text. */
+  --chures-fg:         var(--color-fg-primary);
+  --chures-fg-muted:   var(--color-fg-secondary);
+  --chures-bg:         var(--color-bg-elevated);
+  --chures-surface:    var(--color-bg-card);
+  --chures-input-bg:   var(--color-bg-input);
+
   /* Backgrounds */
   --color-bg-base:        #000;
   --color-bg-secondary:   #0d0d0d;
