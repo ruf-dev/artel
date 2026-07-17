@@ -12,6 +12,7 @@ import {useNotesSearchQuery} from "@/pages/notes/components/NotesSidebar/process
 import {useNotesTreeView} from "@/pages/notes/components/NotesSidebar/processes/useNotesTreeView.ts"
 import {useHighlightNote} from "@/pages/notes/components/NotesSidebar/processes/useHighlightNote.ts"
 import {useFolderActions} from "@/pages/notes/components/NotesSidebar/processes/useFolderActions.tsx"
+import {useNotesDragAndDrop} from "@/pages/notes/components/NotesSidebar/processes/useNotesDragAndDrop.ts"
 import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
 
 interface VaultOption {
@@ -32,6 +33,7 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
     const [treeView, toggleTreeView] = useNotesTreeView()
     const {scrollAreaRef} = useHighlightNote(notesStore.highlightedPath)
     const {handleDownloadFolder, handleDeleteFolder, handleUpload} = useFolderActions()
+    const {onDragStart: onItemDragStart, onDrop: onFolderDrop} = useNotesDragAndDrop()
 
     function handleVaultChange(value: string[]) {
         if (!value[0]) return
@@ -111,6 +113,8 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
                         onDeleteFolder={handleDeleteFolder}
                         onUpload={handleUpload}
                         showCreateButton={showCreateButton}
+                        onItemDragStart={onItemDragStart}
+                        onFolderDrop={onFolderDrop}
                     />
                 )}
             </div>

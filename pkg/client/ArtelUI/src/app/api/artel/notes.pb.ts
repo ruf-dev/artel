@@ -135,6 +135,18 @@ export type DeleteFolderResponse = {
 
 export type DeleteFolder = Record<string, never>;
 
+export type MoveFolderRequest = {
+  vaultId?: string;
+  oldPath?: string;
+  newPath?: string;
+};
+
+export type MoveFolderResponse = {
+  movedCount?: number;
+};
+
+export type MoveFolder = Record<string, never>;
+
 export class NotesAPI {
   static ListFolders(this:void, req: ListFoldersRequest, initReq?: fm.InitReq): Promise<ListFoldersResponse> {
     return fm.fetchRequest<ListFoldersResponse>(`/api/notes/folders`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -165,5 +177,8 @@ export class NotesAPI {
   }
   static DeleteFolder(this:void, req: DeleteFolderRequest, initReq?: fm.InitReq): Promise<DeleteFolderResponse> {
     return fm.fetchRequest<DeleteFolderResponse>(`/api/notes/folder/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static MoveFolder(this:void, req: MoveFolderRequest, initReq?: fm.InitReq): Promise<MoveFolderResponse> {
+    return fm.fetchRequest<MoveFolderResponse>(`/api/notes/folder/move`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

@@ -27,6 +27,7 @@ export interface INotesService {
     listTags: (vaultId: string) => Promise<string[]>
     saveNote: (vaultId: string, path: string, content: string) => Promise<void>
     moveNote: (vaultId: string, oldPath: string, newPath: string) => Promise<void>
+    moveFolder: (vaultId: string, oldPath: string, newPath: string) => Promise<void>
     exportFolder: (vaultId: string, path: string) => Promise<Uint8Array>
     checkImportConflicts: (vaultId: string, destPath: string, zipData: Uint8Array) => Promise<string[]>
     commitImport: (
@@ -62,6 +63,10 @@ export class NotesService implements INotesService {
 
     async moveNote(vaultId: string, oldPath: string, newPath: string): Promise<void> {
         await NotesAPI.MoveNote({vaultId, oldPath, newPath}, useUser.getState().auth.getInitReq())
+    }
+
+    async moveFolder(vaultId: string, oldPath: string, newPath: string): Promise<void> {
+        await NotesAPI.MoveFolder({vaultId, oldPath, newPath}, useUser.getState().auth.getInitReq())
     }
 
     async exportFolder(vaultId: string, path: string): Promise<Uint8Array> {

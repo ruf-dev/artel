@@ -4,7 +4,7 @@ import { NoteItem } from "@/app/hooks/Notes.ts"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import FolderNodeItem from "@/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx"
 import {
-    buildFolderTree, getAncestorFolderPaths, getNoteName,
+    buildFolderTree, getAncestorFolderPaths, getNoteName, sortNotesByName,
 } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
 
 interface SearchResultsTreeProps {
@@ -32,7 +32,7 @@ export default function SearchResultsTree(props: SearchResultsTreeProps) {
     })
 
     const tree = buildFolderTree(Array.from(relevantFolders))
-    const rootNotes = matchedNotes.filter(n => n.path && !n.path.includes("/"))
+    const rootNotes = sortNotesByName(matchedNotes.filter(n => n.path && !n.path.includes("/")))
 
     const [openFolders, setOpenFolders] = useState<Set<string>>(relevantFolders)
 

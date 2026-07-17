@@ -69,6 +69,12 @@ service NotesAPI {
       body: "*"
     };
   };
+  rpc MoveFolder(MoveFolder.Request) returns (MoveFolder.Response) {
+    option (google.api.http) = {
+      post: "/api/notes/folder/move"
+      body: "*"
+    };
+  };
 }
 
 message NoteItem {
@@ -185,5 +191,16 @@ message DeleteFolder {
   message Response {
     int32 deleted_count = 1;
     repeated string failed_paths = 2;
+  }
+}
+
+message MoveFolder {
+  message Request {
+    string vault_id = 1;
+    string old_path = 2;
+    string new_path = 3;
+  }
+  message Response {
+    int32 moved_count = 1;
   }
 }

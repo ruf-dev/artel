@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {DragEvent, useState} from "react"
 import {Button} from "@vervstack/chures"
 
 import { cn } from "@/app/utils/cn.ts"
@@ -24,20 +24,42 @@ interface TreeItemProps {
     onCopyPath?: () => void
     onDownloadFolder?: () => void
     onDeleteFolder?: () => void
+    onDragStart?: (e: DragEvent<HTMLDivElement>) => void
+    onDropTarget?: (e: DragEvent<HTMLDivElement>) => void
 }
 
 export default function TreeItem(props: TreeItemProps) {
     const { name, subtitle, path, active, highlighted } = props
     const { isFolder, isOpen, onClick, onAddInFolder, onCopyPath } = props
-    const { onDownloadFolder, onDeleteFolder } = props
+    const { onDownloadFolder, onDeleteFolder, onDragStart, onDropTarget } = props
     const [copied, setCopied] = useState(false)
+    const [isDragOver, setIsDragOver] = useState(false)
     const depth = props.depth ?? 0
     const paddingLeft = 1.12 + depth * 0.84
+    const acceptsDrop = !!isFolder && !!onDropTarget
     const rowClass = cn(
         cls.TreeItemRowContainer,
         active && cls.TreeItemRowActive,
-        highlighted && cls.TreeItemRowHighlight
+        highlighted && cls.TreeItemRowHighlight,
+        isDragOver && cls.TreeItemRowDropTarget
     )
+
+    function handleDragOver(e: DragEvent<HTMLDivElement>) {
+        if (!acceptsDrop) return
+        e.preventDefault()
+        setIsDragOver(true)
+    }
+
+    function handleDragLeave() {
+        setIsDragOver(false)
+    }
+
+    function handleDrop(e: DragEvent<HTMLDivElement>) {
+        if (!acceptsDrop) return
+        e.preventDefault()
+        setIsDragOver(false)
+        onDropTarget?.(e)
+    }
 
     return (
         <div
@@ -45,6 +67,11 @@ export default function TreeItem(props: TreeItemProps) {
             style={{ padding: `0.28rem 1.12rem 0.28rem ${paddingLeft}rem` }}
             onClick={onClick}
             data-path={path}
+            draggable={!!path}
+            onDragStart={onDragStart}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
         >
             {isFolder ? <ArrowIcon open={!!isOpen} /> : <span className={cls.ArrowSpacer} />}
             {isFolder ? <FolderIcon /> : <FileIcon />}

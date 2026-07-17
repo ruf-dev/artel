@@ -3,6 +3,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.84rem 0.7rem 0.35rem 1.12rem;
+    transition: background 120ms ease;
+
+    &.SectionHeaderDropTarget {
+        background: var(--coral-dim);
+    }
 
     & .SectionLabel {
         font-family: var(--font-mono);

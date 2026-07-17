@@ -6,6 +6,17 @@ export interface FolderNode {
     children: FolderNode[]
 }
 
+function byName(a: { name: string }, b: { name: string }): number {
+    return a.name.localeCompare(b.name)
+}
+
+function sortTree(nodes: FolderNode[]): FolderNode[] {
+    for (const node of nodes) {
+        sortTree(node.children)
+    }
+    return nodes.sort(byName)
+}
+
 export function buildFolderTree(folders: string[]): FolderNode[] {
     const nodeMap = new Map<string, FolderNode>()
 
@@ -32,7 +43,7 @@ export function buildFolderTree(folders: string[]): FolderNode[] {
         }
     }
 
-    return roots
+    return sortTree(roots)
 }
 
 export function getNoteName(note: NoteItem): string {
@@ -42,12 +53,17 @@ export function getNoteName(note: NoteItem): string {
     return filename.endsWith(".md") ? filename.slice(0, -3) : filename
 }
 
+export function sortNotesByName(notes: NoteItem[]): NoteItem[] {
+    return [...notes].sort((a, b) => getNoteName(a).localeCompare(getNoteName(b)))
+}
+
 export function getDirectNotes(folderPath: string, notes: NoteItem[]): NoteItem[] {
     const prefix = folderPath + "/"
-    return notes.filter(n => {
+    const direct = notes.filter(n => {
         if (!n.path || !n.path.startsWith(prefix)) return false
         return !n.path.slice(prefix.length).includes("/")
     })
+    return sortNotesByName(direct)
 }
 
 export function getAncestorFolderPaths(notePath: string): string[] {

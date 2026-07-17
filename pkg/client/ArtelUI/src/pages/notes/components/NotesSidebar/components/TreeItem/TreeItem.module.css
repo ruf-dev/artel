@@ -108,6 +108,10 @@
     animation: tree-item-blink 0.33s ease-in-out 2;
 }
 
+.TreeItemRowDropTarget {
+    background: var(--coral-dim);
+}
+
 @keyframes tree-item-blink {
     0%, 100% {
         background: transparent;

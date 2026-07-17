@@ -127,6 +127,12 @@ var (
 		codes.FailedPrecondition,
 	)
 
+	// notes: folder move.
+	InvalidFolderMove = rerrors.New(
+		"cannot move a folder into itself or one of its own subfolders",
+		codes.InvalidArgument,
+	)
+
 	// imap.
 	InvalidEmailId       = rerrors.New("invalid email id", codes.InvalidArgument)
 	EmailMessageNotFound = rerrors.New("message not found", codes.NotFound)

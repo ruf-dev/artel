@@ -80,6 +80,38 @@
         ]
       }
     },
+    "/api/notes/folder/move": {
+      "post": {
+        "operationId": "NotesAPI_MoveFolder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_notesMoveFolderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_notesMoveFolderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotesAPI"
+        ]
+      }
+    },
     "/api/notes/folders": {
       "post": {
         "operationId": "NotesAPI_ListFolders",
@@ -546,6 +578,29 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "artel_notesMoveFolderRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "oldPath": {
+          "type": "string"
+        },
+        "newPath": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_notesMoveFolderResponse": {
+      "type": "object",
+      "properties": {
+        "movedCount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

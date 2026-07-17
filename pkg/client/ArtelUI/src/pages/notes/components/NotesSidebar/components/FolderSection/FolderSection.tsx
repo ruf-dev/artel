@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react"
+import { DragEvent, useEffect, useState } from "react"
 import {Button} from "@vervstack/chures"
 
+import { cn } from "@/app/utils/cn.ts"
 import { NoteItem } from "@/app/hooks/Notes.ts"
 import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
 import UploadIcon from "@/pages/notes/components/icons/UploadIcon.tsx"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import FolderNodeItem from "@/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx"
 import {
-    buildFolderTree, getAncestorFolderPaths, getNoteName,
+    buildFolderTree, getAncestorFolderPaths, getNoteName, sortNotesByName,
 } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import { useRootDropTarget } from "@/pages/notes/components/NotesSidebar/processes/useRootDropTarget.ts"
 import cls from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.module.css"
 
 interface FolderSectionProps {
@@ -24,13 +26,16 @@ interface FolderSectionProps {
     onDeleteFolder?: (path: string) => void
     onUpload?: () => void
     showCreateButton?: boolean
+    onItemDragStart: (path: string, isFolder: boolean) => (e: DragEvent<HTMLDivElement>) => void
+    onFolderDrop: (targetFolderPath: string) => (e: DragEvent<HTMLDivElement>) => void
 }
 
 export default function FolderSection(props: FolderSectionProps) {
     const { folders, notes, selectedPath, highlightedPath, revealPath, vaultId } = props
     const { onSelectNote, onCreateNote, onDownloadFolder, onDeleteFolder, onUpload } = props
-    const { showCreateButton = true } = props
+    const { showCreateButton = true, onItemDragStart, onFolderDrop } = props
     const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
+    const rootDrop = useRootDropTarget(onFolderDrop)
 
     function toggleFolder(path: string) {
         setOpenFolders(prev => {
@@ -56,11 +61,16 @@ export default function FolderSection(props: FolderSectionProps) {
     }, [revealPath])
 
     const tree = buildFolderTree(folders)
-    const rootNotes = notes.filter(n => n.path && !n.path.includes("/"))
+    const rootNotes = sortNotesByName(notes.filter(n => n.path && !n.path.includes("/")))
 
     return (
         <>
-            <div className={cls.SectionHeaderContainer}>
+            <div
+                className={cn(cls.SectionHeaderContainer, rootDrop.isDragOver && cls.SectionHeaderDropTarget)}
+                onDragOver={rootDrop.onDragOver}
+                onDragLeave={rootDrop.onDragLeave}
+                onDrop={rootDrop.onDrop}
+            >
                 <span className={cls.SectionLabel}>All Notes</span>
                 <div className={cls.SectionActions}>
                     {onUpload && (
@@ -99,6 +109,8 @@ export default function FolderSection(props: FolderSectionProps) {
                     onCreateNoteInFolder={onCreateNote}
                     onDownloadFolder={onDownloadFolder}
                     onDeleteFolder={onDeleteFolder}
+                    onItemDragStart={onItemDragStart}
+                    onFolderDrop={onFolderDrop}
                 />
             ))}
             {rootNotes.map(note => (
@@ -109,6 +121,7 @@ export default function FolderSection(props: FolderSectionProps) {
                     active={selectedPath === note.path}
                     highlighted={!!note.path && highlightedPath === note.path}
                     onClick={() => note.path && onSelectNote(vaultId, note.path)}
+                    onDragStart={note.path ? onItemDragStart(note.path, false) : undefined}
                 />
             ))}
         </>

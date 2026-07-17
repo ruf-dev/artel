@@ -195,10 +195,28 @@ func (s *Service) SaveNote(ctx context.Context, vaultID uuid.UUID, path, content
 	return nil
 }
 
+// MoveNote renames/moves a single note. A move onto an already-occupied destination is
+// rejected with user_errors.AlreadyExists rather than silently overwriting (client.MoveNote
+// upserts on write, so without this check a move onto an existing path would clobber it).
 func (s *Service) MoveNote(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) error {
 	client, err := s.liveSyncClient(ctx, vaultID)
 	if err != nil {
 		return err
+	}
+
+	if oldPath == newPath {
+		return nil
+	}
+
+	notes, err := client.ListNotes(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "error listing notes")
+	}
+
+	for _, n := range notes {
+		if n.Path == newPath {
+			return user_errors.AlreadyExists
+		}
 	}
 
 	err = client.MoveNote(ctx, oldPath, newPath)
@@ -584,4 +602,119 @@ func (s *Service) DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPat
 	}
 
 	return deletedCount, failedPaths, nil
+}
+
+// destPathUnderFolder rewrites a path living under oldFolder so it lives under newFolder
+// instead, preserving everything past the oldFolder prefix.
+func destPathUnderFolder(path, oldFolder, newFolder string) string {
+	rel := relativeToFolder(path, oldFolder)
+	return joinDestPath(newFolder, rel)
+}
+
+// MoveFolder renames folderPath to newFolderPath by moving every note and binary file whose
+// path is folderPath itself or lives under it. Unlike DeleteFolder, this is all-or-nothing:
+// every destination path is checked for conflicts against everything NOT being moved before
+// anything is touched, and the whole move is rejected with user_errors.AlreadyExists if any
+// collide, rather than partially applying and reporting failures.
+func (s *Service) MoveFolder(ctx context.Context, vaultID uuid.UUID, oldFolderPath, newFolderPath string) (movedCount int, err error) {
+	oldFolderPath = normalizeFolderPath(oldFolderPath)
+	newFolderPath = normalizeFolderPath(newFolderPath)
+
+	if oldFolderPath == newFolderPath {
+		return 0, nil
+	}
+
+	if oldFolderPath != "" && underFolder(newFolderPath, oldFolderPath) {
+		return 0, user_errors.InvalidFolderMove
+	}
+
+	client, bucket, err := s.clientAndBucket(ctx, vaultID)
+	if err != nil {
+		return 0, err
+	}
+
+	notes, err := client.ListNotes(ctx)
+	if err != nil {
+		return 0, rerrors.Wrap(err, "error listing notes")
+	}
+
+	var files []storage.ObjectEntry
+	if bucket != nil {
+		files, err = bucket.List(ctx)
+		if err != nil {
+			return 0, rerrors.Wrap(err, "error listing files")
+		}
+	}
+
+	var movingNotes []couchdb.NoteEntry
+	for _, n := range notes {
+		if underFolder(n.Path, oldFolderPath) {
+			movingNotes = append(movingNotes, n)
+		}
+	}
+
+	var movingFiles []storage.ObjectEntry
+	for _, f := range files {
+		if underFolder(f.Path, oldFolderPath) {
+			movingFiles = append(movingFiles, f)
+		}
+	}
+
+	existing := make(map[string]bool, len(notes)+len(files))
+	for _, n := range notes {
+		existing[n.Path] = true
+	}
+
+	for _, f := range files {
+		existing[f.Path] = true
+	}
+
+	moving := make(map[string]bool, len(movingNotes)+len(movingFiles))
+	for _, n := range movingNotes {
+		moving[n.Path] = true
+	}
+
+	for _, f := range movingFiles {
+		moving[f.Path] = true
+	}
+
+	noteDest := make(map[string]string, len(movingNotes))
+	for _, n := range movingNotes {
+		dest := destPathUnderFolder(n.Path, oldFolderPath, newFolderPath)
+		if existing[dest] && !moving[dest] {
+			return 0, user_errors.AlreadyExists
+		}
+
+		noteDest[n.Path] = dest
+	}
+
+	fileDest := make(map[string]string, len(movingFiles))
+	for _, f := range movingFiles {
+		dest := destPathUnderFolder(f.Path, oldFolderPath, newFolderPath)
+		if existing[dest] && !moving[dest] {
+			return 0, user_errors.AlreadyExists
+		}
+
+		fileDest[f.Path] = dest
+	}
+
+	for _, n := range movingNotes {
+		moveErr := client.MoveNote(ctx, n.Path, noteDest[n.Path])
+		if moveErr != nil {
+			return movedCount, rerrors.Wrap(moveErr, "error moving note")
+		}
+
+		movedCount++
+	}
+
+	for _, f := range movingFiles {
+		moveErr := bucket.Move(ctx, f.Path, fileDest[f.Path])
+		if moveErr != nil {
+			return movedCount, rerrors.Wrap(moveErr, "error moving file")
+		}
+
+		movedCount++
+	}
+
+	return movedCount, nil
 }

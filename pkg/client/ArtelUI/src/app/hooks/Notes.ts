@@ -32,6 +32,44 @@ async function deleteFolderAndRefresh(get: () => NotesState, path: string): Prom
     return result
 }
 
+// Figures out where the currently-open note ends up after a drag-and-drop move: unchanged if
+// it wasn't affected, remapped to newPath if it was the moved note itself, or remapped to live
+// under newPath if it was nested inside a moved folder. Returns null only when nothing was
+// selected to begin with.
+function remapSelectedPath(
+    previousSelectedPath: string | null, oldPath: string, newPath: string, isFolder: boolean,
+): string | null {
+    if (!previousSelectedPath) return null
+    if (!isFolder) return previousSelectedPath === oldPath ? newPath : previousSelectedPath
+    if (previousSelectedPath === oldPath) return newPath
+
+    const prefix = oldPath + "/"
+    if (!previousSelectedPath.startsWith(prefix)) return previousSelectedPath
+
+    const rest = previousSelectedPath.slice(prefix.length)
+    return newPath ? `${newPath}/${rest}` : rest
+}
+
+async function moveEntryAndRefresh(
+    get: () => NotesState, oldPath: string, newPath: string, isFolder: boolean,
+): Promise<void> {
+    const vaultId = requireVaultId(get().vaultId)
+    const previousSelectedPath = get().selectedPath
+
+    if (isFolder) {
+        await notesService.moveFolder(vaultId, oldPath, newPath)
+    } else {
+        await notesService.moveNote(vaultId, oldPath, newPath)
+    }
+
+    await get().selectVault(vaultId)
+
+    const nextSelectedPath = remapSelectedPath(previousSelectedPath, oldPath, newPath, isFolder)
+    if (nextSelectedPath) {
+        await get().selectNote(vaultId, nextSelectedPath)
+    }
+}
+
 interface NotesState {
     vaultId: string | null
     folders: string[]
@@ -50,6 +88,7 @@ interface NotesState {
     setSavedContent: (content: string) => void
     saveNote: (content: string) => Promise<void>
     moveNote: (newPath: string) => Promise<void>
+    moveEntry: (oldPath: string, newPath: string, isFolder: boolean) => Promise<void>
     createNote: (path: string) => Promise<void>
     listTags: (vaultId: string) => Promise<string[]>
     downloadFolder: (path: string) => Promise<Uint8Array>
@@ -125,6 +164,9 @@ export const useNotes = create<NotesState>((set, get) => ({
         await get().selectVault(vaultId)
         await get().selectNote(vaultId, newPath)
     },
+
+    moveEntry: (oldPath: string, newPath: string, isFolder: boolean) =>
+        moveEntryAndRefresh(get, oldPath, newPath, isFolder),
 
     createNote: async (path: string) => {
         const { vaultId } = get()

@@ -1,3 +1,5 @@
+import { DragEvent } from "react"
+
 import { NoteItem } from "@/app/hooks/Notes.ts"
 import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
 import {
@@ -16,12 +18,16 @@ interface FolderNodeItemProps {
     onCreateNoteInFolder: (path: string) => void
     onDownloadFolder?: (path: string) => void
     onDeleteFolder?: (path: string) => void
+    // Optional: SearchResultsTree reuses this component for its filtered view but doesn't wire
+    // up drag-and-drop (dropping into a filtered subset is ambiguous), so these are omitted there.
+    onItemDragStart?: (path: string, isFolder: boolean) => (e: DragEvent<HTMLDivElement>) => void
+    onFolderDrop?: (targetFolderPath: string) => (e: DragEvent<HTMLDivElement>) => void
 }
 
 export default function FolderNodeItem(props: FolderNodeItemProps) {
     const { node, notes, openFolders, selectedPath, highlightedPath } = props
     const { depth, onToggle, onSelectNote, onCreateNoteInFolder } = props
-    const { onDownloadFolder, onDeleteFolder } = props
+    const { onDownloadFolder, onDeleteFolder, onItemDragStart, onFolderDrop } = props
     const isOpen = openFolders.has(node.path)
     const directNotes = getDirectNotes(node.path, notes)
 
@@ -38,6 +44,8 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                 onCopyPath={() => navigator.clipboard.writeText(node.path)}
                 onDownloadFolder={onDownloadFolder ? () => onDownloadFolder(node.path) : undefined}
                 onDeleteFolder={onDeleteFolder ? () => onDeleteFolder(node.path) : undefined}
+                onDragStart={onItemDragStart?.(node.path, true)}
+                onDropTarget={onFolderDrop?.(node.path)}
             />
             {isOpen && (
                 <>
@@ -55,6 +63,8 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                             onCreateNoteInFolder={onCreateNoteInFolder}
                             onDownloadFolder={onDownloadFolder}
                             onDeleteFolder={onDeleteFolder}
+                            onItemDragStart={onItemDragStart}
+                            onFolderDrop={onFolderDrop}
                         />
                     ))}
                     {directNotes.map(note => (
@@ -66,6 +76,7 @@ export default function FolderNodeItem(props: FolderNodeItemProps) {
                             active={selectedPath === note.path}
                             highlighted={!!note.path && highlightedPath === note.path}
                             onClick={() => note.path && onSelectNote(note.path)}
+                            onDragStart={note.path && onItemDragStart ? onItemDragStart(note.path, false) : undefined}
                         />
                     ))}
                 </>

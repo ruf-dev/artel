@@ -29,6 +29,7 @@ const (
 	NotesAPI_CheckImportConflicts_FullMethodName = "/artel_notes.NotesAPI/CheckImportConflicts"
 	NotesAPI_CommitImport_FullMethodName         = "/artel_notes.NotesAPI/CommitImport"
 	NotesAPI_DeleteFolder_FullMethodName         = "/artel_notes.NotesAPI/DeleteFolder"
+	NotesAPI_MoveFolder_FullMethodName           = "/artel_notes.NotesAPI/MoveFolder"
 )
 
 // NotesAPIClient is the client API for NotesAPI service.
@@ -45,6 +46,7 @@ type NotesAPIClient interface {
 	CheckImportConflicts(ctx context.Context, in *CheckImportConflicts_Request, opts ...grpc.CallOption) (*CheckImportConflicts_Response, error)
 	CommitImport(ctx context.Context, in *CommitImport_Request, opts ...grpc.CallOption) (*CommitImport_Response, error)
 	DeleteFolder(ctx context.Context, in *DeleteFolder_Request, opts ...grpc.CallOption) (*DeleteFolder_Response, error)
+	MoveFolder(ctx context.Context, in *MoveFolder_Request, opts ...grpc.CallOption) (*MoveFolder_Response, error)
 }
 
 type notesAPIClient struct {
@@ -155,6 +157,16 @@ func (c *notesAPIClient) DeleteFolder(ctx context.Context, in *DeleteFolder_Requ
 	return out, nil
 }
 
+func (c *notesAPIClient) MoveFolder(ctx context.Context, in *MoveFolder_Request, opts ...grpc.CallOption) (*MoveFolder_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MoveFolder_Response)
+	err := c.cc.Invoke(ctx, NotesAPI_MoveFolder_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotesAPIServer is the server API for NotesAPI service.
 // All implementations must embed UnimplementedNotesAPIServer
 // for forward compatibility.
@@ -169,6 +181,7 @@ type NotesAPIServer interface {
 	CheckImportConflicts(context.Context, *CheckImportConflicts_Request) (*CheckImportConflicts_Response, error)
 	CommitImport(context.Context, *CommitImport_Request) (*CommitImport_Response, error)
 	DeleteFolder(context.Context, *DeleteFolder_Request) (*DeleteFolder_Response, error)
+	MoveFolder(context.Context, *MoveFolder_Request) (*MoveFolder_Response, error)
 	mustEmbedUnimplementedNotesAPIServer()
 }
 
@@ -208,6 +221,9 @@ func (UnimplementedNotesAPIServer) CommitImport(context.Context, *CommitImport_R
 }
 func (UnimplementedNotesAPIServer) DeleteFolder(context.Context, *DeleteFolder_Request) (*DeleteFolder_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteFolder not implemented")
+}
+func (UnimplementedNotesAPIServer) MoveFolder(context.Context, *MoveFolder_Request) (*MoveFolder_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method MoveFolder not implemented")
 }
 func (UnimplementedNotesAPIServer) mustEmbedUnimplementedNotesAPIServer() {}
 func (UnimplementedNotesAPIServer) testEmbeddedByValue()                  {}
@@ -410,6 +426,24 @@ func _NotesAPI_DeleteFolder_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotesAPI_MoveFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MoveFolder_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotesAPIServer).MoveFolder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotesAPI_MoveFolder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotesAPIServer).MoveFolder(ctx, req.(*MoveFolder_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotesAPI_ServiceDesc is the grpc.ServiceDesc for NotesAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -456,6 +490,10 @@ var NotesAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteFolder",
 			Handler:    _NotesAPI_DeleteFolder_Handler,
+		},
+		{
+			MethodName: "MoveFolder",
+			Handler:    _NotesAPI_MoveFolder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

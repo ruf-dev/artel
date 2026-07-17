@@ -204,6 +204,7 @@ type NotesService interface {
 		ctx context.Context, vaultID uuid.UUID, destPath string, zipData []byte, resolutions []domain.ImportResolution,
 	) (imported int, skipped int, err error)
 	DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) (deletedCount int, failedPaths []string, err error)
+	MoveFolder(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) (movedCount int, err error)
 }
 
 type MomService interface {
