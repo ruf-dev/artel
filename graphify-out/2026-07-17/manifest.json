@@ -175,17 +175,17 @@
     "semantic_hash": ""
   },
   "internal/repository/interfaces.go": {
-    "mtime": 1784279641.1310906,
+    "mtime": 1784280347.8704681,
     "ast_hash": "155e92eba83621b8c32d8d7ab4a872ce",
     "semantic_hash": ""
   },
   "internal/repository/pg/impl.go": {
-    "mtime": 1784279678.6117713,
+    "mtime": 1784280347.8711805,
     "ast_hash": "106d4fcad029bc1cf175f261b6f1a24d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/models.go": {
-    "mtime": 1784279686.2908058,
+    "mtime": 1784280347.870666,
     "ast_hash": "78065c7aa6da87ebe6e1751eabd7bc14",
     "semantic_hash": ""
   },
@@ -230,7 +230,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/querier.go": {
-    "mtime": 1784279686.2879071,
+    "mtime": 1784280347.870861,
     "ast_hash": "bd3af1aef2dd860393e827f53f79491d",
     "semantic_hash": ""
   },
@@ -655,12 +655,12 @@
     "semantic_hash": ""
   },
   "internal/service/interfaces.go": {
-    "mtime": 1784279508.1347742,
+    "mtime": 1784280347.8714654,
     "ast_hash": "b14a5bbc73f6b76b66e8ded46b3532c9",
     "semantic_hash": ""
   },
   "internal/service/v1/impl.go": {
-    "mtime": 1784279703.4288113,
+    "mtime": 1784280347.8724692,
     "ast_hash": "6f6dfbae5c94943ab877e2d7aa67c8d3",
     "semantic_hash": ""
   },
@@ -700,7 +700,7 @@
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
-    "mtime": 1784279616.3042762,
+    "mtime": 1784280347.8716805,
     "ast_hash": "e5fa914ef04b94a6c086f720d89c059f",
     "semantic_hash": ""
   },
@@ -910,8 +910,8 @@
     "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
   },
   "pkg/client/ArtelUI/src/app/routing/Router.tsx": {
-    "mtime": 1783950112.0119002,
-    "ast_hash": "4cb13beaa500e0efe2873f867108dc52",
+    "mtime": 1784280347.873656,
+    "ast_hash": "7e9bfdead0da0f35b1ee3e77b0ea282b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/routing/HomeLayout.tsx": {
@@ -1475,7 +1475,7 @@
     "semantic_hash": ""
   },
   "internal/transport/task_trackers_api/add.go": {
-    "mtime": 1784279551.7470465,
+    "mtime": 1784280347.8729403,
     "ast_hash": "97eebf9606d565ea5399bf769e31d213",
     "semantic_hash": ""
   },
@@ -1680,7 +1680,7 @@
     "semantic_hash": ""
   },
   "internal/service/v1/externalconnections/external_connections.go": {
-    "mtime": 1784279606.4784224,
+    "mtime": 1784280347.8720756,
     "ast_hash": "90a5d5584ae5bf58e369d0410f6422a1",
     "semantic_hash": ""
   },
@@ -1700,7 +1700,7 @@
     "semantic_hash": ""
   },
   "internal/service/v1/tasktracker/tasktracker.go": {
-    "mtime": 1784279530.6569233,
+    "mtime": 1784280347.8727307,
     "ast_hash": "d8b8a4c4881eb83107851e14f1b142ac",
     "semantic_hash": ""
   },
@@ -1735,7 +1735,7 @@
     "semantic_hash": ""
   },
   "internal/domain/task_tracker.go": {
-    "mtime": 1784279487.3562877,
+    "mtime": 1784280347.8702056,
     "ast_hash": "700700f5f32a1f0dd012b5e732956cb8",
     "semantic_hash": ""
   },
@@ -3925,8 +3925,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/task-trackers/components/ContentSegment/components/TrackerRow/TrackerRow.tsx": {
-    "mtime": 1783621834.033077,
-    "ast_hash": "97f4cb45e6eae1ba1142c81858cc62af",
+    "mtime": 1784280347.8740537,
+    "ast_hash": "6216a05db6d4cd01c58f6b7246a7227d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ContentSegment/ContentSegment.tsx": {
@@ -4505,8 +4505,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/JsonView/JsonView.tsx": {
-    "mtime": 1784274537.4099965,
-    "ast_hash": "363730d204dd0599677e649a46b6b456",
+    "mtime": 1784299160.0768743,
+    "ast_hash": "53d80c615d856147d6a86f8afe4cdaa2",
     "semantic_hash": ""
   },
   "cmd/migrate_task_trackers_to_external_connections/main.go": {
@@ -4515,18 +4515,18 @@
     "semantic_hash": ""
   },
   "migrations/049_trello_card_details.sql": {
-    "mtime": 1784279393.0668056,
+    "mtime": 1784280347.8731658,
     "ast_hash": "ca3c2402afcdff825eba35d25d90dba1",
     "semantic_hash": ""
   },
   "migrations/050_drop_task_trackers.sql": {
-    "mtime": 1784279403.1151402,
+    "mtime": 1784280347.8734262,
     "ast_hash": "2ec220e93a145589db1cf78a22aa4f25",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/roadmap/components/RoadmapCanvasArea/components/RoadmapConnectorPath/RoadmapConnectorPath.tsx": {
-    "mtime": 1784279443.3499348,
-    "ast_hash": "5a8edcb786fb90d520ca716dd91ee178",
+    "mtime": 1784280101.6801162,
+    "ast_hash": "19fd70b0cbf75c3ac3646e1984f91d4a",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/roadmap/processes/roadmapGraph.ts": {
@@ -4570,13 +4570,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/AddTaskLinkDialog/AddTaskLinkDialog.tsx": {
-    "mtime": 1784279846.9187157,
-    "ast_hash": "370579e0a340edca326e7b7ea9759ee7",
+    "mtime": 1784280077.1906567,
+    "ast_hash": "5f8b3e365437e787587b9ba03edb1f58",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/SelectRoadmapRootDialog.tsx": {
-    "mtime": 1784279821.54184,
-    "ast_hash": "29f701ca22036b3e616f0928b3366548",
+    "mtime": 1784280090.1850455,
+    "ast_hash": "ef8c657f1c36d56e68c84dc48bb4a928",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/SelectRoadmapRootDialog/processes/trelloBrowse.ts": {
@@ -4620,8 +4620,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/roadmap/widgets/RoadmapInspector/components/RoadmapInspectorBody/RoadmapInspectorBody.tsx": {
-    "mtime": 1784279660.142331,
-    "ast_hash": "f748db865f2a453250e194714f781cd2",
+    "mtime": 1784280117.911917,
+    "ast_hash": "b950c0cc548143540ad6b7a95b2434d4",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/roadmap/RoadmapPage.tsx": {
+    "mtime": 1784280060.3475018,
+    "ast_hash": "a646c1fef9caba4b3a6c9a922ee6163d",
     "semantic_hash": ""
   }
 }
