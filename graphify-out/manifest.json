@@ -1980,8 +1980,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/ConnectionsPage.tsx": {
-    "mtime": 1784274133.9833941,
-    "ast_hash": "a5227f983e206b54b44afb01c26a7006",
+    "mtime": 1784274181.53453,
+    "ast_hash": "b93f7b62049cfa9407471714acdaa2ac",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/NotesPage.tsx": {
@@ -2080,8 +2080,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/task-trackers/TaskTrackersPage.tsx": {
-    "mtime": 1784274152.2772431,
-    "ast_hash": "467e05cd927ea7b27fbc45b9c1aebf36",
+    "mtime": 1784274161.6793199,
+    "ast_hash": "3b2d693956612e28722d25a14d95650e",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/McpKeyCard/McpKeyCard.tsx": {
