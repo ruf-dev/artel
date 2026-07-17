@@ -1,0 +1,24 @@
+.RoadmapCanvasAreaContainer {
+    flex: 1;
+    overflow: auto;
+    cursor: grab;
+    background-image: radial-gradient(circle, var(--color-border-light) 0.0625rem, transparent 0.0625rem);
+    background-size: 1.5rem 1.5rem;
+    background-attachment: local;
+
+    &.Panning {
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    & .Canvas {
+        position: relative;
+    }
+
+    & .Svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+    }
+}

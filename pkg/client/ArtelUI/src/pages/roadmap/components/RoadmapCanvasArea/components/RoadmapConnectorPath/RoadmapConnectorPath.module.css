@@ -1,0 +1,23 @@
+.Conn {
+    stroke: var(--color-border-light);
+    stroke-width: 0.09375rem;
+    fill: none;
+}
+
+.DependsOn {
+    stroke: var(--coral);
+}
+
+.Blocks {
+    stroke: var(--color-error);
+    stroke-dasharray: 6 4;
+}
+
+.BlockedBy {
+    stroke: var(--color-error);
+    stroke-dasharray: 2 3;
+}
+
+.RelatedTo {
+    stroke: var(--color-border-light);
+}

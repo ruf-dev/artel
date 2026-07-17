@@ -1,0 +1,99 @@
+.RoadmapCanvasNodeContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border);
+    border-radius: 0.8125rem;
+    padding: 0.875rem;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0.0625rem 0.25rem rgb(0 0 0 / 15%);
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+
+    &:hover {
+        border-color: var(--color-border-light);
+        transform: translateY(-0.0625rem);
+    }
+
+    &.Selected {
+        border-color: var(--coral-border);
+        box-shadow: 0 0 0 0.1875rem var(--coral-dim);
+    }
+
+    &.RootNode {
+        border-color: var(--coral-border);
+        border-width: 0.125rem;
+    }
+
+    & .StatusDot {
+        position: absolute;
+        top: 0.6875rem;
+        right: 0.6875rem;
+        width: 0.4375rem;
+        height: 0.4375rem;
+        border-radius: 62.4375rem;
+    }
+
+    & .StatusOpen {
+        background: var(--status-online);
+        box-shadow: 0 0 0.3125rem var(--status-online-glow);
+    }
+
+    & .StatusClosed {
+        background: var(--color-border-light);
+    }
+
+    & .Head {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1875rem;
+        min-width: 0;
+        padding-right: 1rem;
+    }
+
+    & .Title {
+        font-weight: 600;
+        font-size: 0.8125rem;
+        letter-spacing: -0.008125rem;
+        color: var(--color-fg-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .SubLabel {
+        font-family: var(--font-mono);
+        font-size: 0.625rem;
+        letter-spacing: 0.0125rem;
+        color: var(--color-fg-tertiary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .LinkBadge {
+        align-self: flex-start;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+        background: var(--color-bg-hover);
+        border-radius: 62.4375rem;
+        padding: 0.125rem 0.5rem;
+    }
+
+    & .ExpandBtn {
+        align-self: flex-start;
+        padding: 0.1875rem 0.625rem;
+        font-size: 0.75rem;
+        border-radius: 62.4375rem;
+        border: var(--border-thickness) solid var(--color-border-light);
+        color: var(--color-fg-secondary);
+    }
+
+    & .ExpandBtn:hover {
+        color: var(--color-fg-primary);
+        border-color: var(--coral-border);
+    }
+}

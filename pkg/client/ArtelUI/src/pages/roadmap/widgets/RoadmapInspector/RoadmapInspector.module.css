@@ -1,0 +1,19 @@
+.RoadmapInspectorContainer {
+    display: contents;
+
+    & .Panel {
+        width: 0;
+        flex-shrink: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border-left: var(--border-thickness) solid transparent;
+        background: var(--color-bg-card);
+        transition: width 220ms cubic-bezier(.2,.7,.2,1), border-color 220ms ease;
+
+        &.Open {
+            width: 20rem;
+            border-left-color: var(--color-border);
+        }
+    }
+}

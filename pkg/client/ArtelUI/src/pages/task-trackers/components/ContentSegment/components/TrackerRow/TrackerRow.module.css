@@ -36,4 +36,11 @@
         font-family: var(--font-mono);
         letter-spacing: 0.0075rem;
     }
+
+    & .RowActions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
 }

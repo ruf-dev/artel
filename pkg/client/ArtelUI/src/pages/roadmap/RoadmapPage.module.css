@@ -1,0 +1,59 @@
+.RoadmapPageContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    & .Bar {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        height: 2.875rem;
+        padding: 0 1rem;
+        background: var(--color-bg-card);
+        border-bottom: var(--border-thickness) solid var(--color-border);
+    }
+
+    & .BarDivider {
+        width: 0.0625rem;
+        height: 1.25rem;
+        background: var(--color-border-light);
+    }
+
+    & .Name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+    }
+
+    & .Main {
+        position: relative;
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    & .LoadingState {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-fg-tertiary);
+        font-size: 0.875rem;
+    }
+
+    & .LoadingBadge {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        background: var(--color-bg-card);
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: 62.4375rem;
+        padding: 0.25rem 0.75rem;
+    }
+}

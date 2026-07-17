@@ -12,6 +12,7 @@ import McpAuthPage from "@/pages/mcp-auth/McpAuthPage.tsx"
 import ClosedAlphaPage from "@/pages/closed-alpha/ClosedAlphaPage.tsx"
 import AdminPage from "@/pages/admin/AdminPage.tsx"
 import TaskTrackersPage from "@/pages/task-trackers/TaskTrackersPage.tsx"
+import RoadmapPage from "@/pages/roadmap/RoadmapPage.tsx"
 import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
@@ -32,6 +33,7 @@ export enum Path {
     HomePage = "/",
     McpKeysPage = "/mcp_keys",
     TaskTrackersPage = "/task-trackers",
+    RoadmapPage = "/task-trackers/:trackerId/roadmap/:cardId",
     NotesPage = "/notes",
     NotesPageVault = "/notes/:vaultId",
     NotesPageNote = "/notes/:vaultId/*",
@@ -56,6 +58,7 @@ const routes: RouteObject[] = [
             {path: Path.McpKeysPage, element: <McpKeysPage/>, errorElement: <ErrorPage/>},
             {path: Path.Admin, element: <AdminPage/>, errorElement: <ErrorPage/>},
             {path: Path.TaskTrackersPage, element: <TaskTrackersPage/>, errorElement: <ErrorPage/>},
+            {path: Path.RoadmapPage, element: <RoadmapPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPage, element: <NotesPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPageVault, element: <NotesPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPageNote, element: <NotesPage/>, errorElement: <ErrorPage/>},

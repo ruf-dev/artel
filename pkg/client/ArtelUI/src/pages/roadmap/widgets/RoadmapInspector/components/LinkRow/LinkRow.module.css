@@ -1,0 +1,40 @@
+.LinkRowContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
+    border: var(--border-thickness) solid var(--color-border-light);
+    background: transparent;
+    color: var(--color-fg-secondary);
+    font-size: 0.8125rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 140ms ease, border-color 140ms ease;
+
+    &:hover {
+        background: var(--color-bg-hover);
+        border-color: var(--color-border-bright);
+    }
+
+    &.ExternalChip {
+        color: var(--color-fg-tertiary);
+    }
+
+    & .RelationTag {
+        flex-shrink: 0;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.025rem;
+        color: var(--coral);
+    }
+
+    & .TargetName {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
