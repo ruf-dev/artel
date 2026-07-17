@@ -9,9 +9,13 @@ interface Props {
 export default function SchemaTree({schema}: Props) {
     return (
         <div className={cls.SchemaTree}>
-            {Object.entries(schema.properties).map(([name, prop]) => (
-                <SchemaFieldRow key={name} name={name} prop={prop} depth={0}/>
-            ))}
+            {schema.isArray && schema.items ? (
+                <SchemaFieldRow name="[0]" prop={schema.items} depth={0}/>
+            ) : (
+                Object.entries(schema.properties).map(([name, prop]) => (
+                    <SchemaFieldRow key={name} name={name} prop={prop} depth={0}/>
+                ))
+            )}
         </div>
     )
 }

@@ -398,7 +398,14 @@ func toolSchemaToDomain(s toolSchemaRow) domain.ToolSchema {
 		props[k] = toolPropertyToDomain(v)
 	}
 
-	return domain.ToolSchema{Properties: props, Required: s.Required}
+	schema := domain.ToolSchema{Properties: props, Required: s.Required, IsArray: s.IsArray}
+
+	if s.Items != nil {
+		items := toolPropertyToDomain(*s.Items)
+		schema.Items = &items
+	}
+
+	return schema
 }
 
 func toolSchemaFromDomain(s domain.ToolSchema) toolSchemaRow {
@@ -407,7 +414,14 @@ func toolSchemaFromDomain(s domain.ToolSchema) toolSchemaRow {
 		props[k] = toolPropertyFromDomain(v)
 	}
 
-	return toolSchemaRow{Properties: props, Required: s.Required}
+	row := toolSchemaRow{Properties: props, Required: s.Required, IsArray: s.IsArray}
+
+	if s.Items != nil {
+		items := toolPropertyFromDomain(*s.Items)
+		row.Items = &items
+	}
+
+	return row
 }
 
 // private JSON structs — storage representation of the input_schema/output_schema/action
@@ -416,6 +430,8 @@ func toolSchemaFromDomain(s domain.ToolSchema) toolSchemaRow {
 type toolSchemaRow struct {
 	Properties map[string]toolPropertyRow `json:"properties"`
 	Required   []string                   `json:"required"`
+	IsArray    bool                       `json:"isArray,omitempty"`
+	Items      *toolPropertyRow           `json:"items,omitempty"`
 }
 
 type toolPropertyRow struct {

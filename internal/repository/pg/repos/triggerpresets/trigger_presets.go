@@ -108,9 +108,15 @@ func unmarshalToolSchema(raw json.RawMessage) (domain.ToolSchema, error) {
 	schema := domain.ToolSchema{
 		Properties: make(map[string]domain.ToolProperty, len(row.Properties)),
 		Required:   row.Required,
+		IsArray:    row.IsArray,
 	}
 	for k, v := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(v)
+	}
+
+	if row.Items != nil {
+		items := toolPropertyRowToDomain(*row.Items)
+		schema.Items = &items
 	}
 
 	return schema, nil
@@ -142,6 +148,8 @@ func toolPropertyRowToDomain(p toolPropertyRow) domain.ToolProperty {
 type toolSchemaRow struct {
 	Properties map[string]toolPropertyRow `json:"properties"`
 	Required   []string                   `json:"required"`
+	IsArray    bool                       `json:"isArray,omitempty"`
+	Items      *toolPropertyRow           `json:"items,omitempty"`
 }
 
 type toolPropertyRow struct {

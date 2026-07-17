@@ -23,12 +23,16 @@ func (s *ServiceImpl) ListTools(_ context.Context) ([]domain.McpToolDef, error) 
 			Required:    []string{},
 		},
 		OutputSchema: domain.ToolSchema{
-			Properties: map[string]domain.ToolProperty{
-				fieldName:        {Type: schemaTypeString, Description: "MoM name (each array entry)"},
-				fieldAuthor:      {Type: schemaTypeString, Description: "MoM author"},
-				fieldDescription: {Type: schemaTypeString, Description: "MoM description"},
+			IsArray: true,
+			Items: &domain.ToolProperty{
+				Type: schemaTypeObject,
+				Properties: map[string]domain.ToolProperty{
+					fieldName:        {Type: schemaTypeString, Description: "MoM name"},
+					fieldAuthor:      {Type: schemaTypeString, Description: "MoM author"},
+					fieldDescription: {Type: schemaTypeString, Description: "MoM description"},
+				},
+				Required: []string{fieldName, fieldAuthor, fieldDescription},
 			},
-			Required: []string{fieldName, fieldAuthor, fieldDescription},
 		},
 	}
 	tools = append(tools, connectionsTool)
@@ -42,11 +46,15 @@ func (s *ServiceImpl) ListTools(_ context.Context) ([]domain.McpToolDef, error) 
 			Required:   []string{},
 		},
 		OutputSchema: domain.ToolSchema{
-			Properties: map[string]domain.ToolProperty{
-				fieldUuid:     {Type: schemaTypeString, Description: "External connection uuid (each array entry)"},
-				fieldProvider: {Type: schemaTypeString, Description: "Provider key, e.g. gitlab, trello, email"},
+			IsArray: true,
+			Items: &domain.ToolProperty{
+				Type: schemaTypeObject,
+				Properties: map[string]domain.ToolProperty{
+					fieldUuid:     {Type: schemaTypeString, Description: "External connection uuid"},
+					fieldProvider: {Type: schemaTypeString, Description: "Provider key, e.g. gitlab, trello, email"},
+				},
+				Required: []string{fieldUuid, fieldProvider},
 			},
-			Required: []string{fieldUuid, fieldProvider},
 		},
 	}
 	tools = append(tools, connectionsForTractsTool)

@@ -36,6 +36,8 @@ export interface SchemaProperty {
 export interface SchemaNode {
     properties: Record<string, SchemaProperty>
     required?: string[]
+    isArray?: boolean
+    items?: SchemaProperty
 }
 
 export interface TractTriggerSummary {

@@ -358,8 +358,7 @@ func (e *VaultExecutor) getFileMetadata(
 
 // Output schemas below are hints for tool-picker/port-chip UIs, not enforced at runtime.
 // list_files/list_folders/list_tags/connections marshal a JSON array as their text result;
-// since ToolSchema (unlike ToolProperty) has no array/root type of its own, Properties there
-// describes the shape of each array element rather than the response envelope itself.
+// their OutputSchema declares IsArray+Items to describe that array shape directly.
 
 func VaultToolDefinitions() []domain.McpToolDef {
 	return []domain.McpToolDef{
@@ -371,12 +370,16 @@ func VaultToolDefinitions() []domain.McpToolDef {
 				Required:    []string{},
 			},
 			OutputSchema: domain.ToolSchema{
-				Properties: map[string]domain.ToolProperty{
-					fieldPath:     {Type: schemaTypeString, Description: "Vault-relative file path (each array entry)"},
-					fieldMtime:    {Type: schemaTypeInteger, Description: "Last modified time, unix ms"},
-					fieldMimeType: {Type: schemaTypeString, Description: "MIME type of the file"},
+				IsArray: true,
+				Items: &domain.ToolProperty{
+					Type: schemaTypeObject,
+					Properties: map[string]domain.ToolProperty{
+						fieldPath:     {Type: schemaTypeString, Description: "Vault-relative file path"},
+						fieldMtime:    {Type: schemaTypeInteger, Description: "Last modified time, unix ms"},
+						fieldMimeType: {Type: schemaTypeString, Description: "MIME type of the file"},
+					},
+					Required: []string{fieldPath, fieldMtime, fieldMimeType},
 				},
-				Required: []string{fieldPath, fieldMtime, fieldMimeType},
 			},
 		},
 		{
@@ -460,10 +463,8 @@ func VaultToolDefinitions() []domain.McpToolDef {
 				Required:    []string{},
 			},
 			OutputSchema: domain.ToolSchema{
-				Properties: map[string]domain.ToolProperty{
-					fieldPath: {Type: schemaTypeString, Description: "Folder path (each array entry)"},
-				},
-				Required: []string{fieldPath},
+				IsArray: true,
+				Items:   &domain.ToolProperty{Type: schemaTypeString, Description: "Folder path"},
 			},
 		},
 		{
@@ -474,10 +475,8 @@ func VaultToolDefinitions() []domain.McpToolDef {
 				Required:    []string{},
 			},
 			OutputSchema: domain.ToolSchema{
-				Properties: map[string]domain.ToolProperty{
-					"tag": {Type: schemaTypeString, Description: "Tag name (each array entry)"},
-				},
-				Required: []string{"tag"},
+				IsArray: true,
+				Items:   &domain.ToolProperty{Type: schemaTypeString, Description: "Tag name"},
 			},
 		},
 		{

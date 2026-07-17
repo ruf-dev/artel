@@ -209,6 +209,8 @@ func triggersToProto(triggers []domain.Trigger) []*pb.TriggerItem {
 type toolSchemaRow struct {
 	Properties map[string]toolPropertyRow `json:"properties"`
 	Required   []string                   `json:"required"`
+	IsArray    bool                       `json:"isArray,omitempty"`
+	Items      *toolPropertyRow           `json:"items,omitempty"`
 }
 
 type toolPropertyRow struct {
@@ -224,9 +226,15 @@ func schemaToJSON(schema domain.ToolSchema) string {
 	row := toolSchemaRow{
 		Properties: make(map[string]toolPropertyRow, len(schema.Properties)),
 		Required:   schema.Required,
+		IsArray:    schema.IsArray,
 	}
 	for k, v := range schema.Properties {
 		row.Properties[k] = toolPropertyRowFromDomain(v)
+	}
+
+	if schema.Items != nil {
+		items := toolPropertyRowFromDomain(*schema.Items)
+		row.Items = &items
 	}
 
 	data, err := json.Marshal(row)
@@ -255,9 +263,15 @@ func schemaFromJSON(raw string) (domain.ToolSchema, error) {
 	schema := domain.ToolSchema{
 		Properties: make(map[string]domain.ToolProperty, len(row.Properties)),
 		Required:   row.Required,
+		IsArray:    row.IsArray,
 	}
 	for k, v := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(v)
+	}
+
+	if row.Items != nil {
+		items := toolPropertyRowToDomain(*row.Items)
+		schema.Items = &items
 	}
 
 	return schema, nil

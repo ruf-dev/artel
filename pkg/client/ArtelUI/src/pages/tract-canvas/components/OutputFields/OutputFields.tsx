@@ -1,13 +1,21 @@
 import cls from "@/pages/tract-canvas/components/OutputFields/OutputFields.module.css"
-import {SchemaNode} from "@/processes/Tracts.ts"
+import {SchemaNode, SchemaProperty} from "@/processes/Tracts.ts"
 import {cn} from "@/app/utils/cn.ts"
 
 interface Props {
     schema?: SchemaNode
 }
 
+function arrayProps(schema: SchemaNode): [string, SchemaProperty][] {
+    if (!schema.items) return []
+    if (schema.items.properties) return Object.entries(schema.items.properties)
+    return [["[0]", schema.items]]
+}
+
 export default function OutputFields({schema}: Props) {
-    const props = schema ? Object.entries(schema.properties) : []
+    const props = schema
+        ? (schema.isArray ? arrayProps(schema) : Object.entries(schema.properties))
+        : []
 
     return (
         <div className={cls.OutputFieldsContainer}>

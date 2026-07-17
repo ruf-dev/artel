@@ -4,6 +4,7 @@ package mcp
 // tool schema definitions and result maps.
 const (
 	schemaTypeString = "string"
+	schemaTypeObject = "object"
 
 	fieldName        = "name"
 	fieldAuthor      = "author"

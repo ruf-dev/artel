@@ -828,6 +828,8 @@ func decodeInto(v interface{}, out interface{}) error {
 type toolSchemaRow struct {
 	Properties map[string]toolPropertyRow `json:"properties"`
 	Required   []string                   `json:"required"`
+	IsArray    bool                       `json:"isArray,omitempty"`
+	Items      *toolPropertyRow           `json:"items,omitempty"`
 }
 
 type toolPropertyRow struct {
@@ -854,9 +856,15 @@ func toolSchemaFromParam(v interface{}) (domain.ToolSchema, error) {
 	schema := domain.ToolSchema{
 		Properties: make(map[string]domain.ToolProperty, len(row.Properties)),
 		Required:   row.Required,
+		IsArray:    row.IsArray,
 	}
 	for k, pr := range row.Properties {
 		schema.Properties[k] = toolPropertyRowToDomain(pr)
+	}
+
+	if row.Items != nil {
+		items := toolPropertyRowToDomain(*row.Items)
+		schema.Items = &items
 	}
 
 	return schema, nil
@@ -866,9 +874,15 @@ func toolSchemaToRow(schema domain.ToolSchema) toolSchemaRow {
 	row := toolSchemaRow{
 		Properties: make(map[string]toolPropertyRow, len(schema.Properties)),
 		Required:   schema.Required,
+		IsArray:    schema.IsArray,
 	}
 	for k, v := range schema.Properties {
 		row.Properties[k] = toolPropertyRowFromDomain(v)
+	}
+
+	if schema.Items != nil {
+		items := toolPropertyRowFromDomain(*schema.Items)
+		row.Items = &items
 	}
 
 	return row
@@ -924,8 +938,7 @@ func toolPropertyRowToDomain(p toolPropertyRow) domain.ToolProperty {
 //
 // Output schemas below are hints for tool-picker/port-chip UIs, not enforced at runtime (see
 // executors/vault.go). list_tracts/get_tract_runs marshal a JSON array as their text result;
-// since ToolSchema (unlike ToolProperty) has no array/root type of its own, Properties there
-// describes the shape of each array element rather than the response envelope itself.
+// their OutputSchema declares IsArray+Items to describe that array shape directly.
 
 func TractToolDefinitions() []domain.McpToolDef {
 	filterItemSchema := domain.ToolProperty{
@@ -1140,15 +1153,19 @@ func TractToolDefinitions() []domain.McpToolDef {
 				Required:    []string{},
 			},
 			OutputSchema: domain.ToolSchema{
-				Properties: map[string]domain.ToolProperty{
-					fieldUuid:        {Type: schemaTypeString, Description: "Tract uuid (each array entry)"},
-					fieldName:        {Type: schemaTypeString},
-					fieldDescription: {Type: schemaTypeString},
-					fieldEnabled:     {Type: schemaTypeBoolean},
-					fieldCreatedAt:   {Type: schemaTypeString},
-					fieldUpdatedAt:   {Type: schemaTypeString},
+				IsArray: true,
+				Items: &domain.ToolProperty{
+					Type: schemaTypeObject,
+					Properties: map[string]domain.ToolProperty{
+						fieldUuid:        {Type: schemaTypeString},
+						fieldName:        {Type: schemaTypeString},
+						fieldDescription: {Type: schemaTypeString},
+						fieldEnabled:     {Type: schemaTypeBoolean},
+						fieldCreatedAt:   {Type: schemaTypeString},
+						fieldUpdatedAt:   {Type: schemaTypeString},
+					},
+					Required: []string{fieldUuid, fieldName, fieldEnabled, fieldCreatedAt, fieldUpdatedAt},
 				},
-				Required: []string{fieldUuid, fieldName, fieldEnabled, fieldCreatedAt, fieldUpdatedAt},
 			},
 		},
 		{
@@ -1204,33 +1221,37 @@ func TractToolDefinitions() []domain.McpToolDef {
 				Required: []string{fieldTractUuid},
 			},
 			OutputSchema: domain.ToolSchema{
-				Properties: map[string]domain.ToolProperty{
-					fieldUuid:         {Type: schemaTypeString, Description: "Run uuid (each array entry)"},
-					fieldStatus:       {Type: schemaTypeString, Enum: []string{"running", "done", "failed"}},
-					"started_by":      {Type: schemaTypeString, Enum: []string{"webhook", "manual", fieldMcp}},
-					"trigger_payload": {Type: schemaTypeObject},
-					"error":           {Type: schemaTypeString},
-					fieldCreatedAt:    {Type: schemaTypeString},
-					fieldUpdatedAt:    {Type: schemaTypeString},
-					"steps": {
-						Type: schemaTypeArray,
-						Items: &domain.ToolProperty{
-							Type: schemaTypeObject,
-							Properties: map[string]domain.ToolProperty{
-								"step_id":     {Type: schemaTypeString},
-								"step_name":   {Type: schemaTypeString},
-								"step_type":   {Type: schemaTypeString},
-								fieldStatus:   {Type: schemaTypeString, Enum: []string{"running", "done", "failed"}},
-								"input":       {Type: schemaTypeObject},
-								"output":      {Type: schemaTypeObject},
-								"error":       {Type: schemaTypeString},
-								"started_at":  {Type: schemaTypeString},
-								"finished_at": {Type: schemaTypeString},
+				IsArray: true,
+				Items: &domain.ToolProperty{
+					Type: schemaTypeObject,
+					Properties: map[string]domain.ToolProperty{
+						fieldUuid:         {Type: schemaTypeString},
+						fieldStatus:       {Type: schemaTypeString, Enum: []string{"running", "done", "failed"}},
+						"started_by":      {Type: schemaTypeString, Enum: []string{"webhook", "manual", fieldMcp}},
+						"trigger_payload": {Type: schemaTypeObject},
+						"error":           {Type: schemaTypeString},
+						fieldCreatedAt:    {Type: schemaTypeString},
+						fieldUpdatedAt:    {Type: schemaTypeString},
+						"steps": {
+							Type: schemaTypeArray,
+							Items: &domain.ToolProperty{
+								Type: schemaTypeObject,
+								Properties: map[string]domain.ToolProperty{
+									"step_id":     {Type: schemaTypeString},
+									"step_name":   {Type: schemaTypeString},
+									"step_type":   {Type: schemaTypeString},
+									fieldStatus:   {Type: schemaTypeString, Enum: []string{"running", "done", "failed"}},
+									"input":       {Type: schemaTypeObject},
+									"output":      {Type: schemaTypeObject},
+									"error":       {Type: schemaTypeString},
+									"started_at":  {Type: schemaTypeString},
+									"finished_at": {Type: schemaTypeString},
+								},
 							},
 						},
 					},
+					Required: []string{fieldUuid, fieldStatus, "started_by", fieldCreatedAt, fieldUpdatedAt, "steps"},
 				},
-				Required: []string{fieldUuid, fieldStatus, "started_by", fieldCreatedAt, fieldUpdatedAt, "steps"},
 			},
 		},
 		{

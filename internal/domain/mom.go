@@ -48,9 +48,16 @@ type ToolApiDescription struct {
 // ToolSchema is a standalone {properties, required} object schema — the same shape as
 // ToolApiDescription's input fields, reused to describe a tool's output. Empty (no properties,
 // no required) means the output shape is undeclared.
+//
+// IsArray marks the whole schema as describing a list rather than an object: when true, the
+// tool's output is an array of Items and Properties/Required are unused (left zero) — mirrors
+// how ToolProperty itself models a nested array via Type=="array"+Items, just promoted to the
+// schema root.
 type ToolSchema struct {
 	Properties map[string]ToolProperty
 	Required   []string
+	IsArray    bool
+	Items      *ToolProperty
 }
 
 // ToolProperty describes one input or output parameter. Recursive for object/array types:
