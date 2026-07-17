@@ -7,6 +7,7 @@ import JsonNode from "@/components/JsonBlock/components/JsonNode.tsx"
 interface Props {
     label: string
     value: unknown
+    defaultCollapsed?: boolean
 }
 
 const ROOT_PATH = "$"
@@ -17,8 +18,10 @@ function isNonEmptyBranch(value: unknown): boolean {
     return false
 }
 
-export default function JsonBlock({label, value}: Props) {
-    const [collapsedPaths, setCollapsedPaths] = useState<Set<string>>(new Set())
+export default function JsonBlock({label, value, defaultCollapsed}: Props) {
+    const [collapsedPaths, setCollapsedPaths] = useState<Set<string>>(
+        () => defaultCollapsed ? new Set([ROOT_PATH]) : new Set(),
+    )
 
     function toggle(path: string) {
         setCollapsedPaths(prev => {

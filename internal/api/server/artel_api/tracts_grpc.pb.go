@@ -28,6 +28,7 @@ const (
 	TractsAPI_RunTract_FullMethodName           = "/artel_api.TractsAPI/RunTract"
 	TractsAPI_ListRuns_FullMethodName           = "/artel_api.TractsAPI/ListRuns"
 	TractsAPI_GetRun_FullMethodName             = "/artel_api.TractsAPI/GetRun"
+	TractsAPI_WatchRun_FullMethodName           = "/artel_api.TractsAPI/WatchRun"
 	TractsAPI_RetryRun_FullMethodName           = "/artel_api.TractsAPI/RetryRun"
 	TractsAPI_ListTractTools_FullMethodName     = "/artel_api.TractsAPI/ListTractTools"
 	TractsAPI_ListTriggerSources_FullMethodName = "/artel_api.TractsAPI/ListTriggerSources"
@@ -53,6 +54,7 @@ type TractsAPIClient interface {
 	RunTract(ctx context.Context, in *RunTract_Request, opts ...grpc.CallOption) (*RunTract_Response, error)
 	ListRuns(ctx context.Context, in *ListRuns_Request, opts ...grpc.CallOption) (*ListRuns_Response, error)
 	GetRun(ctx context.Context, in *GetRun_Request, opts ...grpc.CallOption) (*GetRun_Response, error)
+	WatchRun(ctx context.Context, in *WatchRun_Request, opts ...grpc.CallOption) (grpc.ServerStreamingClient[WatchRun_Response], error)
 	RetryRun(ctx context.Context, in *RetryRun_Request, opts ...grpc.CallOption) (*RetryRun_Response, error)
 	ListTractTools(ctx context.Context, in *ListTractTools_Request, opts ...grpc.CallOption) (*ListTractTools_Response, error)
 	ListTriggerSources(ctx context.Context, in *ListTriggerSources_Request, opts ...grpc.CallOption) (*ListTriggerSources_Response, error)
@@ -162,6 +164,25 @@ func (c *tractsAPIClient) GetRun(ctx context.Context, in *GetRun_Request, opts .
 	}
 	return out, nil
 }
+
+func (c *tractsAPIClient) WatchRun(ctx context.Context, in *WatchRun_Request, opts ...grpc.CallOption) (grpc.ServerStreamingClient[WatchRun_Response], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &TractsAPI_ServiceDesc.Streams[0], TractsAPI_WatchRun_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[WatchRun_Request, WatchRun_Response]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type TractsAPI_WatchRunClient = grpc.ServerStreamingClient[WatchRun_Response]
 
 func (c *tractsAPIClient) RetryRun(ctx context.Context, in *RetryRun_Request, opts ...grpc.CallOption) (*RetryRun_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -276,6 +297,7 @@ type TractsAPIServer interface {
 	RunTract(context.Context, *RunTract_Request) (*RunTract_Response, error)
 	ListRuns(context.Context, *ListRuns_Request) (*ListRuns_Response, error)
 	GetRun(context.Context, *GetRun_Request) (*GetRun_Response, error)
+	WatchRun(*WatchRun_Request, grpc.ServerStreamingServer[WatchRun_Response]) error
 	RetryRun(context.Context, *RetryRun_Request) (*RetryRun_Response, error)
 	ListTractTools(context.Context, *ListTractTools_Request) (*ListTractTools_Response, error)
 	ListTriggerSources(context.Context, *ListTriggerSources_Request) (*ListTriggerSources_Response, error)
@@ -322,6 +344,9 @@ func (UnimplementedTractsAPIServer) ListRuns(context.Context, *ListRuns_Request)
 }
 func (UnimplementedTractsAPIServer) GetRun(context.Context, *GetRun_Request) (*GetRun_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRun not implemented")
+}
+func (UnimplementedTractsAPIServer) WatchRun(*WatchRun_Request, grpc.ServerStreamingServer[WatchRun_Response]) error {
+	return status.Error(codes.Unimplemented, "method WatchRun not implemented")
 }
 func (UnimplementedTractsAPIServer) RetryRun(context.Context, *RetryRun_Request) (*RetryRun_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method RetryRun not implemented")
@@ -535,6 +560,17 @@ func _TractsAPI_GetRun_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	return interceptor(ctx, in, info, handler)
 }
+
+func _TractsAPI_WatchRun_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(WatchRun_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TractsAPIServer).WatchRun(m, &grpc.GenericServerStream[WatchRun_Request, WatchRun_Response]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type TractsAPI_WatchRunServer = grpc.ServerStreamingServer[WatchRun_Response]
 
 func _TractsAPI_RetryRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RetryRun_Request)
@@ -800,6 +836,12 @@ var TractsAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TractsAPI_UnlinkTrigger_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "WatchRun",
+			Handler:       _TractsAPI_WatchRun_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "tracts.proto",
 }

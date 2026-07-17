@@ -272,6 +272,47 @@
         ]
       }
     },
+    "/api/tracts/runs/watch": {
+      "post": {
+        "operationId": "TractsAPI_WatchRun",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/artel_apiWatchRunResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of artel_apiWatchRunResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiWatchRunRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
     "/api/tracts/set-enabled": {
       "post": {
         "operationId": "TractsAPI_SetTractEnabled",
@@ -1325,6 +1366,29 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "artel_apiWatchRunRequest": {
+      "type": "object",
+      "properties": {
+        "runUuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiWatchRunResponse": {
+      "type": "object",
+      "properties": {
+        "run": {
+          "$ref": "#/definitions/artel_apiTractRunItem"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractRunStepItem"
           }
         }
       }

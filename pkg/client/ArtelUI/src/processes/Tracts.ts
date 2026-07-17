@@ -37,6 +37,11 @@ export interface ITractsService {
 
     listRuns: (tractUuid: string, limit: number) => Promise<TractRun[]>
     getRun: (runUuid: string) => Promise<{ run: TractRun; steps: TractRunStep[] }>
+    watchRun: (
+        runUuid: string,
+        onUpdate: (run: TractRun, steps: TractRunStep[]) => void,
+        signal: AbortSignal,
+    ) => Promise<void>
 
     listTractTools: () => Promise<TractTool[]>
     listTriggerSources: () => Promise<TriggerSource[]>
@@ -110,6 +115,20 @@ export class TractsService implements ITractsService {
     async getRun(runUuid: string): Promise<{ run: TractRun; steps: TractRunStep[] }> {
         const res = await TractsAPI.GetRun({runUuid}, useUser.getState().auth.getInitReq())
         return {run: toRun(res.run!), steps: (res.steps ?? []).map(toRunStep)}
+    }
+
+    async watchRun(
+        runUuid: string,
+        onUpdate: (run: TractRun, steps: TractRunStep[]) => void,
+        signal: AbortSignal,
+    ): Promise<void> {
+        await TractsAPI.WatchRun(
+            {runUuid},
+            (res) => {
+                onUpdate(toRun(res.run!), (res.steps ?? []).map(toRunStep))
+            },
+            {...useUser.getState().auth.getInitReq(), signal},
+        )
     }
 
     async listTractTools(): Promise<TractTool[]> {

@@ -233,6 +233,17 @@ export type GetRunResponse = {
 
 export type GetRun = Record<string, never>;
 
+export type WatchRunRequest = {
+  runUuid?: string;
+};
+
+export type WatchRunResponse = {
+  run?: TractRunItem;
+  steps?: TractRunStepItem[];
+};
+
+export type WatchRun = Record<string, never>;
+
 export type RetryRunRequest = {
   runUuid?: string;
 };
@@ -356,6 +367,9 @@ export class TractsAPI {
   }
   static GetRun(this:void, req: GetRunRequest, initReq?: fm.InitReq): Promise<GetRunResponse> {
     return fm.fetchRequest<GetRunResponse>(`/api/tracts/runs/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static WatchRun(this:void, req: WatchRunRequest, entityNotifier?: fm.NotifyStreamEntityArrival<WatchRunResponse>, initReq?: fm.InitReq): Promise<void> {
+    return fm.fetchStreamingRequest<WatchRunResponse>(`/api/tracts/runs/watch`, entityNotifier, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static RetryRun(this:void, req: RetryRunRequest, initReq?: fm.InitReq): Promise<RetryRunResponse> {
     return fm.fetchRequest<RetryRunResponse>(`/api/tracts/runs/retry`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

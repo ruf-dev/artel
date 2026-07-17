@@ -77,18 +77,27 @@ function cap(s: string): string {
 
 interface RunLogProps {
     runUuid: string
+    runStatus: string
     onRetry: () => Promise<unknown>
 }
 
-export default function RunLog({runUuid, onRetry}: RunLogProps) {
-    const {currentRun, currentRunSteps, currentRunLoading, fetchRun, clearCurrentRun} = useTracts()
+export default function RunLog({runUuid, runStatus, onRetry}: RunLogProps) {
+    const {currentRun, currentRunSteps, currentRunLoading, watchRun, fetchRun, clearCurrentRun} = useTracts()
     const bakeError = useBakeError()
     const [retrying, setRetrying] = useState(false)
 
     useEffect(() => {
-        void fetchRun(runUuid)
-        return () => clearCurrentRun()
-    }, [runUuid])
+        if (runStatus !== "running") {
+            fetchRun(runUuid).catch(err => bakeError("Failed to load run", err))
+            return () => clearCurrentRun()
+        }
+
+        const stopWatching = watchRun(runUuid)
+        return () => {
+            stopWatching()
+            clearCurrentRun()
+        }
+    }, [runUuid, runStatus])
 
     function handleRetry() {
         setRetrying(true)
@@ -113,7 +122,7 @@ export default function RunLog({runUuid, onRetry}: RunLogProps) {
                     </div>
                     {l.input !== undefined && l.input !== null && (
                         <div className={cls.EntryInput}>
-                            <JsonBlock label="Input" value={l.input}/>
+                            <JsonBlock label="Input" value={l.input} defaultCollapsed/>
                         </div>
                     )}
                 </div>

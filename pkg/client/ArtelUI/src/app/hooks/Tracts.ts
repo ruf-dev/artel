@@ -77,6 +77,7 @@ interface TractsState {
 
     fetchRuns: (tractUuid: string) => Promise<void>
     fetchRun: (runUuid: string) => Promise<void>
+    watchRun: (runUuid: string) => () => void
     clearCurrentRun: () => void
 
     fetchTools: () => Promise<void>
@@ -109,6 +110,27 @@ async function handleCreateAndLinkTrigger(
     await tractsService.linkTrigger(result.trigger.uuid, tractUuid, [])
     await Promise.all([get().fetchTriggers(), get().fetch()])
     return result
+}
+
+type SetTractsState = (partial: Partial<TractsState>) => void
+
+function handleWatchRun(runUuid: string, set: SetTractsState): () => void {
+    set({currentRunLoading: true})
+
+    const controller = new AbortController()
+
+    tractsService.watchRun(
+        runUuid,
+        (run, steps) => set({currentRun: run, currentRunSteps: steps, currentRunLoading: false}),
+        controller.signal,
+    ).catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") {
+            return
+        }
+        console.error("watchRun stream failed", err)
+    })
+
+    return () => controller.abort()
 }
 
 export const useTracts = create<TractsState>((set, get) => ({
@@ -191,6 +213,8 @@ export const useTracts = create<TractsState>((set, get) => ({
             set({currentRunLoading: false})
         }
     },
+
+    watchRun: (runUuid: string) => handleWatchRun(runUuid, set),
 
     clearCurrentRun: () => set({currentRun: null, currentRunSteps: []}),
 

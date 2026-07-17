@@ -70,6 +70,13 @@ service TractsAPI {
     };
   }
 
+  rpc WatchRun(WatchRun.Request) returns (stream WatchRun.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/runs/watch"
+      body: "*"
+    };
+  }
+
   rpc RetryRun(RetryRun.Request) returns (RetryRun.Response) {
     option (google.api.http) = {
       post: "/api/tracts/runs/retry"
@@ -344,6 +351,16 @@ message ListRuns {
 }
 
 message GetRun {
+  message Request {
+    string run_uuid = 1;
+  }
+  message Response {
+    TractRunItem run                = 1;
+    repeated TractRunStepItem steps = 2;
+  }
+}
+
+message WatchRun {
   message Request {
     string run_uuid = 1;
   }

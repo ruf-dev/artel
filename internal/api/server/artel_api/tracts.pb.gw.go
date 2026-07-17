@@ -278,6 +278,29 @@ func local_request_TractsAPI_GetRun_0(ctx context.Context, marshaler runtime.Mar
 	return msg, metadata, err
 }
 
+func request_TractsAPI_WatchRun_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (TractsAPI_WatchRunClient, runtime.ServerMetadata, error) {
+	var (
+		protoReq WatchRun_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	stream, err := client.WatchRun(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+}
+
 func request_TractsAPI_RetryRun_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq RetryRun_Request
@@ -752,6 +775,13 @@ func RegisterTractsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_TractsAPI_GetRun_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+
+	mux.Handle(http.MethodPost, pattern_TractsAPI_WatchRun_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
 	mux.Handle(http.MethodPost, pattern_TractsAPI_RetryRun_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1145,6 +1175,23 @@ func RegisterTractsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_TractsAPI_GetRun_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_WatchRun_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.TractsAPI/WatchRun", runtime.WithHTTPPathPattern("/api/tracts/runs/watch"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TractsAPI_WatchRun_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_WatchRun_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_TractsAPI_RetryRun_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1328,6 +1375,7 @@ var (
 	pattern_TractsAPI_RunTract_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "run"}, ""))
 	pattern_TractsAPI_ListRuns_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "list"}, ""))
 	pattern_TractsAPI_GetRun_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "get"}, ""))
+	pattern_TractsAPI_WatchRun_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "watch"}, ""))
 	pattern_TractsAPI_RetryRun_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "retry"}, ""))
 	pattern_TractsAPI_ListTractTools_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "tools", "list"}, ""))
 	pattern_TractsAPI_ListTriggerSources_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "trigger-sources", "list"}, ""))
@@ -1350,6 +1398,7 @@ var (
 	forward_TractsAPI_RunTract_0           = runtime.ForwardResponseMessage
 	forward_TractsAPI_ListRuns_0           = runtime.ForwardResponseMessage
 	forward_TractsAPI_GetRun_0             = runtime.ForwardResponseMessage
+	forward_TractsAPI_WatchRun_0           = runtime.ForwardResponseStream
 	forward_TractsAPI_RetryRun_0           = runtime.ForwardResponseMessage
 	forward_TractsAPI_ListTractTools_0     = runtime.ForwardResponseMessage
 	forward_TractsAPI_ListTriggerSources_0 = runtime.ForwardResponseMessage

@@ -11,29 +11,12 @@
 }
 
 .PanelOpen {
-    height: 13.75rem;
     border-top-color: var(--color-border);
     opacity: 1;
 }
 
-.Backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgb(0 0 0 / 35%);
-    backdrop-filter: blur(0.5rem);
-    -webkit-backdrop-filter: blur(0.5rem);
-}
-
-[data-theme="light"] .Backdrop {
-    background: rgb(0 0 0 / 16%);
-}
-
-.Panel.Enlarged {
-    position: absolute;
-    inset: 0;
-    top: auto;
-    height: 85%;
-    box-shadow: 0 -2rem 4rem -1.5rem rgb(0 0 0 / 50%);
+.Panel.Dragging {
+    transition: none;
 }
 
 .Split {
