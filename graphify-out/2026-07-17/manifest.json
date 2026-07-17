@@ -2135,8 +2135,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/CLAUDE.md": {
-    "mtime": 1783688891.087777,
-    "ast_hash": "7dff681447331d47e41e494e11a7d3be",
+    "mtime": 1784268788.0002418,
+    "ast_hash": "4b02ae3a09b06eb81512426e40b549f4",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/icons/mails/gmail.png": {
@@ -3260,8 +3260,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/stylelint.config.js": {
-    "mtime": 1783684599.4440172,
-    "ast_hash": "3696979ec08dc9495b3116cb99d1209f",
+    "mtime": 1784268704.2046366,
+    "ast_hash": "1f04ffe3f9a54d4d4a3434f03aa08001",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/S3InstancesTab/S3InstanceList.tsx": {
@@ -4530,8 +4530,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/UserSubscriptionDialog.tsx": {
-    "mtime": 1784230213.7643254,
-    "ast_hash": "52a7d4d84cad596b8bb83144c4a4707f",
+    "mtime": 1784269487.7911038,
+    "ast_hash": "d28b58d80eb9b8910c340b95df5a5f2c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/components/FeatureOverrideRow/FeatureOverrideRow.tsx": {
@@ -4557,6 +4557,16 @@
   "pkg/docs/swaggers/admin_subscriptions.swagger.json": {
     "mtime": 1784229573.6547732,
     "ast_hash": "07513a01ffcf218d38e75255fa55b181",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/processes/useUserSubscriptionDialog.tsx": {
+    "mtime": 1784269453.732046,
+    "ast_hash": "6d5e97a9eb5767493496f55bd4ed5412",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/stylelint-rules/dialog-scrollable.js": {
+    "mtime": 1784269365.778115,
+    "ast_hash": "87f3fb184bad5b45254ea3d725b2589b",
     "semantic_hash": ""
   }
 }
