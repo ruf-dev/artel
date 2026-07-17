@@ -1,4 +1,4 @@
-import cls from "@/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.module.css"
+import cls from "@/components/JsonView/JsonView.module.css"
 
 type JsonTokenKind = "key" | "string" | "number" | "boolean" | "null" | "plain"
 

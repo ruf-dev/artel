@@ -5,7 +5,7 @@ import cls from "@/dialogs/AddTriggerDialog/AddTriggerDialog.module.css"
 import {SchemaFieldRow, fieldsToSchemaNode} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import {useTriggerSources} from "@/app/hooks/Tracts.ts"
 import CodeIcon from "@/icons/common/CodeIcon.tsx"
-import JsonView from "@/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.tsx"
+import JsonView from "@/components/JsonView/JsonView.tsx"
 import SchemaFieldList from "@/dialogs/AddTriggerDialog/components/SchemaFieldList/SchemaFieldList.tsx"
 import SchemaPropertyPreview
     from "@/dialogs/AddTriggerDialog/components/SchemaPropertyPreview/SchemaPropertyPreview.tsx"
