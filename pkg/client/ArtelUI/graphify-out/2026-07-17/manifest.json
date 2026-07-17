@@ -15,82 +15,82 @@
     "semantic_hash": ""
   },
   "src/app/api/artel/admin_couch.pb.ts": {
-    "mtime": 1784229585.2852788,
+    "mtime": 1783941934.9493701,
     "ast_hash": "3cf7f5a917da7c7ace9563a7d52b7484",
     "semantic_hash": ""
   },
   "src/app/api/artel/admin_users.pb.ts": {
-    "mtime": 1784229585.286353,
+    "mtime": 1783941934.9495962,
     "ast_hash": "75861a0582cc983302ab5c99d3d4bde7",
     "semantic_hash": ""
   },
   "src/app/api/artel/artel_api.pb.ts": {
-    "mtime": 1784229585.2865405,
+    "mtime": 1783941934.9496648,
     "ast_hash": "32219109938c9fe8185d6c262945811e",
     "semantic_hash": ""
   },
   "src/app/api/artel/auth.pb.ts": {
-    "mtime": 1784229585.2866523,
+    "mtime": 1783941934.9497302,
     "ast_hash": "d530fbb91ecb693a87614480beafa1f1",
     "semantic_hash": ""
   },
   "src/app/api/artel/couch_instances.pb.ts": {
-    "mtime": 1784229585.286712,
+    "mtime": 1783941934.9497836,
     "ast_hash": "90ef0d2d2aba9c3e31e1c19d679218f7",
     "semantic_hash": ""
   },
   "src/app/api/artel/external_connections.pb.ts": {
-    "mtime": 1784229585.2882228,
-    "ast_hash": "a4538ac1a36689c9e6e2c17da102ee21",
+    "mtime": 1783941934.9500444,
+    "ast_hash": "19f717f440301308a8e419d5a02b22f1",
     "semantic_hash": ""
   },
   "src/app/api/artel/fetch.pb.ts": {
-    "mtime": 1784229585.2883687,
+    "mtime": 1783941934.950113,
     "ast_hash": "611a00bd7dd14cbdfe7c5ea6170b6625",
     "semantic_hash": ""
   },
   "src/app/api/artel/index.ts": {
-    "mtime": 1784229585.2850518,
-    "ast_hash": "cd575c87fbaa7845a05433278997133e",
+    "mtime": 1783941934.949076,
+    "ast_hash": "5d725f1aeb2afea58b8b0cc96c6f1725",
     "semantic_hash": ""
   },
   "src/app/api/artel/mcp_keys.pb.ts": {
-    "mtime": 1784229585.2884803,
+    "mtime": 1783941934.950571,
     "ast_hash": "26dfd61190e0c4841cd7ba88e59fd58d",
     "semantic_hash": ""
   },
   "src/app/api/artel/notes.pb.ts": {
-    "mtime": 1784229585.2904701,
+    "mtime": 1783941934.9508622,
     "ast_hash": "1d2a0a06d9210212a036358c7efecb48",
     "semantic_hash": ""
   },
   "src/app/api/artel/prompts.pb.ts": {
-    "mtime": 1784229585.2906485,
+    "mtime": 1783941934.951196,
     "ast_hash": "b6e69cd76667b8949344061bd673072b",
     "semantic_hash": ""
   },
   "src/app/api/artel/s3_instances.pb.ts": {
-    "mtime": 1784229585.2909064,
+    "mtime": 1783941934.9513664,
     "ast_hash": "f3cf492e658d8a646340aeed5a45526e",
     "semantic_hash": ""
   },
   "src/app/api/artel/task_trackers.pb.ts": {
-    "mtime": 1784229585.294312,
+    "mtime": 1783941934.9517453,
     "ast_hash": "6e507251f3f551857b4aca3e13e5ca02",
     "semantic_hash": ""
   },
   "src/app/api/artel/tracts.pb.ts": {
-    "mtime": 1784229585.2943795,
+    "mtime": 1783941934.9525542,
     "ast_hash": "ee880beb82c8f8016493119870149414",
     "semantic_hash": ""
   },
   "src/app/api/artel/user_errors.pb.ts": {
-    "mtime": 1784229585.2944653,
+    "mtime": 1783941934.9527,
     "ast_hash": "c1fd47388488059eb04c653408a032cc",
     "semantic_hash": ""
   },
   "src/app/api/artel/vaults.pb.ts": {
-    "mtime": 1784229585.296146,
+    "mtime": 1783941934.9527636,
     "ast_hash": "1c39ac72310220721de6fabb5dbeea84",
     "semantic_hash": ""
   },
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "src/app/hooks/ExternalConnections.ts": {
-    "mtime": 1783976344.3395061,
-    "ast_hash": "402324c7edcc5fa2b3cdb24754080f34",
+    "mtime": 1783754808.096543,
+    "ast_hash": "7f9085bde1edb87df8b1befdee5e597a",
     "semantic_hash": ""
   },
   "src/app/hooks/McpKeys.ts": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "src/dialogs/AddTriggerDialog/screens/SchemaBuilder.tsx": {
-    "mtime": 1784274590.277815,
-    "ast_hash": "074ef17b0037d8dde9e0e3cb482c5c47",
+    "mtime": 1783754839.1742737,
+    "ast_hash": "fb0ba44ba6fcabc73b96198a366f1e75",
     "semantic_hash": ""
   },
   "src/dialogs/AddTriggerDialog/screens/SourcePicker.tsx": {
@@ -524,9 +524,14 @@
     "ast_hash": "4b244f0e58ce2dce99cffa571ccbc9f7",
     "semantic_hash": ""
   },
+  "src/dialogs/AddTriggerDialog/widgets/JsonView/JsonView.tsx": {
+    "mtime": 1783451760.6786084,
+    "ast_hash": "8e44debd53ce903ccd46a74855da981b",
+    "semantic_hash": ""
+  },
   "src/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx": {
-    "mtime": 1783974172.681796,
-    "ast_hash": "1bb207fc7e8e4b7a27ee1fdef032d989",
+    "mtime": 1783754795.0627422,
+    "ast_hash": "3f617514222c8763a6d015d1809b61fd",
     "semantic_hash": ""
   },
   "src/dialogs/FastSetupDialog/FastSetupDialog.tsx": {
@@ -635,8 +640,8 @@
     "semantic_hash": ""
   },
   "src/pages/connections/ConnectionsPage.tsx": {
-    "mtime": 1784274181.53453,
-    "ast_hash": "b93f7b62049cfa9407471714acdaa2ac",
+    "mtime": 1783617665.1258159,
+    "ast_hash": "6f2c6ed62b94a16946de807b269a44ee",
     "semantic_hash": ""
   },
   "src/pages/connections/GoogleOAuthCallbackPage.tsx": {
@@ -650,8 +655,8 @@
     "semantic_hash": ""
   },
   "src/pages/home/HomePage.tsx": {
-    "mtime": 1784273951.094711,
-    "ast_hash": "54b75ac269e5bac1ced37e0560170e11",
+    "mtime": 1783617611.6357288,
+    "ast_hash": "5ab2897cbc086ccd327e1c5ead1a2704",
     "semantic_hash": ""
   },
   "src/pages/init/InitPage.tsx": {
@@ -670,8 +675,8 @@
     "semantic_hash": ""
   },
   "src/pages/mcp-keys/McpKeysPage.tsx": {
-    "mtime": 1784274142.859581,
-    "ast_hash": "8858969238c801afdce524c3ba994634",
+    "mtime": 1783617793.798928,
+    "ast_hash": "1101ad815fb7d7ed2513b84bd26deb17",
     "semantic_hash": ""
   },
   "src/pages/notes/NotesPage.tsx": {
@@ -795,13 +800,13 @@
     "semantic_hash": ""
   },
   "src/pages/task-trackers/TaskTrackersPage.tsx": {
-    "mtime": 1784274161.6793199,
-    "ast_hash": "3b2d693956612e28722d25a14d95650e",
+    "mtime": 1783621812.5709968,
+    "ast_hash": "a63b25d5eb705edd539d6588dc219db4",
     "semantic_hash": ""
   },
   "src/pages/toolbox/ToolboxPage.tsx": {
-    "mtime": 1784273991.8937647,
-    "ast_hash": "55cea6c825cb136d6c3260b22c419c52",
+    "mtime": 1783621673.3647926,
+    "ast_hash": "f6b8a3758657545e9f510991da577694",
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/TractCanvasBuilderPage.tsx": {
@@ -810,8 +815,8 @@
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/TractCanvasListPage.tsx": {
-    "mtime": 1784274085.5306532,
-    "ast_hash": "3c04a432966715d364f7a0919deb7c8b",
+    "mtime": 1783576645.0615957,
+    "ast_hash": "173adfef3b139a2282d26bd1de549d1c",
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/components/ActionBody/ActionBody.tsx": {
@@ -949,6 +954,11 @@
     "ast_hash": "657deed03c74ff16569ede786a752970",
     "semantic_hash": ""
   },
+  "src/pages/tract-canvas/segments/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783576645.0618649,
+    "ast_hash": "64923e254ce014e207fc89c2668df969",
+    "semantic_hash": ""
+  },
   "src/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.tsx": {
     "mtime": 1783617894.8223546,
     "ast_hash": "0c30d0c1741bee409cd973f6fa7a15d3",
@@ -975,8 +985,8 @@
     "semantic_hash": ""
   },
   "src/processes/ExternalConnections.ts": {
-    "mtime": 1783976336.1528606,
-    "ast_hash": "09d0f6ca0034d1f4abc21e1a0cc8cc95",
+    "mtime": 1783754774.838934,
+    "ast_hash": "f9df240729725cdb03c669cd9022da5a",
     "semantic_hash": ""
   },
   "src/processes/McpKeys.ts": {
@@ -1115,8 +1125,8 @@
     "semantic_hash": ""
   },
   "stylelint.config.js": {
-    "mtime": 1784268704.2046366,
-    "ast_hash": "1f04ffe3f9a54d4d4a3434f03aa08001",
+    "mtime": 1783684599.4440172,
+    "ast_hash": "3696979ec08dc9495b3116cb99d1209f",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -1145,8 +1155,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1784268788.0002418,
-    "ast_hash": "4b02ae3a09b06eb81512426e40b549f4",
+    "mtime": 1783688891.087777,
+    "ast_hash": "7dff681447331d47e41e494e11a7d3be",
     "semantic_hash": ""
   },
   "ZPOTIFY_PARITY_HANDOFF.md": {
@@ -1320,8 +1330,8 @@
     "semantic_hash": ""
   },
   "src/dialogs/ManageGitlabDialog/components/ConnectForm/ConnectForm.tsx": {
-    "mtime": 1783954396.6863456,
-    "ast_hash": "9115cc85df9db845e791bc05b2086046",
+    "mtime": 1783951595.1792405,
+    "ast_hash": "a59b60dcad4d80bdf4a89745223ebb02",
     "semantic_hash": ""
   },
   "src/dialogs/ManageGitlabDialog/components/ConnectedContent/ConnectedContent.tsx": {
@@ -1445,13 +1455,13 @@
     "semantic_hash": ""
   },
   "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.tsx": {
-    "mtime": 1784230067.791325,
-    "ast_hash": "3be67a9fb9bb22634bcf9e4f9bfa3361",
+    "mtime": 1783755010.4420414,
+    "ast_hash": "07c20f8ac1756ffbb304e6952b85cc6f",
     "semantic_hash": ""
   },
   "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx": {
-    "mtime": 1784227949.7093842,
-    "ast_hash": "5a744dd58a4490b642a3618b1f770210",
+    "mtime": 1783755010.4410908,
+    "ast_hash": "b0a25f4d047738278dc4b49db9f9ba6e",
     "semantic_hash": ""
   },
   "src/pages/admin/components/ArtelUsersTab/components/ArtelUserList/ArtelUserList.tsx": {
@@ -1540,8 +1550,13 @@
     "semantic_hash": ""
   },
   "src/pages/connections/components/ContentSegment/ContentSegment.tsx": {
-    "mtime": 1783974153.3368735,
-    "ast_hash": "9b60ee2edfad3e12f318fc4ce1f50bbc",
+    "mtime": 1783617645.894349,
+    "ast_hash": "725694da888869943045c385b077f1de",
+    "semantic_hash": ""
+  },
+  "src/pages/connections/components/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783617634.83017,
+    "ast_hash": "be98cecc660261754ac3aeda8126fb8f",
     "semantic_hash": ""
   },
   "src/pages/home/components/ContentSegment/ContentSegment.tsx": {
@@ -1552,6 +1567,11 @@
   "src/pages/home/components/CreateVaultDialog/CreateVaultDialog.tsx": {
     "mtime": 1783881707.003838,
     "ast_hash": "831629299ae943ab9d6477ac6d3b3809",
+    "semantic_hash": ""
+  },
+  "src/pages/home/components/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783617548.0722585,
+    "ast_hash": "6b47bfbc84e32c86b12fb8bc9ee76cb1",
     "semantic_hash": ""
   },
   "src/pages/init/components/LoginContent/LoginContent.tsx": {
@@ -1587,6 +1607,11 @@
   "src/pages/mcp-keys/components/CreateKeyDialog/CreateKeyDialog.tsx": {
     "mtime": 1783881748.7687764,
     "ast_hash": "cc421bb5edba70f2912d75769c21ba23",
+    "semantic_hash": ""
+  },
+  "src/pages/mcp-keys/components/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783617740.3311324,
+    "ast_hash": "afac4f4eb56d6a0156f13f4b9d09c360",
     "semantic_hash": ""
   },
   "src/pages/notes/components/BreadcrumbBar/components/BreadcrumbPath/BreadcrumbPath.tsx": {
@@ -1819,6 +1844,11 @@
     "ast_hash": "97f4cb45e6eae1ba1142c81858cc62af",
     "semantic_hash": ""
   },
+  "src/pages/task-trackers/components/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783754869.1350965,
+    "ast_hash": "db0d063aca67ec1b09edb162fd4110f1",
+    "semantic_hash": ""
+  },
   "src/pages/toolbox/components/ContentSegment/ContentSegment.tsx": {
     "mtime": 1783621689.2017255,
     "ast_hash": "79b83755654cfe8c013ff1877f287d77",
@@ -1829,14 +1859,19 @@
     "ast_hash": "cd7b0d8b938943ea4fc066619d7ae31c",
     "semantic_hash": ""
   },
+  "src/pages/toolbox/components/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1783755015.982299,
+    "ast_hash": "c87450f8f692497b02fcce4300afa46f",
+    "semantic_hash": ""
+  },
   "src/pages/toolbox/components/ToolsDialog/ToolsDialog.tsx": {
     "mtime": 1783621715.0256982,
     "ast_hash": "ab46a7b6412ec1b4b61ce99e4bcf8938",
     "semantic_hash": ""
   },
   "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.tsx": {
-    "mtime": 1784276035.5571423,
-    "ast_hash": "809745defbda68ab94259d9487d07ec1",
+    "mtime": 1783754712.3645153,
+    "ast_hash": "3cb2f455d72cc1274bbc72eed84a7568",
     "semantic_hash": ""
   },
   "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx": {
@@ -1862,6 +1897,11 @@
   "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/components/ParamInput/ParamInput.tsx": {
     "mtime": 1783882233.4560006,
     "ast_hash": "b467f3749ad5b3ff63844c225fc95d70",
+    "semantic_hash": ""
+  },
+  "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.tsx": {
+    "mtime": 1783755016.6719313,
+    "ast_hash": "2124fbcbeef49789b4fbf09165d76632",
     "semantic_hash": ""
   },
   "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/SmtpActionView/SmtpActionView.tsx": {
@@ -2137,121 +2177,6 @@
   "src/widgets/GoogleSheetsConnectionContent/processes/useSpreadsheetPicker.ts": {
     "mtime": 1783595231.207976,
     "ast_hash": "4df56b0c5fca1ed469e85f07646eef65",
-    "semantic_hash": ""
-  },
-  "src/app/api/artel/admin_subscriptions.pb.ts": {
-    "mtime": 1784229585.285366,
-    "ast_hash": "0194e428eb584597723eed44dc36c1f2",
-    "semantic_hash": ""
-  },
-  "src/components/HeroSegment/HeroSegment.tsx": {
-    "mtime": 1784273898.5112734,
-    "ast_hash": "f8cec5ef7eb4659000c15e8cfd190771",
-    "semantic_hash": ""
-  },
-  "src/components/JsonView/JsonView.tsx": {
-    "mtime": 1784274537.4099965,
-    "ast_hash": "363730d204dd0599677e649a46b6b456",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageGitlabDialog/components/ConnectForm/components/UseDefaultButton/UseDefaultButton.tsx": {
-    "mtime": 1783953241.4277892,
-    "ast_hash": "0c4285c0eba7f8ef9cf8278e5e8592a6",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageGitlabDialog/components/GitlabCheckButton/GitlabCheckButton.tsx": {
-    "mtime": 1783953910.5233748,
-    "ast_hash": "3b00994cf987a3b8a7792eae987abc14",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageTrelloDialog/ManageTrelloDialog.tsx": {
-    "mtime": 1783976454.1821299,
-    "ast_hash": "7e3b46db046162cc3bf672c16b3924e6",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageTrelloDialog/components/AccountsSection/AccountsSection.tsx": {
-    "mtime": 1783976522.4659376,
-    "ast_hash": "a9de2533b68e6b2a59b0c034b90a4f89",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageTrelloDialog/components/AccountsSection/components/TrelloConnectionRow/TrelloConnectionRow.tsx": {
-    "mtime": 1783976388.075728,
-    "ast_hash": "cfcff7ec5a22ec062b4f9c5bab0e9092",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageTrelloDialog/components/DialogHead/DialogHead.tsx": {
-    "mtime": 1783976359.465182,
-    "ast_hash": "e7a60c1e8dc477fea2270a595219accc",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageTrelloDialog/components/TrelloAddDialog/TrelloAddDialog.tsx": {
-    "mtime": 1783976417.0249553,
-    "ast_hash": "075e521aebdf39525598aa039bd342dc",
-    "semantic_hash": ""
-  },
-  "src/dialogs/ManageTrelloDialog/components/TrelloCheckButton/TrelloCheckButton.tsx": {
-    "mtime": 1783974067.315111,
-    "ast_hash": "e17e83395292ab188e69fd55b7b404ff",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/UserSubscriptionDialog.tsx": {
-    "mtime": 1784269487.7911038,
-    "ast_hash": "d28b58d80eb9b8910c340b95df5a5f2c",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/components/FeatureOverrideRow/FeatureOverrideRow.tsx": {
-    "mtime": 1784229998.4424002,
-    "ast_hash": "e9a934025fd3df9363e4b9b607905d72",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/components/QuotaOverrideRow/QuotaOverrideRow.tsx": {
-    "mtime": 1784230009.1470506,
-    "ast_hash": "cb9bff6c77f1167686262546f4a50d08",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/components/SubscriptionForm/SubscriptionForm.tsx": {
-    "mtime": 1784230225.2605286,
-    "ast_hash": "6c72f4a9d6b3671f7df9cfc76505de49",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/processes/subscriptionOverrides.ts": {
-    "mtime": 1784230124.144668,
-    "ast_hash": "1b7a721ec84450887bc40aec4ffeff09",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/processes/useUserSubscriptionDialog.tsx": {
-    "mtime": 1784269453.732046,
-    "ast_hash": "6d5e97a9eb5767493496f55bd4ed5412",
-    "semantic_hash": ""
-  },
-  "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/ResultView.tsx": {
-    "mtime": 1784276112.0169363,
-    "ast_hash": "5c09accf56fe2207daff03ffd0f954bf",
-    "semantic_hash": ""
-  },
-  "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/DisplayTaskTrackerTables.tsx": {
-    "mtime": 1784276122.8484426,
-    "ast_hash": "ec8f6b46cfb0544dc99866db7f136dc4",
-    "semantic_hash": ""
-  },
-  "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableBody/TaskTrackerTableBody.tsx": {
-    "mtime": 1784276134.4930604,
-    "ast_hash": "ba6938ec0b17bc918d65b758b73001bd",
-    "semantic_hash": ""
-  },
-  "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableHead/TaskTrackerTableHead.tsx": {
-    "mtime": 1784276127.5163736,
-    "ast_hash": "e05297b0f2d3b2ab49b0da87ad6e1dcd",
-    "semantic_hash": ""
-  },
-  "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/taskTrackerAdapters.ts": {
-    "mtime": 1784275977.0055423,
-    "ast_hash": "7f48d8acd5f81e0c9fc54bfa8d83d727",
-    "semantic_hash": ""
-  },
-  "stylelint-rules/dialog-scrollable.js": {
-    "mtime": 1784269365.778115,
-    "ast_hash": "87f3fb184bad5b45254ea3d725b2589b",
     "semantic_hash": ""
   }
 }
