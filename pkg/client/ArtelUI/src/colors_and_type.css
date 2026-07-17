@@ -136,6 +136,11 @@
 
   /* Status */
   --status-online-glow: rgb(22 163 74 / 22%);
+  --status-locked:      rgb(10 8 5 / 30%);
+  --color-info:         rgb(10 8 5 / 52%);
+
+  /* Surface Variants */
+  --color-bg-submitted: rgb(0 0 0 / 8%);
 
   /* Focus / empty-state */
   --color-bg-input-focus:    #F5F4F2;
