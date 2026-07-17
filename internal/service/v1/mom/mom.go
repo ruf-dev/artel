@@ -1,6 +1,7 @@
 package mom
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 
@@ -204,7 +205,13 @@ func (s *ServiceImpl) dispatchHttp(
 
 	var secrets map[string]interface{}
 
-	err := json.Unmarshal(exConn.CredentialsJSON, &secrets)
+	// UseNumber preserves numeric credential fields (e.g. account/workspace IDs) as their
+	// original digit string via json.Number, instead of decoding them into float64 and
+	// losing precision/formatting when they're later interpolated into a URL.
+	decoder := json.NewDecoder(bytes.NewReader(exConn.CredentialsJSON))
+	decoder.UseNumber()
+
+	err := decoder.Decode(&secrets)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error unmarshaling http credentials")
 	}

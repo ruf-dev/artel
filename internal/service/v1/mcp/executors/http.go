@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"time"
 
 	"go.redsock.ru/rerrors"
@@ -243,7 +244,20 @@ func resolveActionValue(value string, params map[string]interface{}, secrets map
 		return "", user_errors.McpSecretFieldMissing
 	}
 
-	return fmt.Sprint(secretValue), nil
+	return stringifyValue(secretValue), nil
+}
+
+// stringifyValue formats a param/secret value for embedding in a URL, header, or query
+// string. float64 needs special handling because encoding/json decodes all bare JSON numbers
+// into float64, and fmt.Sprint's default formatting switches large values (e.g. numeric IDs)
+// to exponential notation, which breaks when the result is used as an identifier.
+func stringifyValue(value interface{}) string {
+	floatValue, ok := value.(float64)
+	if !ok {
+		return fmt.Sprint(value)
+	}
+
+	return strconv.FormatFloat(floatValue, 'f', -1, 64)
 }
 
 func secretField(value string) (string, bool) {
@@ -270,7 +284,7 @@ func interpolateParams(value string, params map[string]interface{}) string {
 			return ""
 		}
 
-		return fmt.Sprint(paramValue)
+		return stringifyValue(paramValue)
 	})
 }
 
@@ -290,6 +304,6 @@ func interpolateSecrets(value string, secrets map[string]interface{}) string {
 			return ""
 		}
 
-		return fmt.Sprint(secretValue)
+		return stringifyValue(secretValue)
 	})
 }
