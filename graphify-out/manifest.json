@@ -4550,8 +4550,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/DisplayTaskTrackerTables.tsx": {
-    "mtime": 1784276122.8484426,
-    "ast_hash": "ec8f6b46cfb0544dc99866db7f136dc4",
+    "mtime": 1784303035.7404828,
+    "ast_hash": "61dbddbcf99e941a09ccc5bfe11a13a3",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableBody/TaskTrackerTableBody.tsx": {
@@ -4565,8 +4565,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/taskTrackerAdapters.ts": {
-    "mtime": 1784302454.9507093,
-    "ast_hash": "3e473234600cca1de9a529a89a9b09e8",
+    "mtime": 1784303008.3486328,
+    "ast_hash": "24963e23dd13efc05596037a6312c581",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/AddTaskLinkDialog/AddTaskLinkDialog.tsx": {
@@ -4667,6 +4667,11 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/resultViewWidgets.ts": {
     "mtime": 1784302497.8468533,
     "ast_hash": "21a216b2c22531e722b625ddbff57d00",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TransposeToggle/TransposeToggle.tsx": {
+    "mtime": 1784303014.6425843,
+    "ast_hash": "a4e26c6cc76a4e91be727093340f36ae",
     "semantic_hash": ""
   }
 }
