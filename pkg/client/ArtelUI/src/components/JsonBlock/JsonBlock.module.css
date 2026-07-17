@@ -1,0 +1,80 @@
+.JsonBlockContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    & .LabelRow {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        width: fit-content;
+
+        & .Label {
+            font-family: var(--font-mono);
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04125rem;
+            color: var(--color-fg-tertiary);
+        }
+
+        &.LabelRowToggle {
+            cursor: pointer;
+
+            &:hover .Label {
+                color: var(--color-fg-secondary);
+            }
+        }
+    }
+
+    & .Caret {
+        display: inline-block;
+        margin-right: 0.25rem;
+        color: var(--color-fg-tertiary);
+        transition: transform 100ms ease;
+
+        &.CaretOpen {
+            transform: rotate(90deg);
+        }
+    }
+
+    & .Json {
+        margin: 0;
+        padding: 0.625rem 0.75rem;
+        background: var(--color-bg-input);
+        border: var(--border-thickness) solid var(--color-border);
+        border-radius: 0.5rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--color-fg-secondary);
+        overflow-x: auto;
+        white-space: pre;
+
+        & .Row {
+            line-height: 1.5;
+
+            &.RowToggle {
+                cursor: pointer;
+                border-radius: 0.25rem;
+
+                &:hover {
+                    background: rgb(255 255 255 / 5%);
+                }
+            }
+        }
+
+        & .Punct {
+            color: var(--color-fg-tertiary);
+        }
+
+        & .Ellipsis {
+            color: var(--color-fg-tertiary);
+            font-style: italic;
+            margin-left: 0.25rem;
+        }
+
+        & .JsonKey { color: var(--color-fg-primary); font-weight: 600; }
+        & .JsonString { color: var(--status-online); }
+        & .JsonNumber { color: var(--color-warning); }
+        & .JsonBoolean, & .JsonNull { color: var(--color-fg-accent); }
+    }
+}

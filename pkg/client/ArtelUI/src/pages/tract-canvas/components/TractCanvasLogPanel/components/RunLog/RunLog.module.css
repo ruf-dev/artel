@@ -1,3 +1,7 @@
+.Entry {
+    margin-bottom: 0.125rem;
+}
+
 .Line {
     display: flex;
     align-items: flex-start;
@@ -6,6 +10,10 @@
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     line-height: 1.6;
+}
+
+.EntryInput {
+    margin: 0.125rem 0 0.5rem 1.375rem;
 }
 
 .LineT {

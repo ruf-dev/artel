@@ -3,6 +3,7 @@ import {useEffect} from "react"
 import {TractRun, TractRunStep} from "@/processes/Tracts.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {cn} from "@/app/utils/cn.ts"
+import JsonBlock from "@/components/JsonBlock/JsonBlock.tsx"
 import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/components/RunLog/RunLog.module.css"
 
 interface LogLine {
@@ -10,6 +11,7 @@ interface LogLine {
     t: string
     msg: string
     kind: "info" | "ok" | "err"
+    input?: unknown
 }
 
 function formatTime(iso: string | undefined): string {
@@ -25,13 +27,20 @@ function buildLogLines(run: TractRun, steps: TractRunStep[]): LogLine[] {
     lines.push({
         key: "trigger",
         t: triggerT,
-        msg: `Trigger fired (${run.startedBy}) — payload ${JSON.stringify(run.triggerPayload)}`,
+        msg: `Trigger fired (${run.startedBy})`,
         kind: "info",
+        input: run.triggerPayload,
     })
 
     for (const s of steps) {
         const t = formatTime(s.startedAt)
-        lines.push({key: `${s.stepId}-start`, t, msg: `${s.stepType}.${s.stepName || s.stepId} →`, kind: "info"})
+        lines.push({
+            key: `${s.stepId}-start`,
+            t,
+            msg: `${s.stepType}.${s.stepName || s.stepId} →`,
+            kind: "info",
+            input: s.input,
+        })
         if (s.status === "done") {
             lines.push({
                 key: `${s.stepId}-done`,
@@ -85,9 +94,16 @@ export default function RunLog({runUuid}: RunLogProps) {
     return (
         <>
             {lines.map(l => (
-                <div className={cls.Line} key={l.key}>
-                    <span className={cls.LineT}>{l.t}</span>
-                    <span className={cn(cls.LineM, cls[`LineM${cap(l.kind)}`])}>{l.msg}</span>
+                <div className={cls.Entry} key={l.key}>
+                    <div className={cls.Line}>
+                        <span className={cls.LineT}>{l.t}</span>
+                        <span className={cn(cls.LineM, cls[`LineM${cap(l.kind)}`])}>{l.msg}</span>
+                    </div>
+                    {l.input !== undefined && l.input !== null && (
+                        <div className={cls.EntryInput}>
+                            <JsonBlock label="Input" value={l.input}/>
+                        </div>
+                    )}
                 </div>
             ))}
         </>

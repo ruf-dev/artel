@@ -105,6 +105,8 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
                     triggerSchema={triggerSchema}
                     momCandidates={momCandidates}
                     lastOutputByStepId={runTracking.lastOutputByStepId}
+                    activeInputByStepId={runTracking.activeInputByStepId}
+                    activeTriggerPayload={runTracking.activeTriggerPayload}
                     tractUuid={tract.uuid}
                     linkedTriggerSummaries={linkedSummaries}
                     onChangeSteps={handleChangeSteps}

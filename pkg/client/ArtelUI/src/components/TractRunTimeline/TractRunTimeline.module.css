@@ -88,33 +88,6 @@
     padding: 0 0.875rem 0.875rem;
 }
 
-.JsonBlock {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.JsonLabel {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04125rem;
-    color: var(--color-fg-tertiary);
-}
-
-.Json {
-    margin: 0;
-    padding: 0.625rem 0.75rem;
-    background: var(--color-bg-input);
-    border: var(--border-thickness) solid var(--color-border);
-    border-radius: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-fg-secondary);
-    overflow-x: auto;
-    white-space: pre;
-}
-
 .RunError {
     color: var(--color-error);
     font-size: 0.8125rem;

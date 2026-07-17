@@ -29,6 +29,20 @@ export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
         return m
     }, [activeRunSteps])
 
+    // Actual params a step was invoked with in the viewed run — unlike lastOutputByStepId,
+    // this includes failed steps too, so a failed run's inspector can show what was sent.
+    const activeInputByStepId = useMemo(() => {
+        const m: Record<string, unknown> = {}
+        for (const s of activeRunSteps) {
+            if (s.input !== undefined) m[s.stepId] = s.input
+        }
+        return m
+    }, [activeRunSteps])
+
+    const activeTriggerPayload = useMemo(() => {
+        return selectedRunUuid && currentRun?.uuid === selectedRunUuid ? currentRun.triggerPayload : undefined
+    }, [selectedRunUuid, currentRun])
+
     function nodeStatus(id: string): NodeStatus {
         if (id === TRIGGER_NODE_ID) return activeRunSteps.length > 0 ? "ok" : "idle"
         const step = activeRunSteps.find(s => s.stepId === id)
@@ -96,7 +110,7 @@ export function useTractRunTracking(tractUuid: string, layout: CanvasLayout) {
         running,
         logOpen, toggleLog, closeLog,
         selectedRunUuid, setSelectedRunUuid,
-        activeRunSteps, lastOutputByStepId, nodeStatus, runningEdgeIds,
+        activeRunSteps, lastOutputByStepId, activeInputByStepId, activeTriggerPayload, nodeStatus, runningEdgeIds,
         startRun,
     }
 }

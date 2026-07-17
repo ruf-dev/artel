@@ -9,6 +9,7 @@ import {cn} from "@/app/utils/cn.ts"
 import {ChevronRightIcon} from "@/pages/tract-canvas/icons/ChevronRightIcon/ChevronRightIcon.tsx"
 import {CloseIcon} from "@/pages/tract-canvas/icons/CloseIcon/CloseIcon.tsx"
 import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
+import JsonBlock from "@/components/JsonBlock/JsonBlock.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 import OutputFields from "@/pages/tract-canvas/components/OutputFields/OutputFields.tsx"
 import ActionBody from "@/pages/tract-canvas/components/ActionBody/ActionBody.tsx"
@@ -17,6 +18,14 @@ import ParallelBody from "@/pages/tract-canvas/components/ParallelBody/ParallelB
 import GroupBody from "@/pages/tract-canvas/components/GroupBody/GroupBody.tsx"
 import DangerZone from "@/pages/tract-canvas/components/DangerZone/DangerZone.tsx"
 
+// Read-only value actually used the last time this node ran, shown only while a run is
+// selected in the log panel — the editable inputs elsewhere in the sidebar are unaffected.
+function runValueFor(node: CanvasNode, activeTriggerPayload: unknown, activeInputByStepId: Record<string, unknown>) {
+    if (node.kind === "trigger") return activeTriggerPayload
+    if (node.kind === "action" && node.step) return activeInputByStepId[node.step.id]
+    return undefined
+}
+
 interface Props {
     node: CanvasNode
     rootSteps: TractStep[]
@@ -24,6 +33,8 @@ interface Props {
     triggerSchema?: SchemaNode
     momCandidates: MomCandidate[]
     lastOutputByStepId: Record<string, unknown>
+    activeInputByStepId: Record<string, unknown>
+    activeTriggerPayload: unknown
     tractUuid: string
     linkedTriggerSummaries: TractTriggerSummary[]
     onChangeSteps: (newRootSteps: TractStep[]) => void
@@ -35,9 +46,12 @@ interface Props {
 
 export default function TractCanvasInspectorBody(props: Props) {
     const {node, rootSteps, tools, triggerSchema, momCandidates, lastOutputByStepId} = props
+    const {activeInputByStepId, activeTriggerPayload} = props
     const {tractUuid, linkedTriggerSummaries, onChangeSteps, onOpenAddBlock, onClose} = props
     const {enlarged, onToggleEnlarge} = props
     const step = node.step
+    const runValue = runValueFor(node, activeTriggerPayload, activeInputByStepId)
+    const runValueLabel = node.kind === "trigger" ? "Trigger payload" : "Step input"
 
     return (
         <div className={cls.TractCanvasInspectorBodyContainer}>
@@ -119,6 +133,11 @@ export default function TractCanvasInspectorBody(props: Props) {
                         >
                             + Add step after
                         </Button>
+                    </Section>
+                )}
+                {runValue !== undefined && (
+                    <Section title="Run values">
+                        <JsonBlock label={runValueLabel} value={runValue}/>
                     </Section>
                 )}
             </div>

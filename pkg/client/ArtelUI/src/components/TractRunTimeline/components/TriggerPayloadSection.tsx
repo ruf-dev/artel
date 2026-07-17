@@ -1,6 +1,7 @@
 import {useState} from "react"
 
 import cls from "@/components/TractRunTimeline/TractRunTimeline.module.css"
+import JsonBlock from "@/components/JsonBlock/JsonBlock.tsx"
 
 interface Props {
     payload: unknown
@@ -16,7 +17,7 @@ export default function TriggerPayloadSection({payload}: Props) {
             </div>
             {open && (
                 <div className={cls.StepBody}>
-                    <pre className={cls.Json}>{JSON.stringify(payload, null, 2)}</pre>
+                    <JsonBlock label="Payload" value={payload}/>
                 </div>
             )}
         </div>

@@ -3,7 +3,7 @@ import {useState} from "react"
 import cls from "@/components/TractRunTimeline/TractRunTimeline.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {TractRunStep} from "@/processes/Tracts.ts"
-import JsonBlock from "@/components/TractRunTimeline/components/JsonBlock.tsx"
+import JsonBlock from "@/components/JsonBlock/JsonBlock.tsx"
 
 interface Props {
     step: TractRunStep

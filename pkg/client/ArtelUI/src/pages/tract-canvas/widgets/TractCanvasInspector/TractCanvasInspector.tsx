@@ -16,6 +16,8 @@ interface Props {
     triggerSchema?: SchemaNode
     momCandidates: MomCandidate[]
     lastOutputByStepId: Record<string, unknown>
+    activeInputByStepId: Record<string, unknown>
+    activeTriggerPayload: unknown
     tractUuid: string
     linkedTriggerSummaries: TractTriggerSummary[]
     onChangeSteps: (newRootSteps: TractStep[]) => void
@@ -46,6 +48,8 @@ export default function TractCanvasInspector(props: Props) {
                         triggerSchema={props.triggerSchema}
                         momCandidates={props.momCandidates}
                         lastOutputByStepId={props.lastOutputByStepId}
+                        activeInputByStepId={props.activeInputByStepId}
+                        activeTriggerPayload={props.activeTriggerPayload}
                         tractUuid={props.tractUuid}
                         linkedTriggerSummaries={props.linkedTriggerSummaries}
                         onChangeSteps={props.onChangeSteps}
