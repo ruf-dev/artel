@@ -2550,8 +2550,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.tsx": {
-    "mtime": 1784309960.817784,
-    "ast_hash": "726883b05d3502a560b93903ef4711ba",
+    "mtime": 1784314511.9074998,
+    "ast_hash": "83c191ea9d2ba8c1c881eb63ed3b8077",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx": {
@@ -3755,13 +3755,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/components/LogPanelBar/LogPanelBar.tsx": {
-    "mtime": 1783617988.7869923,
-    "ast_hash": "e1911e0b3a31774ec1cd2f2a4488e022",
+    "mtime": 1784314529.3330846,
+    "ast_hash": "18784befeabcfc0d0e3eaa4b40d7e4f8",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/components/RunLog/RunLog.tsx": {
-    "mtime": 1784309980.8009007,
-    "ast_hash": "22198095af6f045372f45b3b319ea49e",
+    "mtime": 1784314491.0731754,
+    "ast_hash": "1a166f78d7b45a79729b2d013d93b93e",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/tractsMappers.ts": {
@@ -4675,8 +4675,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/JsonBlock/JsonBlock.tsx": {
-    "mtime": 1784308247.013216,
-    "ast_hash": "64c302b5c56f9861866daddf5bebb383",
+    "mtime": 1784314483.0697327,
+    "ast_hash": "680b5c148916f6e3cc1c5a2bb6141b3b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/JsonBlock/components/JsonNode.tsx": {
@@ -4692,6 +4692,11 @@
   "internal/service/v1/mcp/executors/log_transport.go": {
     "mtime": 1784311850.0942538,
     "ast_hash": "3b8e276b890668777ae172a2c5923e11",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/components/ResizeHandle/ResizeHandle.tsx": {
+    "mtime": 1784314487.9119558,
+    "ast_hash": "556f6a775109e32c8b6ef1551f4c1202",
     "semantic_hash": ""
   }
 }
