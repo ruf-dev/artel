@@ -13,8 +13,8 @@ import ConnectionPicker
     from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx"
 import ParamsList
     from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/ParamsList.tsx"
-import ResultView
-    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/ResultView.tsx"
+import RunScreens
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/RunScreens/RunScreens.tsx"
 import cls from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.module.css"
 
 export default function ToolDetail(
@@ -29,6 +29,7 @@ export default function ToolDetail(
     const [paramValues, setParamValues] = useState<Record<string, string>>({})
     const [running, setRunning] = useState(false)
     const [result, setResult] = useState<string | null>(null)
+    const [showResult, setShowResult] = useState(false)
 
     function setParam(name: string, value: string) {
         setParamValues(prev => ({...prev, [name]: value}))
@@ -37,19 +38,30 @@ export default function ToolDetail(
     function onRun() {
         if (!selectedConnectionId) return
         setRunning(true)
-        setResult(null)
+        setShowResult(false)
         const params = coerceParams(tool.params ?? {}, paramValues)
         executeMomTool(candidate.name ?? "", tool.name ?? "", selectedConnectionId, params)
-            .then(setResult)
+            .then(res => {
+                setResult(res)
+                setShowResult(true)
+            })
             .catch(err => bakeError("Failed to run tool", err))
             .finally(() => setRunning(false))
+    }
+
+    function onBackClick() {
+        if (showResult) {
+            setShowResult(false)
+            return
+        }
+        onBack()
     }
 
     return (
         <div className={cls.ToolDetailContainer} role="dialog" aria-modal="true">
             <h2 className={cls.DialogTitle}>{tool.name}</h2>
             <p className={cls.DialogDesc}>{tool.description}</p>
-            <div className={cls.ToolDetailBody}>
+            <RunScreens showResult={showResult} result={result} candidate={candidate} tool={tool}>
                 {tool.smtp && <SmtpActionView action={tool.smtp}/>}
                 {tool.imap && <ImapActionView action={tool.imap}/>}
                 <ConnectionPicker
@@ -58,12 +70,11 @@ export default function ToolDetail(
                     onSelect={setSelectedConnectionId}
                 />
                 {tool.params && <ParamsList params={tool.params} values={paramValues} onChange={setParam}/>}
-                {result !== null && <ResultView result={result} candidate={candidate} tool={tool}/>}
-            </div>
+            </RunScreens>
             <div className={cls.DialogActions}>
-                <Button variant="ghost" onClick={onBack}>Back</Button>
+                <Button variant="ghost" onClick={onBackClick}>Back</Button>
                 <Button variant="primary" disabled={running || !selectedConnectionId} onClick={onRun}>
-                    {running ? "Running…" : "Run"}
+                    {running ? "Running…" : showResult ? "Run again" : "Run"}
                 </Button>
             </div>
         </div>

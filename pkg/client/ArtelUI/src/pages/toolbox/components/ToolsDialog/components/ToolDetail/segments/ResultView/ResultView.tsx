@@ -1,6 +1,7 @@
 import {useState} from "react"
 
 import {McpToolInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
+import {cn} from "@/app/utils/cn.ts"
 import JsonView from "@/components/JsonView/JsonView.tsx"
 import {getResultViewWidget}
     // eslint-disable-next-line max-len -- deep nested import path can't be shortened without changing the import
@@ -19,15 +20,15 @@ function tryParseJson(result: string): { ok: true; value: unknown } | { ok: fals
     }
 }
 
-export default function ResultView({result, candidate, tool}: {
-    result: string; candidate: MomCandidate; tool: McpToolInfo
+export default function ResultView({result, candidate, tool, className}: {
+    result: string; candidate: MomCandidate; tool: McpToolInfo; className?: string
 }) {
     const parsed = tryParseJson(result)
     const widget = parsed.ok ? getResultViewWidget(candidate.name ?? "", tool.name ?? "") : null
     const [viewMode, setViewMode] = useState<ResultViewMode>("widget")
 
     return (
-        <div className={cls.ResultViewContainer}>
+        <div className={cn(cls.ResultViewContainer, className)}>
             <div className={cls.ResultViewHeader}>
                 <span className={cls.SectionTitle}>Result</span>
                 {parsed.ok && widget && (

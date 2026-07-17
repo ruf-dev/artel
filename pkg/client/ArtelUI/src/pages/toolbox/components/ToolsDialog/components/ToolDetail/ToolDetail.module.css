@@ -34,17 +34,6 @@
         margin-bottom: 1.25rem;
     }
 
-    & .ToolDetailBody {
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem 0;
-        border-top: var(--border-thickness) solid var(--color-border-light);
-    }
-
     & .DialogActions {
         flex-shrink: 0;
         display: flex;
