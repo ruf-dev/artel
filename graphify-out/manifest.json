@@ -1010,8 +1010,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/segments/Dialog.tsx": {
-    "mtime": 1783625894.4108372,
-    "ast_hash": "42afc7a60809dda2ed21950055d8fc31",
+    "mtime": 1784301461.8945658,
+    "ast_hash": "0a4b999f4fb3e9561d3b160882631eec",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/VaultCard/VaultCard.tsx": {
@@ -3930,18 +3930,18 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ContentSegment/ContentSegment.tsx": {
-    "mtime": 1783621689.2017255,
-    "ast_hash": "79b83755654cfe8c013ff1877f287d77",
+    "mtime": 1784301975.0345778,
+    "ast_hash": "9289db3626986870362dc595c966c6f3",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ContentSegment/components/MomCandidateRow/MomCandidateRow.tsx": {
-    "mtime": 1783621704.2715497,
-    "ast_hash": "cd7b0d8b938943ea4fc066619d7ae31c",
+    "mtime": 1784301931.139275,
+    "ast_hash": "bf9abf0d04968dc5bb4148820683769f",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/ToolsDialog.tsx": {
-    "mtime": 1783621715.0256982,
-    "ast_hash": "ab46a7b6412ec1b4b61ce99e4bcf8938",
+    "mtime": 1784301988.6298072,
+    "ast_hash": "e0de0819d6f22732ddfa9d4146d98eca",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.tsx": {
@@ -3985,8 +3985,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolRow/ToolRow.tsx": {
-    "mtime": 1783621724.5488846,
-    "ast_hash": "ed3a598a36b9d8d203edde978ce5f88b",
+    "mtime": 1784301953.949383,
+    "ast_hash": "4c221141add6a785246825391ff3071b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/atoms/Input/Input.tsx": {
@@ -4637,6 +4637,21 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/ViewModeToggle/ViewModeToggle.tsx": {
     "mtime": 1784299973.4169927,
     "ast_hash": "7722574f1c4fbb606805809f191a964d",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolRow/icons/GenericToolIcon.tsx": {
+    "mtime": 1784301947.081762,
+    "ast_hash": "f2075f2b099a33da04a882e2e56e2c24",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolRow/icons/ImapIcon.tsx": {
+    "mtime": 1784301944.3292053,
+    "ast_hash": "41a53d612d2fbc2412df90fbd6988b95",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolRow/icons/SmtpIcon.tsx": {
+    "mtime": 1784301942.1612997,
+    "ast_hash": "4a7edfb6a66f890138acb12b18941e49",
     "semantic_hash": ""
   }
 }

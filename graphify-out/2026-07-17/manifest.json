@@ -4545,8 +4545,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/ResultView.tsx": {
-    "mtime": 1784276112.0169363,
-    "ast_hash": "5c09accf56fe2207daff03ffd0f954bf",
+    "mtime": 1784299922.9131465,
+    "ast_hash": "a8a85e37a04471239228958e5b8aa75c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/DisplayTaskTrackerTables.tsx": {
@@ -4555,8 +4555,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableBody/TaskTrackerTableBody.tsx": {
-    "mtime": 1784276134.4930604,
-    "ast_hash": "ba6938ec0b17bc918d65b758b73001bd",
+    "mtime": 1784299856.6146896,
+    "ast_hash": "875303e058d6a6746709ac7c9502ca15",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableHead/TaskTrackerTableHead.tsx": {
@@ -4565,8 +4565,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/taskTrackerAdapters.ts": {
-    "mtime": 1784275977.0055423,
-    "ast_hash": "7f48d8acd5f81e0c9fc54bfa8d83d727",
+    "mtime": 1784299822.857043,
+    "ast_hash": "1fcb8067353820f101c5d163f188664b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/dialogs/AddTaskLinkDialog/AddTaskLinkDialog.tsx": {
@@ -4627,6 +4627,16 @@
   "pkg/client/ArtelUI/src/pages/roadmap/RoadmapPage.tsx": {
     "mtime": 1784280060.3475018,
     "ast_hash": "a646c1fef9caba4b3a6c9a922ee6163d",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableBody/components/TaskTrackerCell/TaskTrackerCell.tsx": {
+    "mtime": 1784299834.7910464,
+    "ast_hash": "c80534e442aa0ab3adeb564764dc92e1",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/ViewModeToggle/ViewModeToggle.tsx": {
+    "mtime": 1784299973.4169927,
+    "ast_hash": "7722574f1c4fbb606805809f191a964d",
     "semantic_hash": ""
   }
 }
