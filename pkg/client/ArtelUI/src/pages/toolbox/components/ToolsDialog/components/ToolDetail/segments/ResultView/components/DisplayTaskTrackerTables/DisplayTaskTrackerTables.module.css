@@ -4,6 +4,14 @@
     max-height: 18rem;
     overflow: auto;
 
+    & .TableToolbar {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.375rem 0.625rem;
+        border-bottom: var(--border-thickness) solid var(--color-border-light);
+        background: var(--color-bg-elevated);
+    }
+
     & .Table {
         border-collapse: collapse;
         width: 100%;

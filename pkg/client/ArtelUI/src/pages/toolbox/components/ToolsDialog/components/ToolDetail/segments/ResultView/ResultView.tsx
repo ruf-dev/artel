@@ -2,12 +2,9 @@ import {useState} from "react"
 
 import {McpToolInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import JsonView from "@/components/JsonView/JsonView.tsx"
-import {buildTaskTrackerTable}
+import {getResultViewWidget}
     // eslint-disable-next-line max-len -- deep nested import path can't be shortened without changing the import
-    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/taskTrackerAdapters.ts"
-import DisplayTaskTrackerTables
-    // eslint-disable-next-line max-len -- deep nested import path can't be shortened without changing the import
-    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/DisplayTaskTrackerTables.tsx"
+    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/processes/resultViewWidgets.ts"
 import ViewModeToggle, {ResultViewMode}
     // eslint-disable-next-line max-len -- deep nested import path can't be shortened without changing the import
     from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/ViewModeToggle/ViewModeToggle.tsx"
@@ -26,20 +23,22 @@ export default function ResultView({result, candidate, tool}: {
     result: string; candidate: MomCandidate; tool: McpToolInfo
 }) {
     const parsed = tryParseJson(result)
-    const table = parsed.ok ? buildTaskTrackerTable(candidate.name ?? "", parsed.value) : null
-    const [viewMode, setViewMode] = useState<ResultViewMode>("table")
+    const widget = parsed.ok ? getResultViewWidget(candidate.name ?? "", tool.name ?? "") : null
+    const [viewMode, setViewMode] = useState<ResultViewMode>("widget")
 
     return (
         <div className={cls.ResultViewContainer}>
             <div className={cls.ResultViewHeader}>
                 <span className={cls.SectionTitle}>Result</span>
-                {parsed.ok && table && <ViewModeToggle mode={viewMode} onChange={setViewMode}/>}
+                {parsed.ok && widget && (
+                    <ViewModeToggle mode={viewMode} widgetLabel={widget.label} onChange={setViewMode}/>
+                )}
             </div>
             {!parsed.ok && <pre className={cls.ResponsePre}>{result}</pre>}
-            {parsed.ok && table && viewMode === "table" && (
-                <DisplayTaskTrackerTables toolName={tool.name ?? ""} table={table}/>
+            {parsed.ok && widget && viewMode === "widget" && (
+                <widget.Component value={parsed.value} toolName={tool.name ?? ""}/>
             )}
-            {parsed.ok && (!table || viewMode === "json") && <JsonView value={parsed.value}/>}
+            {parsed.ok && (!widget || viewMode === "json") && <JsonView value={parsed.value}/>}
         </div>
     )
 }

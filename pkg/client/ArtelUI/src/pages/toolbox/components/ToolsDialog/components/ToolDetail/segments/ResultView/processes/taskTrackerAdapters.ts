@@ -3,19 +3,6 @@ export interface TaskTrackerTable {
     rows: Record<string, unknown>[]
 }
 
-type TaskTrackerAdapter = (value: unknown) => TaskTrackerTable
-
-// One adapter per MoM source name (candidate.name). Only trello exists today; a future
-// tracker (Jira, Linear, ...) registers here under its own MoM name.
-const TASK_TRACKER_ADAPTERS: Record<string, TaskTrackerAdapter> = {
-    trello: toGenericTable,
-}
-
-export function buildTaskTrackerTable(source: string, value: unknown): TaskTrackerTable | null {
-    const adapter = TASK_TRACKER_ADAPTERS[source]
-    return adapter ? adapter(value) : null
-}
-
 // Single-line preview for a cell's raw value — used as-is for scalars, and as the collapsed
 // preview text for object/array values (see TaskTrackerCell, which offers a pretty-printed
 // expansion for those instead of falling back to raw JSON for the whole table).
@@ -35,7 +22,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 // array or single scalar/object degrades to a single "value" column so nothing falls back
 // to raw JSON for a recognized task-tracker source. Cell values are kept raw (not stringified)
 // so TaskTrackerCell can tell JSON values apart from scalars and offer an expand toggle.
-function toGenericTable(value: unknown): TaskTrackerTable {
+export function toGenericTable(value: unknown): TaskTrackerTable {
     const items = Array.isArray(value) ? value : [value]
     if (items.length === 0) return {columns: [], rows: []}
 
@@ -50,4 +37,19 @@ function toGenericTable(value: unknown): TaskTrackerTable {
         columns: ["value"],
         rows: items.map(item => ({value: item})),
     }
+}
+
+// Pivots the table so fields become rows and records become columns — e.g. a single card
+// {id, name, title} renders as one row per field instead of one column per field, which reads
+// better when there are few records but many fields.
+export function transposeTable(table: TaskTrackerTable): TaskTrackerTable {
+    const columns = ["Field", ...table.rows.map((_, i) => `#${i + 1}`)]
+    const rows = table.columns.map(field => {
+        const row: Record<string, unknown> = {Field: field}
+        table.rows.forEach((sourceRow, i) => {
+            row[`#${i + 1}`] = sourceRow[field]
+        })
+        return row
+    })
+    return {columns, rows}
 }
