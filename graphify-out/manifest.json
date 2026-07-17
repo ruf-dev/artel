@@ -2560,8 +2560,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/TractCanvasBuilder.tsx": {
-    "mtime": 1783754710.848371,
-    "ast_hash": "a6a78c517023fe754cef68775573493e",
+    "mtime": 1784307782.80909,
+    "ast_hash": "fbf38492379b172b35fffa8cf310a3d6",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea.tsx": {
@@ -2715,8 +2715,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasBuilder/useTractRunTracking.ts": {
-    "mtime": 1783576645.061764,
-    "ast_hash": "77364672fd8302b6a01bc6a244ca6244",
+    "mtime": 1784307778.3433106,
+    "ast_hash": "a84c09a1ae4c870fab70d93413256c27",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasTopBar/TractCanvasTopBar.tsx": {
@@ -2970,8 +2970,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasInspectorBody/TractCanvasInspectorBody.tsx": {
-    "mtime": 1783755108.9067721,
-    "ast_hash": "83054c90b4e69573c6e036120e4627b0",
+    "mtime": 1784307844.7041094,
+    "ast_hash": "907d24f8fb957290d222083751a2aee7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/icons/NodeIcon/NodeIcon.tsx": {
@@ -2985,8 +2985,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.tsx": {
-    "mtime": 1783755019.990136,
-    "ast_hash": "4f0d7b1170fbbbc42ffbeb876048d5f0",
+    "mtime": 1784307785.8506517,
+    "ast_hash": "d2be7cac881f098bf639b76ba7a2f665",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/segments/ContentSegment/ContentSegment.tsx": {
@@ -3210,8 +3210,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TractRunTimeline/components/TriggerPayloadSection.tsx": {
-    "mtime": 1783577516.3955946,
-    "ast_hash": "4d98ff009f8643c3b3ff6a69d8bd5307",
+    "mtime": 1784307748.8793404,
+    "ast_hash": "c1245c72b33a44b84fa028de8fded242",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/VaultCard/components/ConnBarRow.tsx": {
@@ -3254,14 +3254,9 @@
     "ast_hash": "17f7a4473e7fe1da39330ace37f16244",
     "semantic_hash": ""
   },
-  "pkg/client/ArtelUI/src/components/TractRunTimeline/components/JsonBlock.tsx": {
-    "mtime": 1783592140.464798,
-    "ast_hash": "4c745395bda2d3f134ebc502430299ad",
-    "semantic_hash": ""
-  },
   "pkg/client/ArtelUI/src/components/TractRunTimeline/components/StepRow.tsx": {
-    "mtime": 1783592148.6892254,
-    "ast_hash": "9d5187da36362e1066eb3a3de0121001",
+    "mtime": 1784307744.7502346,
+    "ast_hash": "af4983416971fd83fae269c5bd5c8837",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TractStepTree/components/ActionCard.tsx": {
@@ -3765,8 +3760,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/components/RunLog/RunLog.tsx": {
-    "mtime": 1783754740.3456168,
-    "ast_hash": "cb0dd8d8bbea383d4b90f4fe866f5c4d",
+    "mtime": 1784307764.059267,
+    "ast_hash": "ee54999e2de8891f764706bd2f9d35a7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/tractsMappers.ts": {
@@ -4677,6 +4672,11 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/RunScreens/RunScreens.tsx": {
     "mtime": 1784303532.490268,
     "ast_hash": "ed6f1b1e0e35db6bd7804201c296b017",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/components/JsonBlock/JsonBlock.tsx": {
+    "mtime": 1784307860.3015726,
+    "ast_hash": "001152ae82955173eacfe91d604d4afa",
     "semantic_hash": ""
   }
 }
