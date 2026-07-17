@@ -1,0 +1,16 @@
+.TaskTrackerTableHeadContainer {
+    & th {
+        position: sticky;
+        top: 0;
+        text-align: left;
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+        color: var(--color-fg-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.03125rem;
+        background: var(--color-bg-elevated);
+        border-bottom: var(--border-thickness) solid var(--color-border-light);
+        padding: 0.375rem 0.625rem;
+        white-space: nowrap;
+    }
+}
