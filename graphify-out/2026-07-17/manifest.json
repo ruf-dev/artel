@@ -4010,8 +4010,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/ToolDetail.tsx": {
-    "mtime": 1783754712.3645153,
-    "ast_hash": "3cb2f455d72cc1274bbc72eed84a7568",
+    "mtime": 1784273848.9725463,
+    "ast_hash": "7fa79fd06eaab909db3103b48821d521",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx": {
@@ -4037,11 +4037,6 @@
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ParamsList/components/ParamRow/components/ParamInput/ParamInput.tsx": {
     "mtime": 1783882233.4560006,
     "ast_hash": "b467f3749ad5b3ff63844c225fc95d70",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ResultPanel/ResultPanel.tsx": {
-    "mtime": 1783755016.6719313,
-    "ast_hash": "2124fbcbeef49789b4fbf09165d76632",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/SmtpActionView/SmtpActionView.tsx": {
@@ -4567,6 +4562,16 @@
   "pkg/client/ArtelUI/stylelint-rules/dialog-scrollable.js": {
     "mtime": 1784269365.778115,
     "ast_hash": "87f3fb184bad5b45254ea3d725b2589b",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/components/HeroSegment/HeroSegment.tsx": {
+    "mtime": 1784273898.5112734,
+    "ast_hash": "f8cec5ef7eb4659000c15e8cfd190771",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ToolResponseViewer/ToolResponseViewer.tsx": {
+    "mtime": 1784273822.8602102,
+    "ast_hash": "2f4c7a57fa7072f8d6c281351a755b6a",
     "semantic_hash": ""
   }
 }
