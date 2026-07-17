@@ -200,9 +200,9 @@ splitting an existing fat page.
 - Global overlays (dialogs, toasts) already work without `z-index` because they're mounted
   last, as a sibling after `<Routes>`, in `pages/segments/Dialog.tsx` — follow that precedent
   for any new global overlay instead of reaching for `z-index`.
-- Enforced for JS/TSX by the `no-restricted-syntax` rule banning `zIndex` in `eslint.config.js`.
-  There is no CSS linter in this project (see root CLAUDE.md — only add one if the user asks),
-  so `z-index` in `.module.css` files must be caught in code review.
+- Enforced for JS/TSX by the `no-restricted-syntax` rule banning `zIndex` in `eslint.config.js`,
+  and for `.module.css`/`.css` files by the `declaration-property-value-disallowed-list` rule
+  in `stylelint.config.js` (`bun run lint:css` / `bunx stylelint '**/*.{css,scss}'`).
 
 ## Never use `!important`
 
@@ -222,8 +222,32 @@ splitting an existing fat page.
   and `MobileTopBar.module.css`'s `.HamburgerBtn`/`.ActionBtn` (nested under
   `.MobileTopBarContainer`) and `DesktopNotesShell.module.css`'s `.ZoomBtn` for
   cases where the natural DOM structure already provides that extra nesting level.
-- There is no CSS linter in this project (see root CLAUDE.md — only add one if the
-  user asks), so `!important` in `.module.css` files must be caught in code review.
+- Enforced for `.module.css`/`.css` files by the `declaration-no-important` rule in
+  `stylelint.config.js` (`bun run lint:css` / `bunx stylelint '**/*.{css,scss}'`).
+
+## Dialog shells must scroll internally
+
+- Every dialog's outer shell (the top-level `{ComponentName}Container`-style class —
+  see Component Structure above; a few legacy files still call it `.Modal`/`.ModalContainer`,
+  don't rename those, just apply the rule below to whatever the outer rule is called)
+  **must set both `max-height` and `overflow-y: auto`**, even if its content looks
+  short today. Content grows (more form fields, a longer list) and viewports shrink
+  (a phone, a small laptop window) — a dialog with no height cap silently overflows
+  the viewport with no way to scroll it, rather than degrading gracefully.
+- Use the `--dialog-max-height` (`80vh`) or `--dialog-max-height-lg` (`90vh`) token
+  from `sizes.css` — never a raw `vh`/`px` value. Reach for `-lg` when the dialog is a
+  dense multi-field form or contains a list (see `ManageVaultDialog.module.css`,
+  `S3InstanceFormDialog.module.css`); the plain token is the default for simpler
+  dialogs (see `WebhookDetailsDialog.module.css`, `TokenRevealDialog.module.css`,
+  `UserSubscriptionDialog.module.css`).
+- This is independent of, and can coexist with, a narrower scrollable region *inside*
+  the dialog (e.g. `UserSessionsDialog.module.css`'s `.SessionsListContainer`, capped
+  shorter so the header/footer never scroll out of view) — that's an extra refinement
+  for a dialog whose header/actions should stay pinned while a long inner list
+  scrolls; the outer cap is required regardless.
+- Enforced by the custom `artel/dialog-scrollable` stylelint rule
+  (`stylelint-rules/dialog-scrollable.js`), scoped to `src/**/*Dialog/*Dialog.module.css`
+  in `stylelint.config.js`.
 
 ## Async style
 

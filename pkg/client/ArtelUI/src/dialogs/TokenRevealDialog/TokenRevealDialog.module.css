@@ -1,6 +1,7 @@
 .DialogContainer {
     width: var(--dialog-width-md);
     max-height: var(--dialog-max-height);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     background: var(--color-bg-card);

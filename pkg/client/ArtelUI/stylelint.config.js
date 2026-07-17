@@ -5,6 +5,9 @@ export default {
         'stylelint-config-standard-scss',
         'stylelint-config-css-modules',
     ],
+    plugins: [
+        './stylelint-rules/dialog-scrollable.js',
+    ],
     rules: {
         // No named colors — always use CSS variables
         'color-named': 'never',
@@ -62,6 +65,15 @@ export default {
                     'lower',
                     {ignoreProperties: ['composes']},
                 ],
+            },
+        },
+        // Dialog shells (top-level and colocated sub-dialogs): must cap their own
+        // height and scroll internally instead of overflowing the viewport — see
+        // stylelint-rules/dialog-scrollable.js
+        {
+            files: ['src/**/*Dialog/*Dialog.module.css'],
+            rules: {
+                'artel/dialog-scrollable': true,
             },
         },
         // Global token files: hex color definitions and base sizing are the source of truth here

@@ -23,6 +23,8 @@
     .Modal {
         width: 100%;
         max-width: 28.75rem;
+        max-height: var(--dialog-max-height);
+        overflow-y: auto;
         background: var(--color-bg-card);
         border: var(--border-thickness) solid var(--color-border-light);
         border-radius: 1.25rem;
