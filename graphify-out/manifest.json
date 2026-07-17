@@ -4675,8 +4675,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/JsonBlock/JsonBlock.tsx": {
-    "mtime": 1784307860.3015726,
-    "ast_hash": "001152ae82955173eacfe91d604d4afa",
+    "mtime": 1784308247.013216,
+    "ast_hash": "64c302b5c56f9861866daddf5bebb383",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/components/JsonBlock/components/JsonNode.tsx": {
+    "mtime": 1784308351.3240876,
+    "ast_hash": "41179eb2f62d628dff99ecb5de92bad9",
     "semantic_hash": ""
   }
 }
