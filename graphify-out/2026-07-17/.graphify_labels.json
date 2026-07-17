@@ -588,6 +588,7 @@
   "586": "LinkS3Bucket_Response",
   "587": "file_vaults_proto_rawDescGZIP",
   "588": "ListMembers",
+  "589": ".listConnectionsForTracts",
   "590": "RevokeInviteLink_Response",
   "592": ".RevokeKey",
   "593": "PromptId (enum)",
