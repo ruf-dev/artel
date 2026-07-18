@@ -1,11 +1,16 @@
 import {Button, Input} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/ScriptBody/components/ScriptParamRow/ScriptParamRow.module.css"
-import {ScriptParam} from "@/processes/Tracts.ts"
+import {ScriptParam, SchemaProperty} from "@/processes/Tracts.ts"
 import TemplateInput, {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
 import {CloseIcon} from "@/pages/tract-canvas/icons/CloseIcon/CloseIcon.tsx"
+import SchemaPropsEditor
+    from "@/pages/tract-canvas/components/ScriptBody/components/SchemaPropsEditor/SchemaPropsEditor.tsx"
 
-const PARAM_TYPES: ScriptParam["type"]["type"][] = ["string", "number", "integer", "boolean", "array", "object"]
+type ParamType = ScriptParam["type"]["type"]
+
+const PARAM_TYPES: ParamType[] = ["string", "number", "integer", "boolean", "array", "object"]
+const ITEM_TYPES: ParamType[] = ["string", "number", "integer", "boolean", "object"]
 
 interface Props {
     param: ScriptParam
@@ -20,10 +25,36 @@ interface Props {
     }
 }
 
-/** ScriptParamRow renders one editable {name, type, description-less} row shared by
- * ScriptBody's Inputs and Outputs sections — the only difference is whether `binding` is
- * passed (input params bind to a template expr; output params are declared only). */
+/** ScriptParamRow renders one editable {name, type, shape} row shared by ScriptBody's Inputs
+ * and Outputs sections — the only difference is whether `binding` is passed (input params
+ * bind to a template expr; output params are declared only). When type is "array", an item
+ * type selector appears; when the type (or array item type) is "object", a one-level
+ * SchemaPropsEditor appears beneath it to declare that object's fields. */
 export default function ScriptParamRow({param, onChange, onRemove, binding}: Props) {
+    const type = param.type
+
+    function retype(nextType: ParamType) {
+        const next: SchemaProperty = {type: nextType, description: type.description}
+        if (nextType === "array") next.items = type.items ?? {type: "string"}
+        if (nextType === "object") next.properties = type.properties ?? {}
+        onChange({type: next})
+    }
+
+    function retypeItems(nextItemType: ParamType) {
+        const items: SchemaProperty = nextItemType === "object"
+            ? {type: "object", properties: type.items?.properties ?? {}}
+            : {type: nextItemType}
+        onChange({type: {...type, items}})
+    }
+
+    function changeItemProperties(properties: Record<string, SchemaProperty>) {
+        onChange({type: {...type, items: {...type.items, type: "object", properties}}})
+    }
+
+    function changeProperties(properties: Record<string, SchemaProperty>) {
+        onChange({type: {...type, properties}})
+    }
+
     return (
         <div className={cls.ScriptParamRowContainer}>
             <div className={cls.Head}>
@@ -35,11 +66,8 @@ export default function ScriptParamRow({param, onChange, onRemove, binding}: Pro
                 />
                 <select
                     className={cls.TypeSelect}
-                    value={param.type.type}
-                    onChange={e => {
-                        const nextType = e.target.value as ScriptParam["type"]["type"]
-                        onChange({type: {...param.type, type: nextType}})
-                    }}
+                    value={type.type}
+                    onChange={e => retype(e.target.value as ParamType)}
                 >
                     {PARAM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -47,6 +75,30 @@ export default function ScriptParamRow({param, onChange, onRemove, binding}: Pro
                     <CloseIcon/>
                 </Button>
             </div>
+            {type.type === "array" && (
+                <div className={cls.Head}>
+                    <span className={cls.ItemTypeLabel}>item type</span>
+                    <select
+                        className={cls.TypeSelect}
+                        value={type.items?.type ?? "string"}
+                        onChange={e => retypeItems(e.target.value as ParamType)}
+                    >
+                        {ITEM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                </div>
+            )}
+            {type.type === "array" && type.items?.type === "object" && (
+                <SchemaPropsEditor
+                    properties={type.items.properties ?? {}}
+                    onChange={changeItemProperties}
+                />
+            )}
+            {type.type === "object" && (
+                <SchemaPropsEditor
+                    properties={type.properties ?? {}}
+                    onChange={changeProperties}
+                />
+            )}
             {binding && (
                 <TemplateInput
                     value={binding.value}

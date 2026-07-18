@@ -114,6 +114,13 @@
   /* ── Focus / empty-state (new, theme-aware) ─────────────── */
   --color-bg-input-focus:    #131313;
   --color-empty-icon-stroke: rgb(255 255 255 / 35%);
+
+  /* ── Code syntax highlighting (script step editor) ──────── */
+  --syntax-keyword:  var(--coral);
+  --syntax-string:   var(--status-online);
+  --syntax-number:   var(--color-warning);
+  --syntax-comment:  var(--color-fg-tertiary);
+  --syntax-property: var(--color-fg-secondary);
 }
 
 /* ════════════ LIGHT THEME ════════════ */

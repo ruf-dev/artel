@@ -16,22 +16,8 @@
     }
 
     & .CodeEditor {
-        box-sizing: border-box;
         width: 100%;
-        padding: 0.5rem 0.625rem;
-        border-radius: 0.4375rem;
-        border: var(--border-thickness) solid var(--color-border-light);
-        background: var(--color-bg-input);
-        color: var(--color-fg-primary);
-        font-family: var(--font-mono);
         font-size: 0.6875rem;
         line-height: 1.5;
-        outline: none;
-        resize: vertical;
-        transition: border-color 140ms ease;
-
-        &:focus {
-            border-color: var(--coral);
-        }
     }
 }

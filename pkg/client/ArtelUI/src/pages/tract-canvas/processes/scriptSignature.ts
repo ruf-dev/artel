@@ -4,9 +4,9 @@
 // javascript.go's buildSource) — signature, JSDoc, output prelude, and return statement are
 // never persisted, only ever derived from inputParams/outputParams, here and server-side.
 
-import {ScriptParam} from "@/processes/Tracts.ts"
+import {ScriptParam, SchemaProperty} from "@/processes/Tracts.ts"
 
-const JSDOC_TYPE: Record<string, string> = {
+const JSDOC_PRIMITIVE: Record<string, string> = {
     string: "string",
     integer: "number",
     number: "number",
@@ -15,8 +15,56 @@ const JSDOC_TYPE: Record<string, string> = {
     object: "object",
 }
 
-function jsDocType(param: ScriptParam): string {
-    return JSDOC_TYPE[param.type.type] ?? "any"
+function jsDocPrimitive(type: string): string {
+    return JSDOC_PRIMITIVE[type] ?? "any"
+}
+
+function toPascalCase(name: string): string {
+    return name
+        .replace(/[^a-zA-Z0-9]+(.)/g, (_, c: string) => c.toUpperCase())
+        .replace(/^./, c => c.toUpperCase())
+}
+
+/** objectTypedefLines renders a `@typedef {Object} Name` block documenting a flat object
+ * schema's properties (one level deep — a property's own type is always primitive here,
+ * never a nested array/object, matching what the param-shape editor lets users declare). */
+function objectTypedefLines(typedefName: string, schema: SchemaProperty): string[] {
+    const lines = ["/**", ` * @typedef {Object} ${typedefName}`]
+
+    for (const [propName, propSchema] of Object.entries(schema.properties ?? {})) {
+        const desc = propSchema.description ? ` - ${propSchema.description}` : ""
+        lines.push(` * @property {${jsDocPrimitive(propSchema.type)}} ${propName}${desc}`)
+    }
+
+    lines.push(" */")
+    return lines
+}
+
+/** resolvedJsDocType maps a param to the type expression used in its `@param`/`@returns`
+ * entry, plus an optional `@typedef` block (printed above the main JSDoc) when the param's
+ * type — or an array param's item type — is an object with a declared property shape.
+ * Falls back to the bare "Array"/"object" JSDoc type when no shape has been declared, so
+ * params created before the shape editor existed still render sensibly. */
+function resolvedJsDocType(param: ScriptParam): { expr: string, typedef?: string[] } {
+    const type = param.type
+
+    if (type.type === "array" && type.items) {
+        const itemType = type.items
+
+        if (itemType.type === "object" && itemType.properties) {
+            const typedefName = `${toPascalCase(param.name)}Item`
+            return {expr: `${typedefName}[]`, typedef: objectTypedefLines(typedefName, itemType)}
+        }
+
+        return {expr: `${jsDocPrimitive(itemType.type)}[]`}
+    }
+
+    if (type.type === "object" && type.properties) {
+        const typedefName = `${toPascalCase(param.name)}Shape`
+        return {expr: typedefName, typedef: objectTypedefLines(typedefName, type)}
+    }
+
+    return {expr: jsDocPrimitive(type.type)}
 }
 
 function zeroValueLiteral(type: string): string {
@@ -42,16 +90,28 @@ function zeroValueLiteral(type: string): string {
 export function generatedHeader(
     name: string, inputParams: ScriptParam[], outputParams: ScriptParam[],
 ): string {
-    const lines: string[] = ["/**"]
+    const typedefBlocks: string[][] = []
+    const paramLines: string[] = []
 
     for (const p of inputParams) {
+        const {expr, typedef} = resolvedJsDocType(p)
+        if (typedef) typedefBlocks.push(typedef)
+
         const desc = p.type.description ? ` - ${p.type.description}` : ""
-        lines.push(` * @param {${jsDocType(p)}} ${p.name}${desc}`)
+        paramLines.push(` * @param {${expr}} ${p.name}${desc}`)
     }
 
-    if (outputParams.length > 0) {
-        const shape = outputParams.map(p => `${p.name}: ${jsDocType(p)}`).join(", ")
-        lines.push(` * @returns {{${shape}}}`)
+    const outputExprs = outputParams.map(p => {
+        const {expr, typedef} = resolvedJsDocType(p)
+        if (typedef) typedefBlocks.push(typedef)
+        return `${p.name}: ${expr}`
+    })
+
+    const lines: string[] = typedefBlocks.flatMap(block => [...block, ""])
+    lines.push("/**", ...paramLines)
+
+    if (outputExprs.length > 0) {
+        lines.push(` * @returns {{${outputExprs.join(", ")}}}`)
     }
 
     lines.push(" */")

@@ -1,16 +1,11 @@
-.ScriptParamRowContainer {
+.SchemaPropsEditorContainer {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding-bottom: 0.5rem;
-    border-bottom: var(--border-thickness) solid var(--color-border);
+    padding: 0.375rem 0 0.125rem 0.75rem;
+    border-left: var(--border-thickness) solid var(--color-border-light);
 
-    &:last-of-type {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    & .Head {
+    & .Row {
         display: flex;
         align-items: center;
         gap: 0.25rem;
@@ -43,10 +38,7 @@
         }
     }
 
-    & .ItemTypeLabel {
-        flex: 1;
-        color: var(--color-fg-secondary);
-        font-family: var(--font-mono);
-        font-size: 0.6875rem;
+    & .AddBtn {
+        align-self: flex-start;
     }
 }
