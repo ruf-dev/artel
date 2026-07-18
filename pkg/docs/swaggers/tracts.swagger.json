@@ -1012,6 +1012,42 @@
     "artel_apiRunTractResponse": {
       "type": "object"
     },
+    "artel_apiScriptLanguage": {
+      "type": "string",
+      "enum": [
+        "SCRIPT_LANGUAGE_UNSPECIFIED",
+        "SCRIPT_LANGUAGE_JAVASCRIPT"
+      ],
+      "default": "SCRIPT_LANGUAGE_UNSPECIFIED"
+    },
+    "artel_apiScriptStep": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "$ref": "#/definitions/artel_apiScriptLanguage"
+        },
+        "code": {
+          "type": "string",
+          "title": "user-authored function body only"
+        },
+        "inputParams": {
+          "type": "string",
+          "title": "JSON-encoded [{\"name\":..., \"type\": {...}}], ordered"
+        },
+        "outputParams": {
+          "type": "string",
+          "title": "JSON-encoded, same shape"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "input bindings, keyed by an input_params name"
+        }
+      },
+      "description": "ScriptStep runs a user-authored function body against a strictly declared, ordered\ninput/output param list. Only the body is free-form — the signature, JSDoc, and return\nstatement the UI shows around it are generated from input_params/output_params, never\nstored. params binds each declared input_params entry to a template expression, exactly\nlike ActionStep.params does for a tool's input schema."
+    },
     "artel_apiSetTractEnabledRequest": {
       "type": "object",
       "properties": {
@@ -1210,6 +1246,9 @@
         },
         "group": {
           "$ref": "#/definitions/artel_apiGroupStep"
+        },
+        "script": {
+          "$ref": "#/definitions/artel_apiScriptStep"
         }
       },
       "description": "TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one\ndetermines the step's behavior (no separate type discriminant needed on the wire)."

@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,6 +20,27 @@ func actionStep(id string, params map[string]string) domain.TractStep {
 		Mcp:    builtinMcpName,
 		Tool:   "write_file",
 		Params: params,
+	}
+
+	return step
+}
+
+func scriptStep(
+	id string,
+	inputParams []domain.ScriptParam,
+	outputParams []domain.ScriptParam,
+	params map[string]string,
+	code string,
+) domain.TractStep {
+	step := domain.TractStep{
+		Id:           id,
+		Name:         id,
+		Type:         stepTypeScript,
+		Language:     domain.ScriptLanguageJavaScript,
+		Code:         code,
+		InputParams:  inputParams,
+		OutputParams: outputParams,
+		Params:       params,
 	}
 
 	return step
@@ -267,12 +289,118 @@ func TestValidateShape_VisibilityRule(t *testing.T) {
 	})
 }
 
+func TestValidateShape_ScriptStep(t *testing.T) {
+	validInput := []domain.ScriptParam{{Name: "a", Property: domain.ToolProperty{Type: "number"}}}
+	validOutput := []domain.ScriptParam{{Name: "sum", Property: domain.ToolProperty{Type: "number"}}}
+	validBinding := map[string]string{"a": "{{ trigger.a }}"}
+
+	t.Run("valid script step passes", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.NoError(t, err)
+	})
+
+	t.Run("missing language is rejected", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step.Language = domain.ScriptLanguageUnspecified
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+
+	t.Run("missing code is rejected", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, validBinding, "")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+
+	t.Run("duplicate param name is rejected", func(t *testing.T) {
+		dupInput := []domain.ScriptParam{
+			{Name: "a", Property: domain.ToolProperty{Type: "number"}},
+			{Name: "a", Property: domain.ToolProperty{Type: "number"}},
+		}
+		step := scriptStep("s", dupInput, validOutput, map[string]string{"a": "1"}, "sum = a;")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+
+	t.Run("invalid identifier is rejected", func(t *testing.T) {
+		badInput := []domain.ScriptParam{{Name: "1bad", Property: domain.ToolProperty{Type: "number"}}}
+		step := scriptStep("s", badInput, validOutput, map[string]string{"1bad": "1"}, "sum = 1;")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+
+	t.Run("missing binding is rejected", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, map[string]string{}, "sum = a;")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+
+	t.Run("extra binding is rejected", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, map[string]string{"a": "1", "extra": "2"}, "sum = a;")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+
+	t.Run("conditions on a script step is rejected", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step.Conditions = []domain.TractCondition{{Left: "1", Op: "==", Right: "1"}}
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := validateShape(def)
+		assert.Error(t, err)
+	})
+}
+
+func TestValidateScriptEngines(t *testing.T) {
+	mcpDefs := newFakeMcpDefsRepo()
+	externalConns := newFakeExternalConnsRepo()
+	executor := newFakeToolExecutor()
+	svc := newTestService(mcpDefs, externalConns, executor)
+
+	validInput := []domain.ScriptParam{{Name: "a", Property: domain.ToolProperty{Type: "number"}}}
+	validOutput := []domain.ScriptParam{{Name: "sum", Property: domain.ToolProperty{Type: "number"}}}
+	validBinding := map[string]string{"a": "1"}
+
+	t.Run("registered language passes", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := svc.validateScriptEngines(def)
+		assert.NoError(t, err)
+	})
+
+	t.Run("unregistered language is rejected", func(t *testing.T) {
+		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step.Language = "lua"
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := svc.validateScriptEngines(def)
+		assert.Error(t, err)
+	})
+}
+
 func newTestService(
 	mcpDefs *fakeMcpDefsRepo,
 	externalConns *fakeExternalConnsRepo,
 	executor *fakeToolExecutor,
 ) *Service {
-	svc := New(nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree())
+	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
+	svc := New(nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
 
 	return svc
 }

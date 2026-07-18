@@ -1,0 +1,45 @@
+.ScriptParamRowContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: var(--border-thickness) solid var(--color-border);
+
+    &:last-of-type {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    & .Head {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    & .NameInputWrapper {
+        flex: 1;
+    }
+
+    & .NameInput {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+    }
+
+    & .TypeSelect {
+        flex-shrink: 0;
+        box-sizing: border-box;
+        padding: 0.375rem 0.5625rem;
+        border-radius: 0.4375rem;
+        border: var(--border-thickness) solid var(--color-border-light);
+        background: var(--color-bg-input);
+        color: var(--color-fg-primary);
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        outline: none;
+        transition: border-color 140ms ease;
+
+        &:focus {
+            border-color: var(--coral);
+        }
+    }
+}

@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"go.redsock.ru/rerrors"
 )
 
@@ -23,11 +24,17 @@ const (
 	stepTypeCondition = "condition"
 	stepTypeParallel  = "parallel"
 	stepTypeGroup     = "group"
+	stepTypeScript    = "script"
 )
 
 const reservedStepId = "trigger"
 
 var stepIdPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+
+// scriptParamIdPattern matches a valid JS identifier — script step input/output param
+// names become function parameter/return-object names verbatim (see script/javascript.go's
+// buildSource), so they're validated against JS identifier syntax at save time.
+var scriptParamIdPattern = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$]*$`)
 
 // Service implements service.TractService and (via engine.go) the tract run engine.
 type Service struct {
@@ -38,6 +45,7 @@ type Service struct {
 	mcpDefs        repository.McpDefinitionsRepo
 	toolExecutor   ToolExecutor
 	subscriptions  service.SubscriptionService
+	scriptEngines  script.Registry
 }
 
 func New(
@@ -48,6 +56,7 @@ func New(
 	mcpDefs repository.McpDefinitionsRepo,
 	toolExecutor ToolExecutor,
 	subscriptions service.SubscriptionService,
+	scriptEngines script.Registry,
 ) *Service {
 	tractSvc := &Service{
 		tracts:         tracts,
@@ -57,6 +66,7 @@ func New(
 		mcpDefs:        mcpDefs,
 		toolExecutor:   toolExecutor,
 		subscriptions:  subscriptions,
+		scriptEngines:  scriptEngines,
 	}
 
 	return tractSvc
@@ -88,6 +98,11 @@ func (s *Service) CreateTract(
 	}
 
 	err = s.validateTools(ctx, uc.UserUuid, def)
+	if err != nil {
+		return domain.Tract{}, nil, err
+	}
+
+	err = s.validateScriptEngines(def)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}
@@ -165,6 +180,11 @@ func (s *Service) UpdateTract(
 	}
 
 	err = s.validateTools(ctx, existing.UserUuid, def)
+	if err != nil {
+		return domain.Tract{}, nil, err
+	}
+
+	err = s.validateScriptEngines(def)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}
@@ -326,9 +346,112 @@ func validateStepShape(step domain.TractStep) error {
 
 		return nil
 
+	case stepTypeScript:
+		if len(step.Conditions) > 0 || len(step.Then) > 0 || len(step.Else) > 0 || len(step.Steps) > 0 ||
+			step.Mcp != "" || step.Tool != "" || step.ConnectionUuid != uuid.Nil {
+			return rerrors.Wrap(user_errors.TractConditionsOnNonBranch, step.Id)
+		}
+
+		if step.Language == domain.ScriptLanguageUnspecified || step.Code == "" {
+			return rerrors.Wrap(user_errors.TractScriptParamInvalid, step.Id+": language and code are required")
+		}
+
+		return validateScriptParams(step)
+
 	default:
 		return rerrors.Wrap(user_errors.TractUnknownStepType, step.Type)
 	}
+}
+
+// validateScriptParams checks a script step's declared InputParams/OutputParams names are
+// non-empty, valid JS identifiers, and unique within each list, and that step.Params (the
+// input bindings, reusing the same field action steps use) has exactly one entry per
+// declared InputParams name — no missing, no extra.
+func validateScriptParams(step domain.TractStep) error {
+	err := validateScriptParamNames(step.Id, step.InputParams)
+	if err != nil {
+		return err
+	}
+
+	err = validateScriptParamNames(step.Id, step.OutputParams)
+	if err != nil {
+		return err
+	}
+
+	if len(step.Params) != len(step.InputParams) {
+		return rerrors.Wrap(user_errors.TractScriptBindingMismatch, step.Id)
+	}
+
+	for _, param := range step.InputParams {
+		_, ok := step.Params[param.Name]
+		if !ok {
+			return rerrors.Wrap(user_errors.TractScriptBindingMismatch, step.Id+": missing binding for "+param.Name)
+		}
+	}
+
+	return nil
+}
+
+func validateScriptParamNames(stepId string, params []domain.ScriptParam) error {
+	seen := make(map[string]struct{}, len(params))
+
+	for _, param := range params {
+		if !scriptParamIdPattern.MatchString(param.Name) {
+			return rerrors.Wrap(user_errors.TractScriptParamInvalid, stepId+": "+param.Name)
+		}
+
+		_, exists := seen[param.Name]
+		if exists {
+			return rerrors.Wrap(user_errors.TractScriptParamInvalid, stepId+": duplicate param "+param.Name)
+		}
+
+		seen[param.Name] = struct{}{}
+	}
+
+	return nil
+}
+
+// validateScriptEngines confirms every script step's declared Language has a registered
+// Engine — a service-level check (unlike validateStepShape, which is pure) since it needs
+// s.scriptEngines.
+func (s *Service) validateScriptEngines(def domain.TractDefinition) error {
+	return walkScriptSteps(def.Steps, func(step domain.TractStep) error {
+		_, ok := s.scriptEngines[step.Language]
+		if !ok {
+			return rerrors.Wrap(user_errors.TractScriptEngineNotFound, step.Id)
+		}
+
+		return nil
+	})
+}
+
+func walkScriptSteps(steps []domain.TractStep, fn func(domain.TractStep) error) error {
+	for _, step := range steps {
+		switch step.Type {
+		case stepTypeScript:
+			err := fn(step)
+			if err != nil {
+				return err
+			}
+		case stepTypeCondition:
+			err := walkScriptSteps(step.Then, fn)
+			if err != nil {
+				return err
+			}
+
+			err = walkScriptSteps(step.Else, fn)
+			if err != nil {
+				return err
+			}
+		case stepTypeParallel, stepTypeGroup:
+			err := walkScriptSteps(step.Steps, fn)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 // checkVisibility walks steps in execution order, verifying every template ref (from Params
@@ -353,7 +476,7 @@ func checkVisibility(steps []domain.TractStep, visible map[string]struct{}) (map
 		}
 
 		switch step.Type {
-		case stepTypeAction:
+		case stepTypeAction, stepTypeScript:
 			local[step.Id] = struct{}{}
 			produced[step.Id] = struct{}{}
 

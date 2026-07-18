@@ -34,13 +34,19 @@ export interface StepColor {
 }
 
 /** colorForKind mirrors the mockup's color law: coral = builtin/vault ops, blue = external
- * integrations, amber = logic/condition, purple = structural (parallel/group). */
-export function colorForKind(kind: "trigger" | "action" | "condition" | "parallel" | "group", mcp?: string): StepColor {
+ * integrations, amber = logic/condition, purple = structural (parallel/group), green = script. */
+export function colorForKind(
+    kind: "trigger" | "action" | "condition" | "parallel" | "group" | "script",
+    mcp?: string,
+): StepColor {
     if (kind === "condition") {
         return {bg: "var(--amber-dim)", border: "rgba(245,158,11,0.28)", fg: "var(--color-warning)"}
     }
     if (kind === "parallel" || kind === "group") {
         return {bg: "rgba(167,139,250,0.12)", border: "rgba(167,139,250,0.28)", fg: "#a78bfa"}
+    }
+    if (kind === "script") {
+        return {bg: "rgba(52,211,153,0.12)", border: "rgba(52,211,153,0.28)", fg: "#34d399"}
     }
     if (kind === "trigger" || mcp === "artel" || !mcp) {
         return {bg: "var(--coral-dim)", border: "var(--coral-border)", fg: "var(--coral)"}

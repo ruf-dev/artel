@@ -8,21 +8,16 @@ import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {cn} from "@/app/utils/cn.ts"
 import {ChevronRightIcon} from "@/pages/tract-canvas/icons/ChevronRightIcon/ChevronRightIcon.tsx"
 import {CloseIcon} from "@/pages/tract-canvas/icons/CloseIcon/CloseIcon.tsx"
-import TriggerPanel from "@/components/TriggerPanel/TriggerPanel.tsx"
 import JsonBlock from "@/components/JsonBlock/JsonBlock.tsx"
 import Section from "@/pages/tract-canvas/components/Section/Section.tsx"
 import OutputFields from "@/pages/tract-canvas/components/OutputFields/OutputFields.tsx"
-import ActionBody from "@/pages/tract-canvas/components/ActionBody/ActionBody.tsx"
-import ConditionBody from "@/pages/tract-canvas/components/ConditionBody/ConditionBody.tsx"
-import ParallelBody from "@/pages/tract-canvas/components/ParallelBody/ParallelBody.tsx"
-import GroupBody from "@/pages/tract-canvas/components/GroupBody/GroupBody.tsx"
-import DangerZone from "@/pages/tract-canvas/components/DangerZone/DangerZone.tsx"
+import StepBody from "@/pages/tract-canvas/components/TractCanvasInspectorBody/components/StepBody.tsx"
 
 // Read-only value actually used the last time this node ran, shown only while a run is
 // selected in the log panel — the editable inputs elsewhere in the sidebar are unaffected.
 function runValueFor(node: CanvasNode, activeTriggerPayload: unknown, activeInputByStepId: Record<string, unknown>) {
     if (node.kind === "trigger") return activeTriggerPayload
-    if (node.kind === "action" && node.step) return activeInputByStepId[node.step.id]
+    if ((node.kind === "action" || node.kind === "script") && node.step) return activeInputByStepId[node.step.id]
     return undefined
 }
 
@@ -76,44 +71,13 @@ export default function TractCanvasInspectorBody(props: Props) {
                 </Button>
             </div>
             <div className={cls.Body}>
-                {node.kind === "trigger" && (
-                    <TriggerPanel tractUuid={tractUuid} linkedTriggerSummaries={linkedTriggerSummaries}/>
-                )}
-                {step && node.kind === "action" && (
-                    <ActionBody
-                        rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema}
-                        momCandidates={momCandidates}
-                        lastOutput={lastOutputByStepId[step.id]}
-                        onChangeSteps={onChangeSteps}
-                    />
-                )}
-                {step && node.kind === "condition" && (
-                    <ConditionBody
-                        rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema}
-                        onChangeSteps={onChangeSteps} onOpenAddBlock={onOpenAddBlock} enlarged={enlarged}
-                    />
-                )}
-                {step && node.kind === "parallel" && (
-                    <ParallelBody step={step} onOpenAddBlock={onOpenAddBlock}/>
-                )}
-                {step && node.kind === "group" && (
-                    <GroupBody
-                        rootSteps={rootSteps}
-                        step={step}
-                        tools={tools}
-                        triggerSchema={triggerSchema}
-                        onChangeSteps={onChangeSteps}
-                    />
-                )}
-                {step && (
-                    <DangerZone
-                        rootSteps={rootSteps}
-                        step={step}
-                        location={node.location}
-                        onChangeSteps={onChangeSteps}
-                        onClose={onClose}
-                    />
-                )}
+                <StepBody
+                    node={node} rootSteps={rootSteps} tools={tools} triggerSchema={triggerSchema}
+                    momCandidates={momCandidates} lastOutputByStepId={lastOutputByStepId}
+                    tractUuid={tractUuid} linkedTriggerSummaries={linkedTriggerSummaries}
+                    onChangeSteps={onChangeSteps} onOpenAddBlock={onOpenAddBlock} onClose={onClose}
+                    enlarged={enlarged}
+                />
                 {node.kind === "action" || node.kind === "trigger" ? (
                     <Section title="Output">
                         <OutputFields
@@ -124,7 +88,7 @@ export default function TractCanvasInspectorBody(props: Props) {
                             }
                         />
                     </Section>
-                ) : (
+                ) : node.kind === "script" ? null : (
                     <Section title="Flow">
                         <Button
                             variant="ghost"

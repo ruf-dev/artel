@@ -17,6 +17,11 @@ type OneOf<T> =
         : never
       : never);
 
+export enum ScriptLanguage {
+  SCRIPT_LANGUAGE_UNSPECIFIED = "SCRIPT_LANGUAGE_UNSPECIFIED",
+  SCRIPT_LANGUAGE_JAVASCRIPT = "SCRIPT_LANGUAGE_JAVASCRIPT",
+}
+
 export type TractTriggerSummary = {
   uuid?: string;
   name?: string;
@@ -39,6 +44,14 @@ export type ActionStep = {
   mcp?: string;
   tool?: string;
   connectionUuid?: string;
+  params?: Record<string, string>;
+};
+
+export type ScriptStep = {
+  language?: ScriptLanguage;
+  code?: string;
+  inputParams?: string;
+  outputParams?: string;
   params?: Record<string, string>;
 };
 
@@ -68,6 +81,7 @@ export type TractStep = BaseTractStep &
     condition: ConditionStep;
     parallel: ParallelStep;
     group: GroupStep;
+    script: ScriptStep;
   }>;
 
 export type TractDefinition = {

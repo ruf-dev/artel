@@ -19,6 +19,7 @@ import (
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
 	"github.com/ruf-dev/artel/internal/transport/admin_subscriptions_api"
@@ -69,9 +70,10 @@ func (c *Custom) Init(a *App) error {
 	// Tract is constructed here (not in svcv1.New) because its ToolExecutor composes the
 	// already-built Mcp and Mom services — mcp must exist first, then tract.
 	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
+	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
 	services.Tract = tract.New(
 		repo.Tracts(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(), repo.McpDefinitions(),
-		tractToolExecutor, services.SubscriptionService(),
+		tractToolExecutor, services.SubscriptionService(), scriptEngines,
 	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that

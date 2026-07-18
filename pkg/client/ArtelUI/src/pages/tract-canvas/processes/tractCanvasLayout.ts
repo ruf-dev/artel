@@ -30,7 +30,7 @@ export const MARGIN_Y = 220
 
 const ROW_GAP = 32
 
-export type CanvasNodeKind = "trigger" | "action" | "condition" | "parallel" | "group"
+export type CanvasNodeKind = "trigger" | "action" | "condition" | "parallel" | "group" | "script"
 
 export interface CanvasNode {
     id: string
@@ -231,11 +231,14 @@ function layoutFlow(
             return
         }
 
-        // action or group: one node each (a group's own nested steps are edited in the
-        // inspector, not expanded onto the canvas)
+        // action, script, or group: one node each (a group's own nested steps are edited in
+        // the inspector, not expanded onto the canvas)
         const id = step.id
+        let kind: CanvasNodeKind = "action"
+        if (step.type === "group") kind = "group"
+        if (step.type === "script") kind = "script"
         nodes.push({
-            id, col: curCol, row, kind: step.type === "group" ? "group" : "action", step, location, index,
+            id, col: curCol, row, kind, step, location, index,
             nextLocation: next.location, nextIndex: next.index,
         })
         addEdges(edges, curPrevIds, id)

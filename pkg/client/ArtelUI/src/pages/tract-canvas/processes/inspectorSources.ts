@@ -1,4 +1,4 @@
-import {SchemaNode, TractStep, TractTool} from "@/processes/Tracts.ts"
+import {SchemaNode, SchemaProperty, TractStep, TractTool} from "@/processes/Tracts.ts"
 import {computeVisibleStepIds, findStepById} from "@/processes/tractTemplate.ts"
 import {TemplateSource} from "@/components/TemplateInput/TemplateInput.tsx"
 
@@ -18,6 +18,12 @@ export function buildSources(
                 id, label: step.name || id,
                 schema: {properties: {result: {type: "boolean", description: "condition result"}}},
             })
+        } else if (step.type === "script") {
+            const properties: Record<string, SchemaProperty> = {}
+            for (const p of step.outputParams ?? []) {
+                properties[p.name] = p.type
+            }
+            sources.push({id, label: step.name || id, schema: {properties}})
         }
     }
     return sources

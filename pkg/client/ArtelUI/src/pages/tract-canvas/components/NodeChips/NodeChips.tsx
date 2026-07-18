@@ -37,6 +37,11 @@ export default function NodeChips({node, tools, triggerInfo, momCandidates}: {
         const n = step.steps?.length ?? 0
         return <span className={cls.Chip}>{n} {n === 1 ? "step" : "steps"}</span>
     }
+    if (node.kind === "script") {
+        const inN = step.inputParams?.length ?? 0
+        const outN = step.outputParams?.length ?? 0
+        return <span className={cls.Chip}>{inN} in · {outN} out</span>
+    }
 
     const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
     if (!tool) return <span className={cls.Chip}>unknown tool</span>

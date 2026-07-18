@@ -3,11 +3,12 @@ import {useMemo} from "react"
 import {TractTool} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {BranchIcon} from "@/pages/tract-canvas/icons/BranchIcon/BranchIcon.tsx"
+import {CodeIcon} from "@/pages/tract-canvas/icons/CodeIcon/CodeIcon.tsx"
 
 const BUILTIN_MCP = "artel"
 
 export interface LogicOption {
-    type: "condition"
+    type: "condition" | "script"
     name: string
     desc: string
     Icon: (p: { className?: string }) => React.JSX.Element
@@ -15,6 +16,7 @@ export interface LogicOption {
 
 const LOGIC_OPTIONS: LogicOption[] = [
     {type: "condition", name: "Condition", desc: "Route to a true/false branch", Icon: BranchIcon},
+    {type: "script", name: "Script", desc: "Run a function against declared input/output params", Icon: CodeIcon},
 ]
 
 interface Args {

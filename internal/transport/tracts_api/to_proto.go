@@ -245,6 +245,74 @@ func schemaToJSON(schema domain.ToolSchema) string {
 	return string(data)
 }
 
+// -- JSON <-> []domain.ScriptParam --
+//
+// Ordered (unlike ToolSchema.Properties, a map), so this is its own row shape rather than
+// reusing toolSchemaRow — a JSON array preserves the order that drives the generated
+// function signature (see script/javascript.go's buildSource).
+
+type scriptParamRow struct {
+	Name string          `json:"name"`
+	Type toolPropertyRow `json:"type"`
+}
+
+func scriptParamsToJSON(params []domain.ScriptParam) string {
+	rows := make([]scriptParamRow, len(params))
+	for i, p := range params {
+		rows[i] = scriptParamRow{Name: p.Name, Type: toolPropertyRowFromDomain(p.Property)}
+	}
+
+	data, err := json.Marshal(rows)
+	if err != nil {
+		return "[]"
+	}
+
+	return string(data)
+}
+
+func scriptParamsFromJSON(raw string) ([]domain.ScriptParam, error) {
+	if raw == "" {
+		return nil, nil
+	}
+
+	var rows []scriptParamRow
+
+	err := json.Unmarshal([]byte(raw), &rows)
+	if err != nil {
+		return nil, rerrors.Wrap(
+			user_errors.TractRequestFieldInvalidJSON,
+			"error unmarshaling script params",
+		)
+	}
+
+	params := make([]domain.ScriptParam, len(rows))
+	for i, row := range rows {
+		params[i] = domain.ScriptParam{Name: row.Name, Property: toolPropertyRowToDomain(row.Type)}
+	}
+
+	return params, nil
+}
+
+// -- domain.ScriptLanguage <-> pb.ScriptLanguage --
+
+func scriptLanguageToProto(lang domain.ScriptLanguage) pb.ScriptLanguage {
+	switch lang {
+	case domain.ScriptLanguageJavaScript:
+		return pb.ScriptLanguage_SCRIPT_LANGUAGE_JAVASCRIPT
+	default:
+		return pb.ScriptLanguage_SCRIPT_LANGUAGE_UNSPECIFIED
+	}
+}
+
+func scriptLanguageFromProto(lang pb.ScriptLanguage) domain.ScriptLanguage {
+	switch lang {
+	case pb.ScriptLanguage_SCRIPT_LANGUAGE_JAVASCRIPT:
+		return domain.ScriptLanguageJavaScript
+	default:
+		return domain.ScriptLanguageUnspecified
+	}
+}
+
 func schemaFromJSON(raw string) (domain.ToolSchema, error) {
 	if raw == "" {
 		return domain.ToolSchema{}, nil
@@ -386,6 +454,14 @@ func stepToProto(s domain.TractStep) *pb.TractStep {
 		step.Kind = &pb.TractStep_Parallel{Parallel: &pb.ParallelStep{Steps: stepsToProto(s.Steps)}}
 	case "group":
 		step.Kind = &pb.TractStep_Group{Group: &pb.GroupStep{Steps: stepsToProto(s.Steps)}}
+	case "script":
+		step.Kind = &pb.TractStep_Script{Script: &pb.ScriptStep{
+			Language:     scriptLanguageToProto(s.Language),
+			Code:         s.Code,
+			InputParams:  scriptParamsToJSON(s.InputParams),
+			OutputParams: scriptParamsToJSON(s.OutputParams),
+			Params:       s.Params,
+		}}
 	}
 
 	return step
@@ -459,6 +535,24 @@ func stepFromProto(s *pb.TractStep) (domain.TractStep, error) {
 		}
 
 		step.Steps = steps
+	case *pb.TractStep_Script:
+		step.Type = "script"
+		step.Language = scriptLanguageFromProto(kind.Script.Language)
+		step.Code = kind.Script.Code
+		step.Params = kind.Script.Params
+
+		inputParams, err := scriptParamsFromJSON(kind.Script.InputParams)
+		if err != nil {
+			return domain.TractStep{}, err
+		}
+
+		outputParams, err := scriptParamsFromJSON(kind.Script.OutputParams)
+		if err != nil {
+			return domain.TractStep{}, err
+		}
+
+		step.InputParams = inputParams
+		step.OutputParams = outputParams
 	default:
 		return domain.TractStep{}, rerrors.Wrap(
 			user_errors.TractRequestFieldInvalidJSON,

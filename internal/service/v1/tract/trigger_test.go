@@ -8,6 +8,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +18,8 @@ func newTriggerTestService(
 	triggerPresets *fakeTriggerPresetsRepo,
 	externalConns *fakeExternalConnsRepo,
 ) *Service {
-	svc := New(nil, triggers, triggerPresets, externalConns, nil, nil, subscription.NewFree())
+	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
+	svc := New(nil, triggers, triggerPresets, externalConns, nil, nil, subscription.NewFree(), scriptEngines)
 
 	return svc
 }

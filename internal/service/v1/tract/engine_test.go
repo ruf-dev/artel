@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +18,8 @@ func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo
 	tracts := newFakeTractsRepo()
 	externalConns := newFakeExternalConnsRepo()
 	mcpDefs := newFakeMcpDefsRepo()
-	svc := New(tracts, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree())
+	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
+	svc := New(tracts, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
 
 	return svc, tracts, externalConns
 }
@@ -242,6 +244,78 @@ func TestEngine_ActionFailureFailsRun(t *testing.T) {
 	steps := tracts.stepsByStepId(run.Uuid)
 	assert.Equal(t, domain.TractRunStepFailed, steps["fail_step"].Status)
 	assert.NotContains(t, steps, "after")
+}
+
+func TestEngine_ScriptStep(t *testing.T) {
+	executor := newFakeToolExecutor("write_file")
+	svc, tracts, _ := newEngineTestService(executor)
+	userUuid := uuid.New()
+
+	step := domain.TractStep{
+		Id:       "sum_nums",
+		Name:     "sum_nums",
+		Type:     stepTypeScript,
+		Language: domain.ScriptLanguageJavaScript,
+		Code:     "for (let i = 0; i < nums.length; i++) { total += nums[i]; }",
+		InputParams: []domain.ScriptParam{
+			{Name: "nums", Property: domain.ToolProperty{Type: "array"}},
+		},
+		OutputParams: []domain.ScriptParam{
+			{Name: "total", Property: domain.ToolProperty{Type: "number"}},
+		},
+		Params: map[string]string{"nums": "{{ trigger.nums }}"},
+	}
+	tract := testTract(userUuid, []domain.TractStep{step})
+
+	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"nums":[1,2,3]}`), StartedByManual, uuid.Nil)
+	require.NoError(t, err)
+	assert.Equal(t, domain.TractRunDone, run.Status)
+
+	steps := tracts.stepsByStepId(run.Uuid)
+	require.Contains(t, steps, "sum_nums")
+	assert.Equal(t, domain.TractRunStepDone, steps["sum_nums"].Status)
+
+	var output map[string]interface{}
+
+	err = json.Unmarshal(steps["sum_nums"].Output, &output)
+	require.NoError(t, err)
+	assert.Equal(t, float64(6), output["total"])
+}
+
+func TestEngine_ScriptStepOutputFeedsLaterStep(t *testing.T) {
+	executor := newFakeToolExecutor("write_file")
+	svc, tracts, _ := newEngineTestService(executor)
+	userUuid := uuid.New()
+
+	doubleStep := domain.TractStep{
+		Id:       "double",
+		Name:     "double",
+		Type:     stepTypeScript,
+		Language: domain.ScriptLanguageJavaScript,
+		Code:     "result = n * 2;",
+		InputParams: []domain.ScriptParam{
+			{Name: "n", Property: domain.ToolProperty{Type: "number"}},
+		},
+		OutputParams: []domain.ScriptParam{
+			{Name: "result", Property: domain.ToolProperty{Type: "number"}},
+		},
+		Params: map[string]string{"n": "{{ trigger.n }}"},
+	}
+	after := actionStep("after", map[string]string{"ref": "{{ double.result }}"})
+	tract := testTract(userUuid, []domain.TractStep{doubleStep, after})
+
+	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"n":21}`), StartedByManual, uuid.Nil)
+	require.NoError(t, err)
+	assert.Equal(t, domain.TractRunDone, run.Status)
+
+	steps := tracts.stepsByStepId(run.Uuid)
+	require.Contains(t, steps, "after")
+
+	var afterInput map[string]interface{}
+
+	err = json.Unmarshal(steps["after"].Input, &afterInput)
+	require.NoError(t, err)
+	assert.InDelta(t, 42, afterInput["ref"], 0.0001)
 }
 
 func TestEngine_MomToolOwnershipCheck(t *testing.T) {

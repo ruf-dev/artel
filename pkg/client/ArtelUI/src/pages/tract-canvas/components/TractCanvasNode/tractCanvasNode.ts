@@ -9,6 +9,7 @@ export function typeLabel(node: CanvasNode, triggerInfo?: { kind: string; source
     if (node.kind === "condition") return "condition"
     if (node.kind === "parallel") return "parallel"
     if (node.kind === "group") return "group"
+    if (node.kind === "script") return "script"
     const step = node.step
     if (step?.mcp && step.tool) return `${step.mcp}.${step.tool}`
     return "action"

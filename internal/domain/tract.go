@@ -30,12 +30,14 @@ type TractDefinition struct {
 }
 
 // TractStep is one node of the nested step tree. Type is one of "action" | "condition" |
-// "parallel" | "group" (constants defined locally in internal/service/v1/tract, not here).
-// Action fields (Mcp/Tool/ConnectionUuid/Params) are only meaningful when Type == "action".
-// Conditions only when Type == "condition", with Then/Else as its two branches. Parallel/group
-// steps run/contain Steps (parallel: concurrently; group: sequentially, a plain nesting
-// container). ConnectionUuid's zero value means no external connection required (builtin
-// tools).
+// "parallel" | "group" | "script" (constants defined locally in internal/service/v1/tract,
+// not here). Action fields (Mcp/Tool/ConnectionUuid/Params) are only meaningful when Type ==
+// "action". Conditions only when Type == "condition", with Then/Else as its two branches.
+// Parallel/group steps run/contain Steps (parallel: concurrently; group: sequentially, a
+// plain nesting container). ConnectionUuid's zero value means no external connection
+// required (builtin tools). Script fields (Language/Code/InputParams/OutputParams) are only
+// meaningful when Type == "script" — Params is reused there too, as the template-expression
+// binding for each declared InputParams entry (same role it plays for action steps).
 type TractStep struct {
 	Id             string            `json:"id"`
 	Name           string            `json:"name,omitempty"`
@@ -49,6 +51,27 @@ type TractStep struct {
 	Then           []TractStep       `json:"then,omitempty"`
 	Else           []TractStep       `json:"else,omitempty"`
 	Steps          []TractStep       `json:"steps,omitempty"`
+	Language       ScriptLanguage    `json:"language,omitempty"`
+	Code           string            `json:"code,omitempty"`
+	InputParams    []ScriptParam     `json:"input_params,omitempty"`
+	OutputParams   []ScriptParam     `json:"output_params,omitempty"`
+}
+
+// ScriptLanguage is the engine id a script step runs under — a closed set, mapped to/from a
+// real numbered proto enum at the transport boundary (see internal/transport/tracts_api).
+type ScriptLanguage string
+
+const (
+	ScriptLanguageUnspecified ScriptLanguage = ""
+	ScriptLanguageJavaScript  ScriptLanguage = "javascript"
+)
+
+// ScriptParam is one named, typed, ordered entry in a script step's declared input or
+// output list — ordered (unlike ToolSchema.Properties, a map) because order drives the
+// function signature generated around the step's user-authored Code.
+type ScriptParam struct {
+	Name     string
+	Property ToolProperty
 }
 
 // TractCondition is {left, op, right} — both sides are template strings rendered before

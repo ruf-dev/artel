@@ -3,6 +3,8 @@ import {
     ConditionStep as PbConditionStep,
     GroupStep as PbGroupStep,
     ParallelStep as PbParallelStep,
+    ScriptLanguage,
+    ScriptStep as PbScriptStep,
     TractCondition as PbTractCondition,
     TractDefinition as PbTractDefinition,
     TractItem,
@@ -14,6 +16,7 @@ import {
     TriggerSourceItem,
 } from "@/app/api/artel/tracts.pb.ts"
 import {
+    ScriptParam,
     SchemaNode,
     Tract,
     TractCondition,
@@ -38,6 +41,14 @@ function safeParseJson<T>(raw: string | undefined, fallback: T): T {
 }
 
 const emptySchema: SchemaNode = {properties: {}}
+
+function scriptParamsToJson(params: ScriptParam[] | undefined): string {
+    return JSON.stringify(params ?? [])
+}
+
+function scriptParamsFromJson(raw: string | undefined): ScriptParam[] {
+    return safeParseJson<ScriptParam[]>(raw, [])
+}
 
 function conditionToProto(c: TractCondition): PbTractCondition {
     return {left: c.left, op: c.op, right: c.right}
@@ -65,6 +76,17 @@ function stepToProto(s: TractStep): PbTractStep {
             return {...base, parallel: {steps: (s.steps ?? []).map(stepToProto)}}
         case "group":
             return {...base, group: {steps: (s.steps ?? []).map(stepToProto)}}
+        case "script":
+            return {
+                ...base,
+                script: {
+                    language: s.language,
+                    code: s.code,
+                    inputParams: scriptParamsToJson(s.inputParams),
+                    outputParams: scriptParamsToJson(s.outputParams),
+                    params: s.params,
+                },
+            }
     }
 }
 
@@ -95,6 +117,18 @@ function stepFromProto(s: PbTractStep): TractStep {
     if (s.parallel) {
         const parallel: PbParallelStep = s.parallel
         return {...base, type: "parallel", steps: (parallel.steps ?? []).map(stepFromProto)}
+    }
+    if (s.script) {
+        const script: PbScriptStep = s.script
+        return {
+            ...base,
+            type: "script",
+            language: script.language ?? ScriptLanguage.SCRIPT_LANGUAGE_UNSPECIFIED,
+            code: script.code,
+            inputParams: scriptParamsFromJson(script.inputParams),
+            outputParams: scriptParamsFromJson(script.outputParams),
+            params: script.params,
+        }
     }
 
     const group: PbGroupStep | undefined = s.group

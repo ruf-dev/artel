@@ -9,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"go.redsock.ru/rerrors"
 	"golang.org/x/sync/errgroup"
 )
@@ -155,6 +156,8 @@ func (s *Service) executeStep(ctx context.Context, state *runState, step domain.
 		return s.executeParallel(ctx, state, step)
 	case stepTypeGroup:
 		return s.executeSteps(ctx, state, step.Steps)
+	case stepTypeScript:
+		return s.executeScript(ctx, state, step)
 	default:
 		// Validation already rejects unknown step types; this is a defensive fallback.
 		return rerrors.Wrap(user_errors.TractUnknownStepType, step.Type)
@@ -198,6 +201,68 @@ func (s *Service) executeAction(ctx context.Context, state *runState, step domai
 	}
 
 	output := parseToolOutput(resultText)
+
+	outputJSON, err := json.Marshal(output)
+	if err != nil {
+		return rerrors.Wrap(err, "error marshaling step output: "+step.Id)
+	}
+
+	err = s.tracts.UpdateRunStepFinish(ctx, insertedStep.Uuid, domain.TractRunStepDone, outputJSON, "")
+	if err != nil {
+		return rerrors.Wrap(err, "error finishing run step: "+step.Id)
+	}
+
+	state.setOutput(step.Id, output)
+
+	return nil
+}
+
+// executeScript mirrors executeAction's plumbing (snapshot → render → record → run →
+// finish → publish), swapping the MoM/builtin tool dispatch for the step's registered
+// script.Engine. Engine presence for step.Language is already guaranteed by
+// validateScriptEngines at save time.
+func (s *Service) executeScript(ctx context.Context, state *runState, step domain.TractStep) error {
+	rslv := state.snapshotResolver()
+
+	rendered, err := renderParams(rslv, step.Params)
+	if err != nil {
+		return rerrors.Wrap(err, "error rendering script params: "+step.Id)
+	}
+
+	inputJSON, err := json.Marshal(rendered)
+	if err != nil {
+		return rerrors.Wrap(err, "error marshaling rendered params: "+step.Id)
+	}
+
+	runStep := domain.TractRunStep{
+		RunUuid:  state.run.Uuid,
+		StepId:   step.Id,
+		StepName: step.Name,
+		StepType: step.Type,
+		Input:    inputJSON,
+	}
+
+	insertedStep, err := s.tracts.InsertRunStep(ctx, runStep)
+	if err != nil {
+		return rerrors.Wrap(err, "error inserting run step: "+step.Id)
+	}
+
+	runInput := script.RunInput{
+		Body:         step.Code,
+		InputParams:  step.InputParams,
+		OutputParams: step.OutputParams,
+		Args:         rendered,
+	}
+
+	output, err := s.scriptEngines[step.Language].Run(ctx, runInput)
+	if err != nil {
+		finishErr := s.tracts.UpdateRunStepFinish(ctx, insertedStep.Uuid, domain.TractRunStepFailed, nil, err.Error())
+		if finishErr != nil {
+			log.Error().Err(finishErr).Str("step_id", step.Id).Msg("error updating failed run step")
+		}
+
+		return rerrors.Wrap(err, "error executing script for step: "+step.Id)
+	}
 
 	outputJSON, err := json.Marshal(output)
 	if err != nil {

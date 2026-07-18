@@ -11,7 +11,7 @@ import ConnectionStep from "@/components/StepPickerDialog/components/ConnectionS
 const BUILTIN_MCP = "artel"
 
 export interface StepDraft {
-    type: "action" | "condition" | "parallel"
+    type: "action" | "condition" | "parallel" | "script"
     mcp?: string
     tool?: string
     connectionUuid?: string
@@ -52,7 +52,7 @@ export default function StepPickerDialog({onConfirm}: Props) {
         CloseDialog()
     }
 
-    function handleSelectSimpleKind(type: "condition" | "parallel") {
+    function handleSelectSimpleKind(type: "condition" | "parallel" | "script") {
         onConfirm({type})
         CloseDialog()
     }
@@ -94,6 +94,12 @@ export default function StepPickerDialog({onConfirm}: Props) {
                 <Button variant="ghost" className={cls.KindOption} onClick={() => handleSelectSimpleKind("parallel")}>
                     <span className={cls.KindTitle}>Parallel</span>
                     <span className={cls.KindDesc}>Runs each lane concurrently. Add lanes after creating it.</span>
+                </Button>
+                <Button variant="ghost" className={cls.KindOption} onClick={() => handleSelectSimpleKind("script")}>
+                    <span className={cls.KindTitle}>Script</span>
+                    <span className={cls.KindDesc}>
+                        Runs a small function against declared input/output params for custom handling.
+                    </span>
                 </Button>
             </div>
             <div className={cls.DialogActions}>

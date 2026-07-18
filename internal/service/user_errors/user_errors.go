@@ -251,6 +251,22 @@ var (
 	TractUnknownStepType   = rerrors.New("unknown step type", codes.InvalidArgument)
 	TractStepNotFound      = rerrors.New("referenced step not found in this run", codes.FailedPrecondition)
 
+	// tract: script steps
+	TractScriptEngineNotFound = rerrors.New("no script engine registered for this language", codes.InvalidArgument)
+	TractScriptParamInvalid   = rerrors.New(
+		"script input/output param name must be a valid identifier and unique within its list",
+		codes.InvalidArgument,
+	)
+	TractScriptBindingMismatch = rerrors.New(
+		"script step params must have exactly one binding per declared input param",
+		codes.InvalidArgument,
+	)
+	TractScriptRuntimeError       = rerrors.New("script execution failed", codes.FailedPrecondition)
+	TractScriptOutputTypeMismatch = rerrors.New(
+		"script output does not match its declared output param types",
+		codes.FailedPrecondition,
+	)
+
 	// tract: template path navigation (distinct from TractStepNotFound — the base step id was
 	// found, but a later segment of the reference path failed to resolve against its output).
 	TractTemplateIndexOnNonArray  = rerrors.New("template index used on a value that is not a list", codes.FailedPrecondition)

@@ -176,6 +176,24 @@ message ActionStep {
   map<string, string> params = 4;
 }
 
+enum ScriptLanguage {
+  SCRIPT_LANGUAGE_UNSPECIFIED = 0;
+  SCRIPT_LANGUAGE_JAVASCRIPT  = 1;
+}
+
+// ScriptStep runs a user-authored function body against a strictly declared, ordered
+// input/output param list. Only the body is free-form — the signature, JSDoc, and return
+// statement the UI shows around it are generated from input_params/output_params, never
+// stored. params binds each declared input_params entry to a template expression, exactly
+// like ActionStep.params does for a tool's input schema.
+message ScriptStep {
+  ScriptLanguage language     = 1;
+  string code                 = 2; // user-authored function body only
+  string input_params         = 3; // JSON-encoded [{"name":..., "type": {...}}], ordered
+  string output_params        = 4; // JSON-encoded, same shape
+  map<string, string> params  = 5; // input bindings, keyed by an input_params name
+}
+
 message ConditionStep {
   repeated TractCondition conditions = 1;
   repeated TractStep then            = 2;
@@ -201,6 +219,7 @@ message TractStep {
     ConditionStep condition = 5;
     ParallelStep parallel   = 6;
     GroupStep group         = 7;
+    ScriptStep script       = 8;
   }
 }
 

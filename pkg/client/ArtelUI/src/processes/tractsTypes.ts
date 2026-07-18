@@ -1,12 +1,26 @@
+import {ScriptLanguage} from "@/app/api/artel/tracts.pb.ts"
+
+export {ScriptLanguage}
+
 export interface TractDefinition {
     steps: TractStep[]
+}
+
+// ScriptParam is one named, typed, ordered entry in a script step's declared input or
+// output list — order drives the function signature ScriptEditor generates around the
+// step's code. `type` reuses the same {type, description, enum, ...} shape as a MoM tool's
+// input/output schema (SchemaProperty below), wrapped with a name because — unlike
+// SchemaNode.properties, a map — a script step's params must preserve declaration order.
+export interface ScriptParam {
+    name: string
+    type: SchemaProperty
 }
 
 export interface TractStep {
     id: string
     name?: string
     description?: string
-    type: "action" | "condition" | "parallel" | "group"
+    type: "action" | "condition" | "parallel" | "group" | "script"
     mcp?: string
     tool?: string
     connection_uuid?: string
@@ -15,6 +29,10 @@ export interface TractStep {
     then?: TractStep[]
     else?: TractStep[]
     steps?: TractStep[]
+    language?: ScriptLanguage
+    code?: string
+    inputParams?: ScriptParam[]
+    outputParams?: ScriptParam[]
 }
 
 export interface TractCondition {

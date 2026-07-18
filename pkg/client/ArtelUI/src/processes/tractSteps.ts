@@ -1,7 +1,7 @@
 // Pure tree-editing utilities over the nested TractStep tree (then/else/steps), used by the
 // tract editor's local (unsaved) definition state. All functions are non-mutating.
 
-import {TractStep} from "@/processes/Tracts.ts"
+import {ScriptLanguage, TractStep} from "@/processes/Tracts.ts"
 import {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 
 /** Location identifies one ordered array of steps within the tree: the root list, or a named
@@ -202,6 +202,12 @@ export function buildStepFromDraft(draft: StepDraft, existingIds: Set<string>): 
     }
     if (draft.type === "condition") {
         return {id, name: id, type: "condition", conditions: [{left: "", op: "==", right: ""}], then: [], else: []}
+    }
+    if (draft.type === "script") {
+        return {
+            id, name: id, type: "script", language: ScriptLanguage.SCRIPT_LANGUAGE_JAVASCRIPT,
+            code: "", params: {}, inputParams: [], outputParams: [],
+        }
     }
     return {id, name: id, type: draft.type, steps: []}
 }
