@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/package.json": {
-    "mtime": 1783881548.72256,
-    "ast_hash": "7a4174e1e75e234dd2ff154deb148e1d",
+    "mtime": 1784398188.245831,
+    "ast_hash": "947dc57e32c5c2dee8057d0b6ab26613",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/tsconfig.json": {
@@ -4745,13 +4745,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/ScriptCodeSection.tsx": {
-    "mtime": 1784322942.2232602,
-    "ast_hash": "7963c403b1eb2c6e5f22995d3970e2c4",
+    "mtime": 1784398271.3914137,
+    "ast_hash": "3ab72954b5bc3e3beaf4289d265f41db",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ScriptBody/components/ScriptParamRow/ScriptParamRow.tsx": {
-    "mtime": 1784322927.8984802,
-    "ast_hash": "e8db2b2f1ee55d0b1e575cce3b793682",
+    "mtime": 1784398473.8911128,
+    "ast_hash": "d9b9a050bbb1fca93548c376ddf9897b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ScriptBody/processes/scriptParamEdits.ts": {
@@ -4770,8 +4770,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/processes/scriptSignature.ts": {
-    "mtime": 1784322663.5161965,
-    "ast_hash": "cc0f61ec86e9d29c5aba0f6e78aa4c01",
+    "mtime": 1784398027.5090742,
+    "ast_hash": "7d0d8956037b6da15ffce5c0256eccd7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/TractCanvasLogPanel/components/RunLog/components/LogEntryRow/LogEntryRow.tsx": {
@@ -4812,6 +4812,16 @@
   "pkg/client/ArtelUI/src/processes/tractStepsMove.ts": {
     "mtime": 1784357572.6213639,
     "ast_hash": "08a937e7027aeeabdd18a18eb483fe20",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/tract-canvas/components/ScriptBody/components/SchemaPropsEditor/SchemaPropsEditor.tsx": {
+    "mtime": 1784398457.1744492,
+    "ast_hash": "a1c37b7407557df62aad800d6978ee70",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts": {
+    "mtime": 1784398259.0956576,
+    "ast_hash": "266cfb3e3d8adb698910cb55cd9b5f0b",
     "semantic_hash": ""
   }
 }
