@@ -2,9 +2,11 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import TractBlockPicker from "@/pages/tract-canvas/components/TractBlockPicker/TractBlockPicker.tsx"
+import InsertConflictDialog from "@/pages/tract-canvas/dialogs/InsertConflictDialog/InsertConflictDialog.tsx"
 import {StepDraft} from "@/components/StepPickerDialog/StepPickerDialog.tsx"
 import RunTractDialog from "@/components/RunTractDialog/RunTractDialog.tsx"
 import {buildStepFromDraft, collectAllStepIds, insertBlockAfter, Location} from "@/processes/tractSteps.ts"
+import {DropSide, findStepById, moveStepRelativeTo, wouldConflict} from "@/processes/tractStepsMove.ts"
 import {Tract, TractDefinition, TractRun} from "@/processes/Tracts.ts"
 
 interface Deps {
@@ -57,5 +59,24 @@ export function useTractCanvasBuilderHandlers(deps: Deps) {
         )
     }
 
-    return {openRunDialog, handleSave, handleChangeSteps, openAddBlock}
+    function handleMoveStep(sourceId: string, targetId: string, side: DropSide) {
+        if (side === "before" || !wouldConflict(deps.definition.steps, sourceId, targetId, side)) {
+            deps.setDefinition(d => ({steps: moveStepRelativeTo(d.steps, sourceId, targetId, side)}))
+            return
+        }
+
+        const sourceName = findStepById(deps.definition.steps, sourceId)?.name || sourceId
+        const targetName = findStepById(deps.definition.steps, targetId)?.name || "Trigger"
+        OpenDialog(
+            <InsertConflictDialog
+                sourceName={sourceName}
+                targetName={targetName}
+                onChoose={choice => deps.setDefinition(d => (
+                    {steps: moveStepRelativeTo(d.steps, sourceId, targetId, side, choice)}
+                ))}
+            />
+        )
+    }
+
+    return {openRunDialog, handleSave, handleChangeSteps, openAddBlock, handleMoveStep}
 }

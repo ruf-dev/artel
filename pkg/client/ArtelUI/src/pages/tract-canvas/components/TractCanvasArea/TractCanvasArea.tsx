@@ -4,10 +4,13 @@ import cls from "@/pages/tract-canvas/components/TractCanvasArea/TractCanvasArea
 import {cn} from "@/app/utils/cn.ts"
 import {CanvasLayout} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Location} from "@/processes/tractSteps.ts"
+import {DropSide} from "@/processes/tractStepsMove.ts"
 import {TractTool} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import TractCanvasNode, {NodeStatus} from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx"
 import ConnectorPath from "@/pages/tract-canvas/components/TractCanvasArea/components/ConnectorPath/ConnectorPath.tsx"
+import ParallelBoxes from "@/pages/tract-canvas/components/TractCanvasArea/components/ParallelBoxes/ParallelBoxes.tsx"
+import {useTractCanvasDrag} from "@/pages/tract-canvas/components/TractCanvasArea/useTractCanvasDrag.ts"
 
 const DRAG_THRESHOLD_PX = 4
 
@@ -22,11 +25,12 @@ interface Props {
     nodeStatus: (id: string) => NodeStatus
     runningEdgeIds: Set<string>
     onAddBlock: (location: Location, index: number) => void
+    onMoveStep: (sourceId: string, targetId: string, side: DropSide) => void
 }
 
 export default function TractCanvasArea(props: Props) {
     const {layout, tools, triggerInfo, momCandidates, selectedNodeId} = props
-    const {onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock} = props
+    const {onSelectNode, onBackgroundClick, nodeStatus, runningEdgeIds, onAddBlock, onMoveStep} = props
     const wrapRef = useRef<HTMLDivElement>(null)
     const dragRef = useRef<
         {startX: number; startY: number; scrollLeft: number; scrollTop: number; moved: boolean} | null
@@ -34,6 +38,7 @@ export default function TractCanvasArea(props: Props) {
     const suppressClickRef = useRef(false)
     const [panning, setPanning] = useState(false)
     const boxedNodeIds = new Set(layout.parallelBoxes.map(b => b.id))
+    const drag = useTractCanvasDrag(onMoveStep)
 
     function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
         if (e.button !== 0) return
@@ -96,20 +101,8 @@ export default function TractCanvasArea(props: Props) {
                         return <ConnectorPath key={edge.id} from={from} to={to} running={runningEdgeIds.has(edge.id)}/>
                     })}
                 </svg>
-                {layout.parallelBoxes.map(box => (
-                    <div
-                        key={box.id}
-                        className={cn(cls.ParallelBox, box.id === selectedNodeId && cls.ParallelBoxSelected)}
-                        style={{left: box.x, top: box.y, width: box.width, height: box.height}}
-                        data-tract-node
-                        onClick={e => {
-                            e.stopPropagation()
-                            onSelectNode(box.id)
-                        }}
-                        role="button"
-                        tabIndex={0}
-                    />
-                ))}
+                <ParallelBoxes
+                    boxes={layout.parallelBoxes} selectedNodeId={selectedNodeId} onSelectNode={onSelectNode}/>
                 {layout.nodes.filter(node => !boxedNodeIds.has(node.id)).map(node => (
                     <TractCanvasNode
                         key={node.id}
@@ -119,8 +112,15 @@ export default function TractCanvasArea(props: Props) {
                         momCandidates={momCandidates}
                         status={nodeStatus(node.id)}
                         selected={node.id === selectedNodeId}
+                        dragging={node.id === drag.draggingId}
+                        dragOverSide={node.id === drag.dragOverId ? drag.dragOverSide : null}
                         onClick={() => onSelectNode(node.id)}
                         onAddBlock={() => onAddBlock(node.nextLocation, node.nextIndex)}
+                        onDragStart={e => drag.handleNodeDragStart(e, node)}
+                        onDragOver={e => drag.handleNodeDragOver(e, node)}
+                        onDragLeave={e => drag.handleNodeDragLeave(e, node)}
+                        onDrop={e => drag.handleNodeDrop(e, node)}
+                        onDragEnd={drag.clearDragState}
                     />
                 ))}
             </div>

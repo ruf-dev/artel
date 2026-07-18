@@ -12,7 +12,7 @@ export type Location =
 
 export const ROOT_LOCATION: Location = {parentId: null, branch: "root"}
 
-function branchArray(step: TractStep, branch: "then" | "else" | "steps"): TractStep[] {
+export function branchArray(step: TractStep, branch: "then" | "else" | "steps"): TractStep[] {
     if (branch === "then") return step.then ?? []
     if (branch === "else") return step.else ?? []
     return step.steps ?? []

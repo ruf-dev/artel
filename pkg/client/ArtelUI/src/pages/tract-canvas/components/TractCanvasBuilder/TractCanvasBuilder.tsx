@@ -61,7 +61,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
 
     const runTracking = useTractRunTracking(tract.uuid, layout)
 
-    const {openRunDialog, handleSave, handleChangeSteps, openAddBlock} = useTractCanvasBuilderHandlers({
+    const {openRunDialog, handleSave, handleChangeSteps, openAddBlock, handleMoveStep} = useTractCanvasBuilderHandlers({
         tract, name, definition, setDefinition, setSaving, setWarnings,
         setSavedName, setSavedDefinition, startRun: runTracking.startRun,
     })
@@ -97,6 +97,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
                     nodeStatus={runTracking.nodeStatus}
                     runningEdgeIds={runTracking.runningEdgeIds}
                     onAddBlock={openAddBlock}
+                    onMoveStep={handleMoveStep}
                 />
                 <TractCanvasInspector
                     node={selectedNode}

@@ -24,6 +24,23 @@
     border-color: var(--coral-border);
 }
 
+.Dragging {
+    opacity: 0.4;
+}
+
+.DropBefore,
+.DropAfter {
+    border-color: var(--coral-border);
+}
+
+.DropBefore {
+    box-shadow: inset 0.1875rem 0 0 0 var(--coral-border);
+}
+
+.DropAfter {
+    box-shadow: inset -0.1875rem 0 0 0 var(--coral-border);
+}
+
 .Node.Running {
     animation: blinkRunningBorder 1.1s ease-in-out infinite;
 }

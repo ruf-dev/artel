@@ -1,3 +1,4 @@
+import type {DragEvent} from "react"
 import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.module.css"
@@ -12,6 +13,7 @@ import NodeChips from "@/pages/tract-canvas/components/NodeChips/NodeChips.tsx"
 import {cap, title, typeLabel} from "@/pages/tract-canvas/components/TractCanvasNode/tractCanvasNode.ts"
 
 export type NodeStatus = "ok" | "err" | "running" | "idle"
+export type DragOverSide = "before" | "after"
 
 interface Props {
     node: CanvasNode
@@ -20,8 +22,15 @@ interface Props {
     momCandidates: MomCandidate[]
     status: NodeStatus
     selected: boolean
+    dragging: boolean
+    dragOverSide: DragOverSide | null
     onClick: () => void
     onAddBlock: () => void
+    onDragStart: (e: DragEvent<HTMLDivElement>) => void
+    onDragOver: (e: DragEvent<HTMLDivElement>) => void
+    onDragLeave: (e: DragEvent<HTMLDivElement>) => void
+    onDrop: (e: DragEvent<HTMLDivElement>) => void
+    onDragEnd: (e: DragEvent<HTMLDivElement>) => void
 }
 
 export default function TractCanvasNode(props: Props) {
@@ -35,13 +44,22 @@ export default function TractCanvasNode(props: Props) {
                 props.selected && cls.Selected,
                 props.node.kind === "trigger" && cls.TriggerNode,
                 props.status === "running" && cls.Running,
+                props.dragging && cls.Dragging,
+                props.dragOverSide === "before" && cls.DropBefore,
+                props.dragOverSide === "after" && cls.DropAfter,
             )}
             style={{left: props.node.x, top: props.node.y, width: NODE_WIDTH, height: NODE_HEIGHT}}
             data-tract-node
+            draggable={props.node.kind !== "trigger"}
             onClick={e => {
                 e.stopPropagation()
                 props.onClick()
             }}
+            onDragStart={props.onDragStart}
+            onDragOver={props.onDragOver}
+            onDragLeave={props.onDragLeave}
+            onDrop={props.onDrop}
+            onDragEnd={props.onDragEnd}
             role="button"
             tabIndex={0}
         >
@@ -73,6 +91,7 @@ export default function TractCanvasNode(props: Props) {
                 className={cls.AddButton}
                 aria-label="Add block after"
                 title="Add block after"
+                draggable={false}
                 onClick={e => {
                     e.stopPropagation()
                     props.onAddBlock()
