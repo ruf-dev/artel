@@ -2495,8 +2495,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/tractTemplate.ts": {
-    "mtime": 1783148591.8231633,
-    "ast_hash": "aa70e53fb9e12140420e3e93e6b71068",
+    "mtime": 1784363754.8392978,
+    "ast_hash": "8482a48c87eb1141a27c7285efcd44c7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/TractRunTimeline/TractRunTimeline.tsx": {
