@@ -122,7 +122,7 @@ function walkProduced(steps: TractStep[], visible: Set<string>): Set<string> {
     const produced = new Set<string>()
 
     for (const step of steps) {
-        if (step.type === "action") {
+        if (step.type === "action" || step.type === "script") {
             local.add(step.id)
             produced.add(step.id)
         } else if (step.type === "condition") {
@@ -158,7 +158,7 @@ function findVisible(steps: TractStep[], targetId: string, visible: Set<string>)
     for (const step of steps) {
         if (step.id === targetId) return new Set(local)
 
-        if (step.type === "action") {
+        if (step.type === "action" || step.type === "script") {
             local.add(step.id)
         } else if (step.type === "condition") {
             const thenHit = findVisible(step.then ?? [], targetId, local)
