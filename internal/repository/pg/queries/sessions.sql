@@ -1,8 +1,10 @@
 -- name: CreateSession :one
-INSERT INTO sessions (user_id, token, expires_at) VALUES ($1, $2, $3) RETURNING id, user_id, token, expires_at, created_at;
+INSERT INTO sessions (user_id, token, expires_at, refresh_token, refresh_expires_at)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, user_id, token, expires_at, refresh_token, refresh_expires_at, created_at;
 
 -- name: GetSessionByToken :one
-SELECT id, user_id, token, expires_at, created_at FROM sessions WHERE token = $1;
+SELECT id, user_id, token, expires_at, refresh_token, refresh_expires_at, created_at FROM sessions WHERE token = $1;
 
 -- name: GetSessionWithUser :one
 SELECT s.id AS session_id, s.token, s.expires_at AS session_expires_at, s.created_at AS session_created_at,
@@ -17,3 +19,9 @@ DELETE FROM sessions WHERE token = $1;
 
 -- name: GetSessionsByUserID :many
 SELECT * FROM sessions WHERE user_id = $1 ORDER BY created_at DESC;
+
+-- name: RotateSession :one
+UPDATE sessions
+SET token = $2, expires_at = $3, refresh_token = $4, refresh_expires_at = $5
+WHERE refresh_token = $1 AND refresh_expires_at > now()
+RETURNING id, user_id, token, expires_at, refresh_token, refresh_expires_at, created_at;

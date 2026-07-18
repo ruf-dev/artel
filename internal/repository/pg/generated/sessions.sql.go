@@ -14,23 +14,45 @@ import (
 )
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (user_id, token, expires_at) VALUES ($1, $2, $3) RETURNING id, user_id, token, expires_at, created_at
+INSERT INTO sessions (user_id, token, expires_at, refresh_token, refresh_expires_at)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, user_id, token, expires_at, refresh_token, refresh_expires_at, created_at
 `
 
 type CreateSessionParams struct {
-	UserID    uuid.UUID
-	Token     string
-	ExpiresAt time.Time
+	UserID           uuid.UUID
+	Token            string
+	ExpiresAt        time.Time
+	RefreshToken     sql.NullString
+	RefreshExpiresAt sql.NullTime
 }
 
-func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, createSession, arg.UserID, arg.Token, arg.ExpiresAt)
-	var i Session
+type CreateSessionRow struct {
+	ID               uuid.UUID
+	UserID           uuid.UUID
+	Token            string
+	ExpiresAt        time.Time
+	RefreshToken     sql.NullString
+	RefreshExpiresAt sql.NullTime
+	CreatedAt        time.Time
+}
+
+func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (CreateSessionRow, error) {
+	row := q.db.QueryRowContext(ctx, createSession,
+		arg.UserID,
+		arg.Token,
+		arg.ExpiresAt,
+		arg.RefreshToken,
+		arg.RefreshExpiresAt,
+	)
+	var i CreateSessionRow
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.Token,
 		&i.ExpiresAt,
+		&i.RefreshToken,
+		&i.RefreshExpiresAt,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -46,17 +68,29 @@ func (q *Queries) DeleteSession(ctx context.Context, token string) error {
 }
 
 const getSessionByToken = `-- name: GetSessionByToken :one
-SELECT id, user_id, token, expires_at, created_at FROM sessions WHERE token = $1
+SELECT id, user_id, token, expires_at, refresh_token, refresh_expires_at, created_at FROM sessions WHERE token = $1
 `
 
-func (q *Queries) GetSessionByToken(ctx context.Context, token string) (Session, error) {
+type GetSessionByTokenRow struct {
+	ID               uuid.UUID
+	UserID           uuid.UUID
+	Token            string
+	ExpiresAt        time.Time
+	RefreshToken     sql.NullString
+	RefreshExpiresAt sql.NullTime
+	CreatedAt        time.Time
+}
+
+func (q *Queries) GetSessionByToken(ctx context.Context, token string) (GetSessionByTokenRow, error) {
 	row := q.db.QueryRowContext(ctx, getSessionByToken, token)
-	var i Session
+	var i GetSessionByTokenRow
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.Token,
 		&i.ExpiresAt,
+		&i.RefreshToken,
+		&i.RefreshExpiresAt,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -105,7 +139,7 @@ func (q *Queries) GetSessionWithUser(ctx context.Context, token string) (GetSess
 }
 
 const getSessionsByUserID = `-- name: GetSessionsByUserID :many
-SELECT id, user_id, token, expires_at, created_at FROM sessions WHERE user_id = $1 ORDER BY created_at DESC
+SELECT id, user_id, token, expires_at, created_at, refresh_token, refresh_expires_at FROM sessions WHERE user_id = $1 ORDER BY created_at DESC
 `
 
 func (q *Queries) GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error) {
@@ -123,6 +157,8 @@ func (q *Queries) GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]
 			&i.Token,
 			&i.ExpiresAt,
 			&i.CreatedAt,
+			&i.RefreshToken,
+			&i.RefreshExpiresAt,
 		); err != nil {
 			return nil, err
 		}
@@ -135,4 +171,50 @@ func (q *Queries) GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]
 		return nil, err
 	}
 	return items, nil
+}
+
+const rotateSession = `-- name: RotateSession :one
+UPDATE sessions
+SET token = $2, expires_at = $3, refresh_token = $4, refresh_expires_at = $5
+WHERE refresh_token = $1 AND refresh_expires_at > now()
+RETURNING id, user_id, token, expires_at, refresh_token, refresh_expires_at, created_at
+`
+
+type RotateSessionParams struct {
+	RefreshToken     sql.NullString
+	Token            string
+	ExpiresAt        time.Time
+	RefreshToken_2   sql.NullString
+	RefreshExpiresAt sql.NullTime
+}
+
+type RotateSessionRow struct {
+	ID               uuid.UUID
+	UserID           uuid.UUID
+	Token            string
+	ExpiresAt        time.Time
+	RefreshToken     sql.NullString
+	RefreshExpiresAt sql.NullTime
+	CreatedAt        time.Time
+}
+
+func (q *Queries) RotateSession(ctx context.Context, arg RotateSessionParams) (RotateSessionRow, error) {
+	row := q.db.QueryRowContext(ctx, rotateSession,
+		arg.RefreshToken,
+		arg.Token,
+		arg.ExpiresAt,
+		arg.RefreshToken_2,
+		arg.RefreshExpiresAt,
+	)
+	var i RotateSessionRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Token,
+		&i.ExpiresAt,
+		&i.RefreshToken,
+		&i.RefreshExpiresAt,
+		&i.CreatedAt,
+	)
+	return i, err
 }

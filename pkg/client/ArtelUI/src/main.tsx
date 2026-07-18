@@ -1,4 +1,5 @@
 import '@/index.css'
+import '@/processes/AuthFetchInterceptor.ts'
 
 import {createRoot} from 'react-dom/client'
 import {BrowserRouter} from "react-router-dom"

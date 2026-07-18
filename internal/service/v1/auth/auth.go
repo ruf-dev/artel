@@ -20,6 +20,11 @@ import (
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
+const (
+	accessTokenTTL  = time.Hour
+	refreshTokenTTL = 30 * 24 * time.Hour
+)
+
 type Service struct {
 	usersRepo       repository.Users
 	sessionsRepo    repository.Sessions
@@ -92,13 +97,19 @@ func (s *Service) Login(ctx context.Context, email, password string) (domain.Ses
 		return domain.Session{}, rerrors.Wrap(err, "password mismatch")
 	}
 
-	token := generateToken()
+	token, expiresAt, refreshToken, refreshExpiresAt := newTokenPair()
 
-	expiresAt := time.Now().Add(24 * time.Hour)
+	newSession := domain.Session{
+		UserUuid:         user.Uuid,
+		Token:            token,
+		ExpiresAt:        expiresAt,
+		RefreshToken:     refreshToken,
+		RefreshExpiresAt: refreshExpiresAt,
+	}
 
-	session, err := s.sessionsRepo.Create(ctx, user.Uuid, token, expiresAt)
+	session, err := s.sessionsRepo.Create(ctx, newSession)
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(err, "create session")
+		return domain.Session{}, rerrors.Wrap(err, "error creating session")
 	}
 
 	return session, nil
@@ -193,15 +204,44 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 		return domain.Session{}, err
 	}
 
-	sessionToken := generateToken()
-	expiresAt := time.Now().Add(24 * time.Hour)
+	token, expiresAt, refreshToken, refreshExpiresAt := newTokenPair()
 
-	session, err := s.sessionsRepo.Create(ctx, user.Uuid, sessionToken, expiresAt)
+	newSession := domain.Session{
+		UserUuid:         user.Uuid,
+		Token:            token,
+		ExpiresAt:        expiresAt,
+		RefreshToken:     refreshToken,
+		RefreshExpiresAt: refreshExpiresAt,
+	}
+
+	session, err := s.sessionsRepo.Create(ctx, newSession)
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(err, "create session")
+		return domain.Session{}, rerrors.Wrap(err, "error creating session")
 	}
 
 	return session, nil
+}
+
+func (s *Service) Refresh(ctx context.Context, refreshToken string) (domain.Session, error) {
+	token, expiresAt, newRefreshToken, newRefreshExpiresAt := newTokenPair()
+
+	newSession := domain.Session{
+		Token:            token,
+		ExpiresAt:        expiresAt,
+		RefreshToken:     newRefreshToken,
+		RefreshExpiresAt: newRefreshExpiresAt,
+	}
+
+	rotated, err := s.sessionsRepo.RotateByRefreshToken(ctx, refreshToken, newSession)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "error rotating session")
+	}
+
+	if !rotated.Valid {
+		return domain.Session{}, user_errors.InvalidRefreshToken
+	}
+
+	return rotated.V, nil
 }
 
 func (s *Service) GetMe(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error) {
@@ -231,6 +271,15 @@ func (s *Service) CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func newTokenPair() (token string, expiresAt time.Time, refreshToken string, refreshExpiresAt time.Time) {
+	token = generateToken()
+	expiresAt = time.Now().Add(accessTokenTTL)
+	refreshToken = generateToken()
+	refreshExpiresAt = time.Now().Add(refreshTokenTTL)
+
+	return token, expiresAt, refreshToken, refreshExpiresAt
 }
 
 func generateToken() string {

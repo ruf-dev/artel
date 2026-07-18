@@ -120,6 +120,7 @@ func (c *Custom) Init(a *App) error {
 			middleware.WithIgnoredPathAuthOption(
 				pb.AuthAPI_Register_FullMethodName,
 				pb.AuthAPI_Login_FullMethodName,
+				pb.AuthAPI_Refresh_FullMethodName,
 				pb.AuthAPI_GetConfig_FullMethodName,
 				pb.AuthAPI_GetMe_FullMethodName,
 			),

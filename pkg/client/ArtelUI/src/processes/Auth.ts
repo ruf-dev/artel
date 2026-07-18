@@ -5,6 +5,8 @@ import useUser from "@/hooks/user/User.ts"
 export interface Session {
     token: string
     expiresAt: string
+    refreshToken: string
+    refreshExpiresAt: string
 }
 
 export interface IAuthService {
@@ -21,6 +23,8 @@ export class AuthService implements IAuthService {
         return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({
             token: res.token,
             expiresAt: res.expiresAt,
+            refreshToken: res.refreshToken,
+            refreshExpiresAt: res.refreshExpiresAt,
         } as Session))
     }
 

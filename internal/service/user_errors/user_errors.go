@@ -36,6 +36,7 @@ var (
 	SessionExpired         = rerrors.New("session expired", codes.Unauthenticated)
 	InvalidTelegramToken   = rerrors.New("invalid telegram token", codes.Unauthenticated)
 	UnsupportedLoginMethod = rerrors.New("unsupported login method", codes.InvalidArgument)
+	InvalidRefreshToken    = rerrors.New("invalid refresh token", codes.Unauthenticated)
 
 	// subscription.
 

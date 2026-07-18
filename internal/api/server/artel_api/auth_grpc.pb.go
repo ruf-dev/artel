@@ -22,6 +22,7 @@ const (
 	AuthAPI_Register_FullMethodName  = "/artel_auth.AuthAPI/Register"
 	AuthAPI_Login_FullMethodName     = "/artel_auth.AuthAPI/Login"
 	AuthAPI_Logout_FullMethodName    = "/artel_auth.AuthAPI/Logout"
+	AuthAPI_Refresh_FullMethodName   = "/artel_auth.AuthAPI/Refresh"
 	AuthAPI_GetConfig_FullMethodName = "/artel_auth.AuthAPI/GetConfig"
 	AuthAPI_GetMe_FullMethodName     = "/artel_auth.AuthAPI/GetMe"
 )
@@ -33,6 +34,7 @@ type AuthAPIClient interface {
 	Register(ctx context.Context, in *Register_Request, opts ...grpc.CallOption) (*Register_Response, error)
 	Login(ctx context.Context, in *Login_Request, opts ...grpc.CallOption) (*Login_Response, error)
 	Logout(ctx context.Context, in *Logout_Request, opts ...grpc.CallOption) (*Logout_Response, error)
+	Refresh(ctx context.Context, in *Refresh_Request, opts ...grpc.CallOption) (*Refresh_Response, error)
 	GetConfig(ctx context.Context, in *GetConfig_Request, opts ...grpc.CallOption) (*GetConfig_Response, error)
 	GetMe(ctx context.Context, in *GetMe_Request, opts ...grpc.CallOption) (*GetMe_Response, error)
 }
@@ -75,6 +77,16 @@ func (c *authAPIClient) Logout(ctx context.Context, in *Logout_Request, opts ...
 	return out, nil
 }
 
+func (c *authAPIClient) Refresh(ctx context.Context, in *Refresh_Request, opts ...grpc.CallOption) (*Refresh_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Refresh_Response)
+	err := c.cc.Invoke(ctx, AuthAPI_Refresh_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authAPIClient) GetConfig(ctx context.Context, in *GetConfig_Request, opts ...grpc.CallOption) (*GetConfig_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetConfig_Response)
@@ -102,6 +114,7 @@ type AuthAPIServer interface {
 	Register(context.Context, *Register_Request) (*Register_Response, error)
 	Login(context.Context, *Login_Request) (*Login_Response, error)
 	Logout(context.Context, *Logout_Request) (*Logout_Response, error)
+	Refresh(context.Context, *Refresh_Request) (*Refresh_Response, error)
 	GetConfig(context.Context, *GetConfig_Request) (*GetConfig_Response, error)
 	GetMe(context.Context, *GetMe_Request) (*GetMe_Response, error)
 	mustEmbedUnimplementedAuthAPIServer()
@@ -122,6 +135,9 @@ func (UnimplementedAuthAPIServer) Login(context.Context, *Login_Request) (*Login
 }
 func (UnimplementedAuthAPIServer) Logout(context.Context, *Logout_Request) (*Logout_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedAuthAPIServer) Refresh(context.Context, *Refresh_Request) (*Refresh_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method Refresh not implemented")
 }
 func (UnimplementedAuthAPIServer) GetConfig(context.Context, *GetConfig_Request) (*GetConfig_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetConfig not implemented")
@@ -204,6 +220,24 @@ func _AuthAPI_Logout_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthAPI_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Refresh_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthAPIServer).Refresh(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthAPI_Refresh_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthAPIServer).Refresh(ctx, req.(*Refresh_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthAPI_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetConfig_Request)
 	if err := dec(in); err != nil {
@@ -258,6 +292,10 @@ var AuthAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _AuthAPI_Logout_Handler,
+		},
+		{
+			MethodName: "Refresh",
+			Handler:    _AuthAPI_Refresh_Handler,
 		},
 		{
 			MethodName: "GetConfig",

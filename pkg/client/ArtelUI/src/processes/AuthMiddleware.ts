@@ -29,7 +29,7 @@ export class AuthMiddleware {
 
     isAuthenticated(): boolean {
         if (!this.session) return false
-        return new Date(this.session.expiresAt) > new Date()
+        return new Date(this.session.refreshExpiresAt) > new Date()
     }
 
     login(s: Session, info?: UserInfo) {
@@ -50,6 +50,13 @@ export class AuthMiddleware {
         this.session = undefined
         this.userInfo = undefined
         clearLocalStorage()
+    }
+
+    updateTokens(token: string, expiresAt: string, refreshToken: string, refreshExpiresAt: string) {
+        if (!this.session) return
+
+        this.session = {token, expiresAt, refreshToken, refreshExpiresAt}
+        saveToLocalStorage({session: this.session, userInfo: this.userInfo})
     }
 
     getToken(): string {

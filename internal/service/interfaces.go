@@ -56,6 +56,10 @@ type AuthService interface {
 	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
 	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
 	CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error
+	// Refresh exchanges a still-valid refresh token for a new access/refresh token pair,
+	// rotating the refresh token in the process. Returns user_errors.InvalidRefreshToken
+	// if the token is unknown, already rotated, or expired.
+	Refresh(ctx context.Context, refreshToken string) (domain.Session, error)
 }
 
 type VaultService interface {

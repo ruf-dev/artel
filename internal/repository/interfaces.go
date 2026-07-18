@@ -110,11 +110,15 @@ type VaultInvites interface {
 }
 
 type Sessions interface {
-	Create(ctx context.Context, userID uuid.UUID, token string, expiresAt time.Time) (domain.Session, error)
+	Create(ctx context.Context, session domain.Session) (domain.Session, error)
 	GetByToken(ctx context.Context, token string) (domain.Session, error)
 	GetByTokenWithUser(ctx context.Context, token string) (domain.Session, domain.User, error)
 	Delete(ctx context.Context, token string) error
 	GetByUserID(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error)
+	// RotateByRefreshToken atomically swaps the session identified by oldRefreshToken for the
+	// token/expiry fields in newSession, provided the old refresh token has not already expired
+	// or been rotated away. Returns Valid: false if no matching row was updated.
+	RotateByRefreshToken(ctx context.Context, oldRefreshToken string, newSession domain.Session) (sql.Null[domain.Session], error)
 }
 
 type Subscriptions interface {

@@ -2,7 +2,8 @@ package sessions
 
 import (
 	"context"
-	"time"
+	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
@@ -21,27 +22,29 @@ func New(q *artel_q.Queries) *SessionsRepo {
 
 func (r *SessionsRepo) Create(
 	ctx context.Context,
-	userID uuid.UUID,
-	token string,
-	expiresAt time.Time,
+	session domain.Session,
 ) (domain.Session, error) {
 	params := artel_q.CreateSessionParams{
-		UserID:    userID,
-		Token:     token,
-		ExpiresAt: expiresAt,
+		UserID:           session.UserUuid,
+		Token:            session.Token,
+		ExpiresAt:        session.ExpiresAt,
+		RefreshToken:     sql.NullString{String: session.RefreshToken, Valid: session.RefreshToken != ""},
+		RefreshExpiresAt: sql.NullTime{Time: session.RefreshExpiresAt, Valid: !session.RefreshExpiresAt.IsZero()},
 	}
 
-	session, err := r.q.CreateSession(ctx, params)
+	created, err := r.q.CreateSession(ctx, params)
 	if err != nil {
-		return domain.Session{}, rerrors.Wrap(err, "failed to create session")
+		return domain.Session{}, rerrors.Wrap(err, "error creating session")
 	}
 
 	return domain.Session{
-		Uuid:      session.ID,
-		UserUuid:  session.UserID,
-		Token:     session.Token,
-		ExpiresAt: session.ExpiresAt,
-		CreatedAt: session.CreatedAt,
+		Uuid:             created.ID,
+		UserUuid:         created.UserID,
+		Token:            created.Token,
+		ExpiresAt:        created.ExpiresAt,
+		RefreshToken:     created.RefreshToken.String,
+		RefreshExpiresAt: created.RefreshExpiresAt.Time,
+		CreatedAt:        created.CreatedAt,
 	}, nil
 }
 
@@ -114,4 +117,39 @@ func (r *SessionsRepo) GetByUserID(ctx context.Context, userUuid uuid.UUID) ([]d
 	}
 
 	return result, nil
+}
+
+func (r *SessionsRepo) RotateByRefreshToken(
+	ctx context.Context,
+	oldRefreshToken string,
+	newSession domain.Session,
+) (sql.Null[domain.Session], error) {
+	params := artel_q.RotateSessionParams{
+		RefreshToken:     sql.NullString{String: oldRefreshToken, Valid: oldRefreshToken != ""},
+		Token:            newSession.Token,
+		ExpiresAt:        newSession.ExpiresAt,
+		RefreshToken_2:   sql.NullString{String: newSession.RefreshToken, Valid: newSession.RefreshToken != ""},
+		RefreshExpiresAt: sql.NullTime{Time: newSession.RefreshExpiresAt, Valid: !newSession.RefreshExpiresAt.IsZero()},
+	}
+
+	rotated, err := r.q.RotateSession(ctx, params)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.Null[domain.Session]{}, nil
+		}
+
+		return sql.Null[domain.Session]{}, rerrors.Wrap(err, "error rotating session")
+	}
+
+	session := domain.Session{
+		Uuid:             rotated.ID,
+		UserUuid:         rotated.UserID,
+		Token:            rotated.Token,
+		ExpiresAt:        rotated.ExpiresAt,
+		RefreshToken:     rotated.RefreshToken.String,
+		RefreshExpiresAt: rotated.RefreshExpiresAt.Time,
+		CreatedAt:        rotated.CreatedAt,
+	}
+
+	return sql.Null[domain.Session]{V: session, Valid: true}, nil
 }

@@ -346,11 +346,13 @@ type S3Instance struct {
 }
 
 type Session struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	Token     string
-	ExpiresAt time.Time
-	CreatedAt time.Time
+	ID               uuid.UUID
+	UserID           uuid.UUID
+	Token            string
+	ExpiresAt        time.Time
+	CreatedAt        time.Time
+	RefreshToken     sql.NullString
+	RefreshExpiresAt sql.NullTime
 }
 
 type Subscription struct {

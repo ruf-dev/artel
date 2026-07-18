@@ -51,6 +51,8 @@ export type LoginRequest = BaseLoginRequest &
 export type LoginResponse = {
   token?: string;
   expiresAt?: GoogleProtobufTimestamp.Timestamp;
+  refreshToken?: string;
+  refreshExpiresAt?: GoogleProtobufTimestamp.Timestamp;
 };
 
 export type Login = Record<string, never>;
@@ -60,6 +62,19 @@ export type LogoutRequest = Record<string, never>;
 export type LogoutResponse = Record<string, never>;
 
 export type Logout = Record<string, never>;
+
+export type RefreshRequest = {
+  refreshToken?: string;
+};
+
+export type RefreshResponse = {
+  token?: string;
+  expiresAt?: GoogleProtobufTimestamp.Timestamp;
+  refreshToken?: string;
+  refreshExpiresAt?: GoogleProtobufTimestamp.Timestamp;
+};
+
+export type Refresh = Record<string, never>;
 
 export type GetConfigRequest = Record<string, never>;
 
@@ -98,6 +113,9 @@ export class AuthAPI {
   }
   static Logout(this:void, req: LogoutRequest, initReq?: fm.InitReq): Promise<LogoutResponse> {
     return fm.fetchRequest<LogoutResponse>(`/api/auth/logout`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static Refresh(this:void, req: RefreshRequest, initReq?: fm.InitReq): Promise<RefreshResponse> {
+    return fm.fetchRequest<RefreshResponse>(`/api/auth/refresh`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static GetConfig(this:void, req: GetConfigRequest, initReq?: fm.InitReq): Promise<GetConfigResponse> {
     return fm.fetchRequest<GetConfigResponse>(`/api/auth/config`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

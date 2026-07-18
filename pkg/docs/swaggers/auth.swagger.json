@@ -144,6 +144,38 @@
         ]
       }
     },
+    "/api/auth/refresh": {
+      "post": {
+        "operationId": "AuthAPI_Refresh",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_authRefreshResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_authRefreshRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthAPI"
+        ]
+      }
+    },
     "/api/auth/register": {
       "post": {
         "operationId": "AuthAPI_Register",
@@ -235,6 +267,13 @@
         "expiresAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "refreshExpiresAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -269,6 +308,33 @@
         },
         "hasNotes": {
           "type": "boolean"
+        }
+      }
+    },
+    "artel_authRefreshRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_authRefreshResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "refreshExpiresAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },

@@ -28,6 +28,12 @@ service AuthAPI {
       body: "*"
     };
   };
+  rpc Refresh(Refresh.Request) returns (Refresh.Response) {
+    option (google.api.http) = {
+      post: "/api/auth/refresh"
+      body: "*"
+    };
+  };
   rpc GetConfig(GetConfig.Request) returns (GetConfig.Response) {
     option (google.api.http) = {
       post: "/api/auth/config"
@@ -70,14 +76,28 @@ message Login {
     }
   }
   message Response {
-    string                    token      = 1;
-    google.protobuf.Timestamp expires_at = 2;
+    string                    token               = 1;
+    google.protobuf.Timestamp expires_at          = 2;
+    string                    refresh_token       = 3;
+    google.protobuf.Timestamp refresh_expires_at  = 4;
   }
 }
 
 message Logout {
   message Request {}
   message Response {}
+}
+
+message Refresh {
+  message Request {
+    string refresh_token = 1;
+  }
+  message Response {
+    string                    token              = 1;
+    google.protobuf.Timestamp expires_at         = 2;
+    string                    refresh_token      = 3;
+    google.protobuf.Timestamp refresh_expires_at = 4;
+  }
 }
 
 message GetConfig {

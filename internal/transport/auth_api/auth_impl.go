@@ -53,8 +53,10 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 		}
 
 		resp := &artel_api.Login_Response{
-			Token:     session.Token,
-			ExpiresAt: timestamppb.New(session.ExpiresAt),
+			Token:            session.Token,
+			ExpiresAt:        timestamppb.New(session.ExpiresAt),
+			RefreshToken:     session.RefreshToken,
+			RefreshExpiresAt: timestamppb.New(session.RefreshExpiresAt),
 		}
 
 		return resp, nil
@@ -67,14 +69,35 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 		}
 
 		resp := &artel_api.Login_Response{
-			Token:     session.Token,
-			ExpiresAt: timestamppb.New(session.ExpiresAt),
+			Token:            session.Token,
+			ExpiresAt:        timestamppb.New(session.ExpiresAt),
+			RefreshToken:     session.RefreshToken,
+			RefreshExpiresAt: timestamppb.New(session.RefreshExpiresAt),
 		}
 
 		return resp, nil
 	default:
 		return nil, user_errors.UnsupportedLoginMethod
 	}
+}
+
+func (h *authHandler) Refresh(
+	ctx context.Context,
+	req *artel_api.Refresh_Request,
+) (*artel_api.Refresh_Response, error) {
+	session, err := h.authSvc.Refresh(ctx, req.GetRefreshToken())
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error refreshing session")
+	}
+
+	resp := &artel_api.Refresh_Response{
+		Token:            session.Token,
+		ExpiresAt:        timestamppb.New(session.ExpiresAt),
+		RefreshToken:     session.RefreshToken,
+		RefreshExpiresAt: timestamppb.New(session.RefreshExpiresAt),
+	}
+
+	return resp, nil
 }
 
 func (h *authHandler) GetConfig(

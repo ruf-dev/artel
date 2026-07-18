@@ -19,7 +19,7 @@ type Querier interface {
 	CreateDefaultUserPermissions(ctx context.Context, userID uuid.UUID) error
 	CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error)
 	CreatePendingAuthCode(ctx context.Context, arg CreatePendingAuthCodeParams) error
-	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
+	CreateSession(ctx context.Context, arg CreateSessionParams) (CreateSessionRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
@@ -50,7 +50,7 @@ type Querier interface {
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)
 	GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (S3Instance, error)
-	GetSessionByToken(ctx context.Context, token string) (Session, error)
+	GetSessionByToken(ctx context.Context, token string) (GetSessionByTokenRow, error)
 	GetSessionWithUser(ctx context.Context, token string) (GetSessionWithUserRow, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
@@ -120,6 +120,7 @@ type Querier interface {
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
 	RevokeVaultInvite(ctx context.Context, id uuid.UUID) error
+	RotateSession(ctx context.Context, arg RotateSessionParams) (RotateSessionRow, error)
 	// Invalidates the trigger's current webhook URL/token by overwriting trigger_uuid,
 	// secret_hash, and token_suffix in place, keyed by the trigger's stable primary key id.
 	RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecretParams) (Trigger, error)
