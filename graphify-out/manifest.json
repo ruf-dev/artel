@@ -2240,8 +2240,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/tract/tract_test.go": {
-    "mtime": 1784322029.1550367,
-    "ast_hash": "97c2796f68f2d4a9d53d0956556a19d5",
+    "mtime": 1784401790.9884443,
+    "ast_hash": "c4ebec784107325c99fc183ae1ac4f43",
     "semantic_hash": ""
   },
   "internal/domain/tract.go": {
@@ -4725,8 +4725,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/tract/script/javascript.go": {
-    "mtime": 1784321543.9538774,
-    "ast_hash": "961ed769d0d114b28ec09ba3940590b7",
+    "mtime": 1784401778.0798912,
+    "ast_hash": "d759f6c550e7eb4e722c97241217a0de",
     "semantic_hash": ""
   },
   "internal/service/v1/tract/script/javascript_test.go": {
