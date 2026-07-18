@@ -14,4 +14,9 @@
         text-transform: uppercase;
         color: var(--color-fg-tertiary);
     }
+
+    & .SizeButton svg {
+        width: 0.8125rem;
+        height: 0.8125rem;
+    }
 }

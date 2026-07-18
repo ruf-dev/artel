@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/tract-canvas/components/TractCanvasLogPanel/TractCanvasLogPanel.module.css"
@@ -8,9 +8,20 @@ import LogPanelBar from "@/pages/tract-canvas/components/TractCanvasLogPanel/com
 import RunLog from "@/pages/tract-canvas/components/TractCanvasLogPanel/components/RunLog/RunLog.tsx"
 import ResizeHandle from "@/pages/tract-canvas/components/TractCanvasLogPanel/components/ResizeHandle/ResizeHandle.tsx"
 
+const HEIGHT_STORAGE_KEY = "artel.tract.logPanelHeight"
 const DEFAULT_HEIGHT = 220
 const MIN_HEIGHT = 160
-const MAX_HEIGHT_RATIO = 0.85
+const COMPACT_HEIGHT_RATIO = 0.2
+const EXPANDED_HEIGHT_RATIO = 0.85
+
+function clampHeight(h: number): number {
+    return Math.min(Math.max(h, MIN_HEIGHT), window.innerHeight * EXPANDED_HEIGHT_RATIO)
+}
+
+function loadStoredHeight(): number {
+    const stored = Number(localStorage.getItem(HEIGHT_STORAGE_KEY))
+    return stored > 0 ? clampHeight(stored) : DEFAULT_HEIGHT
+}
 
 interface Props {
     open: boolean
@@ -22,12 +33,23 @@ interface Props {
 }
 
 export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSelectRun, onRetryRun, onClose}: Props) {
-    const [height, setHeight] = useState(DEFAULT_HEIGHT)
+    const [height, setHeight] = useState(loadStoredHeight)
     const [isDragging, setIsDragging] = useState(false)
 
+    useEffect(() => {
+        localStorage.setItem(HEIGHT_STORAGE_KEY, String(height))
+    }, [height])
+
     function handleResize(newHeight: number) {
-        const maxHeight = window.innerHeight * MAX_HEIGHT_RATIO
-        setHeight(Math.min(Math.max(newHeight, MIN_HEIGHT), maxHeight))
+        setHeight(clampHeight(newHeight))
+    }
+
+    const expandedHeight = window.innerHeight * EXPANDED_HEIGHT_RATIO
+    const compactHeight = window.innerHeight * COMPACT_HEIGHT_RATIO
+    const isExpanded = height >= (compactHeight + expandedHeight) / 2
+
+    function handleTogglePreset() {
+        setHeight(isExpanded ? compactHeight : expandedHeight)
     }
 
     return (
@@ -40,7 +62,7 @@ export default function TractCanvasLogPanel({open, runs, selectedRunUuid, onSele
                 onDragStart={() => setIsDragging(true)}
                 onDragEnd={() => setIsDragging(false)}
             />
-            <LogPanelBar onClose={onClose}/>
+            <LogPanelBar expanded={isExpanded} onTogglePreset={handleTogglePreset} onClose={onClose}/>
             <div className={cls.Split}>
                 <div className={cls.RunList}>
                     {runs.length === 0 && <p className={cls.Empty}>No runs yet.</p>}

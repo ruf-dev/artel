@@ -24,6 +24,22 @@
     border-color: var(--coral-border);
 }
 
+.Node.Running {
+    animation: blinkRunningBorder 1.1s ease-in-out infinite;
+}
+
+@keyframes blinkRunningBorder {
+    0%, 100% {
+        border-color: var(--status-online);
+        box-shadow: 0 0 0 0.1875rem var(--status-online-glow);
+    }
+
+    50% {
+        border-color: var(--color-border);
+        box-shadow: 0 0.0625rem 0.25rem rgb(0 0 0 / 15%);
+    }
+}
+
 .StatusDot {
     position: absolute;
     top: 0.6875rem;

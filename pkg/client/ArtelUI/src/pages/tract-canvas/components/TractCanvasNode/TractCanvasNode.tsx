@@ -30,7 +30,12 @@ export default function TractCanvasNode(props: Props) {
 
     return (
         <div
-            className={cn(cls.Node, props.selected && cls.Selected, props.node.kind === "trigger" && cls.TriggerNode)}
+            className={cn(
+                cls.Node,
+                props.selected && cls.Selected,
+                props.node.kind === "trigger" && cls.TriggerNode,
+                props.status === "running" && cls.Running,
+            )}
             style={{left: props.node.x, top: props.node.y, width: NODE_WIDTH, height: NODE_HEIGHT}}
             data-tract-node
             onClick={e => {
