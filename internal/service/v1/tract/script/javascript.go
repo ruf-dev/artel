@@ -40,7 +40,10 @@ func (e *JavaScriptEngine) Run(ctx context.Context, in RunInput) (map[string]int
 		argv[i] = in.Args[p.Name]
 	}
 
-	vm.Set("__args", argv)
+	err := vm.Set("__args", argv)
+	if err != nil {
+		return nil, rerrors.Wrap(user_errors.TractScriptRuntimeError, err.Error())
+	}
 
 	done := make(chan struct{})
 	defer close(done)

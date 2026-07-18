@@ -26,15 +26,14 @@ func actionStep(id string, params map[string]string) domain.TractStep {
 }
 
 func scriptStep(
-	id string,
 	inputParams []domain.ScriptParam,
 	outputParams []domain.ScriptParam,
 	params map[string]string,
 	code string,
 ) domain.TractStep {
 	step := domain.TractStep{
-		Id:           id,
-		Name:         id,
+		Id:           "s",
+		Name:         "s",
 		Type:         stepTypeScript,
 		Language:     domain.ScriptLanguageJavaScript,
 		Code:         code,
@@ -295,7 +294,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 	validBinding := map[string]string{"a": "{{ trigger.a }}"}
 
 	t.Run("valid script step passes", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step := scriptStep(validInput, validOutput, validBinding, "sum = a;")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := validateShape(def)
@@ -303,7 +302,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 	})
 
 	t.Run("missing language is rejected", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step := scriptStep(validInput, validOutput, validBinding, "sum = a;")
 		step.Language = domain.ScriptLanguageUnspecified
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
@@ -312,7 +311,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 	})
 
 	t.Run("missing code is rejected", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, validBinding, "")
+		step := scriptStep(validInput, validOutput, validBinding, "")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := validateShape(def)
@@ -324,7 +323,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 			{Name: "a", Property: domain.ToolProperty{Type: "number"}},
 			{Name: "a", Property: domain.ToolProperty{Type: "number"}},
 		}
-		step := scriptStep("s", dupInput, validOutput, map[string]string{"a": "1"}, "sum = a;")
+		step := scriptStep(dupInput, validOutput, map[string]string{"a": "1"}, "sum = a;")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := validateShape(def)
@@ -333,7 +332,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 
 	t.Run("invalid identifier is rejected", func(t *testing.T) {
 		badInput := []domain.ScriptParam{{Name: "1bad", Property: domain.ToolProperty{Type: "number"}}}
-		step := scriptStep("s", badInput, validOutput, map[string]string{"1bad": "1"}, "sum = 1;")
+		step := scriptStep(badInput, validOutput, map[string]string{"1bad": "1"}, "sum = 1;")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := validateShape(def)
@@ -341,7 +340,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 	})
 
 	t.Run("missing binding is rejected", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, map[string]string{}, "sum = a;")
+		step := scriptStep(validInput, validOutput, map[string]string{}, "sum = a;")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := validateShape(def)
@@ -349,7 +348,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 	})
 
 	t.Run("extra binding is rejected", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, map[string]string{"a": "1", "extra": "2"}, "sum = a;")
+		step := scriptStep(validInput, validOutput, map[string]string{"a": "1", "extra": "2"}, "sum = a;")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := validateShape(def)
@@ -357,7 +356,7 @@ func TestValidateShape_ScriptStep(t *testing.T) {
 	})
 
 	t.Run("conditions on a script step is rejected", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step := scriptStep(validInput, validOutput, validBinding, "sum = a;")
 		step.Conditions = []domain.TractCondition{{Left: "1", Op: "==", Right: "1"}}
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
@@ -377,7 +376,7 @@ func TestValidateScriptEngines(t *testing.T) {
 	validBinding := map[string]string{"a": "1"}
 
 	t.Run("registered language passes", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step := scriptStep(validInput, validOutput, validBinding, "sum = a;")
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
 		err := svc.validateScriptEngines(def)
@@ -385,7 +384,7 @@ func TestValidateScriptEngines(t *testing.T) {
 	})
 
 	t.Run("unregistered language is rejected", func(t *testing.T) {
-		step := scriptStep("s", validInput, validOutput, validBinding, "sum = a;")
+		step := scriptStep(validInput, validOutput, validBinding, "sum = a;")
 		step.Language = "lua"
 		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
 
