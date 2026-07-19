@@ -55,7 +55,16 @@ function refreshTokens(): Promise<boolean> {
 }
 
 function forceLogout() {
+    const hadSession = Boolean(useUser.getState().auth.session)
     useUser.getState().logout()
+
+    // Nothing to force: there was no session to lose, or we're already on
+    // the login page — a hard redirect here would just reload in place and,
+    // repeated on every subsequent 401, loop forever.
+    if (!hadSession || window.location.pathname === Path.InitPage) {
+        return
+    }
+
     window.location.href = Path.InitPage
 }
 
