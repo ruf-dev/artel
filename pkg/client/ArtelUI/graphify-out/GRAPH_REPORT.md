@@ -1,16 +1,16 @@
 # Graph Report - ArtelUI  (2026-07-19)
 
 ## Corpus Check
-- 493 files · ~135,498 words
+- 493 files · ~135,504 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2254 nodes · 5462 edges · 107 communities (102 shown, 5 thin omitted)
+- 2254 nodes · 5462 edges · 107 communities (101 shown, 6 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 21 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `19e6a3c7`
+- Built from commit: `13a9ce84`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -143,7 +143,7 @@
 - 3-file cycle: `src/app/routing/Router.tsx -> src/pages/init/InitPage.tsx -> src/pages/init/components/LoginContent/LoginContent.tsx -> src/app/routing/Router.tsx`
 - 3-file cycle: `src/app/routing/Router.tsx -> src/pages/notes/NotesPage.tsx -> src/pages/notes/processes/notesUrl.ts -> src/app/routing/Router.tsx`
 
-## Communities (107 total, 5 thin omitted)
+## Communities (107 total, 6 thin omitted)
 
 ### Community 0 - "tracts.pb.ts"
 Cohesion: 0.03
@@ -195,7 +195,7 @@ Nodes (20): DeleteCouchInstance, DeleteCouchInstanceRequest, DeleteCouchInstance
 
 ### Community 12 - "TractsService"
 Cohesion: 0.08
-Nodes (6): TractsAPI, TractsService, parseSchema(), toTool(), toTrigger(), toTriggerSource()
+Nodes (4): TractsAPI, TractsService, toTrigger(), toTriggerSource()
 
 ### Community 13 - "Dialog.ts"
 Cohesion: 0.16
@@ -302,8 +302,8 @@ Cohesion: 0.11
 Nodes (17): DeleteS3Instance, DeleteS3InstanceRequest, DeleteS3InstanceResponse, GetS3Instance, GetS3InstanceRequest, ListS3Instances, ListS3InstancesRequest, ListS3InstancesResponse (+9 more)
 
 ### Community 40 - "CreateNoteDialog.tsx"
-Cohesion: 0.10
-Nodes (23): ActionStep, ConditionStep, GroupStep, ParallelStep, ScriptStep, TractCondition, TractDefinition, TractItem (+15 more)
+Cohesion: 0.09
+Nodes (27): ActionStep, ConditionStep, GroupStep, ParallelStep, ScriptStep, TractCondition, TractDefinition, TractItem (+19 more)
 
 ### Community 41 - "ArtelUI Frontend Rules"
 Cohesion: 0.11
@@ -509,10 +509,6 @@ Nodes (5): name, private, trustedDependencies, type, version
 Cohesion: 0.27
 Nodes (6): ArtelLogoIcon(), ChevronLeftIcon(), DrawerCloseButton(), DrawerCloseButtonProps, MobileDrawerProps, VaultOption
 
-### Community 104 - ".getRun"
-Cohesion: 0.29
-Nodes (4): safeParseJson(), scriptParamsFromJson(), toRun(), toRunStep()
-
 ### Community 105 - "UserList.tsx"
 Cohesion: 0.50
 Nodes (3): CouchUserEntry, UserListProps, UserRowProps
@@ -520,7 +516,7 @@ Nodes (3): CouchUserEntry, UserListProps, UserRowProps
 ## Knowledge Gaps
 - **638 isolated node(s):** `localPlugin`, `name`, `private`, `version`, `type` (+633 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

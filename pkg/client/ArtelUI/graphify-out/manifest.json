@@ -2415,8 +2415,8 @@
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts": {
-    "mtime": 1784398259.0956576,
-    "ast_hash": "266cfb3e3d8adb698910cb55cd9b5f0b",
+    "mtime": 1784451416.115582,
+    "ast_hash": "bac9636b0b2d02363a552dfb41ce2446",
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/components/ScriptBody/components/ScriptParamRow/ScriptParamRow.tsx": {

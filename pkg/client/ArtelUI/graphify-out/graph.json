@@ -16717,7 +16717,7 @@
       "label": "scriptHighlightStyle",
       "file_type": "code",
       "source_file": "src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts",
-      "source_location": "L55",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "src_pages_tract_canvas_components_scriptbody_components_scriptcodesection_processes_scripteditorextensions_scripthighlightstyle",
       "community": 33,
@@ -16727,7 +16727,7 @@
       "label": "paramCompletionSource()",
       "file_type": "code",
       "source_file": "src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts",
-      "source_location": "L67",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "src_pages_tract_canvas_components_scriptbody_components_scriptcodesection_processes_scripteditorextensions_paramcompletionsource",
       "community": 33,
@@ -20680,7 +20680,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_processes_tractsmappers_safeparsejson",
-      "community": 104,
+      "community": 40,
       "norm_label": "safeparsejson()"
     },
     {
@@ -20710,7 +20710,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "src_processes_tractsmappers_scriptparamsfromjson",
-      "community": 104,
+      "community": 40,
       "norm_label": "scriptparamsfromjson()"
     },
     {
@@ -20780,7 +20780,7 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "src_processes_tractsmappers_parseschema",
-      "community": 12,
+      "community": 40,
       "norm_label": "parseschema()"
     },
     {
@@ -20820,7 +20820,7 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "src_processes_tractsmappers_totool",
-      "community": 12,
+      "community": 40,
       "norm_label": "totool()"
     },
     {
@@ -68647,7 +68647,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts",
-      "source_location": "L67",
+      "source_location": "L70",
       "weight": 1.0,
       "source": "src_pages_tract_canvas_components_scriptbody_components_scriptcodesection_processes_scripteditorextensions",
       "target": "src_pages_tract_canvas_components_scriptbody_components_scriptcodesection_processes_scripteditorextensions_paramcompletionsource",
@@ -68667,7 +68667,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts",
-      "source_location": "L55",
+      "source_location": "L58",
       "weight": 1.0,
       "source": "src_pages_tract_canvas_components_scriptbody_components_scriptcodesection_processes_scripteditorextensions",
       "target": "src_pages_tract_canvas_components_scriptbody_components_scriptcodesection_processes_scripteditorextensions_scripthighlightstyle",
@@ -80870,5 +80870,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "19e6a3c7f69c0e6a2ff02d31225454bb2a1cb620"
+  "built_at_commit": "13a9ce843f03fd798e08269c9726b4fb1e840683"
 }
