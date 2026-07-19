@@ -28,8 +28,11 @@ export const scriptEditorTheme = EditorView.theme({
         borderColor: "var(--coral)",
     },
     ".cm-content": {
-        caretColor: "var(--coral)",
         padding: "0.5rem 0.625rem",
+    },
+    ".cm-cursor, .cm-dropCursor": {
+        borderLeftColor: "var(--coral)",
+        borderLeftWidth: "2px",
     },
     ".cm-line": {
         padding: 0,
