@@ -46,6 +46,19 @@
         gap: 0.625rem;
         margin-top: 1.5rem;
     }
+
+    .ExploreLink {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        margin-top: 0.75rem;
+    }
+
+    .ExploreLink:hover {
+        color: var(--coral);
+    }
 }
 
 @keyframes dialogIn {

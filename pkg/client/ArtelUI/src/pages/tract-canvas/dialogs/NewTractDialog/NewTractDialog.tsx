@@ -6,10 +6,11 @@ import cls from "@/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.modu
 import {useDialog, useDialogKeyboard} from "@/app/hooks/Dialog"
 import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import BrowseTemplatesDialog from "@/dialogs/BrowseTemplatesDialog/BrowseTemplatesDialog.tsx"
 
 
 export default function NewTractDialog() {
-    const {CloseDialog} = useDialog()
+    const {CloseDialog, OpenDialog} = useDialog()
     const {createTract} = useTracts()
     const bakeError = useBakeError()
     const navigate = useNavigate()
@@ -49,6 +50,14 @@ export default function NewTractDialog() {
                     {creating ? "…" : "Create"}
                 </Button>
             </div>
+            <Button
+                variant="ghost"
+                className={cls.ExploreLink}
+                onClick={() => OpenDialog(<BrowseTemplatesDialog/>)}
+                disabled={creating}
+            >
+                or explore templates →
+            </Button>
         </div>
     )
 }
