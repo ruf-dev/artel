@@ -90,7 +90,7 @@ func (s *E2ESuite) SetupSuite() {
 	s.couchInstanceID, err = s.svcs.CouchInstance.RegisterCouchInstance(ctx, couchURL, couchUser, couchPass)
 	s.Require().NoError(err, "register couch instance")
 
-	s.mcpHdlr = mcp_api.NewMcpHandler(s.svcs.Mcp, s.svcs.Email, s.svcs.Mom)
+	s.mcpHdlr = mcp_api.NewMcpHandler(s.svcs.Mcp, s.svcs.Mom)
 }
 
 func (s *E2ESuite) TearDownSuite() {
@@ -122,8 +122,12 @@ func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
 	s.Require().NoError(err)
 	s.Require().NotEmpty(session.Token)
 
-	// 3. Build user context (replaces the gRPC auth interceptor for direct service calls)
-	uc := user_context.UserContext{UserUuid: user.Uuid}
+	// 3. Build user context (replaces the gRPC auth interceptor for direct service calls) —
+	// UserName must be non-empty: vault creation derives the CouchDB database name from it, and
+	// an empty UserName produces a name starting with "-", which CouchDB rejects. Email/password
+	// registration never populates domain.User.Username (it defaults to "" — see
+	// migrations/007_telegram_auth.sql), so a local-part stand-in is used here instead.
+	uc := user_context.UserContext{UserUuid: user.Uuid, UserName: strings.SplitN(email, "@", 2)[0]}
 	userCtx := user_context.WithUserContext(ctx, uc)
 
 	// 4. Create vault
@@ -133,18 +137,14 @@ func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
 		_ = s.svcs.Vault.DeleteVault(context.Background(), vault.Uuid)
 	})
 
-	// 5. Enable HasNotes (default permissions have it off)
-	_, err = s.repos.UserPermissions().Upsert(ctx, user.Uuid, false, false, false, true)
-	s.Require().NoError(err)
-
-	// 6. Create MCP key for this vault
+	// 5. Create MCP key for this vault
 	rawToken, key, err := s.svcs.Mcp.CreateKey(userCtx, vault.Uuid, "e2e-key")
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
 		_ = s.svcs.Mcp.RevokeKey(context.Background(), key.Uuid)
 	})
 
-	// 7. Write a note via MCP HTTP handler
+	// 6. Write a note via MCP HTTP handler
 	writeArgs := map[string]any{
 		"path":    "e2e/hello.md",
 		"content": "# Hello\nThis is a test note from the e2e suite.",
