@@ -44,6 +44,35 @@ activation step is needed.
 If touching Go backend files, read [docs/architecture.md](docs/architecture.md) for rscli structure, configuration,
 planned layers, service layout, and key dependencies.
 
+## Testing
+
+- Unit tests: `go test ./...` from the repo root — no external services required.
+- E2E tests live under `tests/` (`tests/e2e`, `tests/livesync`, `tests/vault`, `tests/tract_e2e`,
+  `tests/gitlab_trigger_e2e`) and are gated behind the `e2e` build tag, so they're excluded from
+  `go test ./...` by default.
+
+Bring up the test backends (Postgres, CouchDB, MinIO) once per session:
+
+```bash
+docker compose -f tests/docker-compose.yaml up -d   # postgres:15434, couchdb:15985, minio:19000
+go test -tags e2e ./tests/...                        # or scope to one suite, e.g. ./tests/e2e/...
+docker compose -f tests/docker-compose.yaml down     # tear down when done
+```
+
+Suites default to `localhost` + the ports above; override via `PG_DSN`, `COUCH_URL`/`COUCH_USER`/`COUCH_PASS`,
+and `S3_ENDPOINT` env vars if pointing at different infra.
+
+Each e2e suite constructs its own `svcv1.Services` via `config.EnvironmentConfig{}` — note that
+`SubscriptionsEnabled` defaults to `false` there, which routes all quota/feature checks through
+`FreeService` (always-allow, no CouchDB/S3 calls). A suite that needs to exercise real plan/quota
+enforcement (`PaidService`) must set `cfg.SubscriptionsEnabled = true` explicitly (see
+`tests/e2e/quota_test.go`).
+
+`UserContext.UserName` must be non-empty when a test builds one by hand (bypassing the gRPC auth
+interceptor) and then calls `Vault.CreateVault` — the CouchDB database name is derived from it, and
+an empty value produces a name starting with `-`, which CouchDB rejects. Email/password registration
+never populates `domain.User.Username`, so tests stand in with the email's local part.
+
 ## MoM (MCP of MCP) — third-party integrations
 
 Artel has a declarative integration framework internally called "MoM" (MCP of MCP — unrelated to
