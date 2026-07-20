@@ -241,6 +241,7 @@ var (
 		codes.InvalidArgument,
 	)
 	TractConnectionNotOwned    = rerrors.New("connection_id does not belong to the tract owner", codes.PermissionDenied)
+	TractConnectionUuidInvalid = rerrors.New("connection uuid is not a valid uuid", codes.InvalidArgument)
 	TractInvalidTemplateRef    = rerrors.New("template reference is not visible from this step", codes.InvalidArgument)
 	TractMalformedTemplate     = rerrors.New("malformed template expression", codes.InvalidArgument)
 	TractUnknownTemplateVar    = rerrors.New("unknown $-variable in template expression", codes.InvalidArgument)
@@ -279,9 +280,10 @@ var (
 	TractTemplateFieldNotFound = rerrors.New("referenced field not found in step output", codes.FailedPrecondition)
 
 	// tract: ownership
-	TriggerNotFound = rerrors.New("trigger not found", codes.NotFound)
-	TriggerNotOwned = rerrors.New("trigger does not belong to the caller", codes.PermissionDenied)
-	TractNotOwned   = rerrors.New("tract does not belong to the caller", codes.PermissionDenied)
+	TriggerNotFound       = rerrors.New("trigger not found", codes.NotFound)
+	TriggerNotOwned       = rerrors.New("trigger does not belong to the caller", codes.PermissionDenied)
+	TractNotOwned         = rerrors.New("tract does not belong to the caller", codes.PermissionDenied)
+	TractTemplateNotOwned = rerrors.New("template does not belong to the caller", codes.PermissionDenied)
 
 	// tract: provider-linked trigger presets (e.g. gitlab_push)
 	TriggerProviderConnectionRequired = rerrors.New(

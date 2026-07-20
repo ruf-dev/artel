@@ -49,6 +49,41 @@ service TractsAPI {
     };
   }
 
+  rpc PublishTractTemplate(PublishTractTemplate.Request) returns (PublishTractTemplate.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/templates/publish"
+      body: "*"
+    };
+  }
+
+  rpc UnpublishTractTemplate(UnpublishTractTemplate.Request) returns (UnpublishTractTemplate.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/templates/unpublish"
+      body: "*"
+    };
+  }
+
+  rpc ListTractTemplates(ListTractTemplates.Request) returns (ListTractTemplates.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/templates/list"
+      body: "*"
+    };
+  }
+
+  rpc GetTractTemplate(GetTractTemplate.Request) returns (GetTractTemplate.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/templates/get"
+      body: "*"
+    };
+  }
+
+  rpc InstantiateTractTemplate(InstantiateTractTemplate.Request) returns (InstantiateTractTemplate.Response) {
+    option (google.api.http) = {
+      post: "/api/tracts/templates/instantiate"
+      body: "*"
+    };
+  }
+
   rpc RunTract(RunTract.Request) returns (RunTract.Response) {
     option (google.api.http) = {
       post: "/api/tracts/run"
@@ -239,6 +274,34 @@ message TractItem {
   string updated_at                     = 9;
 }
 
+// TractTemplateItem is the wire shape of domain.TractTemplate — a published, browsable/copyable
+// snapshot of a tract's definition. source_tract_uuid is empty if the source tract was since
+// deleted.
+message TractTemplateItem {
+  string uuid              = 1;
+  string source_tract_uuid = 2;
+  string owner_uuid        = 3;
+  string name              = 4;
+  string description       = 5;
+  TractDefinition definition = 6;
+  string category          = 7;
+  int32 install_count      = 8;
+  string published_at      = 9;
+  string updated_at        = 10;
+}
+
+// TractTemplateSummary omits `definition` — used for gallery list rendering where the full
+// step tree isn't needed yet (GetTractTemplate returns the full item when a user opens one).
+message TractTemplateSummary {
+  string uuid          = 1;
+  string owner_uuid     = 2;
+  string name           = 3;
+  string description    = 4;
+  string category       = 5;
+  int32 install_count   = 6;
+  string published_at   = 7;
+}
+
 message TractRunItem {
   string uuid            = 1;
   string tract_uuid      = 2;
@@ -349,6 +412,55 @@ message SetTractEnabled {
     bool enabled  = 2;
   }
   message Response {}
+}
+
+message PublishTractTemplate {
+  message Request {
+    string tract_uuid = 1;
+    string category    = 2;
+  }
+  message Response {
+    TractTemplateItem template = 1;
+  }
+}
+
+message UnpublishTractTemplate {
+  message Request {
+    string template_uuid = 1;
+  }
+  message Response {}
+}
+
+message ListTractTemplates {
+  message Request {
+    string category   = 1; // empty = no filter
+    bool mine_only     = 2; // true = only templates published by the caller
+  }
+  message Response {
+    repeated TractTemplateSummary templates = 1;
+  }
+}
+
+message GetTractTemplate {
+  message Request {
+    string uuid = 1;
+  }
+  message Response {
+    TractTemplateItem template = 1;
+  }
+}
+
+message InstantiateTractTemplate {
+  message Request {
+    string template_uuid    = 1;
+    string name              = 2;
+    string description       = 3;
+    map<string, string> connections = 4; // mcp name -> connection_uuid, for every non-builtin MoM the template's steps use
+  }
+  message Response {
+    TractItem tract           = 1;
+    repeated string warnings  = 2;
+  }
 }
 
 message RunTract {

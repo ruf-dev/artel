@@ -72,8 +72,8 @@ func (c *Custom) Init(a *App) error {
 	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
 	services.Tract = tract.New(
-		repo.Tracts(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(), repo.McpDefinitions(),
-		tractToolExecutor, services.SubscriptionService(), scriptEngines,
+		repo.Tracts(), repo.TractTemplates(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(),
+		repo.McpDefinitions(), tractToolExecutor, services.SubscriptionService(), scriptEngines,
 	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that

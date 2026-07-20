@@ -21,6 +21,27 @@ type Tract struct {
 	UpdatedAt   time.Time
 }
 
+// TractTemplate is an immutable published snapshot of a Tract, browsable/copyable by any user
+// (not just its owner). Definition is copied at publish time — it is NOT a live view of the
+// source tract; later edits to the source tract never propagate here. Every ConnectionUuid
+// inside Definition's step tree is always zero: those uuids referenced per-user
+// external_connections rows belonging to the publisher's account, meaningless (and unsafe to
+// expose) to anyone who installs the template into their own account, so they are stripped to
+// nil at publish time. SourceTractUuid is zero if the source tract has since been deleted
+// (source_tract_id is ON DELETE SET NULL — the template snapshot is designed to outlive it).
+type TractTemplate struct {
+	Uuid            uuid.UUID
+	SourceTractUuid uuid.UUID
+	OwnerUuid       uuid.UUID
+	Name            string
+	Description     string
+	Definition      TractDefinition
+	Category        string
+	InstallCount    int
+	PublishedAt     time.Time
+	UpdatedAt       time.Time
+}
+
 // TractDefinition is the JSON-serialized step tree — json tags live here because the
 // engine/validation layer (internal/service/v1/tract) marshals it directly for Postgres JSONB
 // storage. The wire (proto) shape is a typed oneof-per-step-kind message, mapped to/from this

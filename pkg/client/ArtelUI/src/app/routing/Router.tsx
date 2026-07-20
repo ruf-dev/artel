@@ -19,6 +19,7 @@ import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
 import ToolboxPage from "@/pages/toolbox/ToolboxPage.tsx"
 import TractCanvasListPage from "@/pages/tract-canvas/TractCanvasListPage.tsx"
 import TractCanvasBuilderPage from "@/pages/tract-canvas/TractCanvasBuilderPage.tsx"
+import TractTemplatesListPage from "@/pages/tract-templates/TractTemplatesListPage.tsx"
 import GoogleOAuthCallbackPage from "@/pages/connections/GoogleOAuthCallbackPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
@@ -41,6 +42,7 @@ export enum Path {
     ToolboxPage = "/toolbox",
     TractsPage = "/tracts",
     TractEditorPage = "/tracts/:tractUuid",
+    TractTemplatesPage = "/tract-templates",
     GoogleOAuthCallback = "/connections/google/callback",
     McpAuth = "/authorize",
     ClosedAlpha = "/closed-alpha",
@@ -67,6 +69,7 @@ const routes: RouteObject[] = [
             {path: Path.ToolboxPage, element: <ToolboxPage/>, errorElement: <ErrorPage/>},
             {path: Path.TractsPage, element: <TractCanvasListPage/>, errorElement: <ErrorPage/>},
             {path: Path.TractEditorPage, element: <TractCanvasBuilderPage/>, errorElement: <ErrorPage/>},
+            {path: Path.TractTemplatesPage, element: <TractTemplatesListPage/>, errorElement: <ErrorPage/>},
             {path: "*", element: <Navigate to={Path.HomePage} replace/>},
         ],
     },

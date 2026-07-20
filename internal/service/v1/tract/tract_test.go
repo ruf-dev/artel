@@ -399,7 +399,7 @@ func newTestService(
 	executor *fakeToolExecutor,
 ) *Service {
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
-	svc := New(nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
+	svc := New(nil, nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
 
 	return svc
 }

@@ -39,6 +39,7 @@ var scriptParamIdPattern = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$]*$`)
 // Service implements service.TractService and (via engine.go) the tract run engine.
 type Service struct {
 	tracts         repository.TractsRepo
+	templates      repository.TractTemplatesRepo
 	triggers       repository.TriggersRepo
 	triggerPresets repository.TriggerPresetsRepo
 	externalConns  repository.ExternalConnectionRepo
@@ -50,6 +51,7 @@ type Service struct {
 
 func New(
 	tracts repository.TractsRepo,
+	templates repository.TractTemplatesRepo,
 	triggers repository.TriggersRepo,
 	triggerPresets repository.TriggerPresetsRepo,
 	externalConns repository.ExternalConnectionRepo,
@@ -60,6 +62,7 @@ func New(
 ) *Service {
 	tractSvc := &Service{
 		tracts:         tracts,
+		templates:      templates,
 		triggers:       triggers,
 		triggerPresets: triggerPresets,
 		externalConns:  externalConns,
@@ -87,7 +90,20 @@ func (s *Service) CreateTract(
 		return domain.Tract{}, nil, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	err := s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureTract)
+	return s.createTractInternal(ctx, uc.UserUuid, name, description, def)
+}
+
+// createTractInternal runs the full validate+persist pipeline shared by CreateTract and
+// InstantiateTemplate — an instantiated-from-template tract goes through identical
+// validation/quota checks as a manually created one, no relaxed invariants.
+func (s *Service) createTractInternal(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	name string,
+	description string,
+	def domain.TractDefinition,
+) (domain.Tract, []string, error) {
+	err := s.subscriptions.CheckFeature(ctx, userUuid, domain.FeatureTract)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}
@@ -97,7 +113,7 @@ func (s *Service) CreateTract(
 		return domain.Tract{}, nil, err
 	}
 
-	err = s.validateTools(ctx, uc.UserUuid, def)
+	err = s.validateTools(ctx, userUuid, def)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}
@@ -108,7 +124,7 @@ func (s *Service) CreateTract(
 	}
 
 	tract := domain.Tract{
-		UserUuid:    uc.UserUuid,
+		UserUuid:    userUuid,
 		Name:        name,
 		Description: description,
 		Enabled:     true,
@@ -574,13 +590,19 @@ func checkStepRefs(step domain.TractStep, visible map[string]struct{}) error {
 // toolExecutor, or an (mcp, tool) pair present in mcp_tools; connection_id is required for
 // MoM tools (and must belong to ownerUuid), forbidden for builtins.
 func (s *Service) validateTools(ctx context.Context, ownerUuid uuid.UUID, def domain.TractDefinition) error {
-	return walkActions(def.Steps, func(step domain.TractStep) error {
-		return s.validateActionTool(ctx, ownerUuid, step)
+	return walkActions(def.Steps, func(step *domain.TractStep) error {
+		return s.validateActionTool(ctx, ownerUuid, *step)
 	})
 }
 
-func walkActions(steps []domain.TractStep, fn func(domain.TractStep) error) error {
-	for _, step := range steps {
+// walkActions visits every action step in steps (depth-first, execution order), including
+// through condition/parallel/group branches. fn receives a pointer into steps so callers can
+// either just read the step (validateTools) or mutate it in place (templates.go's
+// ConnectionUuid stripping/filling on publish/instantiate) — one traversal, two use cases.
+func walkActions(steps []domain.TractStep, fn func(*domain.TractStep) error) error {
+	for i := range steps {
+		step := &steps[i]
+
 		switch step.Type {
 		case stepTypeAction:
 			err := fn(step)

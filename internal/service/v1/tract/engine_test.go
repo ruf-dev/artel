@@ -16,10 +16,11 @@ import (
 
 func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo, *fakeExternalConnsRepo) {
 	tracts := newFakeTractsRepo()
+	templates := newFakeTractTemplatesRepo()
 	externalConns := newFakeExternalConnsRepo()
 	mcpDefs := newFakeMcpDefsRepo()
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
-	svc := New(tracts, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
+	svc := New(tracts, templates, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
 
 	return svc, tracts, externalConns
 }

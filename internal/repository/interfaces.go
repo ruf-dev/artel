@@ -34,6 +34,7 @@ type Repo interface {
 	McpDefinitions() McpDefinitionsRepo
 	McpConnectors() McpConnectorsRepo
 	Tracts() TractsRepo
+	TractTemplates() TractTemplatesRepo
 	Triggers() TriggersRepo
 	TriggerPresets() TriggerPresetsRepo
 
@@ -276,6 +277,19 @@ type TractsRepo interface {
 	// SweepStaleRuns/SweepStaleRunSteps mark stale 'running' rows 'failed' — call once at app init.
 	SweepStaleRuns(ctx context.Context, threshold time.Time) error
 	SweepStaleRunSteps(ctx context.Context, threshold time.Time) error
+}
+
+// TractTemplatesRepo is the pure-DB layer for published tract templates — immutable snapshots
+// of a Tract's definition, browsable/copyable by any user. See domain.TractTemplate.
+type TractTemplatesRepo interface {
+	Create(ctx context.Context, template domain.TractTemplate) (domain.TractTemplate, error)
+	Get(ctx context.Context, id uuid.UUID) (sql.Null[domain.TractTemplate], error)
+	// ListAll returns published templates ordered by install_count desc, published_at desc.
+	// category == "" means no filter.
+	ListAll(ctx context.Context, category string) ([]domain.TractTemplate, error)
+	ListByOwner(ctx context.Context, ownerUuid uuid.UUID) ([]domain.TractTemplate, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+	IncrementInstallCount(ctx context.Context, id uuid.UUID) error
 }
 
 // TriggersRepo is the pure-DB layer for standalone triggers and their tract links.

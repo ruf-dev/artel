@@ -345,6 +345,166 @@
         ]
       }
     },
+    "/api/tracts/templates/get": {
+      "post": {
+        "operationId": "TractsAPI_GetTractTemplate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetTractTemplateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetTractTemplateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/templates/instantiate": {
+      "post": {
+        "operationId": "TractsAPI_InstantiateTractTemplate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiInstantiateTractTemplateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiInstantiateTractTemplateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/templates/list": {
+      "post": {
+        "operationId": "TractsAPI_ListTractTemplates",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTractTemplatesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListTractTemplatesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/templates/publish": {
+      "post": {
+        "operationId": "TractsAPI_PublishTractTemplate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiPublishTractTemplateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiPublishTractTemplateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
+    "/api/tracts/templates/unpublish": {
+      "post": {
+        "operationId": "TractsAPI_UnpublishTractTemplate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiUnpublishTractTemplateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiUnpublishTractTemplateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TractsAPI"
+        ]
+      }
+    },
     "/api/tracts/tools/list": {
       "post": {
         "operationId": "TractsAPI_ListTractTools",
@@ -845,6 +1005,22 @@
         }
       }
     },
+    "artel_apiGetTractTemplateRequest": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiGetTractTemplateResponse": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "$ref": "#/definitions/artel_apiTractTemplateItem"
+        }
+      }
+    },
     "artel_apiGroupStep": {
       "type": "object",
       "properties": {
@@ -853,6 +1029,41 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/artel_apiTractStep"
+          }
+        }
+      }
+    },
+    "artel_apiInstantiateTractTemplateRequest": {
+      "type": "object",
+      "properties": {
+        "templateUuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "connections": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "mcp name -\u003e connection_uuid, for every non-builtin MoM the template's steps use"
+        }
+      }
+    },
+    "artel_apiInstantiateTractTemplateResponse": {
+      "type": "object",
+      "properties": {
+        "tract": {
+          "$ref": "#/definitions/artel_apiTractItem"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
@@ -895,6 +1106,31 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/artel_apiTractRunItem"
+          }
+        }
+      }
+    },
+    "artel_apiListTractTemplatesRequest": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "title": "empty = no filter"
+        },
+        "mineOnly": {
+          "type": "boolean",
+          "title": "true = only templates published by the caller"
+        }
+      }
+    },
+    "artel_apiListTractTemplatesResponse": {
+      "type": "object",
+      "properties": {
+        "templates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiTractTemplateSummary"
           }
         }
       }
@@ -968,6 +1204,25 @@
             "type": "object",
             "$ref": "#/definitions/artel_apiTractStep"
           }
+        }
+      }
+    },
+    "artel_apiPublishTractTemplateRequest": {
+      "type": "object",
+      "properties": {
+        "tractUuid": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiPublishTractTemplateResponse": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "$ref": "#/definitions/artel_apiTractTemplateItem"
         }
       }
     },
@@ -1253,6 +1508,71 @@
       },
       "description": "TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one\ndetermines the step's behavior (no separate type discriminant needed on the wire)."
     },
+    "artel_apiTractTemplateItem": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "sourceTractUuid": {
+          "type": "string"
+        },
+        "ownerUuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "definition": {
+          "$ref": "#/definitions/artel_apiTractDefinition"
+        },
+        "category": {
+          "type": "string"
+        },
+        "installCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "publishedAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "description": "TractTemplateItem is the wire shape of domain.TractTemplate — a published, browsable/copyable\nsnapshot of a tract's definition. source_tract_uuid is empty if the source tract was since\ndeleted."
+    },
+    "artel_apiTractTemplateSummary": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "ownerUuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "installCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "publishedAt": {
+          "type": "string"
+        }
+      },
+      "description": "TractTemplateSummary omits `definition` — used for gallery list rendering where the full\nstep tree isn't needed yet (GetTractTemplate returns the full item when a user opens one)."
+    },
     "artel_apiTractToolItem": {
       "type": "object",
       "properties": {
@@ -1376,6 +1696,17 @@
       }
     },
     "artel_apiUnlinkTriggerResponse": {
+      "type": "object"
+    },
+    "artel_apiUnpublishTractTemplateRequest": {
+      "type": "object",
+      "properties": {
+        "templateUuid": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiUnpublishTractTemplateResponse": {
       "type": "object"
     },
     "artel_apiUpdateTractRequest": {

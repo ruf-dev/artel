@@ -11,6 +11,8 @@ import {useTractCanvasBuilderHandlers}
 import {layoutTract} from "@/pages/tract-canvas/processes/tractCanvasLayout.ts"
 import {Tract, TractDefinition, TractRun, TractTool, Trigger} from "@/processes/Tracts.ts"
 import {MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
+import {useDialog} from "@/app/hooks/Dialog"
+import PublishTemplateDialog from "@/dialogs/PublishTemplateDialog/PublishTemplateDialog.tsx"
 
 interface Props {
     tract: Tract
@@ -22,6 +24,7 @@ interface Props {
 }
 
 export default function TractCanvasBuilder({tract, tools, triggers, runs, momCandidates, onBack}: Props) {
+    const {OpenDialog} = useDialog()
     const [seeded, setSeeded] = useState(false)
     const [name, setName] = useState(tract.name)
     const [definition, setDefinition] = useState<TractDefinition>(tract.definition)
@@ -79,6 +82,7 @@ export default function TractCanvasBuilder({tract, tools, triggers, runs, momCan
                 onSave={handleSave}
                 onRun={openRunDialog}
                 onToggleLog={runTracking.toggleLog}
+                onPublish={() => OpenDialog(<PublishTemplateDialog tractUuid={tract.uuid}/>)}
             />
             {warnings.length > 0 && (
                 <div className={cls.Warnings}>

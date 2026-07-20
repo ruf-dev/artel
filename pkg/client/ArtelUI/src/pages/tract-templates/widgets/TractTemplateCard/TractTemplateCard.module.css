@@ -1,0 +1,92 @@
+.Card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.125rem;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border);
+    border-radius: 0.875rem;
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    animation: fadeUp 380ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(0.5rem); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.Card:hover {
+    border-color: var(--color-border-light);
+    background: var(--color-bg-hover);
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.5rem 1.5rem -0.75rem rgb(0 0 0 / 50%);
+}
+
+.Info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+}
+
+.Name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.00875rem;
+    color: var(--color-fg-primary);
+}
+
+.Desc {
+    font-size: 0.75rem;
+    color: var(--color-fg-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.Meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.Chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 62.4375rem;
+    background: var(--color-bg-elevated);
+    border: var(--border-thickness) solid var(--color-border);
+    font-size: 0.6875rem;
+    font-family: var(--font-mono);
+    color: var(--color-fg-secondary);
+    letter-spacing: 0.01375rem;
+    white-space: nowrap;
+}
+
+.InstallCount {
+    font-size: 0.75rem;
+    color: var(--color-fg-tertiary);
+}
+
+.OwnerChip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 62.4375rem;
+    background: var(--coral-dim);
+    border: var(--border-thickness) solid var(--coral-border);
+    font-size: 0.6875rem;
+    color: var(--coral);
+    white-space: nowrap;
+}
+
+.Actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: auto;
+}

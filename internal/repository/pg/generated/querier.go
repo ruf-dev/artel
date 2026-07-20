@@ -35,6 +35,7 @@ type Querier interface {
 	DeleteS3Instance(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
+	DeleteTractTemplate(ctx context.Context, id uuid.UUID) error
 	DeleteTrigger(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
@@ -59,6 +60,7 @@ type Querier interface {
 	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (Tract, error)
 	GetTractRun(ctx context.Context, id uuid.UUID) (TractRun, error)
+	GetTractTemplate(ctx context.Context, id uuid.UUID) (TractTemplate, error)
 	GetTrigger(ctx context.Context, id uuid.UUID) (Trigger, error)
 	// Webhook routing lookup: the fired webhook only knows the trigger's rotatable routing id.
 	GetTriggerByTriggerUuid(ctx context.Context, triggerUuid uuid.UUID) (Trigger, error)
@@ -75,12 +77,14 @@ type Querier interface {
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	IncrementTractTemplateInstallCount(ctx context.Context, id uuid.UUID) error
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
 	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
 	InsertTract(ctx context.Context, arg InsertTractParams) (Tract, error)
 	InsertTractRun(ctx context.Context, arg InsertTractRunParams) (TractRun, error)
 	InsertTractRunStep(ctx context.Context, arg InsertTractRunStepParams) (TractRunStep, error)
+	InsertTractTemplate(ctx context.Context, arg InsertTractTemplateParams) (TractTemplate, error)
 	InsertTrigger(ctx context.Context, arg InsertTriggerParams) (Trigger, error)
 	InsertTriggerProviderLink(ctx context.Context, arg InsertTriggerProviderLinkParams) error
 	LinkTriggerToTract(ctx context.Context, arg LinkTriggerToTractParams) error
@@ -101,6 +105,8 @@ type Querier interface {
 	ListSubscriptionPlans(ctx context.Context) ([]SubscriptionPlan, error)
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
 	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)
+	ListTractTemplates(ctx context.Context, dollar_1 string) ([]TractTemplate, error)
+	ListTractTemplatesByOwner(ctx context.Context, ownerID uuid.UUID) ([]TractTemplate, error)
 	ListTractsByUser(ctx context.Context, userID uuid.UUID) ([]Tract, error)
 	// tractUuid's linked triggers, Trigger populated — the tract editor's "wired up triggers" view.
 	ListTriggerLinksByTract(ctx context.Context, tractID uuid.UUID) ([]ListTriggerLinksByTractRow, error)

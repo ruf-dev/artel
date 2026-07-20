@@ -242,6 +242,21 @@ type TractService interface {
 	SetTractEnabled(ctx context.Context, id uuid.UUID, enabled bool) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
 
+	// PublishTemplate snapshots tractUuid's current definition as a new public template.
+	PublishTemplate(ctx context.Context, tractUuid uuid.UUID, category string) (domain.TractTemplate, error)
+	// UnpublishTemplate removes a template — publisher-only.
+	UnpublishTemplate(ctx context.Context, templateUuid uuid.UUID) error
+	// ListTemplates lists published templates; mineOnly restricts to the caller's own.
+	ListTemplates(ctx context.Context, category string, mineOnly bool) ([]domain.TractTemplate, error)
+	// GetTemplate returns one template — any authenticated user may read any template.
+	GetTemplate(ctx context.Context, templateUuid uuid.UUID) (domain.TractTemplate, error)
+	// InstantiateTemplate copies templateUuid into a brand-new tract owned by the caller.
+	// connections maps MoM name -> connection uuid for every non-builtin action step the
+	// template uses.
+	InstantiateTemplate(
+		ctx context.Context, templateUuid uuid.UUID, name, description string, connections map[string]uuid.UUID,
+	) (domain.Tract, []string, error)
+
 	// CreateTrigger returns the raw webhook token once — only its hash is persisted.
 	CreateTrigger(
 		ctx context.Context, name string, kind string, source string,

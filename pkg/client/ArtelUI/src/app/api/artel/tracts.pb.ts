@@ -100,6 +100,29 @@ export type TractItem = {
   updatedAt?: string;
 };
 
+export type TractTemplateItem = {
+  uuid?: string;
+  sourceTractUuid?: string;
+  ownerUuid?: string;
+  name?: string;
+  description?: string;
+  definition?: TractDefinition;
+  category?: string;
+  installCount?: number;
+  publishedAt?: string;
+  updatedAt?: string;
+};
+
+export type TractTemplateSummary = {
+  uuid?: string;
+  ownerUuid?: string;
+  name?: string;
+  description?: string;
+  category?: string;
+  installCount?: number;
+  publishedAt?: string;
+};
+
 export type TractRunItem = {
   uuid?: string;
   tractUuid?: string;
@@ -215,6 +238,60 @@ export type SetTractEnabledRequest = {
 export type SetTractEnabledResponse = Record<string, never>;
 
 export type SetTractEnabled = Record<string, never>;
+
+export type PublishTractTemplateRequest = {
+  tractUuid?: string;
+  category?: string;
+};
+
+export type PublishTractTemplateResponse = {
+  template?: TractTemplateItem;
+};
+
+export type PublishTractTemplate = Record<string, never>;
+
+export type UnpublishTractTemplateRequest = {
+  templateUuid?: string;
+};
+
+export type UnpublishTractTemplateResponse = Record<string, never>;
+
+export type UnpublishTractTemplate = Record<string, never>;
+
+export type ListTractTemplatesRequest = {
+  category?: string;
+  mineOnly?: boolean;
+};
+
+export type ListTractTemplatesResponse = {
+  templates?: TractTemplateSummary[];
+};
+
+export type ListTractTemplates = Record<string, never>;
+
+export type GetTractTemplateRequest = {
+  uuid?: string;
+};
+
+export type GetTractTemplateResponse = {
+  template?: TractTemplateItem;
+};
+
+export type GetTractTemplate = Record<string, never>;
+
+export type InstantiateTractTemplateRequest = {
+  templateUuid?: string;
+  name?: string;
+  description?: string;
+  connections?: Record<string, string>;
+};
+
+export type InstantiateTractTemplateResponse = {
+  tract?: TractItem;
+  warnings?: string[];
+};
+
+export type InstantiateTractTemplate = Record<string, never>;
 
 export type RunTractRequest = {
   tractUuid?: string;
@@ -372,6 +449,21 @@ export class TractsAPI {
   }
   static SetTractEnabled(this:void, req: SetTractEnabledRequest, initReq?: fm.InitReq): Promise<SetTractEnabledResponse> {
     return fm.fetchRequest<SetTractEnabledResponse>(`/api/tracts/set-enabled`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static PublishTractTemplate(this:void, req: PublishTractTemplateRequest, initReq?: fm.InitReq): Promise<PublishTractTemplateResponse> {
+    return fm.fetchRequest<PublishTractTemplateResponse>(`/api/tracts/templates/publish`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static UnpublishTractTemplate(this:void, req: UnpublishTractTemplateRequest, initReq?: fm.InitReq): Promise<UnpublishTractTemplateResponse> {
+    return fm.fetchRequest<UnpublishTractTemplateResponse>(`/api/tracts/templates/unpublish`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListTractTemplates(this:void, req: ListTractTemplatesRequest, initReq?: fm.InitReq): Promise<ListTractTemplatesResponse> {
+    return fm.fetchRequest<ListTractTemplatesResponse>(`/api/tracts/templates/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static GetTractTemplate(this:void, req: GetTractTemplateRequest, initReq?: fm.InitReq): Promise<GetTractTemplateResponse> {
+    return fm.fetchRequest<GetTractTemplateResponse>(`/api/tracts/templates/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static InstantiateTractTemplate(this:void, req: InstantiateTractTemplateRequest, initReq?: fm.InitReq): Promise<InstantiateTractTemplateResponse> {
+    return fm.fetchRequest<InstantiateTractTemplateResponse>(`/api/tracts/templates/instantiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static RunTract(this:void, req: RunTractRequest, initReq?: fm.InitReq): Promise<RunTractResponse> {
     return fm.fetchRequest<RunTractResponse>(`/api/tracts/run`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

@@ -19,6 +19,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptionplans"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/tract_templates"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tracts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggerpresets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggers"
@@ -51,6 +52,7 @@ type Repos struct {
 	mcpDefinitions        repository.McpDefinitionsRepo
 	mcpConnectors         repository.McpConnectorsRepo
 	tracts                repository.TractsRepo
+	tractTemplates        repository.TractTemplatesRepo
 	triggers              repository.TriggersRepo
 	triggerPresets        repository.TriggerPresetsRepo
 
@@ -141,6 +143,10 @@ func (r Repos) Tracts() repository.TractsRepo {
 	return r.tracts
 }
 
+func (r Repos) TractTemplates() repository.TractTemplatesRepo {
+	return r.tractTemplates
+}
+
 func (r Repos) Triggers() repository.TriggersRepo {
 	return r.triggers
 }
@@ -175,6 +181,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 		mcpDefinitions:        mcpdefinitions.New(q),
 		mcpConnectors:         mcpconnectors.New(q),
 		tracts:                tracts.New(q, txManager),
+		tractTemplates:        tract_templates.New(q, txManager),
 		triggers:              triggers.New(q),
 		triggerPresets:        triggerpresets.New(q),
 

@@ -437,8 +437,99 @@ func (f *fakeTriggerPresetsRepo) GetByKey(_ context.Context, key string) (sql.Nu
 	return result, nil
 }
 
+// fakeTractTemplatesRepo is a minimal in-memory repository.TractTemplatesRepo used by
+// publish/unpublish/list/get/instantiate template tests.
+type fakeTractTemplatesRepo struct {
+	mu            sync.Mutex
+	templates     map[uuid.UUID]domain.TractTemplate
+	installCounts map[uuid.UUID]int
+}
+
+func newFakeTractTemplatesRepo() *fakeTractTemplatesRepo {
+	repo := &fakeTractTemplatesRepo{
+		templates:     map[uuid.UUID]domain.TractTemplate{},
+		installCounts: map[uuid.UUID]int{},
+	}
+
+	return repo
+}
+
+func (f *fakeTractTemplatesRepo) Create(_ context.Context, template domain.TractTemplate) (domain.TractTemplate, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	template.Uuid = uuid.New()
+	f.templates[template.Uuid] = template
+
+	return template, nil
+}
+
+func (f *fakeTractTemplatesRepo) Get(_ context.Context, id uuid.UUID) (sql.Null[domain.TractTemplate], error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	template, ok := f.templates[id]
+	if !ok {
+		return sql.Null[domain.TractTemplate]{}, nil
+	}
+
+	template.InstallCount = f.installCounts[id]
+	result := sql.Null[domain.TractTemplate]{V: template, Valid: true}
+
+	return result, nil
+}
+
+func (f *fakeTractTemplatesRepo) ListAll(_ context.Context, category string) ([]domain.TractTemplate, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	var templates []domain.TractTemplate
+
+	for _, template := range f.templates {
+		if category == "" || template.Category == category {
+			templates = append(templates, template)
+		}
+	}
+
+	return templates, nil
+}
+
+func (f *fakeTractTemplatesRepo) ListByOwner(_ context.Context, ownerUuid uuid.UUID) ([]domain.TractTemplate, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	var templates []domain.TractTemplate
+
+	for _, template := range f.templates {
+		if template.OwnerUuid == ownerUuid {
+			templates = append(templates, template)
+		}
+	}
+
+	return templates, nil
+}
+
+func (f *fakeTractTemplatesRepo) Delete(_ context.Context, id uuid.UUID) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	delete(f.templates, id)
+
+	return nil
+}
+
+func (f *fakeTractTemplatesRepo) IncrementInstallCount(_ context.Context, id uuid.UUID) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	f.installCounts[id]++
+
+	return nil
+}
+
 var (
 	_ repository.TractsRepo             = (*fakeTractsRepo)(nil)
+	_ repository.TractTemplatesRepo     = (*fakeTractTemplatesRepo)(nil)
 	_ repository.ExternalConnectionRepo = (*fakeExternalConnsRepo)(nil)
 	_ repository.McpDefinitionsRepo     = (*fakeMcpDefsRepo)(nil)
 	_ repository.TriggersRepo           = (*fakeTriggersRepo)(nil)

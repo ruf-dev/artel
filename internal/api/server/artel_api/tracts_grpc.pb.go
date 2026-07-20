@@ -19,26 +19,31 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TractsAPI_CreateTract_FullMethodName        = "/artel_api.TractsAPI/CreateTract"
-	TractsAPI_UpdateTract_FullMethodName        = "/artel_api.TractsAPI/UpdateTract"
-	TractsAPI_GetTract_FullMethodName           = "/artel_api.TractsAPI/GetTract"
-	TractsAPI_ListTracts_FullMethodName         = "/artel_api.TractsAPI/ListTracts"
-	TractsAPI_DeleteTract_FullMethodName        = "/artel_api.TractsAPI/DeleteTract"
-	TractsAPI_SetTractEnabled_FullMethodName    = "/artel_api.TractsAPI/SetTractEnabled"
-	TractsAPI_RunTract_FullMethodName           = "/artel_api.TractsAPI/RunTract"
-	TractsAPI_ListRuns_FullMethodName           = "/artel_api.TractsAPI/ListRuns"
-	TractsAPI_GetRun_FullMethodName             = "/artel_api.TractsAPI/GetRun"
-	TractsAPI_WatchRun_FullMethodName           = "/artel_api.TractsAPI/WatchRun"
-	TractsAPI_RetryRun_FullMethodName           = "/artel_api.TractsAPI/RetryRun"
-	TractsAPI_ListTractTools_FullMethodName     = "/artel_api.TractsAPI/ListTractTools"
-	TractsAPI_ListTriggerSources_FullMethodName = "/artel_api.TractsAPI/ListTriggerSources"
-	TractsAPI_CreateTrigger_FullMethodName      = "/artel_api.TractsAPI/CreateTrigger"
-	TractsAPI_ListTriggers_FullMethodName       = "/artel_api.TractsAPI/ListTriggers"
-	TractsAPI_DeleteTrigger_FullMethodName      = "/artel_api.TractsAPI/DeleteTrigger"
-	TractsAPI_SetTriggerEnabled_FullMethodName  = "/artel_api.TractsAPI/SetTriggerEnabled"
-	TractsAPI_RotateTriggerToken_FullMethodName = "/artel_api.TractsAPI/RotateTriggerToken"
-	TractsAPI_LinkTrigger_FullMethodName        = "/artel_api.TractsAPI/LinkTrigger"
-	TractsAPI_UnlinkTrigger_FullMethodName      = "/artel_api.TractsAPI/UnlinkTrigger"
+	TractsAPI_CreateTract_FullMethodName              = "/artel_api.TractsAPI/CreateTract"
+	TractsAPI_UpdateTract_FullMethodName              = "/artel_api.TractsAPI/UpdateTract"
+	TractsAPI_GetTract_FullMethodName                 = "/artel_api.TractsAPI/GetTract"
+	TractsAPI_ListTracts_FullMethodName               = "/artel_api.TractsAPI/ListTracts"
+	TractsAPI_DeleteTract_FullMethodName              = "/artel_api.TractsAPI/DeleteTract"
+	TractsAPI_SetTractEnabled_FullMethodName          = "/artel_api.TractsAPI/SetTractEnabled"
+	TractsAPI_PublishTractTemplate_FullMethodName     = "/artel_api.TractsAPI/PublishTractTemplate"
+	TractsAPI_UnpublishTractTemplate_FullMethodName   = "/artel_api.TractsAPI/UnpublishTractTemplate"
+	TractsAPI_ListTractTemplates_FullMethodName       = "/artel_api.TractsAPI/ListTractTemplates"
+	TractsAPI_GetTractTemplate_FullMethodName         = "/artel_api.TractsAPI/GetTractTemplate"
+	TractsAPI_InstantiateTractTemplate_FullMethodName = "/artel_api.TractsAPI/InstantiateTractTemplate"
+	TractsAPI_RunTract_FullMethodName                 = "/artel_api.TractsAPI/RunTract"
+	TractsAPI_ListRuns_FullMethodName                 = "/artel_api.TractsAPI/ListRuns"
+	TractsAPI_GetRun_FullMethodName                   = "/artel_api.TractsAPI/GetRun"
+	TractsAPI_WatchRun_FullMethodName                 = "/artel_api.TractsAPI/WatchRun"
+	TractsAPI_RetryRun_FullMethodName                 = "/artel_api.TractsAPI/RetryRun"
+	TractsAPI_ListTractTools_FullMethodName           = "/artel_api.TractsAPI/ListTractTools"
+	TractsAPI_ListTriggerSources_FullMethodName       = "/artel_api.TractsAPI/ListTriggerSources"
+	TractsAPI_CreateTrigger_FullMethodName            = "/artel_api.TractsAPI/CreateTrigger"
+	TractsAPI_ListTriggers_FullMethodName             = "/artel_api.TractsAPI/ListTriggers"
+	TractsAPI_DeleteTrigger_FullMethodName            = "/artel_api.TractsAPI/DeleteTrigger"
+	TractsAPI_SetTriggerEnabled_FullMethodName        = "/artel_api.TractsAPI/SetTriggerEnabled"
+	TractsAPI_RotateTriggerToken_FullMethodName       = "/artel_api.TractsAPI/RotateTriggerToken"
+	TractsAPI_LinkTrigger_FullMethodName              = "/artel_api.TractsAPI/LinkTrigger"
+	TractsAPI_UnlinkTrigger_FullMethodName            = "/artel_api.TractsAPI/UnlinkTrigger"
 )
 
 // TractsAPIClient is the client API for TractsAPI service.
@@ -51,6 +56,11 @@ type TractsAPIClient interface {
 	ListTracts(ctx context.Context, in *ListTracts_Request, opts ...grpc.CallOption) (*ListTracts_Response, error)
 	DeleteTract(ctx context.Context, in *DeleteTract_Request, opts ...grpc.CallOption) (*DeleteTract_Response, error)
 	SetTractEnabled(ctx context.Context, in *SetTractEnabled_Request, opts ...grpc.CallOption) (*SetTractEnabled_Response, error)
+	PublishTractTemplate(ctx context.Context, in *PublishTractTemplate_Request, opts ...grpc.CallOption) (*PublishTractTemplate_Response, error)
+	UnpublishTractTemplate(ctx context.Context, in *UnpublishTractTemplate_Request, opts ...grpc.CallOption) (*UnpublishTractTemplate_Response, error)
+	ListTractTemplates(ctx context.Context, in *ListTractTemplates_Request, opts ...grpc.CallOption) (*ListTractTemplates_Response, error)
+	GetTractTemplate(ctx context.Context, in *GetTractTemplate_Request, opts ...grpc.CallOption) (*GetTractTemplate_Response, error)
+	InstantiateTractTemplate(ctx context.Context, in *InstantiateTractTemplate_Request, opts ...grpc.CallOption) (*InstantiateTractTemplate_Response, error)
 	RunTract(ctx context.Context, in *RunTract_Request, opts ...grpc.CallOption) (*RunTract_Response, error)
 	ListRuns(ctx context.Context, in *ListRuns_Request, opts ...grpc.CallOption) (*ListRuns_Response, error)
 	GetRun(ctx context.Context, in *GetRun_Request, opts ...grpc.CallOption) (*GetRun_Response, error)
@@ -129,6 +139,56 @@ func (c *tractsAPIClient) SetTractEnabled(ctx context.Context, in *SetTractEnabl
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SetTractEnabled_Response)
 	err := c.cc.Invoke(ctx, TractsAPI_SetTractEnabled_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tractsAPIClient) PublishTractTemplate(ctx context.Context, in *PublishTractTemplate_Request, opts ...grpc.CallOption) (*PublishTractTemplate_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PublishTractTemplate_Response)
+	err := c.cc.Invoke(ctx, TractsAPI_PublishTractTemplate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tractsAPIClient) UnpublishTractTemplate(ctx context.Context, in *UnpublishTractTemplate_Request, opts ...grpc.CallOption) (*UnpublishTractTemplate_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnpublishTractTemplate_Response)
+	err := c.cc.Invoke(ctx, TractsAPI_UnpublishTractTemplate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tractsAPIClient) ListTractTemplates(ctx context.Context, in *ListTractTemplates_Request, opts ...grpc.CallOption) (*ListTractTemplates_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListTractTemplates_Response)
+	err := c.cc.Invoke(ctx, TractsAPI_ListTractTemplates_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tractsAPIClient) GetTractTemplate(ctx context.Context, in *GetTractTemplate_Request, opts ...grpc.CallOption) (*GetTractTemplate_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTractTemplate_Response)
+	err := c.cc.Invoke(ctx, TractsAPI_GetTractTemplate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tractsAPIClient) InstantiateTractTemplate(ctx context.Context, in *InstantiateTractTemplate_Request, opts ...grpc.CallOption) (*InstantiateTractTemplate_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InstantiateTractTemplate_Response)
+	err := c.cc.Invoke(ctx, TractsAPI_InstantiateTractTemplate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -294,6 +354,11 @@ type TractsAPIServer interface {
 	ListTracts(context.Context, *ListTracts_Request) (*ListTracts_Response, error)
 	DeleteTract(context.Context, *DeleteTract_Request) (*DeleteTract_Response, error)
 	SetTractEnabled(context.Context, *SetTractEnabled_Request) (*SetTractEnabled_Response, error)
+	PublishTractTemplate(context.Context, *PublishTractTemplate_Request) (*PublishTractTemplate_Response, error)
+	UnpublishTractTemplate(context.Context, *UnpublishTractTemplate_Request) (*UnpublishTractTemplate_Response, error)
+	ListTractTemplates(context.Context, *ListTractTemplates_Request) (*ListTractTemplates_Response, error)
+	GetTractTemplate(context.Context, *GetTractTemplate_Request) (*GetTractTemplate_Response, error)
+	InstantiateTractTemplate(context.Context, *InstantiateTractTemplate_Request) (*InstantiateTractTemplate_Response, error)
 	RunTract(context.Context, *RunTract_Request) (*RunTract_Response, error)
 	ListRuns(context.Context, *ListRuns_Request) (*ListRuns_Response, error)
 	GetRun(context.Context, *GetRun_Request) (*GetRun_Response, error)
@@ -335,6 +400,21 @@ func (UnimplementedTractsAPIServer) DeleteTract(context.Context, *DeleteTract_Re
 }
 func (UnimplementedTractsAPIServer) SetTractEnabled(context.Context, *SetTractEnabled_Request) (*SetTractEnabled_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetTractEnabled not implemented")
+}
+func (UnimplementedTractsAPIServer) PublishTractTemplate(context.Context, *PublishTractTemplate_Request) (*PublishTractTemplate_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method PublishTractTemplate not implemented")
+}
+func (UnimplementedTractsAPIServer) UnpublishTractTemplate(context.Context, *UnpublishTractTemplate_Request) (*UnpublishTractTemplate_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method UnpublishTractTemplate not implemented")
+}
+func (UnimplementedTractsAPIServer) ListTractTemplates(context.Context, *ListTractTemplates_Request) (*ListTractTemplates_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListTractTemplates not implemented")
+}
+func (UnimplementedTractsAPIServer) GetTractTemplate(context.Context, *GetTractTemplate_Request) (*GetTractTemplate_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTractTemplate not implemented")
+}
+func (UnimplementedTractsAPIServer) InstantiateTractTemplate(context.Context, *InstantiateTractTemplate_Request) (*InstantiateTractTemplate_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method InstantiateTractTemplate not implemented")
 }
 func (UnimplementedTractsAPIServer) RunTract(context.Context, *RunTract_Request) (*RunTract_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method RunTract not implemented")
@@ -503,6 +583,96 @@ func _TractsAPI_SetTractEnabled_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TractsAPIServer).SetTractEnabled(ctx, req.(*SetTractEnabled_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TractsAPI_PublishTractTemplate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishTractTemplate_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TractsAPIServer).PublishTractTemplate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TractsAPI_PublishTractTemplate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TractsAPIServer).PublishTractTemplate(ctx, req.(*PublishTractTemplate_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TractsAPI_UnpublishTractTemplate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnpublishTractTemplate_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TractsAPIServer).UnpublishTractTemplate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TractsAPI_UnpublishTractTemplate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TractsAPIServer).UnpublishTractTemplate(ctx, req.(*UnpublishTractTemplate_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TractsAPI_ListTractTemplates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTractTemplates_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TractsAPIServer).ListTractTemplates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TractsAPI_ListTractTemplates_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TractsAPIServer).ListTractTemplates(ctx, req.(*ListTractTemplates_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TractsAPI_GetTractTemplate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTractTemplate_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TractsAPIServer).GetTractTemplate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TractsAPI_GetTractTemplate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TractsAPIServer).GetTractTemplate(ctx, req.(*GetTractTemplate_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TractsAPI_InstantiateTractTemplate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InstantiateTractTemplate_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TractsAPIServer).InstantiateTractTemplate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TractsAPI_InstantiateTractTemplate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TractsAPIServer).InstantiateTractTemplate(ctx, req.(*InstantiateTractTemplate_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -782,6 +952,26 @@ var TractsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetTractEnabled",
 			Handler:    _TractsAPI_SetTractEnabled_Handler,
+		},
+		{
+			MethodName: "PublishTractTemplate",
+			Handler:    _TractsAPI_PublishTractTemplate_Handler,
+		},
+		{
+			MethodName: "UnpublishTractTemplate",
+			Handler:    _TractsAPI_UnpublishTractTemplate_Handler,
+		},
+		{
+			MethodName: "ListTractTemplates",
+			Handler:    _TractsAPI_ListTractTemplates_Handler,
+		},
+		{
+			MethodName: "GetTractTemplate",
+			Handler:    _TractsAPI_GetTractTemplate_Handler,
+		},
+		{
+			MethodName: "InstantiateTractTemplate",
+			Handler:    _TractsAPI_InstantiateTractTemplate_Handler,
 		},
 		{
 			MethodName: "RunTract",

@@ -141,3 +141,26 @@ export interface CreatedTrigger {
     webhookUrl: string
     webhookToken: string
 }
+
+export interface TractTemplateSummary {
+    uuid: string
+    ownerUuid: string
+    name: string
+    description: string
+    category: string
+    installCount: number
+    publishedAt: string
+}
+
+export interface TractTemplate {
+    uuid: string
+    sourceTractUuid: string
+    ownerUuid: string
+    name: string
+    description: string
+    definition: TractDefinition
+    category: string
+    installCount: number
+    publishedAt: string
+    updatedAt: string
+}

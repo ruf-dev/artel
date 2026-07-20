@@ -197,6 +197,141 @@ func local_request_TractsAPI_SetTractEnabled_0(ctx context.Context, marshaler ru
 	return msg, metadata, err
 }
 
+func request_TractsAPI_PublishTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq PublishTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.PublishTractTemplate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_TractsAPI_PublishTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, server TractsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq PublishTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.PublishTractTemplate(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_TractsAPI_UnpublishTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UnpublishTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.UnpublishTractTemplate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_TractsAPI_UnpublishTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, server TractsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UnpublishTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.UnpublishTractTemplate(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_TractsAPI_ListTractTemplates_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListTractTemplates_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.ListTractTemplates(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_TractsAPI_ListTractTemplates_0(ctx context.Context, marshaler runtime.Marshaler, server TractsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListTractTemplates_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ListTractTemplates(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_TractsAPI_GetTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.GetTractTemplate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_TractsAPI_GetTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, server TractsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetTractTemplate(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_TractsAPI_InstantiateTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq InstantiateTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.InstantiateTractTemplate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_TractsAPI_InstantiateTractTemplate_0(ctx context.Context, marshaler runtime.Marshaler, server TractsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq InstantiateTractTemplate_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.InstantiateTractTemplate(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_TractsAPI_RunTract_0(ctx context.Context, marshaler runtime.Marshaler, client TractsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq RunTract_Request
@@ -715,6 +850,106 @@ func RegisterTractsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_TractsAPI_SetTractEnabled_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_PublishTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.TractsAPI/PublishTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/publish"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TractsAPI_PublishTractTemplate_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_PublishTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_UnpublishTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.TractsAPI/UnpublishTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/unpublish"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TractsAPI_UnpublishTractTemplate_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_UnpublishTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_ListTractTemplates_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.TractsAPI/ListTractTemplates", runtime.WithHTTPPathPattern("/api/tracts/templates/list"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TractsAPI_ListTractTemplates_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_ListTractTemplates_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_GetTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.TractsAPI/GetTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/get"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TractsAPI_GetTractTemplate_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_GetTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_InstantiateTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.TractsAPI/InstantiateTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/instantiate"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TractsAPI_InstantiateTractTemplate_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_InstantiateTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_TractsAPI_RunTract_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1124,6 +1359,91 @@ func RegisterTractsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_TractsAPI_SetTractEnabled_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_PublishTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.TractsAPI/PublishTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/publish"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TractsAPI_PublishTractTemplate_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_PublishTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_UnpublishTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.TractsAPI/UnpublishTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/unpublish"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TractsAPI_UnpublishTractTemplate_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_UnpublishTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_ListTractTemplates_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.TractsAPI/ListTractTemplates", runtime.WithHTTPPathPattern("/api/tracts/templates/list"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TractsAPI_ListTractTemplates_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_ListTractTemplates_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_GetTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.TractsAPI/GetTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/get"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TractsAPI_GetTractTemplate_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_GetTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_TractsAPI_InstantiateTractTemplate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.TractsAPI/InstantiateTractTemplate", runtime.WithHTTPPathPattern("/api/tracts/templates/instantiate"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TractsAPI_InstantiateTractTemplate_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_TractsAPI_InstantiateTractTemplate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_TractsAPI_RunTract_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1366,47 +1686,57 @@ func RegisterTractsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 }
 
 var (
-	pattern_TractsAPI_CreateTract_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "create"}, ""))
-	pattern_TractsAPI_UpdateTract_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "update"}, ""))
-	pattern_TractsAPI_GetTract_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "get"}, ""))
-	pattern_TractsAPI_ListTracts_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "list"}, ""))
-	pattern_TractsAPI_DeleteTract_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "delete"}, ""))
-	pattern_TractsAPI_SetTractEnabled_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "set-enabled"}, ""))
-	pattern_TractsAPI_RunTract_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "run"}, ""))
-	pattern_TractsAPI_ListRuns_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "list"}, ""))
-	pattern_TractsAPI_GetRun_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "get"}, ""))
-	pattern_TractsAPI_WatchRun_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "watch"}, ""))
-	pattern_TractsAPI_RetryRun_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "retry"}, ""))
-	pattern_TractsAPI_ListTractTools_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "tools", "list"}, ""))
-	pattern_TractsAPI_ListTriggerSources_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "trigger-sources", "list"}, ""))
-	pattern_TractsAPI_CreateTrigger_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "create"}, ""))
-	pattern_TractsAPI_ListTriggers_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "list"}, ""))
-	pattern_TractsAPI_DeleteTrigger_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "delete"}, ""))
-	pattern_TractsAPI_SetTriggerEnabled_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "set-enabled"}, ""))
-	pattern_TractsAPI_RotateTriggerToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "tracts", "triggers", "uuid", "rotate_token"}, ""))
-	pattern_TractsAPI_LinkTrigger_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "link"}, ""))
-	pattern_TractsAPI_UnlinkTrigger_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "unlink"}, ""))
+	pattern_TractsAPI_CreateTract_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "create"}, ""))
+	pattern_TractsAPI_UpdateTract_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "update"}, ""))
+	pattern_TractsAPI_GetTract_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "get"}, ""))
+	pattern_TractsAPI_ListTracts_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "list"}, ""))
+	pattern_TractsAPI_DeleteTract_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "delete"}, ""))
+	pattern_TractsAPI_SetTractEnabled_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "set-enabled"}, ""))
+	pattern_TractsAPI_PublishTractTemplate_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "templates", "publish"}, ""))
+	pattern_TractsAPI_UnpublishTractTemplate_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "templates", "unpublish"}, ""))
+	pattern_TractsAPI_ListTractTemplates_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "templates", "list"}, ""))
+	pattern_TractsAPI_GetTractTemplate_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "templates", "get"}, ""))
+	pattern_TractsAPI_InstantiateTractTemplate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "templates", "instantiate"}, ""))
+	pattern_TractsAPI_RunTract_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "tracts", "run"}, ""))
+	pattern_TractsAPI_ListRuns_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "list"}, ""))
+	pattern_TractsAPI_GetRun_0                   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "get"}, ""))
+	pattern_TractsAPI_WatchRun_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "watch"}, ""))
+	pattern_TractsAPI_RetryRun_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "runs", "retry"}, ""))
+	pattern_TractsAPI_ListTractTools_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "tools", "list"}, ""))
+	pattern_TractsAPI_ListTriggerSources_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "trigger-sources", "list"}, ""))
+	pattern_TractsAPI_CreateTrigger_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "create"}, ""))
+	pattern_TractsAPI_ListTriggers_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "list"}, ""))
+	pattern_TractsAPI_DeleteTrigger_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "delete"}, ""))
+	pattern_TractsAPI_SetTriggerEnabled_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "set-enabled"}, ""))
+	pattern_TractsAPI_RotateTriggerToken_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "tracts", "triggers", "uuid", "rotate_token"}, ""))
+	pattern_TractsAPI_LinkTrigger_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "link"}, ""))
+	pattern_TractsAPI_UnlinkTrigger_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "tracts", "triggers", "unlink"}, ""))
 )
 
 var (
-	forward_TractsAPI_CreateTract_0        = runtime.ForwardResponseMessage
-	forward_TractsAPI_UpdateTract_0        = runtime.ForwardResponseMessage
-	forward_TractsAPI_GetTract_0           = runtime.ForwardResponseMessage
-	forward_TractsAPI_ListTracts_0         = runtime.ForwardResponseMessage
-	forward_TractsAPI_DeleteTract_0        = runtime.ForwardResponseMessage
-	forward_TractsAPI_SetTractEnabled_0    = runtime.ForwardResponseMessage
-	forward_TractsAPI_RunTract_0           = runtime.ForwardResponseMessage
-	forward_TractsAPI_ListRuns_0           = runtime.ForwardResponseMessage
-	forward_TractsAPI_GetRun_0             = runtime.ForwardResponseMessage
-	forward_TractsAPI_WatchRun_0           = runtime.ForwardResponseStream
-	forward_TractsAPI_RetryRun_0           = runtime.ForwardResponseMessage
-	forward_TractsAPI_ListTractTools_0     = runtime.ForwardResponseMessage
-	forward_TractsAPI_ListTriggerSources_0 = runtime.ForwardResponseMessage
-	forward_TractsAPI_CreateTrigger_0      = runtime.ForwardResponseMessage
-	forward_TractsAPI_ListTriggers_0       = runtime.ForwardResponseMessage
-	forward_TractsAPI_DeleteTrigger_0      = runtime.ForwardResponseMessage
-	forward_TractsAPI_SetTriggerEnabled_0  = runtime.ForwardResponseMessage
-	forward_TractsAPI_RotateTriggerToken_0 = runtime.ForwardResponseMessage
-	forward_TractsAPI_LinkTrigger_0        = runtime.ForwardResponseMessage
-	forward_TractsAPI_UnlinkTrigger_0      = runtime.ForwardResponseMessage
+	forward_TractsAPI_CreateTract_0              = runtime.ForwardResponseMessage
+	forward_TractsAPI_UpdateTract_0              = runtime.ForwardResponseMessage
+	forward_TractsAPI_GetTract_0                 = runtime.ForwardResponseMessage
+	forward_TractsAPI_ListTracts_0               = runtime.ForwardResponseMessage
+	forward_TractsAPI_DeleteTract_0              = runtime.ForwardResponseMessage
+	forward_TractsAPI_SetTractEnabled_0          = runtime.ForwardResponseMessage
+	forward_TractsAPI_PublishTractTemplate_0     = runtime.ForwardResponseMessage
+	forward_TractsAPI_UnpublishTractTemplate_0   = runtime.ForwardResponseMessage
+	forward_TractsAPI_ListTractTemplates_0       = runtime.ForwardResponseMessage
+	forward_TractsAPI_GetTractTemplate_0         = runtime.ForwardResponseMessage
+	forward_TractsAPI_InstantiateTractTemplate_0 = runtime.ForwardResponseMessage
+	forward_TractsAPI_RunTract_0                 = runtime.ForwardResponseMessage
+	forward_TractsAPI_ListRuns_0                 = runtime.ForwardResponseMessage
+	forward_TractsAPI_GetRun_0                   = runtime.ForwardResponseMessage
+	forward_TractsAPI_WatchRun_0                 = runtime.ForwardResponseStream
+	forward_TractsAPI_RetryRun_0                 = runtime.ForwardResponseMessage
+	forward_TractsAPI_ListTractTools_0           = runtime.ForwardResponseMessage
+	forward_TractsAPI_ListTriggerSources_0       = runtime.ForwardResponseMessage
+	forward_TractsAPI_CreateTrigger_0            = runtime.ForwardResponseMessage
+	forward_TractsAPI_ListTriggers_0             = runtime.ForwardResponseMessage
+	forward_TractsAPI_DeleteTrigger_0            = runtime.ForwardResponseMessage
+	forward_TractsAPI_SetTriggerEnabled_0        = runtime.ForwardResponseMessage
+	forward_TractsAPI_RotateTriggerToken_0       = runtime.ForwardResponseMessage
+	forward_TractsAPI_LinkTrigger_0              = runtime.ForwardResponseMessage
+	forward_TractsAPI_UnlinkTrigger_0            = runtime.ForwardResponseMessage
 )

@@ -64,6 +64,56 @@ func triggerSummaryToProto(t domain.Trigger) *pb.TractTriggerSummary {
 	return summary
 }
 
+// tractTemplateToProto renders the full TractTemplateItem, including the step tree — used by
+// PublishTractTemplate/GetTractTemplate, where the caller needs the full definition (to open it
+// in the editor, or to gather connection requirements before instantiating).
+func tractTemplateToProto(t domain.TractTemplate) *pb.TractTemplateItem {
+	sourceTractUuid := ""
+	if t.SourceTractUuid != uuid.Nil {
+		sourceTractUuid = t.SourceTractUuid.String()
+	}
+
+	item := &pb.TractTemplateItem{
+		Uuid:            t.Uuid.String(),
+		SourceTractUuid: sourceTractUuid,
+		OwnerUuid:       t.OwnerUuid.String(),
+		Name:            t.Name,
+		Description:     t.Description,
+		Definition:      definitionToProto(t.Definition),
+		Category:        t.Category,
+		InstallCount:    int32(t.InstallCount),
+		PublishedAt:     t.PublishedAt.UTC().Format(timeFormat),
+		UpdatedAt:       t.UpdatedAt.UTC().Format(timeFormat),
+	}
+
+	return item
+}
+
+// tractTemplateSummaryToProto renders the gallery-list shape — omits Definition, which
+// ListTractTemplates callers don't need until a user opens one specific template.
+func tractTemplateSummaryToProto(t domain.TractTemplate) *pb.TractTemplateSummary {
+	item := &pb.TractTemplateSummary{
+		Uuid:         t.Uuid.String(),
+		OwnerUuid:    t.OwnerUuid.String(),
+		Name:         t.Name,
+		Description:  t.Description,
+		Category:     t.Category,
+		InstallCount: int32(t.InstallCount),
+		PublishedAt:  t.PublishedAt.UTC().Format(timeFormat),
+	}
+
+	return item
+}
+
+func tractTemplateSummariesToProto(templates []domain.TractTemplate) []*pb.TractTemplateSummary {
+	items := make([]*pb.TractTemplateSummary, len(templates))
+	for i, t := range templates {
+		items[i] = tractTemplateSummaryToProto(t)
+	}
+
+	return items
+}
+
 func runToProto(r domain.TractRun) *pb.TractRunItem {
 	triggerUuid := ""
 	if r.TriggerUuid != uuid.Nil {

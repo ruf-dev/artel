@@ -11,6 +11,8 @@ import {
     TractRunItem,
     TractRunStepItem,
     TractStep as PbTractStep,
+    TractTemplateItem as PbTractTemplateItem,
+    TractTemplateSummary as PbTractTemplateSummary,
     TractToolItem,
     TriggerItem,
     TriggerSourceItem,
@@ -24,6 +26,8 @@ import {
     TractRun,
     TractRunStep,
     TractStep,
+    TractTemplate,
+    TractTemplateSummary,
     TractTool,
     Trigger,
     TriggerSource,
@@ -212,6 +216,33 @@ export function toTriggerSource(item: TriggerSourceItem): TriggerSource {
         category: item.category ?? "",
         label: item.label ?? "",
         provider: item.provider ?? "",
+    }
+}
+
+export function toTractTemplateSummary(item: PbTractTemplateSummary): TractTemplateSummary {
+    return {
+        uuid: item.uuid ?? "",
+        ownerUuid: item.ownerUuid ?? "",
+        name: item.name ?? "",
+        description: item.description ?? "",
+        category: item.category ?? "",
+        installCount: item.installCount ?? 0,
+        publishedAt: item.publishedAt ?? "",
+    }
+}
+
+export function toTractTemplate(item: PbTractTemplateItem): TractTemplate {
+    return {
+        uuid: item.uuid ?? "",
+        sourceTractUuid: item.sourceTractUuid ?? "",
+        ownerUuid: item.ownerUuid ?? "",
+        name: item.name ?? "",
+        description: item.description ?? "",
+        definition: definitionFromProto(item.definition),
+        category: item.category ?? "",
+        installCount: item.installCount ?? 0,
+        publishedAt: item.publishedAt ?? "",
+        updatedAt: item.updatedAt ?? "",
     }
 }
 

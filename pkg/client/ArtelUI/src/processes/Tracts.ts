@@ -7,6 +7,8 @@ import {
     TractDefinition,
     TractRun,
     TractRunStep,
+    TractTemplate,
+    TractTemplateSummary,
     TractTool,
     Trigger,
     TriggerSource,
@@ -15,6 +17,8 @@ import {
     toRunStep,
     toTool,
     toTract,
+    toTractTemplate,
+    toTractTemplateSummary,
     toTrigger,
     toTriggerSource,
 } from "@/processes/tractsMappers.ts"
@@ -55,6 +59,14 @@ export interface ITractsService {
     rotateTriggerToken: (uuid: string) => Promise<CreatedTrigger>
     linkTrigger: (triggerUuid: string, tractUuid: string, filters: TractCondition[]) => Promise<void>
     unlinkTrigger: (triggerUuid: string, tractUuid: string) => Promise<void>
+
+    listTemplates: (category: string, mineOnly: boolean) => Promise<TractTemplateSummary[]>
+    getTemplate: (uuid: string) => Promise<TractTemplate>
+    publishTemplate: (tractUuid: string, category: string) => Promise<TractTemplate>
+    unpublishTemplate: (uuid: string) => Promise<void>
+    instantiateTemplate: (
+        templateUuid: string, name: string, description: string, connections: Record<string, string>,
+    ) => Promise<{ tract: Tract; warnings: string[] }>
 }
 
 export class TractsService implements ITractsService {
@@ -186,6 +198,37 @@ export class TractsService implements ITractsService {
 
     async unlinkTrigger(triggerUuid: string, tractUuid: string): Promise<void> {
         await TractsAPI.UnlinkTrigger({triggerUuid, tractUuid}, useUser.getState().auth.getInitReq())
+    }
+
+    async listTemplates(category: string, mineOnly: boolean): Promise<TractTemplateSummary[]> {
+        const res = await TractsAPI.ListTractTemplates({category, mineOnly}, useUser.getState().auth.getInitReq())
+        return (res.templates ?? []).map(toTractTemplateSummary)
+    }
+
+    async getTemplate(uuid: string): Promise<TractTemplate> {
+        const res = await TractsAPI.GetTractTemplate({uuid}, useUser.getState().auth.getInitReq())
+        return toTractTemplate(res.template!)
+    }
+
+    async publishTemplate(tractUuid: string, category: string): Promise<TractTemplate> {
+        const res = await TractsAPI.PublishTractTemplate(
+            {tractUuid, category}, useUser.getState().auth.getInitReq(),
+        )
+        return toTractTemplate(res.template!)
+    }
+
+    async unpublishTemplate(uuid: string): Promise<void> {
+        await TractsAPI.UnpublishTractTemplate({templateUuid: uuid}, useUser.getState().auth.getInitReq())
+    }
+
+    async instantiateTemplate(
+        templateUuid: string, name: string, description: string, connections: Record<string, string>,
+    ): Promise<{ tract: Tract; warnings: string[] }> {
+        const res = await TractsAPI.InstantiateTractTemplate(
+            {templateUuid, name, description, connections},
+            useUser.getState().auth.getInitReq(),
+        )
+        return {tract: toTract(res.tract!), warnings: res.warnings ?? []}
     }
 }
 

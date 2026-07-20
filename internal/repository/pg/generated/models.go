@@ -410,6 +410,19 @@ type TractRunStep struct {
 	FinishedAt sql.NullTime
 }
 
+type TractTemplate struct {
+	ID            uuid.UUID
+	SourceTractID uuid.NullUUID
+	OwnerID       uuid.UUID
+	Name          string
+	Description   string
+	Definition    json.RawMessage
+	Category      string
+	InstallCount  int32
+	PublishedAt   time.Time
+	UpdatedAt     time.Time
+}
+
 type TractTriggerLink struct {
 	TractID   uuid.UUID
 	TriggerID uuid.UUID

@@ -15,11 +15,12 @@ interface Props {
     onSave: () => void
     onRun: () => void
     onToggleLog: () => void
+    onPublish: () => void
 }
 
 export default function TractCanvasTopBar(props: Props) {
     const {name, onNameChange, isDirty, saving, running, lastRunStatus} = props
-    const {onBack, onSave, onRun, onToggleLog} = props
+    const {onBack, onSave, onRun, onToggleLog, onPublish} = props
 
     return (
         <div className={cls.BarContainer}>
@@ -31,6 +32,7 @@ export default function TractCanvasTopBar(props: Props) {
             {isDirty && <span className={cls.DirtyDot} title="Unsaved changes"/>}
             <div className={cls.BarRight}>
                 <RunStatusBadge running={running} lastRunStatus={lastRunStatus}/>
+                <Button variant="ghost" onClick={onPublish}>Publish as Template</Button>
                 <Button variant="ghost" onClick={onToggleLog}>Logs</Button>
                 {isDirty && (
                     <Button onClick={onSave} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
