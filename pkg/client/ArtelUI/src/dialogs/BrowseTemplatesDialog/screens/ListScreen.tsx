@@ -26,6 +26,7 @@ export default function ListScreen({templates, loading, onSelect}: Props) {
         <div className={cls.BrowseTemplatesDialogContainer} role="dialog" aria-modal="true">
             <h2 className={cls.DialogTitle}>Explore templates</h2>
             <Input
+                className={cls.SearchInputWrapper}
                 inputClassName={cls.SearchInput}
                 value={search}
                 setValue={setSearch}

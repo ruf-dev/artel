@@ -1,0 +1,43 @@
+.ConnectionSectionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    & .SegmentHeading {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        letter-spacing: 0.03125rem;
+        color: var(--color-fg-secondary);
+
+        &::before,
+        &::after {
+            content: "";
+            flex: 1 1 auto;
+            height: var(--border-thickness);
+            background: var(--color-border-light);
+        }
+    }
+
+    & .Empty {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+    }
+
+    & .LinkBtn {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: none;
+        color: var(--coral);
+        font-size: 0.8125rem;
+
+        &:hover {
+            background: none;
+        }
+    }
+}

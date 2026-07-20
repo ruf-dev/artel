@@ -17,6 +17,10 @@
         margin-bottom: 1rem;
     }
 
+    .DialogInputWrapper {
+        margin-bottom: 0.625rem;
+    }
+
     .DialogInput {
         width: 100%;
         box-sizing: border-box;
@@ -29,7 +33,6 @@
         font-family: inherit;
         outline: none;
         transition: border-color 160ms ease;
-        margin-bottom: 0.625rem;
 
         &:focus {
             border-color: var(--coral);
@@ -40,24 +43,23 @@
         }
     }
 
+    .Requires {
+        font-size: 0.75rem;
+        color: var(--color-fg-secondary);
+        margin: 0 0 0.75rem;
+    }
+
+    .MomNames {
+        text-transform: capitalize;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+    }
+
     .Connections {
         display: flex;
         flex-direction: column;
         gap: 1rem;
         margin-top: 0.75rem;
-    }
-
-    .ConnectionSection {
-        display: flex;
-        flex-direction: column;
-        gap: 0.375rem;
-    }
-
-    .ConnectionLabel {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--color-fg-secondary);
-        text-transform: capitalize;
     }
 
     .DialogActions {

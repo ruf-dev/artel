@@ -50,14 +50,16 @@ export default function NewTractDialog() {
                     {creating ? "…" : "Create"}
                 </Button>
             </div>
-            <Button
-                variant="ghost"
-                className={cls.ExploreLink}
-                onClick={() => OpenDialog(<BrowseTemplatesDialog/>)}
-                disabled={creating}
-            >
-                or explore templates →
-            </Button>
+            <div className={cls.ExploreLinkWrapper}>
+                <Button
+                    variant="ghost"
+                    className={cls.ExploreLink}
+                    onClick={() => OpenDialog(<BrowseTemplatesDialog/>)}
+                    disabled={creating}
+                >
+                    or explore templates →
+                </Button>
+            </div>
         </div>
     )
 }

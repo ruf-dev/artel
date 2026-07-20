@@ -5,11 +5,10 @@ import {Button, Input, LoadingWrapper} from "@vervstack/chures"
 import cls from "@/dialogs/InstantiateTemplateDialog/InstantiateTemplateDialog.module.css"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
+import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {TractTemplate, tractsService} from "@/processes/Tracts.ts"
 import {requiredConnections} from "@/dialogs/InstantiateTemplateDialog/processes/requiredConnections.ts"
-import ConnectionPicker
-    from "@/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx"
+import ConnectionSection from "@/dialogs/InstantiateTemplateDialog/components/ConnectionSection/ConnectionSection.tsx"
 
 interface Props {
     templateUuid: string
@@ -19,7 +18,7 @@ export default function InstantiateTemplateDialog({templateUuid}: Props) {
     const {CloseDialog} = useDialog()
     const bakeError = useBakeError()
     const navigate = useNavigate()
-    const {connections, fetch: fetchConnections} = useExternalConnections()
+    const {momCandidates, fetchMomCandidates} = useMcpKeys()
 
     const [template, setTemplate] = useState<TractTemplate | null>(null)
     const [loading, setLoading] = useState(true)
@@ -29,8 +28,8 @@ export default function InstantiateTemplateDialog({templateUuid}: Props) {
     const [submitting, setSubmitting] = useState(false)
 
     useEffect(() => {
-        void fetchConnections()
-    }, [fetchConnections])
+        void fetchMomCandidates()
+    }, [fetchMomCandidates])
 
     useEffect(() => {
         setLoading(true)
@@ -67,6 +66,7 @@ export default function InstantiateTemplateDialog({templateUuid}: Props) {
             <LoadingWrapper isLoading={loading}>
                 <h2 className={cls.DialogTitle}>Use template</h2>
                 <Input
+                    className={cls.DialogInputWrapper}
                     inputClassName={cls.DialogInput}
                     value={name}
                     setValue={setName}
@@ -75,6 +75,7 @@ export default function InstantiateTemplateDialog({templateUuid}: Props) {
                     disabled={submitting}
                 />
                 <Input
+                    className={cls.DialogInputWrapper}
                     inputClassName={cls.DialogInput}
                     value={description}
                     setValue={setDescription}
@@ -82,16 +83,21 @@ export default function InstantiateTemplateDialog({templateUuid}: Props) {
                     disabled={submitting}
                 />
                 {requiredMoms.length > 0 && (
+                    <p className={cls.Requires}>
+                        Requires <span className={cls.MomNames}>{requiredMoms.join(", ")}</span>
+                        {requiredMoms.length > 1 ? " connections" : " connection"}
+                    </p>
+                )}
+                {requiredMoms.length > 0 && (
                     <div className={cls.Connections}>
                         {requiredMoms.map(mcp => (
-                            <div key={mcp} className={cls.ConnectionSection}>
-                                <span className={cls.ConnectionLabel}>{mcp}</span>
-                                <ConnectionPicker
-                                    connections={connections}
-                                    selectedId={connectionsByMom[mcp] ?? ""}
-                                    onSelect={id => setConnectionsByMom(prev => ({...prev, [mcp]: id}))}
-                                />
-                            </div>
+                            <ConnectionSection
+                                key={mcp}
+                                mcp={mcp}
+                                connections={momCandidates.find(c => c.name === mcp)?.connections ?? []}
+                                selectedId={connectionsByMom[mcp] ?? ""}
+                                onSelect={id => setConnectionsByMom(prev => ({...prev, [mcp]: id}))}
+                            />
                         ))}
                     </div>
                 )}
