@@ -22,9 +22,44 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: build
-        uses: RedSockActions/release_image@v1.0.39
+        uses: RedSockActions/release_image@v1.0.43
         with:
           DRYRUN: true
+          REGISTRY_USER: redsockruf
+          REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
+          REGISTRY_URL: ${{ vars.REGISTRY_URL }}
+          IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+
+      - name: Move new cache
+        run: |
+          if [ -d "/tmp/.buildx-cache-new" ]; then
+            rm -rf /tmp/.buildx-cache
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          else
+            echo "No new buildx cache generated."
+          fi
+
+  omnibus-image-build:
+    runs-on: ${{ vars.UBUNTU_IMAGE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-omnibus-${{ github.ref_name }}-${{ hashFiles('Dockerfile.omnibus', '**/go.sum', '**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-omnibus-${{ github.ref_name }}-
+            ${{ runner.os }}-buildx-omnibus-
+
+      - name: build
+        uses: RedSockActions/release_image@v1.0.43
+        with:
+          DRYRUN: true
+          DOCKERFILE: Dockerfile.omnibus
+          TAG_SUFFIX: "-omnibus"
           REGISTRY_USER: redsockruf
           REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
           REGISTRY_URL: ${{ vars.REGISTRY_URL }}
@@ -43,6 +78,7 @@ jobs:
     runs-on: ${{ vars.UBUNTU_IMAGE }}
     needs:
       - image-build
+      - omnibus-image-build
     steps:
       - name: Release tag
         id: release
@@ -74,10 +110,80 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Release image
-        uses: RedSockActions/release_image@v1.0.39
+        uses: RedSockActions/release_image@v1.0.43
         with:
           REGISTRY_USER: redsockruf
           REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
           DISABLE_CHECKOUT: true
+          REGISTRY_URL: ${{ vars.REGISTRY_URL }}
+          IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          TAG_LATEST: "false"
+
+  omnibus-docker-registry-release:
+    if: ${{ needs.tag-release.outputs.tag != '' }}
+    runs-on: ${{ vars.UBUNTU_IMAGE }}
+    needs:
+      - tag-release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-omnibus-${{ github.ref_name }}-${{ hashFiles('Dockerfile.omnibus', '**/go.sum', '**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-omnibus-${{ github.ref_name }}-
+            ${{ runner.os }}-buildx-omnibus-
+
+      - name: Release image
+        uses: RedSockActions/release_image@v1.0.43
+        with:
+          REGISTRY_USER: redsockruf
+          REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
+          DISABLE_CHECKOUT: true
+          REGISTRY_URL: ${{ vars.REGISTRY_URL }}
+          IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+          DOCKERFILE: Dockerfile.omnibus
+          TAG_SUFFIX: "-omnibus"
+          TAG_LATEST: "false"
+
+  promote-latest:
+    if: ${{ needs.tag-release.outputs.tag != '' }}
+    runs-on: ${{ vars.UBUNTU_IMAGE }}
+    needs:
+      - tag-release
+      - docker-registry-release
+      - omnibus-docker-registry-release
+    environment: promote-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Promote artel image to latest
+        uses: RedSockActions/release_image@v1.0.43
+        with:
+          MODE: promote
+          DISABLE_CHECKOUT: true
+          REGISTRY_USER: redsockruf
+          REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
+          REGISTRY_URL: ${{ vars.REGISTRY_URL }}
+          IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+
+      - name: Promote omnibus image to latest
+        uses: RedSockActions/release_image@v1.0.43
+        with:
+          MODE: promote
+          DISABLE_CHECKOUT: true
+          TAG_SUFFIX: "-omnibus"
+          REGISTRY_USER: redsockruf
+          REGISTRY_PWD: ${{ secrets.REGISTRY_PWD }}
           REGISTRY_URL: ${{ vars.REGISTRY_URL }}
           IMAGE_NAME: ${{ vars.IMAGE_NAME }}
