@@ -9,7 +9,7 @@ import {useTracts, useTriggerSources} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
-import {providerEnumFor} from "@/components/TriggerPanel/triggerLabels.ts"
+import {providerEnumFor, providerLabel} from "@/components/TriggerPanel/triggerLabels.ts"
 import TokenRevealDialog from "@/dialogs/TokenRevealDialog/TokenRevealDialog.tsx"
 import {fieldsToSchemaNode, useAddTriggerDialog} from "@/dialogs/AddTriggerDialog/addTriggerDialogContext.ts"
 import DialogHeaderWithClose from "@/dialogs/AddTriggerDialog/components/DialogHeaderWithClose.tsx"
@@ -110,6 +110,12 @@ export default function CreateScreen() {
                         onChange={context.setFields}/>
                 )}
             </div>
+
+            {context.kind === "webhook" && selectedSource?.provider && !hasProviderConnection && (
+                <p className={cls.Notice}>
+                    Connect {providerLabel(selectedSource.provider)} in Connections first to create this trigger.
+                </p>
+            )}
 
             <div className={cn(cls.DialogActions, cls.DialogActionsEnd)}>
                 <Button
