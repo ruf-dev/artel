@@ -1210,8 +1210,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/e2e_test.go": {
-    "mtime": 1784541295.542631,
-    "ast_hash": "3ab0ae39e9258cf85d3d7ff511b02079",
+    "mtime": 1783192964.5215077,
+    "ast_hash": "55e1b3170feffda3282ab45c7bf6250e",
     "semantic_hash": ""
   },
   "tests/vault/vault_test.go": {
@@ -1825,8 +1825,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/ServerStatus.ts": {
-    "mtime": 1784449814.531975,
-    "ast_hash": "81855d454553fc6f96f2836d0e19d247",
+    "mtime": 1781513937.7022057,
+    "ast_hash": "fd356d56ea3899a9f74af24f9ced66da",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/Notes.ts": {
@@ -2090,8 +2090,8 @@
     "semantic_hash": ""
   },
   "tests/docker-compose.yaml": {
-    "mtime": 1784540909.9303675,
-    "ast_hash": "fc2f4090535a60c6857765cfa3106333",
+    "mtime": 1780909820.1284108,
+    "ast_hash": "a7d19c1e29e920d99e951b7b9f6f55fb",
     "semantic_hash": ""
   },
   "docs/mcp/tools.md": {
@@ -4820,8 +4820,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/components/ScriptBody/components/ScriptCodeSection/processes/scriptEditorExtensions.ts": {
-    "mtime": 1784451416.115582,
-    "ast_hash": "bac9636b0b2d02363a552dfb41ce2446",
+    "mtime": 1784398259.0956576,
+    "ast_hash": "266cfb3e3d8adb698910cb55cd9b5f0b",
     "semantic_hash": ""
   },
   "internal/service/v1/auth/auth_test.go": {
@@ -4835,23 +4835,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/AuthFetchInterceptor.ts": {
-    "mtime": 1784449819.8334684,
-    "ast_hash": "683ab89842a14dba7a42924032f1abae",
-    "semantic_hash": ""
-  },
-  "tests/e2e/quota_test.go": {
-    "mtime": 1784541575.1175973,
-    "ast_hash": "a23166b7838573697e8a290242140c2b",
-    "semantic_hash": ""
-  },
-  "docs/ideas/data_aggregation.md": {
-    "mtime": 1784452342.641462,
-    "ast_hash": "bb5d0e1ac35c43beab493fe09e1578ba",
-    "semantic_hash": ""
-  },
-  "docs/ideas/search.md": {
-    "mtime": 1784406752.843392,
-    "ast_hash": "b6463eb7cddf071be1f075455bd60ea9",
+    "mtime": 1784403229.8377378,
+    "ast_hash": "4fc17a296a68ce0d02789a248acdd499",
     "semantic_hash": ""
   }
 }
