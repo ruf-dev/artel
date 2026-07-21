@@ -5,6 +5,7 @@ go 1.26.3
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/Red-Sock/go-swagger-ui v0.0.2
+	github.com/dop251/goja v0.0.0-20260701091749-b07b74453ea9
 	github.com/emersion/go-imap v1.2.1
 	github.com/go-kivik/kivik/v4 v4.5.2
 	github.com/golang-jwt/jwt/v5 v5.3.1
@@ -15,7 +16,6 @@ require (
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/rs/cors v1.11.1
 	github.com/rs/zerolog v1.35.1
-	github.com/sirupsen/logrus v1.9.4
 	github.com/soheilhy/cmux v0.1.5
 	github.com/sqlc-dev/pqtype v0.3.0
 	github.com/stretchr/testify v1.11.1
@@ -31,7 +31,6 @@ require (
 	go.redsock.ru/toolbox v0.0.13
 	go.vervstack.ru/matreshka v1.0.95
 	golang.org/x/crypto v0.51.0
-	golang.org/x/net v0.53.0
 	golang.org/x/oauth2 v0.36.0
 	golang.org/x/sync v0.20.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250519155744-55703ea1f237
@@ -45,7 +44,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dlclark/regexp2/v2 v2.2.1 // indirect
-	github.com/dop251/goja v0.0.0-20260701091749-b07b74453ea9 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -76,6 +74,7 @@ require (
 	go.redsock.ru/evon v0.0.30 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
+	golang.org/x/net v0.53.0 // indirect
 	golang.org/x/sys v0.44.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237 // indirect
