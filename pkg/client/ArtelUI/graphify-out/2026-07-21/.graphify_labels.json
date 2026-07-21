@@ -105,11 +105,5 @@
   "103": "CouchInstancesAPI",
   "104": ".getRun",
   "105": "UserList.tsx",
-  "106": "Vaults.ts",
-  "107": "AuthFetchInterceptor.ts",
-  "108": "EmailCheckButton.tsx",
-  "109": "GitlabCheckButton.tsx",
-  "110": "TrelloCheckButton.tsx",
-  "111": "TopbarDrawerCloseButton.tsx",
-  "112": "InsertConflictDialog.tsx"
+  "106": "Vaults.ts"
 }
