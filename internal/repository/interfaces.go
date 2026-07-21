@@ -55,6 +55,7 @@ type Users interface {
 	Create(ctx context.Context, email, passwordHash string) (domain.User, error)
 	GetByID(ctx context.Context, id uuid.UUID) (domain.User, error)
 	GetByEmail(ctx context.Context, email string) (domain.User, error)
+	FindByEmail(ctx context.Context, email string) (sql.Null[domain.User], error)
 
 	GetByTelegramId(ctx context.Context, telegramId string) (sql.Null[domain.User], error)
 	CreateByUsername(ctx context.Context, username, photoUrl string) (domain.User, error)

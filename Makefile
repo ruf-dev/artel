@@ -25,7 +25,8 @@ build-local-container:
 lint: .lint-go .lint-react
 
 .lint-go:
-	golangci-lint run ./...
+	go fmt ./...
+	golangci-lint run
 .lint-react:
 	cd pkg/client/ArtelUI && bun run lint
 ### Web Client Setup

@@ -23,6 +23,7 @@ type authHandler struct {
 	authSvc          service.AuthService
 	s3InstanceSvc    service.S3InstanceService
 	telegramClientID string
+	noAuthEnabled    bool
 }
 
 func (h *authHandler) Register(
@@ -112,6 +113,7 @@ func (h *authHandler) GetConfig(
 	return &artel_api.GetConfig_Response{
 		TelegramClientId: h.telegramClientID,
 		IsS3Available:    hasS3,
+		NoAuthEnabled:    h.noAuthEnabled,
 	}, nil
 }
 
@@ -172,12 +174,15 @@ type AuthImpl struct {
 	handler *authHandler
 }
 
-func NewAuthImpl(authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService) *AuthImpl {
+func NewAuthImpl(
+	authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService, noAuthEnabled bool,
+) *AuthImpl {
 	return &AuthImpl{
 		handler: &authHandler{
 			authSvc:          authSvc,
 			telegramClientID: telegramClientID,
 			s3InstanceSvc:    s3InstanceSvc,
+			noAuthEnabled:    noAuthEnabled,
 		},
 	}
 }

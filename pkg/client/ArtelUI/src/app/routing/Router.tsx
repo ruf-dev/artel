@@ -23,6 +23,7 @@ import TractTemplatesListPage from "@/pages/tract-templates/TractTemplatesListPa
 import GoogleOAuthCallbackPage from "@/pages/connections/GoogleOAuthCallbackPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
+import UnsecureBanner from "@/segments/UnsecureBanner/UnsecureBanner.tsx"
 import {authService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
 import {useServerStatus} from "@/app/hooks/ServerStatus.ts"
@@ -107,6 +108,7 @@ export default function Router() {
 
     return (
         <div className={cls.Root}>
+            <UnsecureBanner/>
             <div className={cls.Content}>
                 {routeElement}
             </div>

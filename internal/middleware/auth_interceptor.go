@@ -19,6 +19,7 @@ const authHeader = "authorization"
 type authMiddleware struct {
 	ignoredPaths        map[string]struct{}
 	isDebugEnabled      bool
+	noAuthEnabled       bool
 	authService         service.AuthService
 	subscriptionService service.SubscriptionService
 }
@@ -45,6 +46,15 @@ func WithDebug(b bool) authOption {
 	}
 }
 
+// WithNoAuth makes the interceptor a pass-through for every RPC, injecting the fixed
+// local-dev user (see auth.Service.EnsureNoAuthUser) instead of validating any token.
+// Intended for local development only.
+func WithNoAuth(b bool) authOption {
+	return func(am *authMiddleware) {
+		am.noAuthEnabled = b
+	}
+}
+
 func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOption {
 	ac := &authMiddleware{
 		ignoredPaths:        make(map[string]struct{}),
@@ -58,6 +68,15 @@ func GrpcAuthInterceptor(srv service.Service, opts ...authOption) grpc.ServerOpt
 
 	return grpc.ChainUnaryInterceptor(
 		func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+			if ac.noAuthEnabled {
+				ctxWithUser, err := ac.authWithNoAuth(ctx)
+				if err != nil {
+					return nil, err
+				}
+
+				return handler(ctxWithUser, req)
+			}
+
 			if ac.isIgnored(info.FullMethod) {
 				return handler(ctx, req)
 			}
@@ -108,6 +127,23 @@ func (am *authMiddleware) authWithSession(ctx context.Context, md metadata.MD) (
 	ctxWithUser := user_context.WithUserContext(ctx, uc)
 
 	return ctxWithUser, nil
+}
+
+// authWithNoAuth injects the fixed local-dev user without validating any token or
+// checking subscription status — the dev user has no real subscription to be active.
+func (am *authMiddleware) authWithNoAuth(ctx context.Context) (context.Context, error) {
+	user, err := am.authService.ValidateToken(ctx, "")
+	if err != nil {
+		return nil, rerrors.Wrap(err)
+	}
+
+	uc := user_context.UserContext{
+		UserUuid: user.Uuid,
+		UserName: user.Username,
+		Roles:    nil,
+	}
+
+	return user_context.WithUserContext(ctx, uc), nil
 }
 
 func (am *authMiddleware) authWithDebugHeaders(_ context.Context, _ metadata.MD) (err error) {

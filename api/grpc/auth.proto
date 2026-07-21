@@ -105,6 +105,7 @@ message GetConfig {
   message Response {
     string telegram_client_id = 1;
     bool is_s3_available = 2;
+    bool no_auth_enabled = 3;
   }
 }
 

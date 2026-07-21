@@ -90,6 +90,29 @@ func (r *UsersRepo) GetByEmail(ctx context0.Context, email string) (domain.User,
 	return u, nil
 }
 
+func (r *UsersRepo) FindByEmail(ctx context0.Context, email string) (sql.Null[domain.User], error) {
+	nullEmail := sql.NullString{String: email, Valid: email != ""}
+
+	row, err := r.q.GetUserByEmail(ctx, nullEmail)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.Null[domain.User]{}, nil
+		}
+
+		return sql.Null[domain.User]{}, rerrors.Wrap(err, "error finding user by email")
+	}
+
+	u := domain.User{
+		Uuid:         row.ID,
+		Email:        row.Email.String,
+		PasswordHash: row.PasswordHash,
+		CreatedAt:    row.CreatedAt,
+		UpdatedAt:    row.UpdatedAt,
+	}
+
+	return sql.Null[domain.User]{V: u, Valid: true}, nil
+}
+
 func (r *UsersRepo) Delete(ctx context0.Context, id uuid.UUID) error {
 	err := r.q.DeleteUser(ctx, id)
 	if err != nil {

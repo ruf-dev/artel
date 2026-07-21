@@ -1,0 +1,12 @@
+.UnsecureBannerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-bg-base);
+    background: var(--warning-color);
+}

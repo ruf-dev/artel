@@ -67,6 +67,15 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "init services")
 	}
 
+	if a.Cfg.Environment.NoAuthEnabled {
+		_, err = services.Auth.EnsureNoAuthUser(a.Ctx)
+		if err != nil {
+			return rerrors.Wrap(err, "error ensuring noauth dev user")
+		}
+
+		log.Warn().Msg("running unsecure instance: authentication is disabled (no_auth_enabled=true) — local development only")
+	}
+
 	// Tract is constructed here (not in svcv1.New) because its ToolExecutor composes the
 	// already-built Mcp and Mom services — mcp must exist first, then tract.
 	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
@@ -93,7 +102,9 @@ func (c *Custom) Init(a *App) error {
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
-	authImpl := auth_api.NewAuthImpl(services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService())
+	authImpl := auth_api.NewAuthImpl(
+		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), a.Cfg.Environment.NoAuthEnabled,
+	)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
@@ -124,6 +135,7 @@ func (c *Custom) Init(a *App) error {
 				pb.AuthAPI_GetConfig_FullMethodName,
 				pb.AuthAPI_GetMe_FullMethodName,
 			),
+			middleware.WithNoAuth(a.Cfg.Environment.NoAuthEnabled),
 		),
 		middleware.GrpcAdminInterceptor(services.Auth,
 			pb.CouchInstancesAPI_RegisterCouchInstance_FullMethodName,

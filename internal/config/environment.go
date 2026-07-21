@@ -9,6 +9,7 @@ type EnvironmentConfig struct {
 	GoogleClientSecret   string
 	LogFormat            string
 	LogLevel             string
+	NoAuthEnabled        bool
 	OtelEndpoint         string
 	SubscriptionsEnabled bool
 	TelegramClientID     string

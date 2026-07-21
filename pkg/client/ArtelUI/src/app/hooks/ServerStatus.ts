@@ -2,6 +2,7 @@ import {useEffect, useState} from "react"
 
 import {AuthAPI} from "@/app/api/artel"
 import {apiPrefix} from "@/app/api/api.ts"
+import {useAppConfig} from "@/app/hooks/AppConfig.ts"
 
 const PING_INTERVAL_MS = 10_000
 const PING_TIMEOUT_MS = 5_000
@@ -14,10 +15,11 @@ async function pingServer(): Promise<boolean> {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS)
     try {
-        await AuthAPI.GetConfig({}, {
+        const cfg = await AuthAPI.GetConfig({}, {
             ...apiPrefix(),
             signal: controller.signal,
         })
+        useAppConfig.getState().setNoAuthEnabled(cfg.noAuthEnabled === true)
         return true
     } catch (err) {
         // TypeError = network unreachable (ECONNREFUSED)

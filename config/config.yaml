@@ -47,3 +47,6 @@ environment:
     - name: subscriptions_enabled
       type: bool
       value: false
+    - name: no_auth_enabled
+      type: bool
+      value: false

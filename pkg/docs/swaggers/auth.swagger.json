@@ -221,6 +221,9 @@
         },
         "isS3Available": {
           "type": "boolean"
+        },
+        "noAuthEnabled": {
+          "type": "boolean"
         }
       }
     },

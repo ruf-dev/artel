@@ -25,6 +25,11 @@ const (
 	refreshTokenTTL = 30 * 24 * time.Hour
 )
 
+const (
+	noAuthUserEmail    = "noauth-dev@localhost.artel"
+	noAuthUserUsername = "dev"
+)
+
 type Service struct {
 	usersRepo       repository.Users
 	sessionsRepo    repository.Sessions
@@ -33,6 +38,10 @@ type Service struct {
 	subscriptions   service.SubscriptionService
 	txManager       tx_manager.TxManager
 	tgParser        telegram.TokenParser
+
+	// noAuthUser is set by EnsureNoAuthUser when the server runs with NoAuthEnabled.
+	// ValidateToken short-circuits to it, ignoring whatever token was presented.
+	noAuthUser *domain.User
 }
 
 func New(repo repository.Repo, telegramClientId string, subscriptions service.SubscriptionService) *Service {
@@ -125,6 +134,10 @@ func (s *Service) Logout(ctx context.Context, token string) error {
 }
 
 func (s *Service) ValidateToken(ctx context.Context, token string) (domain.User, error) {
+	if s.noAuthUser != nil {
+		return *s.noAuthUser, nil
+	}
+
 	session, user, err := s.sessionsRepo.GetByTokenWithUser(ctx, token)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "get session with user")
@@ -271,6 +284,50 @@ func (s *Service) CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *Service) EnsureNoAuthUser(ctx context.Context) (domain.User, error) {
+	existing, err := s.usersRepo.FindByEmail(ctx, noAuthUserEmail)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "error finding noauth user")
+	}
+
+	user := existing.V
+
+	if !existing.Valid {
+		err = s.txManager.Execute(func(tx *sql.Tx) error {
+			usersRepo := s.usersRepo.WithTx(tx)
+
+			user, err = usersRepo.Create(ctx, noAuthUserEmail, "")
+			if err != nil {
+				return rerrors.Wrap(err, "error creating noauth user")
+			}
+
+			err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid)
+			if err != nil {
+				return rerrors.Wrap(err, "error creating default permissions")
+			}
+
+			err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid)
+			if err != nil {
+				return rerrors.Wrap(err, "error creating default subscription")
+			}
+
+			return nil
+		})
+		if err != nil {
+			return domain.User{}, err
+		}
+	}
+
+	// The users table has no username for password-style rows (see CreateByUsername vs.
+	// Create) — set it in-memory only so the injected UserContext.UserName is non-empty,
+	// which CouchDB database naming requires.
+	user.Username = noAuthUserUsername
+
+	s.noAuthUser = &user
+
+	return user, nil
 }
 
 func newTokenPair() (token string, expiresAt time.Time, refreshToken string, refreshExpiresAt time.Time) {

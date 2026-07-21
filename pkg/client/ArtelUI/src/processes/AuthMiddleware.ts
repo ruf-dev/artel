@@ -1,5 +1,6 @@
 import {apiPrefix} from "@/app/api/api.ts"
 import {Session} from "@/processes/Auth.ts";
+import {useAppConfig} from "@/app/hooks/AppConfig.ts";
 
 export type UserInfo = {
     id: string
@@ -28,6 +29,7 @@ export class AuthMiddleware {
     }
 
     isAuthenticated(): boolean {
+        if (useAppConfig.getState().noAuthEnabled) return true
         if (!this.session) return false
         return new Date(this.session.refreshExpiresAt) > new Date()
     }

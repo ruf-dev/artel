@@ -60,6 +60,10 @@ type AuthService interface {
 	// rotating the refresh token in the process. Returns user_errors.InvalidRefreshToken
 	// if the token is unknown, already rotated, or expired.
 	Refresh(ctx context.Context, refreshToken string) (domain.Session, error)
+	// EnsureNoAuthUser creates (on first run) and caches the fixed local-dev user used to
+	// bypass authentication entirely when the server is configured with NoAuthEnabled.
+	// Every subsequent ValidateToken call returns this user regardless of the token presented.
+	EnsureNoAuthUser(ctx context.Context) (domain.User, error)
 }
 
 type VaultService interface {
