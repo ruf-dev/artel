@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "internal/clients/smtp/client.go": {
-    "mtime": 1784709519.9094377,
-    "ast_hash": "82b1c8f2688d2c2635e0f5a9d17075db",
+    "mtime": 1784709581.7007594,
+    "ast_hash": "62e41e2a8fac045b4f4cf4e7a6bfa138",
     "semantic_hash": ""
   },
   "internal/clients/sqldb/postgres.go": {
