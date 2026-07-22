@@ -2075,8 +2075,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/ProviderCard/ProviderCard.tsx": {
-    "mtime": 1783755115.2986383,
-    "ast_hash": "80d58b9a25ac5ffb87abc498b262e656",
+    "mtime": 1784705839.376536,
+    "ast_hash": "1bfc0bc29069e61f8f2d8433d3506bd7",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/widgets/GoogleConnectionContent/GoogleConnectionContent.tsx": {
@@ -5095,8 +5095,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/components/BYOKSection/BYOKSection.tsx": {
-    "mtime": 1784702940.3345253,
-    "ast_hash": "f4c5fa245bc6929ac5f278d1982ec954",
+    "mtime": 1784705839.3765407,
+    "ast_hash": "0eb8bcf85c9f0232172bc46d6f82a63f",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/components/ByokTabIcon/ByokTabIcon.tsx": {
@@ -5107,6 +5107,11 @@
   "pkg/client/ArtelUI/src/pages/connections/components/ExternalConnectionsTabIcon/ExternalConnectionsTabIcon.tsx": {
     "mtime": 1784702689.2257898,
     "ast_hash": "499b82a0236f3eb16fb2f3e1d16aa9cc",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/icons/llm/claude-color.svg": {
+    "mtime": 1784705597.4889061,
+    "ast_hash": "9e17036145c6f918d950b9ba9435f5b7",
     "semantic_hash": ""
   }
 }

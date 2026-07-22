@@ -1020,7 +1020,6 @@
   "1018": "TestEncryptDecryptRoundTrip",
   "1019": "ExternalProviderType",
   "1020": "ExternalConnectionMeta",
-  "1021": "AddAnthropicConnection",
   "1022": "prompt.go",
   "1023": "spreadsheets.go",
   "1024": "tract.go",
