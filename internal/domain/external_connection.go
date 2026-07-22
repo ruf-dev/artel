@@ -14,6 +14,7 @@ const (
 	ProviderMiro         = "miro"
 	ProviderEmail        = "email"
 	ProviderGitlab       = "gitlab"
+	ProviderAnthropic    = "anthropic"
 )
 
 type ExternalConnection struct {
@@ -73,4 +74,10 @@ type GitlabCredentials struct {
 	PersonalAccessToken string `json:"personal_access_token"`
 	InstanceUrl         string `json:"instance_url"`
 	WebhookSecret       string `json:"webhook_secret,omitempty"`
+}
+
+// AnthropicKeyCredentials is stored encrypted in credentials_enc for the anthropic provider.
+type AnthropicKeyCredentials struct {
+	ApiKey  string `json:"api_key"`
+	BaseUrl string `json:"base_url,omitempty"` // optional override, e.g. a proxy/regional endpoint
 }

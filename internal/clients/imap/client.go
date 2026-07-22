@@ -16,6 +16,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
 
+	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 )
 
@@ -43,8 +44,19 @@ type ListEmailsOptions struct {
 	BeforeUid *string
 }
 
-func (c *Client) ListEmails(_ context.Context, opts ListEmailsOptions) ([]domain.EmailMeta, error) {
-	conn, err := c.connect()
+func (c *Client) ListEmails(ctx context.Context, opts ListEmailsOptions) (emails []domain.EmailMeta, err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "list_emails").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "list_emails").Str("host", addr).Int("count", len(emails)).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err := c.connect(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -224,8 +236,19 @@ func emailMetaFromMessage(msg *imap.Message) domain.EmailMeta {
 	return meta
 }
 
-func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, error) {
-	conn, err := c.connect()
+func (c *Client) ReadEmail(ctx context.Context, uid string) (message domain.EmailMessage, err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "read_email").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "read_email").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err := c.connect(ctx)
 	if err != nil {
 		return domain.EmailMessage{}, err
 	}
@@ -307,7 +330,9 @@ func (c *Client) ReadEmail(_ context.Context, uid string) (domain.EmailMessage, 
 // configured host/port/credentials work without fetching any mailbox data. Unlike connect(), the
 // dial (and the deadline covering the subsequent login) is bounded by ctx's deadline, so a host
 // that never responds fails once ctx expires instead of hanging indefinitely.
-func (c *Client) TestConnection(ctx context.Context) error {
+func (c *Client) TestConnection(ctx context.Context) (err error) {
+	opStart := time.Now()
+
 	dialer := &net.Dialer{}
 
 	if deadline, ok := ctx.Deadline(); ok {
@@ -315,6 +340,14 @@ func (c *Client) TestConnection(ctx context.Context) error {
 	}
 
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "test_connection").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "test_connection").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
 
 	conn, err := client.DialWithDialerTLS(dialer, addr, nil)
 	if err != nil {
@@ -330,8 +363,19 @@ func (c *Client) TestConnection(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) ListFolders(_ context.Context) ([]string, error) {
-	conn, err := c.connect()
+func (c *Client) ListFolders(ctx context.Context) (names []string, err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "list_folders").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "list_folders").Str("host", addr).Int("count", len(names)).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err := c.connect(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -357,10 +401,19 @@ func (c *Client) ListFolders(_ context.Context) ([]string, error) {
 	return folders, nil
 }
 
-func (c *Client) connect() (*client.Client, error) {
+func (c *Client) connect(ctx context.Context) (conn *client.Client, err error) {
+	opStart := time.Now()
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
 
-	conn, err := client.DialTLS(addr, nil)
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "connect").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "connect").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err = client.DialTLS(addr, nil)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "connect to imap server")
 	}

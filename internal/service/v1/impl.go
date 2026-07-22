@@ -58,16 +58,19 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	subscriptionSvc := newSubscriptionService(repo, cfg)
 
 	// Built ahead of the Services literal (rather than inline) because TaskTracker composes
-	// both as service.ExternalConnectionService/service.MomService — those interface values
-	// don't exist yet mid-construction of the same struct literal.
+	// both as service.ExternalConnectionService/service.MomService, and externalconns.New itself
+	// composes service.MomService (to validate gitlab/trello credentials via the MoM http
+	// executor) — those interface values don't exist yet mid-construction of the same struct
+	// literal.
+	momSvc := mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections())
 	externalConnectionsSvc := externalconns.New(
 		repo.ExternalConnections(),
 		repo.PendingAuthCodes(),
 		repo.McpSpreadsheets(),
 		repo.MailServerSuggestions(),
 		oauthCfg,
+		momSvc,
 	)
-	momSvc := mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections())
 
 	services := &Services{
 		Auth:          auth.New(repo, cfg.TelegramClientID, subscriptionSvc),

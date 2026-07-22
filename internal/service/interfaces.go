@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/domain"
@@ -229,6 +230,12 @@ type MomService interface {
 	ExecuteToolForConnection(
 		ctx context.Context, exConnUuid uuid.UUID, mcpName string, toolName string, params map[string]interface{},
 	) (string, error)
+	// ExecuteToolWithSecrets executes a MoM http tool's action directly against a caller-supplied
+	// secrets map, without requiring a persisted external_connections row — used to validate
+	// externally-supplied credentials against the real provider before anything is saved.
+	ExecuteToolWithSecrets(
+		ctx context.Context, mcpName, toolName string, secrets, params map[string]interface{},
+	) (string, error)
 }
 
 // TractService owns tract/trigger CRUD, trigger↔tract links, and run lifecycle (StartRun,
@@ -322,4 +329,10 @@ type ExternalConnectionService interface {
 	GenerateGitlabWebhookSecret(ctx context.Context) (domain.ExternalConnectionMeta, string, error)
 	AddTrelloConnection(ctx context.Context, apiKey, apiToken string) (domain.ExternalConnectionMeta, error)
 	CheckTrelloConnection(ctx context.Context, apiKey, apiToken string) (fullName string, err error)
+	AddAnthropicConnection(
+		ctx context.Context, apiKey, baseUrl, defaultModel string,
+	) (domain.ExternalConnectionMeta, error)
+	CheckAnthropicConnection(
+		ctx context.Context, apiKey, baseUrl, defaultModel string,
+	) (models []anthropicClient.ModelInfo, recommendedDefaultModel string, err error)
 }

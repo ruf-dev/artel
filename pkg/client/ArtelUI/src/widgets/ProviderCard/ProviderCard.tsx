@@ -1,11 +1,14 @@
+import {ReactNode} from "react"
+
 import cls from "@/widgets/ProviderCard/ProviderCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {ExternalConnectionInfo, ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import ProviderIcon from "@/components/ProviderIcon/ProviderIcon.tsx"
 
-export default function ProviderCard({provider, name, connections, loading, onClick}: {
+export default function ProviderCard({provider, name, icon, connections, loading, onClick}: {
     provider: ExternalProvider
     name: string
+    icon?: ReactNode
     connections: ExternalConnectionInfo[]
     loading: boolean
     onClick?: () => void
@@ -25,7 +28,7 @@ export default function ProviderCard({provider, name, connections, loading, onCl
             onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onClick?.() }}
         >
             <div className={cls.CardHeader}>
-                <div className={cls.CardIcon}><ProviderIcon provider={provider}/></div>
+                <div className={cls.CardIcon}>{icon ?? <ProviderIcon provider={provider}/>}</div>
                 <div className={cls.CardTitles}>
                     <div className={cls.CardName}>{name}</div>
                     {accountLabel && <div className={cls.CardAccount}>{accountLabel}</div>}

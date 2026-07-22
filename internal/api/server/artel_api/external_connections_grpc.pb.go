@@ -35,6 +35,8 @@ const (
 	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
 	ExternalConnectionsAPI_AddTrelloConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddTrelloConnection"
 	ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection"
+	ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection"
+	ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName    = "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -60,6 +62,8 @@ type ExternalConnectionsAPIClient interface {
 	GenerateGitlabWebhookSecret(ctx context.Context, in *GenerateGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*GenerateGitlabWebhookSecret_Response, error)
 	AddTrelloConnection(ctx context.Context, in *AddTrelloConnection_Request, opts ...grpc.CallOption) (*AddTrelloConnection_Response, error)
 	CheckTrelloConnection(ctx context.Context, in *CheckTrelloConnection_Request, opts ...grpc.CallOption) (*CheckTrelloConnection_Response, error)
+	AddAnthropicConnection(ctx context.Context, in *AddAnthropicConnection_Request, opts ...grpc.CallOption) (*AddAnthropicConnection_Response, error)
+	CheckAnthropicConnection(ctx context.Context, in *CheckAnthropicConnection_Request, opts ...grpc.CallOption) (*CheckAnthropicConnection_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -230,6 +234,26 @@ func (c *externalConnectionsAPIClient) CheckTrelloConnection(ctx context.Context
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) AddAnthropicConnection(ctx context.Context, in *AddAnthropicConnection_Request, opts ...grpc.CallOption) (*AddAnthropicConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddAnthropicConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) CheckAnthropicConnection(ctx context.Context, in *CheckAnthropicConnection_Request, opts ...grpc.CallOption) (*CheckAnthropicConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckAnthropicConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility.
@@ -253,6 +277,8 @@ type ExternalConnectionsAPIServer interface {
 	GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error)
 	AddTrelloConnection(context.Context, *AddTrelloConnection_Request) (*AddTrelloConnection_Response, error)
 	CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error)
+	AddAnthropicConnection(context.Context, *AddAnthropicConnection_Request) (*AddAnthropicConnection_Response, error)
+	CheckAnthropicConnection(context.Context, *CheckAnthropicConnection_Request) (*CheckAnthropicConnection_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -310,6 +336,12 @@ func (UnimplementedExternalConnectionsAPIServer) AddTrelloConnection(context.Con
 }
 func (UnimplementedExternalConnectionsAPIServer) CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method CheckTrelloConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddAnthropicConnection(context.Context, *AddAnthropicConnection_Request) (*AddAnthropicConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddAnthropicConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) CheckAnthropicConnection(context.Context, *CheckAnthropicConnection_Request) (*CheckAnthropicConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CheckAnthropicConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -621,6 +653,42 @@ func _ExternalConnectionsAPI_CheckTrelloConnection_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_AddAnthropicConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAnthropicConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddAnthropicConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddAnthropicConnection(ctx, req.(*AddAnthropicConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_CheckAnthropicConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckAnthropicConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).CheckAnthropicConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).CheckAnthropicConnection(ctx, req.(*CheckAnthropicConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -691,6 +759,14 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckTrelloConnection",
 			Handler:    _ExternalConnectionsAPI_CheckTrelloConnection_Handler,
+		},
+		{
+			MethodName: "AddAnthropicConnection",
+			Handler:    _ExternalConnectionsAPI_AddAnthropicConnection_Handler,
+		},
+		{
+			MethodName: "CheckAnthropicConnection",
+			Handler:    _ExternalConnectionsAPI_CheckAnthropicConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"net"
 	"net/smtp"
+	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/utils"
 	"go.redsock.ru/rerrors"
 )
@@ -27,15 +29,24 @@ func New(host string, port int, email, password string) *Client {
 	}
 }
 
-func (c *Client) Send(_ context.Context, to, subject, body string) error {
+func (c *Client) Send(ctx context.Context, to, subject, body string) (err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "send").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("smtp client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "send").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("smtp client")
+		}
+	}()
+
 	auth := smtp.PlainAuth("", c.email, c.password, c.host)
 
 	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s",
 		c.email, to, subject, body)
 
-	addr := fmt.Sprintf("%s:%d", c.host, c.port)
-
-	err := smtp.SendMail(addr, auth, c.email, []string{to}, []byte(msg))
+	err = smtp.SendMail(addr, auth, c.email, []string{to}, []byte(msg))
 	if err != nil {
 		return rerrors.Wrap(err, "send mail")
 	}
@@ -48,8 +59,17 @@ func (c *Client) Send(_ context.Context, to, subject, body string) error {
 // cancellation, and — when ctx carries a deadline — the whole handshake (STARTTLS/Auth included)
 // is bounded by it, so a host that never responds fails once ctx expires instead of hanging
 // indefinitely.
-func (c *Client) TestConnection(ctx context.Context) error {
+func (c *Client) TestConnection(ctx context.Context) (err error) {
+	opStart := time.Now()
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "test_connection").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("smtp client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "test_connection").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("smtp client")
+		}
+	}()
 
 	var dialer net.Dialer
 

@@ -121,6 +121,20 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddAnthropicConnection(AddAnthropicConnection.Request) returns (AddAnthropicConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/anthropic/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckAnthropicConnection(CheckAnthropicConnection.Request) returns (CheckAnthropicConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/anthropic/check"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -130,6 +144,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_MIRO = 3;
   EXTERNAL_PROVIDER_EMAIL = 4;
   EXTERNAL_PROVIDER_GITLAB = 5;
+  EXTERNAL_PROVIDER_ANTHROPIC = 6;
 }
 
 message GoogleConnectionInfo {
@@ -309,5 +324,30 @@ message CheckTrelloConnection {
   }
   message Response {
     string full_name = 1;
+  }
+}
+
+message AddAnthropicConnection {
+  message Request {
+    string api_key       = 1;
+    string base_url      = 2; // optional; defaults to https://api.anthropic.com
+    string default_model = 3; // optional; falls back to a recommended default from the live model list
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckAnthropicConnection {
+  message Request {
+    string api_key       = 1;
+    string base_url      = 2;
+    // optional; used as the fallback validation target when the provider doesn't
+    // support GET /v1/models (common for non-official Anthropic-compatible proxies)
+    string default_model = 3;
+  }
+  message Response {
+    repeated string available_models          = 1;
+    string           recommended_default_model = 2;
   }
 }

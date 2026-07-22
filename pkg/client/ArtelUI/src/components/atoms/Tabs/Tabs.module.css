@@ -1,0 +1,42 @@
+.TabsContainer {
+    display: flex;
+    max-width: 75rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+    border-bottom: var(--border-thickness) solid var(--color-border);
+    width: 100%;
+    box-sizing: border-box;
+
+    & .Tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4375rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+        background: transparent;
+        border: none;
+        border-bottom: var(--border-thickness-accent) solid transparent;
+        cursor: pointer;
+        font-family: inherit;
+        margin-bottom: -0.0625rem;
+        letter-spacing: -0.004375rem;
+        transition: color 160ms ease, border-color 160ms ease;
+
+        & .TabIcon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &:hover {
+            color: var(--color-fg-primary);
+        }
+
+        &.TabActive {
+            color: var(--color-fg-primary);
+            border-bottom-color: var(--coral);
+        }
+    }
+}

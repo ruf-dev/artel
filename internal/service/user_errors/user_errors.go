@@ -222,6 +222,33 @@ var (
 		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
 
+	// anthropic / llm key connection.
+	LlmKeyValidationFailed = rerrors.New(
+		"could not verify the api key against the provider",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	LlmKeyRejected = rerrors.New(
+		"the provider rejected the api key",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	LlmKeyProviderUnreachable = rerrors.New(
+		"could not reach the provider to verify the api key",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	LlmKeyModelListingUnsupported = rerrors.New(
+		"the provider doesn't support listing models; enter a model id manually to verify the key against it",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	LlmKeyRequired = rerrors.New(
+		"api key is required to connect this provider",
+		codes.InvalidArgument,
+		rerrors.WithHttpStatus(http.StatusBadRequest),
+	)
+
 	// tract: builtin execution
 	NoVaultForBuiltinTool = rerrors.New(
 		"no vault available to run a builtin tool for this tract",

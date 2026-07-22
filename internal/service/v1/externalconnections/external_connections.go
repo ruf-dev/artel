@@ -16,6 +16,7 @@ import (
 	"go.redsock.ru/rerrors"
 	"golang.org/x/oauth2"
 
+	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/imap"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
@@ -23,6 +24,7 @@ import (
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
 )
@@ -35,11 +37,9 @@ type googleUserInfo struct {
 
 const gitlabDefaultInstanceURL = "https://gitlab.com"
 
-var gitlabValidationClient = &http.Client{Timeout: 10 * time.Second}
-
-const trelloValidationURL = "https://api.trello.com/1/members/me"
-
-var trelloValidationClient = &http.Client{Timeout: 10 * time.Second}
+// anthropicDefaultBaseUrl is used when the caller doesn't override the API host (e.g. for a
+// proxy/regional endpoint).
+const anthropicDefaultBaseUrl = "https://api.anthropic.com"
 
 // emailConnectionCheckTimeout bounds each of the IMAP/SMTP dial+auth round trips in
 // CheckEmailConnection, so a host that never responds fails fast instead of hanging the request.
@@ -61,12 +61,21 @@ type trelloConnectionMeta struct {
 	FullName string `json:"full_name"`
 }
 
+// anthropicConnectionMeta is stored plaintext in metadata (non-sensitive display data).
+type anthropicConnectionMeta struct {
+	KeyPreview      string `json:"key_preview"`
+	DefaultModel    string `json:"default_model"`
+	AvailableModels string `json:"available_models"` // comma-joined model IDs; genericDetails only keeps string values
+	LastVerifiedAt  string `json:"last_verified_at"` // RFC3339
+}
+
 type Service struct {
 	connections           repository.ExternalConnectionRepo
 	pendingCodes          repository.PendingAuthCodes
 	mcpSpreadsheets       repository.McpSpreadsheetsRepo
 	mailServerSuggestions repository.MailServerSuggestions
 	oauthCfg              *oauth2.Config
+	mom                   service.MomService
 }
 
 func New(
@@ -75,6 +84,7 @@ func New(
 	mcpSpreadsheets repository.McpSpreadsheetsRepo,
 	mailServerSuggestions repository.MailServerSuggestions,
 	oauthCfg *oauth2.Config,
+	mom service.MomService,
 ) *Service {
 	return &Service{
 		connections:           connections,
@@ -82,6 +92,7 @@ func New(
 		mcpSpreadsheets:       mcpSpreadsheets,
 		mailServerSuggestions: mailServerSuggestions,
 		oauthCfg:              oauthCfg,
+		mom:                   mom,
 	}
 }
 
@@ -629,43 +640,238 @@ type trelloMemberResponse struct {
 }
 
 // validateTrelloCredentials confirms the key/token pair actually authenticates against Trello
-// before anything is persisted. This can't go through the generic MoM http executor the way
-// every later trello tool call does, because that executor resolves __secrets.* from an
-// existing external_connections row — and at this point the connection doesn't exist yet (that's
-// exactly what this call is validating before we create it). So it stays a small direct request
-// here, mirroring validateGitlabToken above, rather than pulling in a dedicated client package
-// for one unauthenticated-style GET.
+// before anything is persisted, by running the same trello.get_current_user MoM tool every later
+// trello tool call goes through — just with a caller-supplied secrets map instead of one resolved
+// from a persisted external_connections row, since that row doesn't exist yet at this point.
 func (s *Service) validateTrelloCredentials(ctx context.Context, apiKey, apiToken string) (string, error) {
-	reqUrl := trelloValidationURL + "?key=" + url.QueryEscape(apiKey) + "&token=" + url.QueryEscape(apiToken)
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl, nil)
-	if err != nil {
-		return "", rerrors.Wrap(err, "error building trello validation request")
+	secrets := map[string]interface{}{
+		"api_key":   apiKey,
+		"api_token": apiToken,
 	}
 
-	resp, err := trelloValidationClient.Do(req)
+	result, err := s.mom.ExecuteToolWithSecrets(ctx, "trello", "get_current_user", secrets, nil)
 	if err != nil {
-		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "error connecting to trello")
-	}
-	defer utils.CloseWithLog(resp.Body, "trello validation response")
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "trello rejected the credentials")
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", rerrors.Wrap(err, "error reading trello validation response")
+		return "", rerrors.Wrap(user_errors.TrelloValidationFailed, "error validating trello credentials")
 	}
 
 	var member trelloMemberResponse
 
-	err = json.Unmarshal(body, &member)
+	err = json.Unmarshal([]byte(result), &member)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error parsing trello validation response")
 	}
 
 	return member.FullName, nil
+}
+
+// AddAnthropicConnection validates the API key against Anthropic, then persists it. A blank
+// apiKey means "keep the current key" when editing an existing connection, mirroring
+// AddEmailConnection's storedEmailPassword fallback.
+func (s *Service) AddAnthropicConnection(
+	ctx context.Context,
+	apiKey, baseUrl, defaultModel string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	if apiKey == "" {
+		var err error
+
+		apiKey, err = s.storedAnthropicApiKey(ctx, uc.UserUuid)
+		if err != nil {
+			return domain.ExternalConnectionMeta{}, err
+		}
+	}
+
+	models, err := s.validateAnthropicKey(ctx, apiKey, baseUrl, defaultModel)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	resolvedDefaultModel := recommendedDefaultAnthropicModel(defaultModel, models)
+
+	creds := domain.AnthropicKeyCredentials{
+		ApiKey:  apiKey,
+		BaseUrl: baseUrl,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal anthropic credentials")
+	}
+
+	meta := anthropicConnectionMeta{
+		KeyPreview:      anthropicKeyPreview(apiKey),
+		DefaultModel:    resolvedDefaultModel,
+		AvailableModels: strings.Join(anthropicModelIds(models), ","),
+		LastVerifiedAt:  time.Now().UTC().Format(time.RFC3339),
+	}
+
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal anthropic meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderAnthropic,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save anthropic connection")
+	}
+
+	displayName := "Claude (Anthropic)"
+	if resolvedDefaultModel != "" {
+		displayName = resolvedDefaultModel
+	}
+
+	return toMeta(saved, displayName), nil
+}
+
+// CheckAnthropicConnection pings the provider with the given key without persisting anything,
+// letting the caller confirm it works — and preview the available model catalog — before
+// committing to AddAnthropicConnection.
+func (s *Service) CheckAnthropicConnection(
+	ctx context.Context,
+	apiKey, baseUrl, defaultModel string,
+) ([]anthropicClient.ModelInfo, string, error) {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return nil, "", user_errors.Unauthenticated
+	}
+
+	models, err := s.validateAnthropicKey(ctx, apiKey, baseUrl, defaultModel)
+	if err != nil {
+		return nil, "", err
+	}
+
+	recommendedDefault := recommendedDefaultAnthropicModel(defaultModel, models)
+
+	return models, recommendedDefault, nil
+}
+
+// storedAnthropicApiKey resolves the API key of the user's existing anthropic connection, used to
+// fall back when the caller submits a blank key (edit forms leave it blank to mean "keep the
+// current key").
+func (s *Service) storedAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error) {
+	existing, err := s.connections.GetByUserAndProvider(ctx, userUuid, domain.ProviderAnthropic)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error loading existing anthropic connection")
+	}
+
+	if !existing.Valid {
+		return "", user_errors.LlmKeyRequired
+	}
+
+	var creds domain.AnthropicKeyCredentials
+
+	err = json.Unmarshal(existing.V.CredentialsJSON, &creds)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error parsing existing anthropic credentials")
+	}
+
+	return creds.ApiKey, nil
+}
+
+// validateAnthropicKey resolves baseUrl to anthropicDefaultBaseUrl when blank, then confirms the
+// key actually authenticates against the provider by listing its model catalog. ListModels is a
+// zero-token metadata call, so it doubles as key validation before anything is persisted.
+//
+// Non-official Anthropic-compatible providers frequently mirror only the Messages API and don't
+// implement GET /v1/models at all, which surfaces as a 404 here rather than an auth failure. In
+// that case, when the caller supplied defaultModel, fall back to a minimal Ping against that
+// model instead of failing outright — the model catalog stays empty (there's no listing endpoint
+// to populate it from) but the key itself is still confirmed to work.
+func (s *Service) validateAnthropicKey(
+	ctx context.Context,
+	apiKey, baseUrl, defaultModel string,
+) ([]anthropicClient.ModelInfo, error) {
+	client := anthropicClient.New(apiKey, resolveAnthropicBaseUrl(baseUrl))
+
+	models, err := client.ListModels(ctx)
+	if err == nil {
+		return models, nil
+	}
+
+	statusCode, hasStatusCode := anthropicClient.StatusCode(err)
+
+	switch {
+	case hasStatusCode && (statusCode == http.StatusUnauthorized || statusCode == http.StatusForbidden):
+		return nil, rerrors.Wrap(user_errors.LlmKeyRejected, "anthropic rejected the api key")
+	case hasStatusCode && statusCode == http.StatusNotFound && defaultModel != "":
+		pingErr := client.Ping(ctx, defaultModel)
+		if pingErr != nil {
+			return nil, rerrors.Wrap(user_errors.LlmKeyRejected, "error pinging anthropic-compatible endpoint with fallback model")
+		}
+
+		return nil, nil
+	case hasStatusCode && statusCode == http.StatusNotFound:
+		return nil, rerrors.Wrap(user_errors.LlmKeyModelListingUnsupported, "provider does not implement GET /v1/models")
+	case hasStatusCode:
+		return nil, rerrors.Wrap(user_errors.LlmKeyValidationFailed, "error listing anthropic models")
+	default:
+		return nil, rerrors.Wrap(user_errors.LlmKeyProviderUnreachable, "error connecting to anthropic-compatible endpoint")
+	}
+}
+
+// resolveAnthropicBaseUrl returns baseUrl unchanged when set, or anthropicDefaultBaseUrl when
+// blank.
+func resolveAnthropicBaseUrl(baseUrl string) string {
+	if baseUrl == "" {
+		return anthropicDefaultBaseUrl
+	}
+
+	return baseUrl
+}
+
+// recommendedDefaultAnthropicModel returns the caller's chosen default model if set, otherwise
+// falls back to the first entry in models. Anthropic's model-list endpoint returns models in
+// reverse-chronological order (newest first), so the first entry is the newest model.
+//
+// TODO(byok): ModelInfo carries no tier/capability field (only Id, DisplayName,
+// MaxInputTokens, MaxTokens), so there's no reliable way to prefer e.g. an Opus-tier model over
+// a Haiku-tier one from the API response alone. "Newest first" is the simplest honest heuristic
+// for this first pass — revisit if the SDK/API ever exposes a tier signal.
+func recommendedDefaultAnthropicModel(defaultModel string, models []anthropicClient.ModelInfo) string {
+	if defaultModel != "" {
+		return defaultModel
+	}
+
+	if len(models) == 0 {
+		return ""
+	}
+
+	return models[0].Id
+}
+
+// anthropicModelIds extracts the Id field from each model, preserving order.
+func anthropicModelIds(models []anthropicClient.ModelInfo) []string {
+	ids := make([]string, len(models))
+
+	for i, m := range models {
+		ids[i] = m.Id
+	}
+
+	return ids
+}
+
+// anthropicKeyPreview returns a display-safe suffix of apiKey (e.g. "...ab12") for
+// anthropicConnectionMeta.KeyPreview — never the full key.
+func anthropicKeyPreview(apiKey string) string {
+	const previewLen = 4
+
+	if len(apiKey) <= previewLen {
+		return "..." + apiKey
+	}
+
+	return "..." + apiKey[len(apiKey)-previewLen:]
 }
 
 // GenerateGitlabWebhookSecret mints a fresh random secret for the caller's GitLab connection and
@@ -772,35 +978,24 @@ func isLocalGitlabHost(host string) bool {
 }
 
 // validateGitlabToken pings the instance's "who am I" endpoint to confirm the token and
-// instance URL actually work together before anything is persisted.
+// instance URL actually work together before anything is persisted, by running the same
+// gitlab.get_current_user MoM tool every later gitlab tool call goes through — just with a
+// caller-supplied secrets map instead of one resolved from a persisted external_connections row,
+// since that row doesn't exist yet at this point.
 func (s *Service) validateGitlabToken(ctx context.Context, instanceUrl, personalAccessToken string) (string, error) {
-	reqUrl := instanceUrl + "/api/v4/user"
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl, nil)
-	if err != nil {
-		return "", rerrors.Wrap(err, "error building gitlab validation request")
+	secrets := map[string]interface{}{
+		"instance_url":          instanceUrl,
+		"personal_access_token": personalAccessToken,
 	}
 
-	req.Header.Set("PRIVATE-TOKEN", personalAccessToken)
-
-	resp, err := gitlabValidationClient.Do(req)
+	result, err := s.mom.ExecuteToolWithSecrets(ctx, "gitlab", "get_current_user", secrets, nil)
 	if err != nil {
-		return "", rerrors.Wrap(user_errors.GitlabValidationFailed, "error connecting to gitlab instance")
-	}
-	defer utils.CloseWithLog(resp.Body, "gitlab validation response")
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", rerrors.Wrap(user_errors.GitlabValidationFailed, "gitlab instance rejected the token")
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", rerrors.Wrap(err, "error reading gitlab validation response")
+		return "", rerrors.Wrap(user_errors.GitlabValidationFailed, "error validating gitlab token")
 	}
 
 	var userInfo gitlabUserInfo
 
-	err = json.Unmarshal(body, &userInfo)
+	err = json.Unmarshal([]byte(result), &userInfo)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error parsing gitlab validation response")
 	}

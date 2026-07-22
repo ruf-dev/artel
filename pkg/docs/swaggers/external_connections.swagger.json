@@ -16,6 +16,70 @@
     "application/json"
   ],
   "paths": {
+    "/api/external-connections/anthropic/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddAnthropicConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddAnthropicConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddAnthropicConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/anthropic/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckAnthropicConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckAnthropicConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckAnthropicConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/disconnect": {
       "post": {
         "operationId": "ExternalConnectionsAPI_DisconnectProvider",
@@ -531,6 +595,30 @@
     }
   },
   "definitions": {
+    "artel_apiAddAnthropicConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        },
+        "baseUrl": {
+          "type": "string",
+          "title": "optional; defaults to https://api.anthropic.com"
+        },
+        "defaultModel": {
+          "type": "string",
+          "title": "optional; falls back to a recommended default from the live model list"
+        }
+      }
+    },
+    "artel_apiAddAnthropicConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddEmailConnectionRequest": {
       "type": "object",
       "properties": {
@@ -618,6 +706,35 @@
       "properties": {
         "connection": {
           "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
+    "artel_apiCheckAnthropicConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        },
+        "baseUrl": {
+          "type": "string"
+        },
+        "defaultModel": {
+          "type": "string",
+          "title": "optional; used as the fallback validation target when the provider doesn't\nsupport GET /v1/models (common for non-official Anthropic-compatible proxies)"
+        }
+      }
+    },
+    "artel_apiCheckAnthropicConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "availableModels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendedDefaultModel": {
+          "type": "string"
         }
       }
     },
@@ -740,7 +857,8 @@
         "EXTERNAL_PROVIDER_TRELLO",
         "EXTERNAL_PROVIDER_MIRO",
         "EXTERNAL_PROVIDER_EMAIL",
-        "EXTERNAL_PROVIDER_GITLAB"
+        "EXTERNAL_PROVIDER_GITLAB",
+        "EXTERNAL_PROVIDER_ANTHROPIC"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },

@@ -1,6 +1,7 @@
 import {
-    AddEmailConnectionRequest, AddGitlabConnectionRequest, AddTrelloConnectionRequest, ExternalConnectionInfo,
-    ExternalConnectionsAPI, Spreadsheet,
+    AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGitlabConnectionRequest,
+    AddTrelloConnectionRequest, CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
+    ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -19,6 +20,8 @@ export interface IExternalConnectionsService {
     addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<ExternalConnectionInfo>
     generateGitlabWebhookSecret: () => Promise<{connection: ExternalConnectionInfo; webhookSecret: string}>
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<ExternalConnectionInfo>
+    addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<ExternalConnectionInfo>
+    checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
 }
 
 export class ExternalConnectionsService implements IExternalConnectionsService {
@@ -90,6 +93,15 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     async addTrelloConnection(req: AddTrelloConnectionRequest): Promise<ExternalConnectionInfo> {
         const res = await ExternalConnectionsAPI.AddTrelloConnection(req, useUser.getState().auth.getInitReq())
         return res.connection!
+    }
+
+    async addAnthropicConnection(req: AddAnthropicConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddAnthropicConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
+    }
+
+    async checkAnthropicConnection(req: CheckAnthropicConnectionRequest): Promise<CheckAnthropicConnectionResponse> {
+        return ExternalConnectionsAPI.CheckAnthropicConnection(req, useUser.getState().auth.getInitReq())
     }
 }
 

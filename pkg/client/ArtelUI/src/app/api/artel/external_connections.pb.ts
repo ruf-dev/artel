@@ -24,6 +24,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_MIRO = "EXTERNAL_PROVIDER_MIRO",
   EXTERNAL_PROVIDER_EMAIL = "EXTERNAL_PROVIDER_EMAIL",
   EXTERNAL_PROVIDER_GITLAB = "EXTERNAL_PROVIDER_GITLAB",
+  EXTERNAL_PROVIDER_ANTHROPIC = "EXTERNAL_PROVIDER_ANTHROPIC",
 }
 
 export type GoogleConnectionInfo = {
@@ -223,6 +224,31 @@ export type CheckTrelloConnectionResponse = {
 
 export type CheckTrelloConnection = Record<string, never>;
 
+export type AddAnthropicConnectionRequest = {
+  apiKey?: string;
+  baseUrl?: string;
+  defaultModel?: string;
+};
+
+export type AddAnthropicConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddAnthropicConnection = Record<string, never>;
+
+export type CheckAnthropicConnectionRequest = {
+  apiKey?: string;
+  baseUrl?: string;
+  defaultModel?: string;
+};
+
+export type CheckAnthropicConnectionResponse = {
+  availableModels?: string[];
+  recommendedDefaultModel?: string;
+};
+
+export type CheckAnthropicConnection = Record<string, never>;
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -271,5 +297,11 @@ export class ExternalConnectionsAPI {
   }
   static CheckTrelloConnection(this:void, req: CheckTrelloConnectionRequest, initReq?: fm.InitReq): Promise<CheckTrelloConnectionResponse> {
     return fm.fetchRequest<CheckTrelloConnectionResponse>(`/api/external-connections/trello/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddAnthropicConnection(this:void, req: AddAnthropicConnectionRequest, initReq?: fm.InitReq): Promise<AddAnthropicConnectionResponse> {
+    return fm.fetchRequest<AddAnthropicConnectionResponse>(`/api/external-connections/anthropic/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckAnthropicConnection(this:void, req: CheckAnthropicConnectionRequest, initReq?: fm.InitReq): Promise<CheckAnthropicConnectionResponse> {
+    return fm.fetchRequest<CheckAnthropicConnectionResponse>(`/api/external-connections/anthropic/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

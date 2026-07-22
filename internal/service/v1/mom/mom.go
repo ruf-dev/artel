@@ -151,6 +151,45 @@ func (s *ServiceImpl) ExecuteToolForUserConnection(
 	return s.ExecuteToolForConnection(ctx, exConnUuid, mcpName, toolName, params)
 }
 
+// ExecuteToolWithSecrets executes a MoM http tool's action directly against a caller-supplied
+// secrets map, without requiring a persisted external_connections row — used to validate
+// externally-supplied credentials against the real provider before anything is saved.
+func (s *ServiceImpl) ExecuteToolWithSecrets(
+	ctx context.Context,
+	mcpName string,
+	toolName string,
+	secrets map[string]interface{},
+	params map[string]interface{},
+) (string, error) {
+	def, err := s.mcpDefinitions.Get(ctx, mcpName)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error getting mcp definition")
+	}
+
+	if !def.Valid {
+		return "", user_errors.McpToolNotFound
+	}
+
+	for _, tool := range def.V.Tools {
+		if tool.ApiDescription.Name != toolName {
+			continue
+		}
+
+		if tool.Action.Http == nil {
+			return "", user_errors.McpActionMissing
+		}
+
+		result, err := s.httpExecutor.Execute(ctx, tool.Action, secrets, params)
+		if err != nil {
+			return "", rerrors.Wrap(err, "error executing http tool")
+		}
+
+		return result, nil
+	}
+
+	return "", user_errors.McpToolNotFound
+}
+
 func (s *ServiceImpl) dispatch(
 	ctx context.Context,
 	exConnUuid uuid.UUID,

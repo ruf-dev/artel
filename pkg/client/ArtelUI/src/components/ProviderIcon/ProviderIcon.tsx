@@ -4,6 +4,7 @@ import TrelloIcon from "@/components/ProviderIcon/components/TrelloIcon"
 import MiroIcon from "@/components/ProviderIcon/components/MiroIcon"
 import EmailIcon from "@/components/ProviderIcon/components/EmailIcon"
 import GitlabIcon from "@/components/ProviderIcon/components/GitlabIcon"
+import AnthropicIcon from "@/components/ProviderIcon/components/AnthropicIcon"
 import UnknownProviderIcon from "@/components/ProviderIcon/components/UnknownProviderIcon"
 
 export default function ProviderIcon({provider}: {provider?: ExternalProvider}) {
@@ -18,6 +19,8 @@ export default function ProviderIcon({provider}: {provider?: ExternalProvider}) 
             return <EmailIcon/>
         case ExternalProvider.EXTERNAL_PROVIDER_GITLAB:
             return <GitlabIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_ANTHROPIC:
+            return <AnthropicIcon/>
         default:
             return <UnknownProviderIcon/>
     }
