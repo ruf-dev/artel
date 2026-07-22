@@ -380,18 +380,18 @@
     "semantic_hash": "684cf4eeadd271b5c331aed037bdb1e5"
   },
   "internal/transport/grpc.go": {
-    "mtime": 1783187440.3527331,
-    "ast_hash": "5dbab12d6a7f5308d3ec97ea61b20c48",
+    "mtime": 1784631709.3601503,
+    "ast_hash": "d76a7392c3fe182f6280a23353d475cb",
     "semantic_hash": ""
   },
   "internal/transport/http.go": {
-    "mtime": 1783187441.9617736,
-    "ast_hash": "10b6b9d97cfc663a1e74520a10341f52",
+    "mtime": 1784631709.3602874,
+    "ast_hash": "40d14837472326776503113466cbe786",
     "semantic_hash": ""
   },
   "internal/transport/manager.go": {
-    "mtime": 1783187438.9070177,
-    "ast_hash": "e50788aed0645e1eaa0be28af66b13de",
+    "mtime": 1784631709.3604026,
+    "ast_hash": "e9396f1c0ab5c45ec93d1ec4f7347d58",
     "semantic_hash": ""
   },
   "internal/transport/ui/ui.go": {
@@ -510,42 +510,42 @@
     "semantic_hash": ""
   },
   "internal/app/config.go": {
-    "mtime": 1781541066.7157123,
+    "mtime": 1784631711.7638824,
     "ast_hash": "d399af75446becd956ae682bcd0beec2",
     "semantic_hash": "d399af75446becd956ae682bcd0beec2"
   },
   "internal/app/server.go": {
-    "mtime": 1781541066.7160401,
+    "mtime": 1784631711.7649078,
     "ast_hash": "90d24fb773b18ae530d87d86f0bcbea4",
     "semantic_hash": ""
   },
   "internal/app/data_sources.go": {
-    "mtime": 1781541066.7158945,
+    "mtime": 1784631711.764316,
     "ast_hash": "c2e069ea1c09e9643b1df29331952273",
     "semantic_hash": "c2e069ea1c09e9643b1df29331952273"
   },
   "internal/app/app.go": {
-    "mtime": 1781541066.715473,
+    "mtime": 1784631711.7633185,
     "ast_hash": "6b22dc14784c9e2933f7ec0438155bb4",
     "semantic_hash": ""
   },
   "internal/config/servers.go": {
-    "mtime": 1781541066.7166018,
+    "mtime": 1784631711.766174,
     "ast_hash": "bd289d918f417950491034b290842f24",
     "semantic_hash": ""
   },
   "internal/config/data_sources.go": {
-    "mtime": 1781541066.7161975,
+    "mtime": 1784631711.7652655,
     "ast_hash": "20a34a30d8763a26e3fc73785813b035",
     "semantic_hash": ""
   },
   "internal/config/environment.go": {
-    "mtime": 1784573138.882227,
+    "mtime": 1784631711.7655928,
     "ast_hash": "3fe9aa857c15f9df24d59f493f3d275e",
     "semantic_hash": ""
   },
   "internal/config/load.go": {
-    "mtime": 1781541066.7164617,
+    "mtime": 1784631711.765977,
     "ast_hash": "502cd52accfb292d8ad5d97af140fa24",
     "semantic_hash": ""
   },
@@ -760,8 +760,8 @@
     "semantic_hash": ""
   },
   "pkg/docs/docs.swagger_ui.go": {
-    "mtime": 1784573091.9263337,
-    "ast_hash": "d4168ede899ba20e496e6c710a9e9d2f",
+    "mtime": 1784615411.969038,
+    "ast_hash": "3cf4c2491485cdc84022cce5d568e76d",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/auth.swagger.json": {
@@ -1060,8 +1060,8 @@
     "semantic_hash": ""
   },
   "config/config_template.yaml": {
-    "mtime": 1784011195.5504103,
-    "ast_hash": "7025d831fd278db4cc28b7e41440fc61",
+    "mtime": 1784625757.2375815,
+    "ast_hash": "8c392deb9fbfa81944b9c6f67d51416d",
     "semantic_hash": ""
   },
   ".claude/CLAUDE.md": {
@@ -3020,8 +3020,8 @@
     "semantic_hash": ""
   },
   "go.mod": {
-    "mtime": 1784321458.6855757,
-    "ast_hash": "0f441e3314c908ff197af6aaeaaf86c3",
+    "mtime": 1784625910.772126,
+    "ast_hash": "5cba1a49ab3c350ced3d7122b3bbf81e",
     "semantic_hash": ""
   },
   "internal/transport/external_connections_api/generate_gitlab_webhook_secret.go": {
@@ -4504,11 +4504,6 @@
     "ast_hash": "53d80c615d856147d6a86f8afe4cdaa2",
     "semantic_hash": ""
   },
-  "cmd/migrate_task_trackers_to_external_connections/main.go": {
-    "mtime": 1784279476.292994,
-    "ast_hash": "3f76a442ac1ec9c5748366f25ae8c5dc",
-    "semantic_hash": ""
-  },
   "migrations/049_trello_card_details.sql": {
     "mtime": 1784280347.8731658,
     "ast_hash": "ca3c2402afcdff825eba35d25d90dba1",
@@ -4982,6 +4977,16 @@
   "docs/omnibus.md": {
     "mtime": 1784571630.5351079,
     "ast_hash": "64fdf07f1a30488551b58886de35e3cf",
+    "semantic_hash": ""
+  },
+  ".githooks/pre-commit": {
+    "mtime": 1784629507.345938,
+    "ast_hash": "c367b942ac3baacd684a960ae3173e95",
+    "semantic_hash": ""
+  },
+  "pkg/app/app.go": {
+    "mtime": 1784640730.5294838,
+    "ast_hash": "f5a0cc82a96aad152d209cf03a72d892",
     "semantic_hash": ""
   }
 }

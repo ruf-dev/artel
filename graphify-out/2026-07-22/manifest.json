@@ -1810,8 +1810,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/ExternalConnections.ts": {
-    "mtime": 1784661188.739684,
-    "ast_hash": "a3807e63e217740e8a8d8ed4cee35f99",
+    "mtime": 1783976344.3395061,
+    "ast_hash": "402324c7edcc5fa2b3cdb24754080f34",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/hooks/TaskTrackers.ts": {
@@ -1870,8 +1870,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/ExternalConnections.ts": {
-    "mtime": 1784661193.3910978,
-    "ast_hash": "7d522c7902e8ad74193b8b6648f36b85",
+    "mtime": 1783976336.1528606,
+    "ast_hash": "09d0f6ca0034d1f4abc21e1a0cc8cc95",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/grpcErrors.ts": {
@@ -1900,8 +1900,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/ProviderIcon/ProviderIcon.tsx": {
-    "mtime": 1784702682.8080695,
-    "ast_hash": "4cc400df3cfaded37faa497684ff1795",
+    "mtime": 1783576948.875114,
+    "ast_hash": "7cd5e9410a78f51edb4e5b459eb2eee4",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/ConnectorChip/ConnectorChip.tsx": {
@@ -1950,8 +1950,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/ConnectionsPage.tsx": {
-    "mtime": 1784702739.350673,
-    "ast_hash": "1ade82089a019da88a98e08e98418d95",
+    "mtime": 1784274181.53453,
+    "ast_hash": "b93f7b62049cfa9407471714acdaa2ac",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/NotesPage.tsx": {
@@ -5025,8 +5025,8 @@
     "semantic_hash": ""
   },
   "docs/byok/03_frontend_connections_page.md": {
-    "mtime": 1784660980.7943158,
-    "ast_hash": "6b3ebe5704c501b453f447bd46ee9f7d",
+    "mtime": 1784659072.5085897,
+    "ast_hash": "8cb2eaa6e710ca9000d4a9215c83c05f",
     "semantic_hash": ""
   },
   "docs/byok/04_tract_llm_step.md": {
@@ -5045,68 +5045,13 @@
     "semantic_hash": ""
   },
   "docs/byok/08_task_breakedown.md": {
-    "mtime": 1784661322.3926642,
-    "ast_hash": "5745aa518f3cbaaccc0b1e902a0e371d",
+    "mtime": 1784660279.0742466,
+    "ast_hash": "aff37feede93454ad7a973efd8c22236",
     "semantic_hash": ""
   },
   "docs/byok/README.md": {
     "mtime": 1784658971.7552445,
     "ast_hash": "953d4b35ea47af0e04fd9fa57ecb4bf6",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/components/ComingSoonCard/ComingSoonCard.tsx": {
-    "mtime": 1784661115.7913194,
-    "ast_hash": "db42154babc6992656190eadd216ab73",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/components/ProviderIcon/components/AnthropicIcon.tsx": {
-    "mtime": 1784702663.6745396,
-    "ast_hash": "492493c9d3235f4c6d7d599926d4f114",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/components/atoms/Tabs/Tabs.tsx": {
-    "mtime": 1784702706.8247924,
-    "ast_hash": "178a2c0664124235ca9c66f126dac519",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageAnthropicDialog/ManageAnthropicDialog.tsx": {
-    "mtime": 1784702782.033788,
-    "ast_hash": "ed024852923744b5ba5d8caa4ca6fe10",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageAnthropicDialog/components/AnthropicCheckButton/AnthropicCheckButton.tsx": {
-    "mtime": 1784702811.6129277,
-    "ast_hash": "ed61b47488e1237057608d07c45127bd",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageAnthropicDialog/components/ConnectForm/ConnectForm.tsx": {
-    "mtime": 1784702835.4411938,
-    "ast_hash": "de21b8b3d9dac70138ccfc84f969f1d9",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageAnthropicDialog/components/ConnectedContent/ConnectedContent.tsx": {
-    "mtime": 1784702848.0029645,
-    "ast_hash": "896aeb34b79fdd2a71ba2c15944e7d68",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/dialogs/ManageAnthropicDialog/components/DialogHead/DialogHead.tsx": {
-    "mtime": 1784702793.3186831,
-    "ast_hash": "9fc6b1af72a4edf05a4608a3902d39a0",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/pages/connections/components/BYOKSection/BYOKSection.tsx": {
-    "mtime": 1784702940.3345253,
-    "ast_hash": "f4c5fa245bc6929ac5f278d1982ec954",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/pages/connections/components/ByokTabIcon/ByokTabIcon.tsx": {
-    "mtime": 1784702694.1754646,
-    "ast_hash": "8c94656a99f5dddd83bc3173b99f283d",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/pages/connections/components/ExternalConnectionsTabIcon/ExternalConnectionsTabIcon.tsx": {
-    "mtime": 1784702689.2257898,
-    "ast_hash": "499b82a0236f3eb16fb2f3e1d16aa9cc",
     "semantic_hash": ""
   }
 }
