@@ -11,7 +11,7 @@ const PING_TIMEOUT_MS = 5_000
 // this is a pure liveness check and must never depend on login state, or a
 // 401 here gets treated as a session event by the fetch interceptor and
 // forces a reload loop for logged-out visitors (see AuthFetchInterceptor.ts).
-async function pingServer(): Promise<boolean> {
+export async function pingServer(): Promise<boolean> {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS)
     try {
@@ -22,11 +22,22 @@ async function pingServer(): Promise<boolean> {
         useAppConfig.getState().setNoAuthEnabled(cfg.noAuthEnabled === true)
         return true
     } catch (err) {
-        // TypeError = network unreachable (ECONNREFUSED)
-        // AbortError = our timeout fired
-        // Any other throw = HTTP error body → server is up
+        // Three cases mean "down":
+        // - TypeError = network unreachable (ECONNREFUSED)
+        // - AbortError = our timeout fired
+        // - a thrown Response = fetch.pb.ts's fetchRequest() throws the raw
+        //   Response when r.json() fails to parse the body at all. The real
+        //   backend (grpc-gateway generated) always returns JSON, even for
+        //   error statuses, so a body that isn't JSON means something other
+        //   than the real backend answered — e.g. in local dev, when the Go
+        //   backend is down and there's no Vite proxy for /api, the request
+        //   resolves against Vite's own dev server, which serves its SPA
+        //   index.html fallback (200 OK, text/html).
+        // Any other throw = a parsed JSON error body → real backend, just a
+        // non-OK HTTP status → server is up.
         if (err instanceof TypeError) return false
         if (err instanceof DOMException && err.name === "AbortError") return false
+        if (err instanceof Response) return false
         return true
     } finally {
         clearTimeout(timeoutId)
