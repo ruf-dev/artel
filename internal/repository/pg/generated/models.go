@@ -228,6 +228,92 @@ func (ns NullVaultRole) Value() (driver.Value, error) {
 	return string(ns.VaultRole), nil
 }
 
+type WorkbenchAuthMode string
+
+const (
+	WorkbenchAuthModeApiKey            WorkbenchAuthMode = "api_key"
+	WorkbenchAuthModeSubscriptionLogin WorkbenchAuthMode = "subscription_login"
+)
+
+func (e *WorkbenchAuthMode) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = WorkbenchAuthMode(s)
+	case string:
+		*e = WorkbenchAuthMode(s)
+	default:
+		return fmt.Errorf("unsupported scan type for WorkbenchAuthMode: %T", src)
+	}
+	return nil
+}
+
+type NullWorkbenchAuthMode struct {
+	WorkbenchAuthMode WorkbenchAuthMode
+	Valid             bool // Valid is true if WorkbenchAuthMode is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullWorkbenchAuthMode) Scan(value interface{}) error {
+	if value == nil {
+		ns.WorkbenchAuthMode, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.WorkbenchAuthMode.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullWorkbenchAuthMode) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.WorkbenchAuthMode), nil
+}
+
+type WorkbenchStatus string
+
+const (
+	WorkbenchStatusCreated WorkbenchStatus = "created"
+	WorkbenchStatusRunning WorkbenchStatus = "running"
+	WorkbenchStatusStopped WorkbenchStatus = "stopped"
+	WorkbenchStatusRemoved WorkbenchStatus = "removed"
+)
+
+func (e *WorkbenchStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = WorkbenchStatus(s)
+	case string:
+		*e = WorkbenchStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for WorkbenchStatus: %T", src)
+	}
+	return nil
+}
+
+type NullWorkbenchStatus struct {
+	WorkbenchStatus WorkbenchStatus
+	Valid           bool // Valid is true if WorkbenchStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullWorkbenchStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.WorkbenchStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.WorkbenchStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullWorkbenchStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.WorkbenchStatus), nil
+}
+
 type CouchAccount struct {
 	ID               uuid.UUID
 	UserID           uuid.UUID
@@ -508,4 +594,17 @@ type VaultMember struct {
 	UserID    uuid.UUID
 	Role      VaultRole
 	CreatedAt time.Time
+}
+
+type Workbench struct {
+	ID          uuid.UUID
+	VaultID     uuid.UUID
+	UserID      uuid.UUID
+	Status      WorkbenchStatus
+	AuthMode    NullWorkbenchAuthMode
+	ContainerID sql.NullString
+	VolumeName  string
+	CreatedAt   time.Time
+	StartedAt   sql.NullTime
+	StoppedAt   sql.NullTime
 }

@@ -28,12 +28,14 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultinvites"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultmembers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaults"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/workbenches"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 )
 
 type Repos struct {
 	users                 repository.Users
 	vaults                repository.Vaults
+	workbenches           repository.Workbenches
 	vaultMembers          repository.VaultMembers
 	vaultInvitesRepo      repository.VaultInvites
 	sessions              repository.Sessions
@@ -61,6 +63,10 @@ type Repos struct {
 
 func (r Repos) Vaults() repository.Vaults {
 	return r.vaults
+}
+
+func (r Repos) Workbenches() repository.Workbenches {
+	return r.workbenches
 }
 
 func (r Repos) VaultMembers() repository.VaultMembers {
@@ -161,6 +167,7 @@ func New(db *sql.DB, encryptionKey []byte) *Repos {
 
 	return &Repos{
 		vaults:           vaults.New(db, encryptionKey),
+		workbenches:      workbenches.New(db),
 		vaultMembers:     vaultmembers.New(db),
 		vaultInvitesRepo: vaultinvites.New(db),
 		couchInstances:   couchinstances.New(db, encryptionKey),

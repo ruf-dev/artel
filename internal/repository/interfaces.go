@@ -16,6 +16,7 @@ import (
 type Repo interface {
 	Users() Users
 	Vaults() Vaults
+	Workbenches() Workbenches
 	VaultMembers() VaultMembers
 	VaultInvites() VaultInvites
 	Sessions() Sessions
@@ -88,6 +89,19 @@ type Vaults interface {
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, value bool) error
 
 	WithTx(tx sqldb.DB) Vaults
+}
+
+// Workbenches is the pure-DB layer for the per-vault Docker workbench container — see
+// docs/workbench/01_data_model_and_lifecycle.md for the state machine it reflects.
+type Workbenches interface {
+	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName, containerID string) (domain.Workbench, error)
+	GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error
+	MarkStopped(ctx context.Context, vaultID uuid.UUID) error
+	MarkRemoved(ctx context.Context, vaultID uuid.UUID) error
+	Delete(ctx context.Context, vaultID uuid.UUID) error
+
+	WithTx(tx sqldb.DB) Workbenches
 }
 
 type VaultMembers interface {

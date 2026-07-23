@@ -1,0 +1,38 @@
+package domain
+
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type WorkbenchStatus string
+
+const (
+	WorkbenchStatusCreated WorkbenchStatus = "created"
+	WorkbenchStatusRunning WorkbenchStatus = "running"
+	WorkbenchStatusStopped WorkbenchStatus = "stopped"
+	WorkbenchStatusRemoved WorkbenchStatus = "removed"
+)
+
+type WorkbenchAuthMode string
+
+const (
+	WorkbenchAuthModeAPIKey            WorkbenchAuthMode = "api_key"
+	WorkbenchAuthModeSubscriptionLogin WorkbenchAuthMode = "subscription_login"
+)
+
+// Workbench is a thin reflection of the Docker container backing a vault's cloud workbench —
+// see docs/workbench/01_data_model_and_lifecycle.md for the full state machine.
+type Workbench struct {
+	Uuid        uuid.UUID
+	VaultUuid   uuid.UUID
+	UserUuid    uuid.UUID
+	Status      WorkbenchStatus
+	AuthMode    WorkbenchAuthMode // "" when not yet started
+	ContainerId string            // "" only in the creation-failed/retry edge case
+	VolumeName  string
+	CreatedAt   time.Time
+	StartedAt   *time.Time // nil until started
+	StoppedAt   *time.Time // nil until stopped
+}

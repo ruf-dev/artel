@@ -23,6 +23,7 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
+	CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (Workbench, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
@@ -39,6 +40,7 @@ type Querier interface {
 	DeleteTrigger(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
+	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
@@ -77,6 +79,7 @@ type Querier interface {
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) (Workbench, error)
 	IncrementTractTemplateInstallCount(ctx context.Context, id uuid.UUID) error
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
@@ -120,6 +123,9 @@ type Querier interface {
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
+	MarkWorkbenchRemoved(ctx context.Context, vaultID uuid.UUID) error
+	MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error
+	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RegisterS3Instance(ctx context.Context, arg RegisterS3InstanceParams) (uuid.UUID, error)
