@@ -14,10 +14,13 @@ import (
 type VaultsImpl struct {
 	pb.UnimplementedVaultsAPIServer
 	vaultSvc service.VaultService
+	// workbenchSvc is nil when Docker isn't configured for this deployment
+	// (see internal/app/custom.go) — every use must be nil-checked.
+	workbenchSvc service.WorkbenchService
 }
 
-func NewVaultsImpl(vaultSvc service.VaultService) *VaultsImpl {
-	return &VaultsImpl{vaultSvc: vaultSvc}
+func NewVaultsImpl(vaultSvc service.VaultService, workbenchSvc service.WorkbenchService) *VaultsImpl {
+	return &VaultsImpl{vaultSvc: vaultSvc, workbenchSvc: workbenchSvc}
 }
 
 func (v *VaultsImpl) Register(srv grpc.ServiceRegistrar) {

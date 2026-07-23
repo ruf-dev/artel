@@ -576,6 +576,13 @@
         },
         "s3BucketName": {
           "type": "string"
+        },
+        "workbenchExists": {
+          "type": "boolean",
+          "description": "workbench_exists is false when no workbenches row backs this vault yet — either the vault\npredates this feature, or WorkbenchDockerHost isn't configured for this deployment.\nworkbench_status is only meaningful when workbench_exists is true; one of\n\"created\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+        },
+        "workbenchStatus": {
+          "type": "string"
         }
       }
     },

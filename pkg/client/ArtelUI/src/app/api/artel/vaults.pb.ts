@@ -30,6 +30,8 @@ export type GetVaultResponse = {
   dbUrl?: string;
   s3InstanceId?: string;
   s3BucketName?: string;
+  workbenchExists?: boolean;
+  workbenchStatus?: string;
 };
 
 export type GetVault = Record<string, never>;

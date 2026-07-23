@@ -2,8 +2,11 @@ package vaults_api
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"go.redsock.ru/rerrors"
 )
@@ -24,12 +27,29 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*p
 		s3InstanceId = vault.S3InstanceUuid.String()
 	}
 
+	workbenchExists := false
+	workbenchStatus := ""
+	if v.workbenchSvc != nil {
+		wb, wbErr := v.workbenchSvc.GetWorkbench(ctx, vaultID)
+		if wbErr == nil {
+			workbenchExists = true
+			workbenchStatus = string(wb.Status)
+		} else if !errors.Is(wbErr, sql.ErrNoRows) {
+			// A vault without a workbench row is an expected, non-fatal state (predates this
+			// feature, or the create-vault hook's CreateWorkbench call failed separately) — only
+			// log genuine lookup failures, never fail GetVault over supplementary data.
+			log.Error().Err(wbErr).Str("vault_id", req.Id).Msg("error getting workbench status for vault")
+		}
+	}
+
 	resp := &pb.GetVault_Response{
-		Id:           vault.Uuid.String(),
-		Name:         vault.Name,
-		DbUrl:        vault.CouchDBURL,
-		S3InstanceId: s3InstanceId,
-		S3BucketName: vault.S3BucketName,
+		Id:              vault.Uuid.String(),
+		Name:            vault.Name,
+		DbUrl:           vault.CouchDBURL,
+		S3InstanceId:    s3InstanceId,
+		S3BucketName:    vault.S3BucketName,
+		WorkbenchExists: workbenchExists,
+		WorkbenchStatus: workbenchStatus,
 	}
 
 	return resp, nil

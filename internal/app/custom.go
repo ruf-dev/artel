@@ -116,7 +116,7 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error creating server manager")
 	}
 
-	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault)
+	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), a.Cfg.Environment.NoAuthEnabled,

@@ -928,14 +928,20 @@ func (x *GetVault_Request) GetId() string {
 }
 
 type GetVault_Response struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	DbUrl         string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
-	S3InstanceId  string                 `protobuf:"bytes,4,opt,name=s3_instance_id,json=s3InstanceId,proto3" json:"s3_instance_id,omitempty"`
-	S3BucketName  string                 `protobuf:"bytes,5,opt,name=s3_bucket_name,json=s3BucketName,proto3" json:"s3_bucket_name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	Id           string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name         string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DbUrl        string                 `protobuf:"bytes,3,opt,name=db_url,json=dbUrl,proto3" json:"db_url,omitempty"`
+	S3InstanceId string                 `protobuf:"bytes,4,opt,name=s3_instance_id,json=s3InstanceId,proto3" json:"s3_instance_id,omitempty"`
+	S3BucketName string                 `protobuf:"bytes,5,opt,name=s3_bucket_name,json=s3BucketName,proto3" json:"s3_bucket_name,omitempty"`
+	// workbench_exists is false when no workbenches row backs this vault yet — either the vault
+	// predates this feature, or WorkbenchDockerHost isn't configured for this deployment.
+	// workbench_status is only meaningful when workbench_exists is true; one of
+	// "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
+	WorkbenchExists bool   `protobuf:"varint,6,opt,name=workbench_exists,json=workbenchExists,proto3" json:"workbench_exists,omitempty"`
+	WorkbenchStatus string `protobuf:"bytes,7,opt,name=workbench_status,json=workbenchStatus,proto3" json:"workbench_status,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GetVault_Response) Reset() {
@@ -999,6 +1005,20 @@ func (x *GetVault_Response) GetS3InstanceId() string {
 func (x *GetVault_Response) GetS3BucketName() string {
 	if x != nil {
 		return x.S3BucketName
+	}
+	return ""
+}
+
+func (x *GetVault_Response) GetWorkbenchExists() bool {
+	if x != nil {
+		return x.WorkbenchExists
+	}
+	return false
+}
+
+func (x *GetVault_Response) GetWorkbenchStatus() string {
+	if x != nil {
+		return x.WorkbenchStatus
 	}
 	return ""
 }
@@ -2070,16 +2090,18 @@ const file_vaults_proto_rawDesc = "" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"\xb9\x01\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"\x8f\x02\n" +
 	"\bGetVault\x1a\x19\n" +
 	"\aRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x1a\x91\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x1a\xe7\x01\n" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
 	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\x12$\n" +
 	"\x0es3_instance_id\x18\x04 \x01(\tR\fs3InstanceId\x12$\n" +
-	"\x0es3_bucket_name\x18\x05 \x01(\tR\fs3BucketName\"T\n" +
+	"\x0es3_bucket_name\x18\x05 \x01(\tR\fs3BucketName\x12)\n" +
+	"\x10workbench_exists\x18\x06 \x01(\bR\x0fworkbenchExists\x12)\n" +
+	"\x10workbench_status\x18\a \x01(\tR\x0fworkbenchStatus\"T\n" +
 	"\n" +
 	"ListVaults\x1a\t\n" +
 	"\aRequest\x1a;\n" +
