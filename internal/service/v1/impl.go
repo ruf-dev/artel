@@ -41,6 +41,11 @@ type Services struct {
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
 	Tract service.TractService
+	// Workbench is constructed in internal/app/custom.go (not here), and only when
+	// cfg.WorkbenchDockerHost is configured — absence of config means absence of the whole
+	// subsystem (see docs/workbench/02_docker_topology.md), so it stays nil rather than being
+	// backed by a no-op implementation. Nil until custom.go sets it.
+	Workbench service.WorkbenchService
 }
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
@@ -171,4 +176,8 @@ func (s *Services) MomService() service.MomService {
 
 func (s *Services) TractService() service.TractService {
 	return s.Tract
+}
+
+func (s *Services) WorkbenchService() service.WorkbenchService {
+	return s.Workbench
 }

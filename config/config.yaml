@@ -38,15 +38,18 @@ environment:
       type: string
       enum: [Trace, Debug, Info, Warn, Error, Fatal, Panic]
       value: Info
+    - name: no_auth_enabled
+      type: bool
+      value: false
     - name: otel_endpoint
-      type: string
-      value: ""
-    - name: telegram_client_id
       type: string
       value: ""
     - name: subscriptions_enabled
       type: bool
       value: false
-    - name: no_auth_enabled
-      type: bool
-      value: false
+    - name: telegram_client_id
+      type: string
+      value: ""
+    - name: workbench_docker_host
+      type: string
+      value: ""

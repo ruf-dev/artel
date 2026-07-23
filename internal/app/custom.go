@@ -15,11 +15,13 @@ import (
 	"google.golang.org/grpc"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
+	"github.com/ruf-dev/artel/internal/service/v1/workbench"
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
 	"github.com/ruf-dev/artel/internal/transport/admin_subscriptions_api"
@@ -65,6 +67,20 @@ func (c *Custom) Init(a *App) error {
 	services, err := svcv1.New(repo, a.Cfg.Environment)
 	if err != nil {
 		return rerrors.Wrap(err, "init services")
+	}
+
+	// Workbench is constructed here (not in svcv1.New) because it needs a Docker client built
+	// from cfg.WorkbenchDockerHost — absence of that config means absence of the whole
+	// subsystem (see docs/workbench/02_docker_topology.md), so services.Workbench simply stays
+	// nil rather than being backed by a no-op implementation.
+	if a.Cfg.Environment.WorkbenchDockerHost != "" {
+		var dockerClient *workbenchdocker.Client
+		dockerClient, err = workbenchdocker.New(a.Cfg.Environment.WorkbenchDockerHost)
+		if err != nil {
+			return rerrors.Wrap(err, "error creating workbench docker client")
+		}
+
+		services.Workbench = workbench.New(repo.Workbenches(), repo.Vaults(), dockerClient)
 	}
 
 	if a.Cfg.Environment.NoAuthEnabled {

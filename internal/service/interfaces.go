@@ -84,6 +84,15 @@ type VaultService interface {
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error
 }
 
+// WorkbenchService manages the per-vault Docker workbench container — see
+// docs/workbench/01_data_model_and_lifecycle.md for the state machine it drives. Deliberately
+// missing StartWorkbench/StopWorkbench for now (a later task).
+type WorkbenchService interface {
+	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
+}
+
 type CouchInstanceService interface {
 	RegisterCouchInstance(ctx context.Context, url, username, password string) (string, error)
 	GetCouchInstance(ctx context.Context, id string) (domain.CouchInstance, error)
