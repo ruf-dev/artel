@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "internal/app/custom.go": {
-    "mtime": 1784784889.5708284,
-    "ast_hash": "ffb89c1dbda6548b354849a45088e895",
+    "mtime": 1784832596.2864704,
+    "ast_hash": "12f97b7e236d3cd9180215c9be3facfb",
     "semantic_hash": ""
   },
   "internal/app/config.go": {
@@ -555,13 +555,13 @@
     "semantic_hash": ""
   },
   "internal/cryptoutil/aes.go": {
-    "mtime": 1784830906.0500605,
-    "ast_hash": "fa130ba6f0f0e05fdc3c342941013ddb",
+    "mtime": 1784832580.8972788,
+    "ast_hash": "c198555b050eed7b9301dbe1096e3459",
     "semantic_hash": ""
   },
   "internal/cryptoutil/aes_test.go": {
-    "mtime": 1783187441.4206653,
-    "ast_hash": "3570b81b3e671e053f3bdde936ed194b",
+    "mtime": 1784832624.2255337,
+    "ast_hash": "678fb200db19b87988a7bf27400e655c",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/vaults.pb.go": {
@@ -5237,6 +5237,16 @@
   "pkg/client/ArtelUI/src/app/hooks/bun-test.d.ts": {
     "mtime": 1784830750.8886373,
     "ast_hash": "8e9871f05066e86a53dce32f4c6f9bbc",
+    "semantic_hash": ""
+  },
+  "internal/middleware/internal_error_interceptor.go": {
+    "mtime": 1784832604.2513952,
+    "ast_hash": "9629253cc00522865573edfb7ae38827",
+    "semantic_hash": ""
+  },
+  "internal/middleware/internal_error_interceptor_test.go": {
+    "mtime": 1784832612.4034653,
+    "ast_hash": "3ab0f99495196eeda797bbcce784229e",
     "semantic_hash": ""
   }
 }
