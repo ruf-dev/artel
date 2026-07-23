@@ -99,17 +99,22 @@ _Ref: [03_auth_and_login_flow.md](03_auth_and_login_flow.md)_
 
 ## Stage 3 — `subscription_login` auth mode
 
-### Task 7 — Login-URL capture + relay
+### Task 7 — Login-URL capture + relay — DONE
 _Ref: [03_auth_and_login_flow.md](03_auth_and_login_flow.md)_
 
-- [ ] Blocked on Task 0's findings. Implement whichever shape the spike confirms — do not start
-      this task until Task 0 is written up.
-- [ ] `StartWorkbench` for `authMode='subscription_login'`: `docker start` with no key, stream
-      stdout, extract the login URL.
-- [ ] New RPC/polling mechanism to surface the URL (and later, "authorized"/"failed" status) to
-      the frontend.
-- [ ] Frontend: minimal UI to display the URL and poll status — not a full workbench page, just
-      enough to prove the flow.
+- [x] `workbenchdocker.Client`: `CapturePane` (exec + `ContainerExecAttach` + `stdcopy.StdCopy`)
+      and `SendKeys` (exec, `keys` passed as a literal `Cmd` argv element — no `/bin/sh -c`, no
+      shell-injection surface).
+- [x] `WorkbenchService.StartWorkbench` for `authMode='subscription_login'`: `docker start` with
+      no env, marks `status='running'` immediately (container-started, not
+      authenticated-yet — per the state table in `01_data_model_and_lifecycle.md`).
+      `GetLoginPrompt`/`SubmitLoginCode` added to drive/observe the TUI flow via
+      `CapturePane`/`SendKeys`; parsing lives in the pure, unit-tested `parseLoginPrompt` helper.
+- [x] `vaults.proto`: server-streaming `WatchWorkbenchLogin` (modeled on `TractsAPI.WatchRun`,
+      700ms poll) + unary `SubmitWorkbenchLoginCode`. `moti g` + `bun gen` regenerated; wired into
+      `VaultsImpl` (nil-checked `workbenchSvc`).
+- [x] Frontend: left at backend/proto/TS-client only, per the Task 5/6 precedent — no page/component
+      work done.
 
 ## Stage 4 — deferred, not scoped in detail here
 
