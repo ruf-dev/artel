@@ -599,6 +599,78 @@ func (*StopWorkbench) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{15}
 }
 
+type WatchWorkbenchLogin struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WatchWorkbenchLogin) Reset() {
+	*x = WatchWorkbenchLogin{}
+	mi := &file_vaults_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchWorkbenchLogin) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchWorkbenchLogin) ProtoMessage() {}
+
+func (x *WatchWorkbenchLogin) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WatchWorkbenchLogin.ProtoReflect.Descriptor instead.
+func (*WatchWorkbenchLogin) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{16}
+}
+
+type SubmitWorkbenchLoginCode struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SubmitWorkbenchLoginCode) Reset() {
+	*x = SubmitWorkbenchLoginCode{}
+	mi := &file_vaults_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubmitWorkbenchLoginCode) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitWorkbenchLoginCode) ProtoMessage() {}
+
+func (x *SubmitWorkbenchLoginCode) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitWorkbenchLoginCode.ProtoReflect.Descriptor instead.
+func (*SubmitWorkbenchLoginCode) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{17}
+}
+
 type VaultItem struct {
 	state                 protoimpl.MessageState `protogen:"open.v1"`
 	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -614,7 +686,7 @@ type VaultItem struct {
 
 func (x *VaultItem) Reset() {
 	*x = VaultItem{}
-	mi := &file_vaults_proto_msgTypes[16]
+	mi := &file_vaults_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -626,7 +698,7 @@ func (x *VaultItem) String() string {
 func (*VaultItem) ProtoMessage() {}
 
 func (x *VaultItem) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[16]
+	mi := &file_vaults_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -639,7 +711,7 @@ func (x *VaultItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultItem.ProtoReflect.Descriptor instead.
 func (*VaultItem) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{16}
+	return file_vaults_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *VaultItem) GetId() string {
@@ -704,7 +776,7 @@ type VaultMemberInfo struct {
 
 func (x *VaultMemberInfo) Reset() {
 	*x = VaultMemberInfo{}
-	mi := &file_vaults_proto_msgTypes[17]
+	mi := &file_vaults_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -716,7 +788,7 @@ func (x *VaultMemberInfo) String() string {
 func (*VaultMemberInfo) ProtoMessage() {}
 
 func (x *VaultMemberInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[17]
+	mi := &file_vaults_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -729,7 +801,7 @@ func (x *VaultMemberInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultMemberInfo.ProtoReflect.Descriptor instead.
 func (*VaultMemberInfo) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{17}
+	return file_vaults_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *VaultMemberInfo) GetId() string {
@@ -781,7 +853,7 @@ type VaultInviteItem struct {
 
 func (x *VaultInviteItem) Reset() {
 	*x = VaultInviteItem{}
-	mi := &file_vaults_proto_msgTypes[18]
+	mi := &file_vaults_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -793,7 +865,7 @@ func (x *VaultInviteItem) String() string {
 func (*VaultInviteItem) ProtoMessage() {}
 
 func (x *VaultInviteItem) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[18]
+	mi := &file_vaults_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -806,7 +878,7 @@ func (x *VaultInviteItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultInviteItem.ProtoReflect.Descriptor instead.
 func (*VaultInviteItem) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{18}
+	return file_vaults_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *VaultInviteItem) GetId() string {
@@ -860,7 +932,7 @@ type CreateVault_Request struct {
 
 func (x *CreateVault_Request) Reset() {
 	*x = CreateVault_Request{}
-	mi := &file_vaults_proto_msgTypes[19]
+	mi := &file_vaults_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -872,7 +944,7 @@ func (x *CreateVault_Request) String() string {
 func (*CreateVault_Request) ProtoMessage() {}
 
 func (x *CreateVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[19]
+	mi := &file_vaults_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -906,7 +978,7 @@ type CreateVault_Response struct {
 
 func (x *CreateVault_Response) Reset() {
 	*x = CreateVault_Response{}
-	mi := &file_vaults_proto_msgTypes[20]
+	mi := &file_vaults_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -918,7 +990,7 @@ func (x *CreateVault_Response) String() string {
 func (*CreateVault_Response) ProtoMessage() {}
 
 func (x *CreateVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[20]
+	mi := &file_vaults_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -964,7 +1036,7 @@ type GetVault_Request struct {
 
 func (x *GetVault_Request) Reset() {
 	*x = GetVault_Request{}
-	mi := &file_vaults_proto_msgTypes[21]
+	mi := &file_vaults_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -976,7 +1048,7 @@ func (x *GetVault_Request) String() string {
 func (*GetVault_Request) ProtoMessage() {}
 
 func (x *GetVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[21]
+	mi := &file_vaults_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1018,7 +1090,7 @@ type GetVault_Response struct {
 
 func (x *GetVault_Response) Reset() {
 	*x = GetVault_Response{}
-	mi := &file_vaults_proto_msgTypes[22]
+	mi := &file_vaults_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1030,7 +1102,7 @@ func (x *GetVault_Response) String() string {
 func (*GetVault_Response) ProtoMessage() {}
 
 func (x *GetVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[22]
+	mi := &file_vaults_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1103,7 +1175,7 @@ type ListVaults_Request struct {
 
 func (x *ListVaults_Request) Reset() {
 	*x = ListVaults_Request{}
-	mi := &file_vaults_proto_msgTypes[23]
+	mi := &file_vaults_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1115,7 +1187,7 @@ func (x *ListVaults_Request) String() string {
 func (*ListVaults_Request) ProtoMessage() {}
 
 func (x *ListVaults_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[23]
+	mi := &file_vaults_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1140,7 +1212,7 @@ type ListVaults_Response struct {
 
 func (x *ListVaults_Response) Reset() {
 	*x = ListVaults_Response{}
-	mi := &file_vaults_proto_msgTypes[24]
+	mi := &file_vaults_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1152,7 +1224,7 @@ func (x *ListVaults_Response) String() string {
 func (*ListVaults_Response) ProtoMessage() {}
 
 func (x *ListVaults_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[24]
+	mi := &file_vaults_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1184,7 +1256,7 @@ type DeleteVault_Request struct {
 
 func (x *DeleteVault_Request) Reset() {
 	*x = DeleteVault_Request{}
-	mi := &file_vaults_proto_msgTypes[25]
+	mi := &file_vaults_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1196,7 +1268,7 @@ func (x *DeleteVault_Request) String() string {
 func (*DeleteVault_Request) ProtoMessage() {}
 
 func (x *DeleteVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[25]
+	mi := &file_vaults_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1227,7 +1299,7 @@ type DeleteVault_Response struct {
 
 func (x *DeleteVault_Response) Reset() {
 	*x = DeleteVault_Response{}
-	mi := &file_vaults_proto_msgTypes[26]
+	mi := &file_vaults_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1239,7 +1311,7 @@ func (x *DeleteVault_Response) String() string {
 func (*DeleteVault_Response) ProtoMessage() {}
 
 func (x *DeleteVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[26]
+	mi := &file_vaults_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1266,7 +1338,7 @@ type AddMember_Request struct {
 
 func (x *AddMember_Request) Reset() {
 	*x = AddMember_Request{}
-	mi := &file_vaults_proto_msgTypes[27]
+	mi := &file_vaults_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1278,7 +1350,7 @@ func (x *AddMember_Request) String() string {
 func (*AddMember_Request) ProtoMessage() {}
 
 func (x *AddMember_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[27]
+	mi := &file_vaults_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1323,7 +1395,7 @@ type AddMember_Response struct {
 
 func (x *AddMember_Response) Reset() {
 	*x = AddMember_Response{}
-	mi := &file_vaults_proto_msgTypes[28]
+	mi := &file_vaults_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1335,7 +1407,7 @@ func (x *AddMember_Response) String() string {
 func (*AddMember_Response) ProtoMessage() {}
 
 func (x *AddMember_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[28]
+	mi := &file_vaults_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1361,7 +1433,7 @@ type RemoveMember_Request struct {
 
 func (x *RemoveMember_Request) Reset() {
 	*x = RemoveMember_Request{}
-	mi := &file_vaults_proto_msgTypes[29]
+	mi := &file_vaults_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1373,7 +1445,7 @@ func (x *RemoveMember_Request) String() string {
 func (*RemoveMember_Request) ProtoMessage() {}
 
 func (x *RemoveMember_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[29]
+	mi := &file_vaults_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1411,7 +1483,7 @@ type RemoveMember_Response struct {
 
 func (x *RemoveMember_Response) Reset() {
 	*x = RemoveMember_Response{}
-	mi := &file_vaults_proto_msgTypes[30]
+	mi := &file_vaults_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1423,7 +1495,7 @@ func (x *RemoveMember_Response) String() string {
 func (*RemoveMember_Response) ProtoMessage() {}
 
 func (x *RemoveMember_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[30]
+	mi := &file_vaults_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1448,7 +1520,7 @@ type ListMembers_Request struct {
 
 func (x *ListMembers_Request) Reset() {
 	*x = ListMembers_Request{}
-	mi := &file_vaults_proto_msgTypes[31]
+	mi := &file_vaults_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1460,7 +1532,7 @@ func (x *ListMembers_Request) String() string {
 func (*ListMembers_Request) ProtoMessage() {}
 
 func (x *ListMembers_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[31]
+	mi := &file_vaults_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1492,7 +1564,7 @@ type ListMembers_Response struct {
 
 func (x *ListMembers_Response) Reset() {
 	*x = ListMembers_Response{}
-	mi := &file_vaults_proto_msgTypes[32]
+	mi := &file_vaults_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1504,7 +1576,7 @@ func (x *ListMembers_Response) String() string {
 func (*ListMembers_Response) ProtoMessage() {}
 
 func (x *ListMembers_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[32]
+	mi := &file_vaults_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1537,7 +1609,7 @@ type CreateInviteLink_Request struct {
 
 func (x *CreateInviteLink_Request) Reset() {
 	*x = CreateInviteLink_Request{}
-	mi := &file_vaults_proto_msgTypes[33]
+	mi := &file_vaults_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1549,7 +1621,7 @@ func (x *CreateInviteLink_Request) String() string {
 func (*CreateInviteLink_Request) ProtoMessage() {}
 
 func (x *CreateInviteLink_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[33]
+	mi := &file_vaults_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1588,7 +1660,7 @@ type CreateInviteLink_Response struct {
 
 func (x *CreateInviteLink_Response) Reset() {
 	*x = CreateInviteLink_Response{}
-	mi := &file_vaults_proto_msgTypes[34]
+	mi := &file_vaults_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1600,7 +1672,7 @@ func (x *CreateInviteLink_Response) String() string {
 func (*CreateInviteLink_Response) ProtoMessage() {}
 
 func (x *CreateInviteLink_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[34]
+	mi := &file_vaults_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1632,7 +1704,7 @@ type ListInviteLinks_Request struct {
 
 func (x *ListInviteLinks_Request) Reset() {
 	*x = ListInviteLinks_Request{}
-	mi := &file_vaults_proto_msgTypes[35]
+	mi := &file_vaults_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1644,7 +1716,7 @@ func (x *ListInviteLinks_Request) String() string {
 func (*ListInviteLinks_Request) ProtoMessage() {}
 
 func (x *ListInviteLinks_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[35]
+	mi := &file_vaults_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1676,7 +1748,7 @@ type ListInviteLinks_Response struct {
 
 func (x *ListInviteLinks_Response) Reset() {
 	*x = ListInviteLinks_Response{}
-	mi := &file_vaults_proto_msgTypes[36]
+	mi := &file_vaults_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1688,7 +1760,7 @@ func (x *ListInviteLinks_Response) String() string {
 func (*ListInviteLinks_Response) ProtoMessage() {}
 
 func (x *ListInviteLinks_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[36]
+	mi := &file_vaults_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1721,7 +1793,7 @@ type RevokeInviteLink_Request struct {
 
 func (x *RevokeInviteLink_Request) Reset() {
 	*x = RevokeInviteLink_Request{}
-	mi := &file_vaults_proto_msgTypes[37]
+	mi := &file_vaults_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1733,7 +1805,7 @@ func (x *RevokeInviteLink_Request) String() string {
 func (*RevokeInviteLink_Request) ProtoMessage() {}
 
 func (x *RevokeInviteLink_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[37]
+	mi := &file_vaults_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1771,7 +1843,7 @@ type RevokeInviteLink_Response struct {
 
 func (x *RevokeInviteLink_Response) Reset() {
 	*x = RevokeInviteLink_Response{}
-	mi := &file_vaults_proto_msgTypes[38]
+	mi := &file_vaults_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1783,7 +1855,7 @@ func (x *RevokeInviteLink_Response) String() string {
 func (*RevokeInviteLink_Response) ProtoMessage() {}
 
 func (x *RevokeInviteLink_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[38]
+	mi := &file_vaults_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1808,7 +1880,7 @@ type AcceptInvite_Request struct {
 
 func (x *AcceptInvite_Request) Reset() {
 	*x = AcceptInvite_Request{}
-	mi := &file_vaults_proto_msgTypes[39]
+	mi := &file_vaults_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1820,7 +1892,7 @@ func (x *AcceptInvite_Request) String() string {
 func (*AcceptInvite_Request) ProtoMessage() {}
 
 func (x *AcceptInvite_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[39]
+	mi := &file_vaults_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1852,7 +1924,7 @@ type AcceptInvite_Response struct {
 
 func (x *AcceptInvite_Response) Reset() {
 	*x = AcceptInvite_Response{}
-	mi := &file_vaults_proto_msgTypes[40]
+	mi := &file_vaults_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1864,7 +1936,7 @@ func (x *AcceptInvite_Response) String() string {
 func (*AcceptInvite_Response) ProtoMessage() {}
 
 func (x *AcceptInvite_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[40]
+	mi := &file_vaults_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1898,7 +1970,7 @@ type LinkS3Bucket_Request struct {
 
 func (x *LinkS3Bucket_Request) Reset() {
 	*x = LinkS3Bucket_Request{}
-	mi := &file_vaults_proto_msgTypes[41]
+	mi := &file_vaults_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1910,7 +1982,7 @@ func (x *LinkS3Bucket_Request) String() string {
 func (*LinkS3Bucket_Request) ProtoMessage() {}
 
 func (x *LinkS3Bucket_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[41]
+	mi := &file_vaults_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1955,7 +2027,7 @@ type LinkS3Bucket_Response struct {
 
 func (x *LinkS3Bucket_Response) Reset() {
 	*x = LinkS3Bucket_Response{}
-	mi := &file_vaults_proto_msgTypes[42]
+	mi := &file_vaults_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1967,7 +2039,7 @@ func (x *LinkS3Bucket_Response) String() string {
 func (*LinkS3Bucket_Response) ProtoMessage() {}
 
 func (x *LinkS3Bucket_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[42]
+	mi := &file_vaults_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1992,7 +2064,7 @@ type UnlinkS3Bucket_Request struct {
 
 func (x *UnlinkS3Bucket_Request) Reset() {
 	*x = UnlinkS3Bucket_Request{}
-	mi := &file_vaults_proto_msgTypes[43]
+	mi := &file_vaults_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2004,7 +2076,7 @@ func (x *UnlinkS3Bucket_Request) String() string {
 func (*UnlinkS3Bucket_Request) ProtoMessage() {}
 
 func (x *UnlinkS3Bucket_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[43]
+	mi := &file_vaults_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2035,7 +2107,7 @@ type UnlinkS3Bucket_Response struct {
 
 func (x *UnlinkS3Bucket_Response) Reset() {
 	*x = UnlinkS3Bucket_Response{}
-	mi := &file_vaults_proto_msgTypes[44]
+	mi := &file_vaults_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2047,7 +2119,7 @@ func (x *UnlinkS3Bucket_Response) String() string {
 func (*UnlinkS3Bucket_Response) ProtoMessage() {}
 
 func (x *UnlinkS3Bucket_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[44]
+	mi := &file_vaults_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2073,7 +2145,7 @@ type SetVaultBinaryStorage_Request struct {
 
 func (x *SetVaultBinaryStorage_Request) Reset() {
 	*x = SetVaultBinaryStorage_Request{}
-	mi := &file_vaults_proto_msgTypes[45]
+	mi := &file_vaults_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2085,7 +2157,7 @@ func (x *SetVaultBinaryStorage_Request) String() string {
 func (*SetVaultBinaryStorage_Request) ProtoMessage() {}
 
 func (x *SetVaultBinaryStorage_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[45]
+	mi := &file_vaults_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2123,7 +2195,7 @@ type SetVaultBinaryStorage_Response struct {
 
 func (x *SetVaultBinaryStorage_Response) Reset() {
 	*x = SetVaultBinaryStorage_Response{}
-	mi := &file_vaults_proto_msgTypes[46]
+	mi := &file_vaults_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2135,7 +2207,7 @@ func (x *SetVaultBinaryStorage_Response) String() string {
 func (*SetVaultBinaryStorage_Response) ProtoMessage() {}
 
 func (x *SetVaultBinaryStorage_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[46]
+	mi := &file_vaults_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2164,7 +2236,7 @@ type StartWorkbench_Request struct {
 
 func (x *StartWorkbench_Request) Reset() {
 	*x = StartWorkbench_Request{}
-	mi := &file_vaults_proto_msgTypes[47]
+	mi := &file_vaults_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2176,7 +2248,7 @@ func (x *StartWorkbench_Request) String() string {
 func (*StartWorkbench_Request) ProtoMessage() {}
 
 func (x *StartWorkbench_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[47]
+	mi := &file_vaults_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2217,7 +2289,7 @@ type StartWorkbench_Response struct {
 
 func (x *StartWorkbench_Response) Reset() {
 	*x = StartWorkbench_Response{}
-	mi := &file_vaults_proto_msgTypes[48]
+	mi := &file_vaults_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2229,7 +2301,7 @@ func (x *StartWorkbench_Response) String() string {
 func (*StartWorkbench_Response) ProtoMessage() {}
 
 func (x *StartWorkbench_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[48]
+	mi := &file_vaults_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2268,7 +2340,7 @@ type StopWorkbench_Request struct {
 
 func (x *StopWorkbench_Request) Reset() {
 	*x = StopWorkbench_Request{}
-	mi := &file_vaults_proto_msgTypes[49]
+	mi := &file_vaults_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2280,7 +2352,7 @@ func (x *StopWorkbench_Request) String() string {
 func (*StopWorkbench_Request) ProtoMessage() {}
 
 func (x *StopWorkbench_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[49]
+	mi := &file_vaults_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2313,7 +2385,7 @@ type StopWorkbench_Response struct {
 
 func (x *StopWorkbench_Response) Reset() {
 	*x = StopWorkbench_Response{}
-	mi := &file_vaults_proto_msgTypes[50]
+	mi := &file_vaults_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2325,7 +2397,7 @@ func (x *StopWorkbench_Response) String() string {
 func (*StopWorkbench_Response) ProtoMessage() {}
 
 func (x *StopWorkbench_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[50]
+	mi := &file_vaults_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2346,6 +2418,204 @@ func (x *StopWorkbench_Response) GetStatus() string {
 		return x.Status
 	}
 	return ""
+}
+
+type WatchWorkbenchLogin_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WatchWorkbenchLogin_Request) Reset() {
+	*x = WatchWorkbenchLogin_Request{}
+	mi := &file_vaults_proto_msgTypes[53]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchWorkbenchLogin_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchWorkbenchLogin_Request) ProtoMessage() {}
+
+func (x *WatchWorkbenchLogin_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[53]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WatchWorkbenchLogin_Request.ProtoReflect.Descriptor instead.
+func (*WatchWorkbenchLogin_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{16, 0}
+}
+
+func (x *WatchWorkbenchLogin_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+type WatchWorkbenchLogin_Response struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// state: "pending"/"url_present"/"error"/"authorized" (see domain.WorkbenchLoginState).
+	State string `protobuf:"bytes,1,opt,name=state,proto3" json:"state,omitempty"`
+	// url is only set when state == "url_present".
+	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	// error_message is only set when state == "error".
+	ErrorMessage  string `protobuf:"bytes,3,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WatchWorkbenchLogin_Response) Reset() {
+	*x = WatchWorkbenchLogin_Response{}
+	mi := &file_vaults_proto_msgTypes[54]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WatchWorkbenchLogin_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WatchWorkbenchLogin_Response) ProtoMessage() {}
+
+func (x *WatchWorkbenchLogin_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[54]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WatchWorkbenchLogin_Response.ProtoReflect.Descriptor instead.
+func (*WatchWorkbenchLogin_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{16, 1}
+}
+
+func (x *WatchWorkbenchLogin_Response) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *WatchWorkbenchLogin_Response) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *WatchWorkbenchLogin_Response) GetErrorMessage() string {
+	if x != nil {
+		return x.ErrorMessage
+	}
+	return ""
+}
+
+type SubmitWorkbenchLoginCode_Request struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	VaultId string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	// code is relayed verbatim into the workbench's tmux session — an OAuth code pasted from
+	// Anthropic's hosted callback page, or (on a brand-new container) the user's first
+	// theme/login-menu keystroke. See docs/workbench/03_auth_and_login_flow.md.
+	Code          string `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SubmitWorkbenchLoginCode_Request) Reset() {
+	*x = SubmitWorkbenchLoginCode_Request{}
+	mi := &file_vaults_proto_msgTypes[55]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubmitWorkbenchLoginCode_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitWorkbenchLoginCode_Request) ProtoMessage() {}
+
+func (x *SubmitWorkbenchLoginCode_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[55]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitWorkbenchLoginCode_Request.ProtoReflect.Descriptor instead.
+func (*SubmitWorkbenchLoginCode_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{17, 0}
+}
+
+func (x *SubmitWorkbenchLoginCode_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *SubmitWorkbenchLoginCode_Request) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type SubmitWorkbenchLoginCode_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SubmitWorkbenchLoginCode_Response) Reset() {
+	*x = SubmitWorkbenchLoginCode_Response{}
+	mi := &file_vaults_proto_msgTypes[56]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubmitWorkbenchLoginCode_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitWorkbenchLoginCode_Response) ProtoMessage() {}
+
+func (x *SubmitWorkbenchLoginCode_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[56]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitWorkbenchLoginCode_Response.ProtoReflect.Descriptor instead.
+func (*SubmitWorkbenchLoginCode_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{17, 1}
 }
 
 var File_vaults_proto protoreflect.FileDescriptor
@@ -2452,7 +2722,20 @@ const file_vaults_proto_rawDesc = "" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a\"\n" +
 	"\bResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status\"\xfc\x01\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"\x94\x01\n" +
+	"\x13WatchWorkbenchLogin\x1a$\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1aW\n" +
+	"\bResponse\x12\x14\n" +
+	"\x05state\x18\x01 \x01(\tR\x05state\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\x12#\n" +
+	"\rerror_message\x18\x03 \x01(\tR\ferrorMessage\"`\n" +
+	"\x18SubmitWorkbenchLoginCode\x1a8\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x12\n" +
+	"\x04code\x18\x02 \x01(\tR\x04code\x1a\n" +
+	"\n" +
+	"\bResponse\"\xfc\x01\n" +
 	"\tVaultItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
@@ -2474,7 +2757,7 @@ const file_vaults_proto_rawDesc = "" +
 	"\x05token\x18\x04 \x01(\tR\x05token\x12\x18\n" +
 	"\arevoked\x18\x05 \x01(\bR\arevoked\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\tR\tcreatedAt2\xf7\x0f\n" +
+	"created_at\x18\x06 \x01(\tR\tcreatedAt2\xc3\x12\n" +
 	"\tVaultsAPI\x12s\n" +
 	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/vaults/create\x12g\n" +
 	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/vaults/get\x12n\n" +
@@ -2492,7 +2775,9 @@ const file_vaults_proto_rawDesc = "" +
 	"\x0eUnlinkS3Bucket\x12$.artel_vaults.UnlinkS3Bucket.Request\x1a%.artel_vaults.UnlinkS3Bucket.Response\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/vaults/s3/unlink\x12\x99\x01\n" +
 	"\x15SetVaultBinaryStorage\x12+.artel_vaults.SetVaultBinaryStorage.Request\x1a,.artel_vaults.SetVaultBinaryStorage.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/binary-storage\x12\x85\x01\n" +
 	"\x0eStartWorkbench\x12$.artel_vaults.StartWorkbench.Request\x1a%.artel_vaults.StartWorkbench.Response\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/api/vaults/workbench/start\x12\x81\x01\n" +
-	"\rStopWorkbench\x12#.artel_vaults.StopWorkbench.Request\x1a$.artel_vaults.StopWorkbench.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/workbench/stopB\x1a\x92\x82\x19\n" +
+	"\rStopWorkbench\x12#.artel_vaults.StopWorkbench.Request\x1a$.artel_vaults.StopWorkbench.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/workbench/stop\x12\x9c\x01\n" +
+	"\x13WatchWorkbenchLogin\x12).artel_vaults.WatchWorkbenchLogin.Request\x1a*.artel_vaults.WatchWorkbenchLogin.Response\",\x82\xd3\xe4\x93\x02&:\x01*\"!/api/vaults/workbench/login/watch0\x01\x12\xaa\x01\n" +
+	"\x18SubmitWorkbenchLoginCode\x12..artel_vaults.SubmitWorkbenchLoginCode.Request\x1a/.artel_vaults.SubmitWorkbenchLoginCode.Response\"-\x82\xd3\xe4\x93\x02':\x01*\"\"/api/vaults/workbench/login/submitB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
@@ -2508,99 +2793,109 @@ func file_vaults_proto_rawDescGZIP() []byte {
 	return file_vaults_proto_rawDescData
 }
 
-var file_vaults_proto_msgTypes = make([]protoimpl.MessageInfo, 51)
+var file_vaults_proto_msgTypes = make([]protoimpl.MessageInfo, 57)
 var file_vaults_proto_goTypes = []any{
-	(*CreateVault)(nil),                    // 0: artel_vaults.CreateVault
-	(*GetVault)(nil),                       // 1: artel_vaults.GetVault
-	(*ListVaults)(nil),                     // 2: artel_vaults.ListVaults
-	(*DeleteVault)(nil),                    // 3: artel_vaults.DeleteVault
-	(*AddMember)(nil),                      // 4: artel_vaults.AddMember
-	(*RemoveMember)(nil),                   // 5: artel_vaults.RemoveMember
-	(*ListMembers)(nil),                    // 6: artel_vaults.ListMembers
-	(*CreateInviteLink)(nil),               // 7: artel_vaults.CreateInviteLink
-	(*ListInviteLinks)(nil),                // 8: artel_vaults.ListInviteLinks
-	(*RevokeInviteLink)(nil),               // 9: artel_vaults.RevokeInviteLink
-	(*AcceptInvite)(nil),                   // 10: artel_vaults.AcceptInvite
-	(*LinkS3Bucket)(nil),                   // 11: artel_vaults.LinkS3Bucket
-	(*UnlinkS3Bucket)(nil),                 // 12: artel_vaults.UnlinkS3Bucket
-	(*SetVaultBinaryStorage)(nil),          // 13: artel_vaults.SetVaultBinaryStorage
-	(*StartWorkbench)(nil),                 // 14: artel_vaults.StartWorkbench
-	(*StopWorkbench)(nil),                  // 15: artel_vaults.StopWorkbench
-	(*VaultItem)(nil),                      // 16: artel_vaults.VaultItem
-	(*VaultMemberInfo)(nil),                // 17: artel_vaults.VaultMemberInfo
-	(*VaultInviteItem)(nil),                // 18: artel_vaults.VaultInviteItem
-	(*CreateVault_Request)(nil),            // 19: artel_vaults.CreateVault.Request
-	(*CreateVault_Response)(nil),           // 20: artel_vaults.CreateVault.Response
-	(*GetVault_Request)(nil),               // 21: artel_vaults.GetVault.Request
-	(*GetVault_Response)(nil),              // 22: artel_vaults.GetVault.Response
-	(*ListVaults_Request)(nil),             // 23: artel_vaults.ListVaults.Request
-	(*ListVaults_Response)(nil),            // 24: artel_vaults.ListVaults.Response
-	(*DeleteVault_Request)(nil),            // 25: artel_vaults.DeleteVault.Request
-	(*DeleteVault_Response)(nil),           // 26: artel_vaults.DeleteVault.Response
-	(*AddMember_Request)(nil),              // 27: artel_vaults.AddMember.Request
-	(*AddMember_Response)(nil),             // 28: artel_vaults.AddMember.Response
-	(*RemoveMember_Request)(nil),           // 29: artel_vaults.RemoveMember.Request
-	(*RemoveMember_Response)(nil),          // 30: artel_vaults.RemoveMember.Response
-	(*ListMembers_Request)(nil),            // 31: artel_vaults.ListMembers.Request
-	(*ListMembers_Response)(nil),           // 32: artel_vaults.ListMembers.Response
-	(*CreateInviteLink_Request)(nil),       // 33: artel_vaults.CreateInviteLink.Request
-	(*CreateInviteLink_Response)(nil),      // 34: artel_vaults.CreateInviteLink.Response
-	(*ListInviteLinks_Request)(nil),        // 35: artel_vaults.ListInviteLinks.Request
-	(*ListInviteLinks_Response)(nil),       // 36: artel_vaults.ListInviteLinks.Response
-	(*RevokeInviteLink_Request)(nil),       // 37: artel_vaults.RevokeInviteLink.Request
-	(*RevokeInviteLink_Response)(nil),      // 38: artel_vaults.RevokeInviteLink.Response
-	(*AcceptInvite_Request)(nil),           // 39: artel_vaults.AcceptInvite.Request
-	(*AcceptInvite_Response)(nil),          // 40: artel_vaults.AcceptInvite.Response
-	(*LinkS3Bucket_Request)(nil),           // 41: artel_vaults.LinkS3Bucket.Request
-	(*LinkS3Bucket_Response)(nil),          // 42: artel_vaults.LinkS3Bucket.Response
-	(*UnlinkS3Bucket_Request)(nil),         // 43: artel_vaults.UnlinkS3Bucket.Request
-	(*UnlinkS3Bucket_Response)(nil),        // 44: artel_vaults.UnlinkS3Bucket.Response
-	(*SetVaultBinaryStorage_Request)(nil),  // 45: artel_vaults.SetVaultBinaryStorage.Request
-	(*SetVaultBinaryStorage_Response)(nil), // 46: artel_vaults.SetVaultBinaryStorage.Response
-	(*StartWorkbench_Request)(nil),         // 47: artel_vaults.StartWorkbench.Request
-	(*StartWorkbench_Response)(nil),        // 48: artel_vaults.StartWorkbench.Response
-	(*StopWorkbench_Request)(nil),          // 49: artel_vaults.StopWorkbench.Request
-	(*StopWorkbench_Response)(nil),         // 50: artel_vaults.StopWorkbench.Response
+	(*CreateVault)(nil),                       // 0: artel_vaults.CreateVault
+	(*GetVault)(nil),                          // 1: artel_vaults.GetVault
+	(*ListVaults)(nil),                        // 2: artel_vaults.ListVaults
+	(*DeleteVault)(nil),                       // 3: artel_vaults.DeleteVault
+	(*AddMember)(nil),                         // 4: artel_vaults.AddMember
+	(*RemoveMember)(nil),                      // 5: artel_vaults.RemoveMember
+	(*ListMembers)(nil),                       // 6: artel_vaults.ListMembers
+	(*CreateInviteLink)(nil),                  // 7: artel_vaults.CreateInviteLink
+	(*ListInviteLinks)(nil),                   // 8: artel_vaults.ListInviteLinks
+	(*RevokeInviteLink)(nil),                  // 9: artel_vaults.RevokeInviteLink
+	(*AcceptInvite)(nil),                      // 10: artel_vaults.AcceptInvite
+	(*LinkS3Bucket)(nil),                      // 11: artel_vaults.LinkS3Bucket
+	(*UnlinkS3Bucket)(nil),                    // 12: artel_vaults.UnlinkS3Bucket
+	(*SetVaultBinaryStorage)(nil),             // 13: artel_vaults.SetVaultBinaryStorage
+	(*StartWorkbench)(nil),                    // 14: artel_vaults.StartWorkbench
+	(*StopWorkbench)(nil),                     // 15: artel_vaults.StopWorkbench
+	(*WatchWorkbenchLogin)(nil),               // 16: artel_vaults.WatchWorkbenchLogin
+	(*SubmitWorkbenchLoginCode)(nil),          // 17: artel_vaults.SubmitWorkbenchLoginCode
+	(*VaultItem)(nil),                         // 18: artel_vaults.VaultItem
+	(*VaultMemberInfo)(nil),                   // 19: artel_vaults.VaultMemberInfo
+	(*VaultInviteItem)(nil),                   // 20: artel_vaults.VaultInviteItem
+	(*CreateVault_Request)(nil),               // 21: artel_vaults.CreateVault.Request
+	(*CreateVault_Response)(nil),              // 22: artel_vaults.CreateVault.Response
+	(*GetVault_Request)(nil),                  // 23: artel_vaults.GetVault.Request
+	(*GetVault_Response)(nil),                 // 24: artel_vaults.GetVault.Response
+	(*ListVaults_Request)(nil),                // 25: artel_vaults.ListVaults.Request
+	(*ListVaults_Response)(nil),               // 26: artel_vaults.ListVaults.Response
+	(*DeleteVault_Request)(nil),               // 27: artel_vaults.DeleteVault.Request
+	(*DeleteVault_Response)(nil),              // 28: artel_vaults.DeleteVault.Response
+	(*AddMember_Request)(nil),                 // 29: artel_vaults.AddMember.Request
+	(*AddMember_Response)(nil),                // 30: artel_vaults.AddMember.Response
+	(*RemoveMember_Request)(nil),              // 31: artel_vaults.RemoveMember.Request
+	(*RemoveMember_Response)(nil),             // 32: artel_vaults.RemoveMember.Response
+	(*ListMembers_Request)(nil),               // 33: artel_vaults.ListMembers.Request
+	(*ListMembers_Response)(nil),              // 34: artel_vaults.ListMembers.Response
+	(*CreateInviteLink_Request)(nil),          // 35: artel_vaults.CreateInviteLink.Request
+	(*CreateInviteLink_Response)(nil),         // 36: artel_vaults.CreateInviteLink.Response
+	(*ListInviteLinks_Request)(nil),           // 37: artel_vaults.ListInviteLinks.Request
+	(*ListInviteLinks_Response)(nil),          // 38: artel_vaults.ListInviteLinks.Response
+	(*RevokeInviteLink_Request)(nil),          // 39: artel_vaults.RevokeInviteLink.Request
+	(*RevokeInviteLink_Response)(nil),         // 40: artel_vaults.RevokeInviteLink.Response
+	(*AcceptInvite_Request)(nil),              // 41: artel_vaults.AcceptInvite.Request
+	(*AcceptInvite_Response)(nil),             // 42: artel_vaults.AcceptInvite.Response
+	(*LinkS3Bucket_Request)(nil),              // 43: artel_vaults.LinkS3Bucket.Request
+	(*LinkS3Bucket_Response)(nil),             // 44: artel_vaults.LinkS3Bucket.Response
+	(*UnlinkS3Bucket_Request)(nil),            // 45: artel_vaults.UnlinkS3Bucket.Request
+	(*UnlinkS3Bucket_Response)(nil),           // 46: artel_vaults.UnlinkS3Bucket.Response
+	(*SetVaultBinaryStorage_Request)(nil),     // 47: artel_vaults.SetVaultBinaryStorage.Request
+	(*SetVaultBinaryStorage_Response)(nil),    // 48: artel_vaults.SetVaultBinaryStorage.Response
+	(*StartWorkbench_Request)(nil),            // 49: artel_vaults.StartWorkbench.Request
+	(*StartWorkbench_Response)(nil),           // 50: artel_vaults.StartWorkbench.Response
+	(*StopWorkbench_Request)(nil),             // 51: artel_vaults.StopWorkbench.Request
+	(*StopWorkbench_Response)(nil),            // 52: artel_vaults.StopWorkbench.Response
+	(*WatchWorkbenchLogin_Request)(nil),       // 53: artel_vaults.WatchWorkbenchLogin.Request
+	(*WatchWorkbenchLogin_Response)(nil),      // 54: artel_vaults.WatchWorkbenchLogin.Response
+	(*SubmitWorkbenchLoginCode_Request)(nil),  // 55: artel_vaults.SubmitWorkbenchLoginCode.Request
+	(*SubmitWorkbenchLoginCode_Response)(nil), // 56: artel_vaults.SubmitWorkbenchLoginCode.Response
 }
 var file_vaults_proto_depIdxs = []int32{
-	16, // 0: artel_vaults.ListVaults.Response.vaults:type_name -> artel_vaults.VaultItem
-	17, // 1: artel_vaults.ListMembers.Response.members:type_name -> artel_vaults.VaultMemberInfo
-	18, // 2: artel_vaults.CreateInviteLink.Response.invite:type_name -> artel_vaults.VaultInviteItem
-	18, // 3: artel_vaults.ListInviteLinks.Response.invites:type_name -> artel_vaults.VaultInviteItem
-	19, // 4: artel_vaults.VaultsAPI.CreateVault:input_type -> artel_vaults.CreateVault.Request
-	21, // 5: artel_vaults.VaultsAPI.GetVault:input_type -> artel_vaults.GetVault.Request
-	23, // 6: artel_vaults.VaultsAPI.ListVaults:input_type -> artel_vaults.ListVaults.Request
-	25, // 7: artel_vaults.VaultsAPI.DeleteVault:input_type -> artel_vaults.DeleteVault.Request
-	27, // 8: artel_vaults.VaultsAPI.AddMember:input_type -> artel_vaults.AddMember.Request
-	29, // 9: artel_vaults.VaultsAPI.RemoveMember:input_type -> artel_vaults.RemoveMember.Request
-	31, // 10: artel_vaults.VaultsAPI.ListMembers:input_type -> artel_vaults.ListMembers.Request
-	33, // 11: artel_vaults.VaultsAPI.CreateInviteLink:input_type -> artel_vaults.CreateInviteLink.Request
-	35, // 12: artel_vaults.VaultsAPI.ListInviteLinks:input_type -> artel_vaults.ListInviteLinks.Request
-	37, // 13: artel_vaults.VaultsAPI.RevokeInviteLink:input_type -> artel_vaults.RevokeInviteLink.Request
-	39, // 14: artel_vaults.VaultsAPI.AcceptInvite:input_type -> artel_vaults.AcceptInvite.Request
-	41, // 15: artel_vaults.VaultsAPI.LinkS3Bucket:input_type -> artel_vaults.LinkS3Bucket.Request
-	43, // 16: artel_vaults.VaultsAPI.UnlinkS3Bucket:input_type -> artel_vaults.UnlinkS3Bucket.Request
-	45, // 17: artel_vaults.VaultsAPI.SetVaultBinaryStorage:input_type -> artel_vaults.SetVaultBinaryStorage.Request
-	47, // 18: artel_vaults.VaultsAPI.StartWorkbench:input_type -> artel_vaults.StartWorkbench.Request
-	49, // 19: artel_vaults.VaultsAPI.StopWorkbench:input_type -> artel_vaults.StopWorkbench.Request
-	20, // 20: artel_vaults.VaultsAPI.CreateVault:output_type -> artel_vaults.CreateVault.Response
-	22, // 21: artel_vaults.VaultsAPI.GetVault:output_type -> artel_vaults.GetVault.Response
-	24, // 22: artel_vaults.VaultsAPI.ListVaults:output_type -> artel_vaults.ListVaults.Response
-	26, // 23: artel_vaults.VaultsAPI.DeleteVault:output_type -> artel_vaults.DeleteVault.Response
-	28, // 24: artel_vaults.VaultsAPI.AddMember:output_type -> artel_vaults.AddMember.Response
-	30, // 25: artel_vaults.VaultsAPI.RemoveMember:output_type -> artel_vaults.RemoveMember.Response
-	32, // 26: artel_vaults.VaultsAPI.ListMembers:output_type -> artel_vaults.ListMembers.Response
-	34, // 27: artel_vaults.VaultsAPI.CreateInviteLink:output_type -> artel_vaults.CreateInviteLink.Response
-	36, // 28: artel_vaults.VaultsAPI.ListInviteLinks:output_type -> artel_vaults.ListInviteLinks.Response
-	38, // 29: artel_vaults.VaultsAPI.RevokeInviteLink:output_type -> artel_vaults.RevokeInviteLink.Response
-	40, // 30: artel_vaults.VaultsAPI.AcceptInvite:output_type -> artel_vaults.AcceptInvite.Response
-	42, // 31: artel_vaults.VaultsAPI.LinkS3Bucket:output_type -> artel_vaults.LinkS3Bucket.Response
-	44, // 32: artel_vaults.VaultsAPI.UnlinkS3Bucket:output_type -> artel_vaults.UnlinkS3Bucket.Response
-	46, // 33: artel_vaults.VaultsAPI.SetVaultBinaryStorage:output_type -> artel_vaults.SetVaultBinaryStorage.Response
-	48, // 34: artel_vaults.VaultsAPI.StartWorkbench:output_type -> artel_vaults.StartWorkbench.Response
-	50, // 35: artel_vaults.VaultsAPI.StopWorkbench:output_type -> artel_vaults.StopWorkbench.Response
-	20, // [20:36] is the sub-list for method output_type
-	4,  // [4:20] is the sub-list for method input_type
+	18, // 0: artel_vaults.ListVaults.Response.vaults:type_name -> artel_vaults.VaultItem
+	19, // 1: artel_vaults.ListMembers.Response.members:type_name -> artel_vaults.VaultMemberInfo
+	20, // 2: artel_vaults.CreateInviteLink.Response.invite:type_name -> artel_vaults.VaultInviteItem
+	20, // 3: artel_vaults.ListInviteLinks.Response.invites:type_name -> artel_vaults.VaultInviteItem
+	21, // 4: artel_vaults.VaultsAPI.CreateVault:input_type -> artel_vaults.CreateVault.Request
+	23, // 5: artel_vaults.VaultsAPI.GetVault:input_type -> artel_vaults.GetVault.Request
+	25, // 6: artel_vaults.VaultsAPI.ListVaults:input_type -> artel_vaults.ListVaults.Request
+	27, // 7: artel_vaults.VaultsAPI.DeleteVault:input_type -> artel_vaults.DeleteVault.Request
+	29, // 8: artel_vaults.VaultsAPI.AddMember:input_type -> artel_vaults.AddMember.Request
+	31, // 9: artel_vaults.VaultsAPI.RemoveMember:input_type -> artel_vaults.RemoveMember.Request
+	33, // 10: artel_vaults.VaultsAPI.ListMembers:input_type -> artel_vaults.ListMembers.Request
+	35, // 11: artel_vaults.VaultsAPI.CreateInviteLink:input_type -> artel_vaults.CreateInviteLink.Request
+	37, // 12: artel_vaults.VaultsAPI.ListInviteLinks:input_type -> artel_vaults.ListInviteLinks.Request
+	39, // 13: artel_vaults.VaultsAPI.RevokeInviteLink:input_type -> artel_vaults.RevokeInviteLink.Request
+	41, // 14: artel_vaults.VaultsAPI.AcceptInvite:input_type -> artel_vaults.AcceptInvite.Request
+	43, // 15: artel_vaults.VaultsAPI.LinkS3Bucket:input_type -> artel_vaults.LinkS3Bucket.Request
+	45, // 16: artel_vaults.VaultsAPI.UnlinkS3Bucket:input_type -> artel_vaults.UnlinkS3Bucket.Request
+	47, // 17: artel_vaults.VaultsAPI.SetVaultBinaryStorage:input_type -> artel_vaults.SetVaultBinaryStorage.Request
+	49, // 18: artel_vaults.VaultsAPI.StartWorkbench:input_type -> artel_vaults.StartWorkbench.Request
+	51, // 19: artel_vaults.VaultsAPI.StopWorkbench:input_type -> artel_vaults.StopWorkbench.Request
+	53, // 20: artel_vaults.VaultsAPI.WatchWorkbenchLogin:input_type -> artel_vaults.WatchWorkbenchLogin.Request
+	55, // 21: artel_vaults.VaultsAPI.SubmitWorkbenchLoginCode:input_type -> artel_vaults.SubmitWorkbenchLoginCode.Request
+	22, // 22: artel_vaults.VaultsAPI.CreateVault:output_type -> artel_vaults.CreateVault.Response
+	24, // 23: artel_vaults.VaultsAPI.GetVault:output_type -> artel_vaults.GetVault.Response
+	26, // 24: artel_vaults.VaultsAPI.ListVaults:output_type -> artel_vaults.ListVaults.Response
+	28, // 25: artel_vaults.VaultsAPI.DeleteVault:output_type -> artel_vaults.DeleteVault.Response
+	30, // 26: artel_vaults.VaultsAPI.AddMember:output_type -> artel_vaults.AddMember.Response
+	32, // 27: artel_vaults.VaultsAPI.RemoveMember:output_type -> artel_vaults.RemoveMember.Response
+	34, // 28: artel_vaults.VaultsAPI.ListMembers:output_type -> artel_vaults.ListMembers.Response
+	36, // 29: artel_vaults.VaultsAPI.CreateInviteLink:output_type -> artel_vaults.CreateInviteLink.Response
+	38, // 30: artel_vaults.VaultsAPI.ListInviteLinks:output_type -> artel_vaults.ListInviteLinks.Response
+	40, // 31: artel_vaults.VaultsAPI.RevokeInviteLink:output_type -> artel_vaults.RevokeInviteLink.Response
+	42, // 32: artel_vaults.VaultsAPI.AcceptInvite:output_type -> artel_vaults.AcceptInvite.Response
+	44, // 33: artel_vaults.VaultsAPI.LinkS3Bucket:output_type -> artel_vaults.LinkS3Bucket.Response
+	46, // 34: artel_vaults.VaultsAPI.UnlinkS3Bucket:output_type -> artel_vaults.UnlinkS3Bucket.Response
+	48, // 35: artel_vaults.VaultsAPI.SetVaultBinaryStorage:output_type -> artel_vaults.SetVaultBinaryStorage.Response
+	50, // 36: artel_vaults.VaultsAPI.StartWorkbench:output_type -> artel_vaults.StartWorkbench.Response
+	52, // 37: artel_vaults.VaultsAPI.StopWorkbench:output_type -> artel_vaults.StopWorkbench.Response
+	54, // 38: artel_vaults.VaultsAPI.WatchWorkbenchLogin:output_type -> artel_vaults.WatchWorkbenchLogin.Response
+	56, // 39: artel_vaults.VaultsAPI.SubmitWorkbenchLoginCode:output_type -> artel_vaults.SubmitWorkbenchLoginCode.Response
+	22, // [22:40] is the sub-list for method output_type
+	4,  // [4:22] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -2617,7 +2912,7 @@ func file_vaults_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_vaults_proto_rawDesc), len(file_vaults_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   51,
+			NumMessages:   57,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

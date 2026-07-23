@@ -1,11 +1,13 @@
 package workbenchdocker
 
 import (
+	"bytes"
 	"context"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/pkg/stdcopy"
 
 	"go.redsock.ru/rerrors"
 )
@@ -121,6 +123,68 @@ func (c *Client) injectEnv(ctx context.Context, containerID string, env map[stri
 		if err != nil {
 			return rerrors.Wrap(err, "starting exec for env var "+key)
 		}
+	}
+
+	return nil
+}
+
+// CapturePane returns the current visible contents of the workbench's tmux pane
+// (tmuxSessionName), via `tmux capture-pane -p`. Used to observe the subscription_login TUI
+// flow (login URL, OAuth errors, ...) without disturbing it — see
+// docs/workbench/03_auth_and_login_flow.md, "Mechanism (confirmed)".
+func (c *Client) CapturePane(ctx context.Context, containerID string) (string, error) {
+	execOptions := container.ExecOptions{
+		Cmd:          []string{"tmux", "capture-pane", "-t", tmuxSessionName, "-p"},
+		AttachStdout: true,
+		AttachStderr: true,
+	}
+
+	created, err := c.cli.ContainerExecCreate(ctx, containerID, execOptions)
+	if err != nil {
+		return "", rerrors.Wrap(err, "creating exec for capture-pane")
+	}
+
+	attachOptions := container.ExecAttachOptions{}
+
+	hijacked, err := c.cli.ContainerExecAttach(ctx, created.ID, attachOptions)
+	if err != nil {
+		return "", rerrors.Wrap(err, "attaching exec for capture-pane")
+	}
+	defer hijacked.Close()
+
+	var stdout, stderr bytes.Buffer
+
+	_, err = stdcopy.StdCopy(&stdout, &stderr, hijacked.Reader)
+	if err != nil {
+		return "", rerrors.Wrap(err, "reading capture-pane output")
+	}
+
+	return stdout.String(), nil
+}
+
+// SendKeys relays keys into the workbench's tmux pane (tmuxSessionName) via
+// `tmux send-keys ... <keys> Enter`, followed by Enter as a separate key. keys is arbitrary,
+// user-controlled input (an OAuth code or first-run keystrokes the user types/pastes) — it is
+// passed as a single, literal argv element of ExecOptions.Cmd, never through a shell
+// (`/bin/sh -c ...`), so there is no shell-metacharacter injection surface: the exec'd process is
+// `tmux` itself, invoked directly, and keys is one opaque argument to it, not text that gets
+// re-parsed as shell syntax. See docs/workbench/03_auth_and_login_flow.md, "Mechanism
+// (confirmed)", step 4.
+func (c *Client) SendKeys(ctx context.Context, containerID string, keys string) error {
+	execOptions := container.ExecOptions{
+		Cmd: []string{"tmux", "send-keys", "-t", tmuxSessionName, keys, "Enter"},
+	}
+
+	created, err := c.cli.ContainerExecCreate(ctx, containerID, execOptions)
+	if err != nil {
+		return rerrors.Wrap(err, "creating exec for send-keys")
+	}
+
+	execStartOptions := container.ExecStartOptions{}
+
+	err = c.cli.ContainerExecStart(ctx, created.ID, execStartOptions)
+	if err != nil {
+		return rerrors.Wrap(err, "starting exec for send-keys")
 	}
 
 	return nil

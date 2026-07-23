@@ -34,6 +34,8 @@ type dockerClient interface {
 	StartContainer(ctx context.Context, containerID string, env map[string]string) error
 	StopContainer(ctx context.Context, containerID string) error
 	RemoveContainer(ctx context.Context, containerID string) error
+	CapturePane(ctx context.Context, containerID string) (string, error)
+	SendKeys(ctx context.Context, containerID string, keys string) error
 }
 
 // externalConnectionService is the narrow subset of service.ExternalConnectionService this
@@ -120,21 +122,27 @@ func (s *Service) GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.W
 	return workbench, nil
 }
 
-// StartWorkbench starts vaultID's workbench container under authMode. Only
-// domain.WorkbenchAuthModeAPIKey is implemented so far — see
-// docs/workbench/03_auth_and_login_flow.md; any other mode fails with
-// user_errors.WorkbenchAuthModeNotImplemented rather than silently falling back.
-//
-// api_key mode: resolves the workbench owner's BYOK Anthropic api key (failing fast with
-// user_errors.WorkbenchMissingAnthropicConnection if none is connected), starts the container
-// with it injected as ANTHROPIC_API_KEY, then records status='running'/started_at.
+// StartWorkbench starts vaultID's workbench container under authMode — see
+// docs/workbench/03_auth_and_login_flow.md for both modes' designs. Any mode besides the two
+// domain.WorkbenchAuthMode constants fails with user_errors.WorkbenchAuthModeNotImplemented
+// rather than silently falling back.
 func (s *Service) StartWorkbench(
 	ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode,
 ) (domain.Workbench, error) {
-	if authMode != domain.WorkbenchAuthModeAPIKey {
+	switch authMode {
+	case domain.WorkbenchAuthModeAPIKey:
+		return s.startWithApiKey(ctx, vaultID)
+	case domain.WorkbenchAuthModeSubscriptionLogin:
+		return s.startWithSubscriptionLogin(ctx, vaultID)
+	default:
 		return domain.Workbench{}, user_errors.WorkbenchAuthModeNotImplemented
 	}
+}
 
+// startWithApiKey resolves the workbench owner's BYOK Anthropic api key (failing fast with
+// user_errors.WorkbenchMissingAnthropicConnection if none is connected), starts the container
+// with it injected as ANTHROPIC_API_KEY, then records status='running'/started_at.
+func (s *Service) startWithApiKey(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
 	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
@@ -158,17 +166,82 @@ func (s *Service) StartWorkbench(
 		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
 	}
 
-	err = s.workbenchesRepo.MarkRunning(ctx, vaultID, domain.WorkbenchAuthModeAPIKey)
+	return s.markRunningAndReload(ctx, vaultID, domain.WorkbenchAuthModeAPIKey)
+}
+
+// startWithSubscriptionLogin starts the container with no auth env vars injected at all — see
+// docs/workbench/03_auth_and_login_flow.md, "Mechanism (confirmed)", step 1. The workbench is
+// recorded as status='running' as soon as the container starts, independent of whether the
+// in-container login TUI flow has completed — see
+// docs/workbench/01_data_model_and_lifecycle.md's state table: "running" means "container
+// started", not "authenticated". Callers observe/drive the actual login flow separately via
+// GetLoginPrompt/SubmitLoginCode.
+func (s *Service) startWithSubscriptionLogin(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
+	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	err = s.docker.StartContainer(ctx, wb.ContainerId, nil)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
+	}
+
+	return s.markRunningAndReload(ctx, vaultID, domain.WorkbenchAuthModeSubscriptionLogin)
+}
+
+// markRunningAndReload records status='running'/started_at under authMode and returns the
+// refreshed row, shared by both StartWorkbench auth-mode branches.
+func (s *Service) markRunningAndReload(
+	ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode,
+) (domain.Workbench, error) {
+	err := s.workbenchesRepo.MarkRunning(ctx, vaultID, authMode)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench running")
 	}
 
-	wb, err = s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
 	return wb, nil
+}
+
+// GetLoginPrompt returns a snapshot of vaultID's subscription_login TUI flow, derived by
+// capturing the workbench's tmux pane and parsing it — see
+// docs/workbench/03_auth_and_login_flow.md, "Mechanism (confirmed)", steps 2-3 and 5-6.
+func (s *Service) GetLoginPrompt(ctx context.Context, vaultID uuid.UUID) (domain.WorkbenchLoginPrompt, error) {
+	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return domain.WorkbenchLoginPrompt{}, rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	pane, err := s.docker.CapturePane(ctx, wb.ContainerId)
+	if err != nil {
+		return domain.WorkbenchLoginPrompt{}, rerrors.Wrap(err, "error capturing workbench tmux pane")
+	}
+
+	prompt := parseLoginPrompt(pane)
+
+	return prompt, nil
+}
+
+// SubmitLoginCode relays the user's pasted OAuth code (or, on a brand-new container, their
+// first theme/menu keystroke) back into vaultID's workbench tmux session — see
+// docs/workbench/03_auth_and_login_flow.md, "Mechanism (confirmed)", step 4.
+func (s *Service) SubmitLoginCode(ctx context.Context, vaultID uuid.UUID, code string) error {
+	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	err = s.docker.SendKeys(ctx, wb.ContainerId, code)
+	if err != nil {
+		return rerrors.Wrap(err, "error relaying login code into workbench session")
+	}
+
+	return nil
 }
 
 // StopWorkbench stops vaultID's running workbench container, retaining it (and its volume) for

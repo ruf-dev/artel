@@ -1,6 +1,7 @@
 package workbenchdocker
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -9,7 +10,10 @@ import (
 	"testing"
 
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ruf-dev/artel/internal/utils"
 )
 
 // newTestClient builds a Client whose underlying Docker SDK client talks to server instead of
@@ -336,6 +340,203 @@ func TestRemoveVolume_DaemonError(t *testing.T) {
 	c := newTestClient(t, server)
 
 	err := c.RemoveVolume(context.Background(), "workbench-vol-test")
+	require.Error(t, err)
+}
+
+// hijackHandler builds an http.HandlerFunc that emulates the Docker daemon's exec-attach
+// upgrade handshake: any request to an "/exec/<id>/start" path carrying an Upgrade header is
+// hijacked (bypassing the normal http.ResponseWriter) and answered with a raw "101 Switching
+// Protocols" response followed by framedPayload written directly to the connection —
+// reproducing what client.postHijacked expects to read back. Every other request is served
+// normally by fallback.
+func hijackHandler(t *testing.T, execID string, framedPayload []byte, fallback http.HandlerFunc) http.HandlerFunc {
+	t.Helper()
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		isAttach := strings.Contains(r.URL.Path, "/exec/"+execID+"/start") && r.Header.Get("Upgrade") != ""
+		if !isAttach {
+			fallback(w, r)
+			return
+		}
+
+		hijacker, ok := w.(http.Hijacker)
+		require.True(t, ok, "test server's ResponseWriter must support Hijack")
+
+		conn, rw, err := hijacker.Hijack()
+		require.NoError(t, err)
+		defer utils.CloseWithLog(conn, "hijacked test connection")
+
+		_, err = rw.WriteString("HTTP/1.1 101 UPGRADED\r\nContent-Type: application/vnd.docker.multiplexed-stream\r\n\r\n")
+		require.NoError(t, err)
+
+		_, err = rw.Write(framedPayload)
+		require.NoError(t, err)
+
+		err = rw.Flush()
+		require.NoError(t, err)
+	}
+}
+
+func TestCapturePane_Success(t *testing.T) {
+	const execID = "exec123"
+	const paneText = "Browser didn't open? Use the url below to sign in\nhttps://platform.claude.com/oauth/authorize?code=1\n"
+
+	var stdoutFrame bytes.Buffer
+	stdoutW := stdcopy.NewStdWriter(&stdoutFrame, stdcopy.Stdout)
+
+	_, err := stdoutW.Write([]byte(paneText))
+	require.NoError(t, err)
+
+	var gotExecCreateCmd []string
+
+	fallback := func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/containers/") && strings.Contains(r.URL.Path, "/exec"):
+			var body map[string]any
+
+			decodeErr := json.NewDecoder(r.Body).Decode(&body)
+			require.NoError(t, decodeErr)
+
+			if cmd, ok := body["Cmd"].([]any); ok {
+				for _, c := range cmd {
+					s, ok := c.(string)
+					require.True(t, ok)
+
+					gotExecCreateCmd = append(gotExecCreateCmd, s)
+				}
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+
+			_, writeErr := w.Write([]byte(`{"Id":"` + execID + `"}`))
+			require.NoError(t, writeErr)
+		default:
+			t.Fatalf("unexpected request path %q", r.URL.Path)
+		}
+	}
+
+	server := httptest.NewServer(hijackHandler(t, execID, stdoutFrame.Bytes(), fallback))
+	defer server.Close()
+
+	c := newTestClient(t, server)
+
+	got, err := c.CapturePane(context.Background(), "container123")
+	require.NoError(t, err)
+	require.Equal(t, paneText, got)
+	require.Equal(t, []string{"tmux", "capture-pane", "-t", tmuxSessionName, "-p"}, gotExecCreateCmd)
+}
+
+func TestCapturePane_ExecCreateError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+
+		_, err := w.Write([]byte(`{"message":"no such container"}`))
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	c := newTestClient(t, server)
+
+	_, err := c.CapturePane(context.Background(), "does-not-exist")
+	require.Error(t, err)
+}
+
+func TestSendKeys_Success(t *testing.T) {
+	const execID = "exec456"
+
+	var gotExecCreateCmd []string
+	var sawExecStart bool
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/exec/"+execID+"/start"):
+			sawExecStart = true
+			w.WriteHeader(http.StatusNoContent)
+		case strings.Contains(r.URL.Path, "/containers/") && strings.Contains(r.URL.Path, "/exec"):
+			var body map[string]any
+
+			err := json.NewDecoder(r.Body).Decode(&body)
+			require.NoError(t, err)
+
+			if cmd, ok := body["Cmd"].([]any); ok {
+				for _, c := range cmd {
+					s, ok := c.(string)
+					require.True(t, ok)
+
+					gotExecCreateCmd = append(gotExecCreateCmd, s)
+				}
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+
+			_, writeErr := w.Write([]byte(`{"Id":"` + execID + `"}`))
+			require.NoError(t, writeErr)
+		default:
+			t.Fatalf("unexpected request path %q", r.URL.Path)
+		}
+	}))
+	defer server.Close()
+
+	c := newTestClient(t, server)
+
+	// A payload containing shell/tmux metacharacters (`;`, `$()`, quotes) is passed as one
+	// argv element — asserting it survives untouched as a single Cmd entry is exactly what
+	// proves there's no shell/re-parsing step it could inject through.
+	const maliciousLookingCode = `code"; rm -rf / #$(whoami)`
+
+	err := c.SendKeys(context.Background(), "container123", maliciousLookingCode)
+	require.NoError(t, err)
+	require.True(t, sawExecStart, "expected an exec-start call")
+	require.Equal(
+		t,
+		[]string{"tmux", "send-keys", "-t", tmuxSessionName, maliciousLookingCode, "Enter"},
+		gotExecCreateCmd,
+	)
+}
+
+func TestSendKeys_ExecCreateError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+
+		_, err := w.Write([]byte(`{"message":"no such container"}`))
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	c := newTestClient(t, server)
+
+	err := c.SendKeys(context.Background(), "does-not-exist", "code")
+	require.Error(t, err)
+}
+
+func TestSendKeys_ExecStartError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/start") && strings.Contains(r.URL.Path, "/exec/"):
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+
+			_, err := w.Write([]byte(`{"message":"exec died"}`))
+			require.NoError(t, err)
+		case strings.Contains(r.URL.Path, "/exec"):
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+
+			_, err := w.Write([]byte(`{"Id":"exec789"}`))
+			require.NoError(t, err)
+		default:
+			t.Fatalf("unexpected request path %q", r.URL.Path)
+		}
+	}))
+	defer server.Close()
+
+	c := newTestClient(t, server)
+
+	err := c.SendKeys(context.Background(), "container123", "code")
 	require.Error(t, err)
 }
 

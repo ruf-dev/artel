@@ -19,22 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	VaultsAPI_CreateVault_FullMethodName           = "/artel_vaults.VaultsAPI/CreateVault"
-	VaultsAPI_GetVault_FullMethodName              = "/artel_vaults.VaultsAPI/GetVault"
-	VaultsAPI_ListVaults_FullMethodName            = "/artel_vaults.VaultsAPI/ListVaults"
-	VaultsAPI_DeleteVault_FullMethodName           = "/artel_vaults.VaultsAPI/DeleteVault"
-	VaultsAPI_AddMember_FullMethodName             = "/artel_vaults.VaultsAPI/AddMember"
-	VaultsAPI_RemoveMember_FullMethodName          = "/artel_vaults.VaultsAPI/RemoveMember"
-	VaultsAPI_ListMembers_FullMethodName           = "/artel_vaults.VaultsAPI/ListMembers"
-	VaultsAPI_CreateInviteLink_FullMethodName      = "/artel_vaults.VaultsAPI/CreateInviteLink"
-	VaultsAPI_ListInviteLinks_FullMethodName       = "/artel_vaults.VaultsAPI/ListInviteLinks"
-	VaultsAPI_RevokeInviteLink_FullMethodName      = "/artel_vaults.VaultsAPI/RevokeInviteLink"
-	VaultsAPI_AcceptInvite_FullMethodName          = "/artel_vaults.VaultsAPI/AcceptInvite"
-	VaultsAPI_LinkS3Bucket_FullMethodName          = "/artel_vaults.VaultsAPI/LinkS3Bucket"
-	VaultsAPI_UnlinkS3Bucket_FullMethodName        = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
-	VaultsAPI_SetVaultBinaryStorage_FullMethodName = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
-	VaultsAPI_StartWorkbench_FullMethodName        = "/artel_vaults.VaultsAPI/StartWorkbench"
-	VaultsAPI_StopWorkbench_FullMethodName         = "/artel_vaults.VaultsAPI/StopWorkbench"
+	VaultsAPI_CreateVault_FullMethodName              = "/artel_vaults.VaultsAPI/CreateVault"
+	VaultsAPI_GetVault_FullMethodName                 = "/artel_vaults.VaultsAPI/GetVault"
+	VaultsAPI_ListVaults_FullMethodName               = "/artel_vaults.VaultsAPI/ListVaults"
+	VaultsAPI_DeleteVault_FullMethodName              = "/artel_vaults.VaultsAPI/DeleteVault"
+	VaultsAPI_AddMember_FullMethodName                = "/artel_vaults.VaultsAPI/AddMember"
+	VaultsAPI_RemoveMember_FullMethodName             = "/artel_vaults.VaultsAPI/RemoveMember"
+	VaultsAPI_ListMembers_FullMethodName              = "/artel_vaults.VaultsAPI/ListMembers"
+	VaultsAPI_CreateInviteLink_FullMethodName         = "/artel_vaults.VaultsAPI/CreateInviteLink"
+	VaultsAPI_ListInviteLinks_FullMethodName          = "/artel_vaults.VaultsAPI/ListInviteLinks"
+	VaultsAPI_RevokeInviteLink_FullMethodName         = "/artel_vaults.VaultsAPI/RevokeInviteLink"
+	VaultsAPI_AcceptInvite_FullMethodName             = "/artel_vaults.VaultsAPI/AcceptInvite"
+	VaultsAPI_LinkS3Bucket_FullMethodName             = "/artel_vaults.VaultsAPI/LinkS3Bucket"
+	VaultsAPI_UnlinkS3Bucket_FullMethodName           = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
+	VaultsAPI_SetVaultBinaryStorage_FullMethodName    = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
+	VaultsAPI_StartWorkbench_FullMethodName           = "/artel_vaults.VaultsAPI/StartWorkbench"
+	VaultsAPI_StopWorkbench_FullMethodName            = "/artel_vaults.VaultsAPI/StopWorkbench"
+	VaultsAPI_WatchWorkbenchLogin_FullMethodName      = "/artel_vaults.VaultsAPI/WatchWorkbenchLogin"
+	VaultsAPI_SubmitWorkbenchLoginCode_FullMethodName = "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -57,6 +59,11 @@ type VaultsAPIClient interface {
 	SetVaultBinaryStorage(ctx context.Context, in *SetVaultBinaryStorage_Request, opts ...grpc.CallOption) (*SetVaultBinaryStorage_Response, error)
 	StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error)
 	StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error)
+	// WatchWorkbenchLogin streams periodic snapshots of the subscription_login TUI flow's state
+	// (docs/workbench/03_auth_and_login_flow.md) until it reaches "authorized" or the client
+	// disconnects. Modeled on TractsAPI.WatchRun.
+	WatchWorkbenchLogin(ctx context.Context, in *WatchWorkbenchLogin_Request, opts ...grpc.CallOption) (grpc.ServerStreamingClient[WatchWorkbenchLogin_Response], error)
+	SubmitWorkbenchLoginCode(ctx context.Context, in *SubmitWorkbenchLoginCode_Request, opts ...grpc.CallOption) (*SubmitWorkbenchLoginCode_Response, error)
 }
 
 type vaultsAPIClient struct {
@@ -227,6 +234,35 @@ func (c *vaultsAPIClient) StopWorkbench(ctx context.Context, in *StopWorkbench_R
 	return out, nil
 }
 
+func (c *vaultsAPIClient) WatchWorkbenchLogin(ctx context.Context, in *WatchWorkbenchLogin_Request, opts ...grpc.CallOption) (grpc.ServerStreamingClient[WatchWorkbenchLogin_Response], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &VaultsAPI_ServiceDesc.Streams[0], VaultsAPI_WatchWorkbenchLogin_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[WatchWorkbenchLogin_Request, WatchWorkbenchLogin_Response]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type VaultsAPI_WatchWorkbenchLoginClient = grpc.ServerStreamingClient[WatchWorkbenchLogin_Response]
+
+func (c *vaultsAPIClient) SubmitWorkbenchLoginCode(ctx context.Context, in *SubmitWorkbenchLoginCode_Request, opts ...grpc.CallOption) (*SubmitWorkbenchLoginCode_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SubmitWorkbenchLoginCode_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_SubmitWorkbenchLoginCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VaultsAPIServer is the server API for VaultsAPI service.
 // All implementations must embed UnimplementedVaultsAPIServer
 // for forward compatibility.
@@ -247,6 +283,11 @@ type VaultsAPIServer interface {
 	SetVaultBinaryStorage(context.Context, *SetVaultBinaryStorage_Request) (*SetVaultBinaryStorage_Response, error)
 	StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error)
 	StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error)
+	// WatchWorkbenchLogin streams periodic snapshots of the subscription_login TUI flow's state
+	// (docs/workbench/03_auth_and_login_flow.md) until it reaches "authorized" or the client
+	// disconnects. Modeled on TractsAPI.WatchRun.
+	WatchWorkbenchLogin(*WatchWorkbenchLogin_Request, grpc.ServerStreamingServer[WatchWorkbenchLogin_Response]) error
+	SubmitWorkbenchLoginCode(context.Context, *SubmitWorkbenchLoginCode_Request) (*SubmitWorkbenchLoginCode_Response, error)
 	mustEmbedUnimplementedVaultsAPIServer()
 }
 
@@ -304,6 +345,12 @@ func (UnimplementedVaultsAPIServer) StartWorkbench(context.Context, *StartWorkbe
 }
 func (UnimplementedVaultsAPIServer) StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method StopWorkbench not implemented")
+}
+func (UnimplementedVaultsAPIServer) WatchWorkbenchLogin(*WatchWorkbenchLogin_Request, grpc.ServerStreamingServer[WatchWorkbenchLogin_Response]) error {
+	return status.Error(codes.Unimplemented, "method WatchWorkbenchLogin not implemented")
+}
+func (UnimplementedVaultsAPIServer) SubmitWorkbenchLoginCode(context.Context, *SubmitWorkbenchLoginCode_Request) (*SubmitWorkbenchLoginCode_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method SubmitWorkbenchLoginCode not implemented")
 }
 func (UnimplementedVaultsAPIServer) mustEmbedUnimplementedVaultsAPIServer() {}
 func (UnimplementedVaultsAPIServer) testEmbeddedByValue()                   {}
@@ -614,6 +661,35 @@ func _VaultsAPI_StopWorkbench_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_WatchWorkbenchLogin_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(WatchWorkbenchLogin_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(VaultsAPIServer).WatchWorkbenchLogin(m, &grpc.GenericServerStream[WatchWorkbenchLogin_Request, WatchWorkbenchLogin_Response]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type VaultsAPI_WatchWorkbenchLoginServer = grpc.ServerStreamingServer[WatchWorkbenchLogin_Response]
+
+func _VaultsAPI_SubmitWorkbenchLoginCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitWorkbenchLoginCode_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).SubmitWorkbenchLoginCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_SubmitWorkbenchLoginCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).SubmitWorkbenchLoginCode(ctx, req.(*SubmitWorkbenchLoginCode_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VaultsAPI_ServiceDesc is the grpc.ServiceDesc for VaultsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -685,7 +761,17 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "StopWorkbench",
 			Handler:    _VaultsAPI_StopWorkbench_Handler,
 		},
+		{
+			MethodName: "SubmitWorkbenchLoginCode",
+			Handler:    _VaultsAPI_SubmitWorkbenchLoginCode_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "WatchWorkbenchLogin",
+			Handler:       _VaultsAPI_WatchWorkbenchLogin_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "vaults.proto",
 }

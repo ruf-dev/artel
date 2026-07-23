@@ -170,6 +170,27 @@ export type StopWorkbenchResponse = {
 
 export type StopWorkbench = Record<string, never>;
 
+export type WatchWorkbenchLoginRequest = {
+  vaultId?: string;
+};
+
+export type WatchWorkbenchLoginResponse = {
+  state?: string;
+  url?: string;
+  errorMessage?: string;
+};
+
+export type WatchWorkbenchLogin = Record<string, never>;
+
+export type SubmitWorkbenchLoginCodeRequest = {
+  vaultId?: string;
+  code?: string;
+};
+
+export type SubmitWorkbenchLoginCodeResponse = Record<string, never>;
+
+export type SubmitWorkbenchLoginCode = Record<string, never>;
+
 export type VaultItem = {
   id?: string;
   name?: string;
@@ -245,5 +266,11 @@ export class VaultsAPI {
   }
   static StopWorkbench(this:void, req: StopWorkbenchRequest, initReq?: fm.InitReq): Promise<StopWorkbenchResponse> {
     return fm.fetchRequest<StopWorkbenchResponse>(`/api/vaults/workbench/stop`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static WatchWorkbenchLogin(this:void, req: WatchWorkbenchLoginRequest, entityNotifier?: fm.NotifyStreamEntityArrival<WatchWorkbenchLoginResponse>, initReq?: fm.InitReq): Promise<void> {
+    return fm.fetchStreamingRequest<WatchWorkbenchLoginResponse>(`/api/vaults/workbench/login/watch`, entityNotifier, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static SubmitWorkbenchLoginCode(this:void, req: SubmitWorkbenchLoginCodeRequest, initReq?: fm.InitReq): Promise<SubmitWorkbenchLoginCodeResponse> {
+    return fm.fetchRequest<SubmitWorkbenchLoginCodeResponse>(`/api/vaults/workbench/login/submit`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

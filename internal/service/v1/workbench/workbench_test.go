@@ -130,6 +130,8 @@ type fakeDocker struct {
 	startContainer  func(ctx context.Context, containerID string, env map[string]string) error
 	stopContainer   func(ctx context.Context, containerID string) error
 	removeContainer func(ctx context.Context, containerID string) error
+	capturePane     func(ctx context.Context, containerID string) (string, error)
+	sendKeys        func(ctx context.Context, containerID string, keys string) error
 }
 
 func newFakeDocker() *fakeDocker {
@@ -142,6 +144,8 @@ func newFakeDocker() *fakeDocker {
 		startContainer:  func(context.Context, string, map[string]string) error { return nil },
 		stopContainer:   func(context.Context, string) error { return nil },
 		removeContainer: func(context.Context, string) error { return nil },
+		capturePane:     func(context.Context, string) (string, error) { return "", nil },
+		sendKeys:        func(context.Context, string, string) error { return nil },
 	}
 }
 
@@ -167,6 +171,14 @@ func (f *fakeDocker) StopContainer(ctx context.Context, containerID string) erro
 
 func (f *fakeDocker) RemoveContainer(ctx context.Context, containerID string) error {
 	return f.removeContainer(ctx, containerID)
+}
+
+func (f *fakeDocker) CapturePane(ctx context.Context, containerID string) (string, error) {
+	return f.capturePane(ctx, containerID)
+}
+
+func (f *fakeDocker) SendKeys(ctx context.Context, containerID string, keys string) error {
+	return f.sendKeys(ctx, containerID, keys)
 }
 
 // fakeExternalConnections is a hand-written externalConnectionService for exercising
@@ -409,7 +421,7 @@ func TestGetWorkbench_Error_Propagates(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestStartWorkbench_NotApiKeyMode_ReturnsNotImplemented(t *testing.T) {
+func TestStartWorkbench_UnknownMode_ReturnsNotImplemented(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			t.Fatal("GetByVaultID should not be called for an unimplemented auth mode")
@@ -419,8 +431,84 @@ func TestStartWorkbench_NotApiKeyMode_ReturnsNotImplemented(t *testing.T) {
 
 	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
 
-	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeSubscriptionLogin)
+	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthMode("bogus"))
 	require.ErrorIs(t, err, user_errors.WorkbenchAuthModeNotImplemented)
+}
+
+func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
+	vaultID := uuid.New()
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}
+	running := domain.Workbench{
+		VaultUuid: vaultID, ContainerId: "container-1",
+		Status: domain.WorkbenchStatusRunning, AuthMode: domain.WorkbenchAuthModeSubscriptionLogin,
+	}
+
+	var gotStartContainerID string
+	var gotEnv map[string]string
+	var gotMarkRunningVaultID uuid.UUID
+	var gotMarkRunningAuthMode domain.WorkbenchAuthMode
+
+	callCount := 0
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			callCount++
+			if callCount == 1 {
+				return wb, nil
+			}
+
+			return running, nil
+		},
+		markRunning: func(_ context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error {
+			gotMarkRunningVaultID = vaultID
+			gotMarkRunningAuthMode = authMode
+			return nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.startContainer = func(_ context.Context, containerID string, env map[string]string) error {
+		gotStartContainerID = containerID
+		gotEnv = env
+		return nil
+	}
+
+	externalConnections := newFakeExternalConnections()
+	externalConnections.getAnthropicApiKey = func(context.Context, uuid.UUID) (string, error) {
+		t.Fatal("GetAnthropicApiKey should not be called for subscription_login mode")
+		return "", nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, externalConnections)
+
+	got, err := svc.StartWorkbench(context.Background(), vaultID, domain.WorkbenchAuthModeSubscriptionLogin)
+	require.NoError(t, err)
+	require.Equal(t, running, got)
+	require.Equal(t, "container-1", gotStartContainerID)
+	require.Nil(t, gotEnv)
+	require.Equal(t, vaultID, gotMarkRunningVaultID)
+	require.Equal(t, domain.WorkbenchAuthModeSubscriptionLogin, gotMarkRunningAuthMode)
+}
+
+func TestStartWorkbench_SubscriptionLogin_StartContainerError_Propagates(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{ContainerId: "container-1"}, nil
+		},
+		markRunning: func(context.Context, uuid.UUID, domain.WorkbenchAuthMode) error {
+			t.Fatal("MarkRunning should not be called when StartContainer fails")
+			return nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.startContainer = func(context.Context, string, map[string]string) error {
+		return errBoom
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeSubscriptionLogin)
+	require.Error(t, err)
 }
 
 func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
@@ -794,5 +882,197 @@ func TestDeleteWorkbench_RepoDeleteError_Propagates(t *testing.T) {
 	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
+	require.Error(t, err)
+}
+
+func TestGetLoginPrompt_UrlPresent(t *testing.T) {
+	vaultID := uuid.New()
+
+	pane := "Opening browser to sign in...\n" +
+		"Browser didn't open? Use the url below to sign in (c to copy)\n" +
+		"\n" +
+		"https://platform.claude.com/oauth/authorize?code=true&state=abc123\n" +
+		"\n" +
+		"Paste code here if prompted >"
+
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.capturePane = func(_ context.Context, containerID string) (string, error) {
+		require.Equal(t, "container-1", containerID)
+		return pane, nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
+	require.NoError(t, err)
+	require.Equal(t, domain.WorkbenchLoginStateURLPresent, got.State)
+	require.Equal(t, "https://platform.claude.com/oauth/authorize?code=true&state=abc123", got.URL)
+}
+
+func TestGetLoginPrompt_OAuthErrorPresent(t *testing.T) {
+	vaultID := uuid.New()
+
+	pane := "https://platform.claude.com/oauth/authorize?code=true\n" +
+		"\n" +
+		"OAuth error: Invalid code. Please make sure the full code was copied\n" +
+		"Paste code here if prompted >"
+
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.capturePane = func(context.Context, string) (string, error) {
+		return pane, nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
+	require.NoError(t, err)
+	require.Equal(t, domain.WorkbenchLoginStateError, got.State)
+	require.Equal(t, "OAuth error: Invalid code. Please make sure the full code was copied", got.ErrorMessage)
+}
+
+func TestGetLoginPrompt_NeitherPresent_Authorized(t *testing.T) {
+	vaultID := uuid.New()
+
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.capturePane = func(context.Context, string) (string, error) {
+		return "│ > hello, what can you help me with today?\n", nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
+	require.NoError(t, err)
+	require.Equal(t, domain.WorkbenchLoginStateAuthorized, got.State)
+}
+
+func TestGetLoginPrompt_NeitherPresent_MenuStillShowing_Pending(t *testing.T) {
+	vaultID := uuid.New()
+
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.capturePane = func(context.Context, string) (string, error) {
+		pane := "Select login method:\n" +
+			"> Claude account with subscription\n" +
+			"  Anthropic Console account\n" +
+			"  3rd-party platform"
+
+		return pane, nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
+	require.NoError(t, err)
+	require.Equal(t, domain.WorkbenchLoginStatePending, got.State)
+}
+
+func TestGetLoginPrompt_GetByVaultIDError_Propagates(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{}, errBoom
+		},
+	}
+
+	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+
+	_, err := svc.GetLoginPrompt(context.Background(), uuid.New())
+	require.Error(t, err)
+}
+
+func TestGetLoginPrompt_CapturePaneError_Propagates(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.capturePane = func(context.Context, string) (string, error) {
+		return "", errBoom
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	_, err := svc.GetLoginPrompt(context.Background(), uuid.New())
+	require.Error(t, err)
+}
+
+func TestSubmitLoginCode_HappyPath(t *testing.T) {
+	vaultID := uuid.New()
+
+	var gotContainerID, gotKeys string
+
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.sendKeys = func(_ context.Context, containerID string, keys string) error {
+		gotContainerID = containerID
+		gotKeys = keys
+		return nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	err := svc.SubmitLoginCode(context.Background(), vaultID, "the-pasted-code")
+	require.NoError(t, err)
+	require.Equal(t, "container-1", gotContainerID)
+	require.Equal(t, "the-pasted-code", gotKeys)
+}
+
+func TestSubmitLoginCode_GetByVaultIDError_Propagates(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{}, errBoom
+		},
+	}
+
+	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+
+	err := svc.SubmitLoginCode(context.Background(), uuid.New(), "code")
+	require.Error(t, err)
+}
+
+func TestSubmitLoginCode_SendKeysError_Propagates(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{ContainerId: "container-1"}, nil
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.sendKeys = func(context.Context, string, string) error {
+		return errBoom
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	err := svc.SubmitLoginCode(context.Background(), uuid.New(), "code")
 	require.Error(t, err)
 }

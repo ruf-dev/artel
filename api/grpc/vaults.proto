@@ -105,6 +105,21 @@ service VaultsAPI {
       body: "*"
     };
   };
+  // WatchWorkbenchLogin streams periodic snapshots of the subscription_login TUI flow's state
+  // (docs/workbench/03_auth_and_login_flow.md) until it reaches "authorized" or the client
+  // disconnects. Modeled on TractsAPI.WatchRun.
+  rpc WatchWorkbenchLogin(WatchWorkbenchLogin.Request) returns (stream WatchWorkbenchLogin.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/login/watch"
+      body: "*"
+    };
+  };
+  rpc SubmitWorkbenchLoginCode(SubmitWorkbenchLoginCode.Request) returns (SubmitWorkbenchLoginCode.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/login/submit"
+      body: "*"
+    };
+  };
 }
 
 message CreateVault {
@@ -260,6 +275,31 @@ message StopWorkbench {
     // status: "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     string status = 1;
   }
+}
+
+message WatchWorkbenchLogin {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    // state: "pending"/"url_present"/"error"/"authorized" (see domain.WorkbenchLoginState).
+    string state = 1;
+    // url is only set when state == "url_present".
+    string url = 2;
+    // error_message is only set when state == "error".
+    string error_message = 3;
+  }
+}
+
+message SubmitWorkbenchLoginCode {
+  message Request {
+    string vault_id = 1;
+    // code is relayed verbatim into the workbench's tmux session — an OAuth code pasted from
+    // Anthropic's hosted callback page, or (on a brand-new container) the user's first
+    // theme/login-menu keystroke. See docs/workbench/03_auth_and_login_flow.md.
+    string code = 2;
+  }
+  message Response {}
 }
 
 message VaultItem {
