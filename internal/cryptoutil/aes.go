@@ -11,7 +11,7 @@ import (
 func Encrypt(key, plaintext []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "error creating AES cipher")
+		return nil, rerrors.Wrap(err, "error creating AES cipher for encrypt function")
 	}
 
 	gcm, err := cipher.NewGCM(block)
@@ -34,7 +34,7 @@ func Encrypt(key, plaintext []byte) ([]byte, error) {
 func Decrypt(key, ciphertext []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "error creating AES cipher")
+		return nil, rerrors.Wrap(err, "error creating AES cipher for encrypt function")
 	}
 
 	gcm, err := cipher.NewGCM(block)

@@ -196,7 +196,7 @@ func encryptOctagonalWheels(plaintext, passphrase string) (string, error) {
 	// 5. AES-256-GCM encrypt
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", rerrors.Wrap(err, "error creating aes cipher")
+		return "", rerrors.Wrap(err, "error creating aes cipher for octogonal wheels")
 	}
 
 	gcm, err := cipher.NewGCMWithNonceSize(block, ivSize)
