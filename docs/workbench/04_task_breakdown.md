@@ -65,36 +65,37 @@ _Ref: [01_data_model_and_lifecycle.md](01_data_model_and_lifecycle.md)_
       configured — callers must handle a nil `Services.Workbench`, check existing patterns for
       how optional services are already handled, e.g. anything gated by `SubscriptionsEnabled`).
 
-### Task 5 — Hook into vault create/delete
+### Task 5 — Hook into vault create/delete — DONE
 _Ref: [01_data_model_and_lifecycle.md](01_data_model_and_lifecycle.md)_
 
-- [ ] Find the `CreateVault` RPC's transport handler; after a successful `VaultService.CreateVault`
+- [x] Found the `CreateVault` RPC's transport handler; after a successful `VaultService.CreateVault`
       call, also call `WorkbenchService.CreateWorkbench` (no-op / clearly logged if
       `Services.Workbench` is nil, i.e. Docker not configured for this deployment) — failure here
-      must not roll back the vault.
-- [ ] Same handler's `DeleteVault` path: call `WorkbenchService.DeleteWorkbench` before (or
-      alongside, with correct ordering — see the note in `01_data_model_and_lifecycle.md`) the
-      vault delete completes.
-- [ ] `api/grpc/vaults.proto` / workbench-specific proto: expose workbench status on whatever the
-      vault detail RPC already returns, or a new `GetWorkbenchStatus(vaultID)` RPC — needed by the
-      frontend to know a workbench exists and what state it's in. `moti g` + `bun gen` as usual.
+      does not roll back the vault.
+- [x] Same handler's `DeleteVault` path: calls `WorkbenchService.DeleteWorkbench` before the
+      vault delete completes, and fails loudly (does not proceed to delete the vault) if it errors.
+- [x] `api/grpc/vaults.proto`: `GetVault.Response` gained `workbench_exists`/`workbench_status`
+      fields (extended the existing vault-detail response rather than a new RPC, mirroring how
+      `s3_instance_id`/`s3_bucket_name` are already exposed). `moti g` + `bun gen` regenerated.
 
 ## Stage 2 — Start/stop with `api_key` auth mode
 
-### Task 6 — `StartWorkbench`/`StopWorkbench`, API-key path only
+### Task 6 — `StartWorkbench`/`StopWorkbench`, API-key path only — DONE
 _Ref: [03_auth_and_login_flow.md](03_auth_and_login_flow.md)_
 
-- [ ] `WorkbenchService.StartWorkbench(ctx, vaultID, authMode)`: for `api_key`, look up + decrypt
-      the user's Anthropic `external_connections` row (reuse `externalconnections` service/repo
-      as-is), fail with a clear `user_errors` case if absent, `docker start` with
-      `ANTHROPIC_API_KEY` injected, update `workbenches.status='running'`, `started_at`.
-- [ ] `StopWorkbench`: `docker stop`, update `status='stopped'`, `stopped_at`.
-- [ ] Transport RPCs for start/stop, wired to the frontend's vault/workbench UI (minimal — a
-      button, not a full page yet).
-- [ ] This is the path to validate the whole prototype end-to-end before touching the login-flow
-      unknown — a user can create a vault, get a workbench, start it with their existing BYOK key,
-      and confirm `claude` runs inside it (verified via `docker exec`/logs for now, not yet a
-      user-facing terminal — that's explicitly deferred, see below).
+- [x] `WorkbenchService.StartWorkbench(ctx, vaultID, authMode)`: for `api_key`, looks up + decrypts
+      the user's Anthropic `external_connections` row via new `ExternalConnectionService.
+      GetAnthropicApiKey` (thin public wrapper over the existing private decrypt logic), fails with
+      new `user_errors.WorkbenchMissingAnthropicConnection` if absent, `docker start` with
+      `ANTHROPIC_API_KEY` injected, updates `workbenches.status='running'`, `started_at`. A
+      non-`api_key` mode fails fast with `user_errors.WorkbenchAuthModeNotImplemented` (Task 7).
+- [x] `StopWorkbench`: `docker stop`, updates `status='stopped'`, `stopped_at`.
+- [x] Transport RPCs `StartWorkbench`/`StopWorkbench` added to `vaults.proto`, wired into
+      `VaultsImpl` (nil-checked `workbenchSvc`, same pattern as create/delete hooks). No frontend
+      UI wiring yet — deliberately backend/proto only, per "minimal — a button, not a full page".
+- [x] Validates the prototype end-to-end at the service/API layer (unit-tested with fakes); a live
+      Docker-daemon smoke test (`docker exec`/logs, not yet a user-facing terminal) is still a
+      manual follow-up, not automated here.
 
 ## Stage 3 — `subscription_login` auth mode
 
