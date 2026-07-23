@@ -866,7 +866,7 @@
   tasks/25-ui-edit-delete-modal.md → pkg/docs/swaggers/vaults.swagger.json
 - `HttpLogMiddleware()` --calls--> `HandlerFunc`  [INFERRED]
   internal/middleware/log.go → pkg/docs/docs.swagger_ui.go
-- `main.go (Service Entry Point)` --implements--> `rscli Scaffold (App Lifecycle Pattern)`  [EXTRACTED]
+- `main.go (Service Entry Point)` --implements--> `verv Scaffold (App Lifecycle Pattern)`  [EXTRACTED]
   cmd/service/main.go → docs/architecture.md
 
 ## Import Cycles
@@ -2229,7 +2229,7 @@ Nodes (5): newLoggingTransport(), loggingTransport, Request, Response, RoundTrip
 
 ### Community 515 - "Community 515"
 Cohesion: 0.29
-Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, rscli Application Structure, Service Layer Layout
+Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, verv Application Structure, Service Layer Layout
 
 ### Community 516 - "Community 516"
 Cohesion: 0.29

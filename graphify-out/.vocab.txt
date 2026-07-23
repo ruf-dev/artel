@@ -964,7 +964,7 @@ row
 rows
 rpc
 rsa
-rscli
+verv
 ruf
 rule
 rules

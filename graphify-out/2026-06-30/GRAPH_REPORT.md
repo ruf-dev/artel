@@ -638,7 +638,7 @@
   tasks/24-ui-create-modal.md → pkg/docs/swaggers/vaults.swagger.json
 - `Task 25: UI Edit/Delete Vault Modal` --references--> `POST /api/vaults/{id}/delete`  [EXTRACTED]
   tasks/25-ui-edit-delete-modal.md → pkg/docs/swaggers/vaults.swagger.json
-- `main.go (Service Entry Point)` --implements--> `rscli Scaffold (App Lifecycle Pattern)`  [EXTRACTED]
+- `main.go (Service Entry Point)` --implements--> `verv Scaffold (App Lifecycle Pattern)`  [EXTRACTED]
   cmd/service/main.go → docs/architecture.md
 - `ListUserMcpKeys` --references--> `email_accounts DB table`  [INFERRED]
   internal/transport/mcp_keys_api/list_user.go → migrations/010_email_accounts.sql
@@ -1979,7 +1979,7 @@ Nodes (5): newLoggingTransport(), loggingTransport, Request, Response, RoundTrip
 
 ### Community 515 - "Community 515"
 Cohesion: 0.29
-Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, rscli Application Structure, Service Layer Layout
+Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, verv Application Structure, Service Layer Layout
 
 ### Community 516 - "Community 516"
 Cohesion: 0.29

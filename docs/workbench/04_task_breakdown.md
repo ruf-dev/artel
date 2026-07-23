@@ -48,7 +48,7 @@ _Ref: [02_docker_topology.md](02_docker_topology.md)_
 _Ref: [02_docker_topology.md](02_docker_topology.md)_
 
 - [x] `config/config.yaml`: add `WorkbenchDockerHost` under `environment:`.
-- [x] `rscli-dev project tidy` to regenerate `internal/config/environment.go` — never hand-edit it.
+- [x] `verv project tidy` to regenerate `internal/config/environment.go` — never hand-edit it.
 - [x] `internal/app/custom.go`: construct `workbenchdocker.Client` + `WorkbenchService` only when
       `cfg.WorkbenchDockerHost != ""`; skip transport route registration otherwise.
 

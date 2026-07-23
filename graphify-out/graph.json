@@ -101614,14 +101614,14 @@
       "norm_label": "github.com/ruf-dev/artel"
     },
     {
-      "label": "generated with love for coding by [RedSock CLI](https://github.com/Red-Sock/rscli)",
+      "label": "generated with love for coding by [RedSock CLI](https://github.com/Red-Sock/verv)",
       "file_type": "document",
       "source_file": "README.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "readme_generated_with_love_for_coding_by_redsock_cli_https_github_com_red_sock_rscli",
+      "id": "readme_generated_with_love_for_coding_by_redsock_cli_https_github_com_red_sock_verv",
       "community": 598,
-      "norm_label": "generated with love for coding by [redsock cli](https://github.com/red-sock/rscli)"
+      "norm_label": "generated with love for coding by [redsock cli](https://github.com/red-sock/verv)"
     },
     {
       "label": "Running locally",
@@ -101774,14 +101774,14 @@
       "norm_label": "architecture"
     },
     {
-      "label": "rscli Application Structure",
+      "label": "verv Application Structure",
       "file_type": "document",
       "source_file": "docs/architecture.md",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "docs_architecture_rscli_application_structure",
+      "id": "docs_architecture_verv_application_structure",
       "community": 379,
-      "norm_label": "rscli application structure"
+      "norm_label": "verv application structure"
     },
     {
       "label": "Configuration (matreshka)",
@@ -118670,7 +118670,7 @@
       "id": "concept_grpc_gateway"
     },
     {
-      "label": "rscli Scaffold (App Lifecycle Pattern)",
+      "label": "verv Scaffold (App Lifecycle Pattern)",
       "file_type": "rationale",
       "source_file": "docs/architecture.md",
       "source_location": null,
@@ -118680,8 +118680,8 @@
       "contributor": null,
       "rationale": "app.go and config.go are generated and never edited. All wiring goes in custom.go. This enforces a clean separation between generated boilerplate and user business logic.",
       "community": 799,
-      "norm_label": "rscli scaffold (app lifecycle pattern)",
-      "id": "concept_rscli_scaffold"
+      "norm_label": "verv scaffold (app lifecycle pattern)",
+      "id": "concept_verv_scaffold"
     },
     {
       "label": "matreshka Config (YAML + Env Vars)",
@@ -350721,7 +350721,7 @@
       "source_location": "L3",
       "weight": 1.0,
       "source": "readme_github_com_ruf_dev_artel",
-      "target": "readme_generated_with_love_for_coding_by_redsock_cli_https_github_com_red_sock_rscli",
+      "target": "readme_generated_with_love_for_coding_by_redsock_cli_https_github_com_red_sock_verv",
       "confidence_score": 1.0
     },
     {
@@ -350881,7 +350881,7 @@
       "source_location": "L3",
       "weight": 1.0,
       "source": "docs_architecture_architecture",
-      "target": "docs_architecture_rscli_application_structure",
+      "target": "docs_architecture_verv_application_structure",
       "confidence_score": 1.0
     },
     {

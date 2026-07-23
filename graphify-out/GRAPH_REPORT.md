@@ -756,7 +756,7 @@
 - Vaults
 - OAuth 2.0 PKCE Flow (MCP Client Auth)
 - rerrors (Error Wrapping Library)
-- rscli Scaffold (App Lifecycle Pattern)
+- verv Scaffold (App Lifecycle Pattern)
 - Service Layer (Business Logic)
 - Telegram OAuth (External Auth)
 - user_permissions DB table
@@ -3415,7 +3415,7 @@ Nodes (4): Context, SetVaultBinaryStorage_Request, SetVaultBinaryStorage_Respons
 
 ### Community 379 - "Architecture"
 Cohesion: 0.33
-Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, rscli Application Structure, Service Layer Layout
+Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, verv Application Structure, Service Layer Layout
 
 ### Community 382 - "compilerOptions"
 Cohesion: 0.22
@@ -3663,7 +3663,7 @@ Nodes (3): Artel Service (Obsidian Vault Provisioning), branch-push.yaml (CI Wor
 
 ### Community 598 - "github.com/ruf-dev/artel"
 Cohesion: 0.17
-Nodes (10): Building from source, Configuration, Data persistence, Omnibus image, Quick start, Troubleshooting, Using it, generated with love for coding by [RedSock CLI](https://github.com/Red-Sock/rscli) (+2 more)
+Nodes (10): Building from source, Configuration, Data persistence, Omnibus image, Quick start, Troubleshooting, Using it, generated with love for coding by [RedSock CLI](https://github.com/Red-Sock/verv) (+2 more)
 
 ### Community 609 - "UnknownFields"
 Cohesion: 0.12

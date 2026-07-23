@@ -4,7 +4,7 @@
 
 Add a config field the same way every other data-source connection string is added per
 `docs/architecture.md` ("Adding a new env variable"): an entry under `environment:` in
-`config/config.yaml`, then `rscli-dev project tidy` regenerates `internal/config/environment.go`.
+`config/config.yaml`, then `verv project tidy` regenerates `internal/config/environment.go`.
 
 ```
 WorkbenchDockerHost string   // e.g. "unix:///var/run/docker-workbenches.sock" or "tcp://host:2376"

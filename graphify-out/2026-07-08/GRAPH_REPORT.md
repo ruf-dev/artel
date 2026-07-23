@@ -2219,7 +2219,7 @@ Nodes (5): newLoggingTransport(), loggingTransport, Request, Response, RoundTrip
 
 ### Community 515 - "Community 515"
 Cohesion: 0.29
-Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, rscli Application Structure, Service Layer Layout
+Nodes (6): Architecture, Configuration (matreshka), Key Dependencies, Planned Layers, verv Application Structure, Service Layer Layout
 
 ### Community 516 - "Community 516"
 Cohesion: 0.29

@@ -1,8 +1,8 @@
 # Architecture
 
-## rscli Application Structure
+## verv Application Structure
 
-rscli scaffolds a fixed two-part app lifecycle:
+verv scaffolds a fixed two-part app lifecycle:
 
 - **`internal/app/app.go`** — Generated, DO NOT EDIT. Wires config → `Custom.Init` → `Custom.Start`. Handles graceful
   shutdown via `go.redsock.ru/toolbox/closer`.
@@ -26,7 +26,7 @@ addresses go in separate config structs added to `internal/config/`.
 The `-config <path>` flag overrides the config file at runtime.
 
 **Adding a new env variable**: edit `config/config.yaml` (add the entry under `environment:`), then run
-`rscli-dev project tidy`. This regenerates `internal/config/environment.go` and the new field appears in
+`verv project tidy`. This regenerates `internal/config/environment.go` and the new field appears in
 `EnvironmentConfig`. Never edit `environment.go` by hand.
 
 ## Planned Layers

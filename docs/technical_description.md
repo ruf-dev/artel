@@ -15,7 +15,7 @@ cmd/service/main.go
 pkg/client/ArtelUI/                 (React + Bun frontend, served at /)
 ```
 
-The app is scaffolded by [rscli](https://github.com/Red-Sock/rscli). `app.go` and `config.go` are generated and never edited — all wiring goes in `custom.go`.
+The app is scaffolded by [verv](https://github.com/Red-Sock/verv). `app.go` and `config.go` are generated and never edited — all wiring goes in `custom.go`.
 
 ---
 
@@ -177,7 +177,7 @@ SendEmail       → SELECT email_accounts → AES-256 decrypt → new smtp.Clien
 | Layer | Technology |
 |-------|-----------|
 | Language | Go |
-| Scaffolding | rscli (RedSock CLI) |
+| Scaffolding | verv (RedSock CLI) |
 | Config | matreshka (YAML + env vars) |
 | API framework | gRPC + grpc-gateway (REST bridge) |
 | Database (metadata) | PostgreSQL |

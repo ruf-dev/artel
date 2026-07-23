@@ -1,6 +1,6 @@
 ### github.com/ruf-dev/artel
 
-##### generated with love for coding by [RedSock CLI](https://github.com/Red-Sock/rscli)
+##### generated with love for coding by [RedSock CLI](https://go.vervstack.ru/verv)
 
 ## Running locally
 

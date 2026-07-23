@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **artel** is a Go service that automates Obsidian in-cloud vault creation. It provisions CouchDB instances, creates
 users and resources within them, and exposes a React UI at `pkg/client/ArtelUI` (Bun + React). Generated
-by [RedSock CLI (rscli)](https://github.com/Red-Sock/rscli).
+by [RedSock CLI (verv)](https://github.com/Red-Sock/verv).
 
 ### Frontend (pkg/client/ArtelUI)
 
@@ -41,7 +41,7 @@ activation step is needed.
 
 ## Architecture
 
-If touching Go backend files, read [docs/architecture.md](docs/architecture.md) for rscli structure, configuration,
+If touching Go backend files, read [docs/architecture.md](docs/architecture.md) for verv structure, configuration,
 planned layers, service layout, and key dependencies.
 
 ## Testing

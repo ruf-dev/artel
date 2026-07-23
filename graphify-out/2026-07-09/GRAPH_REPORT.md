@@ -705,7 +705,7 @@
 - Vaults
 - OAuth 2.0 PKCE Flow (MCP Client Auth)
 - rerrors (Error Wrapping Library)
-- rscli Scaffold (App Lifecycle Pattern)
+- verv Scaffold (App Lifecycle Pattern)
 - Service Layer (Business Logic)
 - Telegram OAuth (External Auth)
 - user_permissions DB table
