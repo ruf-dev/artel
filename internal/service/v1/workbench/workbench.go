@@ -16,8 +16,13 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"go.redsock.ru/rerrors"
 )
+
+// anthropicApiKeyEnvVar is the env var name StartContainer injects the BYOK key under —
+// docs/workbench/03_auth_and_login_flow.md, "api_key mode".
+const anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY"
 
 // dockerClient is the narrow subset of workbenchdocker.Client's methods this service depends
 // on. workbenchdocker.Client is a concrete struct — this interface exists so tests can exercise
@@ -26,23 +31,38 @@ type dockerClient interface {
 	CreateVolume(ctx context.Context, name string) error
 	RemoveVolume(ctx context.Context, name string) error
 	CreateContainer(ctx context.Context, opts workbenchdocker.CreateOpts) (string, error)
+	StartContainer(ctx context.Context, containerID string, env map[string]string) error
 	StopContainer(ctx context.Context, containerID string) error
 	RemoveContainer(ctx context.Context, containerID string) error
+}
+
+// externalConnectionService is the narrow subset of service.ExternalConnectionService this
+// service depends on, to resolve the BYOK Anthropic key for api_key auth mode without a
+// compile-time dependency on the whole external-connections service.
+type externalConnectionService interface {
+	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
 }
 
 type Service struct {
 	workbenchesRepo repository.Workbenches
 	vaultsRepo      repository.Vaults
 
-	docker dockerClient
+	docker              dockerClient
+	externalConnections externalConnectionService
 }
 
-func New(workbenches repository.Workbenches, vaults repository.Vaults, docker dockerClient) *Service {
+func New(
+	workbenches repository.Workbenches,
+	vaults repository.Vaults,
+	docker dockerClient,
+	externalConnections externalConnectionService,
+) *Service {
 	return &Service{
 		workbenchesRepo: workbenches,
 		vaultsRepo:      vaults,
 
-		docker: docker,
+		docker:              docker,
+		externalConnections: externalConnections,
 	}
 }
 
@@ -98,6 +118,78 @@ func (s *Service) GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.W
 	}
 
 	return workbench, nil
+}
+
+// StartWorkbench starts vaultID's workbench container under authMode. Only
+// domain.WorkbenchAuthModeAPIKey is implemented so far — see
+// docs/workbench/03_auth_and_login_flow.md; any other mode fails with
+// user_errors.WorkbenchAuthModeNotImplemented rather than silently falling back.
+//
+// api_key mode: resolves the workbench owner's BYOK Anthropic api key (failing fast with
+// user_errors.WorkbenchMissingAnthropicConnection if none is connected), starts the container
+// with it injected as ANTHROPIC_API_KEY, then records status='running'/started_at.
+func (s *Service) StartWorkbench(
+	ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode,
+) (domain.Workbench, error) {
+	if authMode != domain.WorkbenchAuthModeAPIKey {
+		return domain.Workbench{}, user_errors.WorkbenchAuthModeNotImplemented
+	}
+
+	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	apiKey, err := s.externalConnections.GetAnthropicApiKey(ctx, wb.UserUuid)
+	if err != nil {
+		if errors.Is(err, user_errors.LlmKeyRequired) {
+			return domain.Workbench{}, user_errors.WorkbenchMissingAnthropicConnection
+		}
+
+		return domain.Workbench{}, rerrors.Wrap(err, "error resolving anthropic api key for workbench owner")
+	}
+
+	env := map[string]string{
+		anthropicApiKeyEnvVar: apiKey,
+	}
+
+	err = s.docker.StartContainer(ctx, wb.ContainerId, env)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
+	}
+
+	err = s.workbenchesRepo.MarkRunning(ctx, vaultID, domain.WorkbenchAuthModeAPIKey)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench running")
+	}
+
+	wb, err = s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	return wb, nil
+}
+
+// StopWorkbench stops vaultID's running workbench container, retaining it (and its volume) for
+// a later restart, and records status='stopped'/stopped_at.
+func (s *Service) StopWorkbench(ctx context.Context, vaultID uuid.UUID) error {
+	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	err = s.docker.StopContainer(ctx, wb.ContainerId)
+	if err != nil {
+		return rerrors.Wrap(err, "error stopping workbench container")
+	}
+
+	err = s.workbenchesRepo.MarkStopped(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "error marking workbench stopped")
+	}
+
+	return nil
 }
 
 // DeleteWorkbench tears down vaultID's workbench: stops (if a container was created) and

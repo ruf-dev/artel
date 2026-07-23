@@ -249,6 +249,21 @@ var (
 		rerrors.WithHttpStatus(http.StatusBadRequest),
 	)
 
+	// workbench.
+	WorkbenchMissingAnthropicConnection = rerrors.New(
+		"no anthropic api key connected for this account; connect one before starting this workbench in api_key mode",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	WorkbenchAuthModeNotImplemented = rerrors.New(
+		"this workbench auth mode is not implemented yet",
+		codes.Unimplemented,
+	)
+	WorkbenchNotConfigured = rerrors.New(
+		"workbenches are not enabled for this deployment",
+		codes.Unimplemented,
+	)
+
 	// tract: builtin execution
 	NoVaultForBuiltinTool = rerrors.New(
 		"no vault available to run a builtin tool for this tract",

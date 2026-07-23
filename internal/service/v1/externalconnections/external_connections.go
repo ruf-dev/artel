@@ -780,6 +780,19 @@ func (s *Service) storedAnthropicApiKey(ctx context.Context, userUuid uuid.UUID)
 	return creds.ApiKey, nil
 }
 
+// GetAnthropicApiKey returns userUuid's decrypted BYOK Anthropic api key. Returns
+// user_errors.LlmKeyRequired if userUuid has no anthropic external_connections row — callers
+// that want workbench-specific error semantics should translate that case themselves (see
+// internal/service/v1/workbench).
+func (s *Service) GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error) {
+	apiKey, err := s.storedAnthropicApiKey(ctx, userUuid)
+	if err != nil {
+		return "", err
+	}
+
+	return apiKey, nil
+}
+
 // validateAnthropicKey resolves baseUrl to anthropicDefaultBaseUrl when blank, then confirms the
 // key actually authenticates against the provider by listing its model catalog. ListModels is a
 // zero-token metadata call, so it doubles as key validation before anything is persisted.

@@ -85,11 +85,14 @@ type VaultService interface {
 }
 
 // WorkbenchService manages the per-vault Docker workbench container — see
-// docs/workbench/01_data_model_and_lifecycle.md for the state machine it drives. Deliberately
-// missing StartWorkbench/StopWorkbench for now (a later task).
+// docs/workbench/01_data_model_and_lifecycle.md for the state machine it drives. StartWorkbench
+// currently only implements the api_key auth mode (docs/workbench/03_auth_and_login_flow.md) —
+// subscription_login returns user_errors.WorkbenchAuthModeNotImplemented until a later task.
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	StartWorkbench(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) (domain.Workbench, error)
+	StopWorkbench(ctx context.Context, vaultID uuid.UUID) error
 	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
 }
 
@@ -344,4 +347,8 @@ type ExternalConnectionService interface {
 	CheckAnthropicConnection(
 		ctx context.Context, apiKey, baseUrl, defaultModel string,
 	) (models []anthropicClient.ModelInfo, recommendedDefaultModel string, err error)
+	// GetAnthropicApiKey returns userUuid's decrypted BYOK Anthropic api key — used by
+	// WorkbenchService to inject ANTHROPIC_API_KEY when starting a workbench in api_key auth
+	// mode. Returns user_errors.LlmKeyRequired if userUuid has no anthropic connection.
+	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
 }

@@ -80,7 +80,7 @@ func (c *Custom) Init(a *App) error {
 			return rerrors.Wrap(err, "error creating workbench docker client")
 		}
 
-		services.Workbench = workbench.New(repo.Workbenches(), repo.Vaults(), dockerClient)
+		services.Workbench = workbench.New(repo.Workbenches(), repo.Vaults(), dockerClient, services.ExternalConnections)
 	}
 
 	if a.Cfg.Environment.NoAuthEnabled {

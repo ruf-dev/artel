@@ -148,6 +148,28 @@ export type SetVaultBinaryStorageResponse = Record<string, never>;
 
 export type SetVaultBinaryStorage = Record<string, never>;
 
+export type StartWorkbenchRequest = {
+  vaultId?: string;
+  authMode?: string;
+};
+
+export type StartWorkbenchResponse = {
+  status?: string;
+  authMode?: string;
+};
+
+export type StartWorkbench = Record<string, never>;
+
+export type StopWorkbenchRequest = {
+  vaultId?: string;
+};
+
+export type StopWorkbenchResponse = {
+  status?: string;
+};
+
+export type StopWorkbench = Record<string, never>;
+
 export type VaultItem = {
   id?: string;
   name?: string;
@@ -217,5 +239,11 @@ export class VaultsAPI {
   }
   static SetVaultBinaryStorage(this:void, req: SetVaultBinaryStorageRequest, initReq?: fm.InitReq): Promise<SetVaultBinaryStorageResponse> {
     return fm.fetchRequest<SetVaultBinaryStorageResponse>(`/api/vaults/binary-storage`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static StartWorkbench(this:void, req: StartWorkbenchRequest, initReq?: fm.InitReq): Promise<StartWorkbenchResponse> {
+    return fm.fetchRequest<StartWorkbenchResponse>(`/api/vaults/workbench/start`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static StopWorkbench(this:void, req: StopWorkbenchRequest, initReq?: fm.InitReq): Promise<StopWorkbenchResponse> {
+    return fm.fetchRequest<StopWorkbenchResponse>(`/api/vaults/workbench/stop`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

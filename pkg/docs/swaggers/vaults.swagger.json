@@ -463,6 +463,70 @@
           "VaultsAPI"
         ]
       }
+    },
+    "/api/vaults/workbench/start": {
+      "post": {
+        "operationId": "VaultsAPI_StartWorkbench",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsStartWorkbenchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsStartWorkbenchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/workbench/stop": {
+      "post": {
+        "operationId": "VaultsAPI_StopWorkbench",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsStopWorkbenchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsStopWorkbenchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
     }
   },
   "definitions": {
@@ -699,6 +763,47 @@
     },
     "artel_vaultsSetVaultBinaryStorageResponse": {
       "type": "object"
+    },
+    "artel_vaultsStartWorkbenchRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "authMode": {
+          "type": "string",
+          "description": "auth_mode: \"api_key\" or \"subscription_login\" (see domain.WorkbenchAuthMode). Only\n\"api_key\" is currently implemented — any other value fails with\nuser_errors.WorkbenchAuthModeNotImplemented."
+        }
+      }
+    },
+    "artel_vaultsStartWorkbenchResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "status: \"created\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+        },
+        "authMode": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsStopWorkbenchRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsStopWorkbenchResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "status: \"created\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+        }
+      }
     },
     "artel_vaultsUnlinkS3BucketRequest": {
       "type": "object",

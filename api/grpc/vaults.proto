@@ -93,6 +93,18 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc StartWorkbench(StartWorkbench.Request) returns (StartWorkbench.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/start"
+      body: "*"
+    };
+  };
+  rpc StopWorkbench(StopWorkbench.Request) returns (StopWorkbench.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/stop"
+      body: "*"
+    };
+  };
 }
 
 message CreateVault {
@@ -223,6 +235,31 @@ message SetVaultBinaryStorage {
     bool use_couchdb = 2;
   }
   message Response {}
+}
+
+message StartWorkbench {
+  message Request {
+    string vault_id = 1;
+    // auth_mode: "api_key" or "subscription_login" (see domain.WorkbenchAuthMode). Only
+    // "api_key" is currently implemented — any other value fails with
+    // user_errors.WorkbenchAuthModeNotImplemented.
+    string auth_mode = 2;
+  }
+  message Response {
+    // status: "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
+    string status = 1;
+    string auth_mode = 2;
+  }
+}
+
+message StopWorkbench {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    // status: "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
+    string status = 1;
+  }
 }
 
 message VaultItem {

@@ -33,6 +33,8 @@ const (
 	VaultsAPI_LinkS3Bucket_FullMethodName          = "/artel_vaults.VaultsAPI/LinkS3Bucket"
 	VaultsAPI_UnlinkS3Bucket_FullMethodName        = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
 	VaultsAPI_SetVaultBinaryStorage_FullMethodName = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
+	VaultsAPI_StartWorkbench_FullMethodName        = "/artel_vaults.VaultsAPI/StartWorkbench"
+	VaultsAPI_StopWorkbench_FullMethodName         = "/artel_vaults.VaultsAPI/StopWorkbench"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -53,6 +55,8 @@ type VaultsAPIClient interface {
 	LinkS3Bucket(ctx context.Context, in *LinkS3Bucket_Request, opts ...grpc.CallOption) (*LinkS3Bucket_Response, error)
 	UnlinkS3Bucket(ctx context.Context, in *UnlinkS3Bucket_Request, opts ...grpc.CallOption) (*UnlinkS3Bucket_Response, error)
 	SetVaultBinaryStorage(ctx context.Context, in *SetVaultBinaryStorage_Request, opts ...grpc.CallOption) (*SetVaultBinaryStorage_Response, error)
+	StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error)
+	StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error)
 }
 
 type vaultsAPIClient struct {
@@ -203,6 +207,26 @@ func (c *vaultsAPIClient) SetVaultBinaryStorage(ctx context.Context, in *SetVaul
 	return out, nil
 }
 
+func (c *vaultsAPIClient) StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StartWorkbench_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_StartWorkbench_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StopWorkbench_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_StopWorkbench_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VaultsAPIServer is the server API for VaultsAPI service.
 // All implementations must embed UnimplementedVaultsAPIServer
 // for forward compatibility.
@@ -221,6 +245,8 @@ type VaultsAPIServer interface {
 	LinkS3Bucket(context.Context, *LinkS3Bucket_Request) (*LinkS3Bucket_Response, error)
 	UnlinkS3Bucket(context.Context, *UnlinkS3Bucket_Request) (*UnlinkS3Bucket_Response, error)
 	SetVaultBinaryStorage(context.Context, *SetVaultBinaryStorage_Request) (*SetVaultBinaryStorage_Response, error)
+	StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error)
+	StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error)
 	mustEmbedUnimplementedVaultsAPIServer()
 }
 
@@ -272,6 +298,12 @@ func (UnimplementedVaultsAPIServer) UnlinkS3Bucket(context.Context, *UnlinkS3Buc
 }
 func (UnimplementedVaultsAPIServer) SetVaultBinaryStorage(context.Context, *SetVaultBinaryStorage_Request) (*SetVaultBinaryStorage_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetVaultBinaryStorage not implemented")
+}
+func (UnimplementedVaultsAPIServer) StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method StartWorkbench not implemented")
+}
+func (UnimplementedVaultsAPIServer) StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method StopWorkbench not implemented")
 }
 func (UnimplementedVaultsAPIServer) mustEmbedUnimplementedVaultsAPIServer() {}
 func (UnimplementedVaultsAPIServer) testEmbeddedByValue()                   {}
@@ -546,6 +578,42 @@ func _VaultsAPI_SetVaultBinaryStorage_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_StartWorkbench_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartWorkbench_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).StartWorkbench(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_StartWorkbench_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).StartWorkbench(ctx, req.(*StartWorkbench_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_StopWorkbench_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StopWorkbench_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).StopWorkbench(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_StopWorkbench_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).StopWorkbench(ctx, req.(*StopWorkbench_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VaultsAPI_ServiceDesc is the grpc.ServiceDesc for VaultsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -608,6 +676,14 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetVaultBinaryStorage",
 			Handler:    _VaultsAPI_SetVaultBinaryStorage_Handler,
+		},
+		{
+			MethodName: "StartWorkbench",
+			Handler:    _VaultsAPI_StartWorkbench_Handler,
+		},
+		{
+			MethodName: "StopWorkbench",
+			Handler:    _VaultsAPI_StopWorkbench_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
