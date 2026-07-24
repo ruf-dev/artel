@@ -19,6 +19,7 @@ import (
 	_ "github.com/lib/pq"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/config"
+	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
@@ -66,7 +67,9 @@ func (s *QuotaSuite) SetupSuite() {
 	s.Require().NoError(err, "run migrations")
 
 	encKey := make([]byte, 32)
-	s.repos = repopg.New(db, encKey)
+	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
+	s.Require().NoError(err, "create AES encryptor")
+	s.repos = repopg.New(db, encryptor)
 
 	// SubscriptionsEnabled must be true here: with it false (the E2ESuite default) every
 	// quota check runs through FreeService, which always passes and never touches CouchDB/S3.

@@ -24,6 +24,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 	"github.com/ruf-dev/artel/internal/config"
+	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
@@ -117,7 +118,9 @@ func (s *TractE2ESuite) SetupSuite() {
 	s.Require().NoError(err, "run migrations")
 
 	encKey := make([]byte, 32)
-	s.repos = repopg.New(db, encKey)
+	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
+	s.Require().NoError(err, "create AES encryptor")
+	s.repos = repopg.New(db, encryptor)
 
 	cfg := config.EnvironmentConfig{}
 	svcs, err := svcv1.New(s.repos, cfg)

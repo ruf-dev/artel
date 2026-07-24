@@ -14,14 +14,14 @@ import (
 )
 
 type Repo struct {
-	q             *artel_q.Queries
-	encryptionKey []byte
+	q         *artel_q.Queries
+	encryptor cryptoutil.Encryptor
 }
 
-func New(db sqldb.DB, encryptionKey []byte) *Repo {
+func New(db sqldb.DB, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
-		q:             artel_q.New(db),
-		encryptionKey: encryptionKey,
+		q:         artel_q.New(db),
+		encryptor: encryptor,
 	}
 }
 
@@ -32,7 +32,7 @@ func (r *Repo) Register(
 	accessKey string,
 	secretKeyPlain []byte,
 ) (uuid.UUID, error) {
-	secretKeyEnc, err := cryptoutil.Encrypt(r.encryptionKey, secretKeyPlain)
+	secretKeyEnc, err := r.encryptor.Encrypt(secretKeyPlain)
 	if err != nil {
 		return uuid.UUID{}, rerrors.Wrap(err, "error encrypting secret key")
 	}
@@ -60,7 +60,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (domain.S3Instance, error)
 		return domain.S3Instance{}, rerrors.Wrap(err, "error getting s3 instance")
 	}
 
-	decrypted, err := cryptoutil.Decrypt(r.encryptionKey, row.SecretKeyEnc)
+	decrypted, err := r.encryptor.Decrypt(row.SecretKeyEnc)
 	if err != nil {
 		return domain.S3Instance{}, rerrors.Wrap(err, "error decrypting secret key")
 	}
@@ -109,7 +109,7 @@ func (r *Repo) Update(
 	accessKey string,
 	secretKeyPlain []byte,
 ) error {
-	secretKeyEnc, err := cryptoutil.Encrypt(r.encryptionKey, secretKeyPlain)
+	secretKeyEnc, err := r.encryptor.Encrypt(secretKeyPlain)
 	if err != nil {
 		return rerrors.Wrap(err, "error encrypting secret key")
 	}
@@ -151,5 +151,5 @@ func (r *Repo) Exists(ctx context.Context) (bool, error) {
 }
 
 func (r *Repo) WithTx(tx sqldb.DB) repository.S3Instances {
-	return New(tx, r.encryptionKey)
+	return New(tx, r.encryptor)
 }

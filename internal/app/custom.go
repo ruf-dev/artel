@@ -6,7 +6,6 @@ package app
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -58,23 +57,12 @@ func (c *Custom) Init(a *App) error {
 		log.Logger = log.Logger.Hook(hook)
 	}
 
-	encKeyHex := a.Cfg.Environment.CredsEncryptionKey
-	encKey, err := hex.DecodeString(encKeyHex)
+	encryptor, err := initEncryption(a.Cfg.Environment.CredsEncryptionKey)
 	if err != nil {
-		return rerrors.Wrap(err, "error decoding creds_encryption_key")
+		return rerrors.Wrap(err, "error initializing creds encryption")
 	}
 
-	if !cryptoutil.IsValidKeySize(len(encKey)) {
-		msg := fmt.Sprintf(
-			"ENVIRONMENT_CREDS_ENCRYPTION_KEY must decode to 16, 24, or 32 bytes for AES-128/192/256; "+
-				"got %d bytes. Generate one with: openssl rand -hex 32",
-			len(encKey),
-		)
-
-		return rerrors.New(msg)
-	}
-
-	repo := repopg.New(a.Postgres, encKey)
+	repo := repopg.New(a.Postgres, encryptor)
 
 	services, err := svcv1.New(repo, a.Cfg.Environment)
 	if err != nil {
@@ -132,6 +120,7 @@ func (c *Custom) Init(a *App) error {
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), a.Cfg.Environment.NoAuthEnabled,
+		encryptor.IsPlainText(),
 	)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
@@ -211,6 +200,34 @@ func (c *Custom) Init(a *App) error {
 	c.Transport.AddHttpHandler("/", ui.NewHandler())
 
 	return nil
+}
+
+// initEncryption builds the Encryptor used by the repository layer to encrypt/decrypt
+// stored credentials. An empty encKeyHex is a supported "encryption off" configuration
+// (see config/dev.yaml) — it degrades to NoOpEncryptor instead of failing startup, and
+// the resulting insecure mode is surfaced to operators via a warning log and to the
+// frontend via GetConfig.CredsEncrypted (see auth_api.NewAuthImpl).
+func initEncryption(encKeyHex string) (cryptoutil.Encryptor, error) {
+	if encKeyHex == "" {
+		log.Warn().Msg(
+			"ENVIRONMENT_CREDS_ENCRYPTION_KEY is not set — running in INSECURE mode, " +
+				"all credentials will be stored as plain text",
+		)
+
+		return cryptoutil.NoOpEncryptor{}, nil
+	}
+
+	encKey, err := hex.DecodeString(encKeyHex)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error decoding creds_encryption_key")
+	}
+
+	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error creating AES encryptor")
+	}
+
+	return encryptor, nil
 }
 
 // Start - launch custom handlers

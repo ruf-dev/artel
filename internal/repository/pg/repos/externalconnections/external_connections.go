@@ -17,19 +17,19 @@ import (
 )
 
 type Repo struct {
-	q             *artel_q.Queries
-	encryptionKey []byte
+	q         *artel_q.Queries
+	encryptor cryptoutil.Encryptor
 }
 
-func New(q *artel_q.Queries, encryptionKey []byte) *Repo {
+func New(q *artel_q.Queries, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
-		q:             q,
-		encryptionKey: encryptionKey,
+		q:         q,
+		encryptor: encryptor,
 	}
 }
 
 func (r *Repo) Upsert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error) {
-	credEnc, err := cryptoutil.Encrypt(r.encryptionKey, conn.CredentialsJSON)
+	credEnc, err := r.encryptor.Encrypt(conn.CredentialsJSON)
 	if err != nil {
 		return domain.ExternalConnection{}, rerrors.Wrap(err, "error encrypting credentials")
 	}
@@ -47,7 +47,7 @@ func (r *Repo) Upsert(ctx context.Context, conn domain.ExternalConnection) (doma
 		return domain.ExternalConnection{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error upserting external connection")
 	}
 
-	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+	credJSON, err := r.encryptor.Decrypt(row.CredentialsEnc)
 	if err != nil {
 		return domain.ExternalConnection{}, rerrors.Wrap(err, "error decrypting credentials")
 	}
@@ -56,7 +56,7 @@ func (r *Repo) Upsert(ctx context.Context, conn domain.ExternalConnection) (doma
 }
 
 func (r *Repo) Insert(ctx context.Context, conn domain.ExternalConnection) (domain.ExternalConnection, error) {
-	credEnc, err := cryptoutil.Encrypt(r.encryptionKey, conn.CredentialsJSON)
+	credEnc, err := r.encryptor.Encrypt(conn.CredentialsJSON)
 	if err != nil {
 		return domain.ExternalConnection{}, rerrors.Wrap(err, "error encrypting credentials")
 	}
@@ -74,7 +74,7 @@ func (r *Repo) Insert(ctx context.Context, conn domain.ExternalConnection) (doma
 		return domain.ExternalConnection{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error inserting external connection")
 	}
 
-	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+	credJSON, err := r.encryptor.Decrypt(row.CredentialsEnc)
 	if err != nil {
 		return domain.ExternalConnection{}, rerrors.Wrap(err, "error decrypting credentials")
 	}
@@ -91,7 +91,7 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.ExternalConnec
 		)
 	}
 
-	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+	credJSON, err := r.encryptor.Decrypt(row.CredentialsEnc)
 	if err != nil {
 		return domain.ExternalConnection{}, rerrors.Wrap(err, "error decrypting credentials")
 	}
@@ -121,7 +121,7 @@ func (r *Repo) GetByUserAndProvider(
 		)
 	}
 
-	credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+	credJSON, err := r.encryptor.Decrypt(row.CredentialsEnc)
 	if err != nil {
 		return sql.Null[domain.ExternalConnection]{}, rerrors.Wrap(err, "error decrypting credentials")
 	}
@@ -143,7 +143,7 @@ func (r *Repo) ListByUser(ctx context.Context, userUuid uuid.UUID) ([]domain.Ext
 	conns := make([]domain.ExternalConnection, len(rows))
 
 	for i, row := range rows {
-		credJSON, err := cryptoutil.Decrypt(r.encryptionKey, row.CredentialsEnc)
+		credJSON, err := r.encryptor.Decrypt(row.CredentialsEnc)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error decrypting credentials")
 		}

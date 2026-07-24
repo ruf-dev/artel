@@ -20,6 +20,7 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"github.com/ruf-dev/artel/internal/config"
+	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
@@ -64,7 +65,9 @@ func (s *TractVerifySuite) SetupSuite() {
 	s.db = db
 
 	encKey := make([]byte, 32)
-	s.repos = repopg.New(db, encKey)
+	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
+	s.Require().NoError(err, "create AES encryptor")
+	s.repos = repopg.New(db, encryptor)
 
 	cfg := config.EnvironmentConfig{}
 	s.svcs, err = svcv1.New(s.repos, cfg)

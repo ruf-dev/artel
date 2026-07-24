@@ -14,19 +14,19 @@ import (
 )
 
 type Repo struct {
-	q             *artel_q.Queries
-	encryptionKey []byte
+	q         *artel_q.Queries
+	encryptor cryptoutil.Encryptor
 }
 
-func New(db sqldb.DB, encryptionKey []byte) *Repo {
+func New(db sqldb.DB, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
-		q:             artel_q.New(db),
-		encryptionKey: encryptionKey,
+		q:         artel_q.New(db),
+		encryptor: encryptor,
 	}
 }
 
 func (r *Repo) Register(ctx context.Context, url, username string, passwordPlain []byte) (uuid.UUID, error) {
-	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, passwordPlain)
+	passwordEnc, err := r.encryptor.Encrypt(passwordPlain)
 	if err != nil {
 		return uuid.UUID{}, rerrors.Wrap(err, "encrypt password")
 	}
@@ -51,7 +51,7 @@ func (r *Repo) Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, err
 		return domain.CouchInstance{}, rerrors.Wrap(err, "get couch instance")
 	}
 
-	decrypted, err := cryptoutil.Decrypt(r.encryptionKey, row.PasswordEnc)
+	decrypted, err := r.encryptor.Decrypt(row.PasswordEnc)
 	if err != nil {
 		return domain.CouchInstance{}, rerrors.Wrap(err, "decrypt password")
 	}
@@ -87,7 +87,7 @@ func (r *Repo) List(ctx context.Context) ([]domain.CouchInstance, error) {
 }
 
 func (r *Repo) Update(ctx context.Context, id uuid.UUID, url, username string, passwordPlain []byte) error {
-	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, passwordPlain)
+	passwordEnc, err := r.encryptor.Encrypt(passwordPlain)
 	if err != nil {
 		return rerrors.Wrap(err, "encrypt password")
 	}
@@ -122,7 +122,7 @@ func (r *Repo) RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount,
 		return domain.CouchInstanceWithAccount{}, pg_err.UnwrapPgErr(err)
 	}
 
-	decrypted, err := cryptoutil.Decrypt(r.encryptionKey, row.PasswordEnc)
+	decrypted, err := r.encryptor.Decrypt(row.PasswordEnc)
 	if err != nil {
 		return domain.CouchInstanceWithAccount{}, rerrors.Wrap(err, "decrypt password")
 	}
@@ -142,5 +142,5 @@ func (r *Repo) RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount,
 }
 
 func (r *Repo) WithTx(tx sqldb.DB) repository.CouchInstances {
-	return New(tx, r.encryptionKey)
+	return New(tx, r.encryptor)
 }

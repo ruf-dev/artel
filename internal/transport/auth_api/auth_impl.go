@@ -24,6 +24,7 @@ type authHandler struct {
 	s3InstanceSvc    service.S3InstanceService
 	telegramClientID string
 	noAuthEnabled    bool
+	credsEncrypted   bool
 }
 
 func (h *authHandler) Register(
@@ -114,6 +115,7 @@ func (h *authHandler) GetConfig(
 		TelegramClientId: h.telegramClientID,
 		IsS3Available:    hasS3,
 		NoAuthEnabled:    h.noAuthEnabled,
+		CredsEncrypted:   h.credsEncrypted,
 	}, nil
 }
 
@@ -176,6 +178,7 @@ type AuthImpl struct {
 
 func NewAuthImpl(
 	authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService, noAuthEnabled bool,
+	credsEncrypted bool,
 ) *AuthImpl {
 	return &AuthImpl{
 		handler: &authHandler{
@@ -183,6 +186,7 @@ func NewAuthImpl(
 			telegramClientID: telegramClientID,
 			s3InstanceSvc:    s3InstanceSvc,
 			noAuthEnabled:    noAuthEnabled,
+			credsEncrypted:   credsEncrypted,
 		},
 	}
 }

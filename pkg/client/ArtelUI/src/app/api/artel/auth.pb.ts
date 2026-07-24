@@ -82,6 +82,7 @@ export type GetConfigResponse = {
   telegramClientId?: string;
   isS3Available?: boolean;
   noAuthEnabled?: boolean;
+  credsEncrypted?: boolean;
 };
 
 export type GetConfig = Record<string, never>;

@@ -14,14 +14,14 @@ import (
 )
 
 type Repo struct {
-	q             *artel_q.Queries
-	encryptionKey []byte
+	q         *artel_q.Queries
+	encryptor cryptoutil.Encryptor
 }
 
-func New(db sqldb.DB, encryptionKey []byte) *Repo {
+func New(db sqldb.DB, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
-		q:             artel_q.New(db),
-		encryptionKey: encryptionKey,
+		q:         artel_q.New(db),
+		encryptor: encryptor,
 	}
 }
 
@@ -31,7 +31,7 @@ func (r *Repo) Upsert(
 	username string,
 	passwordPlain string,
 ) (domain.CouchAccount, error) {
-	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passwordPlain))
+	passwordEnc, err := r.encryptor.Encrypt([]byte(passwordPlain))
 	if err != nil {
 		return domain.CouchAccount{}, rerrors.Wrap(err, "encrypt password")
 	}
@@ -81,7 +81,7 @@ func (r *Repo) GetByUserAndInstance(ctx context.Context, userID, instanceID uuid
 		return domain.CouchAccount{}, rerrors.Wrap(err, "get couch account")
 	}
 
-	passwordPlain, err := cryptoutil.Decrypt(r.encryptionKey, row.CouchPasswordEnc)
+	passwordPlain, err := r.encryptor.Decrypt(row.CouchPasswordEnc)
 	if err != nil {
 		return domain.CouchAccount{}, rerrors.Wrap(err, "decrypt password")
 	}
@@ -107,7 +107,7 @@ func (r *Repo) ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.Couch
 	accounts := make([]domain.CouchAccount, len(rows))
 
 	for i, row := range rows {
-		passwordPlain, err := cryptoutil.Decrypt(r.encryptionKey, row.CouchPasswordEnc)
+		passwordPlain, err := r.encryptor.Decrypt(row.CouchPasswordEnc)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "decrypt password")
 		}
@@ -126,7 +126,7 @@ func (r *Repo) ListByUser(ctx context.Context, userID uuid.UUID) ([]domain.Couch
 }
 
 func (r *Repo) UpdatePassword(ctx context.Context, username string, instanceID uuid.UUID, passwordPlain string) error {
-	passwordEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passwordPlain))
+	passwordEnc, err := r.encryptor.Encrypt([]byte(passwordPlain))
 	if err != nil {
 		return rerrors.Wrap(err, "error encrypting password")
 	}
@@ -155,5 +155,5 @@ func (r *Repo) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 func (r *Repo) WithTx(tx sqldb.DB) repository.CouchAccounts {
-	return New(tx, r.encryptionKey)
+	return New(tx, r.encryptor)
 }

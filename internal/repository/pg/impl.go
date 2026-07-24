@@ -3,6 +3,7 @@ package pg
 import (
 	"database/sql"
 
+	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
@@ -161,29 +162,29 @@ func (r Repos) TriggerPresets() repository.TriggerPresetsRepo {
 	return r.triggerPresets
 }
 
-func New(db *sql.DB, encryptionKey []byte) *Repos {
+func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 	txManager := tx_manager.New(db)
 
 	return &Repos{
-		vaults:           vaults.New(db, encryptionKey),
+		vaults:           vaults.New(db, encryptor),
 		workbenches:      workbenches.New(db),
 		vaultMembers:     vaultmembers.New(db),
 		vaultInvitesRepo: vaultinvites.New(db),
-		couchInstances:   couchinstances.New(db, encryptionKey),
-		s3Instances:      s3instances.New(db, encryptionKey),
+		couchInstances:   couchinstances.New(db, encryptor),
+		s3Instances:      s3instances.New(db, encryptor),
 
 		users:                 users.New(q, db),
 		sessions:              sessions.New(q),
 		subscriptions:         subscriptions.New(q),
 		subscriptionPlans:     subscriptionplans.New(q),
-		couchAccounts:         couchaccounts.New(db, encryptionKey),
+		couchAccounts:         couchaccounts.New(db, encryptor),
 		userPermissions:       userpermissions.New(q),
 		mcpKey:                mcpkeys.New(q),
 		pendingAuthCodes:      pendingauthcodes.New(q),
 		mailServerSuggestions: mailserversuggestions.New(q),
 		promptsRepo:           prompts.New(db),
-		externalConnections:   externalconnections.New(q, encryptionKey),
+		externalConnections:   externalconnections.New(q, encryptor),
 		mcpSpreadsheets:       mcpspreadsheets.New(q),
 		mcpDefinitions:        mcpdefinitions.New(q),
 		mcpConnectors:         mcpconnectors.New(q),

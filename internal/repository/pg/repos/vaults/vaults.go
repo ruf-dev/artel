@@ -15,14 +15,14 @@ import (
 )
 
 type Repo struct {
-	q             *artel_q.Queries
-	encryptionKey []byte
+	q         *artel_q.Queries
+	encryptor cryptoutil.Encryptor
 }
 
-func New(db sqldb.DB, encryptionKey []byte) *Repo {
+func New(db sqldb.DB, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
-		q:             artel_q.New(db),
-		encryptionKey: encryptionKey,
+		q:         artel_q.New(db),
+		encryptor: encryptor,
 	}
 }
 
@@ -31,7 +31,7 @@ func (r *Repo) Upsert(
 	userID, couchInstanceID uuid.UUID,
 	name, couchDBName, status, passphrase string,
 ) (domain.Vault, error) {
-	passphraseEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passphrase))
+	passphraseEnc, err := r.encryptor.Encrypt([]byte(passphrase))
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error encrypting livesync passphrase")
 	}
@@ -62,7 +62,7 @@ func (r *Repo) Upsert(
 		row.S3BucketName,
 		row.UseCouchdbForBinaries,
 		row.CreatedAt,
-		r.encryptionKey,
+		r.encryptor,
 	)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
@@ -89,7 +89,7 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error) 
 		row.S3BucketName,
 		row.UseCouchdbForBinaries,
 		row.CreatedAt,
-		r.encryptionKey,
+		r.encryptor,
 	)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
@@ -121,7 +121,7 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 		row.S3BucketName,
 		row.UseCouchdbForBinaries,
 		row.CreatedAt,
-		r.encryptionKey,
+		r.encryptor,
 	)
 	if err != nil {
 		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
@@ -145,7 +145,7 @@ func (r *Repo) UpdateStatus(ctx context.Context, vaultID uuid.UUID, status strin
 }
 
 func (r *Repo) SetLiveSyncPassphrase(ctx context.Context, vaultID uuid.UUID, passphrase string) error {
-	passphraseEnc, err := cryptoutil.Encrypt(r.encryptionKey, []byte(passphrase))
+	passphraseEnc, err := r.encryptor.Encrypt([]byte(passphrase))
 	if err != nil {
 		return rerrors.Wrap(err, "error encrypting livesync passphrase")
 	}
@@ -184,7 +184,7 @@ func (r *Repo) ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain
 			row.S3BucketName,
 			row.UseCouchdbForBinaries,
 			row.CreatedAt,
-			r.encryptionKey,
+			r.encryptor,
 		)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error mapping vault row")
@@ -244,7 +244,7 @@ func (r *Repo) SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, 
 }
 
 func (r *Repo) WithTx(tx sqldb.DB) repository.Vaults {
-	return New(tx, r.encryptionKey)
+	return New(tx, r.encryptor)
 }
 
 func rowToVault(
@@ -257,7 +257,7 @@ func rowToVault(
 	s3BucketName sql.NullString,
 	useCouchDBForBinaries bool,
 	createdAt time.Time,
-	encryptionKey []byte,
+	encryptor cryptoutil.Encryptor,
 ) (domain.Vault, error) {
 	v := domain.Vault{
 		Uuid:                  id,
@@ -273,7 +273,7 @@ func rowToVault(
 	}
 
 	if len(passphraseEnc) > 0 {
-		decrypted, err := cryptoutil.Decrypt(encryptionKey, passphraseEnc)
+		decrypted, err := encryptor.Decrypt(passphraseEnc)
 		if err != nil {
 			return domain.Vault{}, rerrors.Wrap(err, "error decrypting livesync passphrase")
 		}

@@ -883,6 +883,7 @@ type GetConfig_Response struct {
 	TelegramClientId string                 `protobuf:"bytes,1,opt,name=telegram_client_id,json=telegramClientId,proto3" json:"telegram_client_id,omitempty"`
 	IsS3Available    bool                   `protobuf:"varint,2,opt,name=is_s3_available,json=isS3Available,proto3" json:"is_s3_available,omitempty"`
 	NoAuthEnabled    bool                   `protobuf:"varint,3,opt,name=no_auth_enabled,json=noAuthEnabled,proto3" json:"no_auth_enabled,omitempty"`
+	CredsEncrypted   bool                   `protobuf:"varint,4,opt,name=creds_encrypted,json=credsEncrypted,proto3" json:"creds_encrypted,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -934,6 +935,13 @@ func (x *GetConfig_Response) GetIsS3Available() bool {
 func (x *GetConfig_Response) GetNoAuthEnabled() bool {
 	if x != nil {
 		return x.NoAuthEnabled
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetCredsEncrypted() bool {
+	if x != nil {
+		return x.CredsEncrypted
 	}
 	return false
 }
@@ -1092,13 +1100,14 @@ const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"expires_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12#\n" +
 	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\x12H\n" +
-	"\x12refresh_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x10refreshExpiresAt\"\xa1\x01\n" +
+	"\x12refresh_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x10refreshExpiresAt\"\xca\x01\n" +
 	"\tGetConfig\x1a\t\n" +
-	"\aRequest\x1a\x88\x01\n" +
+	"\aRequest\x1a\xb1\x01\n" +
 	"\bResponse\x12,\n" +
 	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\x12&\n" +
 	"\x0fis_s3_available\x18\x02 \x01(\bR\risS3Available\x12&\n" +
-	"\x0fno_auth_enabled\x18\x03 \x01(\bR\rnoAuthEnabled\"\xa0\x01\n" +
+	"\x0fno_auth_enabled\x18\x03 \x01(\bR\rnoAuthEnabled\x12'\n" +
+	"\x0fcreds_encrypted\x18\x04 \x01(\bR\x0ecredsEncrypted\"\xa0\x01\n" +
 	"\vPermissions\x12)\n" +
 	"\x10is_administrator\x18\x01 \x01(\bR\x0fisAdministrator\x12\x1d\n" +
 	"\n" +

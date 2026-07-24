@@ -20,6 +20,7 @@ export async function pingServer(): Promise<boolean> {
             signal: controller.signal,
         })
         useAppConfig.getState().setNoAuthEnabled(cfg.noAuthEnabled === true)
+        useAppConfig.getState().setCredsEncrypted(cfg.credsEncrypted === true)
         return true
     } catch (err) {
         // Three cases mean "down":
