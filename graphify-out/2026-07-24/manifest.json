@@ -3590,8 +3590,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/init/components/LoginContent/LoginContent.tsx": {
-    "mtime": 1783754973.741836,
-    "ast_hash": "fe77f8d4130584c0cd476069bf631cec",
+    "mtime": 1784881214.131881,
+    "ast_hash": "e25cbdb7dc26d1fd2b4b09d2f05f6053",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/mcp-auth/components/McpLogin/McpLogin.tsx": {
@@ -5262,6 +5262,11 @@
   "migrations/056_seed_gitlab_mr_template.sql": {
     "mtime": 1784875707.8248255,
     "ast_hash": "55f4d24a96fc4e56b5efe0076b22e513",
+    "semantic_hash": ""
+  },
+  "scripts/setup_dev_garage.sh": {
+    "mtime": 1784877072.2157533,
+    "ast_hash": "f53b7f8f59a68a9c6f7532e4104b1bbc",
     "semantic_hash": ""
   }
 }

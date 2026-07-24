@@ -3590,8 +3590,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/init/components/LoginContent/LoginContent.tsx": {
-    "mtime": 1784881214.131881,
-    "ast_hash": "e25cbdb7dc26d1fd2b4b09d2f05f6053",
+    "mtime": 1784896714.670554,
+    "ast_hash": "00aa14cf6b206b27cd8e61fc5d5253f5",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/mcp-auth/components/McpLogin/McpLogin.tsx": {
