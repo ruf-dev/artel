@@ -111,8 +111,5 @@
   "109": "GitlabCheckButton.tsx",
   "110": "TrelloCheckButton.tsx",
   "111": "TopbarDrawerCloseButton.tsx",
-  "112": "InsertConflictDialog.tsx",
-  "113": "TopbarMobileTrigger.tsx",
-  "114": "bun-test.d.ts",
-  "115": "ConnectionFilterRow.tsx"
+  "112": "InsertConflictDialog.tsx"
 }
