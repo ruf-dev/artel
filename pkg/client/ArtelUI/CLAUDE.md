@@ -197,6 +197,22 @@ splitting an existing fat page.
   content should be **portaled to `document.body`** (`createPortal`) and positioned via
   `getBoundingClientRect()`, not stacked with `z-index` — see
   `components/TemplateInput/TemplateInput.tsx` for the pattern.
+- **Gotcha: flex/grid items paint as atomic units, one level deep.** "Put the element
+  later in the DOM" only works if the *direct flex/grid item* containing it is later —
+  a `position:absolute` overlay nested inside flex item A still paints underneath flex
+  item B if B comes after A as a sibling, even though the overlay's own DOM position is
+  deeply nested and even though the overlay is `position:absolute`. Flex/grid items
+  paint in (order-modified) document order as atomic blocks; a positioned descendant
+  doesn't escape its own item's paint slot just because it overflows the item's box
+  visually. Symptom: an open dropdown/popover that visually overlaps a later sibling
+  renders (and hit-tests) *underneath* it — clicking the visible dropdown selects the
+  sibling in dev tools instead. Two ways out, prefer in this order: (1) reorder the
+  actual DOM children so the item containing the overlay comes *last*, then use
+  `flex-direction: column-reverse` (or `row-reverse`) to restore the original visual
+  order — see `pages/notes/components/NotesSidebar/components/SidebarTopBar/*` (the
+  vault-picker dropdown DOM-sits after the search bar, `column-reverse` displays it
+  above); (2) if reordering isn't feasible, portal the overlay per the rule above. Do
+  not reach for `z-index` on the flex item either — same rule applies.
 - Global overlays (dialogs, toasts) already work without `z-index` because they're mounted
   last, as a sibling after `<Routes>`, in `pages/segments/Dialog.tsx` — follow that precedent
   for any new global overlay instead of reaching for `z-index`.

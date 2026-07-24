@@ -38,7 +38,7 @@
     }
 
     .SearchIcon {
-        color: var(--color-fg-disabled);
+        color: var(--color-fg-secondary);
         flex-shrink: 0;
     }
 

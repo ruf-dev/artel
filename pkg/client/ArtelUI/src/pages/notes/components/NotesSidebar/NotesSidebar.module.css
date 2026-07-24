@@ -7,16 +7,6 @@
     overflow: hidden;
 }
 
-.VaultPickerWrapper {
-    padding: 0.56rem 0.7rem 0.28rem;
-    flex-shrink: 0;
-}
-
-.SearchWrapper {
-    padding: 0.28rem 0.7rem 0.42rem;
-    flex-shrink: 0;
-}
-
 .ScrollArea {
     flex: 1;
     overflow-y: auto;

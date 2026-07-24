@@ -1,11 +1,9 @@
-import {Dropdown} from "@vervstack/chures"
-
 import {useNotes} from "@/app/hooks/Notes.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import CreateNoteDialog from "@/pages/notes/components/CreateNoteDialog/CreateNoteDialog.tsx"
 import FolderSection from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.tsx"
-import NotesSearchBar from "@/pages/notes/components/NotesSidebar/components/NotesSearchBar/NotesSearchBar.tsx"
+import SidebarTopBar from "@/pages/notes/components/NotesSidebar/components/SidebarTopBar/SidebarTopBar.tsx"
 import SearchResultsList from "@/pages/notes/components/NotesSidebar/components/SearchResultsList/SearchResultsList.tsx"
 import SearchResultsTree from "@/pages/notes/components/NotesSidebar/components/SearchResultsTree/SearchResultsTree.tsx"
 import {useNotesSearchQuery} from "@/pages/notes/components/NotesSidebar/processes/useNotesSearchQuery.ts"
@@ -64,17 +62,13 @@ export default function NotesSidebar({vaults, showCreateButton = true}: NotesSid
 
     return (
         <div className={cls.NotesSidebarContainer}>
-            <div className={cls.VaultPickerWrapper}>
-                <Dropdown
-                    placeholder="Select vault…"
-                    options={vaults}
-                    value={vaultId ? [vaultId] : []}
-                    onChange={handleVaultChange}
-                />
-            </div>
-            <div className={cls.SearchWrapper}>
-                <NotesSearchBar treeView={treeView} onToggleTreeView={toggleTreeView}/>
-            </div>
+            <SidebarTopBar
+                vaults={vaults}
+                vaultId={vaultId}
+                onVaultChange={handleVaultChange}
+                treeView={treeView}
+                onToggleTreeView={toggleTreeView}
+            />
             <div className={cls.ScrollArea} ref={scrollAreaRef}>
                 {!vaultId && (
                     <div className={cls.EmptyVaultHint}>Select a vault to browse notes</div>

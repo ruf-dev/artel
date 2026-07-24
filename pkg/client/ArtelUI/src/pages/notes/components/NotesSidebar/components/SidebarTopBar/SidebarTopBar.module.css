@@ -1,0 +1,30 @@
+.SidebarTopBarContainer {
+    display: flex;
+    flex-direction: column-reverse;
+
+    /* DOM order is search-bar-then-picker (see SidebarTopBar.tsx), so the
+       picker — being later in the DOM — paints on top of the search bar
+       within this flex container, regardless of flex-direction. Without
+       this, the picker's open panel got painted underneath the search bar
+       (a sibling flex item painting over it) and was invisible/unclickable
+       even though it wasn't actually transparent. `column-reverse` here
+       only restores the original visual order (picker above search). */
+
+    & .VaultPickerWrapper {
+        padding: 0.56rem 0.7rem 0.28rem;
+        flex-shrink: 0;
+
+        /* chures' dropdown trigger background otherwise resolves to
+           --color-bg-input, which sits within a few rgb units of the
+           sidebar's own --color-bg-card — nudge it away from the
+           surrounding surface so the closed trigger reads as a distinct
+           box instead of blending into the sidebar. */
+        --chures-input-bg: color-mix(in srgb, var(--color-bg-input) 100%, var(--color-fg-primary) 6%);
+        --chures-dropdown-bg: color-mix(in srgb, var(--color-bg-elevated) 100%, var(--color-fg-primary) 6%);
+    }
+
+    & .SearchWrapper {
+        padding: 0.28rem 0.7rem 0.42rem;
+        flex-shrink: 0;
+    }
+}
