@@ -185,72 +185,72 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/models.go": {
-    "mtime": 1784727189.4463546,
-    "ast_hash": "cae6eac0dc514dedcc4928b4fe6adf03",
+    "mtime": 1784875718.122996,
+    "ast_hash": "8f4e6081681e66fd71461f3fbae36311",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/db.go": {
-    "mtime": 1784727189.4426591,
+    "mtime": 1784875718.1224997,
     "ast_hash": "9de76c60cbdd338abed02aaea64adea5",
     "semantic_hash": "9de76c60cbdd338abed02aaea64adea5"
   },
   "internal/repository/pg/generated/couch_accounts.sql.go": {
-    "mtime": 1784727189.444217,
+    "mtime": 1784875718.1214542,
     "ast_hash": "3bcc15a9bc8fd861b2fb2329ccdbdd6d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/sessions.sql.go": {
-    "mtime": 1784727189.442184,
+    "mtime": 1784875718.1235368,
     "ast_hash": "9b860cc8810fe9c8dc34bb2ed43bfcc8",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mail_server_suggestions.sql.go": {
-    "mtime": 1784727189.4465206,
+    "mtime": 1784875718.1257534,
     "ast_hash": "24f21536c316ccc7dbe20ac0bf98c548",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/vaults.sql.go": {
-    "mtime": 1784727189.4460723,
+    "mtime": 1784875718.1247854,
     "ast_hash": "675c6a8938fd303b35df02be9809fe68",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/couch_instances.sql.go": {
-    "mtime": 1784727189.4445472,
+    "mtime": 1784875718.1253436,
     "ast_hash": "391f77917d25be53e3ccedd24d5210c8",
     "semantic_hash": "391f77917d25be53e3ccedd24d5210c8"
   },
   "internal/repository/pg/generated/vault_members.sql.go": {
-    "mtime": 1784727189.4458146,
+    "mtime": 1784875718.1270547,
     "ast_hash": "c53b291e580fa193cf60298e42724a13",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/subscriptions.sql.go": {
-    "mtime": 1784727189.4443576,
+    "mtime": 1784875718.1218722,
     "ast_hash": "d0260efe27e20f7ac5faac0d1ea8863d",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/querier.go": {
-    "mtime": 1784727189.4438183,
-    "ast_hash": "7b90e90e82ea4d85b64afe3d36c8d021",
+    "mtime": 1784875718.123685,
+    "ast_hash": "5c9274511cb019008c26dd6a013b236c",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/users.sql.go": {
-    "mtime": 1784727189.4450948,
+    "mtime": 1784875718.1265044,
     "ast_hash": "5c59b1f4c9d2fbcb0abbda44c0d14970",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/user_permissions.sql.go": {
-    "mtime": 1784727189.4440806,
+    "mtime": 1784875718.1256912,
     "ast_hash": "5c83417386f895af998b4a5d2c6a3059",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/pending_auth_codes.sql.go": {
-    "mtime": 1784727189.4440236,
+    "mtime": 1784875718.1240864,
     "ast_hash": "db138e65c0bd9793ab41270580a5c418",
     "semantic_hash": "db138e65c0bd9793ab41270580a5c418"
   },
   "internal/repository/pg/generated/mcp_keys.sql.go": {
-    "mtime": 1784727189.4456182,
+    "mtime": 1784875718.1233742,
     "ast_hash": "02433b07fa0a76513ac5cba0bca04f2e",
     "semantic_hash": ""
   },
@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "internal/app/custom.go": {
-    "mtime": 1784832596.2864704,
-    "ast_hash": "12f97b7e236d3cd9180215c9be3facfb",
+    "mtime": 1784874054.6846302,
+    "ast_hash": "2f75763937821a12baa4867719cfebf3",
     "semantic_hash": ""
   },
   "internal/app/config.go": {
@@ -1060,8 +1060,8 @@
     "semantic_hash": ""
   },
   "config/config_template.yaml": {
-    "mtime": 1784728863.5407565,
-    "ast_hash": "7dd68c54754da8f963869e6ed8d1924b",
+    "mtime": 1784874231.9278185,
+    "ast_hash": "ac7e97033aca6bccda7b0ddd0a9d4ec1",
     "semantic_hash": ""
   },
   ".claude/CLAUDE.md": {
@@ -1250,27 +1250,27 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/vault_invites.sql.go": {
-    "mtime": 1784727189.4428084,
+    "mtime": 1784875718.1254895,
     "ast_hash": "01e2b4448bc07e4b22ea8cab5513c2e3",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/external_connections.sql.go": {
-    "mtime": 1784727189.4432104,
+    "mtime": 1784875718.1239407,
     "ast_hash": "0c38a977dcbfc64a930c297092b0b537",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_connectors.sql.go": {
-    "mtime": 1784727189.4459522,
+    "mtime": 1784875718.1261475,
     "ast_hash": "f226e824352d683836f080889cbd17fa",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcps.sql.go": {
-    "mtime": 1784727189.4436104,
+    "mtime": 1784875718.1259043,
     "ast_hash": "60fa9cd8401b8dc13c22784960b39efd",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_spreadsheets.sql.go": {
-    "mtime": 1784727189.4430373,
+    "mtime": 1784875718.1226854,
     "ast_hash": "e9042da7b4ee16acda54482c520bf412",
     "semantic_hash": ""
   },
@@ -2135,17 +2135,17 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/triggers.sql.go": {
-    "mtime": 1784727189.444691,
+    "mtime": 1784875718.1222663,
     "ast_hash": "bb2b9fcd74d3933472c90e6e4371aa53",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/tracts.sql.go": {
-    "mtime": 1784727189.444933,
+    "mtime": 1784875718.127225,
     "ast_hash": "8b95465d09343b2cbb3bf2aa156b65f8",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/mcp_tools.sql.go": {
-    "mtime": 1784727189.442508,
+    "mtime": 1784875718.126321,
     "ast_hash": "2dc3aff491ced9968797e85c44349a6e",
     "semantic_hash": ""
   },
@@ -2245,8 +2245,8 @@
     "semantic_hash": ""
   },
   "internal/domain/tract.go": {
-    "mtime": 1784542956.742543,
-    "ast_hash": "c9e344c3e3b4e6762ac97719ace0eeb6",
+    "mtime": 1784875788.259563,
+    "ast_hash": "22a2d449b735de4832ea2fb9bfa45f51",
     "semantic_hash": ""
   },
   "internal/client/telegram/oidc_test.go": {
@@ -2590,7 +2590,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/s3_instances.sql.go": {
-    "mtime": 1784727189.4454193,
+    "mtime": 1784875718.1267767,
     "ast_hash": "d209c73151901f4d560cb09bc5687dda",
     "semantic_hash": ""
   },
@@ -2770,7 +2770,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/trigger_presets.sql.go": {
-    "mtime": 1784727189.446455,
+    "mtime": 1784875718.1216695,
     "ast_hash": "e959b5ececc94e057f59a69ab399649e",
     "semantic_hash": ""
   },
@@ -4385,7 +4385,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/subscription_plans.sql.go": {
-    "mtime": 1784727189.4460115,
+    "mtime": 1784875718.1260738,
     "ast_hash": "4550c3af6aaeb6fd1b8dabd8bb29d0ef",
     "semantic_hash": ""
   },
@@ -4850,8 +4850,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/tract_templates.sql.go": {
-    "mtime": 1784727189.4435196,
-    "ast_hash": "5bc300143faee3b2a1f4bb88c2e2f271",
+    "mtime": 1784875718.1250694,
+    "ast_hash": "a778d7104b4f1bd5d3401e601ea0b2d0",
     "semantic_hash": ""
   },
   "internal/repository/pg/queries/tract_templates.sql": {
@@ -4860,8 +4860,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/tract_templates/tract_templates.go": {
-    "mtime": 1784543088.490452,
-    "ast_hash": "9b10e1cff1f37587588c3f0cedc6507c",
+    "mtime": 1784875776.2391083,
+    "ast_hash": "53cd2ffc3bdfc9f7054258b590b3140a",
     "semantic_hash": ""
   },
   "migrations/053_tract_templates.sql": {
@@ -4870,8 +4870,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/tract/templates.go": {
-    "mtime": 1784543438.1740015,
-    "ast_hash": "f700945c30b6e46a2ff16418c067c7e4",
+    "mtime": 1784875798.1972194,
+    "ast_hash": "97ad4a45eb0ecb8a53ac4d84d53b4803",
     "semantic_hash": ""
   },
   "internal/transport/tracts_api/get_tract_template.go": {
@@ -5145,7 +5145,7 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/workbenches.sql.go": {
-    "mtime": 1784727189.4426048,
+    "mtime": 1784875718.123185,
     "ast_hash": "e5745e360af865ab09675115d48c44ba",
     "semantic_hash": ""
   },
@@ -5247,6 +5247,21 @@
   "internal/middleware/internal_error_interceptor_test.go": {
     "mtime": 1784832612.4034653,
     "ast_hash": "3ab0f99495196eeda797bbcce784229e",
+    "semantic_hash": ""
+  },
+  "internal/service/v1/tract/templates_test.go": {
+    "mtime": 1784875937.7965195,
+    "ast_hash": "c8fc1e2f109894fbe5829ab7673dbcda",
+    "semantic_hash": ""
+  },
+  "migrations/055_tract_template_owner_nullable.sql": {
+    "mtime": 1784875687.7741196,
+    "ast_hash": "9be955f9f85be214c2b50be12b458389",
+    "semantic_hash": ""
+  },
+  "migrations/056_seed_gitlab_mr_template.sql": {
+    "mtime": 1784875707.8248255,
+    "ast_hash": "55f4d24a96fc4e56b5efe0076b22e513",
     "semantic_hash": ""
   }
 }
