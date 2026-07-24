@@ -6,6 +6,7 @@ package app
 import (
 	"context"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
+	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
@@ -60,6 +62,16 @@ func (c *Custom) Init(a *App) error {
 	encKey, err := hex.DecodeString(encKeyHex)
 	if err != nil {
 		return rerrors.Wrap(err, "error decoding creds_encryption_key")
+	}
+
+	if !cryptoutil.IsValidKeySize(len(encKey)) {
+		msg := fmt.Sprintf(
+			"ENVIRONMENT_CREDS_ENCRYPTION_KEY must decode to 16, 24, or 32 bytes for AES-128/192/256; "+
+				"got %d bytes. Generate one with: openssl rand -hex 32",
+			len(encKey),
+		)
+
+		return rerrors.New(msg)
 	}
 
 	repo := repopg.New(a.Postgres, encKey)
@@ -141,6 +153,7 @@ func (c *Custom) Init(a *App) error {
 	otelServerHandler := otelgrpc.NewServerHandler()
 	c.Transport.AddServerOption(
 		middleware.LogInterceptor(),
+		middleware.InternalErrorInterceptor(),
 		middleware.PanicInterceptor(),
 		grpc.StatsHandler(otelServerHandler),
 		middleware.GrpcAuthInterceptor(services,

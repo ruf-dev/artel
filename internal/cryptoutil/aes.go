@@ -8,6 +8,17 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
+const (
+	KeySize128 = 16
+	KeySize192 = 24
+	KeySize256 = 32
+)
+
+// IsValidKeySize reports whether n is a valid AES key length (128/192/256-bit).
+func IsValidKeySize(n int) bool {
+	return n == KeySize128 || n == KeySize192 || n == KeySize256
+}
+
 func Encrypt(key, plaintext []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -34,7 +45,7 @@ func Encrypt(key, plaintext []byte) ([]byte, error) {
 func Decrypt(key, ciphertext []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "error creating AES cipher for encrypt function")
+		return nil, rerrors.Wrap(err, "error creating AES cipher for decrypt function")
 	}
 
 	gcm, err := cipher.NewGCM(block)
