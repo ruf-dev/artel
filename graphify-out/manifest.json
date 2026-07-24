@@ -760,8 +760,8 @@
     "semantic_hash": ""
   },
   "pkg/docs/docs.swagger_ui.go": {
-    "mtime": 1784914984.244557,
-    "ast_hash": "d4168ede899ba20e496e6c710a9e9d2f",
+    "mtime": 1784916144.574369,
+    "ast_hash": "3cf4c2491485cdc84022cce5d568e76d",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/auth.swagger.json": {
@@ -1960,8 +1960,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
-    "mtime": 1784321045.7803333,
-    "ast_hash": "d6b85ff7f7b66fcba4ee715cf9d2c367",
+    "mtime": 1784920889.6557236,
+    "ast_hash": "0e7c0f4922acbd720d19e53721293168",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NoteEditor/NoteEditor.tsx": {
@@ -5267,6 +5267,11 @@
   "scripts/setup_dev_garage.sh": {
     "mtime": 1784877072.2157533,
     "ast_hash": "f53b7f8f59a68a9c6f7532e4104b1bbc",
+    "semantic_hash": ""
+  },
+  "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/components/SidebarTopBar/SidebarTopBar.tsx": {
+    "mtime": 1784920930.8149338,
+    "ast_hash": "5637cf34ce769191b9902d91f2408974",
     "semantic_hash": ""
   }
 }
