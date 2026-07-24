@@ -60,6 +60,9 @@ func (s *Service) PublishTemplate(ctx context.Context, tractUuid uuid.UUID, cate
 
 // UnpublishTemplate removes a template — publisher-only. Already-instantiated copies (real
 // tracts rows created from it) are unaffected; they're independent rows, not linked back live.
+// Built-in templates (OwnerUuid == uuid.Nil, see domain.TractTemplate doc) can never be
+// unpublished by any real user: an authenticated caller's UserUuid is never uuid.Nil, so the
+// ownership check below already rejects every caller for them — no separate guard needed.
 func (s *Service) UnpublishTemplate(ctx context.Context, templateUuid uuid.UUID) error {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {

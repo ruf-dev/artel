@@ -36,14 +36,14 @@ client-setup:
 client:
 	cd pkg/client/ArtelUI && vite
 
+### local dev environment
+setup-dev-env:
+	docker compose up -d
+	./scripts/setup_dev_garage.sh
+
 ### Garage Setup
 garage-status:
 	docker exec -it artel-garage-s3 /garage status
 
-garage-setup:
-	@echo INSTEAD OF '9961af1a4239d968' - use your id from `make garage-status`
-	docker exec -it artel-garage-s3 /garage layout assign 9961af1a4239d968 -z z1 -c 1G
-	docker exec -it artel-garage-s3 /garage layout apply --version 1
-
-garage-gen-api-key:
-	docker exec -it artel-garage-s3 /garage key create api-key
+setup-dev-garage:
+	./scripts/setup_dev_garage.sh

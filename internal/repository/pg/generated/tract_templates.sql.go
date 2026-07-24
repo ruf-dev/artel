@@ -66,7 +66,7 @@ RETURNING id, source_tract_id, owner_id, name, description, definition, category
 
 type InsertTractTemplateParams struct {
 	SourceTractID uuid.NullUUID
-	OwnerID       uuid.UUID
+	OwnerID       uuid.NullUUID
 	Name          string
 	Description   string
 	Definition    json.RawMessage
@@ -146,7 +146,7 @@ WHERE owner_id = $1
 ORDER BY published_at DESC
 `
 
-func (q *Queries) ListTractTemplatesByOwner(ctx context.Context, ownerID uuid.UUID) ([]TractTemplate, error) {
+func (q *Queries) ListTractTemplatesByOwner(ctx context.Context, ownerID uuid.NullUUID) ([]TractTemplate, error) {
 	rows, err := q.db.QueryContext(ctx, listTractTemplatesByOwner, ownerID)
 	if err != nil {
 		return nil, err

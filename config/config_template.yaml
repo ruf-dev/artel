@@ -20,7 +20,7 @@ servers:
 environment:
     - name: creds_encryption_key
       type: string
-      value: "1"
+      value: "3843d44f2445b26408427c99349a147b673583a59bc4336b60b1ed12aacd22ab"
     - name: google_api_key
       type: string
       value: ""

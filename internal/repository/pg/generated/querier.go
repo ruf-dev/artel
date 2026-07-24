@@ -109,7 +109,7 @@ type Querier interface {
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
 	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)
 	ListTractTemplates(ctx context.Context, dollar_1 string) ([]TractTemplate, error)
-	ListTractTemplatesByOwner(ctx context.Context, ownerID uuid.UUID) ([]TractTemplate, error)
+	ListTractTemplatesByOwner(ctx context.Context, ownerID uuid.NullUUID) ([]TractTemplate, error)
 	ListTractsByUser(ctx context.Context, userID uuid.UUID) ([]Tract, error)
 	// tractUuid's linked triggers, Trigger populated — the tract editor's "wired up triggers" view.
 	ListTriggerLinksByTract(ctx context.Context, tractID uuid.UUID) ([]ListTriggerLinksByTractRow, error)

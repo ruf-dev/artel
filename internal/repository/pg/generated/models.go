@@ -499,7 +499,7 @@ type TractRunStep struct {
 type TractTemplate struct {
 	ID            uuid.UUID
 	SourceTractID uuid.NullUUID
-	OwnerID       uuid.UUID
+	OwnerID       uuid.NullUUID
 	Name          string
 	Description   string
 	Definition    json.RawMessage

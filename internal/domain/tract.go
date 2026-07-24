@@ -29,6 +29,9 @@ type Tract struct {
 // expose) to anyone who installs the template into their own account, so they are stripped to
 // nil at publish time. SourceTractUuid is zero if the source tract has since been deleted
 // (source_tract_id is ON DELETE SET NULL — the template snapshot is designed to outlive it).
+// OwnerUuid zero value has a second meaning beyond "unset": it also marks a built-in template
+// seeded via migration (owner_id NULL in the DB — see migration 055/056), owned by nobody and
+// permanently unremovable by any real user (see UnpublishTemplate).
 type TractTemplate struct {
 	Uuid            uuid.UUID
 	SourceTractUuid uuid.UUID

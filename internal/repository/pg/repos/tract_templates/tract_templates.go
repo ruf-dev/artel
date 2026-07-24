@@ -32,10 +32,11 @@ func (r *Repo) Create(ctx context.Context, template domain.TractTemplate) (domai
 	}
 
 	sourceTractId := uuid.NullUUID{UUID: template.SourceTractUuid, Valid: template.SourceTractUuid != uuid.Nil}
+	ownerId := uuid.NullUUID{UUID: template.OwnerUuid, Valid: template.OwnerUuid != uuid.Nil}
 
 	params := artel_q.InsertTractTemplateParams{
 		SourceTractID: sourceTractId,
-		OwnerID:       template.OwnerUuid,
+		OwnerID:       ownerId,
 		Name:          template.Name,
 		Description:   template.Description,
 		Definition:    defJSON,
@@ -93,7 +94,9 @@ func (r *Repo) ListAll(ctx context.Context, category string) ([]domain.TractTemp
 }
 
 func (r *Repo) ListByOwner(ctx context.Context, ownerUuid uuid.UUID) ([]domain.TractTemplate, error) {
-	rows, err := r.q.ListTractTemplatesByOwner(ctx, ownerUuid)
+	ownerId := uuid.NullUUID{UUID: ownerUuid, Valid: ownerUuid != uuid.Nil}
+
+	rows, err := r.q.ListTractTemplatesByOwner(ctx, ownerId)
 	if err != nil {
 		return nil, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error listing tract templates by owner")
 	}
@@ -140,7 +143,6 @@ func tractTemplateToDomain(row artel_q.TractTemplate) (domain.TractTemplate, err
 
 	template := domain.TractTemplate{
 		Uuid:         row.ID,
-		OwnerUuid:    row.OwnerID,
 		Name:         row.Name,
 		Description:  row.Description,
 		Definition:   def,
@@ -152,6 +154,10 @@ func tractTemplateToDomain(row artel_q.TractTemplate) (domain.TractTemplate, err
 
 	if row.SourceTractID.Valid {
 		template.SourceTractUuid = row.SourceTractID.UUID
+	}
+
+	if row.OwnerID.Valid {
+		template.OwnerUuid = row.OwnerID.UUID
 	}
 
 	return template, nil
