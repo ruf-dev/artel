@@ -45,6 +45,19 @@ func scriptStep(
 	return step
 }
 
+func llmCallStep(connectionUuid uuid.UUID, prompt string) domain.TractStep {
+	step := domain.TractStep{
+		Id:                "summarize",
+		Name:              "summarize",
+		Type:              stepTypeLlmCall,
+		LlmConnectionUuid: connectionUuid,
+		LlmModel:          "claude-opus-4-8",
+		Prompt:            prompt,
+	}
+
+	return step
+}
+
 func TestValidateShape_StepIdRules(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -399,7 +412,7 @@ func newTestService(
 	executor *fakeToolExecutor,
 ) *Service {
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
-	svc := New(nil, nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
+	svc := New(nil, nil, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines, nil)
 
 	return svc
 }
@@ -489,6 +502,56 @@ func TestValidateActionTool_MomRules(t *testing.T) {
 			ConnectionUuid: connUuid,
 		}
 		err := svc.validateActionTool(ctx, otherUserUuid, step)
+		assert.Error(t, err)
+	})
+}
+
+func TestValidateLlmConnections(t *testing.T) {
+	mcpDefs := newFakeMcpDefsRepo()
+	externalConns := newFakeExternalConnsRepo()
+	executor := newFakeToolExecutor("write_file")
+	svc := newTestService(mcpDefs, externalConns, executor)
+
+	ownerUuid := uuid.New()
+	otherUserUuid := uuid.New()
+	ctx := context.Background()
+
+	t.Run("owned anthropic connection is valid", func(t *testing.T) {
+		connUuid := uuid.New()
+		externalConns.conns[connUuid] = domain.ExternalConnection{
+			Uuid: connUuid, UserUuid: ownerUuid, Provider: domain.ProviderAnthropic,
+		}
+
+		step := llmCallStep(connUuid, "{{ trigger.diff }}")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := svc.validateLlmConnections(ctx, ownerUuid, def)
+		assert.NoError(t, err)
+	})
+
+	t.Run("connection owned by someone else is rejected", func(t *testing.T) {
+		connUuid := uuid.New()
+		externalConns.conns[connUuid] = domain.ExternalConnection{
+			Uuid: connUuid, UserUuid: otherUserUuid, Provider: domain.ProviderAnthropic,
+		}
+
+		step := llmCallStep(connUuid, "{{ trigger.diff }}")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := svc.validateLlmConnections(ctx, ownerUuid, def)
+		assert.Error(t, err)
+	})
+
+	t.Run("non-anthropic provider is rejected", func(t *testing.T) {
+		connUuid := uuid.New()
+		externalConns.conns[connUuid] = domain.ExternalConnection{
+			Uuid: connUuid, UserUuid: ownerUuid, Provider: domain.ProviderGitlab,
+		}
+
+		step := llmCallStep(connUuid, "{{ trigger.diff }}")
+		def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+		err := svc.validateLlmConnections(ctx, ownerUuid, def)
 		assert.Error(t, err)
 	})
 }

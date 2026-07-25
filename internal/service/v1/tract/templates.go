@@ -13,9 +13,10 @@ import (
 )
 
 // PublishTemplate snapshots tractUuid's current definition as a new public template — a frozen
-// copy (see domain.TractTemplate doc), not a live view. Every action step's ConnectionUuid is
-// stripped to nil before persisting: it references the publisher's external_connections row,
-// meaningless (and not ownership-checkable) for anyone else.
+// copy (see domain.TractTemplate doc), not a live view. Every action step's ConnectionUuid, and
+// every llm_call step's LlmConnectionUuid, is stripped to nil before persisting: both reference
+// the publisher's external_connections rows, meaningless (and not ownership-checkable) for
+// anyone else.
 func (s *Service) PublishTemplate(ctx context.Context, tractUuid uuid.UUID, category string) (domain.TractTemplate, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
@@ -34,6 +35,15 @@ func (s *Service) PublishTemplate(ctx context.Context, tractUuid uuid.UUID, cate
 
 	err = walkActions(def.Steps, func(step *domain.TractStep) error {
 		step.ConnectionUuid = uuid.Nil
+
+		return nil
+	})
+	if err != nil {
+		return domain.TractTemplate{}, err
+	}
+
+	err = walkLlmCallStepsMut(def.Steps, func(step *domain.TractStep) error {
+		step.LlmConnectionUuid = uuid.Nil
 
 		return nil
 	})
@@ -133,10 +143,13 @@ func (s *Service) GetTemplate(ctx context.Context, templateUuid uuid.UUID) (doma
 
 // InstantiateTemplate copies templateUuid into a brand-new tract owned by the caller. connections
 // maps MoM name -> connection uuid (the caller's own external_connections rows) for every
-// non-builtin action step the template uses; an action step whose Mcp has no entry in the map
-// keeps ConnectionUuid nil and createTractInternal's validateTools will reject the whole call
-// with TractConnectionRequired — instantiate is all-or-nothing, never a partially-wired draft.
-// Trigger links are never copied — a fresh copy always starts with zero triggers.
+// non-builtin action step the template uses, plus — reusing the same map — LLM provider name
+// (e.g. domain.ProviderAnthropic) -> connection uuid for every llm_call step the template uses;
+// neither key space collides since no MoM is ever named after an LLM provider. An action step
+// whose Mcp has no entry, or an llm_call step whose provider has no entry, keeps its connection
+// uuid nil and createTractInternal's validateTools/validateLlmConnections will reject the whole
+// call — instantiate is all-or-nothing, never a partially-wired draft. Trigger links are never
+// copied — a fresh copy always starts with zero triggers.
 func (s *Service) InstantiateTemplate(
 	ctx context.Context, templateUuid uuid.UUID, name, description string, connections map[string]uuid.UUID,
 ) (domain.Tract, []string, error) {
@@ -163,6 +176,15 @@ func (s *Service) InstantiateTemplate(
 		if step.Mcp != builtinMcpName {
 			step.ConnectionUuid = connections[step.Mcp]
 		}
+
+		return nil
+	})
+	if err != nil {
+		return domain.Tract{}, nil, err
+	}
+
+	err = walkLlmCallStepsMut(def.Steps, func(step *domain.TractStep) error {
+		step.LlmConnectionUuid = connections[domain.ProviderAnthropic]
 
 		return nil
 	})

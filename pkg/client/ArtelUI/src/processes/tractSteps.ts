@@ -209,5 +209,8 @@ export function buildStepFromDraft(draft: StepDraft, existingIds: Set<string>): 
             code: "", params: {}, inputParams: [], outputParams: [],
         }
     }
+    if (draft.type === "llm_call") {
+        return {id, name: id, type: "llm_call", llmConnectionId: draft.connectionUuid, prompt: "", systemPrompt: ""}
+    }
     return {id, name: id, type: draft.type, steps: []}
 }

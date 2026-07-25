@@ -26,6 +26,7 @@ export default function CardHeader({step, onUpdate, onDelete, right}: Props) {
     const iconClass = step.type === "action" ? cls.CardIconAction
         : step.type === "condition" ? cls.CardIconCondition
         : step.type === "parallel" ? cls.CardIconParallel
+        : step.type === "llm_call" ? cls.CardIconLlmCall
         : cls.CardIconGroup
 
     return (

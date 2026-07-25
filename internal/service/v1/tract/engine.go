@@ -158,6 +158,8 @@ func (s *Service) executeStep(ctx context.Context, state *runState, step domain.
 		return s.executeSteps(ctx, state, step.Steps)
 	case stepTypeScript:
 		return s.executeScript(ctx, state, step)
+	case stepTypeLlmCall:
+		return s.executeLlmCall(ctx, state, step)
 	default:
 		// Validation already rejects unknown step types; this is a defensive fallback.
 		return rerrors.Wrap(user_errors.TractUnknownStepType, step.Type)
@@ -277,6 +279,110 @@ func (s *Service) executeScript(ctx context.Context, state *runState, step domai
 	state.setOutput(step.Id, output)
 
 	return nil
+}
+
+// executeLlmCall mirrors executeAction/executeScript's plumbing (snapshot → render → record →
+// call → finish → publish), swapping tool/script dispatch for a single Anthropic completion via
+// s.llmExecutor. Prompt/SystemPrompt are plain template strings (not a params map), so they're
+// rendered individually via renderTemplateString rather than renderParams.
+func (s *Service) executeLlmCall(ctx context.Context, state *runState, step domain.TractStep) error {
+	rslv := state.snapshotResolver()
+
+	renderedPrompt, err := renderTemplateString(rslv, step.Prompt)
+	if err != nil {
+		return rerrors.Wrap(err, "error rendering llm_call prompt: "+step.Id)
+	}
+
+	renderedSystemPrompt, err := renderTemplateString(rslv, step.SystemPrompt)
+	if err != nil {
+		return rerrors.Wrap(err, "error rendering llm_call system_prompt: "+step.Id)
+	}
+
+	input := map[string]interface{}{
+		"model":         step.LlmModel,
+		"prompt":        renderedPrompt,
+		"system_prompt": renderedSystemPrompt,
+	}
+
+	inputJSON, err := json.Marshal(input)
+	if err != nil {
+		return rerrors.Wrap(err, "error marshaling llm_call input: "+step.Id)
+	}
+
+	runStep := domain.TractRunStep{
+		RunUuid:  state.run.Uuid,
+		StepId:   step.Id,
+		StepName: step.Name,
+		StepType: step.Type,
+		Input:    inputJSON,
+	}
+
+	insertedStep, err := s.tracts.InsertRunStep(ctx, runStep)
+	if err != nil {
+		return rerrors.Wrap(err, "error inserting run step: "+step.Id)
+	}
+
+	callReq := LlmCallRequest{
+		Model:        step.LlmModel,
+		Prompt:       renderedPrompt,
+		SystemPrompt: renderedSystemPrompt,
+		MaxTokens:    step.MaxTokens,
+	}
+
+	result, err := s.llmExecutor.Call(ctx, state.tract.UserUuid, step.LlmConnectionUuid, callReq)
+	if err != nil {
+		finishErr := s.tracts.UpdateRunStepFinish(ctx, insertedStep.Uuid, domain.TractRunStepFailed, nil, err.Error())
+		if finishErr != nil {
+			log.Error().Err(finishErr).Str("step_id", step.Id).Msg("error updating failed run step")
+		}
+
+		return rerrors.Wrap(err, "error executing llm call for step: "+step.Id)
+	}
+
+	output := map[string]interface{}{
+		"text":  result.Text,
+		"model": result.Model,
+		"usage": map[string]interface{}{
+			"input_tokens":                result.Usage.InputTokens,
+			"output_tokens":               result.Usage.OutputTokens,
+			"cache_creation_input_tokens": result.Usage.CacheCreationInputTokens,
+			"cache_read_input_tokens":     result.Usage.CacheReadInputTokens,
+		},
+	}
+
+	outputJSON, err := json.Marshal(output)
+	if err != nil {
+		return rerrors.Wrap(err, "error marshaling step output: "+step.Id)
+	}
+
+	err = s.tracts.UpdateRunStepFinish(ctx, insertedStep.Uuid, domain.TractRunStepDone, outputJSON, "")
+	if err != nil {
+		return rerrors.Wrap(err, "error finishing run step: "+step.Id)
+	}
+
+	state.setOutput(step.Id, output)
+
+	return nil
+}
+
+// renderTemplateString renders a single plain-string template field (llm_call's Prompt/
+// SystemPrompt) to its final string value. Unlike renderParams (used for action/script Params,
+// which stores each rendered value as interface{} for later structured template refs),
+// Prompt/SystemPrompt are always meant to end up as plain text sent to the LLM — render already
+// returns a string for the common multi-token/plain-text case, but a template that is a single
+// `{{ ref }}` token can resolve to a non-string value (e.g. a prior step's JSON object output),
+// so stringify normalizes that case the same way render's own multi-token path does internally.
+func renderTemplateString(rslv *resolver, tmpl string) (string, error) {
+	value, err := rslv.render(tmpl)
+	if err != nil {
+		return "", err
+	}
+
+	if s, ok := value.(string); ok {
+		return s, nil
+	}
+
+	return stringify(value), nil
 }
 
 func renderParams(rslv *resolver, params map[string]string) (map[string]interface{}, error) {

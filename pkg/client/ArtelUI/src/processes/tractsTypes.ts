@@ -20,7 +20,7 @@ export interface TractStep {
     id: string
     name?: string
     description?: string
-    type: "action" | "condition" | "parallel" | "group" | "script"
+    type: "action" | "condition" | "parallel" | "group" | "script" | "llm_call"
     mcp?: string
     tool?: string
     connection_uuid?: string
@@ -33,6 +33,11 @@ export interface TractStep {
     code?: string
     inputParams?: ScriptParam[]
     outputParams?: ScriptParam[]
+    llmConnectionId?: string
+    llmModel?: string
+    prompt?: string
+    systemPrompt?: string
+    maxTokens?: number
 }
 
 export interface TractCondition {

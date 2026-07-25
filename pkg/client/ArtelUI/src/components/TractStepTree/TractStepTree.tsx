@@ -3,6 +3,7 @@ import {Button, ConfirmDialog} from "@vervstack/chures"
 import {useDialog} from "@/app/hooks/Dialog"
 import {cn} from "@/app/utils/cn.ts"
 import ActionCard from "@/components/TractStepTree/components/ActionCard.tsx"
+import LlmCallCard from "@/components/TractStepTree/components/LlmCallCard.tsx"
 import CardHeader from "@/components/TractStepTree/components/CardHeader.tsx"
 import ConditionRow from "@/components/TractStepTree/components/ConditionRow.tsx"
 import InsertRow from "@/components/TractStepTree/components/InsertRow.tsx"
@@ -152,6 +153,9 @@ function StepCard({rootSteps, location, step, tools, triggerSchema, onChange}: {
                 onChange={onChange}
             />
         )
+    }
+    if (step.type === "llm_call") {
+        return <LlmCallCard step={step} onUpdate={updateStep} onDelete={deleteStep}/>
     }
     if (step.type === "parallel") {
         return (

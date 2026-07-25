@@ -1195,6 +1195,32 @@
         }
       }
     },
+    "artel_apiLlmCallStep": {
+      "type": "object",
+      "properties": {
+        "connectionId": {
+          "type": "string",
+          "title": "external_connections.id (anthropic/openai key)"
+        },
+        "model": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string",
+          "title": "template string"
+        },
+        "systemPrompt": {
+          "type": "string",
+          "title": "template string, optional"
+        },
+        "maxTokens": {
+          "type": "integer",
+          "format": "int32",
+          "title": "optional, service applies a default if 0"
+        }
+      },
+      "description": "LlmCallStep invokes an LLM (currently Anthropic, via a BYOK connection) as a fixed pipeline\nstage — prompt in, text out. Unlike ActionStep, this is a hardcoded, typed step kind (like\nScriptStep), not a MoM-tool-style declarative call. prompt/system_prompt are template strings\nrendered through the same {{...}} resolver as ActionStep.params."
+    },
     "artel_apiParallelStep": {
       "type": "object",
       "properties": {
@@ -1504,6 +1530,9 @@
         },
         "script": {
           "$ref": "#/definitions/artel_apiScriptStep"
+        },
+        "llmCall": {
+          "$ref": "#/definitions/artel_apiLlmCallStep"
         }
       },
       "description": "TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one\ndetermines the step's behavior (no separate type discriminant needed on the wire)."

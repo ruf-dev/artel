@@ -42,6 +42,10 @@ export default function NodeChips({node, tools, triggerInfo, momCandidates}: {
         const outN = step.outputParams?.length ?? 0
         return <span className={cls.Chip}>{inN} in · {outN} out</span>
     }
+    if (node.kind === "llm_call") {
+        if (!step.llmConnectionId) return <span className={cn(cls.Chip, cls.ChipWarn)}>no connection</span>
+        return <span className={cls.Chip}>{step.llmModel || "no model"}</span>
+    }
 
     const tool = tools.find(t => t.mcp === step.mcp && t.tool === step.tool)
     if (!tool) return <span className={cls.Chip}>unknown tool</span>

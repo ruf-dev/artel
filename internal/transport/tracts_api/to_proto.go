@@ -512,6 +512,19 @@ func stepToProto(s domain.TractStep) *pb.TractStep {
 			OutputParams: scriptParamsToJSON(s.OutputParams),
 			Params:       s.Params,
 		}}
+	case "llm_call":
+		llmConnectionUuid := ""
+		if s.LlmConnectionUuid != uuid.Nil {
+			llmConnectionUuid = s.LlmConnectionUuid.String()
+		}
+
+		step.Kind = &pb.TractStep_LlmCall{LlmCall: &pb.LlmCallStep{
+			ConnectionId: llmConnectionUuid,
+			Model:        s.LlmModel,
+			Prompt:       s.Prompt,
+			SystemPrompt: s.SystemPrompt,
+			MaxTokens:    int32(s.MaxTokens),
+		}}
 	}
 
 	return step
@@ -603,6 +616,24 @@ func stepFromProto(s *pb.TractStep) (domain.TractStep, error) {
 
 		step.InputParams = inputParams
 		step.OutputParams = outputParams
+	case *pb.TractStep_LlmCall:
+		step.Type = "llm_call"
+		step.LlmModel = kind.LlmCall.Model
+		step.Prompt = kind.LlmCall.Prompt
+		step.SystemPrompt = kind.LlmCall.SystemPrompt
+		step.MaxTokens = int(kind.LlmCall.MaxTokens)
+
+		if kind.LlmCall.ConnectionId != "" {
+			id, err := uuid.Parse(kind.LlmCall.ConnectionId)
+			if err != nil {
+				return domain.TractStep{}, rerrors.Wrap(
+					user_errors.TractRequestFieldInvalidJSON,
+					"error parsing step llm connection_id",
+				)
+			}
+
+			step.LlmConnectionUuid = id
+		}
 	default:
 		return domain.TractStep{}, rerrors.Wrap(
 			user_errors.TractRequestFieldInvalidJSON,

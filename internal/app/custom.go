@@ -95,10 +95,11 @@ func (c *Custom) Init(a *App) error {
 	// Tract is constructed here (not in svcv1.New) because its ToolExecutor composes the
 	// already-built Mcp and Mom services — mcp must exist first, then tract.
 	tractToolExecutor := tract.NewToolExecutor(services.McpService(), services.MomService())
+	tractLlmExecutor := tract.NewLlmExecutor(repo.ExternalConnections())
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
 	services.Tract = tract.New(
 		repo.Tracts(), repo.TractTemplates(), repo.Triggers(), repo.TriggerPresets(), repo.ExternalConnections(),
-		repo.McpDefinitions(), tractToolExecutor, services.SubscriptionService(), scriptEngines,
+		repo.McpDefinitions(), tractToolExecutor, services.SubscriptionService(), scriptEngines, tractLlmExecutor,
 	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that

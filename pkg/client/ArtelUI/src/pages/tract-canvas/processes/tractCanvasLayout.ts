@@ -30,7 +30,7 @@ export const MARGIN_Y = 220
 
 const ROW_GAP = 32
 
-export type CanvasNodeKind = "trigger" | "action" | "condition" | "parallel" | "group" | "script"
+export type CanvasNodeKind = "trigger" | "action" | "condition" | "parallel" | "group" | "script" | "llm_call"
 
 export interface CanvasNode {
     id: string
@@ -237,6 +237,7 @@ function layoutFlow(
         let kind: CanvasNodeKind = "action"
         if (step.type === "group") kind = "group"
         if (step.type === "script") kind = "script"
+        if (step.type === "llm_call") kind = "llm_call"
         nodes.push({
             id, col: curCol, row, kind, step, location, index,
             nextLocation: next.location, nextIndex: next.index,

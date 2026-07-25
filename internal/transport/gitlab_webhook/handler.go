@@ -166,7 +166,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, trigger := range linkedTriggers {
-		if !tract.MatchesRequest(trigger.Matchers, r.Header) {
+		if !tract.MatchesRequest(trigger.Matchers, r.Header, body) {
 			continue
 		}
 

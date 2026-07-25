@@ -36,7 +36,7 @@ export interface StepColor {
 /** colorForKind mirrors the mockup's color law: coral = builtin/vault ops, blue = external
  * integrations, amber = logic/condition, purple = structural (parallel/group), green = script. */
 export function colorForKind(
-    kind: "trigger" | "action" | "condition" | "parallel" | "group" | "script",
+    kind: "trigger" | "action" | "condition" | "parallel" | "group" | "script" | "llm_call",
     mcp?: string,
 ): StepColor {
     if (kind === "condition") {
@@ -47,6 +47,9 @@ export function colorForKind(
     }
     if (kind === "script") {
         return {bg: "rgba(52,211,153,0.12)", border: "rgba(52,211,153,0.28)", fg: "#34d399"}
+    }
+    if (kind === "llm_call") {
+        return {bg: "rgba(45,212,191,0.12)", border: "rgba(45,212,191,0.28)", fg: "#2dd4bf"}
     }
     if (kind === "trigger" || mcp === "artel" || !mcp) {
         return {bg: "var(--coral-dim)", border: "var(--coral-border)", fg: "var(--coral)"}

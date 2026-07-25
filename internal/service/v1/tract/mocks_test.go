@@ -22,26 +22,56 @@ var (
 // fakeTractsRepo is an in-memory repository.TractsRepo used by engine tests to observe
 // run/run-step persistence without a real database.
 type fakeTractsRepo struct {
-	mu    sync.Mutex
-	runs  map[uuid.UUID]domain.TractRun
-	steps map[uuid.UUID]domain.TractRunStep
+	mu     sync.Mutex
+	tracts map[uuid.UUID]domain.Tract
+	runs   map[uuid.UUID]domain.TractRun
+	steps  map[uuid.UUID]domain.TractRunStep
 }
 
 func newFakeTractsRepo() *fakeTractsRepo {
 	repo := &fakeTractsRepo{
-		runs:  map[uuid.UUID]domain.TractRun{},
-		steps: map[uuid.UUID]domain.TractRunStep{},
+		tracts: map[uuid.UUID]domain.Tract{},
+		runs:   map[uuid.UUID]domain.TractRun{},
+		steps:  map[uuid.UUID]domain.TractRunStep{},
 	}
 
 	return repo
 }
 
+// seedTract makes tract fetchable via Get, for tests exercising PublishTemplate (which reads
+// the source tract before snapshotting it).
+func (f *fakeTractsRepo) seedTract(tract domain.Tract) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	f.tracts[tract.Uuid] = tract
+}
+
 func (f *fakeTractsRepo) Create(_ context.Context, tract domain.Tract) (domain.Tract, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	if tract.Uuid == uuid.Nil {
+		tract.Uuid = uuid.New()
+	}
+
+	f.tracts[tract.Uuid] = tract
+
 	return tract, nil
 }
 
-func (f *fakeTractsRepo) Get(_ context.Context, _ uuid.UUID) (sql.Null[domain.Tract], error) {
-	return sql.Null[domain.Tract]{}, nil
+func (f *fakeTractsRepo) Get(_ context.Context, id uuid.UUID) (sql.Null[domain.Tract], error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
+	tract, ok := f.tracts[id]
+	if !ok {
+		return sql.Null[domain.Tract]{}, nil
+	}
+
+	result := sql.Null[domain.Tract]{V: tract, Valid: true}
+
+	return result, nil
 }
 
 func (f *fakeTractsRepo) ListByUser(_ context.Context, _ uuid.UUID) ([]domain.Tract, error) {
@@ -594,6 +624,40 @@ func (f *fakeToolExecutor) ListBuiltinTools(_ context.Context) ([]domain.McpTool
 }
 
 var _ ToolExecutor = (*fakeToolExecutor)(nil)
+
+// fakeLlmExecutor is a controllable LlmExecutor for engine tests — returns result/err as
+// configured, and records every call's request/userUuid/connectionUuid for assertions (e.g.
+// confirming the engine rendered a step's Prompt/SystemPrompt template before calling out).
+type fakeLlmExecutor struct {
+	result LlmCallResult
+	err    error
+
+	mu    sync.Mutex
+	calls []LlmCallRequest
+}
+
+func newFakeLlmExecutor() *fakeLlmExecutor {
+	return &fakeLlmExecutor{}
+}
+
+func (f *fakeLlmExecutor) Call(
+	_ context.Context,
+	_ uuid.UUID,
+	_ uuid.UUID,
+	req LlmCallRequest,
+) (LlmCallResult, error) {
+	f.mu.Lock()
+	f.calls = append(f.calls, req)
+	f.mu.Unlock()
+
+	if f.err != nil {
+		return LlmCallResult{}, f.err
+	}
+
+	return f.result, nil
+}
+
+var _ LlmExecutor = (*fakeLlmExecutor)(nil)
 
 // dispatchFakeTool implements a few named test-tool behaviors shared by engine tests:
 // "fail" errors immediately, "slow" blocks until ctx is cancelled (used to verify parallel

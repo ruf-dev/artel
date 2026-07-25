@@ -311,6 +311,17 @@ var (
 		codes.FailedPrecondition,
 	)
 
+	// tract: llm_call steps
+	TractLlmStepInvalid = rerrors.New(
+		"llm_call step requires llm_connection_uuid, llm_model, and prompt",
+		codes.InvalidArgument,
+	)
+	TractLlmConnectionProviderMismatch = rerrors.New(
+		"llm_connection_uuid does not reference a supported LLM provider connection",
+		codes.FailedPrecondition,
+	)
+	TractLlmCallFailed = rerrors.New("llm call failed", codes.FailedPrecondition)
+
 	// tract: template path navigation (distinct from TractStepNotFound — the base step id was
 	// found, but a later segment of the reference path failed to resolve against its output).
 	TractTemplateIndexOnNonArray  = rerrors.New("template index used on a value that is not a list", codes.FailedPrecondition)

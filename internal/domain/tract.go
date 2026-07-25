@@ -54,31 +54,46 @@ type TractDefinition struct {
 }
 
 // TractStep is one node of the nested step tree. Type is one of "action" | "condition" |
-// "parallel" | "group" | "script" (constants defined locally in internal/service/v1/tract,
-// not here). Action fields (Mcp/Tool/ConnectionUuid/Params) are only meaningful when Type ==
-// "action". Conditions only when Type == "condition", with Then/Else as its two branches.
-// Parallel/group steps run/contain Steps (parallel: concurrently; group: sequentially, a
-// plain nesting container). ConnectionUuid's zero value means no external connection
-// required (builtin tools). Script fields (Language/Code/InputParams/OutputParams) are only
-// meaningful when Type == "script" — Params is reused there too, as the template-expression
-// binding for each declared InputParams entry (same role it plays for action steps).
+// "parallel" | "group" | "script" | "llm_call" (constants defined locally in
+// internal/service/v1/tract, not here). Action fields (Mcp/Tool/ConnectionUuid/Params) are only
+// meaningful when Type == "action". Conditions only when Type == "condition", with Then/Else as
+// its two branches. Parallel/group steps run/contain Steps (parallel: concurrently; group:
+// sequentially, a plain nesting container). ConnectionUuid's zero value means no external
+// connection required (builtin tools). Script fields (Language/Code/InputParams/OutputParams)
+// are only meaningful when Type == "script" — Params is reused there too, as the
+// template-expression binding for each declared InputParams entry (same role it plays for
+// action steps).
+//
+// LLM fields — only meaningful when Type == "llm_call". LlmConnectionUuid points at the
+// external_connections row (provider "anthropic", "openai" once that lands) supplying the key —
+// named distinctly from ConnectionUuid only to avoid colliding with the action-step field's
+// semantics (MoM connection vs. LLM key connection are different things even though both are
+// external_connections rows). Prompt and SystemPrompt are template strings rendered through the
+// same resolver as action Params — {{steps.<id>.output...}} and {{trigger...}} both work here —
+// but are plain strings rather than a map, since there's a single prompt, not a bag of named
+// params.
 type TractStep struct {
-	Id             string            `json:"id"`
-	Name           string            `json:"name,omitempty"`
-	Description    string            `json:"description,omitempty"`
-	Type           string            `json:"type"`
-	Mcp            string            `json:"mcp,omitempty"`
-	Tool           string            `json:"tool,omitempty"`
-	ConnectionUuid uuid.UUID         `json:"connection_uuid,omitempty"`
-	Params         map[string]string `json:"params,omitempty"`
-	Conditions     []TractCondition  `json:"conditions,omitempty"`
-	Then           []TractStep       `json:"then,omitempty"`
-	Else           []TractStep       `json:"else,omitempty"`
-	Steps          []TractStep       `json:"steps,omitempty"`
-	Language       ScriptLanguage    `json:"language,omitempty"`
-	Code           string            `json:"code,omitempty"`
-	InputParams    []ScriptParam     `json:"input_params,omitempty"`
-	OutputParams   []ScriptParam     `json:"output_params,omitempty"`
+	Id                string            `json:"id"`
+	Name              string            `json:"name,omitempty"`
+	Description       string            `json:"description,omitempty"`
+	Type              string            `json:"type"`
+	Mcp               string            `json:"mcp,omitempty"`
+	Tool              string            `json:"tool,omitempty"`
+	ConnectionUuid    uuid.UUID         `json:"connection_uuid,omitempty"`
+	Params            map[string]string `json:"params,omitempty"`
+	Conditions        []TractCondition  `json:"conditions,omitempty"`
+	Then              []TractStep       `json:"then,omitempty"`
+	Else              []TractStep       `json:"else,omitempty"`
+	Steps             []TractStep       `json:"steps,omitempty"`
+	Language          ScriptLanguage    `json:"language,omitempty"`
+	Code              string            `json:"code,omitempty"`
+	InputParams       []ScriptParam     `json:"input_params,omitempty"`
+	OutputParams      []ScriptParam     `json:"output_params,omitempty"`
+	LlmConnectionUuid uuid.UUID         `json:"llm_connection_uuid,omitempty"`
+	LlmModel          string            `json:"llm_model,omitempty"`
+	Prompt            string            `json:"prompt,omitempty"`
+	SystemPrompt      string            `json:"system_prompt,omitempty"`
+	MaxTokens         int               `json:"max_tokens,omitempty"`
 }
 
 // ScriptLanguage is the engine id a script step runs under — a closed set, mapped to/from a
@@ -183,16 +198,25 @@ type Trigger struct {
 	CreatedAt time.Time
 }
 
-// TriggerMatchers decides whether an inbound delivery should fire a given trigger. Only
-// CheckHeaders exists today (AND semantics across entries, same philosophy as
-// EvaluateTriggerFilters); future check kinds (body field match, mail subject/from match) extend
-// this struct the same way TractCondition covers filter ops.
+// TriggerMatchers decides whether an inbound delivery should fire a given trigger — AND
+// semantics across all CheckHeaders/CheckBody entries (same philosophy as
+// EvaluateTriggerFilters); future check kinds (mail subject/from match) extend this struct the
+// same way TractCondition covers filter ops.
 type TriggerMatchers struct {
 	CheckHeaders []HeaderMatcher
+	CheckBody    []BodyMatcher
 }
 
 type HeaderMatcher struct {
 	Header string
+	Equals string
+}
+
+// BodyMatcher checks a dot-separated JSON body path (e.g. "object_attributes.action") against
+// an exact string value — used where a header alone can't disambiguate (e.g. GitLab sends the
+// same X-Gitlab-Event: Merge Request Hook header for opened/updated/merged/closed alike).
+type BodyMatcher struct {
+	Path   string
 	Equals string
 }
 

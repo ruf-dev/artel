@@ -546,6 +546,86 @@ func (x *GroupStep) GetSteps() []*TractStep {
 	return nil
 }
 
+// LlmCallStep invokes an LLM (currently Anthropic, via a BYOK connection) as a fixed pipeline
+// stage — prompt in, text out. Unlike ActionStep, this is a hardcoded, typed step kind (like
+// ScriptStep), not a MoM-tool-style declarative call. prompt/system_prompt are template strings
+// rendered through the same {{...}} resolver as ActionStep.params.
+type LlmCallStep struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ConnectionId  string                 `protobuf:"bytes,1,opt,name=connection_id,json=connectionId,proto3" json:"connection_id,omitempty"` // external_connections.id (anthropic/openai key)
+	Model         string                 `protobuf:"bytes,2,opt,name=model,proto3" json:"model,omitempty"`
+	Prompt        string                 `protobuf:"bytes,3,opt,name=prompt,proto3" json:"prompt,omitempty"`                                 // template string
+	SystemPrompt  string                 `protobuf:"bytes,4,opt,name=system_prompt,json=systemPrompt,proto3" json:"system_prompt,omitempty"` // template string, optional
+	MaxTokens     int32                  `protobuf:"varint,5,opt,name=max_tokens,json=maxTokens,proto3" json:"max_tokens,omitempty"`         // optional, service applies a default if 0
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LlmCallStep) Reset() {
+	*x = LlmCallStep{}
+	mi := &file_tracts_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LlmCallStep) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LlmCallStep) ProtoMessage() {}
+
+func (x *LlmCallStep) ProtoReflect() protoreflect.Message {
+	mi := &file_tracts_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LlmCallStep.ProtoReflect.Descriptor instead.
+func (*LlmCallStep) Descriptor() ([]byte, []int) {
+	return file_tracts_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *LlmCallStep) GetConnectionId() string {
+	if x != nil {
+		return x.ConnectionId
+	}
+	return ""
+}
+
+func (x *LlmCallStep) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+func (x *LlmCallStep) GetPrompt() string {
+	if x != nil {
+		return x.Prompt
+	}
+	return ""
+}
+
+func (x *LlmCallStep) GetSystemPrompt() string {
+	if x != nil {
+		return x.SystemPrompt
+	}
+	return ""
+}
+
+func (x *LlmCallStep) GetMaxTokens() int32 {
+	if x != nil {
+		return x.MaxTokens
+	}
+	return 0
+}
+
 // TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one
 // determines the step's behavior (no separate type discriminant needed on the wire).
 type TractStep struct {
@@ -560,6 +640,7 @@ type TractStep struct {
 	//	*TractStep_Parallel
 	//	*TractStep_Group
 	//	*TractStep_Script
+	//	*TractStep_LlmCall
 	Kind          isTractStep_Kind `protobuf_oneof:"kind"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -567,7 +648,7 @@ type TractStep struct {
 
 func (x *TractStep) Reset() {
 	*x = TractStep{}
-	mi := &file_tracts_proto_msgTypes[8]
+	mi := &file_tracts_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -579,7 +660,7 @@ func (x *TractStep) String() string {
 func (*TractStep) ProtoMessage() {}
 
 func (x *TractStep) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[8]
+	mi := &file_tracts_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -592,7 +673,7 @@ func (x *TractStep) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractStep.ProtoReflect.Descriptor instead.
 func (*TractStep) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{8}
+	return file_tracts_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *TractStep) GetId() string {
@@ -668,6 +749,15 @@ func (x *TractStep) GetScript() *ScriptStep {
 	return nil
 }
 
+func (x *TractStep) GetLlmCall() *LlmCallStep {
+	if x != nil {
+		if x, ok := x.Kind.(*TractStep_LlmCall); ok {
+			return x.LlmCall
+		}
+	}
+	return nil
+}
+
 type isTractStep_Kind interface {
 	isTractStep_Kind()
 }
@@ -692,6 +782,10 @@ type TractStep_Script struct {
 	Script *ScriptStep `protobuf:"bytes,8,opt,name=script,proto3,oneof"`
 }
 
+type TractStep_LlmCall struct {
+	LlmCall *LlmCallStep `protobuf:"bytes,9,opt,name=llm_call,json=llmCall,proto3,oneof"`
+}
+
 func (*TractStep_Action) isTractStep_Kind() {}
 
 func (*TractStep_Condition) isTractStep_Kind() {}
@@ -702,6 +796,8 @@ func (*TractStep_Group) isTractStep_Kind() {}
 
 func (*TractStep_Script) isTractStep_Kind() {}
 
+func (*TractStep_LlmCall) isTractStep_Kind() {}
+
 type TractDefinition struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Steps         []*TractStep           `protobuf:"bytes,1,rep,name=steps,proto3" json:"steps,omitempty"`
@@ -711,7 +807,7 @@ type TractDefinition struct {
 
 func (x *TractDefinition) Reset() {
 	*x = TractDefinition{}
-	mi := &file_tracts_proto_msgTypes[9]
+	mi := &file_tracts_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -723,7 +819,7 @@ func (x *TractDefinition) String() string {
 func (*TractDefinition) ProtoMessage() {}
 
 func (x *TractDefinition) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[9]
+	mi := &file_tracts_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -736,7 +832,7 @@ func (x *TractDefinition) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractDefinition.ProtoReflect.Descriptor instead.
 func (*TractDefinition) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{9}
+	return file_tracts_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *TractDefinition) GetSteps() []*TractStep {
@@ -763,7 +859,7 @@ type TractItem struct {
 
 func (x *TractItem) Reset() {
 	*x = TractItem{}
-	mi := &file_tracts_proto_msgTypes[10]
+	mi := &file_tracts_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -775,7 +871,7 @@ func (x *TractItem) String() string {
 func (*TractItem) ProtoMessage() {}
 
 func (x *TractItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[10]
+	mi := &file_tracts_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -788,7 +884,7 @@ func (x *TractItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractItem.ProtoReflect.Descriptor instead.
 func (*TractItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{10}
+	return file_tracts_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *TractItem) GetUuid() string {
@@ -875,7 +971,7 @@ type TractTemplateItem struct {
 
 func (x *TractTemplateItem) Reset() {
 	*x = TractTemplateItem{}
-	mi := &file_tracts_proto_msgTypes[11]
+	mi := &file_tracts_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -887,7 +983,7 @@ func (x *TractTemplateItem) String() string {
 func (*TractTemplateItem) ProtoMessage() {}
 
 func (x *TractTemplateItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[11]
+	mi := &file_tracts_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -900,7 +996,7 @@ func (x *TractTemplateItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractTemplateItem.ProtoReflect.Descriptor instead.
 func (*TractTemplateItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{11}
+	return file_tracts_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *TractTemplateItem) GetUuid() string {
@@ -990,7 +1086,7 @@ type TractTemplateSummary struct {
 
 func (x *TractTemplateSummary) Reset() {
 	*x = TractTemplateSummary{}
-	mi := &file_tracts_proto_msgTypes[12]
+	mi := &file_tracts_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1002,7 +1098,7 @@ func (x *TractTemplateSummary) String() string {
 func (*TractTemplateSummary) ProtoMessage() {}
 
 func (x *TractTemplateSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[12]
+	mi := &file_tracts_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1015,7 +1111,7 @@ func (x *TractTemplateSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractTemplateSummary.ProtoReflect.Descriptor instead.
 func (*TractTemplateSummary) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{12}
+	return file_tracts_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *TractTemplateSummary) GetUuid() string {
@@ -1084,7 +1180,7 @@ type TractRunItem struct {
 
 func (x *TractRunItem) Reset() {
 	*x = TractRunItem{}
-	mi := &file_tracts_proto_msgTypes[13]
+	mi := &file_tracts_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1096,7 +1192,7 @@ func (x *TractRunItem) String() string {
 func (*TractRunItem) ProtoMessage() {}
 
 func (x *TractRunItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[13]
+	mi := &file_tracts_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1109,7 +1205,7 @@ func (x *TractRunItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractRunItem.ProtoReflect.Descriptor instead.
 func (*TractRunItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{13}
+	return file_tracts_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *TractRunItem) GetUuid() string {
@@ -1192,7 +1288,7 @@ type TractRunStepItem struct {
 
 func (x *TractRunStepItem) Reset() {
 	*x = TractRunStepItem{}
-	mi := &file_tracts_proto_msgTypes[14]
+	mi := &file_tracts_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1204,7 +1300,7 @@ func (x *TractRunStepItem) String() string {
 func (*TractRunStepItem) ProtoMessage() {}
 
 func (x *TractRunStepItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[14]
+	mi := &file_tracts_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1217,7 +1313,7 @@ func (x *TractRunStepItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractRunStepItem.ProtoReflect.Descriptor instead.
 func (*TractRunStepItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{14}
+	return file_tracts_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *TractRunStepItem) GetStepId() string {
@@ -1296,7 +1392,7 @@ type TractToolItem struct {
 
 func (x *TractToolItem) Reset() {
 	*x = TractToolItem{}
-	mi := &file_tracts_proto_msgTypes[15]
+	mi := &file_tracts_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1308,7 +1404,7 @@ func (x *TractToolItem) String() string {
 func (*TractToolItem) ProtoMessage() {}
 
 func (x *TractToolItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[15]
+	mi := &file_tracts_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1321,7 +1417,7 @@ func (x *TractToolItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TractToolItem.ProtoReflect.Descriptor instead.
 func (*TractToolItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{15}
+	return file_tracts_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *TractToolItem) GetMcp() string {
@@ -1373,7 +1469,7 @@ type TriggerSourceItem struct {
 
 func (x *TriggerSourceItem) Reset() {
 	*x = TriggerSourceItem{}
-	mi := &file_tracts_proto_msgTypes[16]
+	mi := &file_tracts_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1385,7 +1481,7 @@ func (x *TriggerSourceItem) String() string {
 func (*TriggerSourceItem) ProtoMessage() {}
 
 func (x *TriggerSourceItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[16]
+	mi := &file_tracts_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1398,7 +1494,7 @@ func (x *TriggerSourceItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerSourceItem.ProtoReflect.Descriptor instead.
 func (*TriggerSourceItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{16}
+	return file_tracts_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *TriggerSourceItem) GetKey() string {
@@ -1461,7 +1557,7 @@ type TriggerItem struct {
 
 func (x *TriggerItem) Reset() {
 	*x = TriggerItem{}
-	mi := &file_tracts_proto_msgTypes[17]
+	mi := &file_tracts_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1473,7 +1569,7 @@ func (x *TriggerItem) String() string {
 func (*TriggerItem) ProtoMessage() {}
 
 func (x *TriggerItem) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[17]
+	mi := &file_tracts_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1486,7 +1582,7 @@ func (x *TriggerItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerItem.ProtoReflect.Descriptor instead.
 func (*TriggerItem) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{17}
+	return file_tracts_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *TriggerItem) GetUuid() string {
@@ -1567,7 +1663,7 @@ type CreateTract struct {
 
 func (x *CreateTract) Reset() {
 	*x = CreateTract{}
-	mi := &file_tracts_proto_msgTypes[18]
+	mi := &file_tracts_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1579,7 +1675,7 @@ func (x *CreateTract) String() string {
 func (*CreateTract) ProtoMessage() {}
 
 func (x *CreateTract) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[18]
+	mi := &file_tracts_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1592,7 +1688,7 @@ func (x *CreateTract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTract.ProtoReflect.Descriptor instead.
 func (*CreateTract) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{18}
+	return file_tracts_proto_rawDescGZIP(), []int{19}
 }
 
 type UpdateTract struct {
@@ -1603,7 +1699,7 @@ type UpdateTract struct {
 
 func (x *UpdateTract) Reset() {
 	*x = UpdateTract{}
-	mi := &file_tracts_proto_msgTypes[19]
+	mi := &file_tracts_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1615,7 +1711,7 @@ func (x *UpdateTract) String() string {
 func (*UpdateTract) ProtoMessage() {}
 
 func (x *UpdateTract) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[19]
+	mi := &file_tracts_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1628,7 +1724,7 @@ func (x *UpdateTract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTract.ProtoReflect.Descriptor instead.
 func (*UpdateTract) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{19}
+	return file_tracts_proto_rawDescGZIP(), []int{20}
 }
 
 type GetTract struct {
@@ -1639,7 +1735,7 @@ type GetTract struct {
 
 func (x *GetTract) Reset() {
 	*x = GetTract{}
-	mi := &file_tracts_proto_msgTypes[20]
+	mi := &file_tracts_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1651,7 +1747,7 @@ func (x *GetTract) String() string {
 func (*GetTract) ProtoMessage() {}
 
 func (x *GetTract) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[20]
+	mi := &file_tracts_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1664,7 +1760,7 @@ func (x *GetTract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTract.ProtoReflect.Descriptor instead.
 func (*GetTract) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{20}
+	return file_tracts_proto_rawDescGZIP(), []int{21}
 }
 
 type ListTracts struct {
@@ -1675,7 +1771,7 @@ type ListTracts struct {
 
 func (x *ListTracts) Reset() {
 	*x = ListTracts{}
-	mi := &file_tracts_proto_msgTypes[21]
+	mi := &file_tracts_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1687,7 +1783,7 @@ func (x *ListTracts) String() string {
 func (*ListTracts) ProtoMessage() {}
 
 func (x *ListTracts) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[21]
+	mi := &file_tracts_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1700,7 +1796,7 @@ func (x *ListTracts) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTracts.ProtoReflect.Descriptor instead.
 func (*ListTracts) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{21}
+	return file_tracts_proto_rawDescGZIP(), []int{22}
 }
 
 type DeleteTract struct {
@@ -1711,7 +1807,7 @@ type DeleteTract struct {
 
 func (x *DeleteTract) Reset() {
 	*x = DeleteTract{}
-	mi := &file_tracts_proto_msgTypes[22]
+	mi := &file_tracts_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1723,7 +1819,7 @@ func (x *DeleteTract) String() string {
 func (*DeleteTract) ProtoMessage() {}
 
 func (x *DeleteTract) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[22]
+	mi := &file_tracts_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1736,7 +1832,7 @@ func (x *DeleteTract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTract.ProtoReflect.Descriptor instead.
 func (*DeleteTract) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{22}
+	return file_tracts_proto_rawDescGZIP(), []int{23}
 }
 
 type SetTractEnabled struct {
@@ -1747,7 +1843,7 @@ type SetTractEnabled struct {
 
 func (x *SetTractEnabled) Reset() {
 	*x = SetTractEnabled{}
-	mi := &file_tracts_proto_msgTypes[23]
+	mi := &file_tracts_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1759,7 +1855,7 @@ func (x *SetTractEnabled) String() string {
 func (*SetTractEnabled) ProtoMessage() {}
 
 func (x *SetTractEnabled) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[23]
+	mi := &file_tracts_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1772,7 +1868,7 @@ func (x *SetTractEnabled) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetTractEnabled.ProtoReflect.Descriptor instead.
 func (*SetTractEnabled) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{23}
+	return file_tracts_proto_rawDescGZIP(), []int{24}
 }
 
 type PublishTractTemplate struct {
@@ -1783,7 +1879,7 @@ type PublishTractTemplate struct {
 
 func (x *PublishTractTemplate) Reset() {
 	*x = PublishTractTemplate{}
-	mi := &file_tracts_proto_msgTypes[24]
+	mi := &file_tracts_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1795,7 +1891,7 @@ func (x *PublishTractTemplate) String() string {
 func (*PublishTractTemplate) ProtoMessage() {}
 
 func (x *PublishTractTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[24]
+	mi := &file_tracts_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1808,7 +1904,7 @@ func (x *PublishTractTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishTractTemplate.ProtoReflect.Descriptor instead.
 func (*PublishTractTemplate) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{24}
+	return file_tracts_proto_rawDescGZIP(), []int{25}
 }
 
 type UnpublishTractTemplate struct {
@@ -1819,7 +1915,7 @@ type UnpublishTractTemplate struct {
 
 func (x *UnpublishTractTemplate) Reset() {
 	*x = UnpublishTractTemplate{}
-	mi := &file_tracts_proto_msgTypes[25]
+	mi := &file_tracts_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1831,7 +1927,7 @@ func (x *UnpublishTractTemplate) String() string {
 func (*UnpublishTractTemplate) ProtoMessage() {}
 
 func (x *UnpublishTractTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[25]
+	mi := &file_tracts_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1844,7 +1940,7 @@ func (x *UnpublishTractTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnpublishTractTemplate.ProtoReflect.Descriptor instead.
 func (*UnpublishTractTemplate) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{25}
+	return file_tracts_proto_rawDescGZIP(), []int{26}
 }
 
 type ListTractTemplates struct {
@@ -1855,7 +1951,7 @@ type ListTractTemplates struct {
 
 func (x *ListTractTemplates) Reset() {
 	*x = ListTractTemplates{}
-	mi := &file_tracts_proto_msgTypes[26]
+	mi := &file_tracts_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1867,7 +1963,7 @@ func (x *ListTractTemplates) String() string {
 func (*ListTractTemplates) ProtoMessage() {}
 
 func (x *ListTractTemplates) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[26]
+	mi := &file_tracts_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1880,7 +1976,7 @@ func (x *ListTractTemplates) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTractTemplates.ProtoReflect.Descriptor instead.
 func (*ListTractTemplates) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{26}
+	return file_tracts_proto_rawDescGZIP(), []int{27}
 }
 
 type GetTractTemplate struct {
@@ -1891,7 +1987,7 @@ type GetTractTemplate struct {
 
 func (x *GetTractTemplate) Reset() {
 	*x = GetTractTemplate{}
-	mi := &file_tracts_proto_msgTypes[27]
+	mi := &file_tracts_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1903,7 +1999,7 @@ func (x *GetTractTemplate) String() string {
 func (*GetTractTemplate) ProtoMessage() {}
 
 func (x *GetTractTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[27]
+	mi := &file_tracts_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1916,7 +2012,7 @@ func (x *GetTractTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTractTemplate.ProtoReflect.Descriptor instead.
 func (*GetTractTemplate) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{27}
+	return file_tracts_proto_rawDescGZIP(), []int{28}
 }
 
 type InstantiateTractTemplate struct {
@@ -1927,7 +2023,7 @@ type InstantiateTractTemplate struct {
 
 func (x *InstantiateTractTemplate) Reset() {
 	*x = InstantiateTractTemplate{}
-	mi := &file_tracts_proto_msgTypes[28]
+	mi := &file_tracts_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1939,7 +2035,7 @@ func (x *InstantiateTractTemplate) String() string {
 func (*InstantiateTractTemplate) ProtoMessage() {}
 
 func (x *InstantiateTractTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[28]
+	mi := &file_tracts_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1952,7 +2048,7 @@ func (x *InstantiateTractTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InstantiateTractTemplate.ProtoReflect.Descriptor instead.
 func (*InstantiateTractTemplate) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{28}
+	return file_tracts_proto_rawDescGZIP(), []int{29}
 }
 
 type RunTract struct {
@@ -1963,7 +2059,7 @@ type RunTract struct {
 
 func (x *RunTract) Reset() {
 	*x = RunTract{}
-	mi := &file_tracts_proto_msgTypes[29]
+	mi := &file_tracts_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1975,7 +2071,7 @@ func (x *RunTract) String() string {
 func (*RunTract) ProtoMessage() {}
 
 func (x *RunTract) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[29]
+	mi := &file_tracts_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1988,7 +2084,7 @@ func (x *RunTract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RunTract.ProtoReflect.Descriptor instead.
 func (*RunTract) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{29}
+	return file_tracts_proto_rawDescGZIP(), []int{30}
 }
 
 type ListRuns struct {
@@ -1999,7 +2095,7 @@ type ListRuns struct {
 
 func (x *ListRuns) Reset() {
 	*x = ListRuns{}
-	mi := &file_tracts_proto_msgTypes[30]
+	mi := &file_tracts_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2011,7 +2107,7 @@ func (x *ListRuns) String() string {
 func (*ListRuns) ProtoMessage() {}
 
 func (x *ListRuns) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[30]
+	mi := &file_tracts_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2024,7 +2120,7 @@ func (x *ListRuns) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRuns.ProtoReflect.Descriptor instead.
 func (*ListRuns) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{30}
+	return file_tracts_proto_rawDescGZIP(), []int{31}
 }
 
 type GetRun struct {
@@ -2035,7 +2131,7 @@ type GetRun struct {
 
 func (x *GetRun) Reset() {
 	*x = GetRun{}
-	mi := &file_tracts_proto_msgTypes[31]
+	mi := &file_tracts_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2047,7 +2143,7 @@ func (x *GetRun) String() string {
 func (*GetRun) ProtoMessage() {}
 
 func (x *GetRun) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[31]
+	mi := &file_tracts_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2060,7 +2156,7 @@ func (x *GetRun) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRun.ProtoReflect.Descriptor instead.
 func (*GetRun) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{31}
+	return file_tracts_proto_rawDescGZIP(), []int{32}
 }
 
 type WatchRun struct {
@@ -2071,7 +2167,7 @@ type WatchRun struct {
 
 func (x *WatchRun) Reset() {
 	*x = WatchRun{}
-	mi := &file_tracts_proto_msgTypes[32]
+	mi := &file_tracts_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2083,7 +2179,7 @@ func (x *WatchRun) String() string {
 func (*WatchRun) ProtoMessage() {}
 
 func (x *WatchRun) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[32]
+	mi := &file_tracts_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2096,7 +2192,7 @@ func (x *WatchRun) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchRun.ProtoReflect.Descriptor instead.
 func (*WatchRun) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{32}
+	return file_tracts_proto_rawDescGZIP(), []int{33}
 }
 
 type RetryRun struct {
@@ -2107,7 +2203,7 @@ type RetryRun struct {
 
 func (x *RetryRun) Reset() {
 	*x = RetryRun{}
-	mi := &file_tracts_proto_msgTypes[33]
+	mi := &file_tracts_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2119,7 +2215,7 @@ func (x *RetryRun) String() string {
 func (*RetryRun) ProtoMessage() {}
 
 func (x *RetryRun) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[33]
+	mi := &file_tracts_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2132,7 +2228,7 @@ func (x *RetryRun) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetryRun.ProtoReflect.Descriptor instead.
 func (*RetryRun) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{33}
+	return file_tracts_proto_rawDescGZIP(), []int{34}
 }
 
 type ListTractTools struct {
@@ -2143,7 +2239,7 @@ type ListTractTools struct {
 
 func (x *ListTractTools) Reset() {
 	*x = ListTractTools{}
-	mi := &file_tracts_proto_msgTypes[34]
+	mi := &file_tracts_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2155,7 +2251,7 @@ func (x *ListTractTools) String() string {
 func (*ListTractTools) ProtoMessage() {}
 
 func (x *ListTractTools) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[34]
+	mi := &file_tracts_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2168,7 +2264,7 @@ func (x *ListTractTools) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTractTools.ProtoReflect.Descriptor instead.
 func (*ListTractTools) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{34}
+	return file_tracts_proto_rawDescGZIP(), []int{35}
 }
 
 type ListTriggerSources struct {
@@ -2179,7 +2275,7 @@ type ListTriggerSources struct {
 
 func (x *ListTriggerSources) Reset() {
 	*x = ListTriggerSources{}
-	mi := &file_tracts_proto_msgTypes[35]
+	mi := &file_tracts_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2191,7 +2287,7 @@ func (x *ListTriggerSources) String() string {
 func (*ListTriggerSources) ProtoMessage() {}
 
 func (x *ListTriggerSources) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[35]
+	mi := &file_tracts_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2204,7 +2300,7 @@ func (x *ListTriggerSources) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTriggerSources.ProtoReflect.Descriptor instead.
 func (*ListTriggerSources) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{35}
+	return file_tracts_proto_rawDescGZIP(), []int{36}
 }
 
 type CreateTrigger struct {
@@ -2215,7 +2311,7 @@ type CreateTrigger struct {
 
 func (x *CreateTrigger) Reset() {
 	*x = CreateTrigger{}
-	mi := &file_tracts_proto_msgTypes[36]
+	mi := &file_tracts_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2227,7 +2323,7 @@ func (x *CreateTrigger) String() string {
 func (*CreateTrigger) ProtoMessage() {}
 
 func (x *CreateTrigger) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[36]
+	mi := &file_tracts_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2240,7 +2336,7 @@ func (x *CreateTrigger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTrigger.ProtoReflect.Descriptor instead.
 func (*CreateTrigger) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{36}
+	return file_tracts_proto_rawDescGZIP(), []int{37}
 }
 
 type ListTriggers struct {
@@ -2251,7 +2347,7 @@ type ListTriggers struct {
 
 func (x *ListTriggers) Reset() {
 	*x = ListTriggers{}
-	mi := &file_tracts_proto_msgTypes[37]
+	mi := &file_tracts_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2263,7 +2359,7 @@ func (x *ListTriggers) String() string {
 func (*ListTriggers) ProtoMessage() {}
 
 func (x *ListTriggers) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[37]
+	mi := &file_tracts_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2276,7 +2372,7 @@ func (x *ListTriggers) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTriggers.ProtoReflect.Descriptor instead.
 func (*ListTriggers) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{37}
+	return file_tracts_proto_rawDescGZIP(), []int{38}
 }
 
 type DeleteTrigger struct {
@@ -2287,7 +2383,7 @@ type DeleteTrigger struct {
 
 func (x *DeleteTrigger) Reset() {
 	*x = DeleteTrigger{}
-	mi := &file_tracts_proto_msgTypes[38]
+	mi := &file_tracts_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2299,7 +2395,7 @@ func (x *DeleteTrigger) String() string {
 func (*DeleteTrigger) ProtoMessage() {}
 
 func (x *DeleteTrigger) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[38]
+	mi := &file_tracts_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2312,7 +2408,7 @@ func (x *DeleteTrigger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTrigger.ProtoReflect.Descriptor instead.
 func (*DeleteTrigger) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{38}
+	return file_tracts_proto_rawDescGZIP(), []int{39}
 }
 
 type SetTriggerEnabled struct {
@@ -2323,7 +2419,7 @@ type SetTriggerEnabled struct {
 
 func (x *SetTriggerEnabled) Reset() {
 	*x = SetTriggerEnabled{}
-	mi := &file_tracts_proto_msgTypes[39]
+	mi := &file_tracts_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2335,7 +2431,7 @@ func (x *SetTriggerEnabled) String() string {
 func (*SetTriggerEnabled) ProtoMessage() {}
 
 func (x *SetTriggerEnabled) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[39]
+	mi := &file_tracts_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2348,7 +2444,7 @@ func (x *SetTriggerEnabled) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetTriggerEnabled.ProtoReflect.Descriptor instead.
 func (*SetTriggerEnabled) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{39}
+	return file_tracts_proto_rawDescGZIP(), []int{40}
 }
 
 type RotateTriggerToken struct {
@@ -2359,7 +2455,7 @@ type RotateTriggerToken struct {
 
 func (x *RotateTriggerToken) Reset() {
 	*x = RotateTriggerToken{}
-	mi := &file_tracts_proto_msgTypes[40]
+	mi := &file_tracts_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2371,7 +2467,7 @@ func (x *RotateTriggerToken) String() string {
 func (*RotateTriggerToken) ProtoMessage() {}
 
 func (x *RotateTriggerToken) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[40]
+	mi := &file_tracts_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2384,7 +2480,7 @@ func (x *RotateTriggerToken) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RotateTriggerToken.ProtoReflect.Descriptor instead.
 func (*RotateTriggerToken) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{40}
+	return file_tracts_proto_rawDescGZIP(), []int{41}
 }
 
 type LinkTrigger struct {
@@ -2395,7 +2491,7 @@ type LinkTrigger struct {
 
 func (x *LinkTrigger) Reset() {
 	*x = LinkTrigger{}
-	mi := &file_tracts_proto_msgTypes[41]
+	mi := &file_tracts_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2407,7 +2503,7 @@ func (x *LinkTrigger) String() string {
 func (*LinkTrigger) ProtoMessage() {}
 
 func (x *LinkTrigger) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[41]
+	mi := &file_tracts_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2420,7 +2516,7 @@ func (x *LinkTrigger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkTrigger.ProtoReflect.Descriptor instead.
 func (*LinkTrigger) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{41}
+	return file_tracts_proto_rawDescGZIP(), []int{42}
 }
 
 type UnlinkTrigger struct {
@@ -2431,7 +2527,7 @@ type UnlinkTrigger struct {
 
 func (x *UnlinkTrigger) Reset() {
 	*x = UnlinkTrigger{}
-	mi := &file_tracts_proto_msgTypes[42]
+	mi := &file_tracts_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2443,7 +2539,7 @@ func (x *UnlinkTrigger) String() string {
 func (*UnlinkTrigger) ProtoMessage() {}
 
 func (x *UnlinkTrigger) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[42]
+	mi := &file_tracts_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2456,7 +2552,7 @@ func (x *UnlinkTrigger) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnlinkTrigger.ProtoReflect.Descriptor instead.
 func (*UnlinkTrigger) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{42}
+	return file_tracts_proto_rawDescGZIP(), []int{43}
 }
 
 type CreateTract_Request struct {
@@ -2470,7 +2566,7 @@ type CreateTract_Request struct {
 
 func (x *CreateTract_Request) Reset() {
 	*x = CreateTract_Request{}
-	mi := &file_tracts_proto_msgTypes[45]
+	mi := &file_tracts_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2482,7 +2578,7 @@ func (x *CreateTract_Request) String() string {
 func (*CreateTract_Request) ProtoMessage() {}
 
 func (x *CreateTract_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[45]
+	mi := &file_tracts_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2495,7 +2591,7 @@ func (x *CreateTract_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTract_Request.ProtoReflect.Descriptor instead.
 func (*CreateTract_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{18, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{19, 0}
 }
 
 func (x *CreateTract_Request) GetName() string {
@@ -2529,7 +2625,7 @@ type CreateTract_Response struct {
 
 func (x *CreateTract_Response) Reset() {
 	*x = CreateTract_Response{}
-	mi := &file_tracts_proto_msgTypes[46]
+	mi := &file_tracts_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2541,7 +2637,7 @@ func (x *CreateTract_Response) String() string {
 func (*CreateTract_Response) ProtoMessage() {}
 
 func (x *CreateTract_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[46]
+	mi := &file_tracts_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2554,7 +2650,7 @@ func (x *CreateTract_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTract_Response.ProtoReflect.Descriptor instead.
 func (*CreateTract_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{18, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{19, 1}
 }
 
 func (x *CreateTract_Response) GetTract() *TractItem {
@@ -2583,7 +2679,7 @@ type UpdateTract_Request struct {
 
 func (x *UpdateTract_Request) Reset() {
 	*x = UpdateTract_Request{}
-	mi := &file_tracts_proto_msgTypes[47]
+	mi := &file_tracts_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2595,7 +2691,7 @@ func (x *UpdateTract_Request) String() string {
 func (*UpdateTract_Request) ProtoMessage() {}
 
 func (x *UpdateTract_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[47]
+	mi := &file_tracts_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2608,7 +2704,7 @@ func (x *UpdateTract_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTract_Request.ProtoReflect.Descriptor instead.
 func (*UpdateTract_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{19, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{20, 0}
 }
 
 func (x *UpdateTract_Request) GetUuid() string {
@@ -2649,7 +2745,7 @@ type UpdateTract_Response struct {
 
 func (x *UpdateTract_Response) Reset() {
 	*x = UpdateTract_Response{}
-	mi := &file_tracts_proto_msgTypes[48]
+	mi := &file_tracts_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2661,7 +2757,7 @@ func (x *UpdateTract_Response) String() string {
 func (*UpdateTract_Response) ProtoMessage() {}
 
 func (x *UpdateTract_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[48]
+	mi := &file_tracts_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2674,7 +2770,7 @@ func (x *UpdateTract_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTract_Response.ProtoReflect.Descriptor instead.
 func (*UpdateTract_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{19, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{20, 1}
 }
 
 func (x *UpdateTract_Response) GetTract() *TractItem {
@@ -2700,7 +2796,7 @@ type GetTract_Request struct {
 
 func (x *GetTract_Request) Reset() {
 	*x = GetTract_Request{}
-	mi := &file_tracts_proto_msgTypes[49]
+	mi := &file_tracts_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2712,7 +2808,7 @@ func (x *GetTract_Request) String() string {
 func (*GetTract_Request) ProtoMessage() {}
 
 func (x *GetTract_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[49]
+	mi := &file_tracts_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2725,7 +2821,7 @@ func (x *GetTract_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTract_Request.ProtoReflect.Descriptor instead.
 func (*GetTract_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{20, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{21, 0}
 }
 
 func (x *GetTract_Request) GetUuid() string {
@@ -2744,7 +2840,7 @@ type GetTract_Response struct {
 
 func (x *GetTract_Response) Reset() {
 	*x = GetTract_Response{}
-	mi := &file_tracts_proto_msgTypes[50]
+	mi := &file_tracts_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2756,7 +2852,7 @@ func (x *GetTract_Response) String() string {
 func (*GetTract_Response) ProtoMessage() {}
 
 func (x *GetTract_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[50]
+	mi := &file_tracts_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2769,7 +2865,7 @@ func (x *GetTract_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTract_Response.ProtoReflect.Descriptor instead.
 func (*GetTract_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{20, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{21, 1}
 }
 
 func (x *GetTract_Response) GetTract() *TractItem {
@@ -2787,7 +2883,7 @@ type ListTracts_Request struct {
 
 func (x *ListTracts_Request) Reset() {
 	*x = ListTracts_Request{}
-	mi := &file_tracts_proto_msgTypes[51]
+	mi := &file_tracts_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2799,7 +2895,7 @@ func (x *ListTracts_Request) String() string {
 func (*ListTracts_Request) ProtoMessage() {}
 
 func (x *ListTracts_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[51]
+	mi := &file_tracts_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2812,7 +2908,7 @@ func (x *ListTracts_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTracts_Request.ProtoReflect.Descriptor instead.
 func (*ListTracts_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{21, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{22, 0}
 }
 
 type ListTracts_Response struct {
@@ -2824,7 +2920,7 @@ type ListTracts_Response struct {
 
 func (x *ListTracts_Response) Reset() {
 	*x = ListTracts_Response{}
-	mi := &file_tracts_proto_msgTypes[52]
+	mi := &file_tracts_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2836,7 +2932,7 @@ func (x *ListTracts_Response) String() string {
 func (*ListTracts_Response) ProtoMessage() {}
 
 func (x *ListTracts_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[52]
+	mi := &file_tracts_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2849,7 +2945,7 @@ func (x *ListTracts_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTracts_Response.ProtoReflect.Descriptor instead.
 func (*ListTracts_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{21, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{22, 1}
 }
 
 func (x *ListTracts_Response) GetTracts() []*TractItem {
@@ -2868,7 +2964,7 @@ type DeleteTract_Request struct {
 
 func (x *DeleteTract_Request) Reset() {
 	*x = DeleteTract_Request{}
-	mi := &file_tracts_proto_msgTypes[53]
+	mi := &file_tracts_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2880,7 +2976,7 @@ func (x *DeleteTract_Request) String() string {
 func (*DeleteTract_Request) ProtoMessage() {}
 
 func (x *DeleteTract_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[53]
+	mi := &file_tracts_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2893,7 +2989,7 @@ func (x *DeleteTract_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTract_Request.ProtoReflect.Descriptor instead.
 func (*DeleteTract_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{22, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{23, 0}
 }
 
 func (x *DeleteTract_Request) GetUuid() string {
@@ -2911,7 +3007,7 @@ type DeleteTract_Response struct {
 
 func (x *DeleteTract_Response) Reset() {
 	*x = DeleteTract_Response{}
-	mi := &file_tracts_proto_msgTypes[54]
+	mi := &file_tracts_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2923,7 +3019,7 @@ func (x *DeleteTract_Response) String() string {
 func (*DeleteTract_Response) ProtoMessage() {}
 
 func (x *DeleteTract_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[54]
+	mi := &file_tracts_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2936,7 +3032,7 @@ func (x *DeleteTract_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTract_Response.ProtoReflect.Descriptor instead.
 func (*DeleteTract_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{22, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{23, 1}
 }
 
 type SetTractEnabled_Request struct {
@@ -2949,7 +3045,7 @@ type SetTractEnabled_Request struct {
 
 func (x *SetTractEnabled_Request) Reset() {
 	*x = SetTractEnabled_Request{}
-	mi := &file_tracts_proto_msgTypes[55]
+	mi := &file_tracts_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2961,7 +3057,7 @@ func (x *SetTractEnabled_Request) String() string {
 func (*SetTractEnabled_Request) ProtoMessage() {}
 
 func (x *SetTractEnabled_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[55]
+	mi := &file_tracts_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2974,7 +3070,7 @@ func (x *SetTractEnabled_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetTractEnabled_Request.ProtoReflect.Descriptor instead.
 func (*SetTractEnabled_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{23, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{24, 0}
 }
 
 func (x *SetTractEnabled_Request) GetUuid() string {
@@ -2999,7 +3095,7 @@ type SetTractEnabled_Response struct {
 
 func (x *SetTractEnabled_Response) Reset() {
 	*x = SetTractEnabled_Response{}
-	mi := &file_tracts_proto_msgTypes[56]
+	mi := &file_tracts_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3011,7 +3107,7 @@ func (x *SetTractEnabled_Response) String() string {
 func (*SetTractEnabled_Response) ProtoMessage() {}
 
 func (x *SetTractEnabled_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[56]
+	mi := &file_tracts_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3024,7 +3120,7 @@ func (x *SetTractEnabled_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetTractEnabled_Response.ProtoReflect.Descriptor instead.
 func (*SetTractEnabled_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{23, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{24, 1}
 }
 
 type PublishTractTemplate_Request struct {
@@ -3037,7 +3133,7 @@ type PublishTractTemplate_Request struct {
 
 func (x *PublishTractTemplate_Request) Reset() {
 	*x = PublishTractTemplate_Request{}
-	mi := &file_tracts_proto_msgTypes[57]
+	mi := &file_tracts_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3049,7 +3145,7 @@ func (x *PublishTractTemplate_Request) String() string {
 func (*PublishTractTemplate_Request) ProtoMessage() {}
 
 func (x *PublishTractTemplate_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[57]
+	mi := &file_tracts_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3062,7 +3158,7 @@ func (x *PublishTractTemplate_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishTractTemplate_Request.ProtoReflect.Descriptor instead.
 func (*PublishTractTemplate_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{24, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{25, 0}
 }
 
 func (x *PublishTractTemplate_Request) GetTractUuid() string {
@@ -3088,7 +3184,7 @@ type PublishTractTemplate_Response struct {
 
 func (x *PublishTractTemplate_Response) Reset() {
 	*x = PublishTractTemplate_Response{}
-	mi := &file_tracts_proto_msgTypes[58]
+	mi := &file_tracts_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3100,7 +3196,7 @@ func (x *PublishTractTemplate_Response) String() string {
 func (*PublishTractTemplate_Response) ProtoMessage() {}
 
 func (x *PublishTractTemplate_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[58]
+	mi := &file_tracts_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3113,7 +3209,7 @@ func (x *PublishTractTemplate_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishTractTemplate_Response.ProtoReflect.Descriptor instead.
 func (*PublishTractTemplate_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{24, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{25, 1}
 }
 
 func (x *PublishTractTemplate_Response) GetTemplate() *TractTemplateItem {
@@ -3132,7 +3228,7 @@ type UnpublishTractTemplate_Request struct {
 
 func (x *UnpublishTractTemplate_Request) Reset() {
 	*x = UnpublishTractTemplate_Request{}
-	mi := &file_tracts_proto_msgTypes[59]
+	mi := &file_tracts_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3144,7 +3240,7 @@ func (x *UnpublishTractTemplate_Request) String() string {
 func (*UnpublishTractTemplate_Request) ProtoMessage() {}
 
 func (x *UnpublishTractTemplate_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[59]
+	mi := &file_tracts_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3157,7 +3253,7 @@ func (x *UnpublishTractTemplate_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnpublishTractTemplate_Request.ProtoReflect.Descriptor instead.
 func (*UnpublishTractTemplate_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{25, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{26, 0}
 }
 
 func (x *UnpublishTractTemplate_Request) GetTemplateUuid() string {
@@ -3175,7 +3271,7 @@ type UnpublishTractTemplate_Response struct {
 
 func (x *UnpublishTractTemplate_Response) Reset() {
 	*x = UnpublishTractTemplate_Response{}
-	mi := &file_tracts_proto_msgTypes[60]
+	mi := &file_tracts_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3187,7 +3283,7 @@ func (x *UnpublishTractTemplate_Response) String() string {
 func (*UnpublishTractTemplate_Response) ProtoMessage() {}
 
 func (x *UnpublishTractTemplate_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[60]
+	mi := &file_tracts_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3200,7 +3296,7 @@ func (x *UnpublishTractTemplate_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnpublishTractTemplate_Response.ProtoReflect.Descriptor instead.
 func (*UnpublishTractTemplate_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{25, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{26, 1}
 }
 
 type ListTractTemplates_Request struct {
@@ -3213,7 +3309,7 @@ type ListTractTemplates_Request struct {
 
 func (x *ListTractTemplates_Request) Reset() {
 	*x = ListTractTemplates_Request{}
-	mi := &file_tracts_proto_msgTypes[61]
+	mi := &file_tracts_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3225,7 +3321,7 @@ func (x *ListTractTemplates_Request) String() string {
 func (*ListTractTemplates_Request) ProtoMessage() {}
 
 func (x *ListTractTemplates_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[61]
+	mi := &file_tracts_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3238,7 +3334,7 @@ func (x *ListTractTemplates_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTractTemplates_Request.ProtoReflect.Descriptor instead.
 func (*ListTractTemplates_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{26, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{27, 0}
 }
 
 func (x *ListTractTemplates_Request) GetCategory() string {
@@ -3264,7 +3360,7 @@ type ListTractTemplates_Response struct {
 
 func (x *ListTractTemplates_Response) Reset() {
 	*x = ListTractTemplates_Response{}
-	mi := &file_tracts_proto_msgTypes[62]
+	mi := &file_tracts_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3276,7 +3372,7 @@ func (x *ListTractTemplates_Response) String() string {
 func (*ListTractTemplates_Response) ProtoMessage() {}
 
 func (x *ListTractTemplates_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[62]
+	mi := &file_tracts_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3289,7 +3385,7 @@ func (x *ListTractTemplates_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTractTemplates_Response.ProtoReflect.Descriptor instead.
 func (*ListTractTemplates_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{26, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{27, 1}
 }
 
 func (x *ListTractTemplates_Response) GetTemplates() []*TractTemplateSummary {
@@ -3308,7 +3404,7 @@ type GetTractTemplate_Request struct {
 
 func (x *GetTractTemplate_Request) Reset() {
 	*x = GetTractTemplate_Request{}
-	mi := &file_tracts_proto_msgTypes[63]
+	mi := &file_tracts_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3320,7 +3416,7 @@ func (x *GetTractTemplate_Request) String() string {
 func (*GetTractTemplate_Request) ProtoMessage() {}
 
 func (x *GetTractTemplate_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[63]
+	mi := &file_tracts_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3333,7 +3429,7 @@ func (x *GetTractTemplate_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTractTemplate_Request.ProtoReflect.Descriptor instead.
 func (*GetTractTemplate_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{27, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{28, 0}
 }
 
 func (x *GetTractTemplate_Request) GetUuid() string {
@@ -3352,7 +3448,7 @@ type GetTractTemplate_Response struct {
 
 func (x *GetTractTemplate_Response) Reset() {
 	*x = GetTractTemplate_Response{}
-	mi := &file_tracts_proto_msgTypes[64]
+	mi := &file_tracts_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3364,7 +3460,7 @@ func (x *GetTractTemplate_Response) String() string {
 func (*GetTractTemplate_Response) ProtoMessage() {}
 
 func (x *GetTractTemplate_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[64]
+	mi := &file_tracts_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3377,7 +3473,7 @@ func (x *GetTractTemplate_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTractTemplate_Response.ProtoReflect.Descriptor instead.
 func (*GetTractTemplate_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{27, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{28, 1}
 }
 
 func (x *GetTractTemplate_Response) GetTemplate() *TractTemplateItem {
@@ -3399,7 +3495,7 @@ type InstantiateTractTemplate_Request struct {
 
 func (x *InstantiateTractTemplate_Request) Reset() {
 	*x = InstantiateTractTemplate_Request{}
-	mi := &file_tracts_proto_msgTypes[65]
+	mi := &file_tracts_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3411,7 +3507,7 @@ func (x *InstantiateTractTemplate_Request) String() string {
 func (*InstantiateTractTemplate_Request) ProtoMessage() {}
 
 func (x *InstantiateTractTemplate_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[65]
+	mi := &file_tracts_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3424,7 +3520,7 @@ func (x *InstantiateTractTemplate_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InstantiateTractTemplate_Request.ProtoReflect.Descriptor instead.
 func (*InstantiateTractTemplate_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{28, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{29, 0}
 }
 
 func (x *InstantiateTractTemplate_Request) GetTemplateUuid() string {
@@ -3465,7 +3561,7 @@ type InstantiateTractTemplate_Response struct {
 
 func (x *InstantiateTractTemplate_Response) Reset() {
 	*x = InstantiateTractTemplate_Response{}
-	mi := &file_tracts_proto_msgTypes[66]
+	mi := &file_tracts_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3477,7 +3573,7 @@ func (x *InstantiateTractTemplate_Response) String() string {
 func (*InstantiateTractTemplate_Response) ProtoMessage() {}
 
 func (x *InstantiateTractTemplate_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[66]
+	mi := &file_tracts_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3490,7 +3586,7 @@ func (x *InstantiateTractTemplate_Response) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use InstantiateTractTemplate_Response.ProtoReflect.Descriptor instead.
 func (*InstantiateTractTemplate_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{28, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{29, 1}
 }
 
 func (x *InstantiateTractTemplate_Response) GetTract() *TractItem {
@@ -3517,7 +3613,7 @@ type RunTract_Request struct {
 
 func (x *RunTract_Request) Reset() {
 	*x = RunTract_Request{}
-	mi := &file_tracts_proto_msgTypes[68]
+	mi := &file_tracts_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3529,7 +3625,7 @@ func (x *RunTract_Request) String() string {
 func (*RunTract_Request) ProtoMessage() {}
 
 func (x *RunTract_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[68]
+	mi := &file_tracts_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3542,7 +3638,7 @@ func (x *RunTract_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RunTract_Request.ProtoReflect.Descriptor instead.
 func (*RunTract_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{29, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{30, 0}
 }
 
 func (x *RunTract_Request) GetTractUuid() string {
@@ -3567,7 +3663,7 @@ type RunTract_Response struct {
 
 func (x *RunTract_Response) Reset() {
 	*x = RunTract_Response{}
-	mi := &file_tracts_proto_msgTypes[69]
+	mi := &file_tracts_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3579,7 +3675,7 @@ func (x *RunTract_Response) String() string {
 func (*RunTract_Response) ProtoMessage() {}
 
 func (x *RunTract_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[69]
+	mi := &file_tracts_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3592,7 +3688,7 @@ func (x *RunTract_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RunTract_Response.ProtoReflect.Descriptor instead.
 func (*RunTract_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{29, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{30, 1}
 }
 
 type ListRuns_Request struct {
@@ -3605,7 +3701,7 @@ type ListRuns_Request struct {
 
 func (x *ListRuns_Request) Reset() {
 	*x = ListRuns_Request{}
-	mi := &file_tracts_proto_msgTypes[70]
+	mi := &file_tracts_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3617,7 +3713,7 @@ func (x *ListRuns_Request) String() string {
 func (*ListRuns_Request) ProtoMessage() {}
 
 func (x *ListRuns_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[70]
+	mi := &file_tracts_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3630,7 +3726,7 @@ func (x *ListRuns_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRuns_Request.ProtoReflect.Descriptor instead.
 func (*ListRuns_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{30, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{31, 0}
 }
 
 func (x *ListRuns_Request) GetTractUuid() string {
@@ -3656,7 +3752,7 @@ type ListRuns_Response struct {
 
 func (x *ListRuns_Response) Reset() {
 	*x = ListRuns_Response{}
-	mi := &file_tracts_proto_msgTypes[71]
+	mi := &file_tracts_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3668,7 +3764,7 @@ func (x *ListRuns_Response) String() string {
 func (*ListRuns_Response) ProtoMessage() {}
 
 func (x *ListRuns_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[71]
+	mi := &file_tracts_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3681,7 +3777,7 @@ func (x *ListRuns_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRuns_Response.ProtoReflect.Descriptor instead.
 func (*ListRuns_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{30, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{31, 1}
 }
 
 func (x *ListRuns_Response) GetRuns() []*TractRunItem {
@@ -3700,7 +3796,7 @@ type GetRun_Request struct {
 
 func (x *GetRun_Request) Reset() {
 	*x = GetRun_Request{}
-	mi := &file_tracts_proto_msgTypes[72]
+	mi := &file_tracts_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3712,7 +3808,7 @@ func (x *GetRun_Request) String() string {
 func (*GetRun_Request) ProtoMessage() {}
 
 func (x *GetRun_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[72]
+	mi := &file_tracts_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3725,7 +3821,7 @@ func (x *GetRun_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRun_Request.ProtoReflect.Descriptor instead.
 func (*GetRun_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{31, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{32, 0}
 }
 
 func (x *GetRun_Request) GetRunUuid() string {
@@ -3745,7 +3841,7 @@ type GetRun_Response struct {
 
 func (x *GetRun_Response) Reset() {
 	*x = GetRun_Response{}
-	mi := &file_tracts_proto_msgTypes[73]
+	mi := &file_tracts_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3757,7 +3853,7 @@ func (x *GetRun_Response) String() string {
 func (*GetRun_Response) ProtoMessage() {}
 
 func (x *GetRun_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[73]
+	mi := &file_tracts_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3770,7 +3866,7 @@ func (x *GetRun_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRun_Response.ProtoReflect.Descriptor instead.
 func (*GetRun_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{31, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{32, 1}
 }
 
 func (x *GetRun_Response) GetRun() *TractRunItem {
@@ -3796,7 +3892,7 @@ type WatchRun_Request struct {
 
 func (x *WatchRun_Request) Reset() {
 	*x = WatchRun_Request{}
-	mi := &file_tracts_proto_msgTypes[74]
+	mi := &file_tracts_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3808,7 +3904,7 @@ func (x *WatchRun_Request) String() string {
 func (*WatchRun_Request) ProtoMessage() {}
 
 func (x *WatchRun_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[74]
+	mi := &file_tracts_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3821,7 +3917,7 @@ func (x *WatchRun_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchRun_Request.ProtoReflect.Descriptor instead.
 func (*WatchRun_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{32, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{33, 0}
 }
 
 func (x *WatchRun_Request) GetRunUuid() string {
@@ -3841,7 +3937,7 @@ type WatchRun_Response struct {
 
 func (x *WatchRun_Response) Reset() {
 	*x = WatchRun_Response{}
-	mi := &file_tracts_proto_msgTypes[75]
+	mi := &file_tracts_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3853,7 +3949,7 @@ func (x *WatchRun_Response) String() string {
 func (*WatchRun_Response) ProtoMessage() {}
 
 func (x *WatchRun_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[75]
+	mi := &file_tracts_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3866,7 +3962,7 @@ func (x *WatchRun_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchRun_Response.ProtoReflect.Descriptor instead.
 func (*WatchRun_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{32, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{33, 1}
 }
 
 func (x *WatchRun_Response) GetRun() *TractRunItem {
@@ -3892,7 +3988,7 @@ type RetryRun_Request struct {
 
 func (x *RetryRun_Request) Reset() {
 	*x = RetryRun_Request{}
-	mi := &file_tracts_proto_msgTypes[76]
+	mi := &file_tracts_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3904,7 +4000,7 @@ func (x *RetryRun_Request) String() string {
 func (*RetryRun_Request) ProtoMessage() {}
 
 func (x *RetryRun_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[76]
+	mi := &file_tracts_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3917,7 +4013,7 @@ func (x *RetryRun_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetryRun_Request.ProtoReflect.Descriptor instead.
 func (*RetryRun_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{33, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{34, 0}
 }
 
 func (x *RetryRun_Request) GetRunUuid() string {
@@ -3935,7 +4031,7 @@ type RetryRun_Response struct {
 
 func (x *RetryRun_Response) Reset() {
 	*x = RetryRun_Response{}
-	mi := &file_tracts_proto_msgTypes[77]
+	mi := &file_tracts_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3947,7 +4043,7 @@ func (x *RetryRun_Response) String() string {
 func (*RetryRun_Response) ProtoMessage() {}
 
 func (x *RetryRun_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[77]
+	mi := &file_tracts_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3960,7 +4056,7 @@ func (x *RetryRun_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RetryRun_Response.ProtoReflect.Descriptor instead.
 func (*RetryRun_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{33, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{34, 1}
 }
 
 type ListTractTools_Request struct {
@@ -3971,7 +4067,7 @@ type ListTractTools_Request struct {
 
 func (x *ListTractTools_Request) Reset() {
 	*x = ListTractTools_Request{}
-	mi := &file_tracts_proto_msgTypes[78]
+	mi := &file_tracts_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3983,7 +4079,7 @@ func (x *ListTractTools_Request) String() string {
 func (*ListTractTools_Request) ProtoMessage() {}
 
 func (x *ListTractTools_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[78]
+	mi := &file_tracts_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3996,7 +4092,7 @@ func (x *ListTractTools_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTractTools_Request.ProtoReflect.Descriptor instead.
 func (*ListTractTools_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{34, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{35, 0}
 }
 
 type ListTractTools_Response struct {
@@ -4008,7 +4104,7 @@ type ListTractTools_Response struct {
 
 func (x *ListTractTools_Response) Reset() {
 	*x = ListTractTools_Response{}
-	mi := &file_tracts_proto_msgTypes[79]
+	mi := &file_tracts_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4020,7 +4116,7 @@ func (x *ListTractTools_Response) String() string {
 func (*ListTractTools_Response) ProtoMessage() {}
 
 func (x *ListTractTools_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[79]
+	mi := &file_tracts_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4033,7 +4129,7 @@ func (x *ListTractTools_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTractTools_Response.ProtoReflect.Descriptor instead.
 func (*ListTractTools_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{34, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{35, 1}
 }
 
 func (x *ListTractTools_Response) GetTools() []*TractToolItem {
@@ -4051,7 +4147,7 @@ type ListTriggerSources_Request struct {
 
 func (x *ListTriggerSources_Request) Reset() {
 	*x = ListTriggerSources_Request{}
-	mi := &file_tracts_proto_msgTypes[80]
+	mi := &file_tracts_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4063,7 +4159,7 @@ func (x *ListTriggerSources_Request) String() string {
 func (*ListTriggerSources_Request) ProtoMessage() {}
 
 func (x *ListTriggerSources_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[80]
+	mi := &file_tracts_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4076,7 +4172,7 @@ func (x *ListTriggerSources_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTriggerSources_Request.ProtoReflect.Descriptor instead.
 func (*ListTriggerSources_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{35, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{36, 0}
 }
 
 type ListTriggerSources_Response struct {
@@ -4088,7 +4184,7 @@ type ListTriggerSources_Response struct {
 
 func (x *ListTriggerSources_Response) Reset() {
 	*x = ListTriggerSources_Response{}
-	mi := &file_tracts_proto_msgTypes[81]
+	mi := &file_tracts_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4100,7 +4196,7 @@ func (x *ListTriggerSources_Response) String() string {
 func (*ListTriggerSources_Response) ProtoMessage() {}
 
 func (x *ListTriggerSources_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[81]
+	mi := &file_tracts_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4113,7 +4209,7 @@ func (x *ListTriggerSources_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTriggerSources_Response.ProtoReflect.Descriptor instead.
 func (*ListTriggerSources_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{35, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{36, 1}
 }
 
 func (x *ListTriggerSources_Response) GetSources() []*TriggerSourceItem {
@@ -4136,7 +4232,7 @@ type CreateTrigger_Request struct {
 
 func (x *CreateTrigger_Request) Reset() {
 	*x = CreateTrigger_Request{}
-	mi := &file_tracts_proto_msgTypes[82]
+	mi := &file_tracts_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4148,7 +4244,7 @@ func (x *CreateTrigger_Request) String() string {
 func (*CreateTrigger_Request) ProtoMessage() {}
 
 func (x *CreateTrigger_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[82]
+	mi := &file_tracts_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4161,7 +4257,7 @@ func (x *CreateTrigger_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTrigger_Request.ProtoReflect.Descriptor instead.
 func (*CreateTrigger_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{36, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{37, 0}
 }
 
 func (x *CreateTrigger_Request) GetName() string {
@@ -4210,7 +4306,7 @@ type CreateTrigger_Response struct {
 
 func (x *CreateTrigger_Response) Reset() {
 	*x = CreateTrigger_Response{}
-	mi := &file_tracts_proto_msgTypes[83]
+	mi := &file_tracts_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4222,7 +4318,7 @@ func (x *CreateTrigger_Response) String() string {
 func (*CreateTrigger_Response) ProtoMessage() {}
 
 func (x *CreateTrigger_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[83]
+	mi := &file_tracts_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4235,7 +4331,7 @@ func (x *CreateTrigger_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTrigger_Response.ProtoReflect.Descriptor instead.
 func (*CreateTrigger_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{36, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{37, 1}
 }
 
 func (x *CreateTrigger_Response) GetTrigger() *TriggerItem {
@@ -4267,7 +4363,7 @@ type ListTriggers_Request struct {
 
 func (x *ListTriggers_Request) Reset() {
 	*x = ListTriggers_Request{}
-	mi := &file_tracts_proto_msgTypes[84]
+	mi := &file_tracts_proto_msgTypes[85]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4279,7 +4375,7 @@ func (x *ListTriggers_Request) String() string {
 func (*ListTriggers_Request) ProtoMessage() {}
 
 func (x *ListTriggers_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[84]
+	mi := &file_tracts_proto_msgTypes[85]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4292,7 +4388,7 @@ func (x *ListTriggers_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTriggers_Request.ProtoReflect.Descriptor instead.
 func (*ListTriggers_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{37, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{38, 0}
 }
 
 type ListTriggers_Response struct {
@@ -4304,7 +4400,7 @@ type ListTriggers_Response struct {
 
 func (x *ListTriggers_Response) Reset() {
 	*x = ListTriggers_Response{}
-	mi := &file_tracts_proto_msgTypes[85]
+	mi := &file_tracts_proto_msgTypes[86]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4316,7 +4412,7 @@ func (x *ListTriggers_Response) String() string {
 func (*ListTriggers_Response) ProtoMessage() {}
 
 func (x *ListTriggers_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[85]
+	mi := &file_tracts_proto_msgTypes[86]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4329,7 +4425,7 @@ func (x *ListTriggers_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTriggers_Response.ProtoReflect.Descriptor instead.
 func (*ListTriggers_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{37, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{38, 1}
 }
 
 func (x *ListTriggers_Response) GetTriggers() []*TriggerItem {
@@ -4348,7 +4444,7 @@ type DeleteTrigger_Request struct {
 
 func (x *DeleteTrigger_Request) Reset() {
 	*x = DeleteTrigger_Request{}
-	mi := &file_tracts_proto_msgTypes[86]
+	mi := &file_tracts_proto_msgTypes[87]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4360,7 +4456,7 @@ func (x *DeleteTrigger_Request) String() string {
 func (*DeleteTrigger_Request) ProtoMessage() {}
 
 func (x *DeleteTrigger_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[86]
+	mi := &file_tracts_proto_msgTypes[87]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4373,7 +4469,7 @@ func (x *DeleteTrigger_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTrigger_Request.ProtoReflect.Descriptor instead.
 func (*DeleteTrigger_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{38, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{39, 0}
 }
 
 func (x *DeleteTrigger_Request) GetUuid() string {
@@ -4391,7 +4487,7 @@ type DeleteTrigger_Response struct {
 
 func (x *DeleteTrigger_Response) Reset() {
 	*x = DeleteTrigger_Response{}
-	mi := &file_tracts_proto_msgTypes[87]
+	mi := &file_tracts_proto_msgTypes[88]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4403,7 +4499,7 @@ func (x *DeleteTrigger_Response) String() string {
 func (*DeleteTrigger_Response) ProtoMessage() {}
 
 func (x *DeleteTrigger_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[87]
+	mi := &file_tracts_proto_msgTypes[88]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4416,7 +4512,7 @@ func (x *DeleteTrigger_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTrigger_Response.ProtoReflect.Descriptor instead.
 func (*DeleteTrigger_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{38, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{39, 1}
 }
 
 type SetTriggerEnabled_Request struct {
@@ -4429,7 +4525,7 @@ type SetTriggerEnabled_Request struct {
 
 func (x *SetTriggerEnabled_Request) Reset() {
 	*x = SetTriggerEnabled_Request{}
-	mi := &file_tracts_proto_msgTypes[88]
+	mi := &file_tracts_proto_msgTypes[89]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4441,7 +4537,7 @@ func (x *SetTriggerEnabled_Request) String() string {
 func (*SetTriggerEnabled_Request) ProtoMessage() {}
 
 func (x *SetTriggerEnabled_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[88]
+	mi := &file_tracts_proto_msgTypes[89]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4454,7 +4550,7 @@ func (x *SetTriggerEnabled_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetTriggerEnabled_Request.ProtoReflect.Descriptor instead.
 func (*SetTriggerEnabled_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{39, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{40, 0}
 }
 
 func (x *SetTriggerEnabled_Request) GetUuid() string {
@@ -4479,7 +4575,7 @@ type SetTriggerEnabled_Response struct {
 
 func (x *SetTriggerEnabled_Response) Reset() {
 	*x = SetTriggerEnabled_Response{}
-	mi := &file_tracts_proto_msgTypes[89]
+	mi := &file_tracts_proto_msgTypes[90]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4491,7 +4587,7 @@ func (x *SetTriggerEnabled_Response) String() string {
 func (*SetTriggerEnabled_Response) ProtoMessage() {}
 
 func (x *SetTriggerEnabled_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[89]
+	mi := &file_tracts_proto_msgTypes[90]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4504,7 +4600,7 @@ func (x *SetTriggerEnabled_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetTriggerEnabled_Response.ProtoReflect.Descriptor instead.
 func (*SetTriggerEnabled_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{39, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{40, 1}
 }
 
 type RotateTriggerToken_Request struct {
@@ -4516,7 +4612,7 @@ type RotateTriggerToken_Request struct {
 
 func (x *RotateTriggerToken_Request) Reset() {
 	*x = RotateTriggerToken_Request{}
-	mi := &file_tracts_proto_msgTypes[90]
+	mi := &file_tracts_proto_msgTypes[91]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4528,7 +4624,7 @@ func (x *RotateTriggerToken_Request) String() string {
 func (*RotateTriggerToken_Request) ProtoMessage() {}
 
 func (x *RotateTriggerToken_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[90]
+	mi := &file_tracts_proto_msgTypes[91]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4541,7 +4637,7 @@ func (x *RotateTriggerToken_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RotateTriggerToken_Request.ProtoReflect.Descriptor instead.
 func (*RotateTriggerToken_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{40, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{41, 0}
 }
 
 func (x *RotateTriggerToken_Request) GetUuid() string {
@@ -4562,7 +4658,7 @@ type RotateTriggerToken_Response struct {
 
 func (x *RotateTriggerToken_Response) Reset() {
 	*x = RotateTriggerToken_Response{}
-	mi := &file_tracts_proto_msgTypes[91]
+	mi := &file_tracts_proto_msgTypes[92]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4574,7 +4670,7 @@ func (x *RotateTriggerToken_Response) String() string {
 func (*RotateTriggerToken_Response) ProtoMessage() {}
 
 func (x *RotateTriggerToken_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[91]
+	mi := &file_tracts_proto_msgTypes[92]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4587,7 +4683,7 @@ func (x *RotateTriggerToken_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RotateTriggerToken_Response.ProtoReflect.Descriptor instead.
 func (*RotateTriggerToken_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{40, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{41, 1}
 }
 
 func (x *RotateTriggerToken_Response) GetTrigger() *TriggerItem {
@@ -4622,7 +4718,7 @@ type LinkTrigger_Request struct {
 
 func (x *LinkTrigger_Request) Reset() {
 	*x = LinkTrigger_Request{}
-	mi := &file_tracts_proto_msgTypes[92]
+	mi := &file_tracts_proto_msgTypes[93]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4634,7 +4730,7 @@ func (x *LinkTrigger_Request) String() string {
 func (*LinkTrigger_Request) ProtoMessage() {}
 
 func (x *LinkTrigger_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[92]
+	mi := &file_tracts_proto_msgTypes[93]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4647,7 +4743,7 @@ func (x *LinkTrigger_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkTrigger_Request.ProtoReflect.Descriptor instead.
 func (*LinkTrigger_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{41, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{42, 0}
 }
 
 func (x *LinkTrigger_Request) GetTriggerUuid() string {
@@ -4679,7 +4775,7 @@ type LinkTrigger_Response struct {
 
 func (x *LinkTrigger_Response) Reset() {
 	*x = LinkTrigger_Response{}
-	mi := &file_tracts_proto_msgTypes[93]
+	mi := &file_tracts_proto_msgTypes[94]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4691,7 +4787,7 @@ func (x *LinkTrigger_Response) String() string {
 func (*LinkTrigger_Response) ProtoMessage() {}
 
 func (x *LinkTrigger_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[93]
+	mi := &file_tracts_proto_msgTypes[94]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4704,7 +4800,7 @@ func (x *LinkTrigger_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkTrigger_Response.ProtoReflect.Descriptor instead.
 func (*LinkTrigger_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{41, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{42, 1}
 }
 
 type UnlinkTrigger_Request struct {
@@ -4717,7 +4813,7 @@ type UnlinkTrigger_Request struct {
 
 func (x *UnlinkTrigger_Request) Reset() {
 	*x = UnlinkTrigger_Request{}
-	mi := &file_tracts_proto_msgTypes[94]
+	mi := &file_tracts_proto_msgTypes[95]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4729,7 +4825,7 @@ func (x *UnlinkTrigger_Request) String() string {
 func (*UnlinkTrigger_Request) ProtoMessage() {}
 
 func (x *UnlinkTrigger_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[94]
+	mi := &file_tracts_proto_msgTypes[95]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4742,7 +4838,7 @@ func (x *UnlinkTrigger_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnlinkTrigger_Request.ProtoReflect.Descriptor instead.
 func (*UnlinkTrigger_Request) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{42, 0}
+	return file_tracts_proto_rawDescGZIP(), []int{43, 0}
 }
 
 func (x *UnlinkTrigger_Request) GetTriggerUuid() string {
@@ -4767,7 +4863,7 @@ type UnlinkTrigger_Response struct {
 
 func (x *UnlinkTrigger_Response) Reset() {
 	*x = UnlinkTrigger_Response{}
-	mi := &file_tracts_proto_msgTypes[95]
+	mi := &file_tracts_proto_msgTypes[96]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4779,7 +4875,7 @@ func (x *UnlinkTrigger_Response) String() string {
 func (*UnlinkTrigger_Response) ProtoMessage() {}
 
 func (x *UnlinkTrigger_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_tracts_proto_msgTypes[95]
+	mi := &file_tracts_proto_msgTypes[96]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4792,7 +4888,7 @@ func (x *UnlinkTrigger_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnlinkTrigger_Response.ProtoReflect.Descriptor instead.
 func (*UnlinkTrigger_Response) Descriptor() ([]byte, []int) {
-	return file_tracts_proto_rawDescGZIP(), []int{42, 1}
+	return file_tracts_proto_rawDescGZIP(), []int{43, 1}
 }
 
 var File_tracts_proto protoreflect.FileDescriptor
@@ -4840,7 +4936,14 @@ const file_tracts_proto_rawDesc = "" +
 	"\fParallelStep\x12*\n" +
 	"\x05steps\x18\x01 \x03(\v2\x14.artel_api.TractStepR\x05steps\"7\n" +
 	"\tGroupStep\x12*\n" +
-	"\x05steps\x18\x01 \x03(\v2\x14.artel_api.TractStepR\x05steps\"\xda\x02\n" +
+	"\x05steps\x18\x01 \x03(\v2\x14.artel_api.TractStepR\x05steps\"\xa4\x01\n" +
+	"\vLlmCallStep\x12#\n" +
+	"\rconnection_id\x18\x01 \x01(\tR\fconnectionId\x12\x14\n" +
+	"\x05model\x18\x02 \x01(\tR\x05model\x12\x16\n" +
+	"\x06prompt\x18\x03 \x01(\tR\x06prompt\x12#\n" +
+	"\rsystem_prompt\x18\x04 \x01(\tR\fsystemPrompt\x12\x1d\n" +
+	"\n" +
+	"max_tokens\x18\x05 \x01(\x05R\tmaxTokens\"\x8f\x03\n" +
 	"\tTractStep\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -4849,7 +4952,8 @@ const file_tracts_proto_rawDesc = "" +
 	"\tcondition\x18\x05 \x01(\v2\x18.artel_api.ConditionStepH\x00R\tcondition\x125\n" +
 	"\bparallel\x18\x06 \x01(\v2\x17.artel_api.ParallelStepH\x00R\bparallel\x12,\n" +
 	"\x05group\x18\a \x01(\v2\x14.artel_api.GroupStepH\x00R\x05group\x12/\n" +
-	"\x06script\x18\b \x01(\v2\x15.artel_api.ScriptStepH\x00R\x06scriptB\x06\n" +
+	"\x06script\x18\b \x01(\v2\x15.artel_api.ScriptStepH\x00R\x06script\x123\n" +
+	"\bllm_call\x18\t \x01(\v2\x16.artel_api.LlmCallStepH\x00R\allmCallB\x06\n" +
 	"\x04kind\"=\n" +
 	"\x0fTractDefinition\x12*\n" +
 	"\x05steps\x18\x01 \x03(\v2\x14.artel_api.TractStepR\x05steps\"\xd9\x02\n" +
@@ -5155,7 +5259,7 @@ func file_tracts_proto_rawDescGZIP() []byte {
 }
 
 var file_tracts_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_tracts_proto_msgTypes = make([]protoimpl.MessageInfo, 96)
+var file_tracts_proto_msgTypes = make([]protoimpl.MessageInfo, 97)
 var file_tracts_proto_goTypes = []any{
 	(ScriptLanguage)(0),                       // 0: artel_api.ScriptLanguage
 	(*TractTriggerSummary)(nil),               // 1: artel_api.TractTriggerSummary
@@ -5166,190 +5270,192 @@ var file_tracts_proto_goTypes = []any{
 	(*ConditionStep)(nil),                     // 6: artel_api.ConditionStep
 	(*ParallelStep)(nil),                      // 7: artel_api.ParallelStep
 	(*GroupStep)(nil),                         // 8: artel_api.GroupStep
-	(*TractStep)(nil),                         // 9: artel_api.TractStep
-	(*TractDefinition)(nil),                   // 10: artel_api.TractDefinition
-	(*TractItem)(nil),                         // 11: artel_api.TractItem
-	(*TractTemplateItem)(nil),                 // 12: artel_api.TractTemplateItem
-	(*TractTemplateSummary)(nil),              // 13: artel_api.TractTemplateSummary
-	(*TractRunItem)(nil),                      // 14: artel_api.TractRunItem
-	(*TractRunStepItem)(nil),                  // 15: artel_api.TractRunStepItem
-	(*TractToolItem)(nil),                     // 16: artel_api.TractToolItem
-	(*TriggerSourceItem)(nil),                 // 17: artel_api.TriggerSourceItem
-	(*TriggerItem)(nil),                       // 18: artel_api.TriggerItem
-	(*CreateTract)(nil),                       // 19: artel_api.CreateTract
-	(*UpdateTract)(nil),                       // 20: artel_api.UpdateTract
-	(*GetTract)(nil),                          // 21: artel_api.GetTract
-	(*ListTracts)(nil),                        // 22: artel_api.ListTracts
-	(*DeleteTract)(nil),                       // 23: artel_api.DeleteTract
-	(*SetTractEnabled)(nil),                   // 24: artel_api.SetTractEnabled
-	(*PublishTractTemplate)(nil),              // 25: artel_api.PublishTractTemplate
-	(*UnpublishTractTemplate)(nil),            // 26: artel_api.UnpublishTractTemplate
-	(*ListTractTemplates)(nil),                // 27: artel_api.ListTractTemplates
-	(*GetTractTemplate)(nil),                  // 28: artel_api.GetTractTemplate
-	(*InstantiateTractTemplate)(nil),          // 29: artel_api.InstantiateTractTemplate
-	(*RunTract)(nil),                          // 30: artel_api.RunTract
-	(*ListRuns)(nil),                          // 31: artel_api.ListRuns
-	(*GetRun)(nil),                            // 32: artel_api.GetRun
-	(*WatchRun)(nil),                          // 33: artel_api.WatchRun
-	(*RetryRun)(nil),                          // 34: artel_api.RetryRun
-	(*ListTractTools)(nil),                    // 35: artel_api.ListTractTools
-	(*ListTriggerSources)(nil),                // 36: artel_api.ListTriggerSources
-	(*CreateTrigger)(nil),                     // 37: artel_api.CreateTrigger
-	(*ListTriggers)(nil),                      // 38: artel_api.ListTriggers
-	(*DeleteTrigger)(nil),                     // 39: artel_api.DeleteTrigger
-	(*SetTriggerEnabled)(nil),                 // 40: artel_api.SetTriggerEnabled
-	(*RotateTriggerToken)(nil),                // 41: artel_api.RotateTriggerToken
-	(*LinkTrigger)(nil),                       // 42: artel_api.LinkTrigger
-	(*UnlinkTrigger)(nil),                     // 43: artel_api.UnlinkTrigger
-	nil,                                       // 44: artel_api.ActionStep.ParamsEntry
-	nil,                                       // 45: artel_api.ScriptStep.ParamsEntry
-	(*CreateTract_Request)(nil),               // 46: artel_api.CreateTract.Request
-	(*CreateTract_Response)(nil),              // 47: artel_api.CreateTract.Response
-	(*UpdateTract_Request)(nil),               // 48: artel_api.UpdateTract.Request
-	(*UpdateTract_Response)(nil),              // 49: artel_api.UpdateTract.Response
-	(*GetTract_Request)(nil),                  // 50: artel_api.GetTract.Request
-	(*GetTract_Response)(nil),                 // 51: artel_api.GetTract.Response
-	(*ListTracts_Request)(nil),                // 52: artel_api.ListTracts.Request
-	(*ListTracts_Response)(nil),               // 53: artel_api.ListTracts.Response
-	(*DeleteTract_Request)(nil),               // 54: artel_api.DeleteTract.Request
-	(*DeleteTract_Response)(nil),              // 55: artel_api.DeleteTract.Response
-	(*SetTractEnabled_Request)(nil),           // 56: artel_api.SetTractEnabled.Request
-	(*SetTractEnabled_Response)(nil),          // 57: artel_api.SetTractEnabled.Response
-	(*PublishTractTemplate_Request)(nil),      // 58: artel_api.PublishTractTemplate.Request
-	(*PublishTractTemplate_Response)(nil),     // 59: artel_api.PublishTractTemplate.Response
-	(*UnpublishTractTemplate_Request)(nil),    // 60: artel_api.UnpublishTractTemplate.Request
-	(*UnpublishTractTemplate_Response)(nil),   // 61: artel_api.UnpublishTractTemplate.Response
-	(*ListTractTemplates_Request)(nil),        // 62: artel_api.ListTractTemplates.Request
-	(*ListTractTemplates_Response)(nil),       // 63: artel_api.ListTractTemplates.Response
-	(*GetTractTemplate_Request)(nil),          // 64: artel_api.GetTractTemplate.Request
-	(*GetTractTemplate_Response)(nil),         // 65: artel_api.GetTractTemplate.Response
-	(*InstantiateTractTemplate_Request)(nil),  // 66: artel_api.InstantiateTractTemplate.Request
-	(*InstantiateTractTemplate_Response)(nil), // 67: artel_api.InstantiateTractTemplate.Response
-	nil,                                 // 68: artel_api.InstantiateTractTemplate.Request.ConnectionsEntry
-	(*RunTract_Request)(nil),            // 69: artel_api.RunTract.Request
-	(*RunTract_Response)(nil),           // 70: artel_api.RunTract.Response
-	(*ListRuns_Request)(nil),            // 71: artel_api.ListRuns.Request
-	(*ListRuns_Response)(nil),           // 72: artel_api.ListRuns.Response
-	(*GetRun_Request)(nil),              // 73: artel_api.GetRun.Request
-	(*GetRun_Response)(nil),             // 74: artel_api.GetRun.Response
-	(*WatchRun_Request)(nil),            // 75: artel_api.WatchRun.Request
-	(*WatchRun_Response)(nil),           // 76: artel_api.WatchRun.Response
-	(*RetryRun_Request)(nil),            // 77: artel_api.RetryRun.Request
-	(*RetryRun_Response)(nil),           // 78: artel_api.RetryRun.Response
-	(*ListTractTools_Request)(nil),      // 79: artel_api.ListTractTools.Request
-	(*ListTractTools_Response)(nil),     // 80: artel_api.ListTractTools.Response
-	(*ListTriggerSources_Request)(nil),  // 81: artel_api.ListTriggerSources.Request
-	(*ListTriggerSources_Response)(nil), // 82: artel_api.ListTriggerSources.Response
-	(*CreateTrigger_Request)(nil),       // 83: artel_api.CreateTrigger.Request
-	(*CreateTrigger_Response)(nil),      // 84: artel_api.CreateTrigger.Response
-	(*ListTriggers_Request)(nil),        // 85: artel_api.ListTriggers.Request
-	(*ListTriggers_Response)(nil),       // 86: artel_api.ListTriggers.Response
-	(*DeleteTrigger_Request)(nil),       // 87: artel_api.DeleteTrigger.Request
-	(*DeleteTrigger_Response)(nil),      // 88: artel_api.DeleteTrigger.Response
-	(*SetTriggerEnabled_Request)(nil),   // 89: artel_api.SetTriggerEnabled.Request
-	(*SetTriggerEnabled_Response)(nil),  // 90: artel_api.SetTriggerEnabled.Response
-	(*RotateTriggerToken_Request)(nil),  // 91: artel_api.RotateTriggerToken.Request
-	(*RotateTriggerToken_Response)(nil), // 92: artel_api.RotateTriggerToken.Response
-	(*LinkTrigger_Request)(nil),         // 93: artel_api.LinkTrigger.Request
-	(*LinkTrigger_Response)(nil),        // 94: artel_api.LinkTrigger.Response
-	(*UnlinkTrigger_Request)(nil),       // 95: artel_api.UnlinkTrigger.Request
-	(*UnlinkTrigger_Response)(nil),      // 96: artel_api.UnlinkTrigger.Response
+	(*LlmCallStep)(nil),                       // 9: artel_api.LlmCallStep
+	(*TractStep)(nil),                         // 10: artel_api.TractStep
+	(*TractDefinition)(nil),                   // 11: artel_api.TractDefinition
+	(*TractItem)(nil),                         // 12: artel_api.TractItem
+	(*TractTemplateItem)(nil),                 // 13: artel_api.TractTemplateItem
+	(*TractTemplateSummary)(nil),              // 14: artel_api.TractTemplateSummary
+	(*TractRunItem)(nil),                      // 15: artel_api.TractRunItem
+	(*TractRunStepItem)(nil),                  // 16: artel_api.TractRunStepItem
+	(*TractToolItem)(nil),                     // 17: artel_api.TractToolItem
+	(*TriggerSourceItem)(nil),                 // 18: artel_api.TriggerSourceItem
+	(*TriggerItem)(nil),                       // 19: artel_api.TriggerItem
+	(*CreateTract)(nil),                       // 20: artel_api.CreateTract
+	(*UpdateTract)(nil),                       // 21: artel_api.UpdateTract
+	(*GetTract)(nil),                          // 22: artel_api.GetTract
+	(*ListTracts)(nil),                        // 23: artel_api.ListTracts
+	(*DeleteTract)(nil),                       // 24: artel_api.DeleteTract
+	(*SetTractEnabled)(nil),                   // 25: artel_api.SetTractEnabled
+	(*PublishTractTemplate)(nil),              // 26: artel_api.PublishTractTemplate
+	(*UnpublishTractTemplate)(nil),            // 27: artel_api.UnpublishTractTemplate
+	(*ListTractTemplates)(nil),                // 28: artel_api.ListTractTemplates
+	(*GetTractTemplate)(nil),                  // 29: artel_api.GetTractTemplate
+	(*InstantiateTractTemplate)(nil),          // 30: artel_api.InstantiateTractTemplate
+	(*RunTract)(nil),                          // 31: artel_api.RunTract
+	(*ListRuns)(nil),                          // 32: artel_api.ListRuns
+	(*GetRun)(nil),                            // 33: artel_api.GetRun
+	(*WatchRun)(nil),                          // 34: artel_api.WatchRun
+	(*RetryRun)(nil),                          // 35: artel_api.RetryRun
+	(*ListTractTools)(nil),                    // 36: artel_api.ListTractTools
+	(*ListTriggerSources)(nil),                // 37: artel_api.ListTriggerSources
+	(*CreateTrigger)(nil),                     // 38: artel_api.CreateTrigger
+	(*ListTriggers)(nil),                      // 39: artel_api.ListTriggers
+	(*DeleteTrigger)(nil),                     // 40: artel_api.DeleteTrigger
+	(*SetTriggerEnabled)(nil),                 // 41: artel_api.SetTriggerEnabled
+	(*RotateTriggerToken)(nil),                // 42: artel_api.RotateTriggerToken
+	(*LinkTrigger)(nil),                       // 43: artel_api.LinkTrigger
+	(*UnlinkTrigger)(nil),                     // 44: artel_api.UnlinkTrigger
+	nil,                                       // 45: artel_api.ActionStep.ParamsEntry
+	nil,                                       // 46: artel_api.ScriptStep.ParamsEntry
+	(*CreateTract_Request)(nil),               // 47: artel_api.CreateTract.Request
+	(*CreateTract_Response)(nil),              // 48: artel_api.CreateTract.Response
+	(*UpdateTract_Request)(nil),               // 49: artel_api.UpdateTract.Request
+	(*UpdateTract_Response)(nil),              // 50: artel_api.UpdateTract.Response
+	(*GetTract_Request)(nil),                  // 51: artel_api.GetTract.Request
+	(*GetTract_Response)(nil),                 // 52: artel_api.GetTract.Response
+	(*ListTracts_Request)(nil),                // 53: artel_api.ListTracts.Request
+	(*ListTracts_Response)(nil),               // 54: artel_api.ListTracts.Response
+	(*DeleteTract_Request)(nil),               // 55: artel_api.DeleteTract.Request
+	(*DeleteTract_Response)(nil),              // 56: artel_api.DeleteTract.Response
+	(*SetTractEnabled_Request)(nil),           // 57: artel_api.SetTractEnabled.Request
+	(*SetTractEnabled_Response)(nil),          // 58: artel_api.SetTractEnabled.Response
+	(*PublishTractTemplate_Request)(nil),      // 59: artel_api.PublishTractTemplate.Request
+	(*PublishTractTemplate_Response)(nil),     // 60: artel_api.PublishTractTemplate.Response
+	(*UnpublishTractTemplate_Request)(nil),    // 61: artel_api.UnpublishTractTemplate.Request
+	(*UnpublishTractTemplate_Response)(nil),   // 62: artel_api.UnpublishTractTemplate.Response
+	(*ListTractTemplates_Request)(nil),        // 63: artel_api.ListTractTemplates.Request
+	(*ListTractTemplates_Response)(nil),       // 64: artel_api.ListTractTemplates.Response
+	(*GetTractTemplate_Request)(nil),          // 65: artel_api.GetTractTemplate.Request
+	(*GetTractTemplate_Response)(nil),         // 66: artel_api.GetTractTemplate.Response
+	(*InstantiateTractTemplate_Request)(nil),  // 67: artel_api.InstantiateTractTemplate.Request
+	(*InstantiateTractTemplate_Response)(nil), // 68: artel_api.InstantiateTractTemplate.Response
+	nil,                                 // 69: artel_api.InstantiateTractTemplate.Request.ConnectionsEntry
+	(*RunTract_Request)(nil),            // 70: artel_api.RunTract.Request
+	(*RunTract_Response)(nil),           // 71: artel_api.RunTract.Response
+	(*ListRuns_Request)(nil),            // 72: artel_api.ListRuns.Request
+	(*ListRuns_Response)(nil),           // 73: artel_api.ListRuns.Response
+	(*GetRun_Request)(nil),              // 74: artel_api.GetRun.Request
+	(*GetRun_Response)(nil),             // 75: artel_api.GetRun.Response
+	(*WatchRun_Request)(nil),            // 76: artel_api.WatchRun.Request
+	(*WatchRun_Response)(nil),           // 77: artel_api.WatchRun.Response
+	(*RetryRun_Request)(nil),            // 78: artel_api.RetryRun.Request
+	(*RetryRun_Response)(nil),           // 79: artel_api.RetryRun.Response
+	(*ListTractTools_Request)(nil),      // 80: artel_api.ListTractTools.Request
+	(*ListTractTools_Response)(nil),     // 81: artel_api.ListTractTools.Response
+	(*ListTriggerSources_Request)(nil),  // 82: artel_api.ListTriggerSources.Request
+	(*ListTriggerSources_Response)(nil), // 83: artel_api.ListTriggerSources.Response
+	(*CreateTrigger_Request)(nil),       // 84: artel_api.CreateTrigger.Request
+	(*CreateTrigger_Response)(nil),      // 85: artel_api.CreateTrigger.Response
+	(*ListTriggers_Request)(nil),        // 86: artel_api.ListTriggers.Request
+	(*ListTriggers_Response)(nil),       // 87: artel_api.ListTriggers.Response
+	(*DeleteTrigger_Request)(nil),       // 88: artel_api.DeleteTrigger.Request
+	(*DeleteTrigger_Response)(nil),      // 89: artel_api.DeleteTrigger.Response
+	(*SetTriggerEnabled_Request)(nil),   // 90: artel_api.SetTriggerEnabled.Request
+	(*SetTriggerEnabled_Response)(nil),  // 91: artel_api.SetTriggerEnabled.Response
+	(*RotateTriggerToken_Request)(nil),  // 92: artel_api.RotateTriggerToken.Request
+	(*RotateTriggerToken_Response)(nil), // 93: artel_api.RotateTriggerToken.Response
+	(*LinkTrigger_Request)(nil),         // 94: artel_api.LinkTrigger.Request
+	(*LinkTrigger_Response)(nil),        // 95: artel_api.LinkTrigger.Response
+	(*UnlinkTrigger_Request)(nil),       // 96: artel_api.UnlinkTrigger.Request
+	(*UnlinkTrigger_Response)(nil),      // 97: artel_api.UnlinkTrigger.Response
 }
 var file_tracts_proto_depIdxs = []int32{
-	44, // 0: artel_api.ActionStep.params:type_name -> artel_api.ActionStep.ParamsEntry
+	45, // 0: artel_api.ActionStep.params:type_name -> artel_api.ActionStep.ParamsEntry
 	0,  // 1: artel_api.ScriptStep.language:type_name -> artel_api.ScriptLanguage
-	45, // 2: artel_api.ScriptStep.params:type_name -> artel_api.ScriptStep.ParamsEntry
+	46, // 2: artel_api.ScriptStep.params:type_name -> artel_api.ScriptStep.ParamsEntry
 	3,  // 3: artel_api.ConditionStep.conditions:type_name -> artel_api.TractCondition
-	9,  // 4: artel_api.ConditionStep.then:type_name -> artel_api.TractStep
-	9,  // 5: artel_api.ConditionStep.else:type_name -> artel_api.TractStep
-	9,  // 6: artel_api.ParallelStep.steps:type_name -> artel_api.TractStep
-	9,  // 7: artel_api.GroupStep.steps:type_name -> artel_api.TractStep
+	10, // 4: artel_api.ConditionStep.then:type_name -> artel_api.TractStep
+	10, // 5: artel_api.ConditionStep.else:type_name -> artel_api.TractStep
+	10, // 6: artel_api.ParallelStep.steps:type_name -> artel_api.TractStep
+	10, // 7: artel_api.GroupStep.steps:type_name -> artel_api.TractStep
 	4,  // 8: artel_api.TractStep.action:type_name -> artel_api.ActionStep
 	6,  // 9: artel_api.TractStep.condition:type_name -> artel_api.ConditionStep
 	7,  // 10: artel_api.TractStep.parallel:type_name -> artel_api.ParallelStep
 	8,  // 11: artel_api.TractStep.group:type_name -> artel_api.GroupStep
 	5,  // 12: artel_api.TractStep.script:type_name -> artel_api.ScriptStep
-	9,  // 13: artel_api.TractDefinition.steps:type_name -> artel_api.TractStep
-	10, // 14: artel_api.TractItem.definition:type_name -> artel_api.TractDefinition
-	1,  // 15: artel_api.TractItem.triggers:type_name -> artel_api.TractTriggerSummary
-	2,  // 16: artel_api.TractItem.last_run:type_name -> artel_api.TractLastRun
-	10, // 17: artel_api.TractTemplateItem.definition:type_name -> artel_api.TractDefinition
-	10, // 18: artel_api.CreateTract.Request.definition:type_name -> artel_api.TractDefinition
-	11, // 19: artel_api.CreateTract.Response.tract:type_name -> artel_api.TractItem
-	10, // 20: artel_api.UpdateTract.Request.definition:type_name -> artel_api.TractDefinition
-	11, // 21: artel_api.UpdateTract.Response.tract:type_name -> artel_api.TractItem
-	11, // 22: artel_api.GetTract.Response.tract:type_name -> artel_api.TractItem
-	11, // 23: artel_api.ListTracts.Response.tracts:type_name -> artel_api.TractItem
-	12, // 24: artel_api.PublishTractTemplate.Response.template:type_name -> artel_api.TractTemplateItem
-	13, // 25: artel_api.ListTractTemplates.Response.templates:type_name -> artel_api.TractTemplateSummary
-	12, // 26: artel_api.GetTractTemplate.Response.template:type_name -> artel_api.TractTemplateItem
-	68, // 27: artel_api.InstantiateTractTemplate.Request.connections:type_name -> artel_api.InstantiateTractTemplate.Request.ConnectionsEntry
-	11, // 28: artel_api.InstantiateTractTemplate.Response.tract:type_name -> artel_api.TractItem
-	14, // 29: artel_api.ListRuns.Response.runs:type_name -> artel_api.TractRunItem
-	14, // 30: artel_api.GetRun.Response.run:type_name -> artel_api.TractRunItem
-	15, // 31: artel_api.GetRun.Response.steps:type_name -> artel_api.TractRunStepItem
-	14, // 32: artel_api.WatchRun.Response.run:type_name -> artel_api.TractRunItem
-	15, // 33: artel_api.WatchRun.Response.steps:type_name -> artel_api.TractRunStepItem
-	16, // 34: artel_api.ListTractTools.Response.tools:type_name -> artel_api.TractToolItem
-	17, // 35: artel_api.ListTriggerSources.Response.sources:type_name -> artel_api.TriggerSourceItem
-	18, // 36: artel_api.CreateTrigger.Response.trigger:type_name -> artel_api.TriggerItem
-	18, // 37: artel_api.ListTriggers.Response.triggers:type_name -> artel_api.TriggerItem
-	18, // 38: artel_api.RotateTriggerToken.Response.trigger:type_name -> artel_api.TriggerItem
-	46, // 39: artel_api.TractsAPI.CreateTract:input_type -> artel_api.CreateTract.Request
-	48, // 40: artel_api.TractsAPI.UpdateTract:input_type -> artel_api.UpdateTract.Request
-	50, // 41: artel_api.TractsAPI.GetTract:input_type -> artel_api.GetTract.Request
-	52, // 42: artel_api.TractsAPI.ListTracts:input_type -> artel_api.ListTracts.Request
-	54, // 43: artel_api.TractsAPI.DeleteTract:input_type -> artel_api.DeleteTract.Request
-	56, // 44: artel_api.TractsAPI.SetTractEnabled:input_type -> artel_api.SetTractEnabled.Request
-	58, // 45: artel_api.TractsAPI.PublishTractTemplate:input_type -> artel_api.PublishTractTemplate.Request
-	60, // 46: artel_api.TractsAPI.UnpublishTractTemplate:input_type -> artel_api.UnpublishTractTemplate.Request
-	62, // 47: artel_api.TractsAPI.ListTractTemplates:input_type -> artel_api.ListTractTemplates.Request
-	64, // 48: artel_api.TractsAPI.GetTractTemplate:input_type -> artel_api.GetTractTemplate.Request
-	66, // 49: artel_api.TractsAPI.InstantiateTractTemplate:input_type -> artel_api.InstantiateTractTemplate.Request
-	69, // 50: artel_api.TractsAPI.RunTract:input_type -> artel_api.RunTract.Request
-	71, // 51: artel_api.TractsAPI.ListRuns:input_type -> artel_api.ListRuns.Request
-	73, // 52: artel_api.TractsAPI.GetRun:input_type -> artel_api.GetRun.Request
-	75, // 53: artel_api.TractsAPI.WatchRun:input_type -> artel_api.WatchRun.Request
-	77, // 54: artel_api.TractsAPI.RetryRun:input_type -> artel_api.RetryRun.Request
-	79, // 55: artel_api.TractsAPI.ListTractTools:input_type -> artel_api.ListTractTools.Request
-	81, // 56: artel_api.TractsAPI.ListTriggerSources:input_type -> artel_api.ListTriggerSources.Request
-	83, // 57: artel_api.TractsAPI.CreateTrigger:input_type -> artel_api.CreateTrigger.Request
-	85, // 58: artel_api.TractsAPI.ListTriggers:input_type -> artel_api.ListTriggers.Request
-	87, // 59: artel_api.TractsAPI.DeleteTrigger:input_type -> artel_api.DeleteTrigger.Request
-	89, // 60: artel_api.TractsAPI.SetTriggerEnabled:input_type -> artel_api.SetTriggerEnabled.Request
-	91, // 61: artel_api.TractsAPI.RotateTriggerToken:input_type -> artel_api.RotateTriggerToken.Request
-	93, // 62: artel_api.TractsAPI.LinkTrigger:input_type -> artel_api.LinkTrigger.Request
-	95, // 63: artel_api.TractsAPI.UnlinkTrigger:input_type -> artel_api.UnlinkTrigger.Request
-	47, // 64: artel_api.TractsAPI.CreateTract:output_type -> artel_api.CreateTract.Response
-	49, // 65: artel_api.TractsAPI.UpdateTract:output_type -> artel_api.UpdateTract.Response
-	51, // 66: artel_api.TractsAPI.GetTract:output_type -> artel_api.GetTract.Response
-	53, // 67: artel_api.TractsAPI.ListTracts:output_type -> artel_api.ListTracts.Response
-	55, // 68: artel_api.TractsAPI.DeleteTract:output_type -> artel_api.DeleteTract.Response
-	57, // 69: artel_api.TractsAPI.SetTractEnabled:output_type -> artel_api.SetTractEnabled.Response
-	59, // 70: artel_api.TractsAPI.PublishTractTemplate:output_type -> artel_api.PublishTractTemplate.Response
-	61, // 71: artel_api.TractsAPI.UnpublishTractTemplate:output_type -> artel_api.UnpublishTractTemplate.Response
-	63, // 72: artel_api.TractsAPI.ListTractTemplates:output_type -> artel_api.ListTractTemplates.Response
-	65, // 73: artel_api.TractsAPI.GetTractTemplate:output_type -> artel_api.GetTractTemplate.Response
-	67, // 74: artel_api.TractsAPI.InstantiateTractTemplate:output_type -> artel_api.InstantiateTractTemplate.Response
-	70, // 75: artel_api.TractsAPI.RunTract:output_type -> artel_api.RunTract.Response
-	72, // 76: artel_api.TractsAPI.ListRuns:output_type -> artel_api.ListRuns.Response
-	74, // 77: artel_api.TractsAPI.GetRun:output_type -> artel_api.GetRun.Response
-	76, // 78: artel_api.TractsAPI.WatchRun:output_type -> artel_api.WatchRun.Response
-	78, // 79: artel_api.TractsAPI.RetryRun:output_type -> artel_api.RetryRun.Response
-	80, // 80: artel_api.TractsAPI.ListTractTools:output_type -> artel_api.ListTractTools.Response
-	82, // 81: artel_api.TractsAPI.ListTriggerSources:output_type -> artel_api.ListTriggerSources.Response
-	84, // 82: artel_api.TractsAPI.CreateTrigger:output_type -> artel_api.CreateTrigger.Response
-	86, // 83: artel_api.TractsAPI.ListTriggers:output_type -> artel_api.ListTriggers.Response
-	88, // 84: artel_api.TractsAPI.DeleteTrigger:output_type -> artel_api.DeleteTrigger.Response
-	90, // 85: artel_api.TractsAPI.SetTriggerEnabled:output_type -> artel_api.SetTriggerEnabled.Response
-	92, // 86: artel_api.TractsAPI.RotateTriggerToken:output_type -> artel_api.RotateTriggerToken.Response
-	94, // 87: artel_api.TractsAPI.LinkTrigger:output_type -> artel_api.LinkTrigger.Response
-	96, // 88: artel_api.TractsAPI.UnlinkTrigger:output_type -> artel_api.UnlinkTrigger.Response
-	64, // [64:89] is the sub-list for method output_type
-	39, // [39:64] is the sub-list for method input_type
-	39, // [39:39] is the sub-list for extension type_name
-	39, // [39:39] is the sub-list for extension extendee
-	0,  // [0:39] is the sub-list for field type_name
+	9,  // 13: artel_api.TractStep.llm_call:type_name -> artel_api.LlmCallStep
+	10, // 14: artel_api.TractDefinition.steps:type_name -> artel_api.TractStep
+	11, // 15: artel_api.TractItem.definition:type_name -> artel_api.TractDefinition
+	1,  // 16: artel_api.TractItem.triggers:type_name -> artel_api.TractTriggerSummary
+	2,  // 17: artel_api.TractItem.last_run:type_name -> artel_api.TractLastRun
+	11, // 18: artel_api.TractTemplateItem.definition:type_name -> artel_api.TractDefinition
+	11, // 19: artel_api.CreateTract.Request.definition:type_name -> artel_api.TractDefinition
+	12, // 20: artel_api.CreateTract.Response.tract:type_name -> artel_api.TractItem
+	11, // 21: artel_api.UpdateTract.Request.definition:type_name -> artel_api.TractDefinition
+	12, // 22: artel_api.UpdateTract.Response.tract:type_name -> artel_api.TractItem
+	12, // 23: artel_api.GetTract.Response.tract:type_name -> artel_api.TractItem
+	12, // 24: artel_api.ListTracts.Response.tracts:type_name -> artel_api.TractItem
+	13, // 25: artel_api.PublishTractTemplate.Response.template:type_name -> artel_api.TractTemplateItem
+	14, // 26: artel_api.ListTractTemplates.Response.templates:type_name -> artel_api.TractTemplateSummary
+	13, // 27: artel_api.GetTractTemplate.Response.template:type_name -> artel_api.TractTemplateItem
+	69, // 28: artel_api.InstantiateTractTemplate.Request.connections:type_name -> artel_api.InstantiateTractTemplate.Request.ConnectionsEntry
+	12, // 29: artel_api.InstantiateTractTemplate.Response.tract:type_name -> artel_api.TractItem
+	15, // 30: artel_api.ListRuns.Response.runs:type_name -> artel_api.TractRunItem
+	15, // 31: artel_api.GetRun.Response.run:type_name -> artel_api.TractRunItem
+	16, // 32: artel_api.GetRun.Response.steps:type_name -> artel_api.TractRunStepItem
+	15, // 33: artel_api.WatchRun.Response.run:type_name -> artel_api.TractRunItem
+	16, // 34: artel_api.WatchRun.Response.steps:type_name -> artel_api.TractRunStepItem
+	17, // 35: artel_api.ListTractTools.Response.tools:type_name -> artel_api.TractToolItem
+	18, // 36: artel_api.ListTriggerSources.Response.sources:type_name -> artel_api.TriggerSourceItem
+	19, // 37: artel_api.CreateTrigger.Response.trigger:type_name -> artel_api.TriggerItem
+	19, // 38: artel_api.ListTriggers.Response.triggers:type_name -> artel_api.TriggerItem
+	19, // 39: artel_api.RotateTriggerToken.Response.trigger:type_name -> artel_api.TriggerItem
+	47, // 40: artel_api.TractsAPI.CreateTract:input_type -> artel_api.CreateTract.Request
+	49, // 41: artel_api.TractsAPI.UpdateTract:input_type -> artel_api.UpdateTract.Request
+	51, // 42: artel_api.TractsAPI.GetTract:input_type -> artel_api.GetTract.Request
+	53, // 43: artel_api.TractsAPI.ListTracts:input_type -> artel_api.ListTracts.Request
+	55, // 44: artel_api.TractsAPI.DeleteTract:input_type -> artel_api.DeleteTract.Request
+	57, // 45: artel_api.TractsAPI.SetTractEnabled:input_type -> artel_api.SetTractEnabled.Request
+	59, // 46: artel_api.TractsAPI.PublishTractTemplate:input_type -> artel_api.PublishTractTemplate.Request
+	61, // 47: artel_api.TractsAPI.UnpublishTractTemplate:input_type -> artel_api.UnpublishTractTemplate.Request
+	63, // 48: artel_api.TractsAPI.ListTractTemplates:input_type -> artel_api.ListTractTemplates.Request
+	65, // 49: artel_api.TractsAPI.GetTractTemplate:input_type -> artel_api.GetTractTemplate.Request
+	67, // 50: artel_api.TractsAPI.InstantiateTractTemplate:input_type -> artel_api.InstantiateTractTemplate.Request
+	70, // 51: artel_api.TractsAPI.RunTract:input_type -> artel_api.RunTract.Request
+	72, // 52: artel_api.TractsAPI.ListRuns:input_type -> artel_api.ListRuns.Request
+	74, // 53: artel_api.TractsAPI.GetRun:input_type -> artel_api.GetRun.Request
+	76, // 54: artel_api.TractsAPI.WatchRun:input_type -> artel_api.WatchRun.Request
+	78, // 55: artel_api.TractsAPI.RetryRun:input_type -> artel_api.RetryRun.Request
+	80, // 56: artel_api.TractsAPI.ListTractTools:input_type -> artel_api.ListTractTools.Request
+	82, // 57: artel_api.TractsAPI.ListTriggerSources:input_type -> artel_api.ListTriggerSources.Request
+	84, // 58: artel_api.TractsAPI.CreateTrigger:input_type -> artel_api.CreateTrigger.Request
+	86, // 59: artel_api.TractsAPI.ListTriggers:input_type -> artel_api.ListTriggers.Request
+	88, // 60: artel_api.TractsAPI.DeleteTrigger:input_type -> artel_api.DeleteTrigger.Request
+	90, // 61: artel_api.TractsAPI.SetTriggerEnabled:input_type -> artel_api.SetTriggerEnabled.Request
+	92, // 62: artel_api.TractsAPI.RotateTriggerToken:input_type -> artel_api.RotateTriggerToken.Request
+	94, // 63: artel_api.TractsAPI.LinkTrigger:input_type -> artel_api.LinkTrigger.Request
+	96, // 64: artel_api.TractsAPI.UnlinkTrigger:input_type -> artel_api.UnlinkTrigger.Request
+	48, // 65: artel_api.TractsAPI.CreateTract:output_type -> artel_api.CreateTract.Response
+	50, // 66: artel_api.TractsAPI.UpdateTract:output_type -> artel_api.UpdateTract.Response
+	52, // 67: artel_api.TractsAPI.GetTract:output_type -> artel_api.GetTract.Response
+	54, // 68: artel_api.TractsAPI.ListTracts:output_type -> artel_api.ListTracts.Response
+	56, // 69: artel_api.TractsAPI.DeleteTract:output_type -> artel_api.DeleteTract.Response
+	58, // 70: artel_api.TractsAPI.SetTractEnabled:output_type -> artel_api.SetTractEnabled.Response
+	60, // 71: artel_api.TractsAPI.PublishTractTemplate:output_type -> artel_api.PublishTractTemplate.Response
+	62, // 72: artel_api.TractsAPI.UnpublishTractTemplate:output_type -> artel_api.UnpublishTractTemplate.Response
+	64, // 73: artel_api.TractsAPI.ListTractTemplates:output_type -> artel_api.ListTractTemplates.Response
+	66, // 74: artel_api.TractsAPI.GetTractTemplate:output_type -> artel_api.GetTractTemplate.Response
+	68, // 75: artel_api.TractsAPI.InstantiateTractTemplate:output_type -> artel_api.InstantiateTractTemplate.Response
+	71, // 76: artel_api.TractsAPI.RunTract:output_type -> artel_api.RunTract.Response
+	73, // 77: artel_api.TractsAPI.ListRuns:output_type -> artel_api.ListRuns.Response
+	75, // 78: artel_api.TractsAPI.GetRun:output_type -> artel_api.GetRun.Response
+	77, // 79: artel_api.TractsAPI.WatchRun:output_type -> artel_api.WatchRun.Response
+	79, // 80: artel_api.TractsAPI.RetryRun:output_type -> artel_api.RetryRun.Response
+	81, // 81: artel_api.TractsAPI.ListTractTools:output_type -> artel_api.ListTractTools.Response
+	83, // 82: artel_api.TractsAPI.ListTriggerSources:output_type -> artel_api.ListTriggerSources.Response
+	85, // 83: artel_api.TractsAPI.CreateTrigger:output_type -> artel_api.CreateTrigger.Response
+	87, // 84: artel_api.TractsAPI.ListTriggers:output_type -> artel_api.ListTriggers.Response
+	89, // 85: artel_api.TractsAPI.DeleteTrigger:output_type -> artel_api.DeleteTrigger.Response
+	91, // 86: artel_api.TractsAPI.SetTriggerEnabled:output_type -> artel_api.SetTriggerEnabled.Response
+	93, // 87: artel_api.TractsAPI.RotateTriggerToken:output_type -> artel_api.RotateTriggerToken.Response
+	95, // 88: artel_api.TractsAPI.LinkTrigger:output_type -> artel_api.LinkTrigger.Response
+	97, // 89: artel_api.TractsAPI.UnlinkTrigger:output_type -> artel_api.UnlinkTrigger.Response
+	65, // [65:90] is the sub-list for method output_type
+	40, // [40:65] is the sub-list for method input_type
+	40, // [40:40] is the sub-list for extension type_name
+	40, // [40:40] is the sub-list for extension extendee
+	0,  // [0:40] is the sub-list for field type_name
 }
 
 func init() { file_tracts_proto_init() }
@@ -5357,12 +5463,13 @@ func file_tracts_proto_init() {
 	if File_tracts_proto != nil {
 		return
 	}
-	file_tracts_proto_msgTypes[8].OneofWrappers = []any{
+	file_tracts_proto_msgTypes[9].OneofWrappers = []any{
 		(*TractStep_Action)(nil),
 		(*TractStep_Condition)(nil),
 		(*TractStep_Parallel)(nil),
 		(*TractStep_Group)(nil),
 		(*TractStep_Script)(nil),
+		(*TractStep_LlmCall)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -5370,7 +5477,7 @@ func file_tracts_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tracts_proto_rawDesc), len(file_tracts_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   96,
+			NumMessages:   97,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

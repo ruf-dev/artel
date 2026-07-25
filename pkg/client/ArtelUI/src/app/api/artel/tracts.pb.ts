@@ -69,6 +69,14 @@ export type GroupStep = {
   steps?: TractStep[];
 };
 
+export type LlmCallStep = {
+  connectionId?: string;
+  model?: string;
+  prompt?: string;
+  systemPrompt?: string;
+  maxTokens?: number;
+};
+
 type BaseTractStep = {
   id?: string;
   name?: string;
@@ -82,6 +90,7 @@ export type TractStep = BaseTractStep &
     parallel: ParallelStep;
     group: GroupStep;
     script: ScriptStep;
+    llmCall: LlmCallStep;
   }>;
 
 export type TractDefinition = {

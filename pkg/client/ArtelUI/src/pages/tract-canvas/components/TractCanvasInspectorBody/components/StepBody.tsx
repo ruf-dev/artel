@@ -8,6 +8,7 @@ import ConditionBody from "@/pages/tract-canvas/components/ConditionBody/Conditi
 import ParallelBody from "@/pages/tract-canvas/components/ParallelBody/ParallelBody.tsx"
 import GroupBody from "@/pages/tract-canvas/components/GroupBody/GroupBody.tsx"
 import ScriptBody from "@/pages/tract-canvas/components/ScriptBody/ScriptBody.tsx"
+import LlmCallBody from "@/pages/tract-canvas/components/LlmCallBody/LlmCallBody.tsx"
 import DangerZone from "@/pages/tract-canvas/components/DangerZone/DangerZone.tsx"
 
 interface Props {
@@ -67,6 +68,13 @@ export default function StepBody(props: Props) {
             {step && node.kind === "script" && (
                 <ScriptBody
                     rootSteps={rootSteps} step={step} tools={tools} triggerSchema={triggerSchema}
+                    lastOutput={lastOutputByStepId[step.id]}
+                    onChangeSteps={onChangeSteps}
+                />
+            )}
+            {step && node.kind === "llm_call" && (
+                <LlmCallBody
+                    rootSteps={rootSteps} step={step} triggerSchema={triggerSchema}
                     lastOutput={lastOutputByStepId[step.id]}
                     onChangeSteps={onChangeSteps}
                 />

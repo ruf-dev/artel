@@ -7,17 +7,18 @@ import {useTracts} from "@/app/hooks/Tracts.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import ToolStep from "@/components/StepPickerDialog/components/ToolStep.tsx"
 import ConnectionStep from "@/components/StepPickerDialog/components/ConnectionStep.tsx"
+import LlmConnectionStep from "@/components/StepPickerDialog/components/LlmConnectionStep.tsx"
 
 const BUILTIN_MCP = "artel"
 
 export interface StepDraft {
-    type: "action" | "condition" | "parallel" | "script"
+    type: "action" | "condition" | "parallel" | "script" | "llm_call"
     mcp?: string
     tool?: string
     connectionUuid?: string
 }
 
-type Step = "kind" | "tool" | "connection"
+type Step = "kind" | "tool" | "connection" | "llm_connection"
 
 interface Props {
     onConfirm: (draft: StepDraft) => void
@@ -57,6 +58,12 @@ export default function StepPickerDialog({onConfirm}: Props) {
         CloseDialog()
     }
 
+    function handleConfirmLlmConnection() {
+        if (!selectedConnectionId) return
+        onConfirm({type: "llm_call", connectionUuid: selectedConnectionId})
+        CloseDialog()
+    }
+
     if (step === "connection" && selectedTool) {
         return (
             <ConnectionStep
@@ -65,6 +72,17 @@ export default function StepPickerDialog({onConfirm}: Props) {
                 onSelect={setSelectedConnectionId}
                 onBack={() => setStep("tool")}
                 onConfirm={handleConfirmConnection}
+            />
+        )
+    }
+
+    if (step === "llm_connection") {
+        return (
+            <LlmConnectionStep
+                selectedConnectionId={selectedConnectionId}
+                onSelect={setSelectedConnectionId}
+                onBack={() => setStep("kind")}
+                onConfirm={handleConfirmLlmConnection}
             />
         )
     }
@@ -99,6 +117,12 @@ export default function StepPickerDialog({onConfirm}: Props) {
                     <span className={cls.KindTitle}>Script</span>
                     <span className={cls.KindDesc}>
                         Runs a small function against declared input/output params for custom handling.
+                    </span>
+                </Button>
+                <Button variant="ghost" className={cls.KindOption} onClick={() => setStep("llm_connection")}>
+                    <span className={cls.KindTitle}>Call LLM</span>
+                    <span className={cls.KindDesc}>
+                        Sends a prompt to an LLM (Anthropic) and captures the completion.
                     </span>
                 </Button>
             </div>

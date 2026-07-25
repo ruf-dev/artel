@@ -243,6 +243,18 @@ message GroupStep {
   repeated TractStep steps = 1;
 }
 
+// LlmCallStep invokes an LLM (currently Anthropic, via a BYOK connection) as a fixed pipeline
+// stage — prompt in, text out. Unlike ActionStep, this is a hardcoded, typed step kind (like
+// ScriptStep), not a MoM-tool-style declarative call. prompt/system_prompt are template strings
+// rendered through the same {{...}} resolver as ActionStep.params.
+message LlmCallStep {
+  string connection_id = 1; // external_connections.id (anthropic/openai key)
+  string model         = 2;
+  string prompt        = 3; // template string
+  string system_prompt = 4; // template string, optional
+  int32  max_tokens    = 5; // optional, service applies a default if 0
+}
+
 // TractStep is one node of the step tree. Exactly one of `kind`'s variants is set — which one
 // determines the step's behavior (no separate type discriminant needed on the wire).
 message TractStep {
@@ -255,6 +267,7 @@ message TractStep {
     ParallelStep parallel   = 6;
     GroupStep group         = 7;
     ScriptStep script       = 8;
+    LlmCallStep llm_call    = 9;
   }
 }
 
@@ -455,7 +468,7 @@ message InstantiateTractTemplate {
     string template_uuid    = 1;
     string name              = 2;
     string description       = 3;
-    map<string, string> connections = 4; // mcp name -> connection_uuid, for every non-builtin MoM the template's steps use
+    map<string, string> connections = 4; // mcp name -> connection_uuid for every non-builtin MoM the template's action steps use, plus LLM provider name (e.g. "anthropic") -> connection_uuid for every llm_call step it uses
   }
   message Response {
     TractItem tract           = 1;

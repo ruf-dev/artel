@@ -16,6 +16,7 @@ export default function NodeIcon({node, triggerInfo}: { node: CanvasNode; trigge
     if (node.kind === "parallel") return <ForkIcon/>
     if (node.kind === "group") return <LayersIcon/>
     if (node.kind === "script") return <CodeIcon/>
+    if (node.kind === "llm_call") return <ChatIcon/>
     const step = node.step
     if (!step) return <ChatIcon/>
     const Icon = iconForTool(step.mcp ?? "", step.tool ?? "")

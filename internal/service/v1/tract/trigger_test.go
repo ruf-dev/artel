@@ -19,7 +19,7 @@ func newTriggerTestService(
 	externalConns *fakeExternalConnsRepo,
 ) *Service {
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
-	svc := New(nil, nil, triggers, triggerPresets, externalConns, nil, nil, subscription.NewFree(), scriptEngines)
+	svc := New(nil, nil, triggers, triggerPresets, externalConns, nil, nil, subscription.NewFree(), scriptEngines, nil)
 
 	return svc
 }

@@ -500,9 +500,13 @@ type toolPropertyRow struct {
 func marshalMatchers(matchers domain.TriggerMatchers) (json.RawMessage, error) {
 	row := triggerMatchersRow{
 		CheckHeaders: make([]headerMatcherRow, len(matchers.CheckHeaders)),
+		CheckBody:    make([]bodyMatcherRow, len(matchers.CheckBody)),
 	}
 	for i, m := range matchers.CheckHeaders {
 		row.CheckHeaders[i] = headerMatcherRow{Header: m.Header, Equals: m.Equals}
+	}
+	for i, m := range matchers.CheckBody {
+		row.CheckBody[i] = bodyMatcherRow{Path: m.Path, Equals: m.Equals}
 	}
 
 	data, err := json.Marshal(row)
@@ -527,9 +531,13 @@ func unmarshalMatchers(raw json.RawMessage) (domain.TriggerMatchers, error) {
 
 	matchers := domain.TriggerMatchers{
 		CheckHeaders: make([]domain.HeaderMatcher, len(row.CheckHeaders)),
+		CheckBody:    make([]domain.BodyMatcher, len(row.CheckBody)),
 	}
 	for i, m := range row.CheckHeaders {
 		matchers.CheckHeaders[i] = domain.HeaderMatcher{Header: m.Header, Equals: m.Equals}
+	}
+	for i, m := range row.CheckBody {
+		matchers.CheckBody[i] = domain.BodyMatcher{Path: m.Path, Equals: m.Equals}
 	}
 
 	return matchers, nil
@@ -537,10 +545,16 @@ func unmarshalMatchers(raw json.RawMessage) (domain.TriggerMatchers, error) {
 
 type triggerMatchersRow struct {
 	CheckHeaders []headerMatcherRow `json:"check_headers,omitempty"`
+	CheckBody    []bodyMatcherRow   `json:"check_body,omitempty"`
 }
 
 type headerMatcherRow struct {
 	Header string `json:"header"`
+	Equals string `json:"equals"`
+}
+
+type bodyMatcherRow struct {
+	Path   string `json:"path"`
 	Equals string `json:"equals"`
 }
 

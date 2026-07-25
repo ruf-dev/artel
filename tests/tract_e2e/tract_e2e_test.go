@@ -31,6 +31,7 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
+	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -131,12 +132,19 @@ func (s *TractE2ESuite) SetupSuite() {
 	// ToolExecutor composes the already-built Mcp/Mom services — mirror that wiring exactly
 	// since this test drives the service layer directly.
 	tractToolExecutor := tract.NewToolExecutor(s.svcs.McpService(), s.svcs.MomService())
+	tractLlmExecutor := tract.NewLlmExecutor(s.repos.ExternalConnections())
+	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
 	s.svcs.Tract = tract.New(
 		s.repos.Tracts(),
+		s.repos.TractTemplates(),
 		s.repos.Triggers(),
+		s.repos.TriggerPresets(),
 		s.repos.ExternalConnections(),
 		s.repos.McpDefinitions(),
 		tractToolExecutor,
+		s.svcs.SubscriptionService(),
+		scriptEngines,
+		tractLlmExecutor,
 	)
 	s.svcs.McpService().SetTractService(ctx, s.svcs.TractService())
 

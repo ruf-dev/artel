@@ -1,0 +1,52 @@
+.LlmConnectionStepContainer {
+    width: 100%;
+    max-width: 32.5rem;
+    max-height: var(--dialog-max-height);
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 1.125rem;
+    padding: 1.375rem;
+    box-shadow: 0 2rem 5rem -1rem rgb(0 0 0 / 80%);
+
+    & .Head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.875rem;
+    }
+
+    & .Title {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.02125rem;
+        color: var(--color-fg-primary);
+    }
+
+    & .Scroll {
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    & .List {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    & .Empty {
+        color: var(--color-fg-secondary);
+        font-size: 0.875rem;
+        padding: 1rem 0;
+        text-align: center;
+    }
+
+    & .Actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1.125rem;
+    }
+}

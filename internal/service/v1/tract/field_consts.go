@@ -11,9 +11,13 @@ const (
 // Field/map-key names and JSON-schema type strings repeated across trigger payload schemas
 // and templates in this package.
 const (
-	schemaTypeObject = "object"
-	fieldName        = "name"
-	fieldMessage     = "message"
-	fieldRef         = "ref"
-	fieldBranch      = "branch"
+	schemaTypeObject      = "object"
+	fieldName             = "name"
+	fieldMessage          = "message"
+	fieldRef              = "ref"
+	fieldBranch           = "branch"
+	fieldObjectAttributes = "object_attributes"
+	fieldIid              = "iid"
+	fieldAction           = "action"
+	fieldMrIid            = "mr_iid"
 )

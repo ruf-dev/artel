@@ -8,19 +8,34 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
+	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.redsock.ru/rerrors"
 )
 
 func newEngineTestService(executor *fakeToolExecutor) (*Service, *fakeTractsRepo, *fakeExternalConnsRepo) {
+	return newEngineTestServiceWithLlm(executor, nil)
+}
+
+// newEngineTestServiceWithLlm is newEngineTestService plus a controllable LlmExecutor, for
+// llm_call step tests — kept as a separate constructor rather than changing
+// newEngineTestService's signature, since most existing callers don't exercise llm_call steps.
+func newEngineTestServiceWithLlm(
+	executor *fakeToolExecutor,
+	llmExecutor LlmExecutor,
+) (*Service, *fakeTractsRepo, *fakeExternalConnsRepo) {
 	tracts := newFakeTractsRepo()
 	templates := newFakeTractTemplatesRepo()
 	externalConns := newFakeExternalConnsRepo()
 	mcpDefs := newFakeMcpDefsRepo()
 	scriptEngines := script.NewRegistry(script.NewJavaScriptEngine())
-	svc := New(tracts, templates, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines)
+	svc := New(
+		tracts, templates, nil, nil, externalConns, mcpDefs, executor, subscription.NewFree(), scriptEngines,
+		llmExecutor,
+	)
 
 	return svc, tracts, externalConns
 }
@@ -370,4 +385,98 @@ func TestEngine_MomToolExecutesWhenOwned(t *testing.T) {
 
 	steps := tracts.stepsByStepId(run.Uuid)
 	assert.Equal(t, domain.TractRunStepDone, steps["mom_step"].Status)
+}
+
+func TestEngine_LlmCallRun(t *testing.T) {
+	executor := newFakeToolExecutor()
+
+	llmExecutor := newFakeLlmExecutor()
+	llmExecutor.result = LlmCallResult{
+		Text:  "diff summary here",
+		Model: "claude-opus-4-8",
+		Usage: LlmCallUsage{InputTokens: 100, OutputTokens: 20},
+	}
+
+	svc, tracts, externalConns := newEngineTestServiceWithLlm(executor, llmExecutor)
+
+	ownerUuid := uuid.New()
+	connUuid := uuid.New()
+	externalConns.conns[connUuid] = domain.ExternalConnection{
+		Uuid: connUuid, UserUuid: ownerUuid, Provider: domain.ProviderAnthropic,
+	}
+
+	step := llmCallStep(connUuid, "Summarize this diff: {{ trigger.diff }}")
+	tract := testTract(ownerUuid, []domain.TractStep{step})
+
+	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"diff":"+foo"}`), StartedByManual, uuid.Nil)
+	require.NoError(t, err)
+	assert.Equal(t, domain.TractRunDone, run.Status)
+
+	// The engine must render the prompt's {{ trigger.diff }} template before calling out.
+	require.Len(t, llmExecutor.calls, 1)
+	assert.Equal(t, "Summarize this diff: +foo", llmExecutor.calls[0].Prompt)
+	assert.Equal(t, "claude-opus-4-8", llmExecutor.calls[0].Model)
+
+	steps := tracts.stepsByStepId(run.Uuid)
+	require.Contains(t, steps, "summarize")
+	assert.Equal(t, domain.TractRunStepDone, steps["summarize"].Status)
+
+	var output map[string]interface{}
+
+	err = json.Unmarshal(steps["summarize"].Output, &output)
+	require.NoError(t, err)
+	assert.Equal(t, "diff summary here", output["text"])
+	assert.Equal(t, "claude-opus-4-8", output["model"])
+
+	usage, ok := output["usage"].(map[string]interface{})
+	require.True(t, ok)
+	assert.Equal(t, float64(100), usage["input_tokens"])
+	assert.Equal(t, float64(20), usage["output_tokens"])
+}
+
+func TestEngine_LlmCallRun_ConnectionNotOwnedFailsRun(t *testing.T) {
+	executor := newFakeToolExecutor()
+
+	llmExecutor := newFakeLlmExecutor()
+	llmExecutor.err = rerrors.Wrap(user_errors.TractConnectionNotOwned, "summarize")
+
+	svc, tracts, _ := newEngineTestServiceWithLlm(executor, llmExecutor)
+
+	ownerUuid := uuid.New()
+	connUuid := uuid.New()
+
+	step := llmCallStep(connUuid, "Summarize this diff: {{ trigger.diff }}")
+	tract := testTract(ownerUuid, []domain.TractStep{step})
+
+	run, err := svc.StartRun(context.Background(), tract, json.RawMessage(`{"diff":"+foo"}`), StartedByManual, uuid.Nil)
+	require.Error(t, err)
+	assert.Equal(t, domain.TractRunFailed, run.Status)
+
+	steps := tracts.stepsByStepId(run.Uuid)
+	require.Contains(t, steps, "summarize")
+	assert.Equal(t, domain.TractRunStepFailed, steps["summarize"].Status)
+	assert.NotEmpty(t, steps["summarize"].Error)
+}
+
+// TestEngine_LlmCallRun_SaveTimeValidationRejectsUnownedConnection is the create-time
+// counterpart to TestEngine_LlmCallRun_ConnectionNotOwnedFailsRun above: a tract referencing a
+// connection owned by a different user must be rejected by validateLlmConnections before it can
+// ever reach the engine — the run-time re-check in llmExecutor.Call is defense in depth, not the
+// only gate.
+func TestEngine_LlmCallRun_SaveTimeValidationRejectsUnownedConnection(t *testing.T) {
+	executor := newFakeToolExecutor()
+	svc, _, externalConns := newEngineTestServiceWithLlm(executor, newFakeLlmExecutor())
+
+	ownerUuid := uuid.New()
+	otherUserUuid := uuid.New()
+	connUuid := uuid.New()
+	externalConns.conns[connUuid] = domain.ExternalConnection{
+		Uuid: connUuid, UserUuid: otherUserUuid, Provider: domain.ProviderAnthropic,
+	}
+
+	step := llmCallStep(connUuid, "Summarize this diff: {{ trigger.diff }}")
+	def := domain.TractDefinition{Steps: []domain.TractStep{step}}
+
+	err := svc.validateLlmConnections(context.Background(), ownerUuid, def)
+	assert.Error(t, err)
 }

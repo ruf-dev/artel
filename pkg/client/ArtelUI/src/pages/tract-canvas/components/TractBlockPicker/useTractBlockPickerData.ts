@@ -19,6 +19,9 @@ const LOGIC_OPTIONS: LogicOption[] = [
     {type: "script", name: "Script", desc: "Run a function against declared input/output params", Icon: CodeIcon},
 ]
 
+export const LLM_CALL_NAME = "Call LLM"
+export const LLM_CALL_DESC = "Send a prompt to an LLM and capture the completion"
+
 interface Args {
     tools: TractTool[]
     momCandidates: MomCandidate[]
@@ -66,5 +69,8 @@ export function useTractBlockPickerData(args: Args) {
         ? []
         : LOGIC_OPTIONS.filter(o => !q || o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q))
 
-    return {connectedCandidates, grouped, orderedGroups, logicOptions}
+    const showLlmCall = !args.connFilter
+        && (!q || LLM_CALL_NAME.toLowerCase().includes(q) || LLM_CALL_DESC.toLowerCase().includes(q))
+
+    return {connectedCandidates, grouped, orderedGroups, logicOptions, showLlmCall}
 }

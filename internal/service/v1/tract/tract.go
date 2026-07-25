@@ -25,6 +25,7 @@ const (
 	stepTypeParallel  = "parallel"
 	stepTypeGroup     = "group"
 	stepTypeScript    = "script"
+	stepTypeLlmCall   = "llm_call"
 )
 
 const reservedStepId = "trigger"
@@ -47,6 +48,7 @@ type Service struct {
 	toolExecutor   ToolExecutor
 	subscriptions  service.SubscriptionService
 	scriptEngines  script.Registry
+	llmExecutor    LlmExecutor
 }
 
 func New(
@@ -59,6 +61,7 @@ func New(
 	toolExecutor ToolExecutor,
 	subscriptions service.SubscriptionService,
 	scriptEngines script.Registry,
+	llmExecutor LlmExecutor,
 ) *Service {
 	tractSvc := &Service{
 		tracts:         tracts,
@@ -70,6 +73,7 @@ func New(
 		toolExecutor:   toolExecutor,
 		subscriptions:  subscriptions,
 		scriptEngines:  scriptEngines,
+		llmExecutor:    llmExecutor,
 	}
 
 	return tractSvc
@@ -119,6 +123,11 @@ func (s *Service) createTractInternal(
 	}
 
 	err = s.validateScriptEngines(def)
+	if err != nil {
+		return domain.Tract{}, nil, err
+	}
+
+	err = s.validateLlmConnections(ctx, userUuid, def)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}
@@ -201,6 +210,11 @@ func (s *Service) UpdateTract(
 	}
 
 	err = s.validateScriptEngines(def)
+	if err != nil {
+		return domain.Tract{}, nil, err
+	}
+
+	err = s.validateLlmConnections(ctx, existing.UserUuid, def)
 	if err != nil {
 		return domain.Tract{}, nil, err
 	}
@@ -374,6 +388,18 @@ func validateStepShape(step domain.TractStep) error {
 
 		return validateScriptParams(step)
 
+	case stepTypeLlmCall:
+		if len(step.Conditions) > 0 || len(step.Then) > 0 || len(step.Else) > 0 || len(step.Steps) > 0 ||
+			step.Mcp != "" || step.Tool != "" || step.ConnectionUuid != uuid.Nil {
+			return rerrors.Wrap(user_errors.TractConditionsOnNonBranch, step.Id)
+		}
+
+		if step.LlmConnectionUuid == uuid.Nil || step.LlmModel == "" || step.Prompt == "" {
+			return rerrors.Wrap(user_errors.TractLlmStepInvalid, step.Id)
+		}
+
+		return nil
+
 	default:
 		return rerrors.Wrap(user_errors.TractUnknownStepType, step.Type)
 	}
@@ -470,6 +496,60 @@ func walkScriptSteps(steps []domain.TractStep, fn func(domain.TractStep) error) 
 	return nil
 }
 
+// validateLlmConnections checks every llm_call step's LlmConnectionUuid resolves to an
+// external_connections row owned by ownerUuid with provider "anthropic" — mirrors
+// validateScriptEngines's role (a save-time sanity check, not the security boundary). The
+// engine re-verifies ownership itself at run time inside llmExecutor.Call, the same spirit as
+// TractConnectionNotOwned being re-checked in executeTool even though action steps are already
+// validated at save time.
+func (s *Service) validateLlmConnections(ctx context.Context, ownerUuid uuid.UUID, def domain.TractDefinition) error {
+	return walkLlmCallSteps(def.Steps, func(step domain.TractStep) error {
+		conn, err := s.externalConns.GetByID(ctx, step.LlmConnectionUuid)
+		if err != nil {
+			return rerrors.Wrap(err, "error getting llm connection: "+step.Id)
+		}
+
+		if conn.UserUuid != ownerUuid {
+			return rerrors.Wrap(user_errors.TractConnectionNotOwned, step.Id)
+		}
+
+		if conn.Provider != domain.ProviderAnthropic {
+			return rerrors.Wrap(user_errors.TractLlmConnectionProviderMismatch, step.Id)
+		}
+
+		return nil
+	})
+}
+
+func walkLlmCallSteps(steps []domain.TractStep, fn func(domain.TractStep) error) error {
+	for _, step := range steps {
+		switch step.Type {
+		case stepTypeLlmCall:
+			err := fn(step)
+			if err != nil {
+				return err
+			}
+		case stepTypeCondition:
+			err := walkLlmCallSteps(step.Then, fn)
+			if err != nil {
+				return err
+			}
+
+			err = walkLlmCallSteps(step.Else, fn)
+			if err != nil {
+				return err
+			}
+		case stepTypeParallel, stepTypeGroup:
+			err := walkLlmCallSteps(step.Steps, fn)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 // checkVisibility walks steps in execution order, verifying every template ref (from Params
 // and Conditions) resolves to "trigger" or a step that is definitely executed before it:
 // a preceding sibling at any ancestor level. Parallel lanes never see each other while
@@ -492,7 +572,7 @@ func checkVisibility(steps []domain.TractStep, visible map[string]struct{}) (map
 		}
 
 		switch step.Type {
-		case stepTypeAction, stepTypeScript:
+		case stepTypeAction, stepTypeScript, stepTypeLlmCall:
 			local[step.Id] = struct{}{}
 			produced[step.Id] = struct{}{}
 
@@ -555,6 +635,10 @@ func checkStepRefs(step domain.TractStep, visible map[string]struct{}) error {
 
 	for _, c := range step.Conditions {
 		sources = append(sources, c.Left, c.Right)
+	}
+
+	if step.Type == stepTypeLlmCall {
+		sources = append(sources, step.Prompt, step.SystemPrompt)
 	}
 
 	for _, source := range sources {
@@ -621,6 +705,40 @@ func walkActions(steps []domain.TractStep, fn func(*domain.TractStep) error) err
 			}
 		case stepTypeParallel, stepTypeGroup:
 			err := walkActions(step.Steps, fn)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+// walkLlmCallStepsMut is walkLlmCallSteps' mutating sibling — fn receives a pointer into steps
+// so callers can mutate in place (templates.go's LlmConnectionUuid stripping/filling on
+// publish/instantiate), mirroring walkActions vs. validateTools' read-only use of walkActions.
+func walkLlmCallStepsMut(steps []domain.TractStep, fn func(*domain.TractStep) error) error {
+	for i := range steps {
+		step := &steps[i]
+
+		switch step.Type {
+		case stepTypeLlmCall:
+			err := fn(step)
+			if err != nil {
+				return err
+			}
+		case stepTypeCondition:
+			err := walkLlmCallStepsMut(step.Then, fn)
+			if err != nil {
+				return err
+			}
+
+			err = walkLlmCallStepsMut(step.Else, fn)
+			if err != nil {
+				return err
+			}
+		case stepTypeParallel, stepTypeGroup:
+			err := walkLlmCallStepsMut(step.Steps, fn)
 			if err != nil {
 				return err
 			}
@@ -719,6 +837,10 @@ func collectTriggerFields(steps []domain.TractStep) []string {
 
 		for _, c := range step.Conditions {
 			sources = append(sources, c.Left, c.Right)
+		}
+
+		if step.Type == stepTypeLlmCall {
+			sources = append(sources, step.Prompt, step.SystemPrompt)
 		}
 
 		for _, source := range sources {
