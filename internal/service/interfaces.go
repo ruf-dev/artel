@@ -151,6 +151,14 @@ type McpService interface {
 	// ListMomCandidates returns all available MCP definitions paired with the
 	// caller's external connections that can satisfy each one.
 	ListMomCandidates(ctx context.Context) ([]domain.MomCandidate, error)
+	// ListCommunityConnectors returns admin-authored community MoMs (IsCommunity == true),
+	// paired with the caller's external connections the same way ListMomCandidates does, plus
+	// ViewerIsOwner so callers can tell their own connectors apart from other admins'.
+	ListCommunityConnectors(ctx context.Context) ([]domain.MomCandidate, error)
+	// DeleteCommunityConnector deletes a community connector by name — the caller must be its
+	// owning admin. Returns user_errors.NotFound both when the name doesn't exist and when the
+	// caller doesn't own it, so a non-owner can't learn who owns a given name.
+	DeleteCommunityConnector(ctx context.Context, name string) error
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
 	// ListTools returns the built-in tool definitions (vault tools + connections).
@@ -354,4 +362,7 @@ type ExternalConnectionService interface {
 	// WorkbenchService to inject ANTHROPIC_API_KEY when starting a workbench in api_key auth
 	// mode. Returns user_errors.LlmKeyRequired if userUuid has no anthropic connection.
 	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
+	AddGenericConnection(
+		ctx context.Context, provider string, credentials map[string]string,
+	) (domain.ExternalConnectionMeta, error)
 }

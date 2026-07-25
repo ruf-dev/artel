@@ -64,7 +64,7 @@ func TestListConnectionsForTracts(t *testing.T) {
 		},
 	}
 
-	svc := mcp.New(nil, nil, nil, nil, nil, nil, nil, repo, subscription.NewFree())
+	svc := mcp.New(nil, nil, nil, nil, nil, nil, nil, repo, subscription.NewFree(), nil)
 
 	keyCtx := domain.McpKeyContext{UserUuid: userUuid}
 

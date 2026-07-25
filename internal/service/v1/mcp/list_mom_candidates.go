@@ -4,6 +4,7 @@ import (
 	"context"
 	"sort"
 
+	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
@@ -26,7 +27,24 @@ func (s *ServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCandid
 		return nil, rerrors.Wrap(err, "list external connections")
 	}
 
+	connsByProvider := groupConnectionsByProvider(conns)
+
+	candidates := make([]domain.MomCandidate, 0, len(defs))
+	for _, def := range defs {
+		candidates = append(candidates, buildMomCandidate(def, connsByProvider, uc.UserUuid))
+	}
+
+	sortMomCandidates(candidates)
+
+	return candidates, nil
+}
+
+// groupConnectionsByProvider indexes conns (the caller's own external connections) by
+// provider — shared by ListMomCandidates and ListCommunityConnectors, which only differ in
+// which mcpDefinitions.List() rows they turn into candidates.
+func groupConnectionsByProvider(conns []domain.ExternalConnection) map[string][]domain.ExternalConnectionMeta {
 	connsByProvider := make(map[string][]domain.ExternalConnectionMeta)
+
 	for _, c := range conns {
 		connsByProvider[c.Provider] = append(connsByProvider[c.Provider], domain.ExternalConnectionMeta{
 			Uuid:         c.Uuid,
@@ -38,23 +56,35 @@ func (s *ServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCandid
 		})
 	}
 
-	candidates := make([]domain.MomCandidate, 0, len(defs))
+	return connsByProvider
+}
 
-	for _, def := range defs {
-		var matched []domain.ExternalConnectionMeta
-		for _, provider := range requiredProviders(def) {
-			matched = append(matched, connsByProvider[provider]...)
-		}
-
-		candidates = append(candidates, domain.MomCandidate{
-			Name:        def.Name,
-			Author:      def.Author,
-			Description: def.Description,
-			Connections: matched,
-			Tools:       def.Tools,
-		})
+// buildMomCandidate pairs def with whichever of the caller's connections satisfy its tools'
+// required providers, and marks ViewerIsOwner against callerUuid.
+func buildMomCandidate(
+	def domain.McpDefinition,
+	connsByProvider map[string][]domain.ExternalConnectionMeta,
+	callerUuid uuid.UUID,
+) domain.MomCandidate {
+	var matched []domain.ExternalConnectionMeta
+	for _, provider := range requiredProviders(def) {
+		matched = append(matched, connsByProvider[provider]...)
 	}
 
+	candidate := domain.MomCandidate{
+		Name:          def.Name,
+		Author:        def.Author,
+		Description:   def.Description,
+		Connections:   matched,
+		Tools:         def.Tools,
+		OwnerUserUuid: def.OwnerUserUuid,
+		ViewerIsOwner: def.OwnerUserUuid != nil && *def.OwnerUserUuid == callerUuid,
+	}
+
+	return candidate
+}
+
+func sortMomCandidates(candidates []domain.MomCandidate) {
 	sort.SliceStable(candidates, func(i, j int) bool {
 		iHas, jHas := len(candidates[i].Connections) > 0, len(candidates[j].Connections) > 0
 		if iHas != jHas {
@@ -63,8 +93,6 @@ func (s *ServiceImpl) ListMomCandidates(ctx context.Context) ([]domain.MomCandid
 
 		return candidates[i].Name < candidates[j].Name
 	})
-
-	return candidates, nil
 }
 
 // requiredProviders returns the distinct external_connections.provider values

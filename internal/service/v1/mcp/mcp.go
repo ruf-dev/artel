@@ -22,6 +22,7 @@ type ServiceImpl struct {
 	mcpDefinitions      repository.McpDefinitionsRepo
 	externalConnections repository.ExternalConnectionRepo
 	subscriptions       service.SubscriptionService
+	authSvc             service.AuthService
 	vaultExecutor       *executors.VaultExecutor
 	tractExecutor       *executors.TractExecutor
 
@@ -43,6 +44,7 @@ func New(
 	mcpDefinitions repository.McpDefinitionsRepo,
 	externalConnections repository.ExternalConnectionRepo,
 	subscriptions service.SubscriptionService,
+	authSvc service.AuthService,
 ) *ServiceImpl {
 	impl := &ServiceImpl{
 		mcpKeys:             mcpKeys,
@@ -54,6 +56,7 @@ func New(
 		mcpDefinitions:      mcpDefinitions,
 		externalConnections: externalConnections,
 		subscriptions:       subscriptions,
+		authSvc:             authSvc,
 		vaultExecutor:       executors.NewVaultExecutor(),
 		tractExecutor:       executors.NewTractExecutor(),
 	}

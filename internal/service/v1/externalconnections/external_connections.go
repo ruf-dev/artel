@@ -793,6 +793,44 @@ func (s *Service) GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (s
 	return apiKey, nil
 }
 
+// AddGenericConnection stores arbitrary key/value credentials for a community-authored MCP
+// connector, since provider is free TEXT and doesn't require a bespoke RPC per integration.
+// Unlike the provider-specific Add*Connection methods, it does not validate the credentials
+// against any external API — the caller (a MoM http-action tool) is responsible for that.
+func (s *Service) AddGenericConnection(
+	ctx context.Context,
+	provider string,
+	credentials map[string]string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	if provider == "" {
+		return domain.ExternalConnectionMeta{}, user_errors.GenericProviderRequired
+	}
+
+	credJSON, err := json.Marshal(credentials)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal generic credentials")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        provider,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save generic connection")
+	}
+
+	return toMeta(saved, provider), nil
+}
+
 // validateAnthropicKey resolves baseUrl to anthropicDefaultBaseUrl when blank, then confirms the
 // key actually authenticates against the provider by listing its model catalog. ListModels is a
 // zero-token metadata call, so it doubles as key validation before anything is persisted.

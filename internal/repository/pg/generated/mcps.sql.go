@@ -7,6 +7,8 @@ package artel_q
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const deleteMcpDefinition = `-- name: DeleteMcpDefinition :exec
@@ -19,7 +21,7 @@ func (q *Queries) DeleteMcpDefinition(ctx context.Context, name string) error {
 }
 
 const getMcpDefinition = `-- name: GetMcpDefinition :one
-SELECT name, author, description, created_at
+SELECT name, author, description, created_at, owner_user_id, is_community
 FROM mcps
 WHERE name = $1
 `
@@ -32,12 +34,14 @@ func (q *Queries) GetMcpDefinition(ctx context.Context, name string) (Mcp, error
 		&i.Author,
 		&i.Description,
 		&i.CreatedAt,
+		&i.OwnerUserID,
+		&i.IsCommunity,
 	)
 	return i, err
 }
 
 const listMcpDefinitions = `-- name: ListMcpDefinitions :many
-SELECT name, author, description, created_at
+SELECT name, author, description, created_at, owner_user_id, is_community
 FROM mcps
 ORDER BY name
 `
@@ -56,6 +60,8 @@ func (q *Queries) ListMcpDefinitions(ctx context.Context) ([]Mcp, error) {
 			&i.Author,
 			&i.Description,
 			&i.CreatedAt,
+			&i.OwnerUserID,
+			&i.IsCommunity,
 		); err != nil {
 			return nil, err
 		}
@@ -71,28 +77,40 @@ func (q *Queries) ListMcpDefinitions(ctx context.Context) ([]Mcp, error) {
 }
 
 const upsertMcpDefinition = `-- name: UpsertMcpDefinition :one
-INSERT INTO mcps (name, author, description)
-VALUES ($1, $2, $3)
+INSERT INTO mcps (name, author, description, owner_user_id, is_community)
+VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT (name) DO UPDATE
-    SET author      = EXCLUDED.author,
-        description = EXCLUDED.description
-RETURNING name, author, description, created_at
+    SET author        = EXCLUDED.author,
+        description   = EXCLUDED.description,
+        owner_user_id = EXCLUDED.owner_user_id,
+        is_community  = EXCLUDED.is_community
+RETURNING name, author, description, created_at, owner_user_id, is_community
 `
 
 type UpsertMcpDefinitionParams struct {
 	Name        string
 	Author      string
 	Description string
+	OwnerUserID uuid.NullUUID
+	IsCommunity bool
 }
 
 func (q *Queries) UpsertMcpDefinition(ctx context.Context, arg UpsertMcpDefinitionParams) (Mcp, error) {
-	row := q.db.QueryRowContext(ctx, upsertMcpDefinition, arg.Name, arg.Author, arg.Description)
+	row := q.db.QueryRowContext(ctx, upsertMcpDefinition,
+		arg.Name,
+		arg.Author,
+		arg.Description,
+		arg.OwnerUserID,
+		arg.IsCommunity,
+	)
 	var i Mcp
 	err := row.Scan(
 		&i.Name,
 		&i.Author,
 		&i.Description,
 		&i.CreatedAt,
+		&i.OwnerUserID,
+		&i.IsCommunity,
 	)
 	return i, err
 }

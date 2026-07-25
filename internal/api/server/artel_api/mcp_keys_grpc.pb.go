@@ -19,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	McpKeysAPI_CreateMcpKey_FullMethodName       = "/artel_api.McpKeysAPI/CreateMcpKey"
-	McpKeysAPI_ListMcpKeys_FullMethodName        = "/artel_api.McpKeysAPI/ListMcpKeys"
-	McpKeysAPI_RevokeMcpKey_FullMethodName       = "/artel_api.McpKeysAPI/RevokeMcpKey"
-	McpKeysAPI_ListUserMcpKeys_FullMethodName    = "/artel_api.McpKeysAPI/ListUserMcpKeys"
-	McpKeysAPI_SetMcpKeyAccess_FullMethodName    = "/artel_api.McpKeysAPI/SetMcpKeyAccess"
-	McpKeysAPI_ListMcpConnectors_FullMethodName  = "/artel_api.McpKeysAPI/ListMcpConnectors"
-	McpKeysAPI_AddMcpConnector_FullMethodName    = "/artel_api.McpKeysAPI/AddMcpConnector"
-	McpKeysAPI_RemoveMcpConnector_FullMethodName = "/artel_api.McpKeysAPI/RemoveMcpConnector"
-	McpKeysAPI_ListMomCandidates_FullMethodName  = "/artel_api.McpKeysAPI/ListMomCandidates"
-	McpKeysAPI_ExecuteMomTool_FullMethodName     = "/artel_api.McpKeysAPI/ExecuteMomTool"
+	McpKeysAPI_CreateMcpKey_FullMethodName             = "/artel_api.McpKeysAPI/CreateMcpKey"
+	McpKeysAPI_ListMcpKeys_FullMethodName              = "/artel_api.McpKeysAPI/ListMcpKeys"
+	McpKeysAPI_RevokeMcpKey_FullMethodName             = "/artel_api.McpKeysAPI/RevokeMcpKey"
+	McpKeysAPI_ListUserMcpKeys_FullMethodName          = "/artel_api.McpKeysAPI/ListUserMcpKeys"
+	McpKeysAPI_SetMcpKeyAccess_FullMethodName          = "/artel_api.McpKeysAPI/SetMcpKeyAccess"
+	McpKeysAPI_ListMcpConnectors_FullMethodName        = "/artel_api.McpKeysAPI/ListMcpConnectors"
+	McpKeysAPI_AddMcpConnector_FullMethodName          = "/artel_api.McpKeysAPI/AddMcpConnector"
+	McpKeysAPI_RemoveMcpConnector_FullMethodName       = "/artel_api.McpKeysAPI/RemoveMcpConnector"
+	McpKeysAPI_ListMomCandidates_FullMethodName        = "/artel_api.McpKeysAPI/ListMomCandidates"
+	McpKeysAPI_ListCommunityConnectors_FullMethodName  = "/artel_api.McpKeysAPI/ListCommunityConnectors"
+	McpKeysAPI_DeleteCommunityConnector_FullMethodName = "/artel_api.McpKeysAPI/DeleteCommunityConnector"
+	McpKeysAPI_ExecuteMomTool_FullMethodName           = "/artel_api.McpKeysAPI/ExecuteMomTool"
 )
 
 // McpKeysAPIClient is the client API for McpKeysAPI service.
@@ -44,6 +46,8 @@ type McpKeysAPIClient interface {
 	AddMcpConnector(ctx context.Context, in *AddMcpConnector_Request, opts ...grpc.CallOption) (*AddMcpConnector_Response, error)
 	RemoveMcpConnector(ctx context.Context, in *RemoveMcpConnector_Request, opts ...grpc.CallOption) (*RemoveMcpConnector_Response, error)
 	ListMomCandidates(ctx context.Context, in *ListMomCandidates_Request, opts ...grpc.CallOption) (*ListMomCandidates_Response, error)
+	ListCommunityConnectors(ctx context.Context, in *ListCommunityConnectors_Request, opts ...grpc.CallOption) (*ListCommunityConnectors_Response, error)
+	DeleteCommunityConnector(ctx context.Context, in *DeleteCommunityConnector_Request, opts ...grpc.CallOption) (*DeleteCommunityConnector_Response, error)
 	ExecuteMomTool(ctx context.Context, in *ExecuteMomTool_Request, opts ...grpc.CallOption) (*ExecuteMomTool_Response, error)
 }
 
@@ -145,6 +149,26 @@ func (c *mcpKeysAPIClient) ListMomCandidates(ctx context.Context, in *ListMomCan
 	return out, nil
 }
 
+func (c *mcpKeysAPIClient) ListCommunityConnectors(ctx context.Context, in *ListCommunityConnectors_Request, opts ...grpc.CallOption) (*ListCommunityConnectors_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCommunityConnectors_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_ListCommunityConnectors_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mcpKeysAPIClient) DeleteCommunityConnector(ctx context.Context, in *DeleteCommunityConnector_Request, opts ...grpc.CallOption) (*DeleteCommunityConnector_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteCommunityConnector_Response)
+	err := c.cc.Invoke(ctx, McpKeysAPI_DeleteCommunityConnector_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *mcpKeysAPIClient) ExecuteMomTool(ctx context.Context, in *ExecuteMomTool_Request, opts ...grpc.CallOption) (*ExecuteMomTool_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ExecuteMomTool_Response)
@@ -168,6 +192,8 @@ type McpKeysAPIServer interface {
 	AddMcpConnector(context.Context, *AddMcpConnector_Request) (*AddMcpConnector_Response, error)
 	RemoveMcpConnector(context.Context, *RemoveMcpConnector_Request) (*RemoveMcpConnector_Response, error)
 	ListMomCandidates(context.Context, *ListMomCandidates_Request) (*ListMomCandidates_Response, error)
+	ListCommunityConnectors(context.Context, *ListCommunityConnectors_Request) (*ListCommunityConnectors_Response, error)
+	DeleteCommunityConnector(context.Context, *DeleteCommunityConnector_Request) (*DeleteCommunityConnector_Response, error)
 	ExecuteMomTool(context.Context, *ExecuteMomTool_Request) (*ExecuteMomTool_Response, error)
 	mustEmbedUnimplementedMcpKeysAPIServer()
 }
@@ -205,6 +231,12 @@ func (UnimplementedMcpKeysAPIServer) RemoveMcpConnector(context.Context, *Remove
 }
 func (UnimplementedMcpKeysAPIServer) ListMomCandidates(context.Context, *ListMomCandidates_Request) (*ListMomCandidates_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListMomCandidates not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) ListCommunityConnectors(context.Context, *ListCommunityConnectors_Request) (*ListCommunityConnectors_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListCommunityConnectors not implemented")
+}
+func (UnimplementedMcpKeysAPIServer) DeleteCommunityConnector(context.Context, *DeleteCommunityConnector_Request) (*DeleteCommunityConnector_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteCommunityConnector not implemented")
 }
 func (UnimplementedMcpKeysAPIServer) ExecuteMomTool(context.Context, *ExecuteMomTool_Request) (*ExecuteMomTool_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method ExecuteMomTool not implemented")
@@ -392,6 +424,42 @@ func _McpKeysAPI_ListMomCandidates_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _McpKeysAPI_ListCommunityConnectors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCommunityConnectors_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).ListCommunityConnectors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_ListCommunityConnectors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).ListCommunityConnectors(ctx, req.(*ListCommunityConnectors_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _McpKeysAPI_DeleteCommunityConnector_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCommunityConnector_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(McpKeysAPIServer).DeleteCommunityConnector(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: McpKeysAPI_DeleteCommunityConnector_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(McpKeysAPIServer).DeleteCommunityConnector(ctx, req.(*DeleteCommunityConnector_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _McpKeysAPI_ExecuteMomTool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExecuteMomTool_Request)
 	if err := dec(in); err != nil {
@@ -452,6 +520,14 @@ var McpKeysAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListMomCandidates",
 			Handler:    _McpKeysAPI_ListMomCandidates_Handler,
+		},
+		{
+			MethodName: "ListCommunityConnectors",
+			Handler:    _McpKeysAPI_ListCommunityConnectors_Handler,
+		},
+		{
+			MethodName: "DeleteCommunityConnector",
+			Handler:    _McpKeysAPI_DeleteCommunityConnector_Handler,
 		},
 		{
 			MethodName: "ExecuteMomTool",

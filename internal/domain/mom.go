@@ -3,6 +3,8 @@ package domain
 import (
 	"encoding/json"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type McpDefinition struct {
@@ -11,16 +13,26 @@ type McpDefinition struct {
 	Description string
 	Tools       []McpToolDef
 	CreatedAt   time.Time
+
+	// OwnerUserUuid is nil for a system/built-in MoM (seeded via migration), non-nil for the
+	// admin who created a community connector.
+	OwnerUserUuid *uuid.UUID
+	IsCommunity   bool
 }
 
 // MomCandidate is an McpDefinition paired with the caller's external connections
 // that satisfy the providers its tools require.
 type MomCandidate struct {
-	Name        string
-	Author      string
-	Description string
-	Connections []ExternalConnectionMeta
-	Tools       []McpToolDef
+	Name          string
+	Author        string
+	Description   string
+	Connections   []ExternalConnectionMeta
+	Tools         []McpToolDef
+	OwnerUserUuid *uuid.UUID
+	// ViewerIsOwner reports whether the caller is OwnerUserUuid — computed in the service layer
+	// (which has access to the caller's identity via user_context) so transport handlers never
+	// need to inspect auth context themselves.
+	ViewerIsOwner bool
 }
 
 type McpToolDef struct {

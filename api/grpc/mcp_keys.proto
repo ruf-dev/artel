@@ -71,6 +71,20 @@ service McpKeysAPI {
         };
     }
 
+    rpc ListCommunityConnectors(ListCommunityConnectors.Request) returns (ListCommunityConnectors.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/moms/community-connectors/list"
+            body: "*"
+        };
+    }
+
+    rpc DeleteCommunityConnector(DeleteCommunityConnector.Request) returns (DeleteCommunityConnector.Response) {
+        option (google.api.http) = {
+            post: "/api/mcp/moms/community-connectors/delete"
+            body: "*"
+        };
+    }
+
     rpc ExecuteMomTool(ExecuteMomTool.Request) returns (ExecuteMomTool.Response) {
         option (google.api.http) = {
             post: "/api/mcp/moms/execute"
@@ -228,6 +242,29 @@ message ListMomCandidates {
     message Response {
         repeated MomCandidate candidates = 1;
     }
+}
+
+message CommunityConnectorInfo {
+    string name                 = 1;
+    string author               = 2;
+    string description          = 3;
+    repeated McpToolInfo tools  = 4;
+    bool viewer_is_owner        = 5;
+    bool viewer_is_connected    = 6;
+}
+
+message ListCommunityConnectors {
+    message Request {}
+    message Response {
+        repeated CommunityConnectorInfo connectors = 1;
+    }
+}
+
+message DeleteCommunityConnector {
+    message Request {
+        string name = 1;
+    }
+    message Response {}
 }
 
 message ExecuteMomTool {

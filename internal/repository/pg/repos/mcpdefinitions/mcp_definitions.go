@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
@@ -28,6 +29,8 @@ func (r *Repo) Upsert(ctx context.Context, def domain.McpDefinition) (domain.Mcp
 		Name:        def.Name,
 		Author:      def.Author,
 		Description: def.Description,
+		OwnerUserID: ownerUserIDFromDomain(def.OwnerUserUuid),
+		IsCommunity: def.IsCommunity,
 	}
 
 	row, err := r.q.UpsertMcpDefinition(ctx, params)
@@ -48,11 +51,13 @@ func (r *Repo) Upsert(ctx context.Context, def domain.McpDefinition) (domain.Mcp
 	}
 
 	result := domain.McpDefinition{
-		Name:        row.Name,
-		Author:      row.Author,
-		Description: row.Description,
-		Tools:       tools,
-		CreatedAt:   row.CreatedAt,
+		Name:          row.Name,
+		Author:        row.Author,
+		Description:   row.Description,
+		Tools:         tools,
+		CreatedAt:     row.CreatedAt,
+		OwnerUserUuid: ownerUserIDToDomain(row.OwnerUserID),
+		IsCommunity:   row.IsCommunity,
 	}
 
 	return result, nil
@@ -88,11 +93,13 @@ func (r *Repo) Get(ctx context.Context, name string) (sql.Null[domain.McpDefinit
 	}
 
 	def := domain.McpDefinition{
-		Name:        row.Name,
-		Author:      row.Author,
-		Description: row.Description,
-		Tools:       tools,
-		CreatedAt:   row.CreatedAt,
+		Name:          row.Name,
+		Author:        row.Author,
+		Description:   row.Description,
+		Tools:         tools,
+		CreatedAt:     row.CreatedAt,
+		OwnerUserUuid: ownerUserIDToDomain(row.OwnerUserID),
+		IsCommunity:   row.IsCommunity,
 	}
 
 	result := sql.Null[domain.McpDefinition]{V: def, Valid: true}
@@ -131,11 +138,13 @@ func (r *Repo) List(ctx context.Context) ([]domain.McpDefinition, error) {
 		}
 
 		defs[i] = domain.McpDefinition{
-			Name:        row.Name,
-			Author:      row.Author,
-			Description: row.Description,
-			Tools:       tools,
-			CreatedAt:   row.CreatedAt,
+			Name:          row.Name,
+			Author:        row.Author,
+			Description:   row.Description,
+			Tools:         tools,
+			CreatedAt:     row.CreatedAt,
+			OwnerUserUuid: ownerUserIDToDomain(row.OwnerUserID),
+			IsCommunity:   row.IsCommunity,
 		}
 	}
 
@@ -219,6 +228,24 @@ func (r *Repo) listTools(ctx context.Context, mcpName string) ([]domain.McpToolD
 	}
 
 	return tools, nil
+}
+
+func ownerUserIDFromDomain(ownerUserUuid *uuid.UUID) uuid.NullUUID {
+	if ownerUserUuid == nil {
+		return uuid.NullUUID{Valid: false}
+	}
+
+	result := uuid.NullUUID{UUID: *ownerUserUuid, Valid: true}
+
+	return result
+}
+
+func ownerUserIDToDomain(ownerUserID uuid.NullUUID) *uuid.UUID {
+	if !ownerUserID.Valid {
+		return nil
+	}
+
+	return &ownerUserID.UUID
 }
 
 func upsertToolParams(mcpName string, tool domain.McpToolDef) (artel_q.UpsertMcpToolParams, error) {

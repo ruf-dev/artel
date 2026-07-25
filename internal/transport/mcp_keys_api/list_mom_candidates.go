@@ -29,38 +29,7 @@ func (m *McpKeysImpl) ListMomCandidates(
 		tools := make([]*pb.McpToolInfo, 0, len(c.Tools))
 
 		for _, t := range c.Tools {
-			tool := &pb.McpToolInfo{
-				Name:        t.ApiDescription.Name,
-				Description: t.ApiDescription.Description,
-			}
-
-			if t.Action.Smtp != nil {
-				op := pb.SmtpOperation_SMTP_OP_UNSPECIFIED
-				if t.Action.Smtp.Operation == domain.SMTP_OP_SEND {
-					op = pb.SmtpOperation_SMTP_OP_SEND
-				}
-
-				smtpAction := &pb.SmtpToolAction{Operation: op}
-				smtpWrapper := &pb.McpToolInfo_Smtp{Smtp: smtpAction}
-				tool.Action = smtpWrapper
-			}
-
-			if t.Action.Imap != nil {
-				op := imapOperationToProto(t.Action.Imap.Operation)
-				imapAction := &pb.ImapToolAction{Operation: op}
-				imapWrapper := &pb.McpToolInfo_Imap{Imap: imapAction}
-				tool.Action = imapWrapper
-			}
-
-			params := make(map[string]*pb.ToolParamDef, len(t.ApiDescription.Properties))
-
-			for name, prop := range t.ApiDescription.Properties {
-				paramDef := toolPropertyToProto(prop)
-				params[name] = paramDef
-			}
-
-			tool.Params = params
-			tools = append(tools, tool)
+			tools = append(tools, momToolToProto(t))
 		}
 
 		candidate := &pb.MomCandidate{

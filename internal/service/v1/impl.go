@@ -76,9 +76,14 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		oauthCfg,
 		momSvc,
 	)
+	// Also hoisted ahead of the literal: mcp.New needs service.AuthService (to gate
+	// create_community_connector on CheckIsAdmin and to resolve the caller's email for a new
+	// community connector's Author), which doesn't exist yet mid-construction of the same
+	// struct literal either.
+	authSvc := auth.New(repo, cfg.TelegramClientID, subscriptionSvc)
 
 	services := &Services{
-		Auth:          auth.New(repo, cfg.TelegramClientID, subscriptionSvc),
+		Auth:          authSvc,
 		Vault:         vault.New(repo),
 		CouchInstance: couchinstances.New(repo),
 		S3Instance:    s3instances.New(repo),
@@ -93,6 +98,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			repo.McpDefinitions(),
 			repo.ExternalConnections(),
 			subscriptionSvc,
+			authSvc,
 		),
 		Subscription:        subscriptionSvc,
 		Prompt:              prompt.New(repo.Prompts()),

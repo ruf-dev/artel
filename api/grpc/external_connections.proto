@@ -135,6 +135,13 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddGenericConnection(AddGenericConnection.Request) returns (AddGenericConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/generic"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -165,6 +172,7 @@ message ExternalConnectionInfo {
     GoogleConnectionInfo google = 5;
     GenericConnection generic = 6;
   }
+  string provider_name = 7;
 }
 
 message InitiateGoogleOAuth {
@@ -349,5 +357,15 @@ message CheckAnthropicConnection {
   message Response {
     repeated string available_models          = 1;
     string           recommended_default_model = 2;
+  }
+}
+
+message AddGenericConnection {
+  message Request {
+    string provider = 1;
+    map<string, string> credentials = 2;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
   }
 }

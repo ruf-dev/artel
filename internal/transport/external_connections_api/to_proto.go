@@ -19,10 +19,11 @@ var providerToProto = map[string]pb.ExternalProvider{
 
 func ConnectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {
 	info := &pb.ExternalConnectionInfo{
-		Id:        m.Uuid.String(),
-		Provider:  providerToProto[m.Provider],
-		CreatedAt: m.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
-		UpdatedAt: m.UpdatedAt.UTC().Format("2006-01-02T15:04:05Z"),
+		Id:           m.Uuid.String(),
+		Provider:     providerToProto[m.Provider],
+		ProviderName: m.Provider,
+		CreatedAt:    m.CreatedAt.UTC().Format("2006-01-02T15:04:05Z"),
+		UpdatedAt:    m.UpdatedAt.UTC().Format("2006-01-02T15:04:05Z"),
 	}
 
 	switch m.ProviderType {

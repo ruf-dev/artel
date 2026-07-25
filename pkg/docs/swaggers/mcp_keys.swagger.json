@@ -304,6 +304,70 @@
         ]
       }
     },
+    "/api/mcp/moms/community-connectors/delete": {
+      "post": {
+        "operationId": "McpKeysAPI_DeleteCommunityConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteCommunityConnectorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteCommunityConnectorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
+    "/api/mcp/moms/community-connectors/list": {
+      "post": {
+        "operationId": "McpKeysAPI_ListCommunityConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListCommunityConnectorsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListCommunityConnectorsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "McpKeysAPI"
+        ]
+      }
+    },
     "/api/mcp/moms/execute": {
       "post": {
         "operationId": "McpKeysAPI_ExecuteMomTool",
@@ -360,6 +424,33 @@
         }
       }
     },
+    "artel_apiCommunityConnectorInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiMcpToolInfo"
+          }
+        },
+        "viewerIsOwner": {
+          "type": "boolean"
+        },
+        "viewerIsConnected": {
+          "type": "boolean"
+        }
+      }
+    },
     "artel_apiCreateMcpKeyRequest": {
       "type": "object",
       "properties": {
@@ -381,6 +472,17 @@
           "type": "string"
         }
       }
+    },
+    "artel_apiDeleteCommunityConnectorRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDeleteCommunityConnectorResponse": {
+      "type": "object"
     },
     "artel_apiEnumParam": {
       "type": "object",
@@ -438,6 +540,9 @@
         },
         "generic": {
           "$ref": "#/definitions/artel_apiGenericConnection"
+        },
+        "providerName": {
+          "type": "string"
         }
       }
     },
@@ -496,6 +601,21 @@
     },
     "artel_apiIntegerParam": {
       "type": "object"
+    },
+    "artel_apiListCommunityConnectorsRequest": {
+      "type": "object"
+    },
+    "artel_apiListCommunityConnectorsResponse": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiCommunityConnectorInfo"
+          }
+        }
+      }
     },
     "artel_apiListMcpConnectorsRequest": {
       "type": "object",

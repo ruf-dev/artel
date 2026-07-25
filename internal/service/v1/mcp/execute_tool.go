@@ -28,6 +28,10 @@ func (s *ServiceImpl) ExecuteTool(
 		return s.listConnectionsForTracts(ctx, keyCtx.UserUuid)
 	}
 
+	if toolName == toolCreateCommunityConnector {
+		return s.createCommunityConnector(ctx, keyCtx.UserUuid, params)
+	}
+
 	if executors.IsTractTool(toolName) {
 		return s.executeTractTool(ctx, keyCtx.UserUuid, toolName, params)
 	}

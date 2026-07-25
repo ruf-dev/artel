@@ -119,6 +119,24 @@ var (
 	)
 	McpHttpRequestFailed = rerrors.New("http executor: upstream request failed", codes.Unavailable)
 
+	// mcp: community connectors.
+	McpCommunityConnectorNameRequired = rerrors.New(
+		"name is required and must be a non-empty string",
+		codes.InvalidArgument,
+	)
+	McpCommunityConnectorDescriptionRequired = rerrors.New(
+		"description is required and must be a non-empty string",
+		codes.InvalidArgument,
+	)
+	McpCommunityConnectorToolsRequired = rerrors.New(
+		"tools is required and must be a non-empty array",
+		codes.InvalidArgument,
+	)
+	McpCommunityConnectorNameTaken = rerrors.New(
+		"this name belongs to a system connector or another admin's community connector",
+		codes.AlreadyExists,
+	)
+
 	// livesync file-type constraints.
 	UseReadNoteForTextFiles       = rerrors.New("use read_note for text files", codes.FailedPrecondition)
 	UseDeleteNoteForTextFiles     = rerrors.New("use delete_note for text files", codes.FailedPrecondition)
@@ -147,6 +165,11 @@ var (
 	)
 	InvalidOAuthState = rerrors.New(
 		"invalid or expired oauth state",
+		codes.InvalidArgument,
+		rerrors.WithHttpStatus(http.StatusBadRequest),
+	)
+	GenericProviderRequired = rerrors.New(
+		"provider is required",
 		codes.InvalidArgument,
 		rerrors.WithHttpStatus(http.StatusBadRequest),
 	)

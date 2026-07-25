@@ -365,6 +365,8 @@ type Mcp struct {
 	Author      string
 	Description string
 	CreatedAt   time.Time
+	OwnerUserID uuid.NullUUID
+	IsCommunity bool
 }
 
 type McpConnector struct {

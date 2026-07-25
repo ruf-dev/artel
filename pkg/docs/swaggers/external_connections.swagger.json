@@ -241,6 +241,38 @@
         ]
       }
     },
+    "/api/external-connections/generic": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddGenericConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddGenericConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddGenericConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/gitlab/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddGitlabConnection",
@@ -652,6 +684,28 @@
         }
       }
     },
+    "artel_apiAddGenericConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "credentials": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_apiAddGenericConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddGitlabConnectionRequest": {
       "type": "object",
       "properties": {
@@ -846,6 +900,9 @@
         },
         "generic": {
           "$ref": "#/definitions/artel_apiGenericConnection"
+        },
+        "providerName": {
+          "type": "string"
         }
       }
     },
