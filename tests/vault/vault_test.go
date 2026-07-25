@@ -7,9 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 )
 
 func envOrDefault(key, def string) string {
