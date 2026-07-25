@@ -1,10 +1,8 @@
 import {useEffect} from "react"
-import {useNavigate} from "react-router-dom"
 import {Button} from "@vervstack/chures"
 
 import {ExternalConnectionInfo} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
-import {useDialog} from "@/app/hooks/Dialog"
 import SelectOption from "@/components/SelectOption/SelectOption.tsx"
 import {connectionLabel} from "@/components/ConnectorChip/connectionLabel.ts"
 import cls from "@/dialogs/InstantiateTemplateDialog/components/ConnectionSection/ConnectionSection.module.css"
@@ -17,9 +15,6 @@ interface Props {
 }
 
 export default function ConnectionSection({mcp, connections, selectedId, onSelect}: Props) {
-    const {CloseDialog} = useDialog()
-    const navigate = useNavigate()
-
     useEffect(() => {
         if (!selectedId && connections.length === 1) {
             onSelect(connections[0].id ?? "")
@@ -35,10 +30,7 @@ export default function ConnectionSection({mcp, connections, selectedId, onSelec
                     <Button
                         variant="ghost"
                         className={cls.LinkBtn}
-                        onClick={() => {
-                            CloseDialog()
-                            navigate(Path.ConnectionsPage)
-                        }}
+                        onClick={() => window.open(Path.ConnectionsPage, "_blank", "noopener,noreferrer")}
                     >
                         Set one up
                     </Button>
