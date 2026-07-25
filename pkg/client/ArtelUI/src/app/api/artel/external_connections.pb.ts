@@ -41,6 +41,7 @@ type BaseExternalConnectionInfo = {
   provider?: ExternalProvider;
   createdAt?: string;
   updatedAt?: string;
+  providerName?: string;
 };
 
 export type ExternalConnectionInfo = BaseExternalConnectionInfo &
@@ -249,6 +250,17 @@ export type CheckAnthropicConnectionResponse = {
 
 export type CheckAnthropicConnection = Record<string, never>;
 
+export type AddGenericConnectionRequest = {
+  provider?: string;
+  credentials?: Record<string, string>;
+};
+
+export type AddGenericConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddGenericConnection = Record<string, never>;
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -303,5 +315,8 @@ export class ExternalConnectionsAPI {
   }
   static CheckAnthropicConnection(this:void, req: CheckAnthropicConnectionRequest, initReq?: fm.InitReq): Promise<CheckAnthropicConnectionResponse> {
     return fm.fetchRequest<CheckAnthropicConnectionResponse>(`/api/external-connections/anthropic/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddGenericConnection(this:void, req: AddGenericConnectionRequest, initReq?: fm.InitReq): Promise<AddGenericConnectionResponse> {
+    return fm.fetchRequest<AddGenericConnectionResponse>(`/api/external-connections/generic`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

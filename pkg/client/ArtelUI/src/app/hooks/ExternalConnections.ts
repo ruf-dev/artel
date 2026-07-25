@@ -1,9 +1,9 @@
 import {create} from 'zustand'
 
 import {
-    AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGitlabConnectionRequest,
-    AddTrelloConnectionRequest, CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
-    ExternalConnectionInfo, Spreadsheet,
+    AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
+    AddGitlabConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest,
+    CheckAnthropicConnectionResponse, ExternalConnectionInfo, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
@@ -26,6 +26,7 @@ interface ExternalConnectionsState {
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<void>
     addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<void>
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
+    addGenericConnection: (req: AddGenericConnectionRequest) => Promise<void>
 }
 
 export const useExternalConnections = create<ExternalConnectionsState>((set, get) => ({
@@ -109,5 +110,10 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
 
     checkAnthropicConnection: async (req: CheckAnthropicConnectionRequest) => {
         return externalConnectionsService.checkAnthropicConnection(req)
+    },
+
+    addGenericConnection: async (req: AddGenericConnectionRequest) => {
+        await externalConnectionsService.addGenericConnection(req)
+        await get().fetch()
     },
 }))

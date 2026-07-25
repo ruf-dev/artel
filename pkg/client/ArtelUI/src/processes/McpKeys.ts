@@ -5,6 +5,7 @@ import {
     CreateMcpKeyResponse,
     McpConnectorInfo,
     MomCandidate,
+    CommunityConnectorInfo,
 } from "@/app/api/artel/mcp_keys.pb.ts"
 
 export interface IMcpKeysService {
@@ -19,6 +20,8 @@ export interface IMcpKeysService {
     executeMomTool: (
         mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>,
     ) => Promise<string>
+    listCommunityConnectors: () => Promise<CommunityConnectorInfo[]>
+    deleteCommunityConnector: (name: string) => Promise<void>
 }
 
 export class McpKeysService implements IMcpKeysService {
@@ -66,6 +69,15 @@ export class McpKeysService implements IMcpKeysService {
         const req = {mcpName, toolName, externalConnectionId, paramsJson: JSON.stringify(params)}
         const res = await McpKeysAPI.ExecuteMomTool(req, useUser.getState().auth.getInitReq())
         return res.result ?? ""
+    }
+
+    async listCommunityConnectors(): Promise<CommunityConnectorInfo[]> {
+        const res = await McpKeysAPI.ListCommunityConnectors({}, useUser.getState().auth.getInitReq())
+        return res.connectors ?? []
+    }
+
+    async deleteCommunityConnector(name: string): Promise<void> {
+        await McpKeysAPI.DeleteCommunityConnector({name}, useUser.getState().auth.getInitReq())
     }
 }
 

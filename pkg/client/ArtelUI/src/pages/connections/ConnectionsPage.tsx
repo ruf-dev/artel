@@ -10,9 +10,18 @@ import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import Tabs from "@/components/atoms/Tabs/Tabs.tsx"
 import ContentSegment from "@/pages/connections/components/ContentSegment/ContentSegment.tsx"
 import BYOKSection from "@/pages/connections/components/BYOKSection/BYOKSection.tsx"
+import CommunitySection from "@/pages/connections/components/CommunitySection/CommunitySection.tsx"
 import ExternalConnectionsTabIcon
     from "@/pages/connections/components/ExternalConnectionsTabIcon/ExternalConnectionsTabIcon.tsx"
 import ByokTabIcon from "@/pages/connections/components/ByokTabIcon/ByokTabIcon.tsx"
+import CommunityTabIcon from "@/pages/connections/components/CommunityTabIcon/CommunityTabIcon.tsx"
+
+type ConnectionsTab = "external" | "byok" | "community"
+
+function resolveTab(value: string | null): ConnectionsTab {
+    if (value === "byok" || value === "community") return value
+    return "external"
+}
 
 export default function ConnectionsPage() {
     const navigate = useNavigate()
@@ -21,7 +30,7 @@ export default function ConnectionsPage() {
     const bakeError = useBakeError()
     const [searchParams, setSearchParams] = useSearchParams()
 
-    const activeTab = (searchParams.get("tab") === "byok" ? "byok" : "external")
+    const activeTab = resolveTab(searchParams.get("tab"))
 
     useEffect(() => {
         if (!auth.isAuthenticated()) {
@@ -48,8 +57,8 @@ export default function ConnectionsPage() {
     }, [auth])
 
     function handleTabChange(tab: string) {
-        if (tab === "byok") {
-            setSearchParams({tab: "byok"})
+        if (tab === "byok" || tab === "community") {
+            setSearchParams({tab})
         } else {
             setSearchParams({})
         }
@@ -75,11 +84,14 @@ export default function ConnectionsPage() {
                 tabs={[
                     {key: "external", label: "External Connections", icon: <ExternalConnectionsTabIcon/>},
                     {key: "byok", label: "BYOK", icon: <ByokTabIcon/>},
+                    {key: "community", label: "Community", icon: <CommunityTabIcon/>},
                 ]}
                 active={activeTab}
                 onChange={handleTabChange}
             />
-            {activeTab === "external" ? <ContentSegment/> : <BYOKSection/>}
+            {activeTab === "external" && <ContentSegment/>}
+            {activeTab === "byok" && <BYOKSection/>}
+            {activeTab === "community" && <CommunitySection/>}
         </div>
     )
 }

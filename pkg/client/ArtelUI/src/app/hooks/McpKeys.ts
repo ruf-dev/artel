@@ -1,6 +1,8 @@
 import {create} from 'zustand'
 
-import {McpKeyInfo, CreateMcpKeyResponse, McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
+import {
+    McpKeyInfo, CreateMcpKeyResponse, McpConnectorInfo, MomCandidate, CommunityConnectorInfo,
+} from "@/app/api/artel/mcp_keys.pb.ts"
 import {mcpKeysService} from "@/processes/McpKeys.ts"
 
 interface McpKeysState {
@@ -10,6 +12,8 @@ interface McpKeysState {
     connectorsLoading: boolean
     momCandidates: MomCandidate[]
     momCandidatesLoading: boolean
+    communityConnectors: CommunityConnectorInfo[]
+    communityConnectorsLoading: boolean
     fetch: () => Promise<void>
     create: (name: string, vaultId: string) => Promise<CreateMcpKeyResponse>
     revoke: (keyId: string, vaultId: string) => Promise<void>
@@ -21,6 +25,8 @@ interface McpKeysState {
     executeMomTool: (
         mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>,
     ) => Promise<string>
+    fetchCommunityConnectors: () => Promise<void>
+    deleteCommunityConnector: (name: string) => Promise<void>
 }
 
 export const useMcpKeys = create<McpKeysState>((set, get) => ({
@@ -30,6 +36,8 @@ export const useMcpKeys = create<McpKeysState>((set, get) => ({
     connectorsLoading: false,
     momCandidates: [],
     momCandidatesLoading: false,
+    communityConnectors: [],
+    communityConnectorsLoading: false,
 
     fetch: async () => {
         set({loading: true})
@@ -91,5 +99,20 @@ export const useMcpKeys = create<McpKeysState>((set, get) => ({
         mcpName: string, toolName: string, externalConnectionId: string, params: Record<string, unknown>,
     ) => {
         return mcpKeysService.executeMomTool(mcpName, toolName, externalConnectionId, params)
+    },
+
+    fetchCommunityConnectors: async () => {
+        set({communityConnectorsLoading: true})
+        try {
+            const communityConnectors = await mcpKeysService.listCommunityConnectors()
+            set({communityConnectors})
+        } finally {
+            set({communityConnectorsLoading: false})
+        }
+    },
+
+    deleteCommunityConnector: async (name: string) => {
+        await mcpKeysService.deleteCommunityConnector(name)
+        await get().fetchCommunityConnectors()
     },
 }))

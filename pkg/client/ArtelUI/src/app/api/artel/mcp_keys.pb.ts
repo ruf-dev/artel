@@ -182,6 +182,31 @@ export type ListMomCandidatesResponse = {
 
 export type ListMomCandidates = Record<string, never>;
 
+export type CommunityConnectorInfo = {
+  name?: string;
+  author?: string;
+  description?: string;
+  tools?: McpToolInfo[];
+  viewerIsOwner?: boolean;
+  viewerIsConnected?: boolean;
+};
+
+export type ListCommunityConnectorsRequest = Record<string, never>;
+
+export type ListCommunityConnectorsResponse = {
+  connectors?: CommunityConnectorInfo[];
+};
+
+export type ListCommunityConnectors = Record<string, never>;
+
+export type DeleteCommunityConnectorRequest = {
+  name?: string;
+};
+
+export type DeleteCommunityConnectorResponse = Record<string, never>;
+
+export type DeleteCommunityConnector = Record<string, never>;
+
 export type ExecuteMomToolRequest = {
   mcpName?: string;
   toolName?: string;
@@ -222,6 +247,12 @@ export class McpKeysAPI {
   }
   static ListMomCandidates(this:void, req: ListMomCandidatesRequest, initReq?: fm.InitReq): Promise<ListMomCandidatesResponse> {
     return fm.fetchRequest<ListMomCandidatesResponse>(`/api/mcp/moms/candidates`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListCommunityConnectors(this:void, req: ListCommunityConnectorsRequest, initReq?: fm.InitReq): Promise<ListCommunityConnectorsResponse> {
+    return fm.fetchRequest<ListCommunityConnectorsResponse>(`/api/mcp/moms/community-connectors/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static DeleteCommunityConnector(this:void, req: DeleteCommunityConnectorRequest, initReq?: fm.InitReq): Promise<DeleteCommunityConnectorResponse> {
+    return fm.fetchRequest<DeleteCommunityConnectorResponse>(`/api/mcp/moms/community-connectors/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static ExecuteMomTool(this:void, req: ExecuteMomToolRequest, initReq?: fm.InitReq): Promise<ExecuteMomToolResponse> {
     return fm.fetchRequest<ExecuteMomToolResponse>(`/api/mcp/moms/execute`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

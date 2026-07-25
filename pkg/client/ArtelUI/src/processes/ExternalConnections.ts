@@ -1,7 +1,7 @@
 import {
-    AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGitlabConnectionRequest,
-    AddTrelloConnectionRequest, CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
-    ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
+    AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
+    AddGitlabConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest,
+    CheckAnthropicConnectionResponse, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -22,6 +22,7 @@ export interface IExternalConnectionsService {
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<ExternalConnectionInfo>
     addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<ExternalConnectionInfo>
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
+    addGenericConnection: (req: AddGenericConnectionRequest) => Promise<ExternalConnectionInfo>
 }
 
 export class ExternalConnectionsService implements IExternalConnectionsService {
@@ -102,6 +103,11 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async checkAnthropicConnection(req: CheckAnthropicConnectionRequest): Promise<CheckAnthropicConnectionResponse> {
         return ExternalConnectionsAPI.CheckAnthropicConnection(req, useUser.getState().auth.getInitReq())
+    }
+
+    async addGenericConnection(req: AddGenericConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddGenericConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
     }
 }
 

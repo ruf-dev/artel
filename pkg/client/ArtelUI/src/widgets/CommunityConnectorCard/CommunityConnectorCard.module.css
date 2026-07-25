@@ -1,0 +1,83 @@
+.CommunityConnectorCardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.375rem 1.375rem 1.25rem;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border);
+    border-radius: 1rem;
+
+    .Header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        min-width: 0;
+    }
+
+    .Name {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        letter-spacing: -0.009375rem;
+        overflow-wrap: anywhere;
+    }
+
+    .Author {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+    }
+
+    .Description {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .Footer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .ToolCount {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        margin-right: auto;
+    }
+
+    .StatusDot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .StatusDotConnected {
+        background: #34d399;
+        box-shadow: 0 0 0.375rem rgb(52 211 153 / 50%);
+    }
+
+    .StatusDotDisconnected {
+        background: var(--color-fg-disabled, rgb(255 255 255 / 20%));
+    }
+
+    .StatusLabel {
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: -0.00375rem;
+    }
+
+    .StatusLabelConnected {
+        color: #34d399;
+    }
+
+    .StatusLabelDisconnected {
+        color: var(--color-fg-tertiary);
+    }
+
+    .Actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+}

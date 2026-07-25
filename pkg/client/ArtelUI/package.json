@@ -11,7 +11,9 @@
     "lint": "eslint . && stylelint '**/*.{css,scss}'",
     "lint:js": "eslint .",
     "lint:css": "stylelint '**/*.{css,scss}'",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",
@@ -38,6 +40,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/dompurify": "^3.2.0",
     "@types/google.picker": "^0.0.52",
     "@types/react": "^19.1.8",
@@ -50,13 +55,15 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "jsdom": "^29.1.1",
     "stylelint": "^17.14.0",
     "stylelint-config-css-modules": "^4.6.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.1.10"
   },
   "trustedDependencies": [
     "unrs-resolver"
