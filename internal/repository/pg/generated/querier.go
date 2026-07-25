@@ -14,6 +14,7 @@ import (
 
 type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
+	CouchInstanceExists(ctx context.Context) (bool, error)
 	CreateByUsername(ctx context.Context, arg CreateByUsernameParams) (CreateByUsernameRow, error)
 	CreateDefaultSubscription(ctx context.Context, userID uuid.UUID) error
 	CreateDefaultUserPermissions(ctx context.Context, userID uuid.UUID) error
@@ -123,6 +124,8 @@ type Querier interface {
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
+	MarkWorkbenchConfiguring(ctx context.Context, vaultID uuid.UUID) error
+	MarkWorkbenchContainerCreated(ctx context.Context, arg MarkWorkbenchContainerCreatedParams) error
 	MarkWorkbenchRemoved(ctx context.Context, vaultID uuid.UUID) error
 	MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error
 	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error

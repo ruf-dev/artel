@@ -107,6 +107,8 @@ message GetConfig {
     bool is_s3_available = 2;
     bool no_auth_enabled = 3;
     bool creds_encrypted = 4;
+    bool is_couch_available = 5;
+    bool is_workbench_available = 6;
   }
 }
 

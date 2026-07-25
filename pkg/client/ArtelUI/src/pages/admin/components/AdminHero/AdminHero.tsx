@@ -11,6 +11,7 @@ export default function AdminHero({tab}: AdminHeroProps) {
         couch_users: "CouchDB users",
         users: "Artel users",
         s3_instances: "S3 storage",
+        docker_api: "Docker API",
     }
     const title = titleMap[tab]
     return (

@@ -1050,7 +1050,7 @@
           "additionalProperties": {
             "type": "string"
           },
-          "title": "mcp name -\u003e connection_uuid, for every non-builtin MoM the template's steps use"
+          "title": "mcp name -\u003e connection_uuid for every non-builtin MoM the template's action steps use, plus LLM provider name (e.g. \"anthropic\") -\u003e connection_uuid for every llm_call step it uses"
         }
       }
     },

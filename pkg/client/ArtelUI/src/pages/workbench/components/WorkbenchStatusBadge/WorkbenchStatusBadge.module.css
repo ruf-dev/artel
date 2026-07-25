@@ -1,0 +1,42 @@
+.WorkbenchStatusBadgeContainer {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.0375rem;
+    text-transform: uppercase;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 62.4375rem;
+    background: rgb(255 255 255 / 6%);
+    color: var(--color-fg-secondary);
+    border: var(--border-thickness) solid var(--color-border-light);
+    flex-shrink: 0;
+
+    &.StatusNotConfigured {
+        background: rgb(128 128 128 / 12%);
+        color: #808080;
+        border-color: rgb(128 128 128 / 25%);
+    }
+
+    &.StatusConfiguring {
+        background: rgb(100 170 255 / 12%);
+        color: #64aaff;
+        border-color: rgb(100 170 255 / 25%);
+    }
+
+    &.StatusRunning {
+        background: rgb(160 220 140 / 12%);
+        color: #a0dc8c;
+        border-color: rgb(160 220 140 / 25%);
+    }
+
+    &.StatusStopped {
+        background: rgb(255 210 100 / 12%);
+        color: #ffd264;
+        border-color: rgb(255 210 100 / 25%);
+    }
+
+    &.StatusRemoved {
+        background: rgb(193 37 61 / 12%);
+        color: var(--color-error);
+        border-color: rgb(193 37 61 / 25%);
+    }
+}

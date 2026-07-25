@@ -94,8 +94,10 @@ type Vaults interface {
 // Workbenches is the pure-DB layer for the per-vault Docker workbench container — see
 // docs/workbench/01_data_model_and_lifecycle.md for the state machine it reflects.
 type Workbenches interface {
-	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName, containerID string) (domain.Workbench, error)
+	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName string) (domain.Workbench, error)
 	GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, containerID string) error
+	MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error
 	MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error
 	MarkStopped(ctx context.Context, vaultID uuid.UUID) error
 	MarkRemoved(ctx context.Context, vaultID uuid.UUID) error
@@ -177,6 +179,7 @@ type CouchInstances interface {
 	List(ctx context.Context) ([]domain.CouchInstance, error)
 	Update(ctx context.Context, id uuid.UUID, url, username string, passwordPlain []byte) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	Exists(ctx context.Context) (bool, error)
 
 	WithTx(tx sqldb.DB) CouchInstances
 }

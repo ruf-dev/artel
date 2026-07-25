@@ -9,10 +9,11 @@ import (
 type WorkbenchStatus string
 
 const (
-	WorkbenchStatusCreated WorkbenchStatus = "created"
-	WorkbenchStatusRunning WorkbenchStatus = "running"
-	WorkbenchStatusStopped WorkbenchStatus = "stopped"
-	WorkbenchStatusRemoved WorkbenchStatus = "removed"
+	WorkbenchStatusCreated     WorkbenchStatus = "created"
+	WorkbenchStatusConfiguring WorkbenchStatus = "configuring"
+	WorkbenchStatusRunning     WorkbenchStatus = "running"
+	WorkbenchStatusStopped     WorkbenchStatus = "stopped"
+	WorkbenchStatusRemoved     WorkbenchStatus = "removed"
 )
 
 type WorkbenchAuthMode string

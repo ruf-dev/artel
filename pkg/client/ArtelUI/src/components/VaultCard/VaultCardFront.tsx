@@ -7,12 +7,19 @@ import VaultCardConnBar from "@/components/VaultCard/VaultCardConnBar.tsx";
 interface Props {
     vault: VaultItem
     onEdit?: (id: string) => void
+    onWorkbench?: (id: string) => void
+    isWorkbenchAvailable?: boolean
 }
 
-export default function VaultCardFront({vault, onEdit}: Props) {
+export default function VaultCardFront({vault, onEdit, onWorkbench, isWorkbenchAvailable}: Props) {
     return (
         <div className={cls.VaultCardFrontContainer}>
-            <VaultCardHeader vault={vault} onEdit={onEdit}/>
+            <VaultCardHeader
+                vault={vault}
+                onEdit={onEdit}
+                onWorkbench={onWorkbench}
+                isWorkbenchAvailable={isWorkbenchAvailable}
+            />
             <VaultCardStatus/>
             <VaultCardConnBar dbUrl={vault.dbUrl ?? ""} passphrase={vault.livesyncPassphrase ?? ""}/>
         </div>

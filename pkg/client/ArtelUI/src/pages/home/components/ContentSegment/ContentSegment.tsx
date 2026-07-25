@@ -4,9 +4,11 @@ import cls from "@/pages/home/components/ContentSegment/ContentSegment.module.cs
 
 interface ContentSegmentProps {
     onEditClick: (id: string) => void
+    onWorkbenchClick: (id: string) => void
+    isWorkbenchAvailable: boolean
 }
 
-export default function ContentSegment({onEditClick}: ContentSegmentProps) {
+export default function ContentSegment({onEditClick, onWorkbenchClick, isWorkbenchAvailable}: ContentSegmentProps) {
     const {isLoading, vaults} = useVaults()
 
     let loadingState = null
@@ -23,7 +25,13 @@ export default function ContentSegment({onEditClick}: ContentSegmentProps) {
             {
                 !isLoading && <div className={cls.Grid}>
                     {vaults.map(v => (
-                        <VaultCard key={v.id} vault={v} onEdit={onEditClick}/>
+                        <VaultCard
+                            key={v.id}
+                            vault={v}
+                            onEdit={onEditClick}
+                            onWorkbench={onWorkbenchClick}
+                            isWorkbenchAvailable={isWorkbenchAvailable}
+                        />
                     ))}
                 </div>
             }

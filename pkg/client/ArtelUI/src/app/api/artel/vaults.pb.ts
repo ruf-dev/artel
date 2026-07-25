@@ -148,6 +148,16 @@ export type SetVaultBinaryStorageResponse = Record<string, never>;
 
 export type SetVaultBinaryStorage = Record<string, never>;
 
+export type CreateWorkbenchRequest = {
+  vaultId?: string;
+};
+
+export type CreateWorkbenchResponse = {
+  status?: string;
+};
+
+export type CreateWorkbench = Record<string, never>;
+
 export type StartWorkbenchRequest = {
   vaultId?: string;
   authMode?: string;
@@ -260,6 +270,9 @@ export class VaultsAPI {
   }
   static SetVaultBinaryStorage(this:void, req: SetVaultBinaryStorageRequest, initReq?: fm.InitReq): Promise<SetVaultBinaryStorageResponse> {
     return fm.fetchRequest<SetVaultBinaryStorageResponse>(`/api/vaults/binary-storage`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CreateWorkbench(this:void, req: CreateWorkbenchRequest, initReq?: fm.InitReq): Promise<CreateWorkbenchResponse> {
+    return fm.fetchRequest<CreateWorkbenchResponse>(`/api/vaults/workbench/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static StartWorkbench(this:void, req: StartWorkbenchRequest, initReq?: fm.InitReq): Promise<StartWorkbenchResponse> {
     return fm.fetchRequest<StartWorkbenchResponse>(`/api/vaults/workbench/start`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

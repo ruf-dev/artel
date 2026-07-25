@@ -227,6 +227,12 @@
         },
         "credsEncrypted": {
           "type": "boolean"
+        },
+        "isCouchAvailable": {
+          "type": "boolean"
+        },
+        "isWorkbenchAvailable": {
+          "type": "boolean"
         }
       }
     },

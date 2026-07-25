@@ -141,6 +141,15 @@ func (r *Repo) RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount,
 	return result, nil
 }
 
+func (r *Repo) Exists(ctx context.Context) (bool, error) {
+	exists, err := r.q.CouchInstanceExists(ctx)
+	if err != nil {
+		return false, rerrors.Wrap(err, "check couch instance existence")
+	}
+
+	return exists, nil
+}
+
 func (r *Repo) WithTx(tx sqldb.DB) repository.CouchInstances {
 	return New(tx, r.encryptor)
 }

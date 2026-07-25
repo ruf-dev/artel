@@ -126,6 +126,15 @@ func (s *Service) SetupCouchInstance(ctx context.Context, id string) error {
 	return nil
 }
 
+func (s *Service) HasCouchInstances(ctx context.Context) (bool, error) {
+	exists, err := s.couchInstancesRepo.Exists(ctx)
+	if err != nil {
+		return false, rerrors.Wrap(err, "check couch instances availability")
+	}
+
+	return exists, nil
+}
+
 func (s *Service) GetCouchInstanceStatus(ctx context.Context, id string) (couchdb.SetupStatus, error) {
 	uid, err := uuid.Parse(id)
 	if err != nil {

@@ -1,0 +1,48 @@
+.AuthModeOptionContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1875rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 160ms ease;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+
+    &:hover:not(:disabled) {
+        border-color: var(--color-border-bright);
+        background: var(--color-bg-hover);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
+    &.AuthModeOptionSelected {
+        border-color: var(--coral);
+        background: rgb(var(--coral-rgb, 220,90,70), 0.06);
+    }
+
+    .AuthModeOptionLabel {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+    }
+
+    .AuthModeOptionDesc {
+        font-size: 0.75rem;
+        color: var(--color-fg-secondary);
+        line-height: 1.45;
+    }
+
+    .AuthModeOptionHint {
+        font-size: 0.6875rem;
+        color: var(--color-fg-tertiary);
+        line-height: 1.45;
+    }
+}

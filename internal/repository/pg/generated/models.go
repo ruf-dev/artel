@@ -273,10 +273,11 @@ func (ns NullWorkbenchAuthMode) Value() (driver.Value, error) {
 type WorkbenchStatus string
 
 const (
-	WorkbenchStatusCreated WorkbenchStatus = "created"
-	WorkbenchStatusRunning WorkbenchStatus = "running"
-	WorkbenchStatusStopped WorkbenchStatus = "stopped"
-	WorkbenchStatusRemoved WorkbenchStatus = "removed"
+	WorkbenchStatusCreated     WorkbenchStatus = "created"
+	WorkbenchStatusRunning     WorkbenchStatus = "running"
+	WorkbenchStatusStopped     WorkbenchStatus = "stopped"
+	WorkbenchStatusRemoved     WorkbenchStatus = "removed"
+	WorkbenchStatusConfiguring WorkbenchStatus = "configuring"
 )
 
 func (e *WorkbenchStatus) Scan(src interface{}) error {

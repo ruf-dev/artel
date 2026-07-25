@@ -464,6 +464,38 @@
         ]
       }
     },
+    "/api/vaults/workbench/create": {
+      "post": {
+        "operationId": "VaultsAPI_CreateWorkbench",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateWorkbenchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateWorkbenchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
     "/api/vaults/workbench/login/submit": {
       "post": {
         "operationId": "VaultsAPI_SubmitWorkbenchLoginCode",
@@ -678,6 +710,23 @@
         }
       }
     },
+    "artel_vaultsCreateWorkbenchRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsCreateWorkbenchResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "status: \"created\"/\"running\"/\"configuring\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+        }
+      }
+    },
     "artel_vaultsDeleteVaultRequest": {
       "type": "object",
       "properties": {
@@ -717,7 +766,7 @@
         },
         "workbenchExists": {
           "type": "boolean",
-          "description": "workbench_exists is false when no workbenches row backs this vault yet — either the vault\npredates this feature, or WorkbenchDockerHost isn't configured for this deployment.\nworkbench_status is only meaningful when workbench_exists is true; one of\n\"created\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+          "description": "workbench_exists is false when no workbenches row backs this vault yet — either the vault\npredates this feature, or WorkbenchDockerHost isn't configured for this deployment.\nworkbench_status is only meaningful when workbench_exists is true; one of\n\"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
         },
         "workbenchStatus": {
           "type": "string"
@@ -855,7 +904,7 @@
       "properties": {
         "status": {
           "type": "string",
-          "description": "status: \"created\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+          "description": "status: \"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
         },
         "authMode": {
           "type": "string"
@@ -875,7 +924,7 @@
       "properties": {
         "status": {
           "type": "string",
-          "description": "status: \"created\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+          "description": "status: \"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
         }
       }
     },

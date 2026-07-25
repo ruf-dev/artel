@@ -83,6 +83,8 @@ export type GetConfigResponse = {
   isS3Available?: boolean;
   noAuthEnabled?: boolean;
   credsEncrypted?: boolean;
+  isCouchAvailable?: boolean;
+  isWorkbenchAvailable?: boolean;
 };
 
 export type GetConfig = Record<string, never>;

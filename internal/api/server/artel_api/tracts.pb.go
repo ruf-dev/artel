@@ -3488,7 +3488,7 @@ type InstantiateTractTemplate_Request struct {
 	TemplateUuid  string                 `protobuf:"bytes,1,opt,name=template_uuid,json=templateUuid,proto3" json:"template_uuid,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Connections   map[string]string      `protobuf:"bytes,4,rep,name=connections,proto3" json:"connections,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // mcp name -> connection_uuid, for every non-builtin MoM the template's steps use
+	Connections   map[string]string      `protobuf:"bytes,4,rep,name=connections,proto3" json:"connections,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // mcp name -> connection_uuid for every non-builtin MoM the template's action steps use, plus LLM provider name (e.g. "anthropic") -> connection_uuid for every llm_call step it uses
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

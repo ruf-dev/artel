@@ -11,6 +11,7 @@ import TabBar from "@/pages/admin/components/TabBar/TabBar.tsx"
 import InstancesTab from "@/pages/admin/components/InstancesTab/InstancesTab.tsx"
 import UsersTab from "@/pages/admin/components/UsersTab/UsersTab.tsx"
 import ArtelUsersTab from "@/pages/admin/components/ArtelUsersTab/ArtelUsersTab.tsx"
+import DockerApiTab from "@/pages/admin/components/DockerApiTab/DockerApiTab.tsx"
 
 export default function AdminPage() {
     const navigate = useNavigate()
@@ -39,6 +40,7 @@ export default function AdminPage() {
                     <S3InstancesTab />
                 </div>
             )}
+            {tab === "docker_api" && <DockerApiTab />}
         </div>
     )
 }

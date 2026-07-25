@@ -413,6 +413,33 @@ func local_request_VaultsAPI_SetVaultBinaryStorage_0(ctx context.Context, marsha
 	return msg, metadata, err
 }
 
+func request_VaultsAPI_CreateWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.CreateWorkbench(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_VaultsAPI_CreateWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.CreateWorkbench(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_VaultsAPI_StartWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq StartWorkbench_Request
@@ -803,6 +830,26 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_SetVaultBinaryStorage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/create"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_VaultsAPI_CreateWorkbench_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_CreateWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_VaultsAPI_StartWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1148,6 +1195,23 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 		}
 		forward_VaultsAPI_SetVaultBinaryStorage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/create"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_VaultsAPI_CreateWorkbench_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_CreateWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_VaultsAPI_StartWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1234,6 +1298,7 @@ var (
 	pattern_VaultsAPI_LinkS3Bucket_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "s3", "link"}, ""))
 	pattern_VaultsAPI_UnlinkS3Bucket_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "s3", "unlink"}, ""))
 	pattern_VaultsAPI_SetVaultBinaryStorage_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "binary-storage"}, ""))
+	pattern_VaultsAPI_CreateWorkbench_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "create"}, ""))
 	pattern_VaultsAPI_StartWorkbench_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "start"}, ""))
 	pattern_VaultsAPI_StopWorkbench_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "stop"}, ""))
 	pattern_VaultsAPI_WatchWorkbenchLogin_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "vaults", "workbench", "login", "watch"}, ""))
@@ -1255,6 +1320,7 @@ var (
 	forward_VaultsAPI_LinkS3Bucket_0             = runtime.ForwardResponseMessage
 	forward_VaultsAPI_UnlinkS3Bucket_0           = runtime.ForwardResponseMessage
 	forward_VaultsAPI_SetVaultBinaryStorage_0    = runtime.ForwardResponseMessage
+	forward_VaultsAPI_CreateWorkbench_0          = runtime.ForwardResponseMessage
 	forward_VaultsAPI_StartWorkbench_0           = runtime.ForwardResponseMessage
 	forward_VaultsAPI_StopWorkbench_0            = runtime.ForwardResponseMessage
 	forward_VaultsAPI_WatchWorkbenchLogin_0      = runtime.ForwardResponseStream

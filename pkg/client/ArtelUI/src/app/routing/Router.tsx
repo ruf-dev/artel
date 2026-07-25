@@ -21,6 +21,7 @@ import TractCanvasListPage from "@/pages/tract-canvas/TractCanvasListPage.tsx"
 import TractCanvasBuilderPage from "@/pages/tract-canvas/TractCanvasBuilderPage.tsx"
 import TractTemplatesListPage from "@/pages/tract-templates/TractTemplatesListPage.tsx"
 import GoogleOAuthCallbackPage from "@/pages/connections/GoogleOAuthCallbackPage.tsx"
+import WorkbenchPage from "@/pages/workbench/WorkbenchPage.tsx"
 import HomeLayout from "@/app/routing/HomeLayout.tsx"
 import Dialog from "@/pages/segments/Dialog.tsx"
 import UnsecureBanner from "@/segments/UnsecureBanner/UnsecureBanner.tsx"
@@ -39,6 +40,7 @@ export enum Path {
     NotesPage = "/notes",
     NotesPageVault = "/notes/:vaultId",
     NotesPageNote = "/notes/:vaultId/*",
+    WorkbenchPage = "/workbench/:vaultId",
     ConnectionsPage = "/connections",
     ToolboxPage = "/toolbox",
     TractsPage = "/tracts",
@@ -65,6 +67,7 @@ const routes: RouteObject[] = [
             {path: Path.NotesPage, element: <NotesPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPageVault, element: <NotesPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPageNote, element: <NotesPage/>, errorElement: <ErrorPage/>},
+            {path: Path.WorkbenchPage, element: <WorkbenchPage/>, errorElement: <ErrorPage/>},
             {path: Path.ConnectionsPage, element: <ConnectionsPage/>, errorElement: <ErrorPage/>},
             {path: Path.GoogleOAuthCallback, element: <GoogleOAuthCallbackPage/>, errorElement: <ErrorPage/>},
             {path: Path.ToolboxPage, element: <ToolboxPage/>, errorElement: <ErrorPage/>},

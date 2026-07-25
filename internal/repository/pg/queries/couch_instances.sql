@@ -22,3 +22,6 @@ WHERE id = $1;
 
 -- name: DeleteCouchInstance :exec
 DELETE FROM couch_instances WHERE id = $1;
+
+-- name: CouchInstanceExists :one
+SELECT EXISTS(SELECT 1 FROM couch_instances);

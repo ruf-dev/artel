@@ -20,23 +20,45 @@ import (
 // fakeWorkbenches is a hand-written repository.Workbenches for exercising Service's branching
 // logic without a live Postgres.
 type fakeWorkbenches struct {
-	getByVaultID func(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
-	create       func(ctx context.Context, vaultID, userID uuid.UUID, volumeName, containerID string) (domain.Workbench, error)
-	markRunning  func(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error
-	markStopped  func(ctx context.Context, vaultID uuid.UUID) error
-	delete       func(ctx context.Context, vaultID uuid.UUID) error
+	getByVaultID         func(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	create               func(ctx context.Context, vaultID, userID uuid.UUID, volumeName string) (domain.Workbench, error)
+	markContainerCreated func(ctx context.Context, vaultID uuid.UUID, containerID string) error
+	markConfiguring      func(ctx context.Context, vaultID uuid.UUID) error
+	markRunning          func(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error
+	markStopped          func(ctx context.Context, vaultID uuid.UUID) error
+	delete               func(ctx context.Context, vaultID uuid.UUID) error
 }
 
 func (f *fakeWorkbenches) Create(
 	ctx context.Context,
 	vaultID, userID uuid.UUID,
-	volumeName, containerID string,
+	volumeName string,
 ) (domain.Workbench, error) {
-	return f.create(ctx, vaultID, userID, volumeName, containerID)
+	if f.create == nil {
+		return domain.Workbench{}, nil
+	}
+
+	return f.create(ctx, vaultID, userID, volumeName)
 }
 
 func (f *fakeWorkbenches) GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
 	return f.getByVaultID(ctx, vaultID)
+}
+
+func (f *fakeWorkbenches) MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, containerID string) error {
+	if f.markContainerCreated == nil {
+		return nil
+	}
+
+	return f.markContainerCreated(ctx, vaultID, containerID)
+}
+
+func (f *fakeWorkbenches) MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error {
+	if f.markConfiguring == nil {
+		return nil
+	}
+
+	return f.markConfiguring(ctx, vaultID)
 }
 
 func (f *fakeWorkbenches) MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error {
@@ -209,7 +231,7 @@ func TestCreateWorkbench_Idempotent_ReturnsExisting(t *testing.T) {
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			return existing, nil
 		},
-		create: func(context.Context, uuid.UUID, uuid.UUID, string, string) (domain.Workbench, error) {
+		create: func(context.Context, uuid.UUID, uuid.UUID, string) (domain.Workbench, error) {
 			t.Fatal("Create should not be called when a workbench already exists")
 			return domain.Workbench{}, nil
 		},
@@ -240,22 +262,36 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 
 	var gotCreateVolumeName string
 	var gotCreateOpts workbenchdocker.CreateOpts
-	var gotVaultID, gotUserID uuid.UUID
-	var gotVolumeName, gotContainerID string
+	var gotCreateVaultID, gotCreateUserID uuid.UUID
+	var gotCreateVolumeParam string
+	var gotMarkContainerCreatedVaultID uuid.UUID
+	var gotMarkContainerCreatedContainerID string
 
-	created := domain.Workbench{Uuid: uuid.New(), VaultUuid: vaultID, UserUuid: userID}
+	configuring := domain.Workbench{Uuid: uuid.New(), VaultUuid: vaultID, UserUuid: userID, Status: domain.WorkbenchStatusConfiguring}
+	final := domain.Workbench{Uuid: uuid.New(), VaultUuid: vaultID, UserUuid: userID, Status: domain.WorkbenchStatusCreated, ContainerId: "container-1"}
 
+	getByVaultIDCallCount := 0
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "error getting workbench by vault id")
-		},
-		create: func(_ context.Context, vaultID, userID uuid.UUID, volumeName, containerID string) (domain.Workbench, error) {
-			gotVaultID = vaultID
-			gotUserID = userID
-			gotVolumeName = volumeName
-			gotContainerID = containerID
+			getByVaultIDCallCount++
+			if getByVaultIDCallCount == 1 {
+				return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "error getting workbench by vault id")
+			}
 
-			return created, nil
+			return final, nil
+		},
+		create: func(_ context.Context, vaultID, userID uuid.UUID, volumeName string) (domain.Workbench, error) {
+			gotCreateVaultID = vaultID
+			gotCreateUserID = userID
+			gotCreateVolumeParam = volumeName
+
+			return configuring, nil
+		},
+		markContainerCreated: func(_ context.Context, vaultID uuid.UUID, containerID string) error {
+			gotMarkContainerCreatedVaultID = vaultID
+			gotMarkContainerCreatedContainerID = containerID
+
+			return nil
 		},
 	}
 	vaults := &fakeVaults{
@@ -278,16 +314,18 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 
 	got, err := svc.CreateWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
-	require.Equal(t, created, got)
+	require.Equal(t, final, got)
 
 	expectedVolumeName := "workbench-" + vaultID.String()
 	require.Equal(t, expectedVolumeName, gotCreateVolumeName)
 	require.Equal(t, expectedVolumeName, gotCreateOpts.Name)
 	require.Equal(t, expectedVolumeName, gotCreateOpts.VolumeName)
-	require.Equal(t, vaultID, gotVaultID)
-	require.Equal(t, userID, gotUserID)
-	require.Equal(t, expectedVolumeName, gotVolumeName)
-	require.Equal(t, "container-1", gotContainerID)
+	require.Equal(t, vaultID, gotCreateVaultID)
+	require.Equal(t, userID, gotCreateUserID)
+	require.Equal(t, expectedVolumeName, gotCreateVolumeParam)
+	require.Equal(t, vaultID, gotMarkContainerCreatedVaultID)
+	require.Equal(t, "container-1", gotMarkContainerCreatedContainerID)
+	require.Equal(t, 2, getByVaultIDCallCount)
 }
 
 func TestCreateWorkbench_GetByVaultIDUnexpectedError_Propagates(t *testing.T) {
@@ -324,10 +362,40 @@ func TestCreateWorkbench_VaultLookupError_Propagates(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestCreateWorkbench_RepoCreateError_Propagates(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "not found")
+		},
+		create: func(context.Context, uuid.UUID, uuid.UUID, string) (domain.Workbench, error) {
+			return domain.Workbench{}, errBoom
+		},
+	}
+	vaults := &fakeVaults{
+		getByID: func(context.Context, uuid.UUID) (domain.Vault, error) {
+			return domain.Vault{}, nil
+		},
+	}
+	docker := newFakeDocker()
+	docker.createVolume = func(context.Context, string) error {
+		t.Fatal("docker.CreateVolume should not be called when the repo insert fails")
+		return nil
+	}
+
+	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+
+	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
+	require.Error(t, err)
+}
+
 func TestCreateWorkbench_CreateVolumeError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "not found")
+		},
+		markContainerCreated: func(context.Context, uuid.UUID, string) error {
+			t.Fatal("MarkContainerCreated should not be called when CreateVolume fails")
+			return nil
 		},
 	}
 	vaults := &fakeVaults{
@@ -338,6 +406,10 @@ func TestCreateWorkbench_CreateVolumeError_Propagates(t *testing.T) {
 	docker := newFakeDocker()
 	docker.createVolume = func(context.Context, string) error {
 		return errBoom
+	}
+	docker.createContainer = func(context.Context, workbenchdocker.CreateOpts) (string, error) {
+		t.Fatal("CreateContainer should not be called when CreateVolume fails")
+		return "", nil
 	}
 
 	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
@@ -350,6 +422,10 @@ func TestCreateWorkbench_CreateContainerError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "not found")
+		},
+		markContainerCreated: func(context.Context, uuid.UUID, string) error {
+			t.Fatal("MarkContainerCreated should not be called when CreateContainer fails")
+			return nil
 		},
 	}
 	vaults := &fakeVaults{
@@ -368,13 +444,13 @@ func TestCreateWorkbench_CreateContainerError_Propagates(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestCreateWorkbench_RepoCreateError_Propagates(t *testing.T) {
+func TestCreateWorkbench_MarkContainerCreatedError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "not found")
 		},
-		create: func(context.Context, uuid.UUID, uuid.UUID, string, string) (domain.Workbench, error) {
-			return domain.Workbench{}, errBoom
+		markContainerCreated: func(context.Context, uuid.UUID, string) error {
+			return errBoom
 		},
 	}
 	vaults := &fakeVaults{
@@ -445,8 +521,10 @@ func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 
 	var gotStartContainerID string
 	var gotEnv map[string]string
+	var gotMarkConfiguringVaultID uuid.UUID
 	var gotMarkRunningVaultID uuid.UUID
 	var gotMarkRunningAuthMode domain.WorkbenchAuthMode
+	markConfiguringCalled := false
 
 	callCount := 0
 	workbenches := &fakeWorkbenches{
@@ -458,7 +536,13 @@ func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 
 			return running, nil
 		},
+		markConfiguring: func(_ context.Context, vaultID uuid.UUID) error {
+			markConfiguringCalled = true
+			gotMarkConfiguringVaultID = vaultID
+			return nil
+		},
 		markRunning: func(_ context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error {
+			require.True(t, markConfiguringCalled, "MarkConfiguring must be called before MarkRunning")
 			gotMarkRunningVaultID = vaultID
 			gotMarkRunningAuthMode = authMode
 			return nil
@@ -467,6 +551,7 @@ func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 
 	docker := newFakeDocker()
 	docker.startContainer = func(_ context.Context, containerID string, env map[string]string) error {
+		require.True(t, markConfiguringCalled, "MarkConfiguring must be called before StartContainer")
 		gotStartContainerID = containerID
 		gotEnv = env
 		return nil
@@ -485,6 +570,7 @@ func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 	require.Equal(t, running, got)
 	require.Equal(t, "container-1", gotStartContainerID)
 	require.Nil(t, gotEnv)
+	require.Equal(t, vaultID, gotMarkConfiguringVaultID)
 	require.Equal(t, vaultID, gotMarkRunningVaultID)
 	require.Equal(t, domain.WorkbenchAuthModeSubscriptionLogin, gotMarkRunningAuthMode)
 }
@@ -511,6 +597,28 @@ func TestStartWorkbench_SubscriptionLogin_StartContainerError_Propagates(t *test
 	require.Error(t, err)
 }
 
+func TestStartWorkbench_SubscriptionLogin_MarkConfiguringError_ShortCircuits(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{ContainerId: "container-1"}, nil
+		},
+		markConfiguring: func(context.Context, uuid.UUID) error {
+			return errBoom
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.startContainer = func(context.Context, string, map[string]string) error {
+		t.Fatal("StartContainer should not be called when MarkConfiguring fails")
+		return nil
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeSubscriptionLogin)
+	require.Error(t, err)
+}
+
 func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 	vaultID := uuid.New()
 	userID := uuid.New()
@@ -520,8 +628,10 @@ func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 	var gotAnthropicUserID uuid.UUID
 	var gotStartContainerID string
 	var gotEnv map[string]string
+	var gotMarkConfiguringVaultID uuid.UUID
 	var gotMarkRunningVaultID uuid.UUID
 	var gotMarkRunningAuthMode domain.WorkbenchAuthMode
+	markConfiguringCalled := false
 
 	callCount := 0
 	workbenches := &fakeWorkbenches{
@@ -533,7 +643,13 @@ func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 
 			return running, nil
 		},
+		markConfiguring: func(_ context.Context, vaultID uuid.UUID) error {
+			markConfiguringCalled = true
+			gotMarkConfiguringVaultID = vaultID
+			return nil
+		},
 		markRunning: func(_ context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error {
+			require.True(t, markConfiguringCalled, "MarkConfiguring must be called before MarkRunning")
 			gotMarkRunningVaultID = vaultID
 			gotMarkRunningAuthMode = authMode
 			return nil
@@ -542,6 +658,7 @@ func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 
 	docker := newFakeDocker()
 	docker.startContainer = func(_ context.Context, containerID string, env map[string]string) error {
+		require.True(t, markConfiguringCalled, "MarkConfiguring must be called before StartContainer")
 		gotStartContainerID = containerID
 		gotEnv = env
 		return nil
@@ -561,6 +678,7 @@ func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 	require.Equal(t, userID, gotAnthropicUserID)
 	require.Equal(t, "container-1", gotStartContainerID)
 	require.Equal(t, map[string]string{"ANTHROPIC_API_KEY": "sk-ant-test"}, gotEnv)
+	require.Equal(t, vaultID, gotMarkConfiguringVaultID)
 	require.Equal(t, vaultID, gotMarkRunningVaultID)
 	require.Equal(t, domain.WorkbenchAuthModeAPIKey, gotMarkRunningAuthMode)
 }
@@ -616,6 +734,28 @@ func TestStartWorkbench_StartContainerError_Propagates(t *testing.T) {
 	docker := newFakeDocker()
 	docker.startContainer = func(context.Context, string, map[string]string) error {
 		return errBoom
+	}
+
+	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+
+	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeAPIKey)
+	require.Error(t, err)
+}
+
+func TestStartWorkbench_ApiKey_MarkConfiguringError_ShortCircuits(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{ContainerId: "container-1"}, nil
+		},
+		markConfiguring: func(context.Context, uuid.UUID) error {
+			return errBoom
+		},
+	}
+
+	docker := newFakeDocker()
+	docker.startContainer = func(context.Context, string, map[string]string) error {
+		t.Fatal("StartContainer should not be called when MarkConfiguring fails")
+		return nil
 	}
 
 	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())

@@ -106,6 +106,7 @@ type CouchInstanceService interface {
 	DeleteCouchInstance(ctx context.Context, id string) error
 	SetupCouchInstance(ctx context.Context, id string) error
 	GetCouchInstanceStatus(ctx context.Context, id string) (couchdb.SetupStatus, error)
+	HasCouchInstances(ctx context.Context) (bool, error)
 }
 
 type S3InstanceService interface {

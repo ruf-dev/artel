@@ -40,6 +40,13 @@ export default function TabBar({tab, onTabChange}: TabBarProps) {
             >
                 S3 storage
             </Button>
+            <Button
+                variant="unstyled"
+                className={cn(cls.Tab, tab === "docker_api" && cls.TabActive)}
+                onClick={() => onTabChange("docker_api")}
+            >
+                Docker API
+            </Button>
         </div>
     )
 }

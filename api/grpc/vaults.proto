@@ -93,6 +93,12 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc CreateWorkbench(CreateWorkbench.Request) returns (CreateWorkbench.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/create"
+      body: "*"
+    };
+  };
   rpc StartWorkbench(StartWorkbench.Request) returns (StartWorkbench.Response) {
     option (google.api.http) = {
       post: "/api/vaults/workbench/start"
@@ -146,7 +152,7 @@ message GetVault {
     // workbench_exists is false when no workbenches row backs this vault yet — either the vault
     // predates this feature, or WorkbenchDockerHost isn't configured for this deployment.
     // workbench_status is only meaningful when workbench_exists is true; one of
-    // "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
+    // "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     bool workbench_exists = 6;
     string workbench_status = 7;
   }
@@ -252,6 +258,16 @@ message SetVaultBinaryStorage {
   message Response {}
 }
 
+message CreateWorkbench {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    // status: "created"/"running"/"configuring"/"stopped"/"removed" (see domain.WorkbenchStatus).
+    string status = 1;
+  }
+}
+
 message StartWorkbench {
   message Request {
     string vault_id = 1;
@@ -261,7 +277,7 @@ message StartWorkbench {
     string auth_mode = 2;
   }
   message Response {
-    // status: "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
+    // status: "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     string status = 1;
     string auth_mode = 2;
   }
@@ -272,7 +288,7 @@ message StopWorkbench {
     string vault_id = 1;
   }
   message Response {
-    // status: "created"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
+    // status: "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     string status = 1;
   }
 }

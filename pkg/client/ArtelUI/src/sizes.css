@@ -49,6 +49,7 @@
     --dialog-height-toolbox:    80vh;
     --page-height-full:        100vh;
     --inspector-scroll-spacer:  40vh;
+    --workbench-body-padding-top: 30vh;
     --chures-input-height: 2rem;
 }
 

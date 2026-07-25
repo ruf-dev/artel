@@ -26,13 +26,12 @@ func New(db sqldb.DB) *Repo {
 func (r *Repo) Create(
 	ctx context.Context,
 	vaultID, userID uuid.UUID,
-	volumeName, containerID string,
+	volumeName string,
 ) (domain.Workbench, error) {
 	params := artel_q.CreateWorkbenchParams{
-		VaultID:     vaultID,
-		UserID:      userID,
-		VolumeName:  volumeName,
-		ContainerID: sql.NullString{String: containerID, Valid: containerID != ""},
+		VaultID:    vaultID,
+		UserID:     userID,
+		VolumeName: volumeName,
 	}
 
 	row, err := r.q.CreateWorkbench(ctx, params)
@@ -90,6 +89,29 @@ func (r *Repo) MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode doma
 	err := r.q.MarkWorkbenchRunning(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error marking workbench running")
+	}
+
+	return nil
+}
+
+func (r *Repo) MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, containerID string) error {
+	params := artel_q.MarkWorkbenchContainerCreatedParams{
+		VaultID:     vaultID,
+		ContainerID: sql.NullString{String: containerID, Valid: containerID != ""},
+	}
+
+	err := r.q.MarkWorkbenchContainerCreated(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error marking workbench container created")
+	}
+
+	return nil
+}
+
+func (r *Repo) MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error {
+	err := r.q.MarkWorkbenchConfiguring(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
 	return nil

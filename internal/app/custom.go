@@ -120,8 +120,8 @@ func (c *Custom) Init(a *App) error {
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(
-		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), a.Cfg.Environment.NoAuthEnabled,
-		encryptor.IsPlainText(),
+		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
+		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.Workbench != nil,
 	)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
 	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())

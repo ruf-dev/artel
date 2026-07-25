@@ -68,10 +68,20 @@ func New(
 	}
 }
 
-// CreateWorkbench provisions the Docker volume and (unstarted) container backing vaultID's
-// workbench, then records it. Safely re-invocable: if a workbenches row for vaultID already
-// exists (e.g. a retry after a partial failure), it's returned as-is rather than duplicated —
-// see docs/workbench/01_data_model_and_lifecycle.md, "Hook points".
+// CreateWorkbench records a 'configuring' workbenches row for vaultID, then provisions the
+// Docker volume and (unstarted) container backing it, and finally records the container id
+// with status='created'. Safely re-invocable: if a workbenches row for vaultID already exists
+// (e.g. a retry after a partial failure), it's returned as-is rather than duplicated — see
+// docs/workbench/01_data_model_and_lifecycle.md, "Hook points".
+//
+// The row is inserted before the Docker calls (rather than after, as previously) so that a
+// vaultID that never gets a workbench created for it is still driven by a caller explicitly
+// invoking this method (see CreateWorkbench RPC), and so a caller/UI can observe a
+// 'configuring' state while Docker provisioning is in flight. If CreateVolume or
+// CreateContainer fails after the row is inserted, the row is intentionally left in
+// 'configuring' rather than rolled back or cleaned up here — DeleteWorkbench already tolerates
+// partial Docker state (missing container/volume) when tearing down, so a stuck 'configuring'
+// row is recoverable by deleting and retrying rather than needing bespoke rollback logic here.
 func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
 	existing, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
 	if err == nil {
@@ -89,6 +99,11 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 
 	volumeName := fmt.Sprintf("workbench-%s", vaultID.String())
 
+	_, err = s.workbenchesRepo.Create(ctx, vaultID, vault.UserUuid, volumeName)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench")
+	}
+
 	err = s.docker.CreateVolume(ctx, volumeName)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench volume")
@@ -104,9 +119,14 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench container")
 	}
 
-	workbench, err := s.workbenchesRepo.Create(ctx, vaultID, vault.UserUuid, volumeName, containerID)
+	err = s.workbenchesRepo.MarkContainerCreated(ctx, vaultID, containerID)
 	if err != nil {
-		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench")
+		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench container created")
+	}
+
+	workbench, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
 	return workbench, nil
@@ -161,6 +181,11 @@ func (s *Service) startWithApiKey(ctx context.Context, vaultID uuid.UUID) (domai
 		anthropicApiKeyEnvVar: apiKey,
 	}
 
+	err = s.workbenchesRepo.MarkConfiguring(ctx, vaultID)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
+	}
+
 	err = s.docker.StartContainer(ctx, wb.ContainerId, env)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
@@ -180,6 +205,11 @@ func (s *Service) startWithSubscriptionLogin(ctx context.Context, vaultID uuid.U
 	wb, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
+	}
+
+	err = s.workbenchesRepo.MarkConfiguring(ctx, vaultID)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
 	err = s.docker.StartContainer(ctx, wb.ContainerId, nil)

@@ -879,13 +879,15 @@ func (*GetConfig_Request) Descriptor() ([]byte, []int) {
 }
 
 type GetConfig_Response struct {
-	state            protoimpl.MessageState `protogen:"open.v1"`
-	TelegramClientId string                 `protobuf:"bytes,1,opt,name=telegram_client_id,json=telegramClientId,proto3" json:"telegram_client_id,omitempty"`
-	IsS3Available    bool                   `protobuf:"varint,2,opt,name=is_s3_available,json=isS3Available,proto3" json:"is_s3_available,omitempty"`
-	NoAuthEnabled    bool                   `protobuf:"varint,3,opt,name=no_auth_enabled,json=noAuthEnabled,proto3" json:"no_auth_enabled,omitempty"`
-	CredsEncrypted   bool                   `protobuf:"varint,4,opt,name=creds_encrypted,json=credsEncrypted,proto3" json:"creds_encrypted,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	TelegramClientId     string                 `protobuf:"bytes,1,opt,name=telegram_client_id,json=telegramClientId,proto3" json:"telegram_client_id,omitempty"`
+	IsS3Available        bool                   `protobuf:"varint,2,opt,name=is_s3_available,json=isS3Available,proto3" json:"is_s3_available,omitempty"`
+	NoAuthEnabled        bool                   `protobuf:"varint,3,opt,name=no_auth_enabled,json=noAuthEnabled,proto3" json:"no_auth_enabled,omitempty"`
+	CredsEncrypted       bool                   `protobuf:"varint,4,opt,name=creds_encrypted,json=credsEncrypted,proto3" json:"creds_encrypted,omitempty"`
+	IsCouchAvailable     bool                   `protobuf:"varint,5,opt,name=is_couch_available,json=isCouchAvailable,proto3" json:"is_couch_available,omitempty"`
+	IsWorkbenchAvailable bool                   `protobuf:"varint,6,opt,name=is_workbench_available,json=isWorkbenchAvailable,proto3" json:"is_workbench_available,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *GetConfig_Response) Reset() {
@@ -942,6 +944,20 @@ func (x *GetConfig_Response) GetNoAuthEnabled() bool {
 func (x *GetConfig_Response) GetCredsEncrypted() bool {
 	if x != nil {
 		return x.CredsEncrypted
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetIsCouchAvailable() bool {
+	if x != nil {
+		return x.IsCouchAvailable
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetIsWorkbenchAvailable() bool {
+	if x != nil {
+		return x.IsWorkbenchAvailable
 	}
 	return false
 }
@@ -1100,14 +1116,16 @@ const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"expires_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12#\n" +
 	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\x12H\n" +
-	"\x12refresh_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x10refreshExpiresAt\"\xca\x01\n" +
+	"\x12refresh_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x10refreshExpiresAt\"\xae\x02\n" +
 	"\tGetConfig\x1a\t\n" +
-	"\aRequest\x1a\xb1\x01\n" +
+	"\aRequest\x1a\x95\x02\n" +
 	"\bResponse\x12,\n" +
 	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\x12&\n" +
 	"\x0fis_s3_available\x18\x02 \x01(\bR\risS3Available\x12&\n" +
 	"\x0fno_auth_enabled\x18\x03 \x01(\bR\rnoAuthEnabled\x12'\n" +
-	"\x0fcreds_encrypted\x18\x04 \x01(\bR\x0ecredsEncrypted\"\xa0\x01\n" +
+	"\x0fcreds_encrypted\x18\x04 \x01(\bR\x0ecredsEncrypted\x12,\n" +
+	"\x12is_couch_available\x18\x05 \x01(\bR\x10isCouchAvailable\x124\n" +
+	"\x16is_workbench_available\x18\x06 \x01(\bR\x14isWorkbenchAvailable\"\xa0\x01\n" +
 	"\vPermissions\x12)\n" +
 	"\x10is_administrator\x18\x01 \x01(\bR\x0fisAdministrator\x12\x1d\n" +
 	"\n" +

@@ -1,0 +1,47 @@
+.WorkbenchPageContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    .BackLink {
+        display: inline-block;
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        margin: 1.5rem 0 0.75rem 2rem;
+        width: fit-content;
+
+        &:hover {
+            color: var(--color-fg-primary);
+        }
+
+        @media (width <= 45rem) {
+            margin-left: 1.125rem;
+        }
+    }
+
+    .Body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+        padding-top: var(--workbench-body-padding-top);
+        flex: 1;
+    }
+
+    .EmptyState {
+        font-size: 0.875rem;
+        color: var(--color-fg-secondary);
+        line-height: 1.5;
+        max-width: 32rem;
+        margin-top: 0;
+    }
+
+    .RunningState {
+        font-size: 0.875rem;
+        color: var(--color-fg-secondary);
+        line-height: 1.5;
+        max-width: 32rem;
+    }
+}

@@ -1,1 +1,1 @@
-export type Tab = "instances" | "couch_users" | "users" | "s3_instances"
+export type Tab = "instances" | "couch_users" | "users" | "s3_instances" | "docker_api"

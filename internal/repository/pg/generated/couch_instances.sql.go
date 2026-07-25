@@ -12,6 +12,17 @@ import (
 	"github.com/google/uuid"
 )
 
+const couchInstanceExists = `-- name: CouchInstanceExists :one
+SELECT EXISTS(SELECT 1 FROM couch_instances)
+`
+
+func (q *Queries) CouchInstanceExists(ctx context.Context) (bool, error) {
+	row := q.db.QueryRowContext(ctx, couchInstanceExists)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const deleteCouchInstance = `-- name: DeleteCouchInstance :exec
 DELETE FROM couch_instances WHERE id = $1
 `

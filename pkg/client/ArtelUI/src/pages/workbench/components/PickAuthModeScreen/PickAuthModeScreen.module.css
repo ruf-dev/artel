@@ -1,0 +1,21 @@
+.PickAuthModeScreenContainer {
+    .ModalSub {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        margin-bottom: 1.25rem;
+        line-height: 1.55;
+    }
+
+    .OptionList {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .ModalFooter {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.625rem;
+    }
+}
