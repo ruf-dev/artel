@@ -30,3 +30,6 @@ internal/transport/ui/dist/*
 
 .deploy/
 .claude
+
+# Internal implementation/planning notes, not for distribution
+docs/tasks/
