@@ -50,11 +50,12 @@ type Service struct {
 	vaultsRepo      repository.Vaults
 	dockerHostsRepo repository.DockerHosts
 
-	// newDockerClient builds a fresh dockerClient pointed at a given docker host's Url. A fresh
-	// client is built per-call rather than cached, since a workbench pool now has more than one
-	// host — mirrors how internal/service/v1/couchinstances/couchinstances.go builds a fresh
-	// couchdb.New(cfg) per call instead of caching a client.
-	newDockerClient func(host string) (dockerClient, error)
+	// newDockerClient builds a fresh dockerClient pointed at a given docker host's Url (plus its
+	// decrypted TLS material, empty for a local/unauthenticated daemon). A fresh client is built
+	// per-call rather than cached, since a workbench pool now has more than one host — mirrors
+	// how internal/service/v1/couchinstances/couchinstances.go builds a fresh couchdb.New(cfg)
+	// per call instead of caching a client.
+	newDockerClient func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error)
 
 	externalConnections externalConnectionService
 }
@@ -64,7 +65,7 @@ func New(
 	vaults repository.Vaults,
 	dockerHosts repository.DockerHosts,
 	externalConnections externalConnectionService,
-	newDockerClient func(host string) (dockerClient, error),
+	newDockerClient func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error),
 ) *Service {
 	if newDockerClient == nil {
 		newDockerClient = newRealDockerClient
@@ -82,8 +83,8 @@ func New(
 
 // newRealDockerClient is the production default for Service.newDockerClient — wraps
 // workbenchdocker.New so tests can inject a fake instead without a live Docker daemon.
-func newRealDockerClient(host string) (dockerClient, error) {
-	client, err := workbenchdocker.New(host)
+func newRealDockerClient(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error) {
+	client, err := workbenchdocker.New(host, tlsCfg)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error creating workbench docker client")
 	}
@@ -94,17 +95,28 @@ func newRealDockerClient(host string) (dockerClient, error) {
 // resolveClient resolves the dockerClient for wb's assigned docker host. Returns
 // user_errors.WorkbenchMissingDockerHost for a workbenches row that predates the docker_hosts
 // pool (nullable docker_host_id, no backfill — see migrations/061_docker_hosts.sql).
+//
+// It fetches the host via GetWithCreds (rather than Get) so a remote host registered with TLS
+// material gets it threaded into newDockerClient — a local/unauthenticated host's CaCert/
+// ClientCert/ClientKey just come back empty, which newDockerClient/workbenchdocker.New treat as
+// "no TLS", so this is a no-op for the existing unix-socket/dind path.
 func (s *Service) resolveClient(ctx context.Context, wb domain.Workbench) (dockerClient, error) {
 	if wb.DockerHostUuid == nil {
 		return nil, user_errors.WorkbenchMissingDockerHost
 	}
 
-	host, err := s.dockerHostsRepo.Get(ctx, *wb.DockerHostUuid)
+	host, err := s.dockerHostsRepo.GetWithCreds(ctx, *wb.DockerHostUuid)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error getting docker host")
 	}
 
-	client, err := s.newDockerClient(host.Url)
+	tlsCfg := workbenchdocker.TLSConfig{
+		CaCert:     host.CaCert,
+		ClientCert: host.ClientCert,
+		ClientKey:  host.ClientKey,
+	}
+
+	client, err := s.newDockerClient(host.Url, tlsCfg)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error creating docker client")
 	}
@@ -158,7 +170,21 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 		return domain.Workbench{}, rerrors.Wrap(err, "error picking least loaded docker host")
 	}
 
-	docker, err := s.newDockerClient(host.Url)
+	// PickLeastLoaded's query doesn't select the TLS columns (it's a plain load-balancing pick,
+	// same shape as Get) — fetch the decrypted creds separately so a remote TLS-secured host
+	// picked here gets the same treatment as one resolved via resolveClient.
+	hostWithCreds, err := s.dockerHostsRepo.GetWithCreds(ctx, host.Uuid)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error getting docker host creds")
+	}
+
+	tlsCfg := workbenchdocker.TLSConfig{
+		CaCert:     hostWithCreds.CaCert,
+		ClientCert: hostWithCreds.ClientCert,
+		ClientKey:  hostWithCreds.ClientKey,
+	}
+
+	docker, err := s.newDockerClient(host.Url, tlsCfg)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating docker client")
 	}

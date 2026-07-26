@@ -7,8 +7,20 @@ import useUser from "@/hooks/user/User.ts"
 import DockerHostsActionBar
     from "@/pages/admin/components/DockerApiTab/components/DockerHostsActionBar/DockerHostsActionBar.tsx"
 import DockerHostList from "@/pages/admin/components/DockerApiTab/components/DockerHostList/DockerHostList.tsx"
-import DockerHostFormDialog
-    from "@/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/DockerHostFormDialog.tsx"
+import DockerHostFormDialog, {
+    DockerHostFormDialogSaveData,
+} from "@/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/DockerHostFormDialog.tsx"
+
+// TLS fields are write-only and optional on the wire (proto3 `optional`): an
+// empty textarea must be omitted from the request, not sent as "", so the
+// backend keeps the previously stored value on edit instead of clearing it.
+function tlsPatch(data: DockerHostFormDialogSaveData) {
+    return {
+        caCert: data.caCert || undefined,
+        clientCert: data.clientCert || undefined,
+        clientKey: data.clientKey || undefined,
+    }
+}
 
 export default function DockerApiTab() {
     const {auth} = useUser()
@@ -36,8 +48,11 @@ export default function DockerApiTab() {
     function openAddDialog() {
         OpenDialog(
             <DockerHostFormDialog
-                onSave={async (url) => {
-                    await DockerHostsAPI.RegisterDockerHost({url}, auth.getInitReq())
+                onSave={async (data) => {
+                    await DockerHostsAPI.RegisterDockerHost(
+                        {url: data.url, ...tlsPatch(data)},
+                        auth.getInitReq()
+                    )
                     await loadHosts()
                 }}
             />
@@ -48,9 +63,9 @@ export default function DockerApiTab() {
         OpenDialog(
             <DockerHostFormDialog
                 initial={host}
-                onSave={async (url) => {
+                onSave={async (data) => {
                     await DockerHostsAPI.UpdateDockerHost(
-                        {id: host.id, url},
+                        {id: host.id, url: data.url, ...tlsPatch(data)},
                         auth.getInitReq()
                     )
                     await loadHosts()

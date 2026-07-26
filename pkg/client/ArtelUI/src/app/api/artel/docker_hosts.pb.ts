@@ -10,6 +10,9 @@ import * as fm from "./fetch.pb";
 
 export type RegisterDockerHostRequest = {
   url?: string;
+  caCert?: string;
+  clientCert?: string;
+  clientKey?: string;
 };
 
 export type RegisterDockerHostResponse = {
@@ -41,6 +44,9 @@ export type ListDockerHosts = Record<string, never>;
 export type UpdateDockerHostRequest = {
   id?: string;
   url?: string;
+  caCert?: string;
+  clientCert?: string;
+  clientKey?: string;
 };
 
 export type UpdateDockerHostResponse = Record<string, never>;

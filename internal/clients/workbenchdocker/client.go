@@ -14,6 +14,10 @@
 package workbenchdocker
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"net/http"
+
 	"github.com/docker/docker/client"
 
 	"go.redsock.ru/rerrors"
@@ -50,15 +54,49 @@ type Client struct {
 	host string
 }
 
+// TLSConfig carries the decrypted, in-memory PEM-encoded TLS client credentials for connecting
+// to a remote Docker daemon over TLS/mTLS — the docker_hosts.ca_cert_enc/client_cert_enc/
+// client_key_enc columns (migrations/062_docker_hosts_tls.sql), decrypted by
+// dockerhosts.Repo.GetWithCreds. All three fields empty means "no TLS" — see New.
+type TLSConfig struct {
+	CaCert     string
+	ClientCert string
+	ClientKey  string
+}
+
+// enabled reports whether any TLS material was provided. A partially-filled TLSConfig (e.g. a
+// CA cert with no client cert/key) is treated as enabled too — X509KeyPair will fail loudly on
+// the missing half rather than silently falling back to no TLS.
+func (t TLSConfig) enabled() bool {
+	return t.CaCert != "" || t.ClientCert != "" || t.ClientKey != ""
+}
+
 // New constructs a Client talking to the Docker daemon at host (e.g.
-// "unix:///var/run/docker-workbenches.sock" or "tcp://host:2376"). API version negotiation is
-// enabled so the client stays compatible with the daemon regardless of exactly which API
-// version it speaks.
-func New(host string) (*Client, error) {
-	cli, err := client.NewClientWithOpts(
-		client.WithHost(host),
-		client.WithAPIVersionNegotiation(),
-	)
+// "unix:///var/run/docker-workbenches.sock", "tcp://host:2376" for a local/insecure daemon, or
+// "tcp://host:2376" with a populated tlsCfg for a remote mTLS-secured daemon — see
+// docs/workbench/02_docker_topology.md, "Option C"). API version negotiation is enabled so the
+// client stays compatible with the daemon regardless of exactly which API version it speaks.
+//
+// An empty tlsCfg reproduces exactly the pre-TLS behavior (plain client.WithHost, no custom HTTP
+// client) — this must not regress the local unix-socket/dind path.
+func New(host string, tlsCfg TLSConfig) (*Client, error) {
+	opts := []client.Opt{}
+
+	if tlsCfg.enabled() {
+		httpClient, err := newTLSHTTPClient(tlsCfg)
+		if err != nil {
+			return nil, rerrors.Wrap(err, "error building TLS http client")
+		}
+
+		// WithHTTPClient must be set before WithHost — WithHost type-asserts the client's
+		// transport to configure TLS-adjacent options, so the custom *http.Client needs to
+		// already be in place when it runs.
+		opts = append(opts, client.WithHTTPClient(httpClient))
+	}
+
+	opts = append(opts, client.WithHost(host), client.WithAPIVersionNegotiation())
+
+	cli, err := client.NewClientWithOpts(opts...)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "creating docker client")
 	}
@@ -69,4 +107,38 @@ func New(host string) (*Client, error) {
 	}
 
 	return c, nil
+}
+
+// newTLSHTTPClient builds an *http.Client whose transport presents cfg's client certificate and
+// trusts cfg's CA — the Docker SDK's client.WithTLSClientConfig only accepts file paths, but this
+// repo passes decrypted secrets as in-memory values everywhere else, so the TLS config is built
+// by hand here instead of round-tripping cert material through temp files.
+func newTLSHTTPClient(cfg TLSConfig) (*http.Client, error) {
+	cert, err := tls.X509KeyPair([]byte(cfg.ClientCert), []byte(cfg.ClientKey))
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error parsing client cert/key pair")
+	}
+
+	caPool := x509.NewCertPool()
+
+	ok := caPool.AppendCertsFromPEM([]byte(cfg.CaCert))
+	if !ok {
+		return nil, rerrors.New("error parsing CA certificate PEM")
+	}
+
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		RootCAs:      caPool,
+		MinVersion:   tls.VersionTLS12,
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: tlsConfig,
+	}
+
+	httpClient := &http.Client{
+		Transport: transport,
+	}
+
+	return httpClient, nil
 }

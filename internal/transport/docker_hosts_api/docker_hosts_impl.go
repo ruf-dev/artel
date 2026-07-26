@@ -44,7 +44,9 @@ func (d *DockerHostsImpl) RegisterDockerHost(
 	ctx context.Context,
 	req *artel_api.RegisterDockerHost_Request,
 ) (*artel_api.RegisterDockerHost_Response, error) {
-	id, err := d.dockerHostSvc.RegisterDockerHost(ctx, req.Url)
+	id, err := d.dockerHostSvc.RegisterDockerHost(
+		ctx, req.Url, stringOrEmpty(req.CaCert), stringOrEmpty(req.ClientCert), stringOrEmpty(req.ClientKey),
+	)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "register docker host")
 	}
@@ -103,12 +105,26 @@ func (d *DockerHostsImpl) UpdateDockerHost(
 	ctx context.Context,
 	req *artel_api.UpdateDockerHost_Request,
 ) (*artel_api.UpdateDockerHost_Response, error) {
-	err := d.dockerHostSvc.UpdateDockerHost(ctx, req.Id, req.Url)
+	// req.CaCert/ClientCert/ClientKey are proto3 `optional` *string, and their nil-vs-set
+	// presence is passed straight through as the service/repo layer's three-way patch pointer:
+	// nil means "the caller didn't touch this cert", not "clear it".
+	err := d.dockerHostSvc.UpdateDockerHost(ctx, req.Id, req.Url, req.CaCert, req.ClientCert, req.ClientKey)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "update docker host")
 	}
 
 	return &artel_api.UpdateDockerHost_Response{}, nil
+}
+
+// stringOrEmpty dereferences a proto3 `optional string` field, treating "not provided" (nil)
+// the same as an explicit empty string — used for Register, where there's no existing value to
+// preserve, so there's no third "don't touch" state to distinguish (unlike Update).
+func stringOrEmpty(v *string) string {
+	if v == nil {
+		return ""
+	}
+
+	return *v
 }
 
 func (d *DockerHostsImpl) DeleteDockerHost(

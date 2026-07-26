@@ -148,21 +148,22 @@ func (f *fakeVaults) WithTx(sqldb.DB) repository.Vaults {
 // docker host resolution without a live Postgres. Only Get/PickLeastLoaded are exercised by
 // workbench.Service today; the rest are stubbed trivially since these tests never drive them.
 type fakeDockerHosts struct {
-	register        func(ctx context.Context, url string) (uuid.UUID, error)
+	register        func(ctx context.Context, url, caCert, clientCert, clientKey string) (uuid.UUID, error)
 	get             func(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)
+	getWithCreds    func(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)
 	list            func(ctx context.Context) ([]domain.DockerHost, error)
-	update          func(ctx context.Context, id uuid.UUID, url string) error
+	update          func(ctx context.Context, id uuid.UUID, url string, caCert, clientCert, clientKey *string) error
 	delete          func(ctx context.Context, id uuid.UUID) error
 	exists          func(ctx context.Context) (bool, error)
 	pickLeastLoaded func(ctx context.Context) (domain.DockerHost, error)
 }
 
-func (f *fakeDockerHosts) Register(ctx context.Context, url string) (uuid.UUID, error) {
+func (f *fakeDockerHosts) Register(ctx context.Context, url, caCert, clientCert, clientKey string) (uuid.UUID, error) {
 	if f.register == nil {
 		return uuid.New(), nil
 	}
 
-	return f.register(ctx, url)
+	return f.register(ctx, url, caCert, clientCert, clientKey)
 }
 
 func (f *fakeDockerHosts) Get(ctx context.Context, id uuid.UUID) (domain.DockerHost, error) {
@@ -173,6 +174,17 @@ func (f *fakeDockerHosts) Get(ctx context.Context, id uuid.UUID) (domain.DockerH
 	return f.get(ctx, id)
 }
 
+// GetWithCreds falls back to Get's behavior/fixture when getWithCreds isn't set — most tests
+// here don't care about TLS material, only that resolveClient resolves the right host, so they
+// only wire up get/pickLeastLoaded and expect GetWithCreds to resolve the same way.
+func (f *fakeDockerHosts) GetWithCreds(ctx context.Context, id uuid.UUID) (domain.DockerHost, error) {
+	if f.getWithCreds == nil {
+		return f.Get(ctx, id)
+	}
+
+	return f.getWithCreds(ctx, id)
+}
+
 func (f *fakeDockerHosts) List(ctx context.Context) ([]domain.DockerHost, error) {
 	if f.list == nil {
 		return nil, nil
@@ -181,12 +193,12 @@ func (f *fakeDockerHosts) List(ctx context.Context) ([]domain.DockerHost, error)
 	return f.list(ctx)
 }
 
-func (f *fakeDockerHosts) Update(ctx context.Context, id uuid.UUID, url string) error {
+func (f *fakeDockerHosts) Update(ctx context.Context, id uuid.UUID, url string, caCert, clientCert, clientKey *string) error {
 	if f.update == nil {
 		return nil
 	}
 
-	return f.update(ctx, id, url)
+	return f.update(ctx, id, url, caCert, clientCert, clientKey)
 }
 
 func (f *fakeDockerHosts) Delete(ctx context.Context, id uuid.UUID) error {
@@ -300,9 +312,10 @@ func (f *fakeDocker) SendKeys(ctx context.Context, containerID string, keys stri
 }
 
 // fakeDockerClientFactory adapts a single fakeDocker into a Service.newDockerClient func,
-// ignoring the host argument — the common case for tests where only one docker host is in play.
-func fakeDockerClientFactory(d *fakeDocker) func(string) (dockerClient, error) {
-	return func(string) (dockerClient, error) {
+// ignoring the host/tlsCfg arguments — the common case for tests where only one docker host is
+// in play.
+func fakeDockerClientFactory(d *fakeDocker) func(string, workbenchdocker.TLSConfig) (dockerClient, error) {
+	return func(string, workbenchdocker.TLSConfig) (dockerClient, error) {
 		return d, nil
 	}
 }
@@ -419,7 +432,7 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 		return "container-1", nil
 	}
 
-	newDockerClient := func(host string) (dockerClient, error) {
+	newDockerClient := func(host string, _ workbenchdocker.TLSConfig) (dockerClient, error) {
 		gotNewDockerClientHost = host
 		return docker, nil
 	}
@@ -1018,7 +1031,7 @@ func TestStopWorkbench_ResolvesClientFromWorkbenchsOwnDockerHost(t *testing.T) {
 		return nil
 	}
 
-	newDockerClient := func(host string) (dockerClient, error) {
+	newDockerClient := func(host string, _ workbenchdocker.TLSConfig) (dockerClient, error) {
 		switch host {
 		case hostA.Url:
 			return dockerA, nil

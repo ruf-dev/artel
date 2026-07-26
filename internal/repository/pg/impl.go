@@ -179,7 +179,7 @@ func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 		vaultInvitesRepo: vaultinvites.New(db),
 		couchInstances:   couchinstances.New(db, encryptor),
 		s3Instances:      s3instances.New(db, encryptor),
-		dockerHosts:      dockerhosts.New(db),
+		dockerHosts:      dockerhosts.New(db, encryptor),
 
 		users:                 users.New(q, db),
 		sessions:              sessions.New(q),

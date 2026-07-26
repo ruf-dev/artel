@@ -3,11 +3,19 @@ package workbenchdocker
 import (
 	"bytes"
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/x509"
+	"crypto/x509/pkix"
 	"encoding/json"
+	"encoding/pem"
+	"math/big"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
@@ -15,6 +23,44 @@ import (
 
 	"github.com/ruf-dev/artel/internal/utils"
 )
+
+// generateSelfSignedCert builds a throwaway self-signed cert/key pair for exercising New's TLS
+// wiring without depending on any fixture files.
+func generateSelfSignedCert(t *testing.T) (certPEM, keyPEM []byte) {
+	t.Helper()
+
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	require.NoError(t, err)
+
+	serialNumber, err := rand.Int(rand.Reader, big.NewInt(1<<62))
+	require.NoError(t, err)
+
+	subject := pkix.Name{CommonName: "workbenchdocker-test"}
+	template := x509.Certificate{
+		SerialNumber:          serialNumber,
+		Subject:               subject,
+		NotBefore:             time.Now().Add(-time.Hour),
+		NotAfter:              time.Now().Add(time.Hour),
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
+		BasicConstraintsValid: true,
+		IsCA:                  true,
+	}
+
+	der, err := x509.CreateCertificate(rand.Reader, &template, &template, &key.PublicKey, key)
+	require.NoError(t, err)
+
+	certBlock := &pem.Block{Type: "CERTIFICATE", Bytes: der}
+	certPEM = pem.EncodeToMemory(certBlock)
+
+	keyBytes, err := x509.MarshalECPrivateKey(key)
+	require.NoError(t, err)
+
+	keyBlock := &pem.Block{Type: "EC PRIVATE KEY", Bytes: keyBytes}
+	keyPEM = pem.EncodeToMemory(keyBlock)
+
+	return certPEM, keyPEM
+}
 
 // newTestClient builds a Client whose underlying Docker SDK client talks to server instead of
 // a real daemon. It pins an explicit API version (client.WithVersion) rather than
@@ -547,7 +593,35 @@ func TestSendKeys_ExecStartError(t *testing.T) {
 // also faking GET /version (New uses API version negotiation, unlike the pinned-version test
 // client above).
 func TestNew_ConfiguresHost(t *testing.T) {
-	c, err := New("unix:///var/run/docker-workbenches.sock")
+	c, err := New("unix:///var/run/docker-workbenches.sock", TLSConfig{})
 	require.NoError(t, err)
 	require.NotNil(t, c)
+}
+
+// TestNew_TLSConfigured verifies the tlsCfg-populated path builds successfully with a
+// self-signed cert/key/CA triple — it doesn't hit a daemon, just checks New's TLS wiring (cert
+// parsing, CA pool, option ordering) doesn't error before a connection is ever attempted.
+func TestNew_TLSConfigured(t *testing.T) {
+	certPEM, keyPEM := generateSelfSignedCert(t)
+
+	tlsCfg := TLSConfig{
+		CaCert:     string(certPEM),
+		ClientCert: string(certPEM),
+		ClientKey:  string(keyPEM),
+	}
+
+	c, err := New("tcp://127.0.0.1:2376", tlsCfg)
+	require.NoError(t, err)
+	require.NotNil(t, c)
+}
+
+func TestNew_TLSConfigured_InvalidCert(t *testing.T) {
+	tlsCfg := TLSConfig{
+		CaCert:     "not a cert",
+		ClientCert: "not a cert",
+		ClientKey:  "not a key",
+	}
+
+	_, err := New("tcp://127.0.0.1:2376", tlsCfg)
+	require.Error(t, err)
 }

@@ -31,11 +31,14 @@ func newFakeDockerHostsRepo() *fakeDockerHostsRepo {
 	return repo
 }
 
-func (f *fakeDockerHostsRepo) Register(_ context.Context, url string) (uuid.UUID, error) {
+func (f *fakeDockerHostsRepo) Register(_ context.Context, url, caCert, clientCert, clientKey string) (uuid.UUID, error) {
 	id := uuid.New()
 	f.hosts[id] = domain.DockerHost{
-		Uuid: id,
-		Url:  url,
+		Uuid:       id,
+		Url:        url,
+		CaCert:     caCert,
+		ClientCert: clientCert,
+		ClientKey:  clientKey,
 	}
 
 	return id, nil
@@ -47,25 +50,55 @@ func (f *fakeDockerHostsRepo) Get(_ context.Context, id uuid.UUID) (domain.Docke
 		return domain.DockerHost{}, errors.New("not found")
 	}
 
+	// Get is creds-free, mirroring the real repo's Get vs GetWithCreds split.
+	host.CaCert = ""
+	host.ClientCert = ""
+	host.ClientKey = ""
+
+	return host, nil
+}
+
+func (f *fakeDockerHostsRepo) GetWithCreds(_ context.Context, id uuid.UUID) (domain.DockerHost, error) {
+	host, ok := f.hosts[id]
+	if !ok {
+		return domain.DockerHost{}, errors.New("not found")
+	}
+
 	return host, nil
 }
 
 func (f *fakeDockerHostsRepo) List(_ context.Context) ([]domain.DockerHost, error) {
 	hosts := make([]domain.DockerHost, 0, len(f.hosts))
 	for _, host := range f.hosts {
+		host.CaCert = ""
+		host.ClientCert = ""
+		host.ClientKey = ""
 		hosts = append(hosts, host)
 	}
 
 	return hosts, nil
 }
 
-func (f *fakeDockerHostsRepo) Update(_ context.Context, id uuid.UUID, url string) error {
+func (f *fakeDockerHostsRepo) Update(_ context.Context, id uuid.UUID, url string, caCert, clientCert, clientKey *string) error {
 	host, ok := f.hosts[id]
 	if !ok {
 		return errors.New("not found")
 	}
 
 	host.Url = url
+
+	if caCert != nil {
+		host.CaCert = *caCert
+	}
+
+	if clientCert != nil {
+		host.ClientCert = *clientCert
+	}
+
+	if clientKey != nil {
+		host.ClientKey = *clientKey
+	}
+
 	f.hosts[id] = host
 
 	return nil
@@ -103,7 +136,7 @@ func TestService_RegisterDockerHost(t *testing.T) {
 	fakeRepo := newFakeDockerHostsRepo()
 	svc := &Service{dockerHostsRepo: fakeRepo}
 
-	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376")
+	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376", "", "", "")
 	require.NoError(t, err)
 	require.NotEmpty(t, id)
 
@@ -116,7 +149,7 @@ func TestService_GetDockerHost(t *testing.T) {
 	fakeRepo := newFakeDockerHostsRepo()
 	svc := &Service{dockerHostsRepo: fakeRepo}
 
-	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376")
+	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376", "", "", "")
 	require.NoError(t, err)
 
 	t.Run("returns the registered host", func(t *testing.T) {
@@ -140,9 +173,9 @@ func TestService_ListDockerHosts(t *testing.T) {
 	fakeRepo := newFakeDockerHostsRepo()
 	svc := &Service{dockerHostsRepo: fakeRepo}
 
-	_, err := svc.RegisterDockerHost(context.Background(), "tcp://host-a:2376")
+	_, err := svc.RegisterDockerHost(context.Background(), "tcp://host-a:2376", "", "", "")
 	require.NoError(t, err)
-	_, err = svc.RegisterDockerHost(context.Background(), "tcp://host-b:2376")
+	_, err = svc.RegisterDockerHost(context.Background(), "tcp://host-b:2376", "", "", "")
 	require.NoError(t, err)
 
 	hosts, err := svc.ListDockerHosts(context.Background())
@@ -154,11 +187,11 @@ func TestService_UpdateDockerHost(t *testing.T) {
 	fakeRepo := newFakeDockerHostsRepo()
 	svc := &Service{dockerHostsRepo: fakeRepo}
 
-	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376")
+	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376", "", "", "")
 	require.NoError(t, err)
 
 	t.Run("updates the url", func(t *testing.T) {
-		err := svc.UpdateDockerHost(context.Background(), id, "tcp://new-host:2376")
+		err := svc.UpdateDockerHost(context.Background(), id, "tcp://new-host:2376", nil, nil, nil)
 		require.NoError(t, err)
 
 		got, err := svc.GetDockerHost(context.Background(), id)
@@ -167,7 +200,7 @@ func TestService_UpdateDockerHost(t *testing.T) {
 	})
 
 	t.Run("propagates a bad uuid", func(t *testing.T) {
-		err := svc.UpdateDockerHost(context.Background(), "not-a-uuid", "tcp://host:2376")
+		err := svc.UpdateDockerHost(context.Background(), "not-a-uuid", "tcp://host:2376", nil, nil, nil)
 		require.Error(t, err)
 	})
 }
@@ -176,7 +209,7 @@ func TestService_DeleteDockerHost(t *testing.T) {
 	fakeRepo := newFakeDockerHostsRepo()
 	svc := &Service{dockerHostsRepo: fakeRepo}
 
-	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376")
+	id, err := svc.RegisterDockerHost(context.Background(), "tcp://host:2376", "", "", "")
 	require.NoError(t, err)
 
 	t.Run("deletes the host", func(t *testing.T) {

@@ -24,3 +24,34 @@ services:
     command: server /data
     ports:
       - "19000:9000"
+
+  # test-dockerd is a local docker:dind daemon standing in for docs/workbench/02_docker_topology.md's
+  # "Option B" (a second dockerd process) for local dev/testing — plain, unauthenticated TCP,
+  # since it's only ever reachable at localhost. TLS/mTLS (this migration's ca_cert_enc/
+  # client_cert_enc/client_key_enc columns) is for Option C, a genuinely remote host, and is
+  # deliberately not exercised by this local daemon.
+  test-dockerd:
+    image: docker:dind
+    container_name: artel-test-dockerd
+    privileged: true # required by dind to run its own inner dockerd
+    environment:
+      # Disables dind's default self-signed-TLS enforcement so the plain
+      # tcp://localhost:12375 URL scripts/setup_dev_docker_host.sh registers actually works —
+      # the standard recipe for an insecure local dind daemon.
+      DOCKER_TLS_CERTDIR: ""
+    ports:
+      - "12375:2375"
+
+# workbench-net is the dedicated network internal/clients/workbenchdocker/client.go's doc comment
+# assumes pre-exists on the configured daemon. IMPORTANT: this top-level `networks:` block only
+# creates workbench-net on *this compose project's* Docker context — it does NOT create it
+# inside test-dockerd's own inner daemon (dind runs a second, fully separate dockerd process
+# with its own network namespace, so a workbench container created against
+# tcp://localhost:12375 can't see a network that only exists at the compose level). This block
+# is kept for any compose-level service that might want to join workbench-net directly, but the
+# network dind's own workbenches actually attach to is created separately, inside test-dockerd,
+# by scripts/setup_dev_docker_host.sh (`docker -H tcp://localhost:12375 network create
+# workbench-net`) — see that script.
+networks:
+  workbench-net:
+    name: workbench-net

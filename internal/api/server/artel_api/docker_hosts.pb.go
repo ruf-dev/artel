@@ -206,6 +206,9 @@ func (*DeleteDockerHost) Descriptor() ([]byte, []int) {
 type RegisterDockerHost_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Url           string                 `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	CaCert        *string                `protobuf:"bytes,2,opt,name=ca_cert,json=caCert,proto3,oneof" json:"ca_cert,omitempty"`
+	ClientCert    *string                `protobuf:"bytes,3,opt,name=client_cert,json=clientCert,proto3,oneof" json:"client_cert,omitempty"`
+	ClientKey     *string                `protobuf:"bytes,4,opt,name=client_key,json=clientKey,proto3,oneof" json:"client_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -243,6 +246,27 @@ func (*RegisterDockerHost_Request) Descriptor() ([]byte, []int) {
 func (x *RegisterDockerHost_Request) GetUrl() string {
 	if x != nil {
 		return x.Url
+	}
+	return ""
+}
+
+func (x *RegisterDockerHost_Request) GetCaCert() string {
+	if x != nil && x.CaCert != nil {
+		return *x.CaCert
+	}
+	return ""
+}
+
+func (x *RegisterDockerHost_Request) GetClientCert() string {
+	if x != nil && x.ClientCert != nil {
+		return *x.ClientCert
+	}
+	return ""
+}
+
+func (x *RegisterDockerHost_Request) GetClientKey() string {
+	if x != nil && x.ClientKey != nil {
+		return *x.ClientKey
 	}
 	return ""
 }
@@ -479,6 +503,9 @@ type UpdateDockerHost_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Url           string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	CaCert        *string                `protobuf:"bytes,3,opt,name=ca_cert,json=caCert,proto3,oneof" json:"ca_cert,omitempty"`
+	ClientCert    *string                `protobuf:"bytes,4,opt,name=client_cert,json=clientCert,proto3,oneof" json:"client_cert,omitempty"`
+	ClientKey     *string                `protobuf:"bytes,5,opt,name=client_key,json=clientKey,proto3,oneof" json:"client_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -523,6 +550,27 @@ func (x *UpdateDockerHost_Request) GetId() string {
 func (x *UpdateDockerHost_Request) GetUrl() string {
 	if x != nil {
 		return x.Url
+	}
+	return ""
+}
+
+func (x *UpdateDockerHost_Request) GetCaCert() string {
+	if x != nil && x.CaCert != nil {
+		return *x.CaCert
+	}
+	return ""
+}
+
+func (x *UpdateDockerHost_Request) GetClientCert() string {
+	if x != nil && x.ClientCert != nil {
+		return *x.ClientCert
+	}
+	return ""
+}
+
+func (x *UpdateDockerHost_Request) GetClientKey() string {
+	if x != nil && x.ClientKey != nil {
+		return *x.ClientKey
 	}
 	return ""
 }
@@ -647,10 +695,19 @@ var File_docker_hosts_proto protoreflect.FileDescriptor
 
 const file_docker_hosts_proto_rawDesc = "" +
 	"\n" +
-	"\x12docker_hosts.proto\x12\x12artel_docker_hosts\x1a\x1cgoogle/api/annotations.proto\x1a\tnpm.proto\"M\n" +
-	"\x12RegisterDockerHost\x1a\x1b\n" +
+	"\x12docker_hosts.proto\x12\x12artel_docker_hosts\x1a\x1cgoogle/api/annotations.proto\x1a\tnpm.proto\"\xe1\x01\n" +
+	"\x12RegisterDockerHost\x1a\xae\x01\n" +
 	"\aRequest\x12\x10\n" +
-	"\x03url\x18\x01 \x01(\tR\x03url\x1a\x1a\n" +
+	"\x03url\x18\x01 \x01(\tR\x03url\x12\x1c\n" +
+	"\aca_cert\x18\x02 \x01(\tH\x00R\x06caCert\x88\x01\x01\x12$\n" +
+	"\vclient_cert\x18\x03 \x01(\tH\x01R\n" +
+	"clientCert\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"client_key\x18\x04 \x01(\tH\x02R\tclientKey\x88\x01\x01B\n" +
+	"\n" +
+	"\b_ca_certB\x0e\n" +
+	"\f_client_certB\r\n" +
+	"\v_client_key\x1a\x1a\n" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"w\n" +
 	"\rGetDockerHost\x1a\x19\n" +
@@ -664,11 +721,20 @@ const file_docker_hosts_proto_rawDesc = "" +
 	"\x0fListDockerHosts\x1a\t\n" +
 	"\aRequest\x1aL\n" +
 	"\bResponse\x12@\n" +
-	"\x05hosts\x18\x01 \x03(\v2*.artel_docker_hosts.GetDockerHost.ResponseR\x05hosts\"K\n" +
-	"\x10UpdateDockerHost\x1a+\n" +
+	"\x05hosts\x18\x01 \x03(\v2*.artel_docker_hosts.GetDockerHost.ResponseR\x05hosts\"\xdf\x01\n" +
+	"\x10UpdateDockerHost\x1a\xbe\x01\n" +
 	"\aRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
-	"\x03url\x18\x02 \x01(\tR\x03url\x1a\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\x12\x1c\n" +
+	"\aca_cert\x18\x03 \x01(\tH\x00R\x06caCert\x88\x01\x01\x12$\n" +
+	"\vclient_cert\x18\x04 \x01(\tH\x01R\n" +
+	"clientCert\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"client_key\x18\x05 \x01(\tH\x02R\tclientKey\x88\x01\x01B\n" +
+	"\n" +
+	"\b_ca_certB\x0e\n" +
+	"\f_client_certB\r\n" +
+	"\v_client_key\x1a\n" +
 	"\n" +
 	"\bResponse\"9\n" +
 	"\x10DeleteDockerHost\x1a\x19\n" +
@@ -739,6 +805,8 @@ func file_docker_hosts_proto_init() {
 	if File_docker_hosts_proto != nil {
 		return
 	}
+	file_docker_hosts_proto_msgTypes[5].OneofWrappers = []any{}
+	file_docker_hosts_proto_msgTypes[11].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
