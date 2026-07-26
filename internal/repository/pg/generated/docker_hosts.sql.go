@@ -7,6 +7,7 @@ package artel_q
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -35,10 +36,36 @@ const getDockerHost = `-- name: GetDockerHost :one
 SELECT id, url, created_at FROM docker_hosts WHERE id = $1
 `
 
-func (q *Queries) GetDockerHost(ctx context.Context, id uuid.UUID) (DockerHost, error) {
+type GetDockerHostRow struct {
+	ID        uuid.UUID
+	Url       string
+	CreatedAt time.Time
+}
+
+func (q *Queries) GetDockerHost(ctx context.Context, id uuid.UUID) (GetDockerHostRow, error) {
 	row := q.db.QueryRowContext(ctx, getDockerHost, id)
-	var i DockerHost
+	var i GetDockerHostRow
 	err := row.Scan(&i.ID, &i.Url, &i.CreatedAt)
+	return i, err
+}
+
+const getDockerHostWithCreds = `-- name: GetDockerHostWithCreds :one
+SELECT id, url, created_at, ca_cert_enc, client_cert_enc, client_key_enc
+FROM docker_hosts
+WHERE id = $1
+`
+
+func (q *Queries) GetDockerHostWithCreds(ctx context.Context, id uuid.UUID) (DockerHost, error) {
+	row := q.db.QueryRowContext(ctx, getDockerHostWithCreds, id)
+	var i DockerHost
+	err := row.Scan(
+		&i.ID,
+		&i.Url,
+		&i.CreatedAt,
+		&i.CaCertEnc,
+		&i.ClientCertEnc,
+		&i.ClientKeyEnc,
+	)
 	return i, err
 }
 
@@ -46,15 +73,21 @@ const listDockerHosts = `-- name: ListDockerHosts :many
 SELECT id, url, created_at FROM docker_hosts ORDER BY created_at DESC
 `
 
-func (q *Queries) ListDockerHosts(ctx context.Context) ([]DockerHost, error) {
+type ListDockerHostsRow struct {
+	ID        uuid.UUID
+	Url       string
+	CreatedAt time.Time
+}
+
+func (q *Queries) ListDockerHosts(ctx context.Context) ([]ListDockerHostsRow, error) {
 	rows, err := q.db.QueryContext(ctx, listDockerHosts)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []DockerHost{}
+	items := []ListDockerHostsRow{}
 	for rows.Next() {
-		var i DockerHost
+		var i ListDockerHostsRow
 		if err := rows.Scan(&i.ID, &i.Url, &i.CreatedAt); err != nil {
 			return nil, err
 		}
@@ -78,21 +111,39 @@ ORDER BY COUNT(w.id) ASC, dh.created_at ASC
 LIMIT 1
 `
 
-func (q *Queries) PickLeastLoadedDockerHost(ctx context.Context) (DockerHost, error) {
+type PickLeastLoadedDockerHostRow struct {
+	ID        uuid.UUID
+	Url       string
+	CreatedAt time.Time
+}
+
+func (q *Queries) PickLeastLoadedDockerHost(ctx context.Context) (PickLeastLoadedDockerHostRow, error) {
 	row := q.db.QueryRowContext(ctx, pickLeastLoadedDockerHost)
-	var i DockerHost
+	var i PickLeastLoadedDockerHostRow
 	err := row.Scan(&i.ID, &i.Url, &i.CreatedAt)
 	return i, err
 }
 
 const registerDockerHost = `-- name: RegisterDockerHost :one
-INSERT INTO docker_hosts (url)
-VALUES ($1)
+INSERT INTO docker_hosts (url, ca_cert_enc, client_cert_enc, client_key_enc)
+VALUES ($1, $2, $3, $4)
 RETURNING id
 `
 
-func (q *Queries) RegisterDockerHost(ctx context.Context, url string) (uuid.UUID, error) {
-	row := q.db.QueryRowContext(ctx, registerDockerHost, url)
+type RegisterDockerHostParams struct {
+	Url           string
+	CaCertEnc     []byte
+	ClientCertEnc []byte
+	ClientKeyEnc  []byte
+}
+
+func (q *Queries) RegisterDockerHost(ctx context.Context, arg RegisterDockerHostParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, registerDockerHost,
+		arg.Url,
+		arg.CaCertEnc,
+		arg.ClientCertEnc,
+		arg.ClientKeyEnc,
+	)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
@@ -100,16 +151,38 @@ func (q *Queries) RegisterDockerHost(ctx context.Context, url string) (uuid.UUID
 
 const updateDockerHost = `-- name: UpdateDockerHost :exec
 UPDATE docker_hosts
-SET url = $2
+SET url             = $2,
+    ca_cert_enc     = CASE WHEN $3::boolean THEN $4::bytea ELSE ca_cert_enc END,
+    client_cert_enc = CASE WHEN $5::boolean THEN $6::bytea ELSE client_cert_enc END,
+    client_key_enc  = CASE WHEN $7::boolean THEN $8::bytea ELSE client_key_enc END
 WHERE id = $1
 `
 
 type UpdateDockerHostParams struct {
-	ID  uuid.UUID
-	Url string
+	ID               uuid.UUID
+	Url              string
+	UpdateCaCert     bool
+	CaCertEnc        []byte
+	UpdateClientCert bool
+	ClientCertEnc    []byte
+	UpdateClientKey  bool
+	ClientKeyEnc     []byte
 }
 
+// ca_cert_enc/client_cert_enc/client_key_enc are three-way patch fields: the matching
+// update_* boolean is false when the caller didn't touch that cert (leave the stored value
+// alone), true with a NULL value when the caller cleared it, true with a value when the caller
+// set/replaced it. See internal/repository/pg/repos/dockerhosts/dockerhosts.go's Update.
 func (q *Queries) UpdateDockerHost(ctx context.Context, arg UpdateDockerHostParams) error {
-	_, err := q.db.ExecContext(ctx, updateDockerHost, arg.ID, arg.Url)
+	_, err := q.db.ExecContext(ctx, updateDockerHost,
+		arg.ID,
+		arg.Url,
+		arg.UpdateCaCert,
+		arg.CaCertEnc,
+		arg.UpdateClientCert,
+		arg.ClientCertEnc,
+		arg.UpdateClientKey,
+		arg.ClientKeyEnc,
+	)
 	return err
 }

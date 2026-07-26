@@ -1,0 +1,34 @@
+.TextareaContainer {
+    display: block;
+    width: 100%;
+
+    & textarea {
+        width: 100%;
+        min-height: 5rem;
+        resize: vertical;
+        background: var(--color-bg-input);
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-sm);
+        color: var(--color-fg-primary);
+        font-size: var(--font-size-base);
+        font-family: inherit;
+        letter-spacing: inherit;
+        padding: 0.5rem 0.625rem;
+        transition: border-color 160ms ease, background 160ms ease;
+
+        &::placeholder {
+            color: var(--color-fg-disabled);
+        }
+
+        &:focus {
+            border-color: var(--color-border-bright);
+            background: var(--color-bg-input-focus);
+            outline: none;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}

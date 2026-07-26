@@ -111,12 +111,17 @@ type CouchInstanceService interface {
 
 // DockerHostService is admin CRUD over the pool of Docker daemons that back per-vault workbench
 // containers — see docs/workbench/02_docker_topology.md. Unlike CouchInstanceService/
-// S3InstanceService, docker hosts carry no credentials, so there's no setup/status concept.
+// S3InstanceService there's no setup/status concept and no single credential blob; instead there
+// are three optional TLS/mTLS fields for the remote-daemon case (migrations/
+// 062_docker_hosts_tls.sql).
 type DockerHostService interface {
-	RegisterDockerHost(ctx context.Context, url string) (string, error)
+	RegisterDockerHost(ctx context.Context, url, caCert, clientCert, clientKey string) (string, error)
 	GetDockerHost(ctx context.Context, id string) (domain.DockerHost, error)
 	ListDockerHosts(ctx context.Context) ([]domain.DockerHost, error)
-	UpdateDockerHost(ctx context.Context, id, url string) error
+	// UpdateDockerHost patches url unconditionally; caCert/clientCert/clientKey are three-way
+	// patch pointers: nil leaves the stored cert untouched, a pointer to "" clears it, a pointer
+	// to a non-empty PEM re-encrypts and stores it.
+	UpdateDockerHost(ctx context.Context, id, url string, caCert, clientCert, clientKey *string) error
 	DeleteDockerHost(ctx context.Context, id string) error
 	HasDockerHosts(ctx context.Context) (bool, error)
 }

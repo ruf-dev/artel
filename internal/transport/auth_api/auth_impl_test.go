@@ -150,7 +150,7 @@ type fakeDockerHostService struct {
 	hasErr    error
 }
 
-func (f *fakeDockerHostService) RegisterDockerHost(_ context.Context, _ string) (string, error) {
+func (f *fakeDockerHostService) RegisterDockerHost(_ context.Context, _, _, _, _ string) (string, error) {
 	panic("not implemented")
 }
 
@@ -162,7 +162,7 @@ func (f *fakeDockerHostService) ListDockerHosts(_ context.Context) ([]domain.Doc
 	panic("not implemented")
 }
 
-func (f *fakeDockerHostService) UpdateDockerHost(_ context.Context, _, _ string) error {
+func (f *fakeDockerHostService) UpdateDockerHost(_ context.Context, _, _ string, _, _, _ *string) error {
 	panic("not implemented")
 }
 

@@ -203,12 +203,19 @@ type S3Instances interface {
 
 // DockerHosts is the pure-DB layer for the admin-managed pool of Docker daemons that back
 // per-vault workbench containers — see docs/workbench/02_docker_topology.md. Unlike
-// CouchInstances/S3Instances, docker hosts carry no credentials.
+// CouchInstances/S3Instances there's no single credential blob; instead there are three optional
+// TLS/mTLS fields (migrations/062_docker_hosts_tls.sql) for the remote-daemon case.
 type DockerHosts interface {
-	Register(ctx context.Context, url string) (uuid.UUID, error)
+	Register(ctx context.Context, url, caCert, clientCert, clientKey string) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)
+	// GetWithCreds is like Get but also decrypts and populates the TLS fields — used only to
+	// build a TLS-configured Docker client, never for admin list/view.
+	GetWithCreds(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)
 	List(ctx context.Context) ([]domain.DockerHost, error)
-	Update(ctx context.Context, id uuid.UUID, url string) error
+	// Update patches url unconditionally; caCert/clientCert/clientKey are three-way patch
+	// pointers: nil leaves the stored cert untouched, a pointer to "" clears it, a pointer to a
+	// non-empty PEM re-encrypts and stores it.
+	Update(ctx context.Context, id uuid.UUID, url string, caCert, clientCert, clientKey *string) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	Exists(ctx context.Context) (bool, error)
 	// PickLeastLoaded returns the docker host currently backing the fewest live workbenches —

@@ -333,9 +333,12 @@ type CouchInstance struct {
 }
 
 type DockerHost struct {
-	ID        uuid.UUID
-	Url       string
-	CreatedAt time.Time
+	ID            uuid.UUID
+	Url           string
+	CreatedAt     time.Time
+	CaCertEnc     []byte
+	ClientCertEnc []byte
+	ClientKeyEnc  []byte
 }
 
 type ExternalConnection struct {

@@ -6,10 +6,19 @@ import {GetDockerHostResponse} from "@/app/api/artel/docker_hosts.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import FormField from "@/components/FormField/FormField.tsx"
+import DockerHostTlsFields
+    from "@/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/components/DockerHostTlsFields.tsx"
+
+export interface DockerHostFormDialogSaveData {
+    url: string
+    caCert?: string
+    clientCert?: string
+    clientKey?: string
+}
 
 interface DockerHostFormDialogProps {
     initial?: GetDockerHostResponse
-    onSave: (url: string) => Promise<void>
+    onSave: (data: DockerHostFormDialogSaveData) => Promise<void>
 }
 
 export default function DockerHostFormDialog({initial, onSave}: DockerHostFormDialogProps) {
@@ -17,14 +26,18 @@ export default function DockerHostFormDialog({initial, onSave}: DockerHostFormDi
     const bakeError = useBakeError()
     const [saving, setSaving] = useState(false)
     const [url, setUrl] = useState(initial?.url ?? "")
+    const [caCert, setCaCert] = useState("")
+    const [clientCert, setClientCert] = useState("")
+    const [clientKey, setClientKey] = useState("")
 
     const isEdit = !!initial
     const title = isEdit ? "Edit Docker host" : "Add Docker host"
+    const showTlsFields = url.startsWith("tcp://")
 
     async function handleSave() {
         setSaving(true)
         try {
-            await onSave(url)
+            await onSave({url, caCert, clientCert, clientKey})
             CloseDialog()
         } catch (err) {
             bakeError(isEdit ? "Failed to update Docker host" : "Failed to add Docker host", err)
@@ -48,6 +61,18 @@ export default function DockerHostFormDialog({initial, onSave}: DockerHostFormDi
                 fieldClassName={cls.Field}
                 labelClassName={cls.FieldLabel}
             />
+            {showTlsFields && (
+                <DockerHostTlsFields
+                    caCert={caCert}
+                    clientCert={clientCert}
+                    clientKey={clientKey}
+                    isEdit={isEdit}
+                    disabled={saving}
+                    onCaCertChange={setCaCert}
+                    onClientCertChange={setClientCert}
+                    onClientKeyChange={setClientKey}
+                />
+            )}
             <div className={cls.ModalActions}>
                 <Button variant="primary" onClick={handleSave} disabled={saving}>
                     {saving ? "Saving…" : isEdit ? "Save changes" : "Add host"}

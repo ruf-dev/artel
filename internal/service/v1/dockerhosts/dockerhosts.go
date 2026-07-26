@@ -23,8 +23,8 @@ func New(repo repository.Repo) *Service {
 	}
 }
 
-func (s *Service) RegisterDockerHost(ctx context.Context, url string) (string, error) {
-	id, err := s.dockerHostsRepo.Register(ctx, url)
+func (s *Service) RegisterDockerHost(ctx context.Context, url, caCert, clientCert, clientKey string) (string, error) {
+	id, err := s.dockerHostsRepo.Register(ctx, url, caCert, clientCert, clientKey)
 	if err != nil {
 		return "", rerrors.Wrap(err, "register docker host")
 	}
@@ -55,13 +55,13 @@ func (s *Service) ListDockerHosts(ctx context.Context) ([]domain.DockerHost, err
 	return hosts, nil
 }
 
-func (s *Service) UpdateDockerHost(ctx context.Context, id, url string) error {
+func (s *Service) UpdateDockerHost(ctx context.Context, id, url string, caCert, clientCert, clientKey *string) error {
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return rerrors.Wrap(err, "parse uuid")
 	}
 
-	err = s.dockerHostsRepo.Update(ctx, uid, url)
+	err = s.dockerHostsRepo.Update(ctx, uid, url, caCert, clientCert, clientKey)
 	if err != nil {
 		return rerrors.Wrap(err, "update docker host")
 	}

@@ -44,6 +44,9 @@ service DockerHostsAPI {
 message RegisterDockerHost {
   message Request {
     string url = 1;
+    optional string ca_cert     = 2;
+    optional string client_cert = 3;
+    optional string client_key  = 4;
   }
   message Response {
     string id = 1;
@@ -72,6 +75,9 @@ message UpdateDockerHost {
   message Request {
     string id  = 1;
     string url = 2;
+    optional string ca_cert     = 3;
+    optional string client_cert = 4;
+    optional string client_key  = 5;
   }
   message Response {}
 }

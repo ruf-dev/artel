@@ -40,6 +40,8 @@ client:
 setup-dev-env:
 	docker compose up -d
 	./scripts/setup_dev_garage.sh
+	docker compose -f tests/docker-compose.yaml up -d test-dockerd
+	./scripts/setup_dev_docker_host.sh
 
 ### Garage Setup
 garage-status:
@@ -47,3 +49,13 @@ garage-status:
 
 setup-dev-garage:
 	./scripts/setup_dev_garage.sh
+
+### Docker Host (local dind) Setup
+# test-dockerd (tests/docker-compose.yaml) is the local docker:dind daemon registered as a
+# docker_hosts row for workbench.Service to schedule containers against — see
+# docs/workbench/02_docker_topology.md. It lives in tests/docker-compose.yaml, not the root
+# docker-compose.yaml, since it's also what `go test -tags e2e ./tests/...` uses; this target
+# just also brings it up for non-e2e local dev.
+setup-dev-docker-host:
+	docker compose -f tests/docker-compose.yaml up -d test-dockerd
+	./scripts/setup_dev_docker_host.sh
