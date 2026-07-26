@@ -8,6 +8,7 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchaccounts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/couchinstances"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/dockerhosts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/externalconnections"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mailserversuggestions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpconnectors"
@@ -45,6 +46,7 @@ type Repos struct {
 	couchAccounts         repository.CouchAccounts
 	couchInstances        repository.CouchInstances
 	s3Instances           repository.S3Instances
+	dockerHosts           repository.DockerHosts
 	userPermissions       repository.UserPermissionsRepo
 	mcpKey                repository.McpKeyRepository
 	pendingAuthCodes      repository.PendingAuthCodes
@@ -100,6 +102,10 @@ func (r Repos) CouchInstances() repository.CouchInstances {
 
 func (r Repos) S3Instances() repository.S3Instances {
 	return r.s3Instances
+}
+
+func (r Repos) DockerHosts() repository.DockerHosts {
+	return r.dockerHosts
 }
 
 func (r Repos) Users() repository.Users {
@@ -173,6 +179,7 @@ func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 		vaultInvitesRepo: vaultinvites.New(db),
 		couchInstances:   couchinstances.New(db, encryptor),
 		s3Instances:      s3instances.New(db, encryptor),
+		dockerHosts:      dockerhosts.New(db),
 
 		users:                 users.New(q, db),
 		sessions:              sessions.New(q),

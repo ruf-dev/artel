@@ -13,19 +13,25 @@ import (
 )
 
 const createWorkbench = `-- name: CreateWorkbench :one
-INSERT INTO workbenches (vault_id, user_id, volume_name, status, container_id)
-VALUES ($1, $2, $3, 'configuring', NULL)
-RETURNING id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at
+INSERT INTO workbenches (vault_id, user_id, volume_name, status, container_id, docker_host_id)
+VALUES ($1, $2, $3, 'configuring', NULL, $4)
+RETURNING id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 `
 
 type CreateWorkbenchParams struct {
-	VaultID    uuid.UUID
-	UserID     uuid.UUID
-	VolumeName string
+	VaultID      uuid.UUID
+	UserID       uuid.UUID
+	VolumeName   string
+	DockerHostID uuid.NullUUID
 }
 
 func (q *Queries) CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (Workbench, error) {
-	row := q.db.QueryRowContext(ctx, createWorkbench, arg.VaultID, arg.UserID, arg.VolumeName)
+	row := q.db.QueryRowContext(ctx, createWorkbench,
+		arg.VaultID,
+		arg.UserID,
+		arg.VolumeName,
+		arg.DockerHostID,
+	)
 	var i Workbench
 	err := row.Scan(
 		&i.ID,
@@ -38,6 +44,7 @@ func (q *Queries) CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams
 		&i.CreatedAt,
 		&i.StartedAt,
 		&i.StoppedAt,
+		&i.DockerHostID,
 	)
 	return i, err
 }
@@ -54,7 +61,7 @@ func (q *Queries) DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error 
 }
 
 const getWorkbenchByVaultID = `-- name: GetWorkbenchByVaultID :one
-SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at
+SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 FROM workbenches
 WHERE vault_id = $1
 `
@@ -73,6 +80,7 @@ func (q *Queries) GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) 
 		&i.CreatedAt,
 		&i.StartedAt,
 		&i.StoppedAt,
+		&i.DockerHostID,
 	)
 	return i, err
 }

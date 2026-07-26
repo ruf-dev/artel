@@ -1,19 +1,23 @@
 # Docker Topology
 
-## Gating: presence of config, not a feature flag
+## Gating: DB-backed pool, not a single config value
 
-Add a config field the same way every other data-source connection string is added per
-`docs/architecture.md` ("Adding a new env variable"): an entry under `environment:` in
-`config/config.yaml`, then `verv project tidy` regenerates `internal/config/environment.go`.
+Docker hosts are no longer a single startup-time config field. They're admin-managed rows in the
+`docker_hosts` table (migration `061_docker_hosts.sql`) — one row per Docker daemon endpoint
+(`url` only, e.g. `unix:///var/run/docker-workbenches.sock` or `tcp://host:2376`; no credentials,
+unlike `couch_instances`/`s3_instances`), CRUD'd via the `/api/docker_hosts/*` routes
+(`internal/transport/docker_hosts_api`) and the Docker Api admin tab, the same shape as CouchDB/S3
+instance management.
 
-```
-WorkbenchDockerHost string   // e.g. "unix:///var/run/docker-workbenches.sock" or "tcp://host:2376"
-```
-
-When empty, `custom.go` simply does not construct `WorkbenchService` and does not register its
-transport routes — the same "absent, not degraded" shape as everything gated behind
-`SubscriptionsEnabled` today, except here it's a service that either exists or doesn't, not a
-`FreeService`/`PaidService` swap (there's no meaningful no-op workbench).
+`WorkbenchService` is now **always constructed** in `custom.go` — there's no "absent config" case
+that leaves the whole subsystem unconstructed the way there used to be. Each `CreateWorkbench`
+call picks the least-loaded registered host (`DockerHosts.PickLeastLoaded`, by live workbench
+count, ties broken oldest-first) and pins the new workbench to it (`workbenches.docker_host_id`);
+every subsequent operation on that workbench (start/stop/delete/login flow) resolves its Docker
+client from that same pinned host rather than a single shared client instance. "No hosts
+registered yet" is therefore a *runtime* error surfaced from `CreateWorkbench`
+(`user_errors.NoDockerHostsAvailable`), not a startup-time absence — an admin can register a host
+at any time and workbench creation starts working immediately, no restart needed.
 
 ## Where the daemon actually runs
 
@@ -34,13 +38,14 @@ dockerd --data-root /var/lib/docker-workbenches \
         -H unix:///var/run/docker-workbenches.sock
 ```
 
-`WorkbenchDockerHost=unix:///var/run/docker-workbenches.sock`. This gives a genuinely separate
-daemon — own storage driver, own container/image namespace, a crash or resource exhaustion in one
-doesn't touch the other — without provisioning new hardware. This is the sweet spot for the
-prototype: real separation, one `systemd` unit to add, no new machine, no TLS cert management.
+Register `unix:///var/run/docker-workbenches.sock` as a `docker_hosts` row. This gives a genuinely
+separate daemon — own storage driver, own container/image namespace, a crash or resource
+exhaustion in one doesn't touch the other — without provisioning new hardware. This is the sweet
+spot for the prototype: real separation, one `systemd` unit to add, no new machine, no TLS cert
+management.
 
 ### Option C — dedicated remote host
-`WorkbenchDockerHost=tcp://workbench-host.internal:2376`, mutual TLS required (an unauthenticated
+Register `tcp://workbench-host.internal:2376` as a `docker_hosts` row, mutual TLS required (an unauthenticated
 Docker API over plain TCP is unauthenticated root on that host — never do this even internally).
 Best isolation, and lets workbench capacity scale independently of Artel's app servers, but is
 real ops work (a box, cert issuance/rotation, firewall rules). Defer past the prototype; revisit
@@ -56,8 +61,10 @@ New `internal/clients/workbenchdocker` package (naming: avoid colliding with a h
 generic `internal/clients/docker` if Artel ever needs Docker access for something unrelated),
 wrapping `github.com/docker/docker/client` — follows the existing
 `internal/clients/{couchdb,anthropic,imap,smtp}` convention of one small typed wrapper per
-external system, constructed once in `custom.go` with the configured host and handed to
-`WorkbenchService`.
+external system. Unlike those, a single cached instance isn't handed to `WorkbenchService` at
+construction time — with more than one registered host, `WorkbenchService` builds a fresh
+`workbenchdocker.New(host.Url)` per call, pointed at whichever host the workbench in question is
+pinned to (mirrors `couchinstances.Service`'s per-call `couchdb.New(cfg)`, not a cached client).
 
 Minimal surface needed for the prototype:
 

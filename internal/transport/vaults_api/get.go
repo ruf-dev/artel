@@ -29,17 +29,15 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*p
 
 	workbenchExists := false
 	workbenchStatus := ""
-	if v.workbenchSvc != nil {
-		wb, wbErr := v.workbenchSvc.GetWorkbench(ctx, vaultID)
-		if wbErr == nil {
-			workbenchExists = true
-			workbenchStatus = string(wb.Status)
-		} else if !errors.Is(wbErr, sql.ErrNoRows) {
-			// A vault without a workbench row is an expected, non-fatal state (predates this
-			// feature, or the create-vault hook's CreateWorkbench call failed separately) — only
-			// log genuine lookup failures, never fail GetVault over supplementary data.
-			log.Error().Err(wbErr).Str("vault_id", req.Id).Msg("error getting workbench status for vault")
-		}
+	wb, wbErr := v.workbenchSvc.GetWorkbench(ctx, vaultID)
+	if wbErr == nil {
+		workbenchExists = true
+		workbenchStatus = string(wb.Status)
+	} else if !errors.Is(wbErr, sql.ErrNoRows) {
+		// A vault without a workbench row is an expected, non-fatal state (predates this
+		// feature, or the create-vault hook's CreateWorkbench call failed separately) — only
+		// log genuine lookup failures, never fail GetVault over supplementary data.
+		log.Error().Err(wbErr).Str("vault_id", req.Id).Msg("error getting workbench status for vault")
 	}
 
 	resp := &pb.GetVault_Response{

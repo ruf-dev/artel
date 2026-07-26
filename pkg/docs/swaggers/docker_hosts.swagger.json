@@ -1,0 +1,288 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "docker_hosts.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "DockerHostsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/docker_hosts/add": {
+      "post": {
+        "operationId": "DockerHostsAPI_RegisterDockerHost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsRegisterDockerHostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsRegisterDockerHostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DockerHostsAPI"
+        ]
+      }
+    },
+    "/api/docker_hosts/delete": {
+      "post": {
+        "operationId": "DockerHostsAPI_DeleteDockerHost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsDeleteDockerHostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsDeleteDockerHostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DockerHostsAPI"
+        ]
+      }
+    },
+    "/api/docker_hosts/get": {
+      "post": {
+        "operationId": "DockerHostsAPI_GetDockerHost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsGetDockerHostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsGetDockerHostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DockerHostsAPI"
+        ]
+      }
+    },
+    "/api/docker_hosts/list": {
+      "post": {
+        "operationId": "DockerHostsAPI_ListDockerHosts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsListDockerHostsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsListDockerHostsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DockerHostsAPI"
+        ]
+      }
+    },
+    "/api/docker_hosts/update": {
+      "post": {
+        "operationId": "DockerHostsAPI_UpdateDockerHost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsUpdateDockerHostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_docker_hostsUpdateDockerHostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DockerHostsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_docker_hostsDeleteDockerHostRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_docker_hostsDeleteDockerHostResponse": {
+      "type": "object"
+    },
+    "artel_docker_hostsGetDockerHostRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_docker_hostsGetDockerHostResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_docker_hostsListDockerHostsRequest": {
+      "type": "object"
+    },
+    "artel_docker_hostsListDockerHostsResponse": {
+      "type": "object",
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_docker_hostsGetDockerHostResponse"
+          }
+        }
+      }
+    },
+    "artel_docker_hostsRegisterDockerHostRequest": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_docker_hostsRegisterDockerHostResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_docker_hostsUpdateDockerHostRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_docker_hostsUpdateDockerHostResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

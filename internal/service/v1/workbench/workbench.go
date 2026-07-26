@@ -48,24 +48,68 @@ type externalConnectionService interface {
 type Service struct {
 	workbenchesRepo repository.Workbenches
 	vaultsRepo      repository.Vaults
+	dockerHostsRepo repository.DockerHosts
 
-	docker              dockerClient
+	// newDockerClient builds a fresh dockerClient pointed at a given docker host's Url. A fresh
+	// client is built per-call rather than cached, since a workbench pool now has more than one
+	// host — mirrors how internal/service/v1/couchinstances/couchinstances.go builds a fresh
+	// couchdb.New(cfg) per call instead of caching a client.
+	newDockerClient func(host string) (dockerClient, error)
+
 	externalConnections externalConnectionService
 }
 
 func New(
 	workbenches repository.Workbenches,
 	vaults repository.Vaults,
-	docker dockerClient,
+	dockerHosts repository.DockerHosts,
 	externalConnections externalConnectionService,
+	newDockerClient func(host string) (dockerClient, error),
 ) *Service {
+	if newDockerClient == nil {
+		newDockerClient = newRealDockerClient
+	}
+
 	return &Service{
 		workbenchesRepo: workbenches,
 		vaultsRepo:      vaults,
+		dockerHostsRepo: dockerHosts,
 
-		docker:              docker,
+		newDockerClient:     newDockerClient,
 		externalConnections: externalConnections,
 	}
+}
+
+// newRealDockerClient is the production default for Service.newDockerClient — wraps
+// workbenchdocker.New so tests can inject a fake instead without a live Docker daemon.
+func newRealDockerClient(host string) (dockerClient, error) {
+	client, err := workbenchdocker.New(host)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error creating workbench docker client")
+	}
+
+	return client, nil
+}
+
+// resolveClient resolves the dockerClient for wb's assigned docker host. Returns
+// user_errors.WorkbenchMissingDockerHost for a workbenches row that predates the docker_hosts
+// pool (nullable docker_host_id, no backfill — see migrations/061_docker_hosts.sql).
+func (s *Service) resolveClient(ctx context.Context, wb domain.Workbench) (dockerClient, error) {
+	if wb.DockerHostUuid == nil {
+		return nil, user_errors.WorkbenchMissingDockerHost
+	}
+
+	host, err := s.dockerHostsRepo.Get(ctx, *wb.DockerHostUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error getting docker host")
+	}
+
+	client, err := s.newDockerClient(host.Url)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error creating docker client")
+	}
+
+	return client, nil
 }
 
 // CreateWorkbench records a 'configuring' workbenches row for vaultID, then provisions the
@@ -82,6 +126,10 @@ func New(
 // 'configuring' rather than rolled back or cleaned up here — DeleteWorkbench already tolerates
 // partial Docker state (missing container/volume) when tearing down, so a stuck 'configuring'
 // row is recoverable by deleting and retrying rather than needing bespoke rollback logic here.
+//
+// The docker host backing the new workbench is picked once, up front, by
+// DockerHosts.PickLeastLoaded — spreading new workbenches across the registered pool. Returns
+// user_errors.NoDockerHostsAvailable if the pool is empty.
 func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
 	existing, err := s.workbenchesRepo.GetByVaultID(ctx, vaultID)
 	if err == nil {
@@ -97,14 +145,32 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting vault by id")
 	}
 
+	host, err := s.dockerHostsRepo.PickLeastLoaded(ctx)
+	if err != nil {
+		// PickLeastLoaded's underlying sqlc query is a `:one` query against zero rows when the
+		// docker_hosts pool is empty — the repo layer runs that through pg_err.UnwrapPgErr (same
+		// as couchinstances.go's RandomPick), which turns sql.ErrNoRows into user_errors.NotFound
+		// rather than surfacing sql.ErrNoRows itself, so that's what's checked for here.
+		if errors.Is(err, user_errors.NotFound) {
+			return domain.Workbench{}, user_errors.NoDockerHostsAvailable
+		}
+
+		return domain.Workbench{}, rerrors.Wrap(err, "error picking least loaded docker host")
+	}
+
+	docker, err := s.newDockerClient(host.Url)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error creating docker client")
+	}
+
 	volumeName := fmt.Sprintf("workbench-%s", vaultID.String())
 
-	_, err = s.workbenchesRepo.Create(ctx, vaultID, vault.UserUuid, volumeName)
+	_, err = s.workbenchesRepo.Create(ctx, vaultID, vault.UserUuid, volumeName, host.Uuid)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench")
 	}
 
-	err = s.docker.CreateVolume(ctx, volumeName)
+	err = docker.CreateVolume(ctx, volumeName)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench volume")
 	}
@@ -114,7 +180,7 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 		VolumeName: volumeName,
 	}
 
-	containerID, err := s.docker.CreateContainer(ctx, createOpts)
+	containerID, err := docker.CreateContainer(ctx, createOpts)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench container")
 	}
@@ -168,6 +234,11 @@ func (s *Service) startWithApiKey(ctx context.Context, vaultID uuid.UUID) (domai
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error resolving docker client")
+	}
+
 	apiKey, err := s.externalConnections.GetAnthropicApiKey(ctx, wb.UserUuid)
 	if err != nil {
 		if errors.Is(err, user_errors.LlmKeyRequired) {
@@ -186,7 +257,7 @@ func (s *Service) startWithApiKey(ctx context.Context, vaultID uuid.UUID) (domai
 		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
-	err = s.docker.StartContainer(ctx, wb.ContainerId, env)
+	err = docker.StartContainer(ctx, wb.ContainerId, env)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
 	}
@@ -207,12 +278,17 @@ func (s *Service) startWithSubscriptionLogin(ctx context.Context, vaultID uuid.U
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error resolving docker client")
+	}
+
 	err = s.workbenchesRepo.MarkConfiguring(ctx, vaultID)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
-	err = s.docker.StartContainer(ctx, wb.ContainerId, nil)
+	err = docker.StartContainer(ctx, wb.ContainerId, nil)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
 	}
@@ -247,7 +323,12 @@ func (s *Service) GetLoginPrompt(ctx context.Context, vaultID uuid.UUID) (domain
 		return domain.WorkbenchLoginPrompt{}, rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
-	pane, err := s.docker.CapturePane(ctx, wb.ContainerId)
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return domain.WorkbenchLoginPrompt{}, rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	pane, err := docker.CapturePane(ctx, wb.ContainerId)
 	if err != nil {
 		return domain.WorkbenchLoginPrompt{}, rerrors.Wrap(err, "error capturing workbench tmux pane")
 	}
@@ -266,7 +347,12 @@ func (s *Service) SubmitLoginCode(ctx context.Context, vaultID uuid.UUID, code s
 		return rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
-	err = s.docker.SendKeys(ctx, wb.ContainerId, code)
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	err = docker.SendKeys(ctx, wb.ContainerId, code)
 	if err != nil {
 		return rerrors.Wrap(err, "error relaying login code into workbench session")
 	}
@@ -282,7 +368,12 @@ func (s *Service) StopWorkbench(ctx context.Context, vaultID uuid.UUID) error {
 		return rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
-	err = s.docker.StopContainer(ctx, wb.ContainerId)
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	err = docker.StopContainer(ctx, wb.ContainerId)
 	if err != nil {
 		return rerrors.Wrap(err, "error stopping workbench container")
 	}
@@ -312,19 +403,24 @@ func (s *Service) DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error 
 		return rerrors.Wrap(err, "error getting workbench by vault id")
 	}
 
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return rerrors.Wrap(err, "error resolving docker client")
+	}
+
 	if wb.ContainerId != "" {
-		err = s.docker.StopContainer(ctx, wb.ContainerId)
+		err = docker.StopContainer(ctx, wb.ContainerId)
 		if err != nil && !errdefs.IsNotFound(err) {
 			return rerrors.Wrap(err, "error stopping workbench container")
 		}
 
-		err = s.docker.RemoveContainer(ctx, wb.ContainerId)
+		err = docker.RemoveContainer(ctx, wb.ContainerId)
 		if err != nil && !errdefs.IsNotFound(err) {
 			return rerrors.Wrap(err, "error removing workbench container")
 		}
 	}
 
-	err = s.docker.RemoveVolume(ctx, wb.VolumeName)
+	err = docker.RemoveVolume(ctx, wb.VolumeName)
 	if err != nil && !errdefs.IsNotFound(err) {
 		return rerrors.Wrap(err, "error removing workbench volume")
 	}

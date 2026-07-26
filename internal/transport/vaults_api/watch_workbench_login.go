@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
-	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"go.redsock.ru/rerrors"
 )
 
@@ -20,10 +19,6 @@ const watchWorkbenchLoginPollInterval = 700 * time.Millisecond
 func (v *VaultsImpl) WatchWorkbenchLogin(
 	req *pb.WatchWorkbenchLogin_Request, stream pb.VaultsAPI_WatchWorkbenchLoginServer,
 ) error {
-	if v.workbenchSvc == nil {
-		return user_errors.WorkbenchNotConfigured
-	}
-
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		return rerrors.Wrap(err, "parse vault id")

@@ -332,6 +332,12 @@ type CouchInstance struct {
 	CreatedAt   time.Time
 }
 
+type DockerHost struct {
+	ID        uuid.UUID
+	Url       string
+	CreatedAt time.Time
+}
+
 type ExternalConnection struct {
 	ID             uuid.UUID
 	UserID         uuid.UUID
@@ -600,14 +606,15 @@ type VaultMember struct {
 }
 
 type Workbench struct {
-	ID          uuid.UUID
-	VaultID     uuid.UUID
-	UserID      uuid.UUID
-	Status      WorkbenchStatus
-	AuthMode    NullWorkbenchAuthMode
-	ContainerID sql.NullString
-	VolumeName  string
-	CreatedAt   time.Time
-	StartedAt   sql.NullTime
-	StoppedAt   sql.NullTime
+	ID           uuid.UUID
+	VaultID      uuid.UUID
+	UserID       uuid.UUID
+	Status       WorkbenchStatus
+	AuthMode     NullWorkbenchAuthMode
+	ContainerID  sql.NullString
+	VolumeName   string
+	CreatedAt    time.Time
+	StartedAt    sql.NullTime
+	StoppedAt    sql.NullTime
+	DockerHostID uuid.NullUUID
 }

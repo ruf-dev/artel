@@ -21,7 +21,7 @@ import (
 // logic without a live Postgres.
 type fakeWorkbenches struct {
 	getByVaultID         func(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
-	create               func(ctx context.Context, vaultID, userID uuid.UUID, volumeName string) (domain.Workbench, error)
+	create               func(ctx context.Context, vaultID, userID uuid.UUID, volumeName string, dockerHostID uuid.UUID) (domain.Workbench, error)
 	markContainerCreated func(ctx context.Context, vaultID uuid.UUID, containerID string) error
 	markConfiguring      func(ctx context.Context, vaultID uuid.UUID) error
 	markRunning          func(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error
@@ -33,12 +33,13 @@ func (f *fakeWorkbenches) Create(
 	ctx context.Context,
 	vaultID, userID uuid.UUID,
 	volumeName string,
+	dockerHostID uuid.UUID,
 ) (domain.Workbench, error) {
 	if f.create == nil {
 		return domain.Workbench{}, nil
 	}
 
-	return f.create(ctx, vaultID, userID, volumeName)
+	return f.create(ctx, vaultID, userID, volumeName, dockerHostID)
 }
 
 func (f *fakeWorkbenches) GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
@@ -143,6 +144,101 @@ func (f *fakeVaults) WithTx(sqldb.DB) repository.Vaults {
 	return f
 }
 
+// fakeDockerHosts is a hand-written repository.DockerHosts for exercising Service's per-workbench
+// docker host resolution without a live Postgres. Only Get/PickLeastLoaded are exercised by
+// workbench.Service today; the rest are stubbed trivially since these tests never drive them.
+type fakeDockerHosts struct {
+	register        func(ctx context.Context, url string) (uuid.UUID, error)
+	get             func(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)
+	list            func(ctx context.Context) ([]domain.DockerHost, error)
+	update          func(ctx context.Context, id uuid.UUID, url string) error
+	delete          func(ctx context.Context, id uuid.UUID) error
+	exists          func(ctx context.Context) (bool, error)
+	pickLeastLoaded func(ctx context.Context) (domain.DockerHost, error)
+}
+
+func (f *fakeDockerHosts) Register(ctx context.Context, url string) (uuid.UUID, error) {
+	if f.register == nil {
+		return uuid.New(), nil
+	}
+
+	return f.register(ctx, url)
+}
+
+func (f *fakeDockerHosts) Get(ctx context.Context, id uuid.UUID) (domain.DockerHost, error) {
+	if f.get == nil {
+		return domain.DockerHost{Uuid: id}, nil
+	}
+
+	return f.get(ctx, id)
+}
+
+func (f *fakeDockerHosts) List(ctx context.Context) ([]domain.DockerHost, error) {
+	if f.list == nil {
+		return nil, nil
+	}
+
+	return f.list(ctx)
+}
+
+func (f *fakeDockerHosts) Update(ctx context.Context, id uuid.UUID, url string) error {
+	if f.update == nil {
+		return nil
+	}
+
+	return f.update(ctx, id, url)
+}
+
+func (f *fakeDockerHosts) Delete(ctx context.Context, id uuid.UUID) error {
+	if f.delete == nil {
+		return nil
+	}
+
+	return f.delete(ctx, id)
+}
+
+func (f *fakeDockerHosts) Exists(ctx context.Context) (bool, error) {
+	if f.exists == nil {
+		return false, nil
+	}
+
+	return f.exists(ctx)
+}
+
+func (f *fakeDockerHosts) PickLeastLoaded(ctx context.Context) (domain.DockerHost, error) {
+	if f.pickLeastLoaded == nil {
+		return domain.DockerHost{}, nil
+	}
+
+	return f.pickLeastLoaded(ctx)
+}
+
+func (f *fakeDockerHosts) WithTx(sqldb.DB) repository.DockerHosts {
+	return f
+}
+
+// defaultDockerHostID/defaultDockerHost back newFakeDockerHosts's default single-host pool —
+// shared read-only across tests, so a workbench fixture that needs *some* valid DockerHostUuid
+// (most of the docker-op tests below) can just point at this one without every test minting its
+// own host.
+var defaultDockerHostID = uuid.New()
+
+var defaultDockerHost = domain.DockerHost{Uuid: defaultDockerHostID, Url: "docker://default-host"}
+
+// newFakeDockerHosts returns a fakeDockerHosts backed by a single always-available host
+// (defaultDockerHost) — the common case for tests that don't care which host handles a
+// workbench, just that resolution succeeds.
+func newFakeDockerHosts() *fakeDockerHosts {
+	return &fakeDockerHosts{
+		get: func(context.Context, uuid.UUID) (domain.DockerHost, error) {
+			return defaultDockerHost, nil
+		},
+		pickLeastLoaded: func(context.Context) (domain.DockerHost, error) {
+			return defaultDockerHost, nil
+		},
+	}
+}
+
 // fakeDocker is a hand-written dockerClient. Every method defaults to a no-op success; tests
 // override only the fields they need to exercise.
 type fakeDocker struct {
@@ -203,6 +299,14 @@ func (f *fakeDocker) SendKeys(ctx context.Context, containerID string, keys stri
 	return f.sendKeys(ctx, containerID, keys)
 }
 
+// fakeDockerClientFactory adapts a single fakeDocker into a Service.newDockerClient func,
+// ignoring the host argument — the common case for tests where only one docker host is in play.
+func fakeDockerClientFactory(d *fakeDocker) func(string) (dockerClient, error) {
+	return func(string) (dockerClient, error) {
+		return d, nil
+	}
+}
+
 // fakeExternalConnections is a hand-written externalConnectionService for exercising
 // StartWorkbench's api_key resolution without a live external-connections service.
 type fakeExternalConnections struct {
@@ -231,7 +335,7 @@ func TestCreateWorkbench_Idempotent_ReturnsExisting(t *testing.T) {
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			return existing, nil
 		},
-		create: func(context.Context, uuid.UUID, uuid.UUID, string) (domain.Workbench, error) {
+		create: func(context.Context, uuid.UUID, uuid.UUID, string, uuid.UUID) (domain.Workbench, error) {
 			t.Fatal("Create should not be called when a workbench already exists")
 			return domain.Workbench{}, nil
 		},
@@ -248,7 +352,7 @@ func TestCreateWorkbench_Idempotent_ReturnsExisting(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	got, err := svc.CreateWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -262,13 +366,17 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 
 	var gotCreateVolumeName string
 	var gotCreateOpts workbenchdocker.CreateOpts
-	var gotCreateVaultID, gotCreateUserID uuid.UUID
+	var gotCreateVaultID, gotCreateUserID, gotCreateDockerHostID uuid.UUID
 	var gotCreateVolumeParam string
 	var gotMarkContainerCreatedVaultID uuid.UUID
 	var gotMarkContainerCreatedContainerID string
+	var gotNewDockerClientHost string
 
 	configuring := domain.Workbench{Uuid: uuid.New(), VaultUuid: vaultID, UserUuid: userID, Status: domain.WorkbenchStatusConfiguring}
-	final := domain.Workbench{Uuid: uuid.New(), VaultUuid: vaultID, UserUuid: userID, Status: domain.WorkbenchStatusCreated, ContainerId: "container-1"}
+	final := domain.Workbench{
+		Uuid: uuid.New(), VaultUuid: vaultID, UserUuid: userID, Status: domain.WorkbenchStatusCreated,
+		ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID,
+	}
 
 	getByVaultIDCallCount := 0
 	workbenches := &fakeWorkbenches{
@@ -280,10 +388,11 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 
 			return final, nil
 		},
-		create: func(_ context.Context, vaultID, userID uuid.UUID, volumeName string) (domain.Workbench, error) {
+		create: func(_ context.Context, vaultID, userID uuid.UUID, volumeName string, dockerHostID uuid.UUID) (domain.Workbench, error) {
 			gotCreateVaultID = vaultID
 			gotCreateUserID = userID
 			gotCreateVolumeParam = volumeName
+			gotCreateDockerHostID = dockerHostID
 
 			return configuring, nil
 		},
@@ -310,7 +419,12 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 		return "container-1", nil
 	}
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	newDockerClient := func(host string) (dockerClient, error) {
+		gotNewDockerClientHost = host
+		return docker, nil
+	}
+
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), newDockerClient)
 
 	got, err := svc.CreateWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -326,6 +440,40 @@ func TestCreateWorkbench_HappyPath(t *testing.T) {
 	require.Equal(t, vaultID, gotMarkContainerCreatedVaultID)
 	require.Equal(t, "container-1", gotMarkContainerCreatedContainerID)
 	require.Equal(t, 2, getByVaultIDCallCount)
+	require.Equal(t, defaultDockerHostID, gotCreateDockerHostID, "the least-loaded host's uuid must be threaded into repo.Create")
+	require.Equal(t, defaultDockerHost.Url, gotNewDockerClientHost, "CreateVolume/CreateContainer's client must be built from the picked host's url")
+}
+
+func TestCreateWorkbench_NoDockerHostsAvailable_ReturnsClearError(t *testing.T) {
+	workbenches := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "not found")
+		},
+		create: func(context.Context, uuid.UUID, uuid.UUID, string, uuid.UUID) (domain.Workbench, error) {
+			t.Fatal("Create should not be called when no docker hosts are registered")
+			return domain.Workbench{}, nil
+		},
+	}
+	vaults := &fakeVaults{
+		getByID: func(context.Context, uuid.UUID) (domain.Vault, error) {
+			return domain.Vault{}, nil
+		},
+	}
+	dockerHosts := &fakeDockerHosts{
+		// A real DockerHosts.PickLeastLoaded runs its sqlc :one query through
+		// pg_err.UnwrapPgErr (see internal/repository/pg/repos/dockerhosts/dockerhosts.go),
+		// which turns sql.ErrNoRows into user_errors.NotFound rather than surfacing
+		// sql.ErrNoRows itself — so that's what an empty pool actually looks like to the
+		// service, and what's simulated here.
+		pickLeastLoaded: func(context.Context) (domain.DockerHost, error) {
+			return domain.DockerHost{}, user_errors.NotFound
+		},
+	}
+
+	svc := New(workbenches, vaults, dockerHosts, newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
+
+	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
+	require.ErrorIs(t, err, user_errors.NoDockerHostsAvailable)
 }
 
 func TestCreateWorkbench_GetByVaultIDUnexpectedError_Propagates(t *testing.T) {
@@ -337,7 +485,7 @@ func TestCreateWorkbench_GetByVaultIDUnexpectedError_Propagates(t *testing.T) {
 	vaults := &fakeVaults{}
 	docker := newFakeDocker()
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -356,7 +504,7 @@ func TestCreateWorkbench_VaultLookupError_Propagates(t *testing.T) {
 	}
 	docker := newFakeDocker()
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -367,7 +515,7 @@ func TestCreateWorkbench_RepoCreateError_Propagates(t *testing.T) {
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
 			return domain.Workbench{}, rerrors.Wrap(sql.ErrNoRows, "not found")
 		},
-		create: func(context.Context, uuid.UUID, uuid.UUID, string) (domain.Workbench, error) {
+		create: func(context.Context, uuid.UUID, uuid.UUID, string, uuid.UUID) (domain.Workbench, error) {
 			return domain.Workbench{}, errBoom
 		},
 	}
@@ -382,7 +530,7 @@ func TestCreateWorkbench_RepoCreateError_Propagates(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -412,7 +560,7 @@ func TestCreateWorkbench_CreateVolumeError_Propagates(t *testing.T) {
 		return "", nil
 	}
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -438,7 +586,7 @@ func TestCreateWorkbench_CreateContainerError_Propagates(t *testing.T) {
 		return "", errBoom
 	}
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -460,7 +608,7 @@ func TestCreateWorkbench_MarkContainerCreatedError_Propagates(t *testing.T) {
 	}
 	docker := newFakeDocker()
 
-	svc := New(workbenches, vaults, docker, newFakeExternalConnections())
+	svc := New(workbenches, vaults, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.CreateWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -477,7 +625,7 @@ func TestGetWorkbench_Passthrough(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	got, err := svc.GetWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -491,7 +639,7 @@ func TestGetWorkbench_Error_Propagates(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	_, err := svc.GetWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -505,7 +653,7 @@ func TestStartWorkbench_UnknownMode_ReturnsNotImplemented(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthMode("bogus"))
 	require.ErrorIs(t, err, user_errors.WorkbenchAuthModeNotImplemented)
@@ -513,9 +661,9 @@ func TestStartWorkbench_UnknownMode_ReturnsNotImplemented(t *testing.T) {
 
 func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}
 	running := domain.Workbench{
-		VaultUuid: vaultID, ContainerId: "container-1",
+		VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID,
 		Status: domain.WorkbenchStatusRunning, AuthMode: domain.WorkbenchAuthModeSubscriptionLogin,
 	}
 
@@ -563,7 +711,7 @@ func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 		return "", nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, externalConnections)
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), externalConnections, fakeDockerClientFactory(docker))
 
 	got, err := svc.StartWorkbench(context.Background(), vaultID, domain.WorkbenchAuthModeSubscriptionLogin)
 	require.NoError(t, err)
@@ -578,7 +726,7 @@ func TestStartWorkbench_SubscriptionLogin_HappyPath(t *testing.T) {
 func TestStartWorkbench_SubscriptionLogin_StartContainerError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 		markRunning: func(context.Context, uuid.UUID, domain.WorkbenchAuthMode) error {
 			t.Fatal("MarkRunning should not be called when StartContainer fails")
@@ -591,7 +739,7 @@ func TestStartWorkbench_SubscriptionLogin_StartContainerError_Propagates(t *test
 		return errBoom
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeSubscriptionLogin)
 	require.Error(t, err)
@@ -600,7 +748,7 @@ func TestStartWorkbench_SubscriptionLogin_StartContainerError_Propagates(t *test
 func TestStartWorkbench_SubscriptionLogin_MarkConfiguringError_ShortCircuits(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 		markConfiguring: func(context.Context, uuid.UUID) error {
 			return errBoom
@@ -613,7 +761,7 @@ func TestStartWorkbench_SubscriptionLogin_MarkConfiguringError_ShortCircuits(t *
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeSubscriptionLogin)
 	require.Error(t, err)
@@ -622,8 +770,11 @@ func TestStartWorkbench_SubscriptionLogin_MarkConfiguringError_ShortCircuits(t *
 func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 	vaultID := uuid.New()
 	userID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, UserUuid: userID, ContainerId: "container-1"}
-	running := domain.Workbench{VaultUuid: vaultID, UserUuid: userID, ContainerId: "container-1", Status: domain.WorkbenchStatusRunning}
+	wb := domain.Workbench{VaultUuid: vaultID, UserUuid: userID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}
+	running := domain.Workbench{
+		VaultUuid: vaultID, UserUuid: userID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID,
+		Status: domain.WorkbenchStatusRunning,
+	}
 
 	var gotAnthropicUserID uuid.UUID
 	var gotStartContainerID string
@@ -670,7 +821,7 @@ func TestStartWorkbench_ApiKey_HappyPath(t *testing.T) {
 		return "sk-ant-test", nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, externalConnections)
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), externalConnections, fakeDockerClientFactory(docker))
 
 	got, err := svc.StartWorkbench(context.Background(), vaultID, domain.WorkbenchAuthModeAPIKey)
 	require.NoError(t, err)
@@ -690,7 +841,7 @@ func TestStartWorkbench_GetByVaultIDError_Propagates(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeAPIKey)
 	require.Error(t, err)
@@ -699,7 +850,7 @@ func TestStartWorkbench_GetByVaultIDError_Propagates(t *testing.T) {
 func TestStartWorkbench_NoAnthropicConnection_ReturnsClearError(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -714,7 +865,7 @@ func TestStartWorkbench_NoAnthropicConnection_ReturnsClearError(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, externalConnections)
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), externalConnections, fakeDockerClientFactory(docker))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeAPIKey)
 	require.ErrorIs(t, err, user_errors.WorkbenchMissingAnthropicConnection)
@@ -723,7 +874,7 @@ func TestStartWorkbench_NoAnthropicConnection_ReturnsClearError(t *testing.T) {
 func TestStartWorkbench_StartContainerError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 		markRunning: func(context.Context, uuid.UUID, domain.WorkbenchAuthMode) error {
 			t.Fatal("MarkRunning should not be called when StartContainer fails")
@@ -736,7 +887,7 @@ func TestStartWorkbench_StartContainerError_Propagates(t *testing.T) {
 		return errBoom
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeAPIKey)
 	require.Error(t, err)
@@ -745,7 +896,7 @@ func TestStartWorkbench_StartContainerError_Propagates(t *testing.T) {
 func TestStartWorkbench_ApiKey_MarkConfiguringError_ShortCircuits(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 		markConfiguring: func(context.Context, uuid.UUID) error {
 			return errBoom
@@ -758,7 +909,7 @@ func TestStartWorkbench_ApiKey_MarkConfiguringError_ShortCircuits(t *testing.T) 
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.StartWorkbench(context.Background(), uuid.New(), domain.WorkbenchAuthModeAPIKey)
 	require.Error(t, err)
@@ -766,7 +917,7 @@ func TestStartWorkbench_ApiKey_MarkConfiguringError_ShortCircuits(t *testing.T) 
 
 func TestStopWorkbench_HappyPath(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}
 
 	var stoppedID string
 	var markedStoppedVaultID uuid.UUID
@@ -787,7 +938,7 @@ func TestStopWorkbench_HappyPath(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.StopWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -802,7 +953,7 @@ func TestStopWorkbench_GetByVaultIDError_Propagates(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	err := svc.StopWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -811,7 +962,7 @@ func TestStopWorkbench_GetByVaultIDError_Propagates(t *testing.T) {
 func TestStopWorkbench_StopContainerError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 		markStopped: func(context.Context, uuid.UUID) error {
 			t.Fatal("MarkStopped should not be called when StopContainer fails")
@@ -824,10 +975,89 @@ func TestStopWorkbench_StopContainerError_Propagates(t *testing.T) {
 		return errBoom
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.StopWorkbench(context.Background(), uuid.New())
 	require.Error(t, err)
+}
+
+// TestStopWorkbench_ResolvesClientFromWorkbenchsOwnDockerHost pins two workbenches to two
+// distinguishable docker hosts and asserts each one's StopContainer call lands on the docker
+// client built from *its own* DockerHostUuid, not a single shared client — i.e. resolveClient
+// genuinely branches per-workbench rather than always resolving the same host.
+func TestStopWorkbench_ResolvesClientFromWorkbenchsOwnDockerHost(t *testing.T) {
+	hostAID := uuid.New()
+	hostBID := uuid.New()
+	hostA := domain.DockerHost{Uuid: hostAID, Url: "docker://host-a"}
+	hostB := domain.DockerHost{Uuid: hostBID, Url: "docker://host-b"}
+
+	dockerHosts := &fakeDockerHosts{
+		get: func(_ context.Context, id uuid.UUID) (domain.DockerHost, error) {
+			switch id {
+			case hostAID:
+				return hostA, nil
+			case hostBID:
+				return hostB, nil
+			default:
+				t.Fatalf("unexpected docker host id %s", id)
+				return domain.DockerHost{}, nil
+			}
+		},
+	}
+
+	dockerA := newFakeDocker()
+	dockerB := newFakeDocker()
+
+	var stoppedOnA, stoppedOnB bool
+	dockerA.stopContainer = func(context.Context, string) error {
+		stoppedOnA = true
+		return nil
+	}
+	dockerB.stopContainer = func(context.Context, string) error {
+		stoppedOnB = true
+		return nil
+	}
+
+	newDockerClient := func(host string) (dockerClient, error) {
+		switch host {
+		case hostA.Url:
+			return dockerA, nil
+		case hostB.Url:
+			return dockerB, nil
+		default:
+			t.Fatalf("unexpected host url %q", host)
+			return nil, nil
+		}
+	}
+
+	vaultIDOnA := uuid.New()
+	wbOnA := domain.Workbench{VaultUuid: vaultIDOnA, ContainerId: "container-a", DockerHostUuid: &hostAID}
+	workbenchesOnA := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return wbOnA, nil
+		},
+	}
+
+	svcOnA := New(workbenchesOnA, &fakeVaults{}, dockerHosts, newFakeExternalConnections(), newDockerClient)
+
+	err := svcOnA.StopWorkbench(context.Background(), vaultIDOnA)
+	require.NoError(t, err)
+	require.True(t, stoppedOnA, "StopContainer must be called on the client built from the workbench's own (host A) docker host")
+	require.False(t, stoppedOnB, "the host B client must not be touched by a workbench pinned to host A")
+
+	vaultIDOnB := uuid.New()
+	wbOnB := domain.Workbench{VaultUuid: vaultIDOnB, ContainerId: "container-b", DockerHostUuid: &hostBID}
+	workbenchesOnB := &fakeWorkbenches{
+		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
+			return wbOnB, nil
+		},
+	}
+
+	svcOnB := New(workbenchesOnB, &fakeVaults{}, dockerHosts, newFakeExternalConnections(), newDockerClient)
+
+	err = svcOnB.StopWorkbench(context.Background(), vaultIDOnB)
+	require.NoError(t, err)
+	require.True(t, stoppedOnB, "StopContainer must be called on the client built from the workbench's own (host B) docker host")
 }
 
 func TestDeleteWorkbench_NotFound_IsNoop(t *testing.T) {
@@ -842,7 +1072,7 @@ func TestDeleteWorkbench_NotFound_IsNoop(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.DeleteWorkbench(context.Background(), uuid.New())
 	require.NoError(t, err)
@@ -850,7 +1080,7 @@ func TestDeleteWorkbench_NotFound_IsNoop(t *testing.T) {
 
 func TestDeleteWorkbench_HappyPath_StopsRemovesAndDeletes(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", VolumeName: "workbench-vol"}
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", VolumeName: "workbench-vol", DockerHostUuid: &defaultDockerHostID}
 
 	var stoppedID, removedContainerID, removedVolumeName string
 	var deletedVaultID uuid.UUID
@@ -879,7 +1109,7 @@ func TestDeleteWorkbench_HappyPath_StopsRemovesAndDeletes(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -891,7 +1121,7 @@ func TestDeleteWorkbench_HappyPath_StopsRemovesAndDeletes(t *testing.T) {
 
 func TestDeleteWorkbench_NoContainerYet_SkipsContainerCalls(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "", VolumeName: "workbench-vol"}
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "", VolumeName: "workbench-vol", DockerHostUuid: &defaultDockerHostID}
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
@@ -909,7 +1139,7 @@ func TestDeleteWorkbench_NoContainerYet_SkipsContainerCalls(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -917,7 +1147,7 @@ func TestDeleteWorkbench_NoContainerYet_SkipsContainerCalls(t *testing.T) {
 
 func TestDeleteWorkbench_StopContainerNotFound_ContinuesTeardown(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", VolumeName: "workbench-vol"}
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", VolumeName: "workbench-vol", DockerHostUuid: &defaultDockerHostID}
 
 	var removedContainerID string
 	var deleted bool
@@ -941,7 +1171,7 @@ func TestDeleteWorkbench_StopContainerNotFound_ContinuesTeardown(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -951,7 +1181,7 @@ func TestDeleteWorkbench_StopContainerNotFound_ContinuesTeardown(t *testing.T) {
 
 func TestDeleteWorkbench_StopContainerGenericError_Propagates(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", VolumeName: "workbench-vol"}
+	wb := domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", VolumeName: "workbench-vol", DockerHostUuid: &defaultDockerHostID}
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
@@ -972,7 +1202,7 @@ func TestDeleteWorkbench_StopContainerGenericError_Propagates(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
 	require.Error(t, err)
@@ -980,7 +1210,7 @@ func TestDeleteWorkbench_StopContainerGenericError_Propagates(t *testing.T) {
 
 func TestDeleteWorkbench_RemoveVolumeNotFound_ContinuesToDelete(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, VolumeName: "workbench-vol"}
+	wb := domain.Workbench{VaultUuid: vaultID, VolumeName: "workbench-vol", DockerHostUuid: &defaultDockerHostID}
 
 	var deleted bool
 
@@ -999,7 +1229,7 @@ func TestDeleteWorkbench_RemoveVolumeNotFound_ContinuesToDelete(t *testing.T) {
 		return errdefs.ErrNotFound
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -1008,7 +1238,7 @@ func TestDeleteWorkbench_RemoveVolumeNotFound_ContinuesToDelete(t *testing.T) {
 
 func TestDeleteWorkbench_RepoDeleteError_Propagates(t *testing.T) {
 	vaultID := uuid.New()
-	wb := domain.Workbench{VaultUuid: vaultID, VolumeName: "workbench-vol"}
+	wb := domain.Workbench{VaultUuid: vaultID, VolumeName: "workbench-vol", DockerHostUuid: &defaultDockerHostID}
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
@@ -1019,7 +1249,7 @@ func TestDeleteWorkbench_RepoDeleteError_Propagates(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	err := svc.DeleteWorkbench(context.Background(), vaultID)
 	require.Error(t, err)
@@ -1037,7 +1267,7 @@ func TestGetLoginPrompt_UrlPresent(t *testing.T) {
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1047,7 +1277,7 @@ func TestGetLoginPrompt_UrlPresent(t *testing.T) {
 		return pane, nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -1065,7 +1295,7 @@ func TestGetLoginPrompt_OAuthErrorPresent(t *testing.T) {
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1074,7 +1304,7 @@ func TestGetLoginPrompt_OAuthErrorPresent(t *testing.T) {
 		return pane, nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -1087,7 +1317,7 @@ func TestGetLoginPrompt_NeitherPresent_Authorized(t *testing.T) {
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1096,7 +1326,7 @@ func TestGetLoginPrompt_NeitherPresent_Authorized(t *testing.T) {
 		return "│ > hello, what can you help me with today?\n", nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -1108,7 +1338,7 @@ func TestGetLoginPrompt_NeitherPresent_MenuStillShowing_Pending(t *testing.T) {
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1122,7 +1352,7 @@ func TestGetLoginPrompt_NeitherPresent_MenuStillShowing_Pending(t *testing.T) {
 		return pane, nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	got, err := svc.GetLoginPrompt(context.Background(), vaultID)
 	require.NoError(t, err)
@@ -1136,7 +1366,7 @@ func TestGetLoginPrompt_GetByVaultIDError_Propagates(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	_, err := svc.GetLoginPrompt(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -1145,7 +1375,7 @@ func TestGetLoginPrompt_GetByVaultIDError_Propagates(t *testing.T) {
 func TestGetLoginPrompt_CapturePaneError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1154,7 +1384,7 @@ func TestGetLoginPrompt_CapturePaneError_Propagates(t *testing.T) {
 		return "", errBoom
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	_, err := svc.GetLoginPrompt(context.Background(), uuid.New())
 	require.Error(t, err)
@@ -1167,7 +1397,7 @@ func TestSubmitLoginCode_HappyPath(t *testing.T) {
 
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1"}, nil
+			return domain.Workbench{VaultUuid: vaultID, ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1178,7 +1408,7 @@ func TestSubmitLoginCode_HappyPath(t *testing.T) {
 		return nil
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.SubmitLoginCode(context.Background(), vaultID, "the-pasted-code")
 	require.NoError(t, err)
@@ -1193,7 +1423,7 @@ func TestSubmitLoginCode_GetByVaultIDError_Propagates(t *testing.T) {
 		},
 	}
 
-	svc := New(workbenches, &fakeVaults{}, newFakeDocker(), newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(newFakeDocker()))
 
 	err := svc.SubmitLoginCode(context.Background(), uuid.New(), "code")
 	require.Error(t, err)
@@ -1202,7 +1432,7 @@ func TestSubmitLoginCode_GetByVaultIDError_Propagates(t *testing.T) {
 func TestSubmitLoginCode_SendKeysError_Propagates(t *testing.T) {
 	workbenches := &fakeWorkbenches{
 		getByVaultID: func(context.Context, uuid.UUID) (domain.Workbench, error) {
-			return domain.Workbench{ContainerId: "container-1"}, nil
+			return domain.Workbench{ContainerId: "container-1", DockerHostUuid: &defaultDockerHostID}, nil
 		},
 	}
 
@@ -1211,7 +1441,7 @@ func TestSubmitLoginCode_SendKeysError_Propagates(t *testing.T) {
 		return errBoom
 	}
 
-	svc := New(workbenches, &fakeVaults{}, docker, newFakeExternalConnections())
+	svc := New(workbenches, &fakeVaults{}, newFakeDockerHosts(), newFakeExternalConnections(), fakeDockerClientFactory(docker))
 
 	err := svc.SubmitLoginCode(context.Background(), uuid.New(), "code")
 	require.Error(t, err)

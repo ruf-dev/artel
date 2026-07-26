@@ -20,11 +20,9 @@ func (v *VaultsImpl) DeleteVault(ctx context.Context, req *pb.DeleteVault_Reques
 	// live API key) with nothing in Postgres pointing at it anymore. Unlike CreateVault's
 	// best-effort hook, a failure here must fail the whole call rather than proceeding.
 	// See docs/workbench/01_data_model_and_lifecycle.md, "Vault deletion".
-	if v.workbenchSvc != nil {
-		err = v.workbenchSvc.DeleteWorkbench(ctx, vaultID)
-		if err != nil {
-			return nil, rerrors.Wrap(err, "error deleting workbench for vault")
-		}
+	err = v.workbenchSvc.DeleteWorkbench(ctx, vaultID)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error deleting workbench for vault")
 	}
 
 	err = v.vaultSvc.DeleteVault(ctx, vaultID)

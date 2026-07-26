@@ -6,17 +6,12 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
-	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"go.redsock.ru/rerrors"
 )
 
 func (v *VaultsImpl) StartWorkbench(
 	ctx context.Context, req *pb.StartWorkbench_Request,
 ) (*pb.StartWorkbench_Response, error) {
-	if v.workbenchSvc == nil {
-		return nil, user_errors.WorkbenchNotConfigured
-	}
-
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "parse vault id")

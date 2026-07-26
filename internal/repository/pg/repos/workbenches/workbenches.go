@@ -27,11 +27,13 @@ func (r *Repo) Create(
 	ctx context.Context,
 	vaultID, userID uuid.UUID,
 	volumeName string,
+	dockerHostID uuid.UUID,
 ) (domain.Workbench, error) {
 	params := artel_q.CreateWorkbenchParams{
-		VaultID:    vaultID,
-		UserID:     userID,
-		VolumeName: volumeName,
+		VaultID:      vaultID,
+		UserID:       userID,
+		VolumeName:   volumeName,
+		DockerHostID: uuid.NullUUID{UUID: dockerHostID, Valid: true},
 	}
 
 	row, err := r.q.CreateWorkbench(ctx, params)
@@ -50,6 +52,7 @@ func (r *Repo) Create(
 		row.CreatedAt,
 		row.StartedAt,
 		row.StoppedAt,
+		row.DockerHostID,
 	)
 
 	return w, nil
@@ -72,6 +75,7 @@ func (r *Repo) GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Work
 		row.CreatedAt,
 		row.StartedAt,
 		row.StoppedAt,
+		row.DockerHostID,
 	)
 
 	return w, nil
@@ -156,6 +160,7 @@ func rowToWorkbench(
 	volumeName string,
 	createdAt time.Time,
 	startedAt, stoppedAt sql.NullTime,
+	dockerHostID uuid.NullUUID,
 ) domain.Workbench {
 	w := domain.Workbench{
 		Uuid:       id,
@@ -182,6 +187,11 @@ func rowToWorkbench(
 	if stoppedAt.Valid {
 		stoppedAtVal := stoppedAt.Time
 		w.StoppedAt = &stoppedAtVal
+	}
+
+	if dockerHostID.Valid {
+		dockerHostIDVal := dockerHostID.UUID
+		w.DockerHostUuid = &dockerHostIDVal
 	}
 
 	return w

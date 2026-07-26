@@ -13,7 +13,6 @@ type EnvironmentConfig struct {
 	OtelEndpoint         string
 	SubscriptionsEnabled bool
 	TelegramClientID     string
-	WorkbenchDockerHost  string
 }
 
 const (

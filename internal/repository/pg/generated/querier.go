@@ -27,6 +27,7 @@ type Querier interface {
 	CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (Workbench, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
+	DeleteDockerHost(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredPendingAuthCodes(ctx context.Context) error
 	DeleteExternalConnection(ctx context.Context, arg DeleteExternalConnectionParams) error
 	DeleteExternalConnectionByID(ctx context.Context, arg DeleteExternalConnectionByIDParams) error
@@ -42,9 +43,11 @@ type Querier interface {
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
 	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
+	DockerHostExists(ctx context.Context) (bool, error)
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
 	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
+	GetDockerHost(ctx context.Context, id uuid.UUID) (DockerHost, error)
 	GetExternalConnectionByID(ctx context.Context, id uuid.UUID) (ExternalConnection, error)
 	GetExternalConnectionByUserAndProvider(ctx context.Context, arg GetExternalConnectionByUserAndProviderParams) (ExternalConnection, error)
 	GetMcpConnector(ctx context.Context, arg GetMcpConnectorParams) (McpConnector, error)
@@ -97,6 +100,7 @@ type Querier interface {
 	ListAllMcpTools(ctx context.Context) ([]McpTool, error)
 	ListCouchAccountsByUser(ctx context.Context, userID uuid.UUID) ([]CouchAccount, error)
 	ListCouchInstances(ctx context.Context) ([]ListCouchInstancesRow, error)
+	ListDockerHosts(ctx context.Context) ([]DockerHost, error)
 	ListExternalConnectionsByUser(ctx context.Context, userID uuid.UUID) ([]ExternalConnection, error)
 	ListMailServerSuggestions(ctx context.Context, dollar_1 sql.NullString) ([]MailServerSuggestion, error)
 	ListMcpConnectorsByKey(ctx context.Context, mcpKeyID uuid.UUID) ([]McpConnector, error)
@@ -129,8 +133,10 @@ type Querier interface {
 	MarkWorkbenchRemoved(ctx context.Context, vaultID uuid.UUID) error
 	MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error
 	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error
+	PickLeastLoadedDockerHost(ctx context.Context) (DockerHost, error)
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
+	RegisterDockerHost(ctx context.Context, url string) (uuid.UUID, error)
 	RegisterS3Instance(ctx context.Context, arg RegisterS3InstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
@@ -152,6 +158,7 @@ type Querier interface {
 	UnlinkVaultS3Bucket(ctx context.Context, id uuid.UUID) error
 	UpdateCouchAccountPassword(ctx context.Context, arg UpdateCouchAccountPasswordParams) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
+	UpdateDockerHost(ctx context.Context, arg UpdateDockerHostParams) error
 	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
 	UpdateTract(ctx context.Context, arg UpdateTractParams) (Tract, error)
 	UpdateTractRunStatus(ctx context.Context, arg UpdateTractRunStatusParams) error

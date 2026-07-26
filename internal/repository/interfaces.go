@@ -25,6 +25,7 @@ type Repo interface {
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
 	S3Instances() S3Instances
+	DockerHosts() DockerHosts
 	UserPermissions() UserPermissionsRepo
 	McpKeyRepository() McpKeyRepository
 	PendingAuthCodes() PendingAuthCodes
@@ -94,7 +95,7 @@ type Vaults interface {
 // Workbenches is the pure-DB layer for the per-vault Docker workbench container — see
 // docs/workbench/01_data_model_and_lifecycle.md for the state machine it reflects.
 type Workbenches interface {
-	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName string) (domain.Workbench, error)
+	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName string, dockerHostID uuid.UUID) (domain.Workbench, error)
 	GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, containerID string) error
 	MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error
@@ -198,6 +199,23 @@ type S3Instances interface {
 	Exists(ctx context.Context) (bool, error)
 
 	WithTx(tx sqldb.DB) S3Instances
+}
+
+// DockerHosts is the pure-DB layer for the admin-managed pool of Docker daemons that back
+// per-vault workbench containers — see docs/workbench/02_docker_topology.md. Unlike
+// CouchInstances/S3Instances, docker hosts carry no credentials.
+type DockerHosts interface {
+	Register(ctx context.Context, url string) (uuid.UUID, error)
+	Get(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)
+	List(ctx context.Context) ([]domain.DockerHost, error)
+	Update(ctx context.Context, id uuid.UUID, url string) error
+	Delete(ctx context.Context, id uuid.UUID) error
+	Exists(ctx context.Context) (bool, error)
+	// PickLeastLoaded returns the docker host currently backing the fewest live workbenches —
+	// used by workbench.Service.CreateWorkbench to spread new workbenches across the pool.
+	PickLeastLoaded(ctx context.Context) (domain.DockerHost, error)
+
+	WithTx(tx sqldb.DB) DockerHosts
 }
 
 type UserPermissionsRepo interface {

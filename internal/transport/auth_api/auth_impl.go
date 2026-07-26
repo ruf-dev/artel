@@ -20,13 +20,13 @@ import (
 // which collides with the transport.GrpcImpl interface method Register(grpc.ServiceRegistrar).
 type authHandler struct {
 	artel_api.UnimplementedAuthAPIServer
-	authSvc              service.AuthService
-	s3InstanceSvc        service.S3InstanceService
-	couchInstanceSvc     service.CouchInstanceService
-	telegramClientID     string
-	noAuthEnabled        bool
-	credsEncrypted       bool
-	isWorkbenchAvailable bool
+	authSvc          service.AuthService
+	s3InstanceSvc    service.S3InstanceService
+	couchInstanceSvc service.CouchInstanceService
+	dockerHostSvc    service.DockerHostService
+	telegramClientID string
+	noAuthEnabled    bool
+	credsEncrypted   bool
 }
 
 func (h *authHandler) Register(
@@ -118,13 +118,18 @@ func (h *authHandler) GetConfig(
 		return nil, rerrors.Wrap(err, "check couch instances availability")
 	}
 
+	hasDockerHosts, err := h.dockerHostSvc.HasDockerHosts(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "check docker hosts availability")
+	}
+
 	return &artel_api.GetConfig_Response{
 		TelegramClientId:     h.telegramClientID,
 		IsS3Available:        hasS3,
 		NoAuthEnabled:        h.noAuthEnabled,
 		CredsEncrypted:       h.credsEncrypted,
 		IsCouchAvailable:     hasCouch,
-		IsWorkbenchAvailable: h.isWorkbenchAvailable,
+		IsWorkbenchAvailable: hasDockerHosts,
 	}, nil
 }
 
@@ -188,17 +193,17 @@ type AuthImpl struct {
 func NewAuthImpl(
 	authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService,
 	couchInstanceSvc service.CouchInstanceService, noAuthEnabled bool,
-	credsEncrypted bool, isWorkbenchAvailable bool,
+	credsEncrypted bool, dockerHostSvc service.DockerHostService,
 ) *AuthImpl {
 	return &AuthImpl{
 		handler: &authHandler{
-			authSvc:              authSvc,
-			telegramClientID:     telegramClientID,
-			s3InstanceSvc:        s3InstanceSvc,
-			couchInstanceSvc:     couchInstanceSvc,
-			noAuthEnabled:        noAuthEnabled,
-			credsEncrypted:       credsEncrypted,
-			isWorkbenchAvailable: isWorkbenchAvailable,
+			authSvc:          authSvc,
+			telegramClientID: telegramClientID,
+			s3InstanceSvc:    s3InstanceSvc,
+			couchInstanceSvc: couchInstanceSvc,
+			dockerHostSvc:    dockerHostSvc,
+			noAuthEnabled:    noAuthEnabled,
+			credsEncrypted:   credsEncrypted,
 		},
 	}
 }
