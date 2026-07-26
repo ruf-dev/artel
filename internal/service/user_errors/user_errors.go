@@ -286,6 +286,18 @@ var (
 		"workbenches are not enabled for this deployment",
 		codes.Unimplemented,
 	)
+	NoDockerHostsAvailable = rerrors.New(
+		"no docker hosts are registered — ask an administrator to add one",
+		codes.FailedPrecondition,
+	)
+	// WorkbenchMissingDockerHost surfaces from resolveClient for a workbenches row that predates
+	// the docker_hosts pool (nullable docker_host_id, no backfill — see
+	// migrations/061_docker_hosts.sql) — there's no host to resolve a docker client from, so the
+	// only recovery is deleting and recreating the workbench.
+	WorkbenchMissingDockerHost = rerrors.New(
+		"this workbench predates docker host assignment; delete and recreate it",
+		codes.FailedPrecondition,
+	)
 
 	// tract: builtin execution
 	NoVaultForBuiltinTool = rerrors.New(

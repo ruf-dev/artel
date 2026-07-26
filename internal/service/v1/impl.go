@@ -9,6 +9,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/adminusers"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
 	"github.com/ruf-dev/artel/internal/service/v1/couchinstances"
+	"github.com/ruf-dev/artel/internal/service/v1/dockerhosts"
 	externalconns "github.com/ruf-dev/artel/internal/service/v1/externalconnections"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
 	"github.com/ruf-dev/artel/internal/service/v1/mom"
@@ -27,6 +28,7 @@ type Services struct {
 	Vault               service.VaultService
 	CouchInstance       service.CouchInstanceService
 	S3Instance          service.S3InstanceService
+	DockerHost          service.DockerHostService
 	AdminCouch          service.AdminCouchService
 	Mcp                 service.McpService
 	Subscription        service.SubscriptionService
@@ -41,10 +43,9 @@ type Services struct {
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
 	Tract service.TractService
-	// Workbench is constructed in internal/app/custom.go (not here), and only when
-	// cfg.WorkbenchDockerHost is configured — absence of config means absence of the whole
-	// subsystem (see docs/workbench/02_docker_topology.md), so it stays nil rather than being
-	// backed by a no-op implementation. Nil until custom.go sets it.
+	// Workbench is constructed in internal/app/custom.go (not here) rather than above alongside
+	// DockerHost, purely because it composes services.ExternalConnections, which doesn't exist
+	// yet mid-construction of this struct literal. Set unconditionally by custom.go.
 	Workbench service.WorkbenchService
 }
 
@@ -87,6 +88,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Vault:         vault.New(repo),
 		CouchInstance: couchinstances.New(repo),
 		S3Instance:    s3instances.New(repo),
+		DockerHost:    dockerhosts.New(repo),
 		AdminCouch:    admincouchsvc.New(repo),
 		Mcp: mcp.New(
 			repo.McpKeyRepository(),

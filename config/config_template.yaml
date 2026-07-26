@@ -20,7 +20,7 @@ servers:
 environment:
     - name: creds_encryption_key
       type: string
-      value: "3843d44f2445b26408427c99349a147b673583a59bc4336b60b1ed12aacd22ab"
+      value: 3843d44f2445b26408427c99349a147b673583a59bc4336b60b1ed12aacd22ab
     - name: google_api_key
       type: string
       value: ""
@@ -48,8 +48,5 @@ environment:
       type: bool
       value: false
     - name: telegram_client_id
-      type: string
-      value: ""
-    - name: workbench_docker_host
       type: string
       value: ""

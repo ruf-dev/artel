@@ -1115,7 +1115,8 @@ type GetVault_Response struct {
 	S3InstanceId string                 `protobuf:"bytes,4,opt,name=s3_instance_id,json=s3InstanceId,proto3" json:"s3_instance_id,omitempty"`
 	S3BucketName string                 `protobuf:"bytes,5,opt,name=s3_bucket_name,json=s3BucketName,proto3" json:"s3_bucket_name,omitempty"`
 	// workbench_exists is false when no workbenches row backs this vault yet — either the vault
-	// predates this feature, or WorkbenchDockerHost isn't configured for this deployment.
+	// predates this feature, or the create-vault hook's CreateWorkbench call failed separately
+	// (e.g. no docker hosts were registered at the time — see docker_hosts table).
 	// workbench_status is only meaningful when workbench_exists is true; one of
 	// "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
 	WorkbenchExists bool   `protobuf:"varint,6,opt,name=workbench_exists,json=workbenchExists,proto3" json:"workbench_exists,omitempty"`

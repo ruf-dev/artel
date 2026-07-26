@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package artel_docker_hosts;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service DockerHostsAPI {
+  rpc RegisterDockerHost(RegisterDockerHost.Request) returns (RegisterDockerHost.Response) {
+    option (google.api.http) = {
+      post: "/api/docker_hosts/add"
+      body: "*"
+    };
+  };
+  rpc GetDockerHost(GetDockerHost.Request) returns (GetDockerHost.Response) {
+    option (google.api.http) = {
+      post: "/api/docker_hosts/get"
+      body: "*"
+    };
+  };
+  rpc ListDockerHosts(ListDockerHosts.Request) returns (ListDockerHosts.Response) {
+    option (google.api.http) = {
+      post: "/api/docker_hosts/list"
+      body: "*"
+    };
+  };
+  rpc UpdateDockerHost(UpdateDockerHost.Request) returns (UpdateDockerHost.Response) {
+    option (google.api.http) = {
+      post: "/api/docker_hosts/update"
+      body: "*"
+    };
+  };
+  rpc DeleteDockerHost(DeleteDockerHost.Request) returns (DeleteDockerHost.Response) {
+    option (google.api.http) = {
+      post: "/api/docker_hosts/delete"
+      body: "*"
+    };
+  };
+}
+
+message RegisterDockerHost {
+  message Request {
+    string url = 1;
+  }
+  message Response {
+    string id = 1;
+  }
+}
+
+message GetDockerHost {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    string id = 1;
+    string url = 2;
+    string created_at = 3;
+  }
+}
+
+message ListDockerHosts {
+  message Request {}
+  message Response {
+    repeated GetDockerHost.Response hosts = 1;
+  }
+}
+
+message UpdateDockerHost {
+  message Request {
+    string id  = 1;
+    string url = 2;
+  }
+  message Response {}
+}
+
+message DeleteDockerHost {
+  message Request {
+    string id = 1;
+  }
+  message Response {}
+}

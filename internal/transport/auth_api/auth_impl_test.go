@@ -143,52 +143,88 @@ func (f *fakeCouchInstanceService) HasCouchInstances(_ context.Context) (bool, e
 	return f.hasResult, nil
 }
 
+// fakeDockerHostService is a minimal in-memory service.DockerHostService used to test
+// authHandler.GetConfig. Only HasDockerHosts is configurable — GetConfig never calls the rest.
+type fakeDockerHostService struct {
+	hasResult bool
+	hasErr    error
+}
+
+func (f *fakeDockerHostService) RegisterDockerHost(_ context.Context, _ string) (string, error) {
+	panic("not implemented")
+}
+
+func (f *fakeDockerHostService) GetDockerHost(_ context.Context, _ string) (domain.DockerHost, error) {
+	panic("not implemented")
+}
+
+func (f *fakeDockerHostService) ListDockerHosts(_ context.Context) ([]domain.DockerHost, error) {
+	panic("not implemented")
+}
+
+func (f *fakeDockerHostService) UpdateDockerHost(_ context.Context, _, _ string) error {
+	panic("not implemented")
+}
+
+func (f *fakeDockerHostService) DeleteDockerHost(_ context.Context, _ string) error {
+	panic("not implemented")
+}
+
+func (f *fakeDockerHostService) HasDockerHosts(_ context.Context) (bool, error) {
+	if f.hasErr != nil {
+		return false, f.hasErr
+	}
+
+	return f.hasResult, nil
+}
+
 var (
 	_ service.AuthService          = (*fakeAuthService)(nil)
 	_ service.S3InstanceService    = (*fakeS3InstanceService)(nil)
 	_ service.CouchInstanceService = (*fakeCouchInstanceService)(nil)
+	_ service.DockerHostService    = (*fakeDockerHostService)(nil)
 )
 
 func TestAuthHandler_GetConfig(t *testing.T) {
 	testCases := []struct {
-		name                 string
-		hasS3                bool
-		hasCouch             bool
-		noAuthEnabled        bool
-		credsEncrypted       bool
-		isWorkbenchAvailable bool
+		name           string
+		hasS3          bool
+		hasCouch       bool
+		noAuthEnabled  bool
+		credsEncrypted bool
+		hasDockerHosts bool
 	}{
 		{
-			name:                 "all flags false",
-			hasS3:                false,
-			hasCouch:             false,
-			noAuthEnabled:        false,
-			credsEncrypted:       false,
-			isWorkbenchAvailable: false,
+			name:           "all flags false",
+			hasS3:          false,
+			hasCouch:       false,
+			noAuthEnabled:  false,
+			credsEncrypted: false,
+			hasDockerHosts: false,
 		},
 		{
-			name:                 "all flags true",
-			hasS3:                true,
-			hasCouch:             true,
-			noAuthEnabled:        true,
-			credsEncrypted:       true,
-			isWorkbenchAvailable: true,
+			name:           "all flags true",
+			hasS3:          true,
+			hasCouch:       true,
+			noAuthEnabled:  true,
+			credsEncrypted: true,
+			hasDockerHosts: true,
 		},
 		{
-			name:                 "mixed flags",
-			hasS3:                true,
-			hasCouch:             false,
-			noAuthEnabled:        false,
-			credsEncrypted:       true,
-			isWorkbenchAvailable: false,
+			name:           "mixed flags",
+			hasS3:          true,
+			hasCouch:       false,
+			noAuthEnabled:  false,
+			credsEncrypted: true,
+			hasDockerHosts: false,
 		},
 		{
-			name:                 "workbench available only",
-			hasS3:                false,
-			hasCouch:             false,
-			noAuthEnabled:        false,
-			credsEncrypted:       false,
-			isWorkbenchAvailable: true,
+			name:           "workbench available only",
+			hasS3:          false,
+			hasCouch:       false,
+			noAuthEnabled:  false,
+			credsEncrypted: false,
+			hasDockerHosts: true,
 		},
 	}
 
@@ -196,15 +232,16 @@ func TestAuthHandler_GetConfig(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			s3Svc := &fakeS3InstanceService{hasResult: tc.hasS3}
 			couchSvc := &fakeCouchInstanceService{hasResult: tc.hasCouch}
+			dockerHostSvc := &fakeDockerHostService{hasResult: tc.hasDockerHosts}
 
 			handler := &authHandler{
-				authSvc:              &fakeAuthService{},
-				s3InstanceSvc:        s3Svc,
-				couchInstanceSvc:     couchSvc,
-				telegramClientID:     "test-client-id",
-				noAuthEnabled:        tc.noAuthEnabled,
-				credsEncrypted:       tc.credsEncrypted,
-				isWorkbenchAvailable: tc.isWorkbenchAvailable,
+				authSvc:          &fakeAuthService{},
+				s3InstanceSvc:    s3Svc,
+				couchInstanceSvc: couchSvc,
+				dockerHostSvc:    dockerHostSvc,
+				telegramClientID: "test-client-id",
+				noAuthEnabled:    tc.noAuthEnabled,
+				credsEncrypted:   tc.credsEncrypted,
 			}
 
 			resp, err := handler.GetConfig(context.Background(), nil)
@@ -214,7 +251,7 @@ func TestAuthHandler_GetConfig(t *testing.T) {
 			require.Equal(t, tc.hasCouch, resp.IsCouchAvailable)
 			require.Equal(t, tc.noAuthEnabled, resp.NoAuthEnabled)
 			require.Equal(t, tc.credsEncrypted, resp.CredsEncrypted)
-			require.Equal(t, tc.isWorkbenchAvailable, resp.IsWorkbenchAvailable)
+			require.Equal(t, tc.hasDockerHosts, resp.IsWorkbenchAvailable)
 		})
 	}
 }
@@ -244,6 +281,24 @@ func TestAuthHandler_GetConfig_PropagatesCouchError(t *testing.T) {
 		authSvc:          &fakeAuthService{},
 		s3InstanceSvc:    s3Svc,
 		couchInstanceSvc: couchSvc,
+	}
+
+	resp, err := handler.GetConfig(context.Background(), nil)
+	require.Error(t, err)
+	require.Nil(t, resp)
+}
+
+func TestAuthHandler_GetConfig_PropagatesDockerHostsError(t *testing.T) {
+	dockerHostsErr := errors.New("docker hosts backend unavailable")
+	s3Svc := &fakeS3InstanceService{}
+	couchSvc := &fakeCouchInstanceService{}
+	dockerHostSvc := &fakeDockerHostService{hasErr: dockerHostsErr}
+
+	handler := &authHandler{
+		authSvc:          &fakeAuthService{},
+		s3InstanceSvc:    s3Svc,
+		couchInstanceSvc: couchSvc,
+		dockerHostSvc:    dockerHostSvc,
 	}
 
 	resp, err := handler.GetConfig(context.Background(), nil)

@@ -766,7 +766,7 @@
         },
         "workbenchExists": {
           "type": "boolean",
-          "description": "workbench_exists is false when no workbenches row backs this vault yet — either the vault\npredates this feature, or WorkbenchDockerHost isn't configured for this deployment.\nworkbench_status is only meaningful when workbench_exists is true; one of\n\"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+          "description": "workbench_exists is false when no workbenches row backs this vault yet — either the vault\npredates this feature, or the create-vault hook's CreateWorkbench call failed separately\n(e.g. no docker hosts were registered at the time — see docker_hosts table).\nworkbench_status is only meaningful when workbench_exists is true; one of\n\"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
         },
         "workbenchStatus": {
           "type": "string"

@@ -66,4 +66,9 @@ type Workbench struct {
 	CreatedAt   time.Time
 	StartedAt   *time.Time // nil until started
 	StoppedAt   *time.Time // nil until stopped
+	// DockerHostUuid is the docker_hosts row this workbench's container/volume live on, assigned
+	// at CreateWorkbench time by picking the least-loaded host — see
+	// internal/service/v1/workbench/workbench.go's resolveClient. nil only for rows created
+	// before the docker_hosts pool existed.
+	DockerHostUuid *uuid.UUID
 }

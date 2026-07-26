@@ -50,6 +50,3 @@ environment:
     - name: telegram_client_id
       type: string
       value: ""
-    - name: workbench_docker_host
-      type: string
-      value: ""

@@ -51,6 +51,10 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "couch_instances.swagger.json"),
 				},
 				{
+					Name: "DockerHosts",
+					URL:  path.Join(swaggerPath, "docker_hosts.swagger.json"),
+				},
+				{
 					Name: "ExternalConnections",
 					URL:  path.Join(swaggerPath, "external_connections.swagger.json"),
 				},

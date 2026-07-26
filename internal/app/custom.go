@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
-	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
@@ -29,6 +28,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/admin_users_api"
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
+	"github.com/ruf-dev/artel/internal/transport/docker_hosts_api"
 	"github.com/ruf-dev/artel/internal/transport/external_connections_api"
 	"github.com/ruf-dev/artel/internal/transport/gitlab_webhook"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
@@ -69,19 +69,16 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "init services")
 	}
 
-	// Workbench is constructed here (not in svcv1.New) because it needs a Docker client built
-	// from cfg.WorkbenchDockerHost — absence of that config means absence of the whole
-	// subsystem (see docs/workbench/02_docker_topology.md), so services.Workbench simply stays
-	// nil rather than being backed by a no-op implementation.
-	if a.Cfg.Environment.WorkbenchDockerHost != "" {
-		var dockerClient *workbenchdocker.Client
-		dockerClient, err = workbenchdocker.New(a.Cfg.Environment.WorkbenchDockerHost)
-		if err != nil {
-			return rerrors.Wrap(err, "error creating workbench docker client")
-		}
-
-		services.Workbench = workbench.New(repo.Workbenches(), repo.Vaults(), dockerClient, services.ExternalConnections)
-	}
+	// Workbench is constructed here (not in svcv1.New) because it composes
+	// services.ExternalConnections, which doesn't exist yet mid-construction of the Services
+	// struct literal. It's always constructed now — the docker host backing each workbench is
+	// resolved per-workbench from the docker_hosts table (see
+	// docs/workbench/02_docker_topology.md) rather than from a single startup-time config value,
+	// so there's no "absent config" case that leaves the whole subsystem unconstructed anymore.
+	// nil newDockerClient defaults to real workbenchdocker.New construction inside workbench.New.
+	services.Workbench = workbench.New(
+		repo.Workbenches(), repo.Vaults(), repo.DockerHosts(), services.ExternalConnections, nil,
+	)
 
 	if a.Cfg.Environment.NoAuthEnabled {
 		_, err = services.Auth.EnsureNoAuthUser(a.Ctx)
@@ -121,9 +118,10 @@ func (c *Custom) Init(a *App) error {
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
-		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.Workbench != nil,
+		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost,
 	)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
+	dockerHostsImpl := docker_hosts_api.NewDockerHostsImpl(services.DockerHost)
 	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
 	adminUsersImpl := admin_users_api.New(services.AdminUsersService())
@@ -168,6 +166,11 @@ func (c *Custom) Init(a *App) error {
 			pb.S3InstancesAPI_UpdateS3Instance_FullMethodName,
 			pb.S3InstancesAPI_DeleteS3Instance_FullMethodName,
 			pb.S3InstancesAPI_TestS3Instance_FullMethodName,
+			pb.DockerHostsAPI_RegisterDockerHost_FullMethodName,
+			pb.DockerHostsAPI_GetDockerHost_FullMethodName,
+			pb.DockerHostsAPI_ListDockerHosts_FullMethodName,
+			pb.DockerHostsAPI_UpdateDockerHost_FullMethodName,
+			pb.DockerHostsAPI_DeleteDockerHost_FullMethodName,
 			pb.VaultsAPI_LinkS3Bucket_FullMethodName,
 			pb.VaultsAPI_UnlinkS3Bucket_FullMethodName,
 			pb.AdminCouchAPI_ListCouchUsers_FullMethodName,
@@ -184,7 +187,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSubscriptionsAPI_UpdateUserSubscription_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)

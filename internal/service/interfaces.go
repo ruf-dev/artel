@@ -109,6 +109,18 @@ type CouchInstanceService interface {
 	HasCouchInstances(ctx context.Context) (bool, error)
 }
 
+// DockerHostService is admin CRUD over the pool of Docker daemons that back per-vault workbench
+// containers — see docs/workbench/02_docker_topology.md. Unlike CouchInstanceService/
+// S3InstanceService, docker hosts carry no credentials, so there's no setup/status concept.
+type DockerHostService interface {
+	RegisterDockerHost(ctx context.Context, url string) (string, error)
+	GetDockerHost(ctx context.Context, id string) (domain.DockerHost, error)
+	ListDockerHosts(ctx context.Context) ([]domain.DockerHost, error)
+	UpdateDockerHost(ctx context.Context, id, url string) error
+	DeleteDockerHost(ctx context.Context, id string) error
+	HasDockerHosts(ctx context.Context) (bool, error)
+}
+
 type S3InstanceService interface {
 	RegisterS3Instance(
 		ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool,

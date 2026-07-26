@@ -3,9 +3,12 @@
 // volumes that back a single workbench (a per-user sandbox running the `claude` CLI inside
 // a persistent tmux session).
 //
-// This package talks to whichever daemon `WorkbenchDockerHost` points at — see
-// docs/workbench/02_docker_topology.md for why that daemon is expected to be a dedicated
-// second dockerd process, not the daemon Artel's own containers run on. It intentionally does
+// This package talks to whichever daemon URL it's constructed with — one client per call,
+// pointed at whichever docker_hosts row a given workbench is assigned to (resolved by
+// internal/service/v1/workbench/workbench.go's resolveClient), not a single startup-time
+// config value. See docs/workbench/02_docker_topology.md for why a docker host is expected to
+// be a dedicated second dockerd process, not the daemon Artel's own containers run on. It
+// intentionally does
 // not create the `workbench-net` network itself (assumed to pre-exist on the configured
 // daemon) and does not expose any inbound port on the containers it creates.
 package workbenchdocker

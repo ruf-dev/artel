@@ -150,7 +150,8 @@ message GetVault {
     string s3_instance_id = 4;
     string s3_bucket_name = 5;
     // workbench_exists is false when no workbenches row backs this vault yet — either the vault
-    // predates this feature, or WorkbenchDockerHost isn't configured for this deployment.
+    // predates this feature, or the create-vault hook's CreateWorkbench call failed separately
+    // (e.g. no docker hosts were registered at the time — see docker_hosts table).
     // workbench_status is only meaningful when workbench_exists is true; one of
     // "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     bool workbench_exists = 6;

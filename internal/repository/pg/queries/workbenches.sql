@@ -1,10 +1,10 @@
 -- name: CreateWorkbench :one
-INSERT INTO workbenches (vault_id, user_id, volume_name, status, container_id)
-VALUES ($1, $2, $3, 'configuring', NULL)
-RETURNING id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at;
+INSERT INTO workbenches (vault_id, user_id, volume_name, status, container_id, docker_host_id)
+VALUES ($1, $2, $3, 'configuring', NULL, $4)
+RETURNING id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id;
 
 -- name: GetWorkbenchByVaultID :one
-SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at
+SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 FROM workbenches
 WHERE vault_id = $1;
 
