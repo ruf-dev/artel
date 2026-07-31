@@ -1,0 +1,52 @@
+app_info:
+    name: github.com/ruf-dev/artel-embed-example
+    version: v0.0.1
+    startup_duration: 10s
+data_sources:
+    - resource_name: postgres
+      migrations_folder: ../../../migrations
+      host: localhost
+      port: 15436
+      user: artel
+      pwd: ""
+      name: artel_db
+      ssl_mode: disable
+servers:
+    8080:
+        /{GRPC}:
+            module: github.com/ruf-dev/artel
+            gateway: /api
+        name: MASTER
+environment:
+    - name: creds_encryption_key
+      type: string
+      value: ""
+    - name: google_api_key
+      type: string
+      value: ""
+    - name: google_client_id
+      type: string
+      value: ""
+    - name: google_client_secret
+      type: string
+      value: ""
+    - name: log_format
+      type: string
+      enum: [JSON, TEXT]
+      value: TEXT
+    - name: log_level
+      type: string
+      enum: [Trace, Debug, Info, Warn, Error, Fatal, Panic]
+      value: Info
+    - name: no_auth_enabled
+      type: bool
+      value: false
+    - name: otel_endpoint
+      type: string
+      value: ""
+    - name: subscriptions_enabled
+      type: bool
+      value: false
+    - name: telegram_client_id
+      type: string
+      value: ""

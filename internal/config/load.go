@@ -4,6 +4,7 @@ package config
 
 import (
 	"flag"
+	"os"
 
 	"go.redsock.ru/rerrors"
 	"go.vervstack.ru/matreshka/pkg/matreshka"
@@ -48,9 +49,16 @@ func Init() (Config, error) {
 	}
 
 	if isDevBuild {
-		configsPaths = append(configsPaths, devConfigPath)
+		_, statErr := os.Stat(devConfigPath)
+		if statErr == nil {
+			configsPaths = append(configsPaths, devConfigPath)
+		}
 	}
-	configsPaths = append(configsPaths, prodConfigPath)
+
+	_, statErr := os.Stat(prodConfigPath)
+	if statErr == nil {
+		configsPaths = append(configsPaths, prodConfigPath)
+	}
 
 	var err error
 	defaultConfig, err = Load(configsPaths...)

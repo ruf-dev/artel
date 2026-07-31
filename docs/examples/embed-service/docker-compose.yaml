@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: artel
+      POSTGRES_DB: artel_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      # Different host port than the main repo's tests/docker-compose.yaml
+      # (which uses 15434), so both can run at the same time without
+      # colliding.
+      - "15436:5432"
