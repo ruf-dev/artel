@@ -48,6 +48,17 @@
             "statusMessage": "Checking commit message format..."
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/pre-commit-checks.py 2>/dev/null || true",
+            "statusMessage": "Running golangci-lint and e2e tests...",
+            "timeout": 600
+          }
+        ]
       }
     ],
     "PostToolUse": [

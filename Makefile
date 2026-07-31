@@ -59,3 +59,11 @@ setup-dev-garage:
 setup-dev-docker-host:
 	docker compose -f tests/docker-compose.yaml up -d test-dockerd
 	./scripts/setup_dev_docker_host.sh
+
+### E2E testing
+# Brings up tests/docker-compose.yaml (postgres, couchdb, minio, test-dockerd),
+# runs the e2e-tagged test suites, then tears the containers back down
+# regardless of test outcome, so `make test-e2e` is fully self-contained.
+test-e2e:
+	docker compose -f tests/docker-compose.yaml up -d
+	go test -tags e2e ./tests/... ; TEST_EXIT=$$? ; docker compose -f tests/docker-compose.yaml down ; exit $$TEST_EXIT
