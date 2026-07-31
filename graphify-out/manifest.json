@@ -5628,5 +5628,40 @@
     "mtime": 1785052523.4783268,
     "ast_hash": "dfc3b5e5f9c39f896e865ab176e0cd32",
     "semantic_hash": ""
+  },
+  "docs/examples/embed-service/go.mod": {
+    "mtime": 1785523000.2073011,
+    "ast_hash": "4efdfc5bf255850e8a3af38553154766",
+    "semantic_hash": ""
+  },
+  "docs/examples/embed-service/main.go": {
+    "mtime": 1785522932.6790879,
+    "ast_hash": "22f6c7bd746770f1e6312ef9aeeff190",
+    "semantic_hash": ""
+  },
+  "docs/examples/embed-service/main_test.go": {
+    "mtime": 1785522973.4953694,
+    "ast_hash": "930208d6f7835b2216456780eb194ff6",
+    "semantic_hash": ""
+  },
+  "docs/embedding.md": {
+    "mtime": 1785523080.4012263,
+    "ast_hash": "8166762df7e6582301a9e9f90ee856b6",
+    "semantic_hash": ""
+  },
+  "docs/examples/embed-service/README.md": {
+    "mtime": 1785522992.0927362,
+    "ast_hash": "c1c6bcc9f9c06197cb4955968e1a473d",
+    "semantic_hash": ""
+  },
+  "docs/examples/embed-service/config/config.yaml": {
+    "mtime": 1785522924.7648196,
+    "ast_hash": "3060e42a07f61ef00a5c8026018473ab",
+    "semantic_hash": ""
+  },
+  "docs/examples/embed-service/docker-compose.yaml": {
+    "mtime": 1785522977.4322574,
+    "ast_hash": "87e8dee2c7a0146624ffa6c32fca369a",
+    "semantic_hash": ""
   }
 }
