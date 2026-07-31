@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
@@ -24,6 +25,32 @@ func envOrDefault(key, def string) string {
 	}
 
 	return def
+}
+
+// waitForCouchDB retries admin.Setup until it succeeds or timeout elapses.
+// `docker compose up -d` returning doesn't mean CouchDB's HTTP server is
+// accepting connections yet — it takes several seconds to initialize, so
+// calling Setup immediately after startup reliably fails with a
+// connection-level EOF.
+func waitForCouchDB(ctx context.Context, admin *couchdb.Client) error {
+	const (
+		timeout  = 20 * time.Second
+		interval = 500 * time.Millisecond
+	)
+
+	deadline := time.Now().Add(timeout)
+
+	var err error
+	for time.Now().Before(deadline) {
+		err = admin.Setup(ctx)
+		if err == nil {
+			return nil
+		}
+
+		time.Sleep(interval)
+	}
+
+	return err
 }
 
 // noteID returns a unique, suite-scoped document ID derived from the test name and a suffix.
@@ -64,7 +91,7 @@ func (s *VaultSuite) SetupSuite() {
 
 	ctx := context.Background()
 
-	err = s.admin.Setup(ctx)
+	err = waitForCouchDB(ctx, s.admin)
 	s.Require().NoError(err, "CouchDB system setup failed — is the container running?")
 
 	err = s.admin.CreateDatabase(ctx, s.dbName)
