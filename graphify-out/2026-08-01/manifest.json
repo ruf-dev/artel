@@ -140,8 +140,8 @@
     "semantic_hash": "d1663ed1ee789245c452011daa836cc3"
   },
   "internal/clients/sqldb/conn.go": {
-    "mtime": 1785565700.7959504,
-    "ast_hash": "a6522239db44b53bed942d73b16219f8",
+    "mtime": 1783187438.883286,
+    "ast_hash": "3a568c20c75dccc0e75f72412269550d",
     "semantic_hash": ""
   },
   "internal/middleware/log.go": {
@@ -1195,13 +1195,13 @@
     "semantic_hash": ""
   },
   "tests/livesync/livesync_test.go": {
-    "mtime": 1785524876.0523007,
-    "ast_hash": "2464c02093b21e4bca8ce58c3df62d6a",
+    "mtime": 1783201135.2680402,
+    "ast_hash": "e0910a2013cc0f7b80b08bcbdff1cf8d",
     "semantic_hash": ""
   },
   "tests/e2e/e2e_test.go": {
-    "mtime": 1785565729.2899034,
-    "ast_hash": "b04caac5dda498214b424a5c3caac267",
+    "mtime": 1784914984.2451456,
+    "ast_hash": "bb2362cd1038887d3f2a9a7c8dd85fee",
     "semantic_hash": ""
   },
   "tests/vault/vault_test.go": {
@@ -2270,8 +2270,8 @@
     "semantic_hash": ""
   },
   "tests/tract_e2e/tract_e2e_test.go": {
-    "mtime": 1785565755.7346926,
-    "ast_hash": "848d719ea83bd573fb1384e84f65e33f",
+    "mtime": 1784966631.497123,
+    "ast_hash": "1e9b312e792830446a731c5971243bd4",
     "semantic_hash": ""
   },
   "internal/clients/s3/client.go": {
@@ -2750,8 +2750,8 @@
     "semantic_hash": ""
   },
   "tests/gitlab_trigger_e2e/gitlab_trigger_e2e_test.go": {
-    "mtime": 1785565759.6074016,
-    "ast_hash": "28e64d2a990597fd16dcfb7db2cddd89",
+    "mtime": 1784958843.5883627,
+    "ast_hash": "f3ff2f94e4f5d3ab2356430b8c95a0e2",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/trigger_presets.sql.go": {
@@ -4820,8 +4820,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/quota_test.go": {
-    "mtime": 1785565737.2025735,
-    "ast_hash": "47bfd041726d21362805035f5f9d61f3",
+    "mtime": 1784914984.2454133,
+    "ast_hash": "72515b5a70cfb9bd4ab7339fdca388ac",
     "semantic_hash": ""
   },
   "docs/ideas/data_aggregation.md": {
@@ -5340,8 +5340,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/mcp_ownership_test.go": {
-    "mtime": 1785565744.4891276,
-    "ast_hash": "91d8268909ee4e016fd4569e98c0f160",
+    "mtime": 1785010465.1344318,
+    "ast_hash": "0a6038ade8d8f797c29df6b8d34ff718",
     "semantic_hash": ""
   },
   "internal/service/v1/mcp/create_community_connector.go": {
@@ -5645,13 +5645,13 @@
     "semantic_hash": ""
   },
   "docs/embedding.md": {
-    "mtime": 1785565777.4687073,
-    "ast_hash": "4a442330ffa0585c77ff18a8b944e0b5",
+    "mtime": 1785523080.4012263,
+    "ast_hash": "8166762df7e6582301a9e9f90ee856b6",
     "semantic_hash": ""
   },
   "docs/examples/embed-service/README.md": {
-    "mtime": 1785565795.6398265,
-    "ast_hash": "8320f2a887330adcbbc23e89fd715331",
+    "mtime": 1785522992.0927362,
+    "ast_hash": "c1c6bcc9f9c06197cb4955968e1a473d",
     "semantic_hash": ""
   },
   "docs/examples/embed-service/config/config.yaml": {
@@ -5662,11 +5662,6 @@
   "docs/examples/embed-service/docker-compose.yaml": {
     "mtime": 1785522977.4322574,
     "ast_hash": "87e8dee2c7a0146624ffa6c32fca369a",
-    "semantic_hash": ""
-  },
-  "migrations/embed.go": {
-    "mtime": 1785565686.1847672,
-    "ast_hash": "6001bdaa1f5a39065a499063f74ed8e5",
     "semantic_hash": ""
   }
 }
