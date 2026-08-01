@@ -11,10 +11,10 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq"
-	"github.com/pressly/goose/v3"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
+	"github.com/ruf-dev/artel/migrations"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -43,12 +43,7 @@ func (s *McpOwnershipSuite) SetupSuite() {
 	s.Require().NoError(err, "ping postgres — is the container running?")
 	s.db = db
 
-	goose.SetLogger(goose.NopLogger())
-
-	err = goose.SetDialect("postgres")
-	s.Require().NoError(err)
-
-	err = goose.Up(db, "../../migrations")
+	err = migrations.ApplyMigration(db)
 	s.Require().NoError(err, "run migrations")
 
 	encKey := make([]byte, 32)

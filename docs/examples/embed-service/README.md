@@ -43,7 +43,10 @@ without ever importing `internal/app` yourself. See the doc comment on
 docker compose up -d
 
 go test ./...    # starts the embedded app, hits /example/hello, shuts it down
-go run .         # runs it for real; curl http://localhost:8080/example/hello
+
+# runs it for real; required.env has everything go run . needs
+set -a && source required.env && set +a
+go run .         # curl http://localhost:8080/example/hello
 
 docker compose down
 ```
@@ -58,8 +61,8 @@ with zero file present. So embedding artel means shipping a small config
 `MASTER`, one `data_sources` entry with `resource_name: postgres`, the
 `environment` list) — see `config/config.yaml` in this directory, adapted
 from the root repo's `config/config_template.yaml`. Actual runtime values
-(host, port, credentials, migrations folder, ...) are then supplied by env
-vars named per `config/.env.example` in the root repo (e.g.
+(host, port, credentials, ...) are then supplied by env vars named per
+`config/.env.example` in the root repo (e.g.
 `DATA_SOURCES_POSTGRES_HOST`, `SERVERS_MASTER_PORT`) — see the env vars set
 in `main_test.go` for a complete example set. This is the intended,
 supported way to configure an embedded instance, not a workaround.

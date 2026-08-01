@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/pressly/goose/v3"
-	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox/closer"
 	"go.vervstack.ru/matreshka/pkg/matreshka/resources"
+
+	"github.com/ruf-dev/artel/migrations"
 )
 
 func New(cfg resources.SqlResource) (*sql.DB, error) {
@@ -24,21 +24,9 @@ func New(cfg resources.SqlResource) (*sql.DB, error) {
 		return conn.Close()
 	})
 
-	goose.SetLogger(sqlLogger{})
-
-	err = goose.SetDialect(dialect)
+	err = migrations.ApplyMigration(conn)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "error setting dialect")
-	}
-
-	mig := cfg.MigrationFolder()
-	if mig == "" {
-		mig = "./migrations"
-	}
-
-	err = goose.Up(conn, mig)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "error performing up")
+		return nil, rerrors.Wrap(err, "error applying migrations")
 	}
 
 	return conn, nil
@@ -56,14 +44,4 @@ type DB interface {
 
 	QueryRow(query string, args ...any) *sql.Row
 	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
-}
-
-type sqlLogger struct{}
-
-func (s sqlLogger) Fatalf(format string, v ...interface{}) {
-	log.Fatal().Msgf(format, v...)
-}
-
-func (s sqlLogger) Printf(format string, v ...interface{}) {
-	log.Printf(format, v...)
 }

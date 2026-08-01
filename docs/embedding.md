@@ -25,9 +25,12 @@ err = a.Start()
 ## Requirements
 
 - **Postgres reachable.** `app.New()` opens the Postgres connection and runs
-  the `migrations/` goose migrations synchronously as part of startup
-  (`internal/clients/sqldb.New`). No CouchDB, S3, or MinIO connection is
-  needed at startup — those are dialed lazily on first real use.
+  the goose migrations embedded in `github.com/ruf-dev/artel/migrations`
+  (`migrations.ApplyMigration`, called from `internal/clients/sqldb.New`)
+  synchronously as part of startup. The `.sql` files are compiled into the
+  binary via `go:embed`, so no `migrations/` folder needs to exist on disk
+  for the embedding app. No CouchDB, S3, or MinIO connection is needed at
+  startup — those are dialed lazily on first real use.
 - **A config skeleton file.** Artel's config loader
   (`internal/config/load.go`) reads a YAML file first, then lets env vars
   override values on nodes that already exist in it — env vars alone can't
@@ -73,5 +76,6 @@ registers there (`/`, `/mcp`, `/webhooks/gitlab/`, `/tract/hook/`,
 genuinely separate Go module (its own `go.mod`, importing artel via a
 `replace` back to a local checkout) that registers one extra HTTP handler
 and has a test exercising the whole startup → request → graceful-shutdown
-lifecycle against a real Postgres via `go.redsock.ru/toolbox/closer`. See
-its `README.md` for exact run steps.
+lifecycle against a real Postgres via `go.redsock.ru/toolbox/closer`. Its
+`required.env` is a ready-to-copy env file for the full set of variables
+described above. See its `README.md` for exact run steps.

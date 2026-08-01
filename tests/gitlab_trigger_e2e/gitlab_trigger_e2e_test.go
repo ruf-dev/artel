@@ -29,7 +29,6 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/pressly/goose/v3"
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
@@ -40,6 +39,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/ruf-dev/artel/internal/transport/gitlab_webhook"
+	"github.com/ruf-dev/artel/migrations"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -158,12 +158,7 @@ func (s *GitlabTriggerE2ESuite) SetupSuite() {
 	s.Require().NoError(err, "ping postgres — is tests/docker-compose.yaml up?")
 	s.db = db
 
-	goose.SetLogger(goose.NopLogger())
-
-	err = goose.SetDialect("postgres")
-	s.Require().NoError(err)
-
-	err = goose.Up(db, "../../migrations")
+	err = migrations.ApplyMigration(db)
 	s.Require().NoError(err, "run migrations")
 
 	encKey := make([]byte, 32)
