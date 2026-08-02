@@ -755,8 +755,8 @@
     "semantic_hash": ""
   },
   "pkg/docs/docs.swagger_ui.go": {
-    "mtime": 1785658314.187112,
-    "ast_hash": "4a0112d6645eaa32f495b26092237f8c",
+    "mtime": 1785660971.280913,
+    "ast_hash": "a301948a0c005b81a32ad8250ee32774",
     "semantic_hash": ""
   },
   "pkg/docs/swaggers/auth.swagger.json": {
