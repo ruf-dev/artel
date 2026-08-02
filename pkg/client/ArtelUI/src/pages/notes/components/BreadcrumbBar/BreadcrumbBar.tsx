@@ -19,11 +19,12 @@ interface BreadcrumbBarProps {
     saveStatus: SaveStatus
     saveError?: string
     onRename?: () => void
+    hideEdit?: boolean
 }
 
-export default function BreadcrumbBar(
-    { path, mode, onModeChange, saveStatus, saveError, onRename }: BreadcrumbBarProps
-) {
+export default function BreadcrumbBar(props: BreadcrumbBarProps) {
+    const { path, mode, onModeChange, saveStatus, saveError } = props
+    const { onRename, hideEdit } = props
     const [copied, setCopied] = useState(false)
 
     function handleCopyPath() {
@@ -60,7 +61,7 @@ export default function BreadcrumbBar(
                 <SaveStatusIndicator status={saveStatus} errorMessage={saveError} />
             </div>
             <div className={cls.RightSlot}>
-                <ModeBar active={mode} onModeChange={onModeChange} />
+                <ModeBar active={mode} onModeChange={onModeChange} hideEdit={hideEdit} />
             </div>
         </div>
     )

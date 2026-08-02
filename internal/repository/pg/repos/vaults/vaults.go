@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/ruf-dev/artel/internal/repository/pg/pg_err"
 	"go.redsock.ru/rerrors"
 )
 
@@ -62,6 +63,8 @@ func (r *Repo) Upsert(
 		row.S3BucketName,
 		row.UseCouchdbForBinaries,
 		row.CreatedAt,
+		row.IsPublic,
+		row.Slug,
 		r.encryptor,
 	)
 	if err != nil {
@@ -89,6 +92,8 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error) 
 		row.S3BucketName,
 		row.UseCouchdbForBinaries,
 		row.CreatedAt,
+		row.IsPublic,
+		row.Slug,
 		r.encryptor,
 	)
 	if err != nil {
@@ -121,6 +126,8 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 		row.S3BucketName,
 		row.UseCouchdbForBinaries,
 		row.CreatedAt,
+		row.IsPublic,
+		row.Slug,
 		r.encryptor,
 	)
 	if err != nil {
@@ -184,10 +191,16 @@ func (r *Repo) ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain
 			row.S3BucketName,
 			row.UseCouchdbForBinaries,
 			row.CreatedAt,
+			row.IsPublic,
+			row.Slug,
 			r.encryptor,
 		)
 		if err != nil {
 			return nil, rerrors.Wrap(err, "error mapping vault row")
+		}
+
+		if row.MemberRole.Valid {
+			v.MyRole = string(row.MemberRole.VaultRole)
 		}
 
 		vaultList = append(vaultList, v)
@@ -243,6 +256,78 @@ func (r *Repo) SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, 
 	return nil
 }
 
+func (r *Repo) PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error) {
+	params := artel_q.PublishVaultParams{
+		ID:   vaultID,
+		Slug: sql.NullString{String: slug, Valid: true},
+	}
+
+	row, err := r.q.PublishVault(ctx, params)
+	if err != nil {
+		return domain.Vault{}, pg_err.UnwrapPgErr(err)
+	}
+
+	v, err := rowToVault(
+		row.ID,
+		row.UserID,
+		row.Name,
+		row.CouchDbName,
+		row.CouchInstanceID,
+		row.Status,
+		row.LivesyncPassphraseEnc,
+		row.S3InstanceID,
+		row.S3BucketName,
+		row.UseCouchdbForBinaries,
+		row.CreatedAt,
+		row.IsPublic,
+		row.Slug,
+		r.encryptor,
+	)
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
+	}
+
+	return v, nil
+}
+
+func (r *Repo) UnpublishVault(ctx context.Context, vaultID uuid.UUID) error {
+	err := r.q.UnpublishVault(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "error unpublishing vault")
+	}
+
+	return nil
+}
+
+func (r *Repo) GetBySlug(ctx context.Context, slug string) (domain.Vault, error) {
+	row, err := r.q.GetVaultBySlug(ctx, sql.NullString{String: slug, Valid: true})
+	if err != nil {
+		return domain.Vault{}, pg_err.UnwrapPgErr(err)
+	}
+
+	v, err := rowToVault(
+		row.ID,
+		row.UserID,
+		row.Name,
+		row.CouchDbName,
+		row.CouchInstanceID,
+		row.Status,
+		row.LivesyncPassphraseEnc,
+		row.S3InstanceID,
+		row.S3BucketName,
+		row.UseCouchdbForBinaries,
+		row.CreatedAt,
+		row.IsPublic,
+		row.Slug,
+		r.encryptor,
+	)
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(err, "error mapping vault row")
+	}
+
+	return v, nil
+}
+
 func (r *Repo) WithTx(tx sqldb.DB) repository.Vaults {
 	return New(tx, r.encryptor)
 }
@@ -257,6 +342,8 @@ func rowToVault(
 	s3BucketName sql.NullString,
 	useCouchDBForBinaries bool,
 	createdAt time.Time,
+	isPublic bool,
+	slug sql.NullString,
 	encryptor cryptoutil.Encryptor,
 ) (domain.Vault, error) {
 	v := domain.Vault{
@@ -267,6 +354,7 @@ func rowToVault(
 		Status:                status,
 		UseCouchDBForBinaries: useCouchDBForBinaries,
 		CreatedAt:             createdAt,
+		IsPublic:              isPublic,
 	}
 	if couchInstanceID.Valid {
 		v.CouchInstanceUuid = couchInstanceID.UUID
@@ -288,6 +376,10 @@ func rowToVault(
 
 	if s3BucketName.Valid {
 		v.S3BucketName = s3BucketName.String
+	}
+
+	if slug.Valid {
+		v.Slug = slug.String
 	}
 
 	return v, nil

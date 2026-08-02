@@ -33,6 +33,8 @@ const (
 	VaultsAPI_LinkS3Bucket_FullMethodName             = "/artel_vaults.VaultsAPI/LinkS3Bucket"
 	VaultsAPI_UnlinkS3Bucket_FullMethodName           = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
 	VaultsAPI_SetVaultBinaryStorage_FullMethodName    = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
+	VaultsAPI_PublishVault_FullMethodName             = "/artel_vaults.VaultsAPI/PublishVault"
+	VaultsAPI_UnpublishVault_FullMethodName           = "/artel_vaults.VaultsAPI/UnpublishVault"
 	VaultsAPI_CreateWorkbench_FullMethodName          = "/artel_vaults.VaultsAPI/CreateWorkbench"
 	VaultsAPI_StartWorkbench_FullMethodName           = "/artel_vaults.VaultsAPI/StartWorkbench"
 	VaultsAPI_StopWorkbench_FullMethodName            = "/artel_vaults.VaultsAPI/StopWorkbench"
@@ -58,6 +60,8 @@ type VaultsAPIClient interface {
 	LinkS3Bucket(ctx context.Context, in *LinkS3Bucket_Request, opts ...grpc.CallOption) (*LinkS3Bucket_Response, error)
 	UnlinkS3Bucket(ctx context.Context, in *UnlinkS3Bucket_Request, opts ...grpc.CallOption) (*UnlinkS3Bucket_Response, error)
 	SetVaultBinaryStorage(ctx context.Context, in *SetVaultBinaryStorage_Request, opts ...grpc.CallOption) (*SetVaultBinaryStorage_Response, error)
+	PublishVault(ctx context.Context, in *PublishVault_Request, opts ...grpc.CallOption) (*PublishVault_Response, error)
+	UnpublishVault(ctx context.Context, in *UnpublishVault_Request, opts ...grpc.CallOption) (*UnpublishVault_Response, error)
 	CreateWorkbench(ctx context.Context, in *CreateWorkbench_Request, opts ...grpc.CallOption) (*CreateWorkbench_Response, error)
 	StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error)
 	StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error)
@@ -216,6 +220,26 @@ func (c *vaultsAPIClient) SetVaultBinaryStorage(ctx context.Context, in *SetVaul
 	return out, nil
 }
 
+func (c *vaultsAPIClient) PublishVault(ctx context.Context, in *PublishVault_Request, opts ...grpc.CallOption) (*PublishVault_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PublishVault_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_PublishVault_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) UnpublishVault(ctx context.Context, in *UnpublishVault_Request, opts ...grpc.CallOption) (*UnpublishVault_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnpublishVault_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_UnpublishVault_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *vaultsAPIClient) CreateWorkbench(ctx context.Context, in *CreateWorkbench_Request, opts ...grpc.CallOption) (*CreateWorkbench_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateWorkbench_Response)
@@ -293,6 +317,8 @@ type VaultsAPIServer interface {
 	LinkS3Bucket(context.Context, *LinkS3Bucket_Request) (*LinkS3Bucket_Response, error)
 	UnlinkS3Bucket(context.Context, *UnlinkS3Bucket_Request) (*UnlinkS3Bucket_Response, error)
 	SetVaultBinaryStorage(context.Context, *SetVaultBinaryStorage_Request) (*SetVaultBinaryStorage_Response, error)
+	PublishVault(context.Context, *PublishVault_Request) (*PublishVault_Response, error)
+	UnpublishVault(context.Context, *UnpublishVault_Request) (*UnpublishVault_Response, error)
 	CreateWorkbench(context.Context, *CreateWorkbench_Request) (*CreateWorkbench_Response, error)
 	StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error)
 	StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error)
@@ -352,6 +378,12 @@ func (UnimplementedVaultsAPIServer) UnlinkS3Bucket(context.Context, *UnlinkS3Buc
 }
 func (UnimplementedVaultsAPIServer) SetVaultBinaryStorage(context.Context, *SetVaultBinaryStorage_Request) (*SetVaultBinaryStorage_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetVaultBinaryStorage not implemented")
+}
+func (UnimplementedVaultsAPIServer) PublishVault(context.Context, *PublishVault_Request) (*PublishVault_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method PublishVault not implemented")
+}
+func (UnimplementedVaultsAPIServer) UnpublishVault(context.Context, *UnpublishVault_Request) (*UnpublishVault_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method UnpublishVault not implemented")
 }
 func (UnimplementedVaultsAPIServer) CreateWorkbench(context.Context, *CreateWorkbench_Request) (*CreateWorkbench_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateWorkbench not implemented")
@@ -641,6 +673,42 @@ func _VaultsAPI_SetVaultBinaryStorage_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_PublishVault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishVault_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).PublishVault(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_PublishVault_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).PublishVault(ctx, req.(*PublishVault_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_UnpublishVault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnpublishVault_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).UnpublishVault(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_UnpublishVault_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).UnpublishVault(ctx, req.(*UnpublishVault_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VaultsAPI_CreateWorkbench_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateWorkbench_Request)
 	if err := dec(in); err != nil {
@@ -786,6 +854,14 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetVaultBinaryStorage",
 			Handler:    _VaultsAPI_SetVaultBinaryStorage_Handler,
+		},
+		{
+			MethodName: "PublishVault",
+			Handler:    _VaultsAPI_PublishVault_Handler,
+		},
+		{
+			MethodName: "UnpublishVault",
+			Handler:    _VaultsAPI_UnpublishVault_Handler,
 		},
 		{
 			MethodName: "CreateWorkbench",

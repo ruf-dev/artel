@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package artel_public_docs;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+// PublicDocsAPI is the anonymous, auth-exempt read surface for the /docs/:slug viewer
+// (see docs/public_vaults.md). Every RPC here independently resolves the target vault via its
+// slug and only ever returns data when the vault is published (vaults.is_public); it never
+// consults vault_members or user_context. Callers are not authenticated — do not add anything
+// here that requires a user identity or that can mutate state. Registered as an
+// auth-ignored-paths entry in internal/app/custom.go so the auth interceptor lets these
+// through with no token required.
+//
+// Request/response message names below are prefixed with PublicDocs (rather than reusing
+// notes.proto's ListFolders/ListNotes/GetNote/ListTags/NoteItem names) because moti generates
+// every api/grpc/*.proto file into the single Go package internal/api/server/artel_api — reusing
+// an unprefixed name here would collide with the Go type generated for the equivalent NotesAPI
+// message.
+service PublicDocsAPI {
+  rpc GetVaultBySlug(GetVaultBySlug.Request) returns (GetVaultBySlug.Response) {
+    option (google.api.http) = {
+      post: "/api/public-docs/vault"
+      body: "*"
+    };
+  };
+  rpc ListFolders(PublicDocsListFolders.Request) returns (PublicDocsListFolders.Response) {
+    option (google.api.http) = {
+      post: "/api/public-docs/folders"
+      body: "*"
+    };
+  };
+  rpc ListNotes(PublicDocsListNotes.Request) returns (PublicDocsListNotes.Response) {
+    option (google.api.http) = {
+      post: "/api/public-docs/list"
+      body: "*"
+    };
+  };
+  rpc GetNote(PublicDocsGetNote.Request) returns (PublicDocsGetNote.Response) {
+    option (google.api.http) = {
+      post: "/api/public-docs/get"
+      body: "*"
+    };
+  };
+  rpc ListTags(PublicDocsListTags.Request) returns (PublicDocsListTags.Response) {
+    option (google.api.http) = {
+      post: "/api/public-docs/tags"
+      body: "*"
+    };
+  };
+}
+
+message GetVaultBySlug {
+  message Request {
+    string slug = 1;
+  }
+  message Response {
+    string id = 1;
+    string name = 2;
+  }
+}
+
+message PublicDocsNoteItem {
+  string path = 1;
+  int64 mtime = 2;
+}
+
+message PublicDocsListFolders {
+  message Request {
+    string slug = 1;
+  }
+  message Response {
+    repeated string folders = 1;
+  }
+}
+
+message PublicDocsListNotes {
+  message Request {
+    string slug = 1;
+  }
+  message Response {
+    repeated PublicDocsNoteItem notes = 1;
+  }
+}
+
+message PublicDocsGetNote {
+  message Request {
+    string slug = 1;
+    string path = 2;
+  }
+  message Response {
+    string content = 1;
+  }
+}
+
+message PublicDocsListTags {
+  message Request {
+    string slug = 1;
+  }
+  message Response {
+    repeated string tags = 1;
+  }
+}

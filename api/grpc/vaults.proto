@@ -93,6 +93,18 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc PublishVault(PublishVault.Request) returns (PublishVault.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/{vault_id}/publish"
+      body: "*"
+    };
+  };
+  rpc UnpublishVault(UnpublishVault.Request) returns (UnpublishVault.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/{vault_id}/unpublish"
+      body: "*"
+    };
+  };
   rpc CreateWorkbench(CreateWorkbench.Request) returns (CreateWorkbench.Response) {
     option (google.api.http) = {
       post: "/api/vaults/workbench/create"
@@ -259,6 +271,27 @@ message SetVaultBinaryStorage {
   message Response {}
 }
 
+message PublishVault {
+  message Request {
+    string vault_id = 1;
+    // slug: lowercase, [a-z0-9-]+ (validated service-side); must be globally unique across
+    // vaults (see migrations/063_vault_public.sql vaults.slug UNIQUE constraint).
+    string slug = 2;
+  }
+  message Response {
+    VaultItem vault = 1;
+  }
+}
+
+message UnpublishVault {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    VaultItem vault = 1;
+  }
+}
+
 message CreateWorkbench {
   message Request {
     string vault_id = 1;
@@ -327,6 +360,11 @@ message VaultItem {
   string s3_instance_id = 5;
   string s3_bucket_name = 6;
   bool use_couchdb_for_binaries = 7;
+  bool is_public = 8;
+  string slug = 9;
+  // role is the calling user's membership role on this vault ("owner"/"reader"/"maintainer"),
+  // or "" if they have no membership row (e.g. viewing a public vault as a non-member).
+  string role = 10;
 }
 
 message VaultMemberInfo {

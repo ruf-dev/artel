@@ -7,6 +7,7 @@ export * from './couch_instances.pb';
 export * from './docker_hosts.pb';
 export * from './notes.pb';
 export * from './prompts.pb';
+export * from './public_docs.pb';
 export * from './s3_instances.pb';
 export * from './user_errors.pb';
 export * from './vaults.pb';
@@ -20,6 +21,7 @@ export { CouchInstancesAPI } from './couch_instances.pb';
 export { DockerHostsAPI } from './docker_hosts.pb';
 export { NotesAPI } from './notes.pb';
 export { PromptsAPI } from './prompts.pb';
+export { PublicDocsAPI } from './public_docs.pb';
 export { S3InstancesAPI } from './s3_instances.pb';
 export { VaultsAPI } from './vaults.pb';
 

@@ -11,6 +11,9 @@
        only restores the original visual order (picker above search). */
 
     & .VaultPickerWrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.42rem;
         padding: 0.56rem 0.7rem 0.28rem;
         flex-shrink: 0;
 
@@ -21,6 +24,11 @@
            box instead of blending into the sidebar. */
         --chures-input-bg: color-mix(in srgb, var(--color-bg-input) 100%, var(--color-fg-primary) 6%);
         --chures-dropdown-bg: color-mix(in srgb, var(--color-bg-elevated) 100%, var(--color-fg-primary) 6%);
+
+        & .VaultDropdown {
+            flex: 1;
+            min-width: 0;
+        }
     }
 
     & .SearchWrapper {

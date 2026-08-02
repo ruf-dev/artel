@@ -1,0 +1,318 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "public_docs.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PublicDocsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/public-docs/folders": {
+      "post": {
+        "operationId": "PublicDocsAPI_ListFolders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsListFoldersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsListFoldersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PublicDocsAPI"
+        ]
+      }
+    },
+    "/api/public-docs/get": {
+      "post": {
+        "operationId": "PublicDocsAPI_GetNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsGetNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsGetNoteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PublicDocsAPI"
+        ]
+      }
+    },
+    "/api/public-docs/list": {
+      "post": {
+        "operationId": "PublicDocsAPI_ListNotes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsListNotesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsListNotesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PublicDocsAPI"
+        ]
+      }
+    },
+    "/api/public-docs/tags": {
+      "post": {
+        "operationId": "PublicDocsAPI_ListTags",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsListTagsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsPublicDocsListTagsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PublicDocsAPI"
+        ]
+      }
+    },
+    "/api/public-docs/vault": {
+      "post": {
+        "operationId": "PublicDocsAPI_GetVaultBySlug",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsGetVaultBySlugResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsGetVaultBySlugRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PublicDocsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_public_docsGetVaultBySlugRequest": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsGetVaultBySlugResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsPublicDocsGetNoteRequest": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsPublicDocsGetNoteResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsPublicDocsListFoldersRequest": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsPublicDocsListFoldersResponse": {
+      "type": "object",
+      "properties": {
+        "folders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_public_docsPublicDocsListNotesRequest": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsPublicDocsListNotesResponse": {
+      "type": "object",
+      "properties": {
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_public_docsPublicDocsNoteItem"
+          }
+        }
+      }
+    },
+    "artel_public_docsPublicDocsListTagsRequest": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_public_docsPublicDocsListTagsResponse": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_public_docsPublicDocsNoteItem": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "mtime": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

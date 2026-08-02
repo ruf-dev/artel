@@ -588,6 +588,8 @@ type Vault struct {
 	S3InstanceID          uuid.NullUUID
 	S3BucketName          sql.NullString
 	UseCouchdbForBinaries bool
+	IsPublic              bool
+	Slug                  sql.NullString
 }
 
 type VaultInvite struct {

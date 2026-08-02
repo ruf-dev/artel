@@ -1,0 +1,11 @@
+.PublishToggleContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    .Caption {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+        line-height: 1.45;
+    }
+}

@@ -89,6 +89,10 @@ type Vaults interface {
 
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, value bool) error
 
+	PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error)
+	UnpublishVault(ctx context.Context, vaultID uuid.UUID) error
+	GetBySlug(ctx context.Context, slug string) (domain.Vault, error)
+
 	WithTx(tx sqldb.DB) Vaults
 }
 

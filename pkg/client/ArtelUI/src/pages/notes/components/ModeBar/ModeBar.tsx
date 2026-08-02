@@ -9,6 +9,7 @@ type Mode = 'edit' | 'preview' | 'read'
 interface ModeBarProps {
     active: Mode
     onModeChange: (mode: Mode) => void
+    hideEdit?: boolean
 }
 
 const MODES: { key: Mode; label: string }[] = [
@@ -17,10 +18,12 @@ const MODES: { key: Mode; label: string }[] = [
     { key: 'read', label: 'Read' },
 ]
 
-export default function ModeBar({ active, onModeChange }: ModeBarProps) {
+export default function ModeBar({ active, onModeChange, hideEdit }: ModeBarProps) {
+    const modes = hideEdit ? MODES.filter(m => m.key !== 'edit') : MODES
+
     return (
         <div className={cls.ModeBarContainer}>
-            {MODES.map(({ key, label }) => (
+            {modes.map(({ key, label }) => (
                 <Button
                     key={key}
                     variant="unstyled"

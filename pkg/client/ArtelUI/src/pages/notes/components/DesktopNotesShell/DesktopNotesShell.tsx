@@ -11,6 +11,7 @@ import cls from "@/pages/notes/components/DesktopNotesShell/DesktopNotesShell.mo
 interface VaultOption {
     id: string
     name: string
+    isPublic?: boolean
 }
 
 export interface DesktopNotesShellProps {
@@ -30,12 +31,13 @@ export interface DesktopNotesShellProps {
     onRename: () => void
     onZoomIn: () => void
     onZoomOut: () => void
+    hideEdit?: boolean
 }
 
 export default function DesktopNotesShell(props: DesktopNotesShellProps) {
     const { vaultOptions, noteContent, selectedPath, mode, showEditor } = props
     const { saveStatus, saveError, scrollTopRef, fontScale } = props
-    const { onModeChange, onChange, onContentClick, onEscape, onRename } = props
+    const { onModeChange, onChange, onContentClick, onEscape, onRename, hideEdit } = props
     const { onZoomIn, onZoomOut } = props
 
     return (
@@ -52,6 +54,7 @@ export default function DesktopNotesShell(props: DesktopNotesShellProps) {
                         saveStatus={showEditor ? saveStatus : 'idle'}
                         saveError={saveError}
                         onRename={onRename}
+                        hideEdit={hideEdit}
                     />
                 )}
                 {showEditor ? (

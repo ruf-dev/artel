@@ -1,0 +1,23 @@
+.DocsNoteViewerContainer {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.875rem 2.5rem;
+    background: var(--color-bg-base);
+
+    & .EmptyState {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        color: var(--color-fg-disabled);
+        letter-spacing: 0.04875rem;
+    }
+
+    & .Content {
+        color: var(--color-fg-primary);
+        line-height: 1.6;
+    }
+}

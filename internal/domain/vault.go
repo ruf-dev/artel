@@ -20,6 +20,13 @@ type Vault struct {
 	S3BucketName          string     // "" when S3InstanceUuid is nil
 	UseCouchDBForBinaries bool
 	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  string // "" when vault has never been published
+
+	// MyRole is the calling user's membership role on this vault ("owner"/"reader"/"maintainer"),
+	// or "" if they have no membership row. Only populated by ListByMembership — every other
+	// repo method (GetByID, CreateVault, etc.) has no "calling user" concept and leaves it "".
+	MyRole string
 }
 
 type VaultMember struct {

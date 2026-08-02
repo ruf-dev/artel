@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
+	"regexp"
 	"strings"
 
 	"github.com/google/uuid"
@@ -307,6 +308,74 @@ func (s *Service) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {
 	err := s.vaultsRepo.UnlinkS3Bucket(ctx, vaultID)
 	if err != nil {
 		return rerrors.Wrap(err, "unlink vault s3 bucket")
+	}
+
+	return nil
+}
+
+// vaultSlugPattern matches lowercase kebab-case slugs: lowercase alphanumerics separated by
+// single hyphens, no leading/trailing hyphen, no consecutive hyphens.
+var vaultSlugPattern = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
+
+// validateSlug rejects anything that isn't lowercase kebab-case, 3-64 characters.
+func validateSlug(slug string) error {
+	if len(slug) < 3 || len(slug) > 64 {
+		return rerrors.Wrap(user_errors.VaultSlugInvalid)
+	}
+
+	if !vaultSlugPattern.MatchString(slug) {
+		return rerrors.Wrap(user_errors.VaultSlugInvalid)
+	}
+
+	return nil
+}
+
+func (s *Service) PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.Vault{}, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	membership, err := s.vaultMembersRepo.Get(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(err, "get vault membership")
+	}
+
+	if membership.Role != artel_q.VaultRoleOwner {
+		return domain.Vault{}, rerrors.Wrap(user_errors.NotVaultOwner)
+	}
+
+	err = validateSlug(slug)
+	if err != nil {
+		return domain.Vault{}, err
+	}
+
+	vault, err := s.vaultsRepo.PublishVault(ctx, vaultID, slug)
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(err, "publish vault")
+	}
+
+	return vault, nil
+}
+
+func (s *Service) UnpublishVault(ctx context.Context, vaultID uuid.UUID) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	membership, err := s.vaultMembersRepo.Get(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get vault membership")
+	}
+
+	if membership.Role != artel_q.VaultRoleOwner {
+		return rerrors.Wrap(user_errors.NotVaultOwner)
+	}
+
+	err = s.vaultsRepo.UnpublishVault(ctx, vaultID)
+	if err != nil {
+		return rerrors.Wrap(err, "unpublish vault")
 	}
 
 	return nil

@@ -69,6 +69,39 @@ func (s *Service) resolveVault(ctx context.Context, vaultID uuid.UUID) (domain.V
 	return vault, nil
 }
 
+// resolveVaultForRead is resolveVault's read-only counterpart: it grants access to vault
+// members exactly like resolveVault, but also allows a non-member authenticated caller through
+// when the vault has been published (domain.Vault.IsPublic). Used only by the read-only RPCs
+// (ListFolders/ListNotes/GetNote/ListTags) — write paths keep using resolveVault via
+// liveSyncClient/clientAndBucket unchanged.
+func (s *Service) resolveVaultForRead(ctx context.Context, vaultID uuid.UUID) (domain.Vault, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.Vault{}, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	err := s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureNotes)
+	if err != nil {
+		return domain.Vault{}, err
+	}
+
+	_, err = s.vaultMembers.Get(ctx, vaultID, uc.UserUuid)
+	if err == nil {
+		return s.vaults.GetByID(ctx, vaultID)
+	}
+
+	vault, err := s.vaults.GetByID(ctx, vaultID)
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(user_errors.Unauthenticated, "not a vault member")
+	}
+
+	if !vault.IsPublic {
+		return domain.Vault{}, rerrors.Wrap(user_errors.Unauthenticated, "not a vault member")
+	}
+
+	return vault, nil
+}
+
 func (s *Service) liveSyncClientForVault(ctx context.Context, vault domain.Vault) (*couchdb.LiveSyncClient, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
@@ -104,6 +137,17 @@ func (s *Service) liveSyncClient(ctx context.Context, vaultID uuid.UUID) (*couch
 	return s.liveSyncClientForVault(ctx, vault)
 }
 
+// liveSyncClientForRead mirrors liveSyncClient but resolves the vault via resolveVaultForRead,
+// so a non-member authenticated caller can still read a published vault's notes.
+func (s *Service) liveSyncClientForRead(ctx context.Context, vaultID uuid.UUID) (*couchdb.LiveSyncClient, error) {
+	vault, err := s.resolveVaultForRead(ctx, vaultID)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.liveSyncClientForVault(ctx, vault)
+}
+
 // clientAndBucket resolves both halves of a vault's content storage: the CouchDB livesync
 // client for markdown notes, and the storage.BinaryStore (S3 or CouchDB-adapter, may be nil)
 // for everything else.
@@ -127,7 +171,7 @@ func (s *Service) clientAndBucket(ctx context.Context, vaultID uuid.UUID) (*couc
 }
 
 func (s *Service) ListFolders(ctx context.Context, vaultID uuid.UUID) ([]string, error) {
-	client, err := s.liveSyncClient(ctx, vaultID)
+	client, err := s.liveSyncClientForRead(ctx, vaultID)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +180,7 @@ func (s *Service) ListFolders(ctx context.Context, vaultID uuid.UUID) ([]string,
 }
 
 func (s *Service) ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.NoteEntry, error) {
-	client, err := s.liveSyncClient(ctx, vaultID)
+	client, err := s.liveSyncClientForRead(ctx, vaultID)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +189,7 @@ func (s *Service) ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.N
 }
 
 func (s *Service) GetNote(ctx context.Context, vaultID uuid.UUID, path string) (couchdb.NoteDoc, error) {
-	client, err := s.liveSyncClient(ctx, vaultID)
+	client, err := s.liveSyncClientForRead(ctx, vaultID)
 	if err != nil {
 		return couchdb.NoteDoc{}, err
 	}
@@ -154,7 +198,7 @@ func (s *Service) GetNote(ctx context.Context, vaultID uuid.UUID, path string) (
 }
 
 func (s *Service) ListTags(ctx context.Context, vaultID uuid.UUID) ([]string, error) {
-	client, err := s.liveSyncClient(ctx, vaultID)
+	client, err := s.liveSyncClientForRead(ctx, vaultID)
 	if err != nil {
 		return nil, rerrors.Wrap(err)
 	}

@@ -15,6 +15,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/mom"
 	"github.com/ruf-dev/artel/internal/service/v1/notes"
 	"github.com/ruf-dev/artel/internal/service/v1/prompt"
+	"github.com/ruf-dev/artel/internal/service/v1/public_docs"
 	"github.com/ruf-dev/artel/internal/service/v1/s3instances"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
@@ -39,6 +40,7 @@ type Services struct {
 	AdminSubscriptions  service.AdminSubscriptionsService
 	ExternalConnections service.ExternalConnectionService
 	Mom                 service.MomService
+	PublicDocs          service.PublicDocsService
 	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
@@ -110,6 +112,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		AdminSubscriptions:  adminsubscriptions.New(repo.SubscriptionPlans(), repo.Subscriptions()),
 		ExternalConnections: externalConnectionsSvc,
 		Mom:                 momSvc,
+		PublicDocs:          public_docs.New(repo),
 	}
 
 	return services, nil
@@ -188,4 +191,8 @@ func (s *Services) TractService() service.TractService {
 
 func (s *Services) WorkbenchService() service.WorkbenchService {
 	return s.Workbench
+}
+
+func (s *Services) PublicDocsService() service.PublicDocsService {
+	return s.PublicDocs
 }

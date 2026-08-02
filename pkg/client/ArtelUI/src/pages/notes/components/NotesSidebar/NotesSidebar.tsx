@@ -16,6 +16,7 @@ import cls from "@/pages/notes/components/NotesSidebar/NotesSidebar.module.css"
 interface VaultOption {
     id: string
     name: string
+    isPublic?: boolean
 }
 
 interface NotesSidebarProps {

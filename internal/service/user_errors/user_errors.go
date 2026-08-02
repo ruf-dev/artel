@@ -78,6 +78,10 @@ var (
 	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)
 	InviteLinkRevoked  = rerrors.New("invite link has been revoked", codes.FailedPrecondition)
 	InvalidInviteToken = rerrors.New("invalid invite token", codes.NotFound)
+	VaultSlugInvalid   = rerrors.New(
+		"slug must be lowercase kebab-case, 3-64 characters",
+		codes.InvalidArgument,
+	)
 
 	// middleware.
 	NoMetadataInContext = rerrors.New("error getting metadata from context", codes.FailedPrecondition)

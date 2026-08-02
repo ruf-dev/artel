@@ -140,6 +140,18 @@ func (f *fakeVaults) SetUseCouchDBForBinaries(context.Context, uuid.UUID, bool) 
 	return nil
 }
 
+func (f *fakeVaults) PublishVault(context.Context, uuid.UUID, string) (domain.Vault, error) {
+	return domain.Vault{}, nil
+}
+
+func (f *fakeVaults) UnpublishVault(context.Context, uuid.UUID) error {
+	return nil
+}
+
+func (f *fakeVaults) GetBySlug(context.Context, string) (domain.Vault, error) {
+	return domain.Vault{}, nil
+}
+
 func (f *fakeVaults) WithTx(sqldb.DB) repository.Vaults {
 	return f
 }

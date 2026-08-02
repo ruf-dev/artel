@@ -1,0 +1,22 @@
+.DocsPageContainer {
+    display: flex;
+    flex-direction: column;
+    height: var(--page-height-full);
+    background: var(--color-bg-base);
+
+    & .Body {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+    }
+
+    & .ErrorState {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--page-height-full);
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        color: var(--color-fg-disabled);
+    }
+}

@@ -16,7 +16,7 @@ import (
 const createVault = `-- name: CreateVault :one
 INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
 `
 
 type CreateVaultParams struct {
@@ -42,6 +42,8 @@ type CreateVaultRow struct {
 	S3BucketName          sql.NullString
 	UseCouchdbForBinaries bool
 	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  sql.NullString
 }
 
 func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error) {
@@ -68,6 +70,8 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		&i.S3BucketName,
 		&i.UseCouchdbForBinaries,
 		&i.CreatedAt,
+		&i.IsPublic,
+		&i.Slug,
 	)
 	return i, err
 }
@@ -84,7 +88,7 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 }
 
 const getVaultByID = `-- name: GetVaultByID :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
 FROM vaults
 WHERE id = $1
 `
@@ -101,6 +105,8 @@ type GetVaultByIDRow struct {
 	S3BucketName          sql.NullString
 	UseCouchdbForBinaries bool
 	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  sql.NullString
 }
 
 func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error) {
@@ -118,12 +124,14 @@ func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDR
 		&i.S3BucketName,
 		&i.UseCouchdbForBinaries,
 		&i.CreatedAt,
+		&i.IsPublic,
+		&i.Slug,
 	)
 	return i, err
 }
 
 const getVaultByNameAndUser = `-- name: GetVaultByNameAndUser :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
 FROM vaults
 WHERE user_id = $1
   AND name = $2
@@ -146,6 +154,8 @@ type GetVaultByNameAndUserRow struct {
 	S3BucketName          sql.NullString
 	UseCouchdbForBinaries bool
 	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  sql.NullString
 }
 
 func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error) {
@@ -163,6 +173,52 @@ func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameA
 		&i.S3BucketName,
 		&i.UseCouchdbForBinaries,
 		&i.CreatedAt,
+		&i.IsPublic,
+		&i.Slug,
+	)
+	return i, err
+}
+
+const getVaultBySlug = `-- name: GetVaultBySlug :one
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+FROM vaults
+WHERE slug = $1
+  AND is_public
+`
+
+type GetVaultBySlugRow struct {
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
+	UseCouchdbForBinaries bool
+	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  sql.NullString
+}
+
+func (q *Queries) GetVaultBySlug(ctx context.Context, slug sql.NullString) (GetVaultBySlugRow, error) {
+	row := q.db.QueryRowContext(ctx, getVaultBySlug, slug)
+	var i GetVaultBySlugRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.CouchDbName,
+		&i.CouchInstanceID,
+		&i.Status,
+		&i.LivesyncPassphraseEnc,
+		&i.S3InstanceID,
+		&i.S3BucketName,
+		&i.UseCouchdbForBinaries,
+		&i.CreatedAt,
+		&i.IsPublic,
+		&i.Slug,
 	)
 	return i, err
 }
@@ -183,10 +239,11 @@ func (q *Queries) LinkVaultS3Bucket(ctx context.Context, arg LinkVaultS3BucketPa
 }
 
 const listVaultsByMembership = `-- name: ListVaultsByMembership :many
-SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.s3_instance_id, v.s3_bucket_name, v.use_couchdb_for_binaries, v.created_at
+SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.s3_instance_id, v.s3_bucket_name, v.use_couchdb_for_binaries, v.created_at, v.is_public, v.slug, vm.role AS member_role
 FROM vaults v
-         JOIN vault_members vm ON vm.vault_id = v.id
-WHERE vm.user_id = $1
+         LEFT JOIN vault_members vm ON vm.vault_id = v.id AND vm.user_id = $1
+WHERE vm.user_id IS NOT NULL
+   OR v.is_public
 `
 
 type ListVaultsByMembershipRow struct {
@@ -201,6 +258,9 @@ type ListVaultsByMembershipRow struct {
 	S3BucketName          sql.NullString
 	UseCouchdbForBinaries bool
 	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  sql.NullString
+	MemberRole            NullVaultRole
 }
 
 func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error) {
@@ -224,6 +284,9 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 			&i.S3BucketName,
 			&i.UseCouchdbForBinaries,
 			&i.CreatedAt,
+			&i.IsPublic,
+			&i.Slug,
+			&i.MemberRole,
 		); err != nil {
 			return nil, err
 		}
@@ -236,6 +299,56 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 		return nil, err
 	}
 	return items, nil
+}
+
+const publishVault = `-- name: PublishVault :one
+UPDATE vaults
+SET is_public = true,
+    slug      = $2
+WHERE id = $1
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+`
+
+type PublishVaultParams struct {
+	ID   uuid.UUID
+	Slug sql.NullString
+}
+
+type PublishVaultRow struct {
+	ID                    uuid.UUID
+	UserID                uuid.UUID
+	Name                  string
+	CouchDbName           string
+	CouchInstanceID       uuid.NullUUID
+	Status                string
+	LivesyncPassphraseEnc []byte
+	S3InstanceID          uuid.NullUUID
+	S3BucketName          sql.NullString
+	UseCouchdbForBinaries bool
+	CreatedAt             time.Time
+	IsPublic              bool
+	Slug                  sql.NullString
+}
+
+func (q *Queries) PublishVault(ctx context.Context, arg PublishVaultParams) (PublishVaultRow, error) {
+	row := q.db.QueryRowContext(ctx, publishVault, arg.ID, arg.Slug)
+	var i PublishVaultRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.CouchDbName,
+		&i.CouchInstanceID,
+		&i.Status,
+		&i.LivesyncPassphraseEnc,
+		&i.S3InstanceID,
+		&i.S3BucketName,
+		&i.UseCouchdbForBinaries,
+		&i.CreatedAt,
+		&i.IsPublic,
+		&i.Slug,
+	)
+	return i, err
 }
 
 const setVaultLiveSyncPassphrase = `-- name: SetVaultLiveSyncPassphrase :exec
@@ -274,6 +387,17 @@ UPDATE vaults SET s3_instance_id = NULL, s3_bucket_name = NULL WHERE id = $1
 
 func (q *Queries) UnlinkVaultS3Bucket(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, unlinkVaultS3Bucket, id)
+	return err
+}
+
+const unpublishVault = `-- name: UnpublishVault :exec
+UPDATE vaults
+SET is_public = false
+WHERE id = $1
+`
+
+func (q *Queries) UnpublishVault(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, unpublishVault, id)
 	return err
 }
 

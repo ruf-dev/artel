@@ -148,6 +148,27 @@ export type SetVaultBinaryStorageResponse = Record<string, never>;
 
 export type SetVaultBinaryStorage = Record<string, never>;
 
+export type PublishVaultRequest = {
+  vaultId?: string;
+  slug?: string;
+};
+
+export type PublishVaultResponse = {
+  vault?: VaultItem;
+};
+
+export type PublishVault = Record<string, never>;
+
+export type UnpublishVaultRequest = {
+  vaultId?: string;
+};
+
+export type UnpublishVaultResponse = {
+  vault?: VaultItem;
+};
+
+export type UnpublishVault = Record<string, never>;
+
 export type CreateWorkbenchRequest = {
   vaultId?: string;
 };
@@ -209,6 +230,9 @@ export type VaultItem = {
   s3InstanceId?: string;
   s3BucketName?: string;
   useCouchdbForBinaries?: boolean;
+  isPublic?: boolean;
+  slug?: string;
+  role?: string;
 };
 
 export type VaultMemberInfo = {
@@ -270,6 +294,12 @@ export class VaultsAPI {
   }
   static SetVaultBinaryStorage(this:void, req: SetVaultBinaryStorageRequest, initReq?: fm.InitReq): Promise<SetVaultBinaryStorageResponse> {
     return fm.fetchRequest<SetVaultBinaryStorageResponse>(`/api/vaults/binary-storage`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static PublishVault(this:void, req: PublishVaultRequest, initReq?: fm.InitReq): Promise<PublishVaultResponse> {
+    return fm.fetchRequest<PublishVaultResponse>(`/api/vaults/${req.vaultId}/publish`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static UnpublishVault(this:void, req: UnpublishVaultRequest, initReq?: fm.InitReq): Promise<UnpublishVaultResponse> {
+    return fm.fetchRequest<UnpublishVaultResponse>(`/api/vaults/${req.vaultId}/unpublish`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static CreateWorkbench(this:void, req: CreateWorkbenchRequest, initReq?: fm.InitReq): Promise<CreateWorkbenchResponse> {
     return fm.fetchRequest<CreateWorkbenchResponse>(`/api/vaults/workbench/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

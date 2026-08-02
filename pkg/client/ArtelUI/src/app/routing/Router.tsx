@@ -15,6 +15,8 @@ import TaskTrackersPage from "@/pages/task-trackers/TaskTrackersPage.tsx"
 import RoadmapPage from "@/pages/roadmap/RoadmapPage.tsx"
 import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
+import DocsPage from "@/pages/docs/DocsPage.tsx"
+import {DEFAULT_DOCS_SLUG} from "@/pages/docs/processes/docsConstants.ts"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
 import ToolboxPage from "@/pages/toolbox/ToolboxPage.tsx"
 import TractCanvasListPage from "@/pages/tract-canvas/TractCanvasListPage.tsx"
@@ -51,6 +53,8 @@ export enum Path {
     ClosedAlpha = "/closed-alpha",
     Admin = "/admin",
     JoinVault = "/join/:token",
+    DocsPage = "/docs/:slug",
+    DocsPageDefault = "/docs",
 }
 
 export const REDIRECT_AFTER_LOGIN_KEY = "artel_post_login_redirect"
@@ -81,6 +85,12 @@ const routes: RouteObject[] = [
     {path: Path.McpAuth, element: <McpAuthPage/>, errorElement: <ErrorPage/>},
     {path: Path.ClosedAlpha, element: <ClosedAlphaPage/>, errorElement: <ErrorPage/>},
     {path: Path.JoinVault, element: <JoinVaultPage/>, errorElement: <ErrorPage/>},
+    {path: Path.DocsPage, element: <DocsPage/>, errorElement: <ErrorPage/>},
+    {
+        path: Path.DocsPageDefault,
+        element: <Navigate to={`/docs/${DEFAULT_DOCS_SLUG}`} replace/>,
+        errorElement: <ErrorPage/>,
+    },
 ]
 
 export default function Router() {

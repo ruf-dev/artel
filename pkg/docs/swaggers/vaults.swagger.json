@@ -633,6 +633,82 @@
           "VaultsAPI"
         ]
       }
+    },
+    "/api/vaults/{vaultId}/publish": {
+      "post": {
+        "operationId": "VaultsAPI_PublishVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsPublishVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "vaultId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsVaultsAPIPublishVaultBody"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/{vaultId}/unpublish": {
+      "post": {
+        "operationId": "VaultsAPI_UnpublishVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsUnpublishVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "vaultId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsVaultsAPIUnpublishVaultBody"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
     }
   },
   "definitions": {
@@ -845,6 +921,14 @@
         }
       }
     },
+    "artel_vaultsPublishVaultResponse": {
+      "type": "object",
+      "properties": {
+        "vault": {
+          "$ref": "#/definitions/artel_vaultsVaultItem"
+        }
+      }
+    },
     "artel_vaultsRemoveMemberRequest": {
       "type": "object",
       "properties": {
@@ -954,6 +1038,14 @@
     "artel_vaultsUnlinkS3BucketResponse": {
       "type": "object"
     },
+    "artel_vaultsUnpublishVaultResponse": {
+      "type": "object",
+      "properties": {
+        "vault": {
+          "$ref": "#/definitions/artel_vaultsVaultItem"
+        }
+      }
+    },
     "artel_vaultsVaultInviteItem": {
       "type": "object",
       "properties": {
@@ -1000,6 +1092,16 @@
         },
         "useCouchdbForBinaries": {
           "type": "boolean"
+        },
+        "isPublic": {
+          "type": "boolean"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "description": "role is the calling user's membership role on this vault (\"owner\"/\"reader\"/\"maintainer\"),\nor \"\" if they have no membership row (e.g. viewing a public vault as a non-member)."
         }
       }
     },
@@ -1022,6 +1124,18 @@
           "type": "string"
         }
       }
+    },
+    "artel_vaultsVaultsAPIPublishVaultBody": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "slug: lowercase, [a-z0-9-]+ (validated service-side); must be globally unique across\nvaults (see migrations/063_vault_public.sql vaults.slug UNIQUE constraint)."
+        }
+      }
+    },
+    "artel_vaultsVaultsAPIUnpublishVaultBody": {
+      "type": "object"
     },
     "artel_vaultsWatchWorkbenchLoginRequest": {
       "type": "object",

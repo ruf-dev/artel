@@ -35,6 +35,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
 	"github.com/ruf-dev/artel/internal/transport/notes_api"
 	"github.com/ruf-dev/artel/internal/transport/prompts_api"
+	"github.com/ruf-dev/artel/internal/transport/public_docs_api"
 	"github.com/ruf-dev/artel/internal/transport/s3_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
@@ -116,6 +117,7 @@ func (c *Custom) Init(a *App) error {
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
+	publicDocsImpl := public_docs_api.New(services.PublicDocsService())
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
 		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost,
@@ -151,6 +153,11 @@ func (c *Custom) Init(a *App) error {
 				pb.AuthAPI_Refresh_FullMethodName,
 				pb.AuthAPI_GetConfig_FullMethodName,
 				pb.AuthAPI_GetMe_FullMethodName,
+				pb.PublicDocsAPI_GetVaultBySlug_FullMethodName,
+				pb.PublicDocsAPI_ListFolders_FullMethodName,
+				pb.PublicDocsAPI_ListNotes_FullMethodName,
+				pb.PublicDocsAPI_GetNote_FullMethodName,
+				pb.PublicDocsAPI_ListTags_FullMethodName,
 			),
 			middleware.WithNoAuth(a.Cfg.Environment.NoAuthEnabled),
 		),
@@ -187,7 +194,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSubscriptionsAPI_UpdateUserSubscription_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl)
+	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)

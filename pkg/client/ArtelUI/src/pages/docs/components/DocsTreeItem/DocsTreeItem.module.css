@@ -1,0 +1,36 @@
+.DocsTreeItemContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.84rem;
+    cursor: pointer;
+    color: var(--color-fg-secondary);
+    background: transparent;
+    border-left: var(--border-thickness-accent) solid transparent;
+    transition: background 120ms ease;
+
+    &:hover {
+        background: rgb(255 255 255 / 3.5%);
+    }
+
+    & .ArrowSpacer {
+        width: 0.56rem;
+        flex-shrink: 0;
+    }
+
+    & .Label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.DocsTreeItemActive {
+    color: var(--color-fg-primary);
+    background: var(--coral-dim);
+    border-left: var(--border-thickness-accent) solid #FF4B3E;
+
+    &:hover {
+        background: var(--coral-dim);
+    }
+}

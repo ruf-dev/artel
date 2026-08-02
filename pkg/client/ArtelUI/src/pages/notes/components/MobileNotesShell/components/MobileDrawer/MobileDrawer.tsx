@@ -13,6 +13,7 @@ import cls from "@/pages/notes/components/MobileNotesShell/components/MobileDraw
 interface VaultOption {
     id: string
     name: string
+    isPublic?: boolean
 }
 
 interface MobileDrawerProps {

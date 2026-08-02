@@ -82,6 +82,7 @@ type Querier interface {
 	GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error)
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
+	GetVaultBySlug(ctx context.Context, slug sql.NullString) (GetVaultBySlugRow, error)
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) (Workbench, error)
@@ -135,6 +136,7 @@ type Querier interface {
 	MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error
 	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error
 	PickLeastLoadedDockerHost(ctx context.Context) (PickLeastLoadedDockerHostRow, error)
+	PublishVault(ctx context.Context, arg PublishVaultParams) (PublishVaultRow, error)
 	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RegisterDockerHost(ctx context.Context, arg RegisterDockerHostParams) (uuid.UUID, error)
@@ -157,6 +159,7 @@ type Querier interface {
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error
 	UnlinkTriggerFromTract(ctx context.Context, arg UnlinkTriggerFromTractParams) error
 	UnlinkVaultS3Bucket(ctx context.Context, id uuid.UUID) error
+	UnpublishVault(ctx context.Context, id uuid.UUID) error
 	UpdateCouchAccountPassword(ctx context.Context, arg UpdateCouchAccountPasswordParams) error
 	UpdateCouchInstance(ctx context.Context, arg UpdateCouchInstanceParams) error
 	// ca_cert_enc/client_cert_enc/client_key_enc are three-way patch fields: the matching

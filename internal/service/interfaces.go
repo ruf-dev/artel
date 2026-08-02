@@ -30,6 +30,7 @@ type Service interface {
 	ExternalConnectionService() ExternalConnectionService
 	MomService() MomService
 	TractService() TractService
+	PublicDocsService() PublicDocsService
 }
 
 type AdminUsersService interface {
@@ -82,6 +83,8 @@ type VaultService interface {
 	LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error
 	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error
+	PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error)
+	UnpublishVault(ctx context.Context, vaultID uuid.UUID) error
 }
 
 // WorkbenchService manages the per-vault Docker workbench container — see
@@ -254,6 +257,17 @@ type NotesService interface {
 	) (imported int, skipped int, err error)
 	DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) (deletedCount int, failedPaths []string, err error)
 	MoveFolder(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) (movedCount int, err error)
+}
+
+// PublicDocsService is the anonymous, auth-exempt read surface backing PublicDocsAPI (see
+// docs/architecture.md). Every method resolves the target vault by slug and only ever returns
+// data for a published vault (domain.Vault.IsPublic) — it must never require a user_context.
+type PublicDocsService interface {
+	GetVaultBySlug(ctx context.Context, slug string) (domain.Vault, error)
+	ListFolders(ctx context.Context, slug string) ([]string, error)
+	ListNotes(ctx context.Context, slug string) ([]couchdb.NoteEntry, error)
+	GetNote(ctx context.Context, slug, path string) (couchdb.NoteDoc, error)
+	ListTags(ctx context.Context, slug string) ([]string, error)
 }
 
 type MomService interface {

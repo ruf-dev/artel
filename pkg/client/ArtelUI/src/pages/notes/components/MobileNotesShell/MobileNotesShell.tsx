@@ -12,6 +12,7 @@ import cls from "@/pages/notes/components/MobileNotesShell/MobileNotesShell.modu
 interface VaultOption {
     id: string
     name: string
+    isPublic?: boolean
 }
 
 export interface MobileNotesShellProps {
@@ -29,11 +30,13 @@ export interface MobileNotesShellProps {
     onContentClick: (() => void) | undefined
     onEscape: (() => void) | undefined
     onRename: () => void
+    hideEdit?: boolean
 }
 
 export default function MobileNotesShell(props: MobileNotesShellProps) {
     const { vaultOptions, noteContent, selectedPath, mode, showEditor } = props
-    const { scrollTopRef, fontScale, onModeChange, onChange, onContentClick, onEscape } = props
+    const { scrollTopRef, fontScale, onModeChange, onChange, onContentClick } = props
+    const { onEscape, hideEdit } = props
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const { selectedPath: storeSelectedPath, highlightNote } = useNotes()
@@ -64,7 +67,7 @@ export default function MobileNotesShell(props: MobileNotesShellProps) {
                 onHamburgerClick={() => setSidebarOpen(v => !v)}
                 onFindCurrentFile={handleFindCurrentFile}
             />
-            <ModeBar active={mode} onModeChange={onModeChange} />
+            <ModeBar active={mode} onModeChange={onModeChange} hideEdit={hideEdit} />
             <div className={contentAreaClass}>
                 {showEditor ? (
                     <NoteEditor

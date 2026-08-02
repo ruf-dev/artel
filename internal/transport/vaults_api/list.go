@@ -29,6 +29,9 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 			S3InstanceId:          s3InstanceId,
 			S3BucketName:          vault.S3BucketName,
 			UseCouchdbForBinaries: vault.UseCouchDBForBinaries,
+			IsPublic:              vault.IsPublic,
+			Slug:                  vault.Slug,
+			Role:                  vault.MyRole,
 		}
 		items = append(items, item)
 	}

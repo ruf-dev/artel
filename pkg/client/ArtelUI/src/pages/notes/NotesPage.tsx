@@ -4,7 +4,6 @@ import {useLocation, useNavigate, useParams} from "react-router-dom"
 import {useNotes} from "@/app/hooks/Notes.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import {usePortrait} from "@/app/hooks/usePortrait.ts"
-import RenameDialog from "@/pages/notes/components/RenameDialog/RenameDialog.tsx"
 import MobileNotesShell from "@/pages/notes/components/MobileNotesShell/MobileNotesShell.tsx"
 import DesktopNotesShell from "@/pages/notes/components/DesktopNotesShell/DesktopNotesShell.tsx"
 import {useAutosave} from "@/pages/notes/hooks/useAutosave.ts"
@@ -12,6 +11,8 @@ import {NoteMode} from "@/app/hooks/Notes.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {buildNotesUrl, decodeNotePath} from "@/pages/notes/processes/notesUrl.ts"
+import {useReadOnlyVaultGate} from "@/pages/notes/processes/useReadOnlyVaultGate.ts"
+import {buildRenameHandler} from "@/pages/notes/processes/renameHandler.tsx"
 
 
 export default function NotesPage() {
@@ -35,9 +36,11 @@ export default function NotesPage() {
     const vaultOptions = useMemo(
         () => vaults
             .filter(v => v.id && v.name)
-            .map(v => ({id: v.id!, name: v.name!})) || [],
+            .map(v => ({id: v.id!, name: v.name!, isPublic: v.isPublic})) || [],
         [vaults],
     )
+
+    const isReadOnlyVault = useReadOnlyVaultGate(vaults, notesStore.vaultId, notesStore.mode, notesStore.setMode)
 
     useEffect(() => {
         if (vaultIdParam) return
@@ -71,10 +74,11 @@ export default function NotesPage() {
     useEffect(() => { setPreviewEditing(false) }, [notesStore.selectedPath])
 
     useEffect(() => {
+        if (isReadOnlyVault) return
         if (notesStore.selectedPath && notesStore.noteContent === '' && notesStore.mode === 'preview') {
             setPreviewEditing(true)
         }
-    }, [notesStore.selectedPath, notesStore.noteContent])
+    }, [notesStore.selectedPath, notesStore.noteContent, isReadOnlyVault])
 
     const { saveStatus, saveError, forceSave } = useAutosave({
         noteId: notesStore.selectedPath,
@@ -86,6 +90,7 @@ export default function NotesPage() {
     })
 
     function handleModeChange(newMode: NoteMode) {
+        if (newMode === 'edit' && isReadOnlyVault) return
         if (notesStore.mode === 'edit' || (notesStore.mode === 'preview' && previewEditing)) {
             forceSave()
         }
@@ -93,21 +98,9 @@ export default function NotesPage() {
         notesStore.setMode(newMode)
     }
 
-    function handleRename() {
-        if (!notesStore.selectedPath) return
-        OpenDialog(
-            <RenameDialog
-                currentPath={notesStore.selectedPath}
-                onConfirm={async (newPath: string) => {
-                    try {
-                        await notesStore.moveNote(newPath)
-                    } catch (err) {
-                        bakeError("Failed to move note", err)
-                    }
-                }}
-            />
-        )
-    }
+    const handleRename = buildRenameHandler({
+        selectedPath: notesStore.selectedPath, openDialog: OpenDialog, moveNote: notesStore.moveNote, bakeError,
+    })
 
     const mode = notesStore.mode
     const selectedPath = notesStore.selectedPath
@@ -118,9 +111,11 @@ export default function NotesPage() {
         noteContent: notesStore.noteContent,
         saveStatus: showEditor ? saveStatus : 'idle' as const,
         saveError, onModeChange: handleModeChange, onChange: notesStore.setContent,
-        onContentClick: mode === 'preview' && selectedPath ? () => setPreviewEditing(true) : undefined,
+        onContentClick: mode === 'preview' && selectedPath && !isReadOnlyVault
+            ? () => setPreviewEditing(true) : undefined,
         onEscape: mode === 'preview' ? () => setPreviewEditing(false) : undefined,
         onRename: handleRename,
+        hideEdit: isReadOnlyVault,
     }
 
     if (isPortrait) {

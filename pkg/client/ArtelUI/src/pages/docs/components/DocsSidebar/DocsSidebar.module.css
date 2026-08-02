@@ -1,0 +1,29 @@
+.DocsSidebarContainer {
+    width: 16.8rem;
+    flex-shrink: 0;
+    background: var(--color-bg-card);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-right: var(--border-thickness) solid var(--color-border);
+
+    & .Header {
+        padding: 0.84rem 1.12rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.0308rem;
+        color: var(--color-fg-primary);
+        border-bottom: var(--border-thickness) solid var(--color-border-light);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .ScrollArea {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
