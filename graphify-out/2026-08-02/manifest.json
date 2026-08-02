@@ -5510,8 +5510,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/DockerHostFormDialog.tsx": {
-    "mtime": 1785618832.647913,
-    "ast_hash": "cebdccc9da5a96d1ae295ff16eee2188",
+    "mtime": 1785070162.4230552,
+    "ast_hash": "b8504e68b7cea41ac06e38803b7333ee",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/DockerApiTab/components/DockerHostList/DockerHostList.tsx": {
@@ -5667,11 +5667,6 @@
   "migrations/embed.go": {
     "mtime": 1785565686.1847672,
     "ast_hash": "6001bdaa1f5a39065a499063f74ed8e5",
-    "semantic_hash": ""
-  },
-  "pkg/client/ArtelUI/src/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/components/DockerHostVpsGuide.tsx": {
-    "mtime": 1785618781.4267132,
-    "ast_hash": "b9590a3f99026f370330e7a3f5e9219b",
     "semantic_hash": ""
   }
 }
