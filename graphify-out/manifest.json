@@ -385,13 +385,13 @@
     "semantic_hash": ""
   },
   "internal/transport/http.go": {
-    "mtime": 1785053922.8866642,
-    "ast_hash": "40d14837472326776503113466cbe786",
+    "mtime": 1785697292.9125695,
+    "ast_hash": "b4cc4a183c7992df3ca973838e42724d",
     "semantic_hash": ""
   },
   "internal/transport/manager.go": {
-    "mtime": 1785053922.886801,
-    "ast_hash": "e9396f1c0ab5c45ec93d1ec4f7347d58",
+    "mtime": 1785697292.914158,
+    "ast_hash": "4e95f658715a46e6821c43aaf605f573",
     "semantic_hash": ""
   },
   "internal/transport/ui/ui.go": {
@@ -405,8 +405,8 @@
     "semantic_hash": ""
   },
   "internal/transport/vaults_api/vaults_impl.go": {
-    "mtime": 1785053922.936893,
-    "ast_hash": "e69bec06e872287788754f2af5342e94",
+    "mtime": 1785697292.9271798,
+    "ast_hash": "d85e0c75f9b778ec62a3f32f9e0b7ec7",
     "semantic_hash": ""
   },
   "internal/transport/vaults_api/list.go": {
@@ -435,23 +435,23 @@
     "semantic_hash": ""
   },
   "internal/transport/auth_api/auth_impl.go": {
-    "mtime": 1785053922.8776228,
-    "ast_hash": "28fea8c99ed5af8c1fee99149f703e08",
+    "mtime": 1785697292.9077103,
+    "ast_hash": "3db67ac60951e47ba706b00861525730",
     "semantic_hash": ""
   },
   "internal/transport/couch_instances_api/couch_instances_impl.go": {
-    "mtime": 1783193923.270808,
-    "ast_hash": "401802186e99535b4c48761f5d95ee94",
+    "mtime": 1785697292.908838,
+    "ast_hash": "94207a1c6e943b90757043ff841d2a07",
     "semantic_hash": ""
   },
   "internal/transport/artel_api_impl/impl.go": {
-    "mtime": 1783193923.2716277,
-    "ast_hash": "9a920c8df9941be98dad2ef44609bab3",
+    "mtime": 1785697292.906256,
+    "ast_hash": "2ef443b406131f74e0a583b8729c1b47",
     "semantic_hash": ""
   },
   "internal/transport/prompts_api/impl.go": {
-    "mtime": 1783192963.7412398,
-    "ast_hash": "b2353b2314cb21a63a9fb1e03095d76c",
+    "mtime": 1785697292.921834,
+    "ast_hash": "d072dc285aefdb7eae4125122d640a1d",
     "semantic_hash": ""
   },
   "internal/transport/mcp_keys_api/create.go": {
@@ -465,8 +465,8 @@
     "semantic_hash": ""
   },
   "internal/transport/mcp_keys_api/mcp_keys_impl.go": {
-    "mtime": 1783187443.0194433,
-    "ast_hash": "e0c888e9b5ae6d07ff0d5aa0dcf61463",
+    "mtime": 1785697292.915116,
+    "ast_hash": "a74853c54ff5a1a7432bd0bbd4a263b2",
     "semantic_hash": ""
   },
   "internal/transport/mcp_keys_api/set_access.go": {
@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "internal/app/custom.go": {
-    "mtime": 1785657271.4809182,
-    "ast_hash": "a7e2678fffc62afcb3dbf018e3f1c381",
+    "mtime": 1785697292.9007928,
+    "ast_hash": "dea22562e9aa0b60afce49ff2aa6838d",
     "semantic_hash": ""
   },
   "internal/app/config.go": {
@@ -540,8 +540,8 @@
     "semantic_hash": ""
   },
   "internal/config/environment.go": {
-    "mtime": 1785053922.7845912,
-    "ast_hash": "3fe9aa857c15f9df24d59f493f3d275e",
+    "mtime": 1785697292.901714,
+    "ast_hash": "c6944ae1cb7465691a88be4d3636c16d",
     "semantic_hash": ""
   },
   "internal/config/load.go": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
-    "mtime": 1785657143.9573803,
-    "ast_hash": "0d046998e4637b6b94c07fdd4f388290",
+    "mtime": 1785697292.9025702,
+    "ast_hash": "89ddf0f7f532b8900a4b6d87294a6f0d",
     "semantic_hash": ""
   },
   "internal/domain/couch_account.go": {
@@ -755,7 +755,7 @@
     "semantic_hash": ""
   },
   "pkg/docs/docs.swagger_ui.go": {
-    "mtime": 1785660971.280913,
+    "mtime": 1785697292.9327204,
     "ast_hash": "a301948a0c005b81a32ad8250ee32774",
     "semantic_hash": ""
   },
@@ -930,7 +930,7 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/VaultCard/VaultCardHeader.tsx": {
-    "mtime": 1785618119.6834447,
+    "mtime": 1785697292.9282217,
     "ast_hash": "8583571d67ce86fa975837bfe04322b0",
     "semantic_hash": ""
   },
@@ -985,7 +985,7 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/AdminPage.tsx": {
-    "mtime": 1785618073.3395858,
+    "mtime": 1785697292.9292142,
     "ast_hash": "147e0574a03f4f713d8716a333e41663",
     "semantic_hash": ""
   },
@@ -1045,13 +1045,13 @@
     "semantic_hash": ""
   },
   "config/config.yaml": {
-    "mtime": 1785053922.3608499,
-    "ast_hash": "2ce1202cc4e50bb501dfa3e5d72ea063",
+    "mtime": 1785697292.8985758,
+    "ast_hash": "bd68df4119f03bb5058da7ce27ae485a",
     "semantic_hash": ""
   },
   "config/config_template.yaml": {
-    "mtime": 1785053922.3661249,
-    "ast_hash": "4e0c7e7589b39b61e5ed2955d150297d",
+    "mtime": 1785697292.8999836,
+    "ast_hash": "84f56a4b01a6da6242d19535f47704f6",
     "semantic_hash": ""
   },
   ".claude/CLAUDE.md": {
@@ -1345,8 +1345,8 @@
     "semantic_hash": ""
   },
   "internal/transport/notes_api/notes_impl.go": {
-    "mtime": 1783187443.1827075,
-    "ast_hash": "f510cb4c0936aefdd7f5dc923be5b1b4",
+    "mtime": 1785697292.9208448,
+    "ast_hash": "75febee1541e8f42079bed39832e0916",
     "semantic_hash": ""
   },
   "internal/transport/notes_api/get_note.go": {
@@ -1375,8 +1375,8 @@
     "semantic_hash": ""
   },
   "internal/transport/admin_users_api/admin_users_impl.go": {
-    "mtime": 1784011487.0766835,
-    "ast_hash": "0be4f24ec092497cacd72ef838abb3f0",
+    "mtime": 1785697292.905529,
+    "ast_hash": "29d0c2728d402887239a80f118c048b1",
     "semantic_hash": ""
   },
   "internal/transport/external_connections_api/to_proto.go": {
@@ -1425,8 +1425,8 @@
     "semantic_hash": ""
   },
   "internal/transport/external_connections_api/impl.go": {
-    "mtime": 1783193923.2821908,
-    "ast_hash": "291568de37e0f845ae8eaa3d686f3ec2",
+    "mtime": 1785697292.9112225,
+    "ast_hash": "aa7af9c50a7e17d1ad1d04a4d95e79a7",
     "semantic_hash": ""
   },
   "internal/transport/gitlab_webhook/handler.go": {
@@ -1455,8 +1455,8 @@
     "semantic_hash": ""
   },
   "internal/transport/admin_couch_api/admin_couch_impl.go": {
-    "mtime": 1783193923.2988899,
-    "ast_hash": "dbc2327eab4796e6d50377b71bd098a1",
+    "mtime": 1785697292.9032755,
+    "ast_hash": "e4ddbb9a7fbf1678f04aa1112fe9acff",
     "semantic_hash": ""
   },
   "internal/transport/task_trackers_api/to_proto.go": {
@@ -1485,8 +1485,8 @@
     "semantic_hash": ""
   },
   "internal/transport/task_trackers_api/impl.go": {
-    "mtime": 1783193923.3210075,
-    "ast_hash": "8b5eb4122678689d090ab26037b29f3b",
+    "mtime": 1785697292.9247851,
+    "ast_hash": "75432cc10029eb169b973923c3e7ac92",
     "semantic_hash": ""
   },
   "internal/app/otel.go": {
@@ -2385,8 +2385,8 @@
     "semantic_hash": ""
   },
   "internal/transport/tracts_api/impl.go": {
-    "mtime": 1783187438.5495243,
-    "ast_hash": "718c3e1ca3a5e9b42ca0a1dbde5ccebc",
+    "mtime": 1785697292.926136,
+    "ast_hash": "67d0b3eadeca188d81d2cdf63c850f15",
     "semantic_hash": ""
   },
   "internal/storage/binary_store.go": {
@@ -2605,8 +2605,8 @@
     "semantic_hash": ""
   },
   "internal/transport/s3_instances_api/s3_instances_impl.go": {
-    "mtime": 1783193923.2869809,
-    "ast_hash": "14cb0a1c0b7b1a74b4a0dddb259d3241",
+    "mtime": 1785697292.9236355,
+    "ast_hash": "e60cf7bc611b63be0345d17344b367b9",
     "semantic_hash": ""
   },
   "internal/api/server/artel_api/s3_instances.pb.gw.go": {
@@ -4430,8 +4430,8 @@
     "semantic_hash": ""
   },
   "internal/transport/admin_subscriptions_api/admin_subscriptions_impl.go": {
-    "mtime": 1784229693.5983086,
-    "ast_hash": "df3628d3a42d8e4138bf0ddb8c93148e",
+    "mtime": 1785697292.9039395,
+    "ast_hash": "087f2f832d102c760276773b64856bf8",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/admin_subscriptions.pb.ts": {
@@ -5285,7 +5285,7 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/components/DockerApiTab/DockerApiTab.tsx": {
-    "mtime": 1785618088.2783005,
+    "mtime": 1785697292.9309955,
     "ast_hash": "2943938be60b728d39f0c50b5ddd0017",
     "semantic_hash": ""
   },
@@ -5490,8 +5490,8 @@
     "semantic_hash": ""
   },
   "internal/transport/docker_hosts_api/docker_hosts_impl.go": {
-    "mtime": 1785070162.4213605,
-    "ast_hash": "dbd9851a5655924598140a3ed2e13998",
+    "mtime": 1785697292.9100575,
+    "ast_hash": "a01b1b51a768b7c4164bc63928677d7c",
     "semantic_hash": ""
   },
   "migrations/061_docker_hosts.sql": {
@@ -5750,8 +5750,8 @@
     "semantic_hash": ""
   },
   "internal/transport/public_docs_api/public_docs_impl.go": {
-    "mtime": 1785657239.6459384,
-    "ast_hash": "5f8c02a9c27e076ba2f26b71f40c665b",
+    "mtime": 1785697292.9224482,
+    "ast_hash": "030e468fd8baf9f2b06c3557ce2a40c1",
     "semantic_hash": ""
   },
   "internal/transport/vaults_api/publish.go": {
@@ -5847,6 +5847,46 @@
   "internal/service/v1/vault/list_test.go": {
     "mtime": 1785658411.8365972,
     "ast_hash": "37da51b7ba8b791d8aaeb4960fc3de34",
+    "semantic_hash": ""
+  },
+  "internal/middleware/cookie_annotator.go": {
+    "mtime": 1785696268.2522202,
+    "ast_hash": "138012da45faaed939bd31ddaa0a4652",
+    "semantic_hash": ""
+  },
+  "internal/middleware/cookie_annotator_test.go": {
+    "mtime": 1785696318.2920375,
+    "ast_hash": "49594000463d1e905e766190d6092f9e",
+    "semantic_hash": ""
+  },
+  "internal/middleware/cookie_names.go": {
+    "mtime": 1785696729.3574896,
+    "ast_hash": "c9df47742b3c0abf3c3255fb9abf4ad7",
+    "semantic_hash": ""
+  },
+  "internal/middleware/cookie_response.go": {
+    "mtime": 1785696734.25176,
+    "ast_hash": "30c6330b6c5b724f60979e84dbb466a5",
+    "semantic_hash": ""
+  },
+  "internal/middleware/cookie_response_test.go": {
+    "mtime": 1785696369.907485,
+    "ast_hash": "aedbeb1ad2e286f5b578865e8b61ccee",
+    "semantic_hash": ""
+  },
+  "internal/middleware/csrf_interceptor.go": {
+    "mtime": 1785696295.1498287,
+    "ast_hash": "da8cec579cd459e0d0910005138a070f",
+    "semantic_hash": ""
+  },
+  "internal/middleware/csrf_interceptor_test.go": {
+    "mtime": 1785696353.360487,
+    "ast_hash": "f898085860ba80bae7e259c4c02afaf4",
+    "semantic_hash": ""
+  },
+  "internal/transport/gateway_mux.go": {
+    "mtime": 1785696385.095202,
+    "ast_hash": "2d05d63d45ec4dc6d3d309816827ec22",
     "semantic_hash": ""
   }
 }
