@@ -5860,13 +5860,13 @@
     "semantic_hash": ""
   },
   "internal/middleware/cookie_names.go": {
-    "mtime": 1785696729.3574896,
-    "ast_hash": "c9df47742b3c0abf3c3255fb9abf4ad7",
+    "mtime": 1785697908.5134962,
+    "ast_hash": "ebc79fb8de9c5890905fe350d38e625e",
     "semantic_hash": ""
   },
   "internal/middleware/cookie_response.go": {
-    "mtime": 1785696734.25176,
-    "ast_hash": "30c6330b6c5b724f60979e84dbb466a5",
+    "mtime": 1785697926.2459204,
+    "ast_hash": "82917a8ed164ea34c6a4e1d011379266",
     "semantic_hash": ""
   },
   "internal/middleware/cookie_response_test.go": {
