@@ -118,5 +118,7 @@
   "116": "TrelloCheckButton.tsx",
   "117": "requiredConnections.ts",
   "118": "NotConnectedContent.tsx",
-  "119": "ConnectedContent.tsx"
+  "119": "ConnectedContent.tsx",
+  "120": ".DisconnectProvider",
+  "121": ".RemoveSpreadsheet"
 }

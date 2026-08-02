@@ -1,16 +1,16 @@
-# Graph Report - ArtelUI  (2026-07-25)
+# Graph Report - ArtelUI  (2026-08-02)
 
 ## Corpus Check
-- 539 files · ~144,434 words
+- 575 files · ~150,041 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2465 nodes · 6062 edges · 122 communities (113 shown, 9 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 22 edges (avg confidence: 0.68)
+- 2622 nodes · 6394 edges · 120 communities (110 shown, 10 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 23 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `be92ba1b`
+- Built from commit: `ec00a453`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -121,35 +121,33 @@
 - InsertConflictDialog.tsx
 - TopbarMobileTrigger.tsx
 - bun-test.d.ts
-- ConnectionFilterRow.tsx
-- TrelloCheckButton.tsx
 - requiredConnections.ts
 - NotConnectedContent.tsx
 - ConnectedContent.tsx
 
 ## God Nodes (most connected - your core abstractions)
-1. `useDialog` - 186 edges
-2. `cn` - 150 edges
-3. `useBakeError()` - 126 edges
-4. `useUser` - 98 edges
-5. `useExternalConnections` - 61 edges
+1. `useDialog` - 200 edges
+2. `cn` - 156 edges
+3. `useBakeError()` - 136 edges
+4. `useUser` - 100 edges
+5. `useExternalConnections` - 64 edges
 6. `TractStep` - 46 edges
 7. `TractTool` - 42 edges
 8. `MomCandidate` - 41 edges
-9. `ExternalConnectionInfo` - 38 edges
-10. `useMcpKeys` - 36 edges
+9. `ExternalConnectionInfo` - 39 edges
+10. `useMcpKeys` - 39 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `DocsNoteViewer()` --references--> `dompurify`  [EXTRACTED]
+  src/pages/docs/components/DocsNoteViewer/DocsNoteViewer.tsx → package.json
 - `NoteViewer()` --references--> `dompurify`  [EXTRACTED]
   src/pages/notes/components/NoteViewer/NoteViewer.tsx → package.json
-- `Props` --references--> `ExternalConnectionInfo`  [EXTRACTED]
-  src/dialogs/InstantiateTemplateDialog/components/ConnectionSection/ConnectionSection.tsx → src/app/api/artel/external_connections.pb.ts
-- `AccountsSectionProps` --references--> `ExternalConnectionInfo`  [EXTRACTED]
-  src/dialogs/ManageEmailDialog/components/AccountsSection/AccountsSection.tsx → src/app/api/artel/external_connections.pb.ts
 - `EmailConnectionRowProps` --references--> `ExternalConnectionInfo`  [EXTRACTED]
   src/dialogs/ManageEmailDialog/components/AccountsSection/components/EmailConnectionRow/EmailConnectionRow.tsx → src/app/api/artel/external_connections.pb.ts
-- `Props` --references--> `McpKeyInfo`  [EXTRACTED]
-  src/widgets/McpKeyCard/McpKeyCard.tsx → src/app/api/artel/mcp_keys.pb.ts
+- `AnthropicCheckButtonProps` --references--> `CheckAnthropicConnectionRequest`  [EXTRACTED]
+  src/dialogs/ManageAnthropicDialog/components/AnthropicCheckButton/AnthropicCheckButton.tsx → src/app/api/artel/external_connections.pb.ts
+- `MomCandidateCardProps` --references--> `MomCandidate`  [EXTRACTED]
+  src/dialogs/ManageKeyDialog/components/CandidateOptionList/components/MomCandidateCard/MomCandidateCard.tsx → src/app/api/artel/mcp_keys.pb.ts
 
 ## Import Cycles
 - 1-file cycle: `src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx -> src/pages/tract-canvas/components/TractCanvasNode/TractCanvasNode.tsx`
@@ -158,143 +156,143 @@
 - 3-file cycle: `src/app/routing/Router.tsx -> src/pages/workbench/WorkbenchPage.tsx -> src/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx -> src/app/routing/Router.tsx`
 - 5-file cycle: `src/app/routing/Router.tsx -> src/pages/tract-templates/TractTemplatesListPage.tsx -> src/pages/tract-templates/segments/ContentSegment/ContentSegment.tsx -> src/dialogs/InstantiateTemplateDialog/InstantiateTemplateDialog.tsx -> src/dialogs/InstantiateTemplateDialog/components/ConnectionSection/ConnectionSection.tsx -> src/app/routing/Router.tsx`
 
-## Communities (122 total, 9 thin omitted)
+## Communities (120 total, 10 thin omitted)
 
 ### Community 0 - "tracts.pb.ts"
 Cohesion: 0.02
-Nodes (88): Absent, BaseTractStep, CreateTract, CreateTractRequest, CreateTractResponse, CreateTrigger, CreateTriggerRequest, CreateTriggerResponse (+80 more)
+Nodes (80): Absent, BaseTractStep, CreateTract, CreateTractRequest, CreateTractResponse, CreateTrigger, CreateTriggerRequest, CreateTriggerResponse (+72 more)
 
 ### Community 1 - "TaskTrackersPage.tsx"
-Cohesion: 0.08
-Nodes (28): AddTaskTracker, AddTaskTrackerRequest, AddTaskTrackerResponse, DeleteTaskTracker, DeleteTaskTrackerRequest, DeleteTaskTrackerResponse, ListTaskTrackers, ListTaskTrackersRequest (+20 more)
+Cohesion: 0.06
+Nodes (44): AddTaskTracker, AddTaskTrackerRequest, AddTaskTrackerResponse, DeleteTaskTracker, DeleteTaskTrackerRequest, DeleteTaskTrackerResponse, ListTaskTrackers, ListTaskTrackersRequest (+36 more)
 
 ### Community 2 - "vaults.pb.ts"
 Cohesion: 0.03
-Nodes (57): AcceptInvite, AcceptInviteRequest, AcceptInviteResponse, AddMember, AddMemberRequest, AddMemberResponse, CreateInviteLink, CreateInviteLinkRequest (+49 more)
+Nodes (63): AcceptInvite, AcceptInviteRequest, AcceptInviteResponse, AddMember, AddMemberRequest, AddMemberResponse, CreateInviteLink, CreateInviteLinkRequest (+55 more)
 
 ### Community 3 - "useBakeError"
-Cohesion: 0.18
-Nodes (11): useIsMobileNav(), applyTheme(), Theme, useTheme(), BrandMarkIcon(), TopbarBrand(), TopbarMobileDrawer(), TopbarThemeToggle() (+3 more)
+Cohesion: 0.06
+Nodes (38): GetVaultBySlug, GetVaultBySlugRequest, GetVaultBySlugResponse, PublicDocsAPI, PublicDocsGetNote, PublicDocsGetNoteRequest, PublicDocsGetNoteResponse, PublicDocsListFolders (+30 more)
 
 ### Community 4 - "external_connections.pb.ts"
-Cohesion: 0.04
-Nodes (54): Absent, AddAnthropicConnection, AddAnthropicConnectionResponse, AddEmailConnection, AddEmailConnectionResponse, AddGenericConnection, AddGenericConnectionRequest, AddGenericConnectionResponse (+46 more)
+Cohesion: 0.03
+Nodes (78): Absent, AddAnthropicConnection, AddAnthropicConnectionResponse, AddEmailConnection, AddEmailConnectionResponse, AddGenericConnection, AddGenericConnectionResponse, AddGitlabConnection (+70 more)
 
 ### Community 5 - "mcp_keys.pb.ts"
 Cohesion: 0.04
-Nodes (46): Absent, AddMcpConnector, AddMcpConnectorRequest, AddMcpConnectorResponse, BaseMcpToolInfo, BaseToolParamDef, CommunityConnectorInfo, CreateMcpKey (+38 more)
+Nodes (48): Absent, AddMcpConnector, AddMcpConnectorRequest, AddMcpConnectorResponse, BaseMcpToolInfo, BaseToolParamDef, CreateMcpKey, CreateMcpKeyRequest (+40 more)
 
 ### Community 6 - "TemplateInput.tsx"
-Cohesion: 0.14
-Nodes (21): Props, SourceGroups(), buildFlatList(), FilteredGroup, filterSources(), FlatEntry, FlatListItem, flattenArrayItems() (+13 more)
+Cohesion: 0.11
+Nodes (28): Props, SourceGroups(), buildFlatList(), FilteredGroup, filterSources(), FlatEntry, FlatListItem, flattenArrayItems() (+20 more)
 
 ### Community 7 - "addTriggerDialogContext.ts"
-Cohesion: 0.11
-Nodes (24): SetTractsState, triggerSourcesQueryKey, triggersQueryKey, useTrigger(), useTriggerSources(), categoryLabel(), PROVIDER_ENUM_BY_KEY, providerEnumFor() (+16 more)
+Cohesion: 0.16
+Nodes (20): useTrigger(), useTriggerSources(), categoryLabel(), PROVIDER_ENUM_BY_KEY, providerEnumFor(), providerLabel(), triggerChipLabel(), TriggerRow() (+12 more)
 
 ### Community 9 - "admin_couch.pb.ts"
 Cohesion: 0.09
 Nodes (21): ChangeCouchUserPassword, ChangeCouchUserPasswordRequest, ChangeCouchUserPasswordResponse, DeleteCouchUser, DeleteCouchUserRequest, DeleteCouchUserResponse, GetUserDatabaseAccess, GetUserDatabaseAccessRequest (+13 more)
 
 ### Community 10 - "TractCanvasInspectorBody.tsx"
-Cohesion: 0.13
-Nodes (37): ScriptLanguage, Props, Props, TractStepTreeProps, ActionBody(), Props, CONDITION_OPS, ConditionBody() (+29 more)
+Cohesion: 0.12
+Nodes (38): ScriptLanguage, Props, ToolStep(), Props, TractStepTreeProps, ActionBody(), Props, CONDITION_OPS (+30 more)
 
 ### Community 11 - "couch_instances.pb.ts"
-Cohesion: 0.09
-Nodes (22): DeleteCouchInstance, DeleteCouchInstanceRequest, DeleteCouchInstanceResponse, GetCouchInstance, GetCouchInstanceRequest, GetCouchInstanceStatus, GetCouchInstanceStatusRequest, GetCouchInstanceStatusResponse (+14 more)
+Cohesion: 0.10
+Nodes (20): DeleteCouchInstance, DeleteCouchInstanceRequest, DeleteCouchInstanceResponse, GetCouchInstance, GetCouchInstanceRequest, GetCouchInstanceStatus, GetCouchInstanceStatusRequest, GetCouchInstanceStatusResponse (+12 more)
 
 ### Community 12 - "TractsService"
-Cohesion: 0.06
-Nodes (28): TractsAPI, TractsState, safeParseJson(), Props, Props, Deps, ITractsService, TractsService (+20 more)
+Cohesion: 0.07
+Nodes (4): TractsAPI, TractsService, toRun(), toRunStep()
 
 ### Community 13 - "Dialog.ts"
-Cohesion: 0.12
-Nodes (18): connectionLabel(), ConnectionStep(), Props, LlmConnectionStep(), Props, LlmCallCard(), ConnectionSection(), Props (+10 more)
+Cohesion: 0.22
+Nodes (10): connectionLabel(), SelectOption(), ConnectionStep(), Props, ConnectionSection(), ConnectionOptionList(), ConnectionOptionListProps, ConnectionPicker() (+2 more)
 
 ### Community 14 - "Tracts.ts"
 Cohesion: 0.18
 Nodes (21): NoteItem, PlusIcon(), UploadIcon(), FolderNodeItem(), FolderNodeItemProps, FolderSection(), FolderSectionProps, SearchResultsList() (+13 more)
 
 ### Community 15 - "cn"
-Cohesion: 0.08
-Nodes (26): cn, trimScope(), KebabMenu(), KebabMenuItem, Props, TODO: chures has no action/context-menu primitive yet, drop this wrapper once it, TODO: chures has no tab primitive yet, drop this wrapper once it does, Tabs() (+18 more)
+Cohesion: 0.04
+Nodes (63): VaultInviteItem, cn, DropZone(), Props, TODO: chures has no drag-and-drop file dropzone yet, drop this wrapper once it d, KebabMenu(), KebabMenuItem, Props (+55 more)
 
 ### Community 16 - "TractIcons.tsx"
-Cohesion: 0.11
-Nodes (24): useBakeError(), Input(), FormField(), Props, Props, S3ToggleFields(), S3InstanceFormDialog(), S3InstancesActionBar() (+16 more)
+Cohesion: 0.06
+Nodes (42): GetS3InstanceResponse, useBakeError(), FormField(), Props, Props, S3ToggleFields(), Props, S3InstanceFormDialog() (+34 more)
 
 ### Community 17 - "compilerOptions"
+Cohesion: 0.16
+Nodes (21): TractsState, sleep(), formatStartedAt(), Props, RunTractDialog(), Props, TractCanvasBuilder(), Deps (+13 more)
+
+### Community 18 - "ToolboxPage.tsx"
+Cohesion: 0.13
+Nodes (12): McpToolInfo, ToolParamDef, ParamRow(), ParamsList(), RunScreens(), coerceParams(), ToolDetail(), GenericToolIcon() (+4 more)
+
+### Community 19 - "ConnectorChip.tsx"
 Cohesion: 0.08
 Nodes (24): compilerOptions, allowImportingTsExtensions, allowJs, allowSyntheticDefaultImports, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, jsx (+16 more)
 
-### Community 18 - "ToolboxPage.tsx"
-Cohesion: 0.18
-Nodes (9): ImapOperation, ImapToolAction, McpToolInfo, ToolParamDef, ImapActionView(), ParamRow(), ParamsList(), RunScreens() (+1 more)
-
-### Community 19 - "ConnectorChip.tsx"
-Cohesion: 0.15
-Nodes (17): useWorkbench(), useWorkbenchMutations(), workbenchQueryKey(), KNOWN_STATES, LoginRelayScreen(), LoginState, Props, AuthMode (+9 more)
-
 ### Community 20 - "grpcErrors.ts"
-Cohesion: 0.13
-Nodes (15): BadRequestDetail, DetailType, DetailTypeName, ErrorInfoDetail, FieldViolation, getDetail(), getFieldViolations(), GrpcErrorDetail (+7 more)
+Cohesion: 0.11
+Nodes (19): UserErrors, BadRequestDetail, DetailType, DetailTypeName, ErrorInfoDetail, FieldViolation, getDetail(), getFieldViolations() (+11 more)
 
 ### Community 21 - "useDialog"
-Cohesion: 0.20
-Nodes (9): isNonEmptyBranch(), JsonBlock(), Props, Props, statusClass(), StepRow(), Props, Props (+1 more)
+Cohesion: 0.13
+Nodes (17): formatPrimitive(), JsonNode(), primitiveKind(), Props, tokenClass(), TokenKind, isNonEmptyBranch(), JsonBlock() (+9 more)
 
 ### Community 22 - "ManageKeyDialog.tsx"
-Cohesion: 0.14
-Nodes (21): useServerStatus(), HomeLayout(), Path, Router(), routes, HeroSegment(), HeroSegmentProps, VaultCardHeader() (+13 more)
+Cohesion: 0.12
+Nodes (15): SetTractsState, triggerSourcesQueryKey, triggersQueryKey, useTracts, Props, Step, StepDraft, StepPickerDialog() (+7 more)
 
 ### Community 23 - "tractCanvasLayout.ts"
-Cohesion: 0.10
-Nodes (28): NodeChips(), ConnectorPath(), ConnectorPathProps, ParallelBoxes(), Props, Props, TractCanvasArea(), useTractCanvasDrag() (+20 more)
+Cohesion: 0.09
+Nodes (31): MomCandidate, ProviderIcon(), MomCandidateRow(), NodeChips(), ConnectionFilterRow(), ConnectionFilterRowProps, Args, ConnectorPath() (+23 more)
 
 ### Community 24 - "auth.pb.ts"
 Cohesion: 0.08
 Nodes (24): Absent, BaseLoginRequest, GetConfig, GetConfigRequest, GetConfigResponse, GetMe, GetMeRequest, GetMeResponse (+16 more)
 
 ### Community 25 - "VaultItem"
-Cohesion: 0.16
-Nodes (13): VaultItem, CardChips(), Props, Props, VaultChip(), ExpertSettingsDrawer(), Props, Props (+5 more)
+Cohesion: 0.18
+Nodes (11): VaultItem, Props, VaultCardHeader(), ExpertSettingsDrawer(), Props, Props, ExpertSettingsSection(), Props (+3 more)
 
 ### Community 26 - "devDependencies"
-Cohesion: 0.10
-Nodes (21): devDependencies, eslint, eslint-import-resolver-typescript, @eslint/js, eslint-plugin-import-x, eslint-plugin-react, eslint-plugin-react-hooks, eslint-plugin-react-refresh (+13 more)
+Cohesion: 0.05
+Nodes (42): devDependencies, eslint, eslint-import-resolver-typescript, @eslint/js, eslint-plugin-import-x, eslint-plugin-react, eslint-plugin-react-hooks, eslint-plugin-react-refresh (+34 more)
 
 ### Community 27 - "fetch.pb.ts"
 Cohesion: 0.13
 Nodes (17): b64, b64Encode(), fetchStreamingRequest(), FlattenedRequestPayload, flattenRequestPayload(), getNewLineDelimitedJSONDecodingStream(), getNotifyEntityArrivalSink(), InitReq (+9 more)
 
 ### Community 28 - "McpKeysAPI"
-Cohesion: 0.12
-Nodes (6): CreateMcpKeyResponse, McpKeyInfo, McpKeysAPI, McpKeysState, IMcpKeysService, McpKeysService
+Cohesion: 0.11
+Nodes (6): CommunityConnectorInfo, CreateMcpKeyResponse, McpKeysAPI, McpKeysState, IMcpKeysService, McpKeysService
 
 ### Community 29 - "Router.tsx"
-Cohesion: 0.23
-Nodes (15): SelectOption(), execute(), fetchBoards(), fetchCards(), fetchLists(), TrelloBoardLite, TrelloCardLite, TrelloListLite (+7 more)
+Cohesion: 0.12
+Nodes (16): TractItem, TractRunItem, TractRunStepItem, TractTemplateItem, TractTemplateSummary, TractToolItem, TriggerItem, TriggerSourceItem (+8 more)
 
 ### Community 30 - "TractStepTree.tsx"
 Cohesion: 0.18
-Nodes (11): DialogHead(), DialogHeadProps, ManageKeyDialog(), ManageStep, useManageKeyDialog(), AddConnectionScreen(), MainScreen(), SelectConnectionScreen() (+3 more)
+Nodes (13): McpKeyInfo, DialogHead(), DialogHeadProps, ManageKeyDialog(), ManageStep, useManageKeyDialog(), MainScreen(), MainScreenProps (+5 more)
 
 ### Community 31 - "BreadcrumbBar.tsx"
 Cohesion: 0.12
-Nodes (14): BreadcrumbBarProps, Mode, BreadcrumbPath(), BreadcrumbPathProps, CheckIcon(), ErrorDotIcon(), PencilIcon(), SpinnerIcon() (+6 more)
+Nodes (17): NoteMode, BreadcrumbBarProps, Mode, BreadcrumbPath(), BreadcrumbPathProps, DesktopNotesShellProps, VaultOption, CheckIcon() (+9 more)
 
 ### Community 32 - "NotesSidebar.tsx"
 Cohesion: 0.21
 Nodes (8): CloseIcon(), SearchIcon(), SearchIconProps, ListIcon(), TreeIcon(), NotesSearchBar(), NotesSearchBarProps, useNotesSearchQuery()
 
 ### Community 33 - "useExternalConnections"
-Cohesion: 0.14
-Nodes (18): paramCompletionSource(), scriptEditorTheme, scriptHighlightStyle, Props, ScriptCodeSection(), Props, addInputParam(), addOutputParam() (+10 more)
+Cohesion: 0.22
+Nodes (15): paramCompletionSource(), scriptEditorTheme, scriptHighlightStyle, Props, ScriptCodeSection(), Props, generatedFooter(), generatedHeader() (+7 more)
 
 ### Community 34 - "ConnectionDetailDialog.tsx"
-Cohesion: 0.14
-Nodes (11): SuggestionList(), SuggestionListProps, CreateNoteDialog(), Props, ArtelLogoIcon(), ChevronLeftIcon(), DrawerCloseButton(), DrawerCloseButtonProps (+3 more)
+Cohesion: 0.20
+Nodes (10): useNotes, ArtelLogoIcon(), ChevronLeftIcon(), DrawerCloseButton(), DrawerCloseButtonProps, MobileDrawer(), MobileDrawerProps, VaultOption (+2 more)
 
 ### Community 35 - "notes.pb.ts"
 Cohesion: 0.06
@@ -313,72 +311,68 @@ Cohesion: 0.11
 Nodes (17): DeleteS3Instance, DeleteS3InstanceRequest, DeleteS3InstanceResponse, GetS3Instance, GetS3InstanceRequest, ListS3Instances, ListS3InstancesRequest, ListS3InstancesResponse (+9 more)
 
 ### Community 39 - "useVaultMutations"
-Cohesion: 0.09
-Nodes (8): VaultsAPI, useVaultMutations(), DangerZoneText(), CreateVaultDialog(), IWorkbenchService, WorkbenchService, Props, VaultDangerZone()
+Cohesion: 0.10
+Nodes (4): VaultsAPI, useVaultMutations(), IWorkbenchService, WorkbenchService
 
 ### Community 40 - "CreateNoteDialog.tsx"
 Cohesion: 0.16
 Nodes (15): ActionStep, ConditionStep, GroupStep, LlmCallStep, ParallelStep, ScriptStep, TractCondition, TractDefinition (+7 more)
 
 ### Community 41 - "ArtelUI Frontend Rules"
-Cohesion: 0.11
-Nodes (17): ArtelUI Frontend Rules, Async style, Buttons, Component hierarchy, Component Structure, CSS Modules, Dialog shells must scroll internally, Error and Confirmation Handling (+9 more)
+Cohesion: 0.20
+Nodes (14): LogicCell(), LogicCellProps, LogicSection(), Props, OptionCell(), ToolCell(), ToolCellProps, LOGIC_OPTIONS (+6 more)
 
 ### Community 42 - "SchemaProperty"
-Cohesion: 0.22
-Nodes (8): parseScopeList(), SCOPE_INFO, GoogleSheetsSpreadsheetSection(), SpreadsheetRow(), GoogleConnectionContent(), GoogleSheetsConnectionContent(), GapiWindow, useSpreadsheetPicker()
+Cohesion: 0.50
+Nodes (6): parseScopeList(), SCOPE_INFO, trimScope(), buildScopeTooltipHtml(), GoogleSheetsInfoRows(), GoogleConnectionContent()
 
 ### Community 43 - "NoteEditor.tsx"
 Cohesion: 0.16
 Nodes (11): BoldIcon(), CodeIcon(), HeadingIcon(), ItalicIcon(), LinkIcon(), LineNumbers(), LineNumbersProps, NoteEditor() (+3 more)
 
 ### Community 44 - "McpAuthPage.tsx"
-Cohesion: 0.29
-Nodes (9): useMcpKeys, AddTaskLinkDialog(), Props, RELATION_LABEL, RELATION_OPTIONS, RoadmapLinkTarget, WritableRelation, createRoadmapGraph() (+1 more)
+Cohesion: 0.11
+Nodes (18): Input(), AddTaskLinkDialog(), Props, RELATION_LABEL, RELATION_OPTIONS, WritableRelation, CredentialRowProps, DialogHeadProps (+10 more)
 
 ### Community 45 - "MobileNotesShell.tsx"
-Cohesion: 0.18
-Nodes (13): useNotes, SidebarTopBar(), SidebarTopBarProps, VaultOption, NotesSidebar(), NotesSidebarProps, VaultOption, useFolderActions() (+5 more)
-
-### Community 46 - "Tracts.ts"
-Cohesion: 0.19
-Nodes (6): AdminCouchAPI, CouchUserEntry, ManageAccessDialog(), UserListProps, UserRow(), UserRowProps
+Cohesion: 0.15
+Nodes (13): PublicBadge(), SidebarTopBar(), SidebarTopBarProps, VaultOption, NotesSidebar(), NotesSidebarProps, VaultOption, useFolderActions() (+5 more)
 
 ### Community 47 - "useErrorToast.ts"
-Cohesion: 0.18
-Nodes (9): useVaults(), vaultsQueryKey, VaultChipDisplayProps, VaultField(), VaultFieldProps, VaultOptionList(), VaultOptionListProps, IVaultService (+1 more)
+Cohesion: 0.14
+Nodes (14): useMcpKeys, useVaults(), CardHeader(), Props, Props, SearchInput(), VaultChipDisplayProps, VaultField() (+6 more)
 
 ### Community 48 - "dependencies"
-Cohesion: 0.09
-Nodes (22): dependencies, classnames, @codemirror/autocomplete, @codemirror/lang-javascript, @codemirror/language, @codemirror/state, @codemirror/view, dompurify (+14 more)
+Cohesion: 0.10
+Nodes (21): dependencies, classnames, @codemirror/autocomplete, @codemirror/lang-javascript, @codemirror/language, @codemirror/state, @codemirror/view, framer-motion (+13 more)
 
 ### Community 49 - "ProviderIcon.tsx"
-Cohesion: 0.15
-Nodes (14): MAIL_DOMAIN_ICONS, mailProviderIcon(), ConnectorChip(), EmailChip(), KNOWN_MAIL_DOMAIN_CLASSES, mailDomainAccent(), GenericChip(), PROVIDER_CHIP_CLASS (+6 more)
+Cohesion: 0.19
+Nodes (11): MAIL_DOMAIN_ICONS, mailProviderIcon(), ConnectorChip(), EmailChip(), KNOWN_MAIL_DOMAIN_CLASSES, mailDomainAccent(), GenericChip(), PROVIDER_CHIP_CLASS (+3 more)
 
 ### Community 50 - "StepRow.tsx"
-Cohesion: 0.15
-Nodes (19): AddTriggerDialog(), STEP_SCREENS, AddTriggerDialogContext, AddTriggerDialogState, AddTriggerStep, emptySchemaField(), FIELD_TYPES, fieldsToSchemaNode() (+11 more)
+Cohesion: 0.16
+Nodes (19): STEP_SCREENS, AddTriggerDialogContext, AddTriggerDialogState, AddTriggerStep, emptySchemaField(), FIELD_TYPES, fieldsToSchemaNode(), fieldsToSchemaProperties() (+11 more)
 
 ### Community 51 - "AuthMiddleware"
-Cohesion: 0.20
-Nodes (10): apiPrefix(), InitReq, Options, TelegramLoginResponse, AppConfigState, useAppConfig, pingServer(), VaultSettingsSection() (+2 more)
+Cohesion: 0.13
+Nodes (13): apiPrefix(), csrfHeader(), getCsrfToken(), InitReq, TelegramLoginResponse, AppConfigState, useAppConfig, pingServer() (+5 more)
 
 ### Community 52 - "tractSteps.ts"
-Cohesion: 0.16
-Nodes (27): Props, InsertConflictDialog(), Props, appendStep(), branchArray(), buildStepFromDraft(), collapseThinParallels(), collectAllStepIds() (+19 more)
+Cohesion: 0.17
+Nodes (25): InsertConflictDialog(), Props, appendStep(), branchArray(), buildStepFromDraft(), collapseThinParallels(), collectAllStepIds(), generateStepId() (+17 more)
 
 ### Community 53 - "admin_users.pb.ts"
 Cohesion: 0.09
 Nodes (24): AdminUsersAPI, ArtelUserDetails, ArtelUserEntry, GetArtelUser, GetArtelUserRequest, GetArtelUserResponse, GetUserSessions, GetUserSessionsRequest (+16 more)
 
 ### Community 54 - "Topbar.tsx"
-Cohesion: 0.09
-Nodes (29): TractTemplatesState, useTractTemplates, BrowseTemplatesDialog(), Props, TemplateRow(), Props, ListScreen(), Props (+21 more)
+Cohesion: 0.05
+Nodes (48): useServerStatus(), useIsMobileNav(), applyTheme(), Theme, useTheme(), useWorkbench(), useWorkbenchMutations(), workbenchQueryKey() (+40 more)
 
 ### Community 55 - "TractCanvasBuilder.tsx"
-Cohesion: 0.20
-Nodes (11): NoteMode, DesktopNotesShellProps, VaultOption, MobileNotesShell(), MobileNotesShellProps, VaultOption, NoteViewer(), NoteViewerProps (+3 more)
+Cohesion: 0.11
+Nodes (17): ArtelUI Frontend Rules, Async style, Buttons, Component hierarchy, Component Structure, CSS Modules, Dialog shells must scroll internally, Error and Confirmation Handling (+9 more)
 
 ### Community 56 - "User.ts"
 Cohesion: 0.09
@@ -389,40 +383,40 @@ Cohesion: 0.17
 Nodes (6): ErrorReason, Errors, GrpcError, GrpcErrorDetail, ServiceError, ServiceErrorOption
 
 ### Community 58 - "NoteViewer.tsx"
-Cohesion: 0.24
-Nodes (8): ArtelMark(), ArtelMarkProps, ContentSegment, NoteContent(), NoteContentProps, parseWikiLinks(), WikiChip(), WikiChipProps
+Cohesion: 0.16
+Nodes (11): dompurify, ArtelMark(), ArtelMarkProps, ContentSegment, NoteContent(), NoteContentProps, parseWikiLinks(), NoteViewer() (+3 more)
 
 ### Community 59 - "InviteLinksSection.tsx"
-Cohesion: 0.24
-Nodes (8): AdminPage(), Tab, AdminHero(), AdminHeroProps, DockerApiTab(), TabBar(), TabBarProps, UsersTab()
+Cohesion: 0.06
+Nodes (27): DeleteDockerHost, DeleteDockerHostRequest, DeleteDockerHostResponse, DockerHostsAPI, GetDockerHost, GetDockerHostRequest, GetDockerHostResponse, ListDockerHosts (+19 more)
 
 ### Community 60 - "TractBlockPicker.tsx"
-Cohesion: 0.08
-Nodes (24): ExternalProvider, ProviderChip(), AnthropicIcon(), EmailIcon(), GitlabIcon(), GoogleSheetsIcon(), MiroIcon(), TrelloIcon() (+16 more)
+Cohesion: 0.18
+Nodes (8): AnthropicIcon(), EmailIcon(), GitlabIcon(), GoogleSheetsIcon(), MiroIcon(), TrelloIcon(), TODO: placeholder glyph for providers without a dedicated brand icon yet - repla, UnknownProviderIcon()
 
 ### Community 61 - "toTract"
 Cohesion: 0.29
 Nodes (5): McpLoginProps, VaultListProps, VaultSelect(), VaultSelectProps, Vault
 
 ### Community 62 - "NotesPage.tsx"
-Cohesion: 0.12
-Nodes (21): ActionCard(), Props, InsertRow(), Props, Props, SchemaTree(), buildSourcesFor(), collectIdsFromRoot() (+13 more)
+Cohesion: 0.11
+Nodes (19): ActionCard(), CardHeader(), Props, InsertRow(), Props, LlmCallCard(), Props, Props (+11 more)
 
 ### Community 63 - "VaultCard.tsx"
 Cohesion: 0.19
 Nodes (9): Props, VaultCardConnBar(), Props, VaultCardFront(), VaultCardStatus(), ContentSegment(), ContentSegmentProps, Props (+1 more)
 
 ### Community 64 - "TractCanvasTopBar.tsx"
-Cohesion: 0.05
-Nodes (53): Props, RunButton(), Props, RunStatusBadge(), formatRelative(), Props, RunStatusDot(), LogicCell() (+45 more)
+Cohesion: 0.18
+Nodes (8): EditIcon(), EnvelopeIcon(), GlobeIcon(), base, PaperPlaneIcon(), PlusIcon(), SearchIcon(), WrenchIcon()
 
 ### Community 65 - "TractCanvasLogPanel.tsx"
 Cohesion: 0.36
 Nodes (6): LocateIcon(), LocateIconProps, getNoteMeta(), getNoteTitle(), MobileTopBar(), MobileTopBarProps
 
 ### Community 66 - "scripts"
-Cohesion: 0.24
-Nodes (11): cap(), LogEntryRow(), Props, buildLogLines(), formatDuration(), formatTime(), LogLine, LogLineKind (+3 more)
+Cohesion: 0.36
+Nodes (7): buildLogLines(), formatDuration(), formatTime(), LogLineKind, stepMeta(), RunLog(), RunLogProps
 
 ### Community 67 - "AuthAPI"
 Cohesion: 0.22
@@ -430,163 +424,155 @@ Nodes (15): ImportConflictAction, commitImportAndRefresh(), deleteFolderAndRefre
 
 ### Community 68 - "connectionLabel"
 Cohesion: 0.06
-Nodes (43): DialogManager, useDialog, useDialogKeyboard(), useTracts, sleep(), Props, ToolStep(), Props (+35 more)
+Nodes (40): DialogManager, useDialog, useDialogKeyboard(), useTractTemplates, HeroSegment(), HeroSegmentProps, LlmConnectionStep(), Props (+32 more)
 
 ### Community 69 - "S3InstanceFormDialog.tsx"
-Cohesion: 0.14
-Nodes (19): AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGitlabConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse, ExternalConnectionInfo, Spreadsheet (+11 more)
-
-### Community 70 - "compilerOptions"
-Cohesion: 0.18
-Nodes (4): CouchInstancesAPI, InstancesActionBar(), InstancesActionBarProps, InstancesTab()
+Cohesion: 0.22
+Nodes (15): AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest, AddGitlabConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse, Spreadsheet (+7 more)
 
 ### Community 71 - "McpKeys.ts"
-Cohesion: 0.27
-Nodes (7): GetCouchInstanceResponse, InstanceRow(), InstanceRowProps, InstanceFormDialogProps, InstanceListProps, InstanceSelector(), InstanceSelectorProps
+Cohesion: 0.29
+Nodes (6): GetCouchInstanceResponse, InstanceRowProps, InstanceFormDialogProps, InstanceListProps, InstanceSelector(), InstanceSelectorProps
 
 ### Community 72 - "ResultView.tsx"
-Cohesion: 0.17
-Nodes (13): isJsonValue(), TaskTrackerCell(), TaskTrackerTableHead(), DisplayTaskTrackerTables(), TrelloTableWidget(), RESULT_VIEW_WIDGETS, ResultViewWidgetEntry, ResultViewWidgetProps (+5 more)
+Cohesion: 0.13
+Nodes (18): JSON_KIND_CLASS, JsonToken, JsonTokenKind, JsonView(), tokenizeJson(), isJsonValue(), TaskTrackerCell(), TaskTrackerTableHead() (+10 more)
 
 ### Community 73 - "MembersSection.tsx"
 Cohesion: 0.09
-Nodes (35): Props, RELATION_CLASS, RoadmapConnectorPath(), Props, RoadmapCanvasArea(), boardListLabel(), Props, RoadmapCanvasNode() (+27 more)
+Nodes (38): RoadmapLinkTarget, Props, RELATION_CLASS, RoadmapConnectorPath(), Props, RoadmapCanvasArea(), boardListLabel(), Props (+30 more)
 
 ### Community 74 - "LinkScreen.tsx"
-Cohesion: 0.22
-Nodes (9): scripts, build, build:ui, dev, gen, lint, lint:css, lint:js (+1 more)
+Cohesion: 0.23
+Nodes (8): ParamInput(), Props, ParamRow(), Props, ParamsList(), Props, Props, SchemaProperty
 
 ### Community 75 - "dialog-scrollable.js"
 Cohesion: 0.46
 Nodes (7): allRules(), dialogScrollable(), directDeclsOf(), findScrollTarget(), isOverflowY(), messages, meta
 
 ### Community 76 - "Handoff: lint/tooling parity gaps vs. ZpotifyUI"
-Cohesion: 0.27
-Nodes (6): VaultMemberInfo, Props, Props, RoleBadge(), MembersSection(), Props
+Cohesion: 0.25
+Nodes (5): VaultMemberInfo, vaultsQueryKey, Props, IVaultService, VaultService
 
 ### Community 77 - "RunTractDialog.tsx"
-Cohesion: 0.10
-Nodes (17): ParamInput(), Props, ParamRow(), Props, ParamsList(), Props, formatStartedAt(), RunTractDialog() (+9 more)
+Cohesion: 0.14
+Nodes (10): PRIMITIVE_TYPES, Props, ITEM_TYPES, PARAM_TYPES, ParamType, LogPanelBar(), LogPanelBarProps, CloseIcon() (+2 more)
 
 ### Community 78 - "DbAccessList.tsx"
-Cohesion: 0.23
-Nodes (9): VaultInviteItem, CreateInviteLinkDialog(), Props, InviteRow(), Props, Props, RoleOption(), InviteLinksSection() (+1 more)
+Cohesion: 0.22
+Nodes (9): BinaryStorageToggle(), Props, Props, PublishSlugForm(), slugify(), validateSlug(), Props, PublishToggle() (+1 more)
 
 ### Community 79 - "VaultDangerZone.tsx"
 Cohesion: 0.31
 Nodes (8): ResizeHandle(), ResizeHandleProps, clampHeight(), dotClass(), formatDate(), loadStoredHeight(), Props, TractCanvasLogPanel()
 
 ### Community 80 - "CardMeta.tsx"
-Cohesion: 0.39
-Nodes (5): McpConnectorInfo, ConnectorRow(), ConnectorRowProps, ConnectionsFieldProps, MainScreenProps
+Cohesion: 0.23
+Nodes (8): TractTemplatesState, Props, TemplateRow(), Props, Props, Props, toTractTemplateSummary(), TractTemplateSummary
 
 ### Community 92 - "GoogleSheetsSpreadsheetSection.tsx"
-Cohesion: 0.33
-Nodes (4): GetS3InstanceResponse, Props, S3InstanceRow(), TestStatus
+Cohesion: 0.27
+Nodes (5): BranchIcon(), ChatIcon(), CodeIcon(), ForkIcon(), LayersIcon()
+
+### Community 93 - "VaultCardHeader.tsx"
+Cohesion: 0.38
+Nodes (7): OptIcon(), OptIconProps, OptText(), OptTextProps, OptionCellProps, IconProps, StepColor
 
 ### Community 94 - "AuthMiddleware"
 Cohesion: 0.13
-Nodes (11): UserState, LoginContentProps, AuthService, IAuthService, Session, AuthMiddleware, clearLocalStorage(), fromLocalStorage() (+3 more)
+Nodes (4): AuthMiddleware, clearLocalStorage(), fromLocalStorage(), saveToLocalStorage()
 
 ### Community 95 - "ConnectForm.tsx"
-Cohesion: 0.44
-Nodes (6): usePortrait(), useAutosave(), NotesPage(), buildNotesUrl(), decodeNotePath(), encodeNotePath()
+Cohesion: 0.20
+Nodes (11): usePortrait(), Props, RenameDialog(), useAutosave(), NotesPage(), buildNotesUrl(), decodeNotePath(), encodeNotePath() (+3 more)
 
 ### Community 96 - "UsersTab.tsx"
-Cohesion: 0.43
-Nodes (6): formatPrimitive(), JsonNode(), primitiveKind(), Props, tokenClass(), TokenKind
+Cohesion: 0.29
+Nodes (5): ChevronRightIcon(), ManualTriggerIcon(), TrashIcon(), WebhookIcon(), Props
 
 ### Community 97 - "AdminCouchAPI"
-Cohesion: 0.22
-Nodes (10): MomCandidate, CandidateOptionList(), CandidateOptionListProps, MomCandidateCard(), MomCandidateCardProps, ConnectionOptionListProps, AddConnectionScreenProps, ConnectionFilterRow() (+2 more)
+Cohesion: 0.16
+Nodes (12): McpConnectorInfo, CardChips(), Props, CandidateOptionList(), CandidateOptionListProps, MomCandidateCard(), MomCandidateCardProps, ConnectorRow() (+4 more)
 
 ### Community 98 - "CouchInstancesAPI"
-Cohesion: 0.28
-Nodes (5): DropZone(), Props, TODO: chures has no drag-and-drop file dropzone yet, drop this wrapper once it d, ImportZipDialog(), Props
-
-### Community 99 - "TractCanvasLogPanel.tsx"
-Cohesion: 0.24
-Nodes (7): CardHeader(), Props, CardMeta(), formatDate(), Props, McpKeyCard(), Props
-
-### Community 100 - "RunLog.tsx"
-Cohesion: 0.25
-Nodes (5): queryClient, originalFetch, RefreshResponseBody, refreshTokens(), SKIP_REFRESH_PATHS
-
-### Community 101 - "package.json"
-Cohesion: 0.33
-Nodes (5): name, private, trustedDependencies, type, version
-
-### Community 102 - "MobileDrawer.tsx"
-Cohesion: 0.23
-Nodes (6): ToolDetail(), GenericToolIcon(), TODO: placeholder glyph for tool actions without a dedicated icon yet (non-smtp/, ImapIcon(), SmtpIcon(), ToolRow()
-
-### Community 103 - "CouchInstancesAPI"
 Cohesion: 0.22
 Nodes (8): compilerOptions, allowSyntheticDefaultImports, composite, module, moduleResolution, skipLibCheck, strict, include
 
+### Community 99 - "TractCanvasLogPanel.tsx"
+Cohesion: 0.67
+Nodes (3): CardMeta(), formatDate(), Props
+
+### Community 100 - "RunLog.tsx"
+Cohesion: 0.32
+Nodes (4): Props, RunButton(), Props, PlayIcon()
+
+### Community 101 - "package.json"
+Cohesion: 0.32
+Nodes (3): addInputParam(), addOutputParam(), uniqueParamName()
+
+### Community 102 - "MobileDrawer.tsx"
+Cohesion: 0.43
+Nodes (5): useTemplateConnections(), UseTemplateConnectionsResult, InstantiateTemplateDialog(), Props, ConnectionRequirement
+
+### Community 103 - "CouchInstancesAPI"
+Cohesion: 0.33
+Nodes (5): Handoff: lint/tooling parity gaps vs. ZpotifyUI, No CSS linter at all, No Prettier, Structural/style ESLint rules Zpotify enforces that Artel only documents, Suggested order of attack
+
 ### Community 104 - ".getRun"
-Cohesion: 0.15
-Nodes (14): useExternalConnections, ConnectionDetailDialog(), DialogHead(), DialogHeadProps, tokenAuthorizeUrl(), TrelloAddDialog(), COMING_SOON_CARDS, LLM_BYOK_PROVIDERS (+6 more)
+Cohesion: 0.08
+Nodes (24): useExternalConnections, ComingSoonCardProps, CredentialRow(), ConnectGenericDialog(), CredentialField, AnthropicCheckButton(), AnthropicCheckButtonProps, CheckStatus (+16 more)
 
 ### Community 105 - "UserList.tsx"
-Cohesion: 0.32
-Nodes (5): DbAccessList(), DbAccessListProps, DbAccessRow(), DbAccessRowProps, ManageAccessDialogProps
+Cohesion: 0.40
+Nodes (4): DbAccessList(), DbAccessListProps, DbAccessRow(), DbAccessRowProps
 
 ### Community 106 - "Vaults.ts"
 Cohesion: 0.25
 Nodes (6): CopyIcon(), ArrowIcon(), ArrowIconProps, FileIcon(), FolderIcon(), TreeItemProps
 
 ### Community 107 - "AuthFetchInterceptor.ts"
-Cohesion: 0.33
-Nodes (6): CheckEmailConnectionRequest, CheckStatus, EmailCheckButton(), EmailCheckButtonProps, isGrpcError(), notRetryOnStatus()
+Cohesion: 0.11
+Nodes (17): CheckEmailConnectionRequest, CheckGitlabConnectionRequest, CheckStatus, EmailCheckButton(), EmailCheckButtonProps, ConnectedContent(), ConnectedContentProps, UseDefaultButton() (+9 more)
 
 ### Community 108 - "EmailCheckButton.tsx"
-Cohesion: 0.22
-Nodes (10): JSON_KIND_CLASS, JsonToken, JsonTokenKind, JsonView(), tokenizeJson(), ResultViewMode, ViewModeToggle(), getResultViewWidget() (+2 more)
+Cohesion: 0.50
+Nodes (3): CouchUserEntry, UserListProps, UserRowProps
 
 ### Community 109 - "GitlabCheckButton.tsx"
 Cohesion: 0.33
 Nodes (4): ArtelAPI, Version, VersionRequest, VersionResponse
 
 ### Community 110 - "TrelloCheckButton.tsx"
-Cohesion: 0.18
-Nodes (6): AuthAPI, UserErrors, HomePage(), getPreconditionViolations(), GrpcStatusError, isMissingSubscription()
+Cohesion: 0.26
+Nodes (8): AuthAPI, UserState, LoginContentProps, AuthService, IAuthService, Session, StoredAuth, UserInfo
 
 ### Community 112 - "InsertConflictDialog.tsx"
-Cohesion: 0.33
-Nodes (5): Handoff: lint/tooling parity gaps vs. ZpotifyUI, No CSS linter at all, No Prettier, Structural/style ESLint rules Zpotify enforces that Artel only documents, Suggested order of attack
+Cohesion: 0.50
+Nodes (3): DangerZoneText(), Props, VaultDangerZone()
 
 ### Community 113 - "TopbarMobileTrigger.tsx"
-Cohesion: 0.50
-Nodes (3): TopbarHamburgerIcon(), TopbarMobileTrigger(), TopbarMobileTriggerProps
-
-### Community 115 - "ConnectionFilterRow.tsx"
-Cohesion: 0.50
-Nodes (4): CheckGitlabConnectionRequest, CheckStatus, GitlabCheckButton(), GitlabCheckButtonProps
-
-### Community 116 - "TrelloCheckButton.tsx"
-Cohesion: 0.50
-Nodes (4): CheckTrelloConnectionRequest, CheckStatus, TrelloCheckButton(), TrelloCheckButtonProps
+Cohesion: 0.60
+Nodes (4): formatRelative(), Props, RunStatusDot(), TractLastRun
 
 ## Knowledge Gaps
-- **705 isolated node(s):** `localPlugin`, `name`, `private`, `version`, `type` (+700 more)
+- **759 isolated node(s):** `localPlugin`, `name`, `private`, `version`, `type` (+754 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `cn` connect `cn` to `useBakeError`, `TemplateInput.tsx`, `addTriggerDialogContext.ts`, `TractCanvasInspectorBody.tsx`, `Tracts.ts`, `TractIcons.tsx`, `ToolboxPage.tsx`, `ConnectorChip.tsx`, `useDialog`, `ManageKeyDialog.tsx`, `tractCanvasLayout.ts`, `VaultItem`, `Router.tsx`, `BreadcrumbBar.tsx`, `NotesSidebar.tsx`, `ConnectionDetailDialog.tsx`, `index.ts`, `SchemaProperty`, `ProviderIcon.tsx`, `StepRow.tsx`, `admin_users.pb.ts`, `Topbar.tsx`, `InviteLinksSection.tsx`, `TractBlockPicker.tsx`, `NotesPage.tsx`, `TractCanvasTopBar.tsx`, `scripts`, `AuthAPI`, `connectionLabel`, `ResultView.tsx`, `MembersSection.tsx`, `Handoff: lint/tooling parity gaps vs. ZpotifyUI`, `DbAccessList.tsx`, `VaultDangerZone.tsx`, `UsersTab.tsx`, `AdminCouchAPI`, `CouchInstancesAPI`, `.getRun`, `Vaults.ts`, `EmailCheckButton.tsx`, `TopbarMobileTrigger.tsx`?**
-  _High betweenness centrality (0.142) - this node is a cross-community bridge._
-- **Why does `useDialog` connect `connectionLabel` to `TaskTrackersPage.tsx`, `addTriggerDialogContext.ts`, `TractsService`, `Dialog.ts`, `TractIcons.tsx`, `ManageKeyDialog.tsx`, `VaultItem`, `Router.tsx`, `TractStepTree.tsx`, `ConnectionDetailDialog.tsx`, `useVaultMutations`, `SchemaProperty`, `McpAuthPage.tsx`, `MobileNotesShell.tsx`, `Tracts.ts`, `ProviderIcon.tsx`, `StepRow.tsx`, `AuthMiddleware`, `tractSteps.ts`, `admin_users.pb.ts`, `Topbar.tsx`, `User.ts`, `TractBlockPicker.tsx`, `toTract`, `NotesPage.tsx`, `TractCanvasTopBar.tsx`, `AuthAPI`, `compilerOptions`, `McpKeys.ts`, `RunTractDialog.tsx`, `DbAccessList.tsx`, `GoogleSheetsSpreadsheetSection.tsx`, `AuthMiddleware`, `ConnectForm.tsx`, `AdminCouchAPI`, `CouchInstancesAPI`, `TractCanvasLogPanel.tsx`, `.getRun`, `UserList.tsx`, `TrelloCheckButton.tsx`?**
-  _High betweenness centrality (0.108) - this node is a cross-community bridge._
-- **Why does `useUser` connect `ManageKeyDialog.tsx` to `TaskTrackersPage.tsx`, `useBakeError`, `addTriggerDialogContext.ts`, `couch_instances.pb.ts`, `TractsService`, `TractIcons.tsx`, `ConnectorChip.tsx`, `VaultItem`, `McpKeysAPI`, `Notes.ts`, `index.ts`, `useVaultMutations`, `McpAuthPage.tsx`, `Tracts.ts`, `useErrorToast.ts`, `AuthMiddleware`, `admin_users.pb.ts`, `Topbar.tsx`, `User.ts`, `InviteLinksSection.tsx`, `toTract`, `connectionLabel`, `S3InstanceFormDialog.tsx`, `compilerOptions`, `McpKeys.ts`, `GoogleSheetsSpreadsheetSection.tsx`, `AuthMiddleware`, `RunLog.tsx`, `.getRun`, `UserList.tsx`, `AuthFetchInterceptor.ts`, `TrelloCheckButton.tsx`, `ConnectionFilterRow.tsx`, `TrelloCheckButton.tsx`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+- **Why does `useDialog` connect `connectionLabel` to `TaskTrackersPage.tsx`, `external_connections.pb.ts`, `addTriggerDialogContext.ts`, `TractCanvasInspectorBody.tsx`, `Dialog.ts`, `TractIcons.tsx`, `compilerOptions`, `ManageKeyDialog.tsx`, `tractCanvasLayout.ts`, `TractStepTree.tsx`, `ConnectionDetailDialog.tsx`, `McpAuthPage.tsx`, `MobileNotesShell.tsx`, `useErrorToast.ts`, `ProviderIcon.tsx`, `StepRow.tsx`, `AuthMiddleware`, `tractSteps.ts`, `admin_users.pb.ts`, `User.ts`, `InviteLinksSection.tsx`, `toTract`, `NotesPage.tsx`, `AuthAPI`, `S3InstanceFormDialog.tsx`, `MembersSection.tsx`, `DbAccessList.tsx`, `CardMeta.tsx`, `ConnectForm.tsx`, `UsersTab.tsx`, `MobileDrawer.tsx`, `.getRun`, `AuthFetchInterceptor.ts`, `TrelloCheckButton.tsx`?**
+  _High betweenness centrality (0.120) - this node is a cross-community bridge._
+- **Why does `cn` connect `cn` to `useBakeError`, `TemplateInput.tsx`, `addTriggerDialogContext.ts`, `TractCanvasInspectorBody.tsx`, `Dialog.ts`, `Tracts.ts`, `TractIcons.tsx`, `ToolboxPage.tsx`, `useDialog`, `tractCanvasLayout.ts`, `VaultItem`, `NotesSidebar.tsx`, `index.ts`, `SchemaProperty`, `McpAuthPage.tsx`, `useErrorToast.ts`, `ProviderIcon.tsx`, `StepRow.tsx`, `admin_users.pb.ts`, `Topbar.tsx`, `NotesPage.tsx`, `AuthAPI`, `connectionLabel`, `ResultView.tsx`, `MembersSection.tsx`, `VaultDangerZone.tsx`, `UsersTab.tsx`, `Vaults.ts`, `TopbarMobileTrigger.tsx`?**
+  _High betweenness centrality (0.111) - this node is a cross-community bridge._
+- **Why does `useBakeError()` connect `TractIcons.tsx` to `TaskTrackersPage.tsx`, `external_connections.pb.ts`, `addTriggerDialogContext.ts`, `compilerOptions`, `ToolboxPage.tsx`, `ManageKeyDialog.tsx`, `tractCanvasLayout.ts`, `VaultItem`, `ConnectionDetailDialog.tsx`, `McpAuthPage.tsx`, `MobileNotesShell.tsx`, `admin_users.pb.ts`, `Topbar.tsx`, `User.ts`, `InviteLinksSection.tsx`, `scripts`, `connectionLabel`, `S3InstanceFormDialog.tsx`, `MembersSection.tsx`, `DbAccessList.tsx`, `ConnectForm.tsx`, `UsersTab.tsx`, `MobileDrawer.tsx`, `.getRun`, `AuthFetchInterceptor.ts`, `InsertConflictDialog.tsx`?**
+  _High betweenness centrality (0.070) - this node is a cross-community bridge._
 - **What connects `localPlugin`, `name`, `private` to the rest of the system?**
-  _710 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _765 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `tracts.pb.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.02247191011235955 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.024691358024691357 - nodes in this community are weakly interconnected._
 - **Should `TaskTrackersPage.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07922705314009662 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06010230179028133 - nodes in this community are weakly interconnected._
 - **Should `vaults.pb.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.034482758620689655 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03125 - nodes in this community are weakly interconnected._
