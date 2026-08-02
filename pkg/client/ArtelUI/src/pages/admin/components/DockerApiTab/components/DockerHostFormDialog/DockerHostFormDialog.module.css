@@ -4,8 +4,7 @@
 }
 
 .DockerHostFormDialogContainer {
-    width: 100%;
-    max-width: 28.75rem;
+    width: var(--dialog-width-md);
     background: var(--color-bg-card);
     border: var(--border-thickness) solid var(--color-border-light);
     border-radius: 1.25rem;
@@ -48,6 +47,13 @@
             color: var(--color-fg-primary);
             background: var(--color-bg-hover);
         }
+    }
+
+    .ModalSub {
+        font-size: 0.8125rem;
+        color: var(--color-fg-secondary);
+        margin-bottom: 1.25rem;
+        line-height: 1.55;
     }
 
     .Field {

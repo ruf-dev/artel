@@ -61,9 +61,15 @@ setup-dev-docker-host:
 	./scripts/setup_dev_docker_host.sh
 
 ### E2E testing
-# Brings up tests/docker-compose.yaml (postgres, couchdb, minio, test-dockerd),
-# runs the e2e-tagged test suites, then tears the containers back down
-# regardless of test outcome, so `make test-e2e` is fully self-contained.
-test-e2e:
-	docker compose -f tests/docker-compose.yaml up -d
-	go test -tags e2e ./tests/... ; TEST_EXIT=$$? ; docker compose -f tests/docker-compose.yaml down ; exit $$TEST_EXIT
+# Brings up tests/docker-compose.yaml (postgres, couchdb, minio, test-dockerd) and blocks
+# until every service reports healthy (via each service's healthcheck), instead of just
+# `up -d` returning as soon as the containers start — this is what previously let e2e tests
+# race a backend (e.g. CouchDB) that hadn't finished starting yet.
+setup-e2e-env:
+	docker compose -f tests/docker-compose.yaml up -d --wait
+
+# Runs the e2e-tagged test suites against a ready environment. The compose stack is left
+# running afterward (see setup-e2e-env) so repeated `make test-e2e` runs don't pay the
+# container startup cost each time.
+test-e2e: setup-e2e-env
+	go test -tags e2e ./tests/...

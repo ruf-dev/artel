@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {Fragment, useState} from "react"
 import {Button, ModalClose} from "@vervstack/chures"
 
 import cls from "@/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/DockerHostFormDialog.module.css"
@@ -8,6 +8,8 @@ import {useBakeError} from "@/app/hooks/useErrorToast"
 import FormField from "@/components/FormField/FormField.tsx"
 import DockerHostTlsFields
     from "@/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/components/DockerHostTlsFields.tsx"
+import DockerHostVpsGuide
+    from "@/pages/admin/components/DockerApiTab/components/DockerHostFormDialog/components/DockerHostVpsGuide.tsx"
 
 export interface DockerHostFormDialogSaveData {
     url: string
@@ -52,6 +54,11 @@ export default function DockerHostFormDialog({initial, onSave}: DockerHostFormDi
                 <h2 className={cls.ModalTitle}>{title}</h2>
                 <ModalClose onClick={CloseDialog} disabled={saving} className={cls.ModalClose}/>
             </div>
+            <p className={cls.ModalSub}>
+                Point Artel at a Docker daemon it can create workbench containers on. Use a local socket path
+                (e.g. unix:///var/run/docker-workbenches.sock) for a daemon on this same host, or tcp://host:2376
+                with mutual TLS for a daemon on a remote host.
+            </p>
             <FormField
                 label="URL"
                 placeholder="unix:///var/run/docker-workbenches.sock"
@@ -62,16 +69,19 @@ export default function DockerHostFormDialog({initial, onSave}: DockerHostFormDi
                 labelClassName={cls.FieldLabel}
             />
             {showTlsFields && (
-                <DockerHostTlsFields
-                    caCert={caCert}
-                    clientCert={clientCert}
-                    clientKey={clientKey}
-                    isEdit={isEdit}
-                    disabled={saving}
-                    onCaCertChange={setCaCert}
-                    onClientCertChange={setClientCert}
-                    onClientKeyChange={setClientKey}
-                />
+                <Fragment>
+                    <DockerHostVpsGuide/>
+                    <DockerHostTlsFields
+                        caCert={caCert}
+                        clientCert={clientCert}
+                        clientKey={clientKey}
+                        isEdit={isEdit}
+                        disabled={saving}
+                        onCaCertChange={setCaCert}
+                        onClientCertChange={setClientCert}
+                        onClientKeyChange={setClientKey}
+                    />
+                </Fragment>
             )}
             <div className={cls.ModalActions}>
                 <Button variant="primary" onClick={handleSave} disabled={saving}>

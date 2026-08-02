@@ -6,6 +6,12 @@ services:
       COUCHDB_PASSWORD: admin
     ports:
       - "15985:5984"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://admin:admin@localhost:5984/_up"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
 
   test-postgres:
     image: postgres:18
@@ -15,6 +21,12 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "15434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U artel -d artel_db"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
 
   test-minio:
     image: minio/minio:latest
@@ -24,6 +36,12 @@ services:
     command: server /data
     ports:
       - "19000:9000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
 
   # test-dockerd is a local docker:dind daemon standing in for docs/workbench/02_docker_topology.md's
   # "Option B" (a second dockerd process) for local dev/testing — plain, unauthenticated TCP,
@@ -41,6 +59,12 @@ services:
       DOCKER_TLS_CERTDIR: ""
     ports:
       - "12375:2375"
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
 
 # workbench-net is the dedicated network internal/clients/workbenchdocker/client.go's doc comment
 # assumes pre-exists on the configured daemon. IMPORTANT: this top-level `networks:` block only
