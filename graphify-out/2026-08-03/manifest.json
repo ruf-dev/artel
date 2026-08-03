@@ -855,8 +855,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/api.ts": {
-    "mtime": 1785698225.831326,
-    "ast_hash": "1ab4e9da45815713b65761d23412dcc3",
+    "mtime": 1782757895.2073278,
+    "ast_hash": "fe729bdc8e5831b276979044c4e1ed3e",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/api/artel/auth.pb.ts": {
@@ -915,13 +915,13 @@
     "semantic_hash": "71aaccbbad539dfb3c564eb857a31046"
   },
   "pkg/client/ArtelUI/src/processes/AuthMiddleware.ts": {
-    "mtime": 1785698254.2100718,
-    "ast_hash": "a105e2d649179a3dd26d77ff0c57aaaa",
+    "mtime": 1784573346.254643,
+    "ast_hash": "8586184cb7ba51d2afdd1609dd9c7dbf",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/Auth.ts": {
-    "mtime": 1785698302.4565856,
-    "ast_hash": "f7f5b012a8c90244d7fa602f9cbea3f1",
+    "mtime": 1784403168.8466372,
+    "ast_hash": "9aa93adcc2cfd978618dad6b036cb0da",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/Vaults.ts": {
@@ -4815,8 +4815,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/AuthFetchInterceptor.ts": {
-    "mtime": 1785698293.1275673,
-    "ast_hash": "1b2781fd71b8af3b170f3d5b4f9d8eb7",
+    "mtime": 1784449819.8334684,
+    "ast_hash": "683ab89842a14dba7a42924032f1abae",
     "semantic_hash": ""
   },
   "tests/e2e/quota_test.go": {
