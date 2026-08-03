@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 )
@@ -15,10 +15,11 @@ import (
 type S3InstancesImpl struct {
 	artel_api.UnimplementedS3InstancesAPIServer
 	s3InstanceSvc service.S3InstanceService
+	cookieSecure  bool
 }
 
-func NewS3InstancesImpl(s3InstanceSvc service.S3InstanceService) *S3InstancesImpl {
-	return &S3InstancesImpl{s3InstanceSvc: s3InstanceSvc}
+func NewS3InstancesImpl(s3InstanceSvc service.S3InstanceService, cookieSecure bool) *S3InstancesImpl {
+	return &S3InstancesImpl{s3InstanceSvc: s3InstanceSvc, cookieSecure: cookieSecure}
 }
 
 func (s *S3InstancesImpl) Register(srv grpc.ServiceRegistrar) {
@@ -30,7 +31,7 @@ func (s *S3InstancesImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(s.cookieSecure)
 
 	err := artel_api.RegisterS3InstancesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

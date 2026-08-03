@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 )
@@ -15,10 +15,11 @@ import (
 type CouchInstancesImpl struct {
 	artel_api.UnimplementedCouchInstancesAPIServer
 	couchInstanceSvc service.CouchInstanceService
+	cookieSecure     bool
 }
 
-func NewCouchInstancesImpl(couchInstanceSvc service.CouchInstanceService) *CouchInstancesImpl {
-	return &CouchInstancesImpl{couchInstanceSvc: couchInstanceSvc}
+func NewCouchInstancesImpl(couchInstanceSvc service.CouchInstanceService, cookieSecure bool) *CouchInstancesImpl {
+	return &CouchInstancesImpl{couchInstanceSvc: couchInstanceSvc, cookieSecure: cookieSecure}
 }
 
 func (c *CouchInstancesImpl) Register(srv grpc.ServiceRegistrar) {
@@ -30,7 +31,7 @@ func (c *CouchInstancesImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(c.cookieSecure)
 
 	err := artel_api.RegisterCouchInstancesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

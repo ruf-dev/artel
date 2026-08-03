@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -18,14 +18,16 @@ import (
 // the moment the RPC returns.
 type TractsImpl struct {
 	pb.UnimplementedTractsAPIServer
-	tractSvc service.TractService
-	baseCtx  context.Context
+	tractSvc     service.TractService
+	baseCtx      context.Context
+	cookieSecure bool
 }
 
-func New(baseCtx context.Context, tractSvc service.TractService) *TractsImpl {
+func New(baseCtx context.Context, tractSvc service.TractService, cookieSecure bool) *TractsImpl {
 	return &TractsImpl{
-		tractSvc: tractSvc,
-		baseCtx:  baseCtx,
+		tractSvc:     tractSvc,
+		baseCtx:      baseCtx,
+		cookieSecure: cookieSecure,
 	}
 }
 
@@ -34,7 +36,7 @@ func (t *TractsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (t *TractsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(t.cookieSecure)
 
 	err := pb.RegisterTractsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

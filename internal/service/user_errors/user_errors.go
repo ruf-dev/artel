@@ -87,6 +87,7 @@ var (
 	NoMetadataInContext = rerrors.New("error getting metadata from context", codes.FailedPrecondition)
 	NoAuthHeader        = rerrors.New("error getting auth header", codes.Unauthenticated)
 	DebugNotSupported   = rerrors.New("debug not supported", codes.Unimplemented)
+	CSRFTokenInvalid    = rerrors.New("csrf token missing or invalid", codes.PermissionDenied)
 
 	// mcp tool argument validation.
 	McpPathRequired      = rerrors.New("path is required and must be a string", codes.InvalidArgument)

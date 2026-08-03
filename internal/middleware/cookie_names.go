@@ -1,0 +1,55 @@
+package middleware
+
+// Cookie names set on the browser by CookieForwardResponseOption and read back by
+// CookieToMetadataAnnotator / GrpcCSRFInterceptor / auth_api's Refresh fallback.
+const (
+	// AccessTokenCookieName carries the same raw token value as the "authorization" gRPC
+	// metadata key — no Bearer prefix, no transformation (see auth.generateToken).
+	AccessTokenCookieName = "access_token"
+	// RefreshTokenCookieName is read by auth_api's Refresh handler when the request body's
+	// refresh_token field is empty (the browser path never sends it in the body).
+	RefreshTokenCookieName = "refresh_token"
+	// CSRFCookieName is the non-httpOnly double-submit cookie; browsers echo its value back
+	// via the Grpc-Metadata-X-Csrf-Token header, compared in GrpcCSRFInterceptor.
+	CSRFCookieName = "csrf_token"
+	// CookiePath scopes the httpOnly session cookies to the gateway's API root — every RPC is
+	// mounted under /api/ (see api/grpc/*.proto google.api.http annotations), and these cookies
+	// are never read by JS, so narrowing what gets sent on requests is pure upside.
+	CookiePath = "/api/"
+	// CSRFCookiePath is deliberately "/" rather than CookiePath: the SPA itself is served at
+	// root (React Router routes like /vaults, /notes — none of them live under /api/), and a
+	// cookie's Path attribute gates document.cookie visibility exactly like it gates which
+	// requests carry the cookie. A csrf_token scoped to /api/ would be invisible to the
+	// frontend's document.cookie read from any actual app route, breaking the CSRF echo before
+	// it could ever work.
+	CSRFCookiePath = "/"
+)
+
+// Metadata keys used between auth_api's handlers and CookieForwardResponseOption to signal
+// which cookies to set/clear on the HTTP response. Set via grpc.SetHeader in the handler,
+// read back via runtime.ServerMetadataFromContext in the forward-response hook.
+const (
+	SetCookieAccessTokenKey        = "x-set-cookie-access-token"
+	SetCookieAccessTokenExpiryKey  = "x-set-cookie-access-token-expiry"
+	SetCookieRefreshTokenKey       = "x-set-cookie-refresh-token"
+	SetCookieRefreshTokenExpiryKey = "x-set-cookie-refresh-token-expiry"
+	ClearAuthCookiesKey            = "x-clear-auth-cookies"
+)
+
+// ClearAuthCookiesValue is the fixed value paired with ClearAuthCookiesKey — a boolean flag,
+// not a token, so a fixed sentinel is enough.
+const ClearAuthCookiesValue = "1"
+
+// AuthViaCookieMarkerKey is the gRPC metadata key CookieToMetadataAnnotator sets whenever it
+// supplied the "authorization" credential from a cookie rather than a header. GrpcCSRFInterceptor
+// only enforces CSRF checks when this marker is present, so native gRPC/CLI callers presenting a
+// raw Authorization header stay exempt.
+const AuthViaCookieMarkerKey = "x-auth-via-cookie"
+
+// AuthViaCookieMarkerValue is the fixed value paired with AuthViaCookieMarkerKey.
+const AuthViaCookieMarkerValue = "1"
+
+// GatewayCookieMetadataKey is the gRPC metadata key grpc-gateway's DefaultHeaderMatcher
+// populates from the HTTP request's raw "Cookie" header (a permanent IANA header, forwarded
+// with the "grpcgateway-" prefix — see grpc-gateway/v2/runtime.DefaultHeaderMatcher).
+const GatewayCookieMetadataKey = "grpcgateway-cookie"

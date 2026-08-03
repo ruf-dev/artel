@@ -4,21 +4,22 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 )
 
 type AdminCouchImpl struct {
 	artel_api.UnimplementedAdminCouchAPIServer
-	svc service.AdminCouchService
+	svc          service.AdminCouchService
+	cookieSecure bool
 }
 
-func New(svc service.AdminCouchService) *AdminCouchImpl {
-	return &AdminCouchImpl{svc: svc}
+func New(svc service.AdminCouchService, cookieSecure bool) *AdminCouchImpl {
+	return &AdminCouchImpl{svc: svc, cookieSecure: cookieSecure}
 }
 
 func (a *AdminCouchImpl) Register(srv grpc.ServiceRegistrar) {
@@ -26,7 +27,7 @@ func (a *AdminCouchImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (a *AdminCouchImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(a.cookieSecure)
 
 	err := artel_api.RegisterAdminCouchAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

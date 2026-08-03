@@ -4,20 +4,21 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"google.golang.org/grpc"
 )
 
 type ExternalConnectionsImpl struct {
 	pb.UnimplementedExternalConnectionsAPIServer
-	svc service.ExternalConnectionService
+	svc          service.ExternalConnectionService
+	cookieSecure bool
 }
 
-func New(svc service.ExternalConnectionService) *ExternalConnectionsImpl {
-	return &ExternalConnectionsImpl{svc: svc}
+func New(svc service.ExternalConnectionService, cookieSecure bool) *ExternalConnectionsImpl {
+	return &ExternalConnectionsImpl{svc: svc, cookieSecure: cookieSecure}
 }
 
 func (e *ExternalConnectionsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -29,7 +30,7 @@ func (e *ExternalConnectionsImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(e.cookieSecure)
 
 	err := pb.RegisterExternalConnectionsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/hex"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -110,34 +111,38 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error sweeping stale tract runs at startup")
 	}
 
-	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER)
+	cookieSecure := a.Cfg.Environment.CookieSecure
+
+	allowedOrigins := strings.Split(a.Cfg.Environment.AllowedOrigins, ",")
+
+	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER, allowedOrigins)
 	if err != nil {
 		return rerrors.Wrap(err, "error creating server manager")
 	}
 
-	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
-	notesImpl := notes_api.NewNotesImpl(services.NotesService())
-	publicDocsImpl := public_docs_api.New(services.PublicDocsService())
+	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench, cookieSecure)
+	notesImpl := notes_api.NewNotesImpl(services.NotesService(), cookieSecure)
+	publicDocsImpl := public_docs_api.New(services.PublicDocsService(), cookieSecure)
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
-		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost,
+		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost, cookieSecure,
 	)
-	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
-	dockerHostsImpl := docker_hosts_api.NewDockerHostsImpl(services.DockerHost)
-	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
-	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
-	adminUsersImpl := admin_users_api.New(services.AdminUsersService())
-	adminSubscriptionsImpl := admin_subscriptions_api.New(services.AdminSubscriptionsService())
-	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService())
-	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
-	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
-	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
+	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance, cookieSecure)
+	dockerHostsImpl := docker_hosts_api.NewDockerHostsImpl(services.DockerHost, cookieSecure)
+	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService(), cookieSecure)
+	adminCouchImpl := admin_couch_api.New(services.AdminCouchService(), cookieSecure)
+	adminUsersImpl := admin_users_api.New(services.AdminUsersService(), cookieSecure)
+	adminSubscriptionsImpl := admin_subscriptions_api.New(services.AdminSubscriptionsService(), cookieSecure)
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService(), cookieSecure)
+	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService(), cookieSecure)
+	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService(), cookieSecure)
+	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService(), cookieSecure)
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.MomService())
 	gitlabWebhookHandler := gitlab_webhook.New(
 		a.Ctx, repo.ExternalConnections(), repo.Triggers(), services.MomService(), services.TractService(),
 	)
 	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
-	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
+	tractsImpl := tracts_api.New(a.Ctx, services.TractService(), cookieSecure)
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
 	otelServerHandler := otelgrpc.NewServerHandler()
@@ -160,6 +165,75 @@ func (c *Custom) Init(a *App) error {
 				pb.PublicDocsAPI_ListTags_FullMethodName,
 			),
 			middleware.WithNoAuth(a.Cfg.Environment.NoAuthEnabled),
+		),
+		// GrpcCSRFInterceptor only enforces double-submit CSRF checks when
+		// CookieToMetadataAnnotator authenticated the request from a cookie (see
+		// internal/middleware/csrf_interceptor.go) — native gRPC/CLI callers presenting a raw
+		// Authorization header are unaffected. The exempt list below is every read-only RPC,
+		// drafted from the Get*/List*/Has*/Check*/Watch* naming convention (mirrors the
+		// GrpcAdminInterceptor explicit-list idiom below). The five Check* RPCs were read
+		// directly (externalconnections.Service.CheckAnthropicConnection/CheckEmailConnection/
+		// CheckGitlabConnection/CheckTrelloConnection, notes.Service.CheckImportConflicts) to
+		// confirm none of them mutate state before being added here.
+		middleware.GrpcCSRFInterceptor(
+			pb.AdminCouchAPI_GetUserDatabaseAccess_FullMethodName,
+			pb.AdminCouchAPI_ListCouchDatabases_FullMethodName,
+			pb.AdminCouchAPI_ListCouchUsers_FullMethodName,
+			pb.AdminSubscriptionsAPI_GetUserSubscription_FullMethodName,
+			pb.AdminSubscriptionsAPI_ListSubscriptionPlans_FullMethodName,
+			pb.AdminUsersAPI_GetArtelUser_FullMethodName,
+			pb.AdminUsersAPI_GetUserSessions_FullMethodName,
+			pb.AdminUsersAPI_ListArtelUsers_FullMethodName,
+			pb.AuthAPI_GetConfig_FullMethodName,
+			pb.AuthAPI_GetMe_FullMethodName,
+			pb.CouchInstancesAPI_GetCouchInstance_FullMethodName,
+			pb.CouchInstancesAPI_GetCouchInstanceStatus_FullMethodName,
+			pb.CouchInstancesAPI_ListCouchInstances_FullMethodName,
+			pb.DockerHostsAPI_GetDockerHost_FullMethodName,
+			pb.DockerHostsAPI_ListDockerHosts_FullMethodName,
+			pb.ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName,
+			pb.ExternalConnectionsAPI_CheckEmailConnection_FullMethodName,
+			pb.ExternalConnectionsAPI_CheckGitlabConnection_FullMethodName,
+			pb.ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName,
+			pb.ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName,
+			pb.ExternalConnectionsAPI_ListConnections_FullMethodName,
+			pb.ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName,
+			pb.ExternalConnectionsAPI_ListSpreadsheets_FullMethodName,
+			pb.S3InstancesAPI_GetS3Instance_FullMethodName,
+			pb.S3InstancesAPI_ListS3Instances_FullMethodName,
+			pb.McpKeysAPI_ListCommunityConnectors_FullMethodName,
+			pb.McpKeysAPI_ListMcpConnectors_FullMethodName,
+			pb.McpKeysAPI_ListMcpKeys_FullMethodName,
+			pb.McpKeysAPI_ListMomCandidates_FullMethodName,
+			pb.McpKeysAPI_ListUserMcpKeys_FullMethodName,
+			pb.NotesAPI_CheckImportConflicts_FullMethodName,
+			pb.NotesAPI_GetNote_FullMethodName,
+			pb.NotesAPI_ListFolders_FullMethodName,
+			pb.NotesAPI_ListNotes_FullMethodName,
+			pb.NotesAPI_ListTags_FullMethodName,
+			pb.PromptsAPI_ListPrompts_FullMethodName,
+			pb.PublicDocsAPI_GetNote_FullMethodName,
+			pb.PublicDocsAPI_GetVaultBySlug_FullMethodName,
+			pb.PublicDocsAPI_ListFolders_FullMethodName,
+			pb.PublicDocsAPI_ListNotes_FullMethodName,
+			pb.PublicDocsAPI_ListTags_FullMethodName,
+			pb.TaskTrackersAPI_ListTaskTrackers_FullMethodName,
+			pb.TaskTrackersAPI_ListTrelloBoards_FullMethodName,
+			pb.TractsAPI_GetRun_FullMethodName,
+			pb.TractsAPI_GetTract_FullMethodName,
+			pb.TractsAPI_GetTractTemplate_FullMethodName,
+			pb.TractsAPI_ListRuns_FullMethodName,
+			pb.TractsAPI_ListTracts_FullMethodName,
+			pb.TractsAPI_ListTractTemplates_FullMethodName,
+			pb.TractsAPI_ListTractTools_FullMethodName,
+			pb.TractsAPI_ListTriggers_FullMethodName,
+			pb.TractsAPI_ListTriggerSources_FullMethodName,
+			pb.TractsAPI_WatchRun_FullMethodName,
+			pb.VaultsAPI_GetVault_FullMethodName,
+			pb.VaultsAPI_ListInviteLinks_FullMethodName,
+			pb.VaultsAPI_ListMembers_FullMethodName,
+			pb.VaultsAPI_ListVaults_FullMethodName,
+			pb.VaultsAPI_WatchWorkbenchLogin_FullMethodName,
 		),
 		middleware.GrpcAdminInterceptor(services.Auth,
 			pb.CouchInstancesAPI_RegisterCouchInstance_FullMethodName,

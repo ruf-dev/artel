@@ -4,20 +4,21 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"google.golang.org/grpc"
 )
 
 type TaskTrackersImpl struct {
 	pb.UnimplementedTaskTrackersAPIServer
-	trackerSvc service.TaskTrackerService
+	trackerSvc   service.TaskTrackerService
+	cookieSecure bool
 }
 
-func New(trackerSvc service.TaskTrackerService) *TaskTrackersImpl {
-	return &TaskTrackersImpl{trackerSvc: trackerSvc}
+func New(trackerSvc service.TaskTrackerService, cookieSecure bool) *TaskTrackersImpl {
+	return &TaskTrackersImpl{trackerSvc: trackerSvc, cookieSecure: cookieSecure}
 }
 
 func (t *TaskTrackersImpl) Register(srv grpc.ServiceRegistrar) {
@@ -29,7 +30,7 @@ func (t *TaskTrackersImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(t.cookieSecure)
 
 	err := pb.RegisterTaskTrackersAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

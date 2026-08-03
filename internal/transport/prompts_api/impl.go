@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 )
@@ -22,11 +22,12 @@ var stringToPromptId = map[string]pb.PromptId{
 
 type PromptsImpl struct {
 	pb.UnimplementedPromptsAPIServer
-	promptSvc service.PromptService
+	promptSvc    service.PromptService
+	cookieSecure bool
 }
 
-func NewPromptsImpl(promptSvc service.PromptService) *PromptsImpl {
-	return &PromptsImpl{promptSvc: promptSvc}
+func NewPromptsImpl(promptSvc service.PromptService, cookieSecure bool) *PromptsImpl {
+	return &PromptsImpl{promptSvc: promptSvc, cookieSecure: cookieSecure}
 }
 
 func (p *PromptsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -34,7 +35,7 @@ func (p *PromptsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (p *PromptsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(p.cookieSecure)
 
 	err := pb.RegisterPromptsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

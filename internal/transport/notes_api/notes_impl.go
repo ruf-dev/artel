@@ -4,20 +4,21 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"google.golang.org/grpc"
 )
 
 type NotesImpl struct {
 	pb.UnimplementedNotesAPIServer
-	noteSvc service.NotesService
+	noteSvc      service.NotesService
+	cookieSecure bool
 }
 
-func NewNotesImpl(noteSvc service.NotesService) *NotesImpl {
-	return &NotesImpl{noteSvc: noteSvc}
+func NewNotesImpl(noteSvc service.NotesService, cookieSecure bool) *NotesImpl {
+	return &NotesImpl{noteSvc: noteSvc, cookieSecure: cookieSecure}
 }
 
 func (n *NotesImpl) Register(srv grpc.ServiceRegistrar) {
@@ -25,7 +26,7 @@ func (n *NotesImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (n *NotesImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(n.cookieSecure)
 
 	err := pb.RegisterNotesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

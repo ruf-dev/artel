@@ -19,10 +19,10 @@ type httpServer struct {
 	registeredPaths map[string]struct{}
 }
 
-func newHttpServer(listener net.Listener, httpMux *http.ServeMux) httpServer {
+func newHttpServer(listener net.Listener, httpMux *http.ServeMux, allowedOrigins []string) httpServer {
 	return httpServer{
 		server: &http.Server{
-			Handler: setUpCors().Handler(httpMux),
+			Handler: setUpCors(allowedOrigins).Handler(httpMux),
 		},
 		registeredPaths: make(map[string]struct{}),
 		listener:        listener,
@@ -105,15 +105,23 @@ func (s *httpServer) buildHomePageHandler() http.Handler {
 	})
 }
 
-func setUpCors() *cors.Cors {
+// setUpCors builds the CORS policy for the gateway. Browser cookie auth (see
+// internal/middleware/cookie_response.go) requires AllowCredentials: true, which the CORS spec
+// only allows alongside an explicit origin list — never AllowedOrigins: ["*"] — and forces an
+// explicit AllowedHeaders list too, since a wildcard is rejected once credentials are on.
+func setUpCors(allowedOrigins []string) *cors.Cors {
 	return cors.New(
 		cors.Options{
-			AllowedOrigins: []string{"*"},
+			AllowedOrigins: allowedOrigins,
 			AllowedMethods: []string{
 				http.MethodPost,
 				http.MethodGet,
 			},
-			AllowedHeaders:   []string{"*"},
-			AllowCredentials: false,
+			AllowedHeaders: []string{
+				"Content-Type",
+				"Grpc-Metadata-Authorization",
+				"Grpc-Metadata-X-Csrf-Token",
+			},
+			AllowCredentials: true,
 		})
 }

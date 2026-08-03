@@ -1,6 +1,7 @@
-import {apiPrefix} from "@/app/api/api.ts"
+import {apiPrefix, getCsrfToken} from "@/app/api/api.ts"
 import {Session} from "@/processes/Auth.ts";
 import {useAppConfig} from "@/app/hooks/AppConfig.ts";
+import {AuthAPI} from "@/app/api/artel"
 
 export type UserInfo = {
     id: string
@@ -14,51 +15,56 @@ export type UserInfo = {
 }
 
 type StoredAuth = {
-    session: Session
     userInfo?: UserInfo
 }
 
 export class AuthMiddleware {
+    // In-memory only, never persisted: the access token itself now travels
+    // as an httpOnly cookie the browser attaches automatically, so JS no
+    // longer needs to hold it for authenticating /api/* calls. It's kept
+    // here only for the unrelated MCP OAuth bearer-token handoff
+    // (McpAuthPage.tsx passes it to the separate /oauth/vaults endpoint),
+    // which is out of scope for this migration — it now only works for the
+    // lifetime of the current page load rather than surviving a reload.
     session?: Session
     userInfo?: UserInfo
 
     constructor() {
         const stored = fromLocalStorage()
-        this.session = stored?.session
         this.userInfo = stored?.userInfo
     }
 
+    // isAuthenticated is a synchronous, UX-only "was I logged in" signal —
+    // access/refresh tokens are httpOnly and unreadable from JS, so this
+    // checks for the non-httpOnly, root-scoped csrf_token cookie instead,
+    // which the backend sets alongside the auth cookies on Login/Refresh and
+    // clears on Logout. Real authorization is still enforced server-side on
+    // every request regardless of what this returns; it only avoids a
+    // login-page flash before an inevitable 401 redirect.
     isAuthenticated(): boolean {
         if (useAppConfig.getState().noAuthEnabled) return true
-        if (!this.session) return false
-        return new Date(this.session.refreshExpiresAt) > new Date()
+        return Boolean(getCsrfToken())
     }
 
     login(s: Session, info?: UserInfo) {
         this.session = s
         this.userInfo = info
 
-        saveToLocalStorage({session: s, userInfo: info})
+        saveToLocalStorage({userInfo: info})
     }
 
     setUserInfo(info: UserInfo) {
         this.userInfo = info
-        if (this.session) {
-            saveToLocalStorage({session: this.session, userInfo: info})
-        }
+        saveToLocalStorage({userInfo: info})
     }
 
     logout() {
         this.session = undefined
         this.userInfo = undefined
         clearLocalStorage()
-    }
-
-    updateTokens(token: string, expiresAt: string, refreshToken: string, refreshExpiresAt: string) {
-        if (!this.session) return
-
-        this.session = {token, expiresAt, refreshToken, refreshExpiresAt}
-        saveToLocalStorage({session: this.session, userInfo: this.userInfo})
+        // Best-effort: clears the httpOnly auth cookies + csrf_token server
+        // side. Local state is cleared regardless of whether this succeeds.
+        AuthAPI.Logout({}, apiPrefix()).catch(() => {})
     }
 
     getToken(): string {
@@ -87,7 +93,7 @@ export class AuthMiddleware {
     }
 
     getInitReq() {
-        return apiPrefix({accessToken: this.getToken()})
+        return apiPrefix()
     }
 }
 
@@ -100,9 +106,12 @@ function fromLocalStorage(): StoredAuth | undefined {
     if (!raw) return undefined
     try {
         const parsed = JSON.parse(raw)
-        if (parsed.session) return parsed as StoredAuth
-        // legacy: old format stored session directly
-        return {session: parsed}
+        // Pre-migration browsers may still have the old {session, userInfo}
+        // shape cached; only the userInfo part survives, tokens are dropped.
+        if (parsed && typeof parsed === "object" && "userInfo" in parsed) {
+            return {userInfo: parsed.userInfo as UserInfo | undefined}
+        }
+        return undefined
     } catch {
         return undefined
     }

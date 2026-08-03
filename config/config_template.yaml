@@ -18,6 +18,12 @@ servers:
             gateway: /api
         name: MASTER
 environment:
+    - name: allowed_origins
+      type: string
+      value: ""
+    - name: cookie_secure
+      type: bool
+      value: true
     - name: creds_encryption_key
       type: string
       value: 3843d44f2445b26408427c99349a147b673583a59bc4336b60b1ed12aacd22ab

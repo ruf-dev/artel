@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -17,11 +17,12 @@ import (
 
 type AdminUsersImpl struct {
 	artel_api.UnimplementedAdminUsersAPIServer
-	svc service.AdminUsersService
+	svc          service.AdminUsersService
+	cookieSecure bool
 }
 
-func New(svc service.AdminUsersService) *AdminUsersImpl {
-	return &AdminUsersImpl{svc: svc}
+func New(svc service.AdminUsersService, cookieSecure bool) *AdminUsersImpl {
+	return &AdminUsersImpl{svc: svc, cookieSecure: cookieSecure}
 }
 
 func (a *AdminUsersImpl) Register(srv grpc.ServiceRegistrar) {
@@ -29,7 +30,7 @@ func (a *AdminUsersImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (a *AdminUsersImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(a.cookieSecure)
 
 	err := artel_api.RegisterAdminUsersAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

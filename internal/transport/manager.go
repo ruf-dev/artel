@@ -20,7 +20,7 @@ type ServersManager struct {
 	httpServer
 }
 
-func NewServerManager(ctx context.Context, listener net.Listener) (*ServersManager, error) {
+func NewServerManager(ctx context.Context, listener net.Listener, allowedOrigins []string) (*ServersManager, error) {
 	mainMux := cmux.New(listener)
 	httpMux := http.NewServeMux()
 
@@ -29,7 +29,7 @@ func NewServerManager(ctx context.Context, listener net.Listener) (*ServersManag
 		mux: mainMux,
 
 		grpcServer: newGrpcServer(ctx, mainMux.Match(cmux.HTTP2()), httpMux),
-		httpServer: newHttpServer(mainMux.Match(cmux.Any()), httpMux),
+		httpServer: newHttpServer(mainMux.Match(cmux.Any()), httpMux, allowedOrigins),
 	}
 
 	return s, nil

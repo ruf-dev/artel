@@ -4,18 +4,19 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/transport"
 	"google.golang.org/grpc"
 )
 
 type Impl struct {
 	artel_api.UnimplementedVaultsAPIServer
+	cookieSecure bool
 }
 
-func New() *Impl {
-	return &Impl{}
+func New(cookieSecure bool) *Impl {
+	return &Impl{cookieSecure: cookieSecure}
 }
 
 func (impl *Impl) Register(server grpc.ServiceRegistrar) {
@@ -27,7 +28,7 @@ func (impl *Impl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (route string, handler http.Handler) {
-	gwHttpMux := runtime.NewServeMux()
+	gwHttpMux := transport.NewGatewayMux(impl.cookieSecure)
 
 	err := artel_api.RegisterVaultsAPIHandlerFromEndpoint(
 		ctx,

@@ -5,22 +5,23 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 )
 
 type AdminSubscriptionsImpl struct {
 	artel_api.UnimplementedAdminSubscriptionsAPIServer
-	svc service.AdminSubscriptionsService
+	svc          service.AdminSubscriptionsService
+	cookieSecure bool
 }
 
-func New(svc service.AdminSubscriptionsService) *AdminSubscriptionsImpl {
-	return &AdminSubscriptionsImpl{svc: svc}
+func New(svc service.AdminSubscriptionsService, cookieSecure bool) *AdminSubscriptionsImpl {
+	return &AdminSubscriptionsImpl{svc: svc, cookieSecure: cookieSecure}
 }
 
 func (a *AdminSubscriptionsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -28,7 +29,7 @@ func (a *AdminSubscriptionsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (a *AdminSubscriptionsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(a.cookieSecure)
 
 	err := artel_api.RegisterAdminSubscriptionsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

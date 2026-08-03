@@ -2,11 +2,12 @@ import {UserInfo} from "@/processes/AuthMiddleware.ts";
 import {LoginRequest, AuthAPI} from "@/app/api/artel";
 import useUser from "@/hooks/user/User.ts"
 
+// Session no longer carries refresh-token/expiry data — the backend manages
+// the token lifecycle entirely via httpOnly cookies now. `token` survives
+// only because it's still needed in-memory for the unrelated MCP OAuth
+// bearer-token handoff (see AuthMiddleware.ts), not for /api/* auth.
 export interface Session {
     token: string
-    expiresAt: string
-    refreshToken: string
-    refreshExpiresAt: string
 }
 
 export interface IAuthService {
@@ -21,11 +22,8 @@ export class AuthService implements IAuthService {
         } as LoginRequest
 
         return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({
-            token: res.token,
-            expiresAt: res.expiresAt,
-            refreshToken: res.refreshToken,
-            refreshExpiresAt: res.refreshExpiresAt,
-        } as Session))
+            token: res.token ?? "",
+        }))
     }
 
     async FetchUserInfo(): Promise<UserInfo> {

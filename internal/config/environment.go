@@ -3,6 +3,8 @@
 package config
 
 type EnvironmentConfig struct {
+	AllowedOrigins       string
+	CookieSecure         bool
 	CredsEncryptionKey   string
 	GoogleAPIKey         string
 	GoogleClientID       string

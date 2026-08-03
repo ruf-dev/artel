@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/service"
+	"github.com/ruf-dev/artel/internal/transport"
 	"go.redsock.ru/rerrors"
 	"google.golang.org/grpc"
 )
@@ -15,10 +15,11 @@ import (
 type DockerHostsImpl struct {
 	artel_api.UnimplementedDockerHostsAPIServer
 	dockerHostSvc service.DockerHostService
+	cookieSecure  bool
 }
 
-func NewDockerHostsImpl(dockerHostSvc service.DockerHostService) *DockerHostsImpl {
-	return &DockerHostsImpl{dockerHostSvc: dockerHostSvc}
+func NewDockerHostsImpl(dockerHostSvc service.DockerHostService, cookieSecure bool) *DockerHostsImpl {
+	return &DockerHostsImpl{dockerHostSvc: dockerHostSvc, cookieSecure: cookieSecure}
 }
 
 func (d *DockerHostsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -30,7 +31,7 @@ func (d *DockerHostsImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := runtime.NewServeMux()
+	gwMux := transport.NewGatewayMux(d.cookieSecure)
 
 	err := artel_api.RegisterDockerHostsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {
