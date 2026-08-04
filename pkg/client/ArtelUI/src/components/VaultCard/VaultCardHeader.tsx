@@ -80,7 +80,14 @@ export default function VaultCardHeader({vault, onEdit, onWorkbench, isWorkbench
             {isWorkbenchAvailable === false && (
                 <Tooltip id={workbenchTooltipId} clickable noArrow>
                     {isAdmin
-                        ? <>Docker isn&apos;t configured. <Link to={Path.Admin}>Set it up in Admin</Link></>
+                        ? (
+                            <>
+                                Docker isn&apos;t configured.{" "}
+                                <Link to={`${Path.Admin}?tab=docker_api&dialog=true`}>
+                                    Set it up in Admin
+                                </Link>
+                            </>
+                        )
                         : "Workbench requires Docker to be configured. Contact an administrator."}
                 </Tooltip>
             )}

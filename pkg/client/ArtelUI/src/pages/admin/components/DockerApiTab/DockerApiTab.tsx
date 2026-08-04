@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from "react"
+import {useState, useEffect, useCallback, useRef} from "react"
 
 import cls from "@/pages/admin/components/DockerApiTab/DockerApiTab.module.css"
 import {DockerHostsAPI, GetDockerHostResponse} from "@/app/api/artel/docker_hosts.pb.ts"
@@ -22,11 +22,16 @@ function tlsPatch(data: DockerHostFormDialogSaveData) {
     }
 }
 
-export default function DockerApiTab() {
+interface Props {
+    autoOpenAddDialog?: boolean
+}
+
+export default function DockerApiTab({autoOpenAddDialog}: Props) {
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const [hosts, setHosts] = useState<GetDockerHostResponse[]>([])
     const [loading, setLoading] = useState(true)
+    const autoOpenHandled = useRef(false)
 
     const loadHosts = useCallback(async () => {
         setLoading(true)
@@ -73,6 +78,13 @@ export default function DockerApiTab() {
             />
         )
     }
+
+    useEffect(() => {
+        if (autoOpenAddDialog && !autoOpenHandled.current) {
+            autoOpenHandled.current = true
+            openAddDialog()
+        }
+    }, [autoOpenAddDialog])
 
     return (
         <div className={cls.DockerApiTabContainer}>
