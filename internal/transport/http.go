@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/rs/cors"
+	"github.com/soheilhy/cmux"
 	"go.redsock.ru/rerrors"
 )
 
@@ -47,7 +48,7 @@ func (s *httpServer) start() error {
 
 	err := s.server.Serve(s.listener)
 	if err != nil {
-		if !rerrors.Is(err, http.ErrServerClosed) {
+		if !rerrors.Is(err, cmux.ErrServerClosed) && !rerrors.Is(err, cmux.ErrListenerClosed) {
 			return rerrors.Wrap(err, "error listening http server")
 		}
 	}
@@ -105,10 +106,12 @@ func (s *httpServer) buildHomePageHandler() http.Handler {
 	})
 }
 
-// setUpCors builds the CORS policy for the gateway. Browser cookie auth (see
-// internal/middleware/cookie_response.go) requires AllowCredentials: true, which the CORS spec
-// only allows alongside an explicit origin list — never AllowedOrigins: ["*"] — and forces an
-// explicit AllowedHeaders list too, since a wildcard is rejected once credentials are on.
+// AllowAllOrigins is an explicit opt-in escape hatch for the old permissive CORS
+// behavior (e.g. quick local dev) — pass it to setUpCors instead of retyping a wildcard.
+// Never the generated default: AllowCredentials: true (required for cookie-based auth)
+// is only valid alongside an explicit origin allowlist per the CORS spec, never "*".
+var AllowAllOrigins = []string{"*"}
+
 func setUpCors(allowedOrigins []string) *cors.Cors {
 	return cors.New(
 		cors.Options{

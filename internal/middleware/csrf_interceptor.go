@@ -8,8 +8,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-
-	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
 // csrfHeaderMetadataKey is the gRPC metadata key for the frontend's CSRF echo, sent as the
@@ -18,10 +16,9 @@ import (
 const csrfHeaderMetadataKey = "x-csrf-token"
 
 // GrpcCSRFInterceptor enforces double-submit CSRF protection, deny-by-default, for RPCs not in
-// exemptMethods — modeled on GrpcAdminInterceptor's explicit-list idiom. It only fires for
-// requests CookieToMetadataAnnotator authenticated from a cookie (marked via
-// AuthViaCookieMarkerKey); native gRPC/CLI callers presenting a raw Authorization header never
-// carry that marker and stay exempt.
+// exemptMethods. It only fires for requests CookieToMetadataAnnotator authenticated from a
+// cookie (marked via AuthViaCookieMarkerKey); native gRPC/CLI callers presenting a raw
+// Authorization header never carry that marker and stay exempt.
 func GrpcCSRFInterceptor(exemptMethods ...string) grpc.ServerOption {
 	interceptor := NewCSRFInterceptor(exemptMethods...)
 
@@ -30,7 +27,7 @@ func GrpcCSRFInterceptor(exemptMethods ...string) grpc.ServerOption {
 
 // NewCSRFInterceptor builds the interceptor function itself, kept separate from
 // GrpcCSRFInterceptor so it can be exercised directly in unit tests without spinning up a real
-// grpc.Server (mirrors RedactInternalErrors / InternalErrorInterceptor).
+// grpc.Server.
 func NewCSRFInterceptor(exemptMethods ...string) grpc.UnaryServerInterceptor {
 	exempt := make(map[string]struct{}, len(exemptMethods))
 	for _, m := range exemptMethods {
@@ -53,7 +50,7 @@ func NewCSRFInterceptor(exemptMethods ...string) grpc.UnaryServerInterceptor {
 		}
 
 		if !csrfTokenValid(md) {
-			return nil, status.Error(codes.PermissionDenied, user_errors.CSRFTokenInvalid.Error())
+			return nil, status.Error(codes.PermissionDenied, "csrf token missing or invalid")
 		}
 
 		return handler(ctx, req)

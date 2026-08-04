@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/clients/sqldb"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
@@ -64,7 +65,12 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error initializing creds encryption")
 	}
 
-	repo := repopg.New(a.Postgres, encryptor)
+	pgConn, err := sqldb.New(a.Cfg.DataSources.Postgres)
+	if err != nil {
+		return rerrors.Wrap(err, "error creating postgres connection")
+	}
+
+	repo := repopg.New(pgConn, encryptor)
 
 	services, err := svcv1.New(repo, a.Cfg.Environment)
 	if err != nil {
@@ -268,7 +274,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSubscriptionsAPI_UpdateUserSubscription_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl)
+	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)

@@ -6,6 +6,7 @@ import (
 	"go.vervstack.ru/matreshka/pkg/matreshka/resources"
 )
 
+// DataSourcesConfig holds parsed configuration values for this section.
 type DataSourcesConfig struct {
 	Postgres *resources.Postgres
 }

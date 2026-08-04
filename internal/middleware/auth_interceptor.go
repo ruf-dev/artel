@@ -14,8 +14,6 @@ import (
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
-const authHeader = "authorization"
-
 type authMiddleware struct {
 	ignoredPaths        map[string]struct{}
 	isDebugEnabled      bool

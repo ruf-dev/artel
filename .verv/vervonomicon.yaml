@@ -1,9 +1,1 @@
-reverse_proxy:
-  engine: angie #nginx, caddy, and other type of sh..
-  env:
-    - name: DOMAIN
-      value: ....
-    - name: SERVER_API_URL
-      value: ....
-    - name: CLIENT_API_URL
-      value: ....
+name: github.com/ruf-dev/artel

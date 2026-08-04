@@ -11,6 +11,9 @@ data_sources:
       pwd: ""
       name: artel
       ssl_mode: ""
+      schema: ""
+      admin_user: ""
+      admin_pwd: ""
 servers:
     80:
         /{GRPC}:

@@ -2,6 +2,7 @@
 
 package config
 
+// EnvironmentConfig holds parsed configuration values for this section.
 type EnvironmentConfig struct {
 	AllowedOrigins       string
 	CookieSecure         bool
@@ -17,17 +18,19 @@ type EnvironmentConfig struct {
 	TelegramClientID     string
 }
 
+// LogFormat enumerates the allowed values for the LogFormat field.
 const (
-	LogFormat_Json = "JSON"
-	LogFormat_Text = "TEXT"
+	LogFormatJSON = "JSON"
+	LogFormatText = "TEXT"
 )
 
+// LogLevel enumerates the allowed values for the LogLevel field.
 const (
-	LogLevel_Trace = "Trace"
-	LogLevel_Debug = "Debug"
-	LogLevel_Info  = "Info"
-	LogLevel_Warn  = "Warn"
-	LogLevel_Error = "Error"
-	LogLevel_Fatal = "Fatal"
-	LogLevel_Panic = "Panic"
+	LogLevelTrace = "Trace"
+	LogLevelDebug = "Debug"
+	LogLevelInfo  = "Info"
+	LogLevelWarn  = "Warn"
+	LogLevelError = "Error"
+	LogLevelFatal = "Fatal"
+	LogLevelPanic = "Panic"
 )

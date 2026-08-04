@@ -1,33 +1,30 @@
 package middleware
 
 // Cookie names set on the browser by CookieForwardResponseOption and read back by
-// CookieToMetadataAnnotator / GrpcCSRFInterceptor / auth_api's Refresh fallback.
+// CookieToMetadataAnnotator / GrpcCSRFInterceptor / auth handlers' Refresh fallback.
 const (
 	// AccessTokenCookieName carries the same raw token value as the "authorization" gRPC
-	// metadata key — no Bearer prefix, no transformation (see auth.generateToken).
+	// metadata key — no Bearer prefix, no transformation.
 	AccessTokenCookieName = "access_token"
-	// RefreshTokenCookieName is read by auth_api's Refresh handler when the request body's
-	// refresh_token field is empty (the browser path never sends it in the body).
+	// RefreshTokenCookieName is read by an auth handler's Refresh handler when the request
+	// body's refresh_token field is empty (the browser path never sends it in the body).
 	RefreshTokenCookieName = "refresh_token"
 	// CSRFCookieName is the non-httpOnly double-submit cookie; browsers echo its value back
 	// via the Grpc-Metadata-X-Csrf-Token header, compared in GrpcCSRFInterceptor.
 	CSRFCookieName = "csrf_token"
-	// CookiePath scopes the httpOnly session cookies to the gateway's API root — every RPC is
-	// mounted under /api/ (see api/grpc/*.proto google.api.http annotations), and these cookies
-	// are never read by JS, so narrowing what gets sent on requests is pure upside.
+	// CookiePath scopes the httpOnly session cookies to the gateway's API root — adjust to
+	// match wherever this project mounts its gRPC-gateway routes.
 	CookiePath = "/api/"
-	// CSRFCookiePath is deliberately "/" rather than CookiePath: the SPA itself is served at
-	// root (React Router routes like /vaults, /notes — none of them live under /api/), and a
-	// cookie's Path attribute gates document.cookie visibility exactly like it gates which
-	// requests carry the cookie. A csrf_token scoped to /api/ would be invisible to the
-	// frontend's document.cookie read from any actual app route, breaking the CSRF echo before
-	// it could ever work.
+	// CSRFCookiePath is deliberately "/" rather than CookiePath: a cookie's Path attribute
+	// gates document.cookie visibility exactly like it gates which requests carry the cookie,
+	// and the frontend typically needs to read the csrf_token from any app route, not just
+	// API routes, to echo it back.
 	CSRFCookiePath = "/"
 )
 
-// Metadata keys used between auth_api's handlers and CookieForwardResponseOption to signal
-// which cookies to set/clear on the HTTP response. Set via grpc.SetHeader in the handler,
-// read back via runtime.ServerMetadataFromContext in the forward-response hook.
+// Metadata keys used between auth handlers and CookieForwardResponseOption to signal which
+// cookies to set/clear on the HTTP response. Set via grpc.SetHeader in the handler, read back
+// via runtime.ServerMetadataFromContext in the forward-response hook.
 const (
 	SetCookieAccessTokenKey        = "x-set-cookie-access-token"
 	SetCookieAccessTokenExpiryKey  = "x-set-cookie-access-token-expiry"

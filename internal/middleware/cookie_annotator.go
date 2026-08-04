@@ -7,9 +7,13 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+// authHeader is the gRPC metadata key carrying the bearer credential, matching whatever a
+// project's own auth interceptor reads off incoming metadata.
+const authHeader = "authorization"
+
 // CookieToMetadataAnnotator is registered via runtime.WithMetadata on the shared gateway mux
 // (see transport.NewGatewayMux). It translates the access_token cookie into the "authorization"
-// gRPC metadata key that GrpcAuthInterceptor.authWithSession already reads, so browser callers
+// gRPC metadata key that a project's own auth interceptor reads, so browser callers
 // authenticate the same way native gRPC/CLI callers do.
 //
 // It only fires when the request carries neither an "Authorization" nor a
@@ -33,8 +37,8 @@ func CookieToMetadataAnnotator(_ context.Context, r *http.Request) metadata.MD {
 
 // CookieValueFromRawHeader extracts a single cookie's value out of a raw "Cookie" header
 // string (as carried in the GatewayCookieMetadataKey gRPC metadata value, rather than a live
-// *http.Request). Used by GrpcCSRFInterceptor and auth_api's Refresh handler, which both need
-// to read a cookie from gRPC metadata rather than an http.Request.
+// *http.Request). Used by GrpcCSRFInterceptor and any Refresh-style handler that needs to read
+// a cookie from gRPC metadata rather than an http.Request.
 func CookieValueFromRawHeader(rawCookieHeader, name string) (string, error) {
 	header := http.Header{}
 	header.Add("Cookie", rawCookieHeader)

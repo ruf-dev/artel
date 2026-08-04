@@ -14,16 +14,16 @@ import (
 )
 
 // csrfTokenNonceBytes is the size of the fresh nonce minted for the csrf_token cookie on every
-// Login/Refresh — the CSRF token is independent of the session tokens, never derived from them.
+// login/refresh — the CSRF token is independent of the session tokens, never derived from them.
 const csrfTokenNonceBytes = 32
 
 // CookieForwardResponseOption returns a runtime.WithForwardResponseOption hook for the shared
 // gateway mux (see transport.NewGatewayMux). It is a no-op for almost every RPC — it only acts
 // when the handler explicitly set one of the x-set-cookie-*/x-clear-auth-cookies metadata keys
-// via grpc.SetHeader, which only auth_api's Login/Refresh/Logout handlers do (see auth_impl.go).
+// via grpc.SetHeader, which only a project's own login/refresh/logout handlers would do.
 //
-// secure controls the Secure attribute on every cookie it sets (config.EnvironmentConfig.CookieSecure —
-// false for plain-HTTP local dev, true otherwise).
+// secure controls the Secure attribute on every cookie it sets (false for plain-HTTP local dev,
+// true otherwise).
 func CookieForwardResponseOption(secure bool) func(context.Context, http.ResponseWriter, proto.Message) error {
 	return func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
 		serverMD, ok := runtime.ServerMetadataFromContext(ctx)
