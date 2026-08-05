@@ -620,8 +620,8 @@
     "semantic_hash": ""
   },
   "src/pages/admin/AdminPage.tsx": {
-    "mtime": 1785926119.4626985,
-    "ast_hash": "a05cd96623c14d95a794a0ad18a4a05c",
+    "mtime": 1785926333.0209837,
+    "ast_hash": "87a29b7f46c332ab7bc687c14755c30f",
     "semantic_hash": ""
   },
   "src/pages/closed-alpha/ClosedAlphaPage.tsx": {
@@ -2925,8 +2925,8 @@
     "semantic_hash": ""
   },
   "src/pages/admin/components/SettingsTab/SettingsTab.tsx": {
-    "mtime": 1785926245.35617,
-    "ast_hash": "4a3a9db909127128d3d45540d9c1ed87",
+    "mtime": 1785926346.102173,
+    "ast_hash": "46a615b154197f96e9ee033eafeb95cd",
     "semantic_hash": ""
   },
   "src/pages/admin/components/SettingsTab/components/AuthMethodsSection/AuthMethodsSection.tsx": {
@@ -2947,6 +2947,21 @@
   "src/pages/init/components/LoginContent/components/RegisterForm/RegisterForm.tsx": {
     "mtime": 1785926185.471227,
     "ast_hash": "60bc9457a6cc6c980688f6464fa59aa1",
+    "semantic_hash": ""
+  },
+  "src/pages/setup-wizard/SetupWizardPage.tsx": {
+    "mtime": 1785926423.3631382,
+    "ast_hash": "04fd999da96e49ae6f97ebbec9601387",
+    "semantic_hash": ""
+  },
+  "src/pages/setup-wizard/screens/TokenEntryScreen.tsx": {
+    "mtime": 1785926440.835323,
+    "ast_hash": "81c369b2f4724e3cb3a92d27be6bf708",
+    "semantic_hash": ""
+  },
+  "src/pages/setup-wizard/setupWizardContext.ts": {
+    "mtime": 1785926414.9008095,
+    "ast_hash": "74d21c466c40667b63f4704a89d801f5",
     "semantic_hash": ""
   }
 }
