@@ -895,8 +895,8 @@
     "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
   },
   "pkg/client/ArtelUI/src/app/routing/Router.tsx": {
-    "mtime": 1785935571.641793,
-    "ast_hash": "f86b11b4f4e342c66ca8ded926eba03a",
+    "mtime": 1785937021.2763717,
+    "ast_hash": "22429661d7e95721f5056840bfb6bd6d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/routing/HomeLayout.tsx": {
