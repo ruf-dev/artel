@@ -87,7 +87,7 @@ require (
 	go.redsock.ru/protoc-gen-npm v0.0.12 // indirect
 	go.redsock.ru/rerrors v0.0.15 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.vervstack.ru/matreshka v1.0.95 // indirect
+	go.vervstack.ru/matreshka v1.0.98 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	go.yaml.in/yaml/v4 v4.0.0-rc.2 // indirect
 	golang.org/x/crypto v0.51.0 // indirect

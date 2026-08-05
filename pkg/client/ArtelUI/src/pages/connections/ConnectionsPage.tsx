@@ -1,8 +1,7 @@
 import {useEffect} from "react"
-import {useNavigate, useSearchParams} from "react-router-dom"
+import {useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/connections/ConnectionsPage.module.css"
-import {Path} from "@/app/routing/Router.tsx"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -24,7 +23,6 @@ function resolveTab(value: string | null): ConnectionsTab {
 }
 
 export default function ConnectionsPage() {
-    const navigate = useNavigate()
     const {auth} = useUser()
     const {connections, loading, fetch: fetchConnections} = useExternalConnections()
     const bakeError = useBakeError()
@@ -32,12 +30,7 @@ export default function ConnectionsPage() {
 
     const activeTab = resolveTab(searchParams.get("tab"))
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
-        }
-    }, [auth, navigate])
-
+    // Unauthenticated → /init is handled at the router level (HomeLayout.tsx), not per-page.
     useEffect(() => {
         if (!auth.isAuthenticated()) return
 

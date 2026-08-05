@@ -31,9 +31,7 @@ export default function RoadmapPage() {
     const [loading, setLoading] = useState(true)
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) navigate(Path.InitPage)
-    }, [auth, navigate])
+    // Unauthenticated → /init is handled at the router level (HomeLayout.tsx), not per-page.
 
     function callTrello(toolName: string, params: Record<string, unknown>): Promise<string> {
         if (!trackerId) return Promise.reject(new Error("no tracker selected"))

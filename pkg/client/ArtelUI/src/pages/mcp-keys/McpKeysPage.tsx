@@ -1,9 +1,7 @@
 import {useEffect} from "react"
-import {useNavigate} from "react-router-dom"
 import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/mcp-keys/McpKeysPage.module.css"
-import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
@@ -13,18 +11,12 @@ import ContentSegment from "@/pages/mcp-keys/components/ContentSegment/ContentSe
 import CreateKeyDialog from "@/pages/mcp-keys/components/CreateKeyDialog/CreateKeyDialog.tsx"
 
 export default function McpKeysPage() {
-    const navigate = useNavigate()
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const {keys, loading, fetch: fetchKeys} = useMcpKeys()
     const {fetch: fetchExternalConnections} = useExternalConnections()
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
-        }
-    }, [auth, navigate])
-
+    // Unauthenticated → /init is handled at the router level (HomeLayout.tsx), not per-page.
     useEffect(() => {
         if (auth.isAuthenticated()) {
             void fetchKeys()

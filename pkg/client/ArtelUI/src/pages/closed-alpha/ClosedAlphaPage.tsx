@@ -11,8 +11,8 @@ export default function ClosedAlphaPage() {
     const {logout, isAdmin, isEmailsEnabled, isNotesEnabled, isTaskTrackersEnabled} = useUser()
 
     useEffect(() => {
-        if (isAdmin || isEmailsEnabled || isNotesEnabled || isTaskTrackersEnabled) navigate(Path.HomePage)
-    }, [isAdmin, isEmailsEnabled, isNotesEnabled, isTaskTrackersEnabled, navigate])
+        // if (isAdmin || isEmailsEnabled || isNotesEnabled || isTaskTrackersEnabled) navigate(Path.HomePage)
+    }, [isAdmin, isEmailsEnabled, isNotesEnabled, isTaskTrackersEnabled])
 
     function handleLogout() {
         logout()

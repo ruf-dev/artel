@@ -1,9 +1,7 @@
 import {useEffect} from "react"
-import {useNavigate} from "react-router-dom"
 import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/task-trackers/TaskTrackersPage.module.css"
-import {Path} from "@/app/routing/Router.tsx"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useTaskTrackers} from "@/app/hooks/TaskTrackers.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -12,17 +10,11 @@ import ContentSegment from "@/pages/task-trackers/components/ContentSegment/Cont
 import AddTrackerDialog from "@/pages/task-trackers/components/AddTrackerDialog/AddTrackerDialog.tsx"
 
 export default function TaskTrackersPage() {
-    const navigate = useNavigate()
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const {trackers, loading, fetch: fetchTrackers} = useTaskTrackers()
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
-        }
-    }, [auth, navigate])
-
+    // Unauthenticated → /init is handled at the router level (HomeLayout.tsx), not per-page.
     useEffect(() => {
         if (auth.isAuthenticated()) {
             void fetchTrackers()

@@ -1,24 +1,16 @@
 import {useEffect} from "react"
-import {useNavigate} from "react-router-dom"
 
 import cls from "@/pages/tract-templates/TractTemplatesListPage.module.css"
-import {Path} from "@/app/routing/Router.tsx"
 import {useTractTemplates} from "@/app/hooks/TractTemplates.ts"
 import useUser from "@/hooks/user/User.ts"
 import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import ContentSegment from "@/pages/tract-templates/segments/ContentSegment/ContentSegment.tsx"
 
 export default function TractTemplatesListPage() {
-    const navigate = useNavigate()
     const {auth} = useUser()
     const {templates, loading, mineOnly, fetch} = useTractTemplates()
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
-        }
-    }, [auth, navigate])
-
+    // Unauthenticated → /init is handled at the router level (HomeLayout.tsx), not per-page.
     useEffect(() => {
         if (auth.isAuthenticated()) {
             void fetch()

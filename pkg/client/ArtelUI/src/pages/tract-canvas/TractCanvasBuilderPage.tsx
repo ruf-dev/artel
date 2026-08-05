@@ -18,10 +18,7 @@ export default function TractCanvasBuilderPage() {
     const {fetch: fetchConnections} = useExternalConnections()
     const {momCandidates, fetchMomCandidates} = useMcpKeys()
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) navigate(Path.InitPage)
-    }, [auth, navigate])
-
+    // Unauthenticated → /init is handled at the router level (HomeLayout.tsx), not per-page.
     useEffect(() => {
         if (!auth.isAuthenticated() || !tractUuid) return
         if (tractsStore.tracts.length === 0) void tractsStore.fetch()

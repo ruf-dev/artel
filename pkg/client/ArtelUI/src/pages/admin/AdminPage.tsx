@@ -1,9 +1,7 @@
 import {useEffect} from "react"
-import {useNavigate, useSearchParams} from "react-router-dom"
+import {useSearchParams} from "react-router-dom"
 
 import cls from "@/pages/admin/AdminPage.module.css"
-import {Path} from "@/app/routing/Router.tsx"
-import useUser from "@/hooks/user/User.ts"
 import S3InstancesTab from "@/widgets/S3InstancesTab/S3InstancesTab.tsx"
 import {Tab} from "@/pages/admin/adminTypes.ts"
 import AdminHero from "@/pages/admin/components/AdminHero/AdminHero.tsx"
@@ -28,20 +26,9 @@ function resolveTab(value: string | null): Tab {
 }
 
 export default function AdminPage() {
-    const navigate = useNavigate()
-    const {auth, isAdmin} = useUser()
     const [searchParams, setSearchParams] = useSearchParams()
     const tab = resolveTab(searchParams.get("tab"))
 
-    useEffect(() => {
-        if (!auth.isAuthenticated()) {
-            navigate(Path.InitPage)
-            return
-        }
-        if (!isAdmin) {
-            navigate(Path.HomePage)
-        }
-    }, [auth, isAdmin, navigate])
 
     useEffect(() => {
         if (searchParams.get("dialog") === "true") {
@@ -65,18 +52,18 @@ export default function AdminPage() {
 
     return (
         <div className={cls.AdminPageContainer}>
-            <AdminHero tab={tab} />
-            <TabBar tab={tab} onTabChange={handleTabChange} />
-            {tab === "instances" && <InstancesTab />}
-            {tab === "couch_users" && <UsersTab />}
-            {tab === "users" && <ArtelUsersTab />}
+            <AdminHero tab={tab}/>
+            <TabBar tab={tab} onTabChange={handleTabChange}/>
+            {tab === "instances" && <InstancesTab/>}
+            {tab === "couch_users" && <UsersTab/>}
+            {tab === "users" && <ArtelUsersTab/>}
             {tab === "s3_instances" && (
                 <div className={cls.ContentContainer}>
-                    <S3InstancesTab />
+                    <S3InstancesTab/>
                 </div>
             )}
-            {tab === "docker_api" && <DockerApiTab autoOpenAddDialog={autoOpenDockerDialog} />}
-            {tab === "settings" && <SettingsTab />}
+            {tab === "docker_api" && <DockerApiTab autoOpenAddDialog={autoOpenDockerDialog}/>}
+            {tab === "settings" && <SettingsTab/>}
         </div>
     )
 }
