@@ -117,17 +117,10 @@
   "115": "ConnectionFilterRow.tsx",
   "116": "TrelloCheckButton.tsx",
   "117": "requiredConnections.ts",
-  "118": "NotConnectedContent.tsx",
   "119": "ConnectedContent.tsx",
   "120": "KebabMenu.tsx",
-  "121": "WorkbenchStatusBadge.tsx",
-  "122": "TopbarMobileTrigger.tsx",
   "123": "Tabs.tsx",
-  "124": "scriptParamEdits.ts",
   "125": "Textarea.tsx",
   "126": "BYOKSection.tsx",
-  "127": "UsersTab.tsx",
-  "128": "GitlabCheckButton.tsx",
-  "129": "NoteViewer.tsx",
-  "130": "SetupStatusSection.tsx"
+  "128": "GitlabCheckButton.tsx"
 }
