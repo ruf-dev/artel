@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "src/app/hooks/ServerStatus.ts": {
-    "mtime": 1784914984.244277,
-    "ast_hash": "ebceba252b676f0c42b27ac0dfc3ed31",
+    "mtime": 1785926118.480567,
+    "ast_hash": "ef6c9bfc4be3fc14d9e91f6c957edce1",
     "semantic_hash": ""
   },
   "src/app/hooks/TaskTrackers.ts": {
@@ -620,8 +620,8 @@
     "semantic_hash": ""
   },
   "src/pages/admin/AdminPage.tsx": {
-    "mtime": 1785697292.9292142,
-    "ast_hash": "147e0574a03f4f713d8716a333e41663",
+    "mtime": 1785926119.4626985,
+    "ast_hash": "a05cd96623c14d95a794a0ad18a4a05c",
     "semantic_hash": ""
   },
   "src/pages/closed-alpha/ClosedAlphaPage.tsx": {
@@ -955,8 +955,8 @@
     "semantic_hash": ""
   },
   "src/processes/Auth.ts": {
-    "mtime": 1785698302.4565856,
-    "ast_hash": "f7f5b012a8c90244d7fa602f9cbea3f1",
+    "mtime": 1785926130.2857285,
+    "ast_hash": "5a81cb889c24f711138d18bb28183e61",
     "semantic_hash": ""
   },
   "src/processes/AuthMiddleware.ts": {
@@ -1425,13 +1425,13 @@
     "semantic_hash": ""
   },
   "src/pages/admin/adminTypes.ts": {
-    "mtime": 1784993630.8445508,
-    "ast_hash": "d68138ed2278ccd8b5983ead17df3151",
+    "mtime": 1785926094.5089676,
+    "ast_hash": "29d30e785bbb2cd1961817f8493db9ee",
     "semantic_hash": ""
   },
   "src/pages/admin/components/AdminHero/AdminHero.tsx": {
-    "mtime": 1784993637.7404373,
-    "ast_hash": "d94044b3809ca7d68824216424835957",
+    "mtime": 1785926171.8907428,
+    "ast_hash": "6b7744c351725a2b276452cefa6afe60",
     "semantic_hash": ""
   },
   "src/pages/admin/components/ArtelUsersTab/ArtelUsersTab.tsx": {
@@ -1440,8 +1440,8 @@
     "semantic_hash": ""
   },
   "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/ArtelUserDetailDialog.tsx": {
-    "mtime": 1784230067.791325,
-    "ast_hash": "3be67a9fb9bb22634bcf9e4f9bfa3361",
+    "mtime": 1785926206.0200665,
+    "ast_hash": "0a85b8cb27275b3b513e66da56d0a5b8",
     "semantic_hash": ""
   },
   "src/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSessionsDialog/UserSessionsDialog.tsx": {
@@ -1490,8 +1490,8 @@
     "semantic_hash": ""
   },
   "src/pages/admin/components/TabBar/TabBar.tsx": {
-    "mtime": 1784993634.8239753,
-    "ast_hash": "95003fe9e86c24411d9448d1356a45e1",
+    "mtime": 1785926129.0574875,
+    "ast_hash": "4a83cb6cbfba23217b669d4a10132322",
     "semantic_hash": ""
   },
   "src/pages/admin/components/UsersTab/UsersTab.tsx": {
@@ -1550,8 +1550,8 @@
     "semantic_hash": ""
   },
   "src/pages/init/components/LoginContent/LoginContent.tsx": {
-    "mtime": 1784912057.3653045,
-    "ast_hash": "fe77f8d4130584c0cd476069bf631cec",
+    "mtime": 1785926166.4814126,
+    "ast_hash": "1d13513b4fed47049f6a131289d1d1f9",
     "semantic_hash": ""
   },
   "src/pages/mcp-auth/components/McpLogin/McpLogin.tsx": {
@@ -2495,8 +2495,8 @@
     "semantic_hash": ""
   },
   "src/app/hooks/AppConfig.ts": {
-    "mtime": 1784914984.2440982,
-    "ast_hash": "f54ac7728457f24d2f38fcd9366ffba2",
+    "mtime": 1785926108.802934,
+    "ast_hash": "d0769198d729c0d149024fb4f2292455",
     "semantic_hash": ""
   },
   "src/app/hooks/TractTemplates.ts": {
@@ -2917,6 +2917,36 @@
   "src/app/api/artel/setup_wizard.pb.ts": {
     "mtime": 1785925873.0365522,
     "ast_hash": "d4f1f1790a6e1be285058bd15e9d34d3",
+    "semantic_hash": ""
+  },
+  "src/pages/admin/components/ArtelUsersTab/components/ChangeArtelPasswordDialog/ChangeArtelPasswordDialog.tsx": {
+    "mtime": 1785926185.6974635,
+    "ast_hash": "cdef7f509f3b76265b83272edd499a3e",
+    "semantic_hash": ""
+  },
+  "src/pages/admin/components/SettingsTab/SettingsTab.tsx": {
+    "mtime": 1785926245.35617,
+    "ast_hash": "4a3a9db909127128d3d45540d9c1ed87",
+    "semantic_hash": ""
+  },
+  "src/pages/admin/components/SettingsTab/components/AuthMethodsSection/AuthMethodsSection.tsx": {
+    "mtime": 1785926224.2581565,
+    "ast_hash": "f5c1b1aa985ee00d3687e335449110c2",
+    "semantic_hash": ""
+  },
+  "src/pages/admin/components/SettingsTab/components/RegistrationModeSection/RegistrationModeSection.tsx": {
+    "mtime": 1785926230.3719928,
+    "ast_hash": "3fad29c20bc22cf1950fc7979874590f",
+    "semantic_hash": ""
+  },
+  "src/pages/init/components/LoginContent/components/PasswordLoginForm/PasswordLoginForm.tsx": {
+    "mtime": 1785926178.1761658,
+    "ast_hash": "930e9712450425f946acd6424eb12038",
+    "semantic_hash": ""
+  },
+  "src/pages/init/components/LoginContent/components/RegisterForm/RegisterForm.tsx": {
+    "mtime": 1785926185.471227,
+    "ast_hash": "60bc9457a6cc6c980688f6464fa59aa1",
     "semantic_hash": ""
   }
 }
