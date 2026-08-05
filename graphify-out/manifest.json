@@ -2515,8 +2515,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/TractCanvasBuilderPage.tsx": {
-    "mtime": 1785932026.639751,
-    "ast_hash": "20c734c866772d5227d3a8a6d6f3b9f0",
+    "mtime": 1785933655.5208516,
+    "ast_hash": "0eff079d21bc8796f77e8605b81f6457",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/processes/tractCanvasLayout.ts": {
@@ -2720,8 +2720,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarUserMenu/TopbarUserMenu.tsx": {
-    "mtime": 1783857379.8658493,
-    "ast_hash": "1058c8a24d70adc05ddf7f54a7213d0c",
+    "mtime": 1785933690.9631789,
+    "ast_hash": "0bf83acfd48fdffad20c72c400fb0286",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarNav/TopbarNav.tsx": {
@@ -2960,8 +2960,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.tsx": {
-    "mtime": 1784547195.6336894,
-    "ast_hash": "8ec636766a8aa561d6e3807a53ae0b9a",
+    "mtime": 1785933661.284015,
+    "ast_hash": "bf7745572f725c7477b6398e8e20b006",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/widgets/TractCanvasInspector/TractCanvasInspector.tsx": {
@@ -2970,8 +2970,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/tract-canvas/segments/ContentSegment/ContentSegment.tsx": {
-    "mtime": 1783576645.061846,
-    "ast_hash": "657deed03c74ff16569ede786a752970",
+    "mtime": 1785933683.025734,
+    "ast_hash": "391146fde1d10258de4be661982d6b60",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/components/EmailChip/EmailChip.tsx": {
@@ -3925,8 +3925,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx": {
-    "mtime": 1783755010.444984,
-    "ast_hash": "3fd6c0a7a7535691ec531340859cae35",
+    "mtime": 1785933642.5002077,
+    "ast_hash": "729fc19a6ad44c427f88a2a0ef101949",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ImapActionView/ImapActionView.tsx": {
@@ -4120,8 +4120,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileDrawer/TopbarMobileDrawer.tsx": {
-    "mtime": 1784545403.6686234,
-    "ast_hash": "4c743234acc5969c91f97589be561359",
+    "mtime": 1785933697.0991778,
+    "ast_hash": "8543fbb7a7f6859d21b8c7e4e07c0f72",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/segments/Topbar/components/TopbarMobileTrigger/TopbarMobileTrigger.tsx": {
@@ -4810,7 +4810,7 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/AuthFetchInterceptor.ts": {
-    "mtime": 1785931894.4881868,
+    "mtime": 1785934830.3962007,
     "ast_hash": "27d21805175111d479f986aa0d4c2e4d",
     "semantic_hash": ""
   },
@@ -5315,8 +5315,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx": {
-    "mtime": 1784990447.9489992,
-    "ast_hash": "bfd8d4864b8aa0182c98d7098f9ee514",
+    "mtime": 1785933635.8723838,
+    "ast_hash": "d9c22f5bd8b1f62fc402d3a262de3d50",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/workbench/components/WorkbenchStatusBadge/WorkbenchStatusBadge.tsx": {
@@ -6110,8 +6110,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/setup-wizard/SetupWizardPage.tsx": {
-    "mtime": 1785931776.6503837,
-    "ast_hash": "04fd999da96e49ae6f97ebbec9601387",
+    "mtime": 1785933668.9611888,
+    "ast_hash": "10ff1108f3bf6d2240cc2bb5aa58352e",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/setup-wizard/screens/AuthMethodsScreen.tsx": {
@@ -6120,8 +6120,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/setup-wizard/screens/CreateAdminScreen.tsx": {
-    "mtime": 1785926471.06861,
-    "ast_hash": "e65187acb681f64fdf2bdc513eebfdcc",
+    "mtime": 1785933676.1426008,
+    "ast_hash": "cebc9319fbaaf495c4d3cb964cff85cd",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/setup-wizard/screens/RegistrationModeScreen.tsx": {
