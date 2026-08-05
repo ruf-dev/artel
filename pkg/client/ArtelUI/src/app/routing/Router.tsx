@@ -102,13 +102,19 @@ export default function Router() {
 
     const {auth, setUserInfo} = useUser()
     const isServerAvailable = useServerStatus()
+    const setupCompleted = useAppConfig((s) => s.setupCompleted)
     const routeElement = useRoutes(routes)
 
+    // setupCompleted starts at its safe default (true) and only reflects the real value once
+    // the first GetConfig response lands — this must re-run when that happens, not just once at
+    // mount, or a fresh instance never actually gets routed to /setup.
     useEffect(() => {
-        if (!useAppConfig.getState().setupCompleted && location.pathname !== Path.SetupWizard) {
+        if (!setupCompleted && location.pathname !== Path.SetupWizard) {
             navigate(Path.SetupWizard)
         }
+    }, [setupCompleted])
 
+    useEffect(() => {
         if (!auth.isAuthenticated()) return
 
         authService.FetchUserInfo().then(setUserInfo).catch(() => {})

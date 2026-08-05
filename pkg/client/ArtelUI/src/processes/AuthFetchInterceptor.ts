@@ -1,4 +1,4 @@
-import {apiPrefix} from "@/app/api/api.ts"
+import {apiPrefix, clearCsrfCookie} from "@/app/api/api.ts"
 import {AuthAPI} from "@/app/api/artel"
 import {Path} from "@/app/routing/Router.tsx"
 import useUser from "@/hooks/user/User.ts"
@@ -37,10 +37,16 @@ function forceLogout() {
     const hadSession = useUser.getState().auth.isAuthenticated()
     useUser.getState().logout()
 
+    // logout() fires AuthAPI.Logout() to clear the httpOnly auth cookies + csrf_token
+    // server-side, but that's an async round-trip that can lose the race against the
+    // synchronous redirect below — clear the readable csrf_token cookie ourselves right
+    // now so isAuthenticated() can't still read true on the page that's about to load.
+    clearCsrfCookie()
+
     // Nothing to force: there was no session to lose, or we're already on
-    // the login page — a hard redirect here would just reload in place and,
-    // repeated on every subsequent 401, loop forever.
-    if (!hadSession || window.location.pathname === Path.InitPage) {
+    // the login page or setup wizard — a hard redirect here would just reload
+    // in place and, repeated on every subsequent 401, loop forever.
+    if (!hadSession || window.location.pathname === Path.InitPage || window.location.pathname === Path.SetupWizard) {
         return
     }
 

@@ -162,6 +162,11 @@
   /* Focus / empty-state */
   --color-bg-input-focus:    #F5F4F2;
   --color-empty-icon-stroke: rgb(0 0 0 / 22%);
+
+  /* chures Toggle off-track defaults to white-alpha, invisible against this
+     theme's light backgrounds — flip to black-alpha like the other white/black
+     alpha pairs above (--color-border, --color-bg-hover, etc.) */
+  --chures-toggle-bg-off: rgb(0 0 0 / 13%);
 }
 
 /* ── Typography ──────────────────────────────────────────── */
