@@ -2963,5 +2963,15 @@
     "mtime": 1785926414.9008095,
     "ast_hash": "74d21c466c40667b63f4704a89d801f5",
     "semantic_hash": ""
+  },
+  "src/pages/setup-wizard/screens/AuthMethodsScreen.tsx": {
+    "mtime": 1785926450.3097997,
+    "ast_hash": "9cc9244cd35df5ce79da1f78158f64ce",
+    "semantic_hash": ""
+  },
+  "src/pages/setup-wizard/screens/RegistrationModeScreen.tsx": {
+    "mtime": 1785926458.0068686,
+    "ast_hash": "ac0f80a0e2752dfbca8b556cba007c09",
+    "semantic_hash": ""
   }
 }
