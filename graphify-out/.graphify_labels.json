@@ -2353,6 +2353,7 @@
   "2351": "GetMe_Request",
   "2352": "GetStatus",
   "2353": "LinkTrigger_Response",
+  "2354": "UpdateS3Instance",
   "2355": "SelectAuthMethods",
   "2357": "SubmitToken",
   "2358": "UpdateAuthMethods",

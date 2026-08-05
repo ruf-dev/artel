@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/home/HomePage.tsx": {
-    "mtime": 1784994216.2062073,
-    "ast_hash": "2761e8915dc161c2c2806641113f0882",
+    "mtime": 1785933587.7758975,
+    "ast_hash": "a0bee0a6530e087d32031284b4347feb",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/mcp-auth/McpAuthPage.tsx": {
@@ -975,8 +975,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/closed-alpha/ClosedAlphaPage.tsx": {
-    "mtime": 1785933435.3002827,
-    "ast_hash": "5de68fb094b701ae26b91f36cbdc8866",
+    "mtime": 1785933613.1276555,
+    "ast_hash": "4e4d1a0ceae96ef77faf0dab098aa427",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/admin/AdminPage.tsx": {
@@ -1925,13 +1925,13 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/join/JoinVaultPage.tsx": {
-    "mtime": 1783576645.0614514,
-    "ast_hash": "59539097051d88f89697cfab0b3a5bac",
+    "mtime": 1785933607.3099473,
+    "ast_hash": "4be50503bddfe06477774a99d12c0ada",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/GoogleOAuthCallbackPage.tsx": {
-    "mtime": 1783576645.0614128,
-    "ast_hash": "6b00b07450e1ec53e7994fab5cf4b671",
+    "mtime": 1785933619.4546704,
+    "ast_hash": "f2ef91d3349ef9c85c0a52025ec870eb",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/connections/ConnectionsPage.tsx": {
@@ -1940,8 +1940,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/NotesPage.tsx": {
-    "mtime": 1785657823.1204069,
-    "ast_hash": "64ec4e6c8487b3d0bbf2c36cfb7e882c",
+    "mtime": 1785933626.8843796,
+    "ast_hash": "e9bf98a102784fdec641f8b2fe302236",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/notes/components/NotesSidebar/NotesSidebar.tsx": {
@@ -4595,8 +4595,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/roadmap/RoadmapPage.tsx": {
-    "mtime": 1785932037.0003424,
-    "ast_hash": "9592bcf704fbbf3bba4244aacc38f1a4",
+    "mtime": 1785933595.0050437,
+    "ast_hash": "6ea2ac21140aea653b9e32d7c72e1f3c",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/toolbox/components/ToolsDialog/components/ToolDetail/segments/ResultView/components/DisplayTaskTrackerTables/components/TaskTrackerTableBody/components/TaskTrackerCell/TaskTrackerCell.tsx": {
