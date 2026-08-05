@@ -895,8 +895,8 @@
     "semantic_hash": "611a00bd7dd14cbdfe7c5ea6170b6625"
   },
   "pkg/client/ArtelUI/src/app/routing/Router.tsx": {
-    "mtime": 1785932435.1402473,
-    "ast_hash": "b5fd189f1ea57128f8459a270a9935a8",
+    "mtime": 1785937021.2763717,
+    "ast_hash": "22429661d7e95721f5056840bfb6bd6d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/app/routing/HomeLayout.tsx": {
@@ -960,8 +960,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/init/InitPage.tsx": {
-    "mtime": 1785933580.647678,
-    "ast_hash": "a5fdcec31ba004dd8c4b29d1e3157ec3",
+    "mtime": 1785935843.2447278,
+    "ast_hash": "379f32d7329f9168a75a477eba26394d",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/pages/home/HomePage.tsx": {
