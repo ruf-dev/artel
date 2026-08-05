@@ -4810,8 +4810,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/src/processes/AuthFetchInterceptor.ts": {
-    "mtime": 1785934692.7823136,
-    "ast_hash": "06d28beed3eca4f9124202b870a95389",
+    "mtime": 1785934830.3962007,
+    "ast_hash": "27d21805175111d479f986aa0d4c2e4d",
     "semantic_hash": ""
   },
   "tests/e2e/quota_test.go": {
