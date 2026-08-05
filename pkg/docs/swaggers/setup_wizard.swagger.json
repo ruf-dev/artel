@@ -1,0 +1,331 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "setup_wizard.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SetupWizardAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/setup_wizard/complete": {
+      "post": {
+        "operationId": "SetupWizardAPI_CompleteSetup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardCompleteSetupResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardCompleteSetupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SetupWizardAPI"
+        ]
+      }
+    },
+    "/api/setup_wizard/select_auth_methods": {
+      "post": {
+        "operationId": "SetupWizardAPI_SelectAuthMethods",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardSelectAuthMethodsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardSelectAuthMethodsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SetupWizardAPI"
+        ]
+      }
+    },
+    "/api/setup_wizard/select_registration_mode": {
+      "post": {
+        "operationId": "SetupWizardAPI_SelectRegistrationMode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardSelectRegistrationModeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardSelectRegistrationModeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SetupWizardAPI"
+        ]
+      }
+    },
+    "/api/setup_wizard/status": {
+      "post": {
+        "operationId": "SetupWizardAPI_GetStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardGetStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardGetStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SetupWizardAPI"
+        ]
+      }
+    },
+    "/api/setup_wizard/submit_token": {
+      "post": {
+        "operationId": "SetupWizardAPI_SubmitToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardSubmitTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_setup_wizardSubmitTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SetupWizardAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_authPasswordCredentials": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_authTelegramCredentials": {
+      "type": "object",
+      "properties": {
+        "idToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_setup_wizardCompleteSetupRequest": {
+      "type": "object",
+      "properties": {
+        "wizardSessionToken": {
+          "type": "string"
+        },
+        "password": {
+          "$ref": "#/definitions/artel_authPasswordCredentials"
+        },
+        "telegram": {
+          "$ref": "#/definitions/artel_authTelegramCredentials"
+        }
+      }
+    },
+    "artel_setup_wizardCompleteSetupResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "refreshExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "artel_setup_wizardGetStatusRequest": {
+      "type": "object"
+    },
+    "artel_setup_wizardGetStatusResponse": {
+      "type": "object",
+      "properties": {
+        "setupCompleted": {
+          "type": "boolean"
+        },
+        "tokenPending": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_setup_wizardRegistrationMode": {
+      "type": "string",
+      "enum": [
+        "ADMIN_ONLY",
+        "SELF_REGISTER"
+      ],
+      "default": "ADMIN_ONLY"
+    },
+    "artel_setup_wizardSelectAuthMethodsRequest": {
+      "type": "object",
+      "properties": {
+        "wizardSessionToken": {
+          "type": "string"
+        },
+        "passwordEnabled": {
+          "type": "boolean"
+        },
+        "telegramEnabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_setup_wizardSelectAuthMethodsResponse": {
+      "type": "object"
+    },
+    "artel_setup_wizardSelectRegistrationModeRequest": {
+      "type": "object",
+      "properties": {
+        "wizardSessionToken": {
+          "type": "string"
+        },
+        "mode": {
+          "$ref": "#/definitions/artel_setup_wizardRegistrationMode"
+        }
+      }
+    },
+    "artel_setup_wizardSelectRegistrationModeResponse": {
+      "type": "object"
+    },
+    "artel_setup_wizardSubmitTokenRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_setup_wizardSubmitTokenResponse": {
+      "type": "object",
+      "properties": {
+        "wizardSessionToken": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

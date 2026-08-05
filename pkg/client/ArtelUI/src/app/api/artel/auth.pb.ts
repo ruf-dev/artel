@@ -85,6 +85,10 @@ export type GetConfigResponse = {
   credsEncrypted?: boolean;
   isCouchAvailable?: boolean;
   isWorkbenchAvailable?: boolean;
+  setupCompleted?: boolean;
+  passwordAuthEnabled?: boolean;
+  telegramAuthEnabled?: boolean;
+  selfRegisterEnabled?: boolean;
 };
 
 export type GetConfig = Record<string, never>;

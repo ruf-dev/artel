@@ -35,16 +35,24 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "admin_subscriptions.swagger.json"),
 				},
 				{
+					Name: "Auth",
+					URL:  path.Join(swaggerPath, "auth.swagger.json"),
+				},
+				{
+					Name: "SetupWizard",
+					URL:  path.Join(swaggerPath, "setup_wizard.swagger.json"),
+				},
+				{
+					Name: "AdminSystemSettings",
+					URL:  path.Join(swaggerPath, "admin_system_settings.swagger.json"),
+				},
+				{
 					Name: "AdminUsers",
 					URL:  path.Join(swaggerPath, "admin_users.swagger.json"),
 				},
 				{
 					Name: "ArtelApi",
 					URL:  path.Join(swaggerPath, "artel_api.swagger.json"),
-				},
-				{
-					Name: "Auth",
-					URL:  path.Join(swaggerPath, "auth.swagger.json"),
 				},
 				{
 					Name: "CouchInstances",

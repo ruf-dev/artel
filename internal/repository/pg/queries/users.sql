@@ -31,6 +31,9 @@ SELECT photo_url FROM users WHERE id = $1;
 -- name: UpdateUserPhotoUrl :exec
 UPDATE users SET photo_url = $2 WHERE id = $1;
 
+-- name: UpdateUserPasswordHash :exec
+UPDATE users SET password_hash = $2, updated_at = NOW() WHERE id = $1;
+
 -- name: GetUserDetails :one
 -- Feature flags and subscription state are no longer joined here — callers fetch those via
 -- SubscriptionService.GetEffective, since they now come from a plan+override merge rather than

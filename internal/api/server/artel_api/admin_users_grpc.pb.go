@@ -8,7 +8,6 @@ package artel_api
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AdminUsersAPI_ListArtelUsers_FullMethodName  = "/artel_admin_users.AdminUsersAPI/ListArtelUsers"
-	AdminUsersAPI_GetArtelUser_FullMethodName    = "/artel_admin_users.AdminUsersAPI/GetArtelUser"
-	AdminUsersAPI_GetUserSessions_FullMethodName = "/artel_admin_users.AdminUsersAPI/GetUserSessions"
+	AdminUsersAPI_ListArtelUsers_FullMethodName          = "/artel_admin_users.AdminUsersAPI/ListArtelUsers"
+	AdminUsersAPI_GetArtelUser_FullMethodName            = "/artel_admin_users.AdminUsersAPI/GetArtelUser"
+	AdminUsersAPI_GetUserSessions_FullMethodName         = "/artel_admin_users.AdminUsersAPI/GetUserSessions"
+	AdminUsersAPI_CreateArtelUser_FullMethodName         = "/artel_admin_users.AdminUsersAPI/CreateArtelUser"
+	AdminUsersAPI_ChangeArtelUserPassword_FullMethodName = "/artel_admin_users.AdminUsersAPI/ChangeArtelUserPassword"
 )
 
 // AdminUsersAPIClient is the client API for AdminUsersAPI service.
@@ -32,6 +33,8 @@ type AdminUsersAPIClient interface {
 	ListArtelUsers(ctx context.Context, in *ListArtelUsers_Request, opts ...grpc.CallOption) (*ListArtelUsers_Response, error)
 	GetArtelUser(ctx context.Context, in *GetArtelUser_Request, opts ...grpc.CallOption) (*GetArtelUser_Response, error)
 	GetUserSessions(ctx context.Context, in *GetUserSessions_Request, opts ...grpc.CallOption) (*GetUserSessions_Response, error)
+	CreateArtelUser(ctx context.Context, in *CreateArtelUser_Request, opts ...grpc.CallOption) (*CreateArtelUser_Response, error)
+	ChangeArtelUserPassword(ctx context.Context, in *ChangeArtelUserPassword_Request, opts ...grpc.CallOption) (*ChangeArtelUserPassword_Response, error)
 }
 
 type adminUsersAPIClient struct {
@@ -72,6 +75,26 @@ func (c *adminUsersAPIClient) GetUserSessions(ctx context.Context, in *GetUserSe
 	return out, nil
 }
 
+func (c *adminUsersAPIClient) CreateArtelUser(ctx context.Context, in *CreateArtelUser_Request, opts ...grpc.CallOption) (*CreateArtelUser_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateArtelUser_Response)
+	err := c.cc.Invoke(ctx, AdminUsersAPI_CreateArtelUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminUsersAPIClient) ChangeArtelUserPassword(ctx context.Context, in *ChangeArtelUserPassword_Request, opts ...grpc.CallOption) (*ChangeArtelUserPassword_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChangeArtelUserPassword_Response)
+	err := c.cc.Invoke(ctx, AdminUsersAPI_ChangeArtelUserPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminUsersAPIServer is the server API for AdminUsersAPI service.
 // All implementations must embed UnimplementedAdminUsersAPIServer
 // for forward compatibility.
@@ -79,6 +102,8 @@ type AdminUsersAPIServer interface {
 	ListArtelUsers(context.Context, *ListArtelUsers_Request) (*ListArtelUsers_Response, error)
 	GetArtelUser(context.Context, *GetArtelUser_Request) (*GetArtelUser_Response, error)
 	GetUserSessions(context.Context, *GetUserSessions_Request) (*GetUserSessions_Response, error)
+	CreateArtelUser(context.Context, *CreateArtelUser_Request) (*CreateArtelUser_Response, error)
+	ChangeArtelUserPassword(context.Context, *ChangeArtelUserPassword_Request) (*ChangeArtelUserPassword_Response, error)
 	mustEmbedUnimplementedAdminUsersAPIServer()
 }
 
@@ -97,6 +122,12 @@ func (UnimplementedAdminUsersAPIServer) GetArtelUser(context.Context, *GetArtelU
 }
 func (UnimplementedAdminUsersAPIServer) GetUserSessions(context.Context, *GetUserSessions_Request) (*GetUserSessions_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserSessions not implemented")
+}
+func (UnimplementedAdminUsersAPIServer) CreateArtelUser(context.Context, *CreateArtelUser_Request) (*CreateArtelUser_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateArtelUser not implemented")
+}
+func (UnimplementedAdminUsersAPIServer) ChangeArtelUserPassword(context.Context, *ChangeArtelUserPassword_Request) (*ChangeArtelUserPassword_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method ChangeArtelUserPassword not implemented")
 }
 func (UnimplementedAdminUsersAPIServer) mustEmbedUnimplementedAdminUsersAPIServer() {}
 func (UnimplementedAdminUsersAPIServer) testEmbeddedByValue()                       {}
@@ -173,6 +204,42 @@ func _AdminUsersAPI_GetUserSessions_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminUsersAPI_CreateArtelUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateArtelUser_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminUsersAPIServer).CreateArtelUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminUsersAPI_CreateArtelUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminUsersAPIServer).CreateArtelUser(ctx, req.(*CreateArtelUser_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminUsersAPI_ChangeArtelUserPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeArtelUserPassword_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminUsersAPIServer).ChangeArtelUserPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminUsersAPI_ChangeArtelUserPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminUsersAPIServer).ChangeArtelUserPassword(ctx, req.(*ChangeArtelUserPassword_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminUsersAPI_ServiceDesc is the grpc.ServiceDesc for AdminUsersAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -191,6 +258,14 @@ var AdminUsersAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserSessions",
 			Handler:    _AdminUsersAPI_GetUserSessions_Handler,
+		},
+		{
+			MethodName: "CreateArtelUser",
+			Handler:    _AdminUsersAPI_CreateArtelUser_Handler,
+		},
+		{
+			MethodName: "ChangeArtelUserPassword",
+			Handler:    _AdminUsersAPI_ChangeArtelUserPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

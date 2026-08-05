@@ -67,6 +67,26 @@ export type GetUserSessionsResponse = {
 
 export type GetUserSessions = Record<string, never>;
 
+export type CreateArtelUserRequest = {
+  email?: string;
+  password?: string;
+};
+
+export type CreateArtelUserResponse = {
+  user?: ArtelUserEntry;
+};
+
+export type CreateArtelUser = Record<string, never>;
+
+export type ChangeArtelUserPasswordRequest = {
+  userId?: string;
+  newPassword?: string;
+};
+
+export type ChangeArtelUserPasswordResponse = Record<string, never>;
+
+export type ChangeArtelUserPassword = Record<string, never>;
+
 export class AdminUsersAPI {
   static ListArtelUsers(this:void, req: ListArtelUsersRequest, initReq?: fm.InitReq): Promise<ListArtelUsersResponse> {
     return fm.fetchRequest<ListArtelUsersResponse>(`/api/admin_users/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -76,5 +96,11 @@ export class AdminUsersAPI {
   }
   static GetUserSessions(this:void, req: GetUserSessionsRequest, initReq?: fm.InitReq): Promise<GetUserSessionsResponse> {
     return fm.fetchRequest<GetUserSessionsResponse>(`/api/admin_users/sessions`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CreateArtelUser(this:void, req: CreateArtelUserRequest, initReq?: fm.InitReq): Promise<CreateArtelUserResponse> {
+    return fm.fetchRequest<CreateArtelUserResponse>(`/api/admin_users/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ChangeArtelUserPassword(this:void, req: ChangeArtelUserPasswordRequest, initReq?: fm.InitReq): Promise<ChangeArtelUserPasswordResponse> {
+    return fm.fetchRequest<ChangeArtelUserPasswordResponse>(`/api/admin_users/change_password`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

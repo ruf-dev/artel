@@ -28,6 +28,18 @@ service AdminUsersAPI {
       body: "*"
     };
   };
+  rpc CreateArtelUser(CreateArtelUser.Request) returns (CreateArtelUser.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_users/create"
+      body: "*"
+    };
+  };
+  rpc ChangeArtelUserPassword(ChangeArtelUserPassword.Request) returns (ChangeArtelUserPassword.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_users/change_password"
+      body: "*"
+    };
+  };
 }
 
 message ArtelUserEntry {
@@ -83,4 +95,22 @@ message GetUserSessions {
   message Response {
     repeated UserSession sessions = 1;
   }
+}
+
+message CreateArtelUser {
+  message Request {
+    string email = 1;
+    string password = 2;
+  }
+  message Response {
+    ArtelUserEntry user = 1;
+  }
+}
+
+message ChangeArtelUserPassword {
+  message Request {
+    string user_id = 1;
+    string new_password = 2;
+  }
+  message Response {}
 }

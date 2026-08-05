@@ -1,0 +1,74 @@
+.SettingsTabContainer {
+    flex: 1;
+    padding: 2rem 2rem 5rem;
+    max-width: 75rem;
+    margin: 0 auto;
+    width: 100%;
+    overflow-y: auto;
+
+    & .Section {
+        margin-bottom: 3rem;
+
+        & .SectionTitle {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-fg-primary);
+            margin: 0 0 1.5rem;
+            padding: 0;
+        }
+
+        & .SettingsGroup {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            & .ToggleRow {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem;
+                border-radius: var(--border-radius);
+                background: var(--color-bg-secondary);
+                transition: background-color 160ms ease;
+
+                &:hover {
+                    background: var(--color-bg-tertiary);
+                }
+            }
+        }
+
+        & .ModeButtonGroup {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+
+            & .ModeButton {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+                font-weight: 500;
+                border-radius: var(--border-radius);
+                transition: all 160ms ease;
+
+                &.ModeButtonActive {
+                    background: var(--coral);
+                    color: var(--color-fg-white);
+                }
+            }
+        }
+    }
+}
+
+@media (width <= 45rem) {
+    .SettingsTabContainer {
+        padding: 1.5rem 1.125rem 3.75rem;
+
+        & .Section {
+            & .ModeButtonGroup {
+                flex-direction: column;
+
+                & .ModeButton {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

@@ -123,6 +123,12 @@ func (s *TractE2ESuite) SetupSuite() {
 	s.Require().NoError(err, "init services")
 	s.svcs = svcs
 
+	err = s.repos.SystemSettings().CompleteSetup(ctx)
+	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
+
+	err = s.repos.SystemSettings().UpdateRegistrationMode(ctx, domain.RegistrationModeSelfRegister)
+	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+
 	// Tract is normally wired in internal/app/custom.go (not svcv1.New) because its
 	// ToolExecutor composes the already-built Mcp/Mom services — mirror that wiring exactly
 	// since this test drives the service layer directly.

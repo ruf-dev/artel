@@ -233,6 +233,18 @@
         },
         "isWorkbenchAvailable": {
           "type": "boolean"
+        },
+        "setupCompleted": {
+          "type": "boolean"
+        },
+        "passwordAuthEnabled": {
+          "type": "boolean"
+        },
+        "telegramAuthEnabled": {
+          "type": "boolean"
+        },
+        "selfRegisterEnabled": {
+          "type": "boolean"
         }
       }
     },

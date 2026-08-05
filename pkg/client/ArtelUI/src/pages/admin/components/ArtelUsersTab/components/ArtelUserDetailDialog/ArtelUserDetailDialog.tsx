@@ -13,6 +13,8 @@ import UserSessionsDialog
 import UserSubscriptionDialog
     // eslint-disable-next-line max-len -- path too long to wrap
     from "@/pages/admin/components/ArtelUsersTab/components/ArtelUserDetailDialog/components/UserSubscriptionDialog/UserSubscriptionDialog.tsx"
+import ChangeArtelPasswordDialog
+    from "@/pages/admin/components/ArtelUsersTab/components/ChangeArtelPasswordDialog/ChangeArtelPasswordDialog.tsx"
 
 interface ArtelUserDetailDialogProps {
     userId: string
@@ -45,6 +47,10 @@ export default function ArtelUserDetailDialog({userId}: ArtelUserDetailDialogPro
 
     function openSubscription() {
         OpenDialog(<UserSubscriptionDialog userId={userId} onUpdated={load} />)
+    }
+
+    function openChangePassword() {
+        OpenDialog(<ChangeArtelPasswordDialog userId={userId} username={details?.username ?? ""} />)
     }
 
     return (
@@ -80,6 +86,7 @@ export default function ArtelUserDetailDialog({userId}: ArtelUserDetailDialogPro
                 <p className={cls.Empty}>User not found.</p>
             )}
             <div className={cls.ModalActions}>
+                <Button variant="secondary" onClick={openChangePassword} disabled={loading}>Change password</Button>
                 <Button variant="secondary" onClick={openSubscription}>Subscription</Button>
                 <Button variant="secondary" onClick={openSessions}>Sessions</Button>
                 <Button variant="primary" onClick={CloseDialog}>Close</Button>

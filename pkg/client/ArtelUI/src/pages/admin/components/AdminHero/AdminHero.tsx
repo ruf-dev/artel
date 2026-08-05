@@ -12,6 +12,7 @@ export default function AdminHero({tab}: AdminHeroProps) {
         users: "Artel users",
         s3_instances: "S3 storage",
         docker_api: "Docker API",
+        settings: "Settings",
     }
     const title = titleMap[tab]
     return (

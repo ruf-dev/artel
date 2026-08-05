@@ -116,6 +116,60 @@ func local_request_AdminUsersAPI_GetUserSessions_0(ctx context.Context, marshale
 	return msg, metadata, err
 }
 
+func request_AdminUsersAPI_CreateArtelUser_0(ctx context.Context, marshaler runtime.Marshaler, client AdminUsersAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateArtelUser_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.CreateArtelUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_AdminUsersAPI_CreateArtelUser_0(ctx context.Context, marshaler runtime.Marshaler, server AdminUsersAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateArtelUser_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.CreateArtelUser(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_AdminUsersAPI_ChangeArtelUserPassword_0(ctx context.Context, marshaler runtime.Marshaler, client AdminUsersAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ChangeArtelUserPassword_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.ChangeArtelUserPassword(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_AdminUsersAPI_ChangeArtelUserPassword_0(ctx context.Context, marshaler runtime.Marshaler, server AdminUsersAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ChangeArtelUserPassword_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ChangeArtelUserPassword(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterAdminUsersAPIHandlerServer registers the http handlers for service AdminUsersAPI to "mux".
 // UnaryRPC     :call AdminUsersAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -181,6 +235,46 @@ func RegisterAdminUsersAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 		forward_AdminUsersAPI_GetUserSessions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_AdminUsersAPI_CreateArtelUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_users.AdminUsersAPI/CreateArtelUser", runtime.WithHTTPPathPattern("/api/admin_users/create"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_AdminUsersAPI_CreateArtelUser_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_AdminUsersAPI_CreateArtelUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_AdminUsersAPI_ChangeArtelUserPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_users.AdminUsersAPI/ChangeArtelUserPassword", runtime.WithHTTPPathPattern("/api/admin_users/change_password"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_AdminUsersAPI_ChangeArtelUserPassword_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_AdminUsersAPI_ChangeArtelUserPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -273,17 +367,55 @@ func RegisterAdminUsersAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_AdminUsersAPI_GetUserSessions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_AdminUsersAPI_CreateArtelUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_users.AdminUsersAPI/CreateArtelUser", runtime.WithHTTPPathPattern("/api/admin_users/create"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_AdminUsersAPI_CreateArtelUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_AdminUsersAPI_CreateArtelUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_AdminUsersAPI_ChangeArtelUserPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_users.AdminUsersAPI/ChangeArtelUserPassword", runtime.WithHTTPPathPattern("/api/admin_users/change_password"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_AdminUsersAPI_ChangeArtelUserPassword_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_AdminUsersAPI_ChangeArtelUserPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_AdminUsersAPI_ListArtelUsers_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "list"}, ""))
-	pattern_AdminUsersAPI_GetArtelUser_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "get"}, ""))
-	pattern_AdminUsersAPI_GetUserSessions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "sessions"}, ""))
+	pattern_AdminUsersAPI_ListArtelUsers_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "list"}, ""))
+	pattern_AdminUsersAPI_GetArtelUser_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "get"}, ""))
+	pattern_AdminUsersAPI_GetUserSessions_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "sessions"}, ""))
+	pattern_AdminUsersAPI_CreateArtelUser_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "create"}, ""))
+	pattern_AdminUsersAPI_ChangeArtelUserPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_users", "change_password"}, ""))
 )
 
 var (
-	forward_AdminUsersAPI_ListArtelUsers_0  = runtime.ForwardResponseMessage
-	forward_AdminUsersAPI_GetArtelUser_0    = runtime.ForwardResponseMessage
-	forward_AdminUsersAPI_GetUserSessions_0 = runtime.ForwardResponseMessage
+	forward_AdminUsersAPI_ListArtelUsers_0          = runtime.ForwardResponseMessage
+	forward_AdminUsersAPI_GetArtelUser_0            = runtime.ForwardResponseMessage
+	forward_AdminUsersAPI_GetUserSessions_0         = runtime.ForwardResponseMessage
+	forward_AdminUsersAPI_CreateArtelUser_0         = runtime.ForwardResponseMessage
+	forward_AdminUsersAPI_ChangeArtelUserPassword_0 = runtime.ForwardResponseMessage
 )

@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package artel_setup_wizard;
+
+import "auth.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+enum RegistrationMode {
+  ADMIN_ONLY = 0;
+  SELF_REGISTER = 1;
+}
+
+service SetupWizardAPI {
+  rpc GetStatus(GetStatus.Request) returns (GetStatus.Response) {
+    option (google.api.http) = {
+      post: "/api/setup_wizard/status"
+      body: "*"
+    };
+  };
+  rpc SubmitToken(SubmitToken.Request) returns (SubmitToken.Response) {
+    option (google.api.http) = {
+      post: "/api/setup_wizard/submit_token"
+      body: "*"
+    };
+  };
+  rpc SelectAuthMethods(SelectAuthMethods.Request) returns (SelectAuthMethods.Response) {
+    option (google.api.http) = {
+      post: "/api/setup_wizard/select_auth_methods"
+      body: "*"
+    };
+  };
+  rpc SelectRegistrationMode(SelectRegistrationMode.Request) returns (SelectRegistrationMode.Response) {
+    option (google.api.http) = {
+      post: "/api/setup_wizard/select_registration_mode"
+      body: "*"
+    };
+  };
+  rpc CompleteSetup(CompleteSetup.Request) returns (CompleteSetup.Response) {
+    option (google.api.http) = {
+      post: "/api/setup_wizard/complete"
+      body: "*"
+    };
+  };
+}
+
+message GetStatus {
+  message Request {}
+  message Response {
+    bool setup_completed = 1;
+    bool token_pending = 2;
+  }
+}
+
+message SubmitToken {
+  message Request {
+    string token = 1;
+  }
+  message Response {
+    string wizard_session_token = 1;
+  }
+}
+
+message SelectAuthMethods {
+  message Request {
+    string wizard_session_token = 1;
+    bool password_enabled = 2;
+    bool telegram_enabled = 3;
+  }
+  message Response {}
+}
+
+message SelectRegistrationMode {
+  message Request {
+    string wizard_session_token = 1;
+    RegistrationMode mode = 2;
+  }
+  message Response {}
+}
+
+message CompleteSetup {
+  message Request {
+    string wizard_session_token = 1;
+    oneof method {
+      artel_auth.PasswordCredentials password = 2;
+      artel_auth.TelegramCredentials telegram = 3;
+    }
+  }
+  message Response {
+    string                    token              = 1;
+    google.protobuf.Timestamp expires_at         = 2;
+    string                    refresh_token      = 3;
+    google.protobuf.Timestamp refresh_expires_at = 4;
+  }
+}

@@ -220,6 +220,20 @@ func (q *Queries) GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDeta
 	return i, err
 }
 
+const updateUserPasswordHash = `-- name: UpdateUserPasswordHash :exec
+UPDATE users SET password_hash = $2, updated_at = NOW() WHERE id = $1
+`
+
+type UpdateUserPasswordHashParams struct {
+	ID           uuid.UUID
+	PasswordHash string
+}
+
+func (q *Queries) UpdateUserPasswordHash(ctx context.Context, arg UpdateUserPasswordHashParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserPasswordHash, arg.ID, arg.PasswordHash)
+	return err
+}
+
 const updateUserPhotoUrl = `-- name: UpdateUserPhotoUrl :exec
 UPDATE users SET photo_url = $2 WHERE id = $1
 `

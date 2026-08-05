@@ -39,6 +39,7 @@ type Repo interface {
 	TractTemplates() TractTemplatesRepo
 	Triggers() TriggersRepo
 	TriggerPresets() TriggerPresetsRepo
+	SystemSettings() SystemSettingsRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -64,6 +65,7 @@ type Users interface {
 	UpsertTelegramIdentity(ctx context.Context, identity domain.TelegramIdentity) error
 	GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error)
 	UpdatePhotoUrl(ctx context.Context, userUuid uuid.UUID, photoUrl string) error
+	UpdatePasswordHash(ctx context.Context, userUuid uuid.UUID, passwordHash string) error
 
 	ListAll(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error)
 	GetDetailsById(ctx context.Context, id uuid.UUID) (domain.UserDetails, error)
@@ -377,6 +379,19 @@ type TriggersRepo interface {
 type TriggerPresetsRepo interface {
 	List(ctx context.Context) ([]domain.TriggerPreset, error)
 	GetByKey(ctx context.Context, key string) (sql.Null[domain.TriggerPreset], error)
+}
+
+// SystemSettingsRepo is the pure-DB layer for the single-row (id=1) global instance
+// configuration — see domain.SystemSettings and migrations/064_system_settings.sql.
+type SystemSettingsRepo interface {
+	Get(ctx context.Context) (domain.SystemSettings, error)
+	GetForUpdate(ctx context.Context) (domain.SystemSettings, error)
+	UpdateAuthMethods(ctx context.Context, passwordEnabled, telegramEnabled bool) error
+	UpdateRegistrationMode(ctx context.Context, mode domain.RegistrationMode) error
+	SetSetupToken(ctx context.Context, tokenHash string, issuedAt time.Time) error
+	CompleteSetup(ctx context.Context) error
+
+	WithTx(tx *sql.Tx) SystemSettingsRepo
 }
 
 // TractTriggerLink is a read-side join projection — see TriggersRepo doc comments above for

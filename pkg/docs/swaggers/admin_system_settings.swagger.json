@@ -1,0 +1,196 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "admin_system_settings.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AdminSystemSettingsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/admin_system_settings/get": {
+      "post": {
+        "operationId": "AdminSystemSettingsAPI_GetSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsGetSettingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsGetSettingsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSystemSettingsAPI"
+        ]
+      }
+    },
+    "/api/admin_system_settings/update_auth_methods": {
+      "post": {
+        "operationId": "AdminSystemSettingsAPI_UpdateAuthMethods",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateAuthMethodsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateAuthMethodsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSystemSettingsAPI"
+        ]
+      }
+    },
+    "/api/admin_system_settings/update_registration_mode": {
+      "post": {
+        "operationId": "AdminSystemSettingsAPI_UpdateRegistrationMode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateRegistrationModeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateRegistrationModeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSystemSettingsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_admin_system_settingsGetSettingsRequest": {
+      "type": "object"
+    },
+    "artel_admin_system_settingsGetSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "passwordAuthEnabled": {
+          "type": "boolean"
+        },
+        "telegramAuthEnabled": {
+          "type": "boolean"
+        },
+        "registrationMode": {
+          "$ref": "#/definitions/artel_setup_wizardRegistrationMode"
+        }
+      }
+    },
+    "artel_admin_system_settingsUpdateAuthMethodsRequest": {
+      "type": "object",
+      "properties": {
+        "passwordEnabled": {
+          "type": "boolean"
+        },
+        "telegramEnabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_admin_system_settingsUpdateAuthMethodsResponse": {
+      "type": "object"
+    },
+    "artel_admin_system_settingsUpdateRegistrationModeRequest": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/definitions/artel_setup_wizardRegistrationMode"
+        }
+      }
+    },
+    "artel_admin_system_settingsUpdateRegistrationModeResponse": {
+      "type": "object"
+    },
+    "artel_setup_wizardRegistrationMode": {
+      "type": "string",
+      "enum": [
+        "ADMIN_ONLY",
+        "SELF_REGISTER"
+      ],
+      "default": "ADMIN_ONLY"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

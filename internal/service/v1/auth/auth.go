@@ -35,6 +35,7 @@ type Service struct {
 	sessionsRepo    repository.Sessions
 	permissionsRepo repository.UserPermissionsRepo
 	subsRepo        repository.Subscriptions
+	settingsRepo    repository.SystemSettingsRepo
 	subscriptions   service.SubscriptionService
 	txManager       tx_manager.TxManager
 	tgParser        telegram.TokenParser
@@ -56,13 +57,16 @@ func New(repo repository.Repo, telegramClientId string, subscriptions service.Su
 		sessionsRepo:    repo.Sessions(),
 		permissionsRepo: repo.UserPermissions(),
 		subsRepo:        repo.Subscriptions(),
+		settingsRepo:    repo.SystemSettings(),
 		subscriptions:   subscriptions,
 		txManager:       repo.TxManager(),
 		tgParser:        tgParser,
 	}
 }
 
-func (s *Service) Register(ctx context.Context, email, password string) (domain.User, error) {
+// createUserTx creates a new user plus their default permissions/subscription in a single
+// transaction, promoting the user to administrator in the same transaction when isAdmin is set.
+func (s *Service) createUserTx(ctx context.Context, email, password string, isAdmin bool) (domain.User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return domain.User{}, rerrors.Wrap(err, "generate password hash")
@@ -76,9 +80,9 @@ func (s *Service) Register(ctx context.Context, email, password string) (domain.
 			return rerrors.Wrap(err, "create user")
 		}
 
-		err = s.permissionsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid)
+		_, err = s.permissionsRepo.WithTx(tx).Upsert(ctx, user.Uuid, isAdmin)
 		if err != nil {
-			return rerrors.Wrap(err, "create default permissions")
+			return rerrors.Wrap(err, "create user permissions")
 		}
 
 		err = s.subsRepo.WithTx(tx).CreateDefault(ctx, user.Uuid)
@@ -95,7 +99,70 @@ func (s *Service) Register(ctx context.Context, email, password string) (domain.
 	return user, nil
 }
 
+func (s *Service) Register(ctx context.Context, email, password string) (domain.User, error) {
+	settings, err := s.settingsRepo.Get(ctx)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "get system settings")
+	}
+
+	if !settings.SetupCompleted {
+		return domain.User{}, user_errors.SetupNotCompleted
+	}
+
+	if settings.RegistrationMode == domain.RegistrationModeAdminOnly {
+		return domain.User{}, user_errors.SelfRegistrationDisabled
+	}
+
+	if !settings.PasswordAuthEnabled {
+		return domain.User{}, user_errors.AuthMethodDisabled
+	}
+
+	user, err := s.createUserTx(ctx, email, password, false)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user, nil
+}
+
+// RegisterAdmin creates a new administrator account, bypassing all setup/registration-mode/
+// auth-method checks — used only by the first-run setup wizard, which runs before setup is
+// marked complete.
+func (s *Service) RegisterAdmin(ctx context.Context, email, password string) (domain.User, error) {
+	user, err := s.createUserTx(ctx, email, password, true)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user, nil
+}
+
+// CreateUserUnchecked creates a new non-admin account, bypassing all setup/registration-mode/
+// auth-method checks — used only by the admin users page, where the caller is already
+// authenticated and authorized as an administrator at the transport level.
+func (s *Service) CreateUserUnchecked(ctx context.Context, email, password string) (domain.User, error) {
+	user, err := s.createUserTx(ctx, email, password, false)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user, nil
+}
+
 func (s *Service) Login(ctx context.Context, email, password string) (domain.Session, error) {
+	settings, err := s.settingsRepo.Get(ctx)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "get system settings")
+	}
+
+	if !settings.SetupCompleted {
+		return domain.Session{}, user_errors.SetupNotCompleted
+	}
+
+	if !settings.PasswordAuthEnabled {
+		return domain.Session{}, user_errors.AuthMethodDisabled
+	}
+
 	user, err := s.usersRepo.GetByEmail(ctx, email)
 	if err != nil {
 		return domain.Session{}, rerrors.Wrap(err, "get user by email")
@@ -151,6 +218,42 @@ func (s *Service) ValidateToken(ctx context.Context, token string) (domain.User,
 }
 
 func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {
+	settings, err := s.settingsRepo.Get(ctx)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "get system settings")
+	}
+
+	if !settings.SetupCompleted {
+		return domain.Session{}, user_errors.SetupNotCompleted
+	}
+
+	if !settings.TelegramAuthEnabled {
+		return domain.Session{}, user_errors.AuthMethodDisabled
+	}
+
+	session, err := s.loginOrRegisterViaTelegram(ctx, idToken, false)
+	if err != nil {
+		return domain.Session{}, err
+	}
+
+	return session, nil
+}
+
+// LoginOrRegisterAdminViaTelegram is the wizard-only variant of LoginViaTelegram: it bypasses
+// all setup/auth-method checks and promotes the resulting user to administrator, whether they
+// were just created or already existed.
+func (s *Service) LoginOrRegisterAdminViaTelegram(ctx context.Context, idToken string) (domain.Session, error) {
+	session, err := s.loginOrRegisterViaTelegram(ctx, idToken, true)
+	if err != nil {
+		return domain.Session{}, err
+	}
+
+	return session, nil
+}
+
+func (s *Service) loginOrRegisterViaTelegram(
+	ctx context.Context, idToken string, promoteToAdmin bool,
+) (domain.Session, error) {
 	claims, err := s.tgParser.ParseAndVerifyIdToken(idToken)
 	if err != nil {
 		return domain.Session{}, rerrors.Wrap(
@@ -177,7 +280,9 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 				return rerrors.Wrap(err, "get user by telegram id")
 			}
 
-			if !userValue.Valid {
+			isNewUser := !userValue.Valid
+
+			if isNewUser {
 				userValue.V, err = usersRepo.CreateByUsername(ctx, claims.Login, claims.Picture)
 				if err != nil {
 					return rerrors.Wrap(err, "create user")
@@ -201,14 +306,23 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 				return rerrors.Wrap(err, "update user photo url")
 			}
 
-			err = permissionsRepo.CreateDefault(ctx, user.Uuid)
-			if err != nil {
-				return rerrors.Wrap(err, "create default permissions")
+			if isNewUser {
+				err = permissionsRepo.CreateDefault(ctx, user.Uuid)
+				if err != nil {
+					return rerrors.Wrap(err, "create default permissions")
+				}
+
+				err = subsRepo.CreateDefault(ctx, user.Uuid)
+				if err != nil {
+					return rerrors.Wrap(err, "create default subscription")
+				}
 			}
 
-			err = subsRepo.CreateDefault(ctx, user.Uuid)
-			if err != nil {
-				return rerrors.Wrap(err, "create default subscription")
+			if promoteToAdmin {
+				_, err = permissionsRepo.Upsert(ctx, user.Uuid, true)
+				if err != nil {
+					return rerrors.Wrap(err, "promote user to administrator")
+				}
 			}
 
 			return nil
@@ -233,6 +347,22 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	}
 
 	return session, nil
+}
+
+// ChangePassword overwrites userUuid's password hash — used by the admin users page to reset a
+// user's password. Callers are responsible for authorizing the caller before invoking this.
+func (s *Service) ChangePassword(ctx context.Context, userUuid uuid.UUID, newPassword string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return rerrors.Wrap(err, "generate password hash")
+	}
+
+	err = s.usersRepo.UpdatePasswordHash(ctx, userUuid, string(hash))
+	if err != nil {
+		return rerrors.Wrap(err, "update password hash")
+	}
+
+	return nil
 }
 
 func (s *Service) Refresh(ctx context.Context, refreshToken string) (domain.Session, error) {

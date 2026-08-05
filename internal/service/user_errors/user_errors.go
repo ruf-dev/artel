@@ -38,6 +38,43 @@ var (
 	UnsupportedLoginMethod = rerrors.New("unsupported login method", codes.InvalidArgument)
 	InvalidRefreshToken    = rerrors.New("invalid refresh token", codes.Unauthenticated)
 
+	// auth: first-run setup wizard / instance auth policy.
+	SetupNotCompleted = rerrors.New(
+		"instance setup has not been completed yet",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	SelfRegistrationDisabled = rerrors.New(
+		"self-registration is disabled for this instance; ask an administrator to create your account",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+	AuthMethodDisabled = rerrors.New(
+		"this authentication method is disabled for this instance",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	WizardSessionInvalid = rerrors.New(
+		"setup wizard session is invalid or has expired; submit the setup token again",
+		codes.Unauthenticated,
+		rerrors.WithHttpStatus(http.StatusUnauthorized),
+	)
+	SetupAlreadyCompleted = rerrors.New(
+		"instance setup has already been completed",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusConflict),
+	)
+	AtLeastOneAuthMethodRequired = rerrors.New(
+		"at least one authentication method must be enabled",
+		codes.InvalidArgument,
+		rerrors.WithHttpStatus(http.StatusBadRequest),
+	)
+	AuthMethodNotEnabled = rerrors.New(
+		"the credential provided does not match any enabled authentication method",
+		codes.InvalidArgument,
+		rerrors.WithHttpStatus(http.StatusBadRequest),
+	)
+
 	// subscription.
 
 	NoActiveSubscription = rerrors.New("no active subscription",

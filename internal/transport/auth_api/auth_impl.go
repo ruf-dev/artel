@@ -27,6 +27,7 @@ type authHandler struct {
 	s3InstanceSvc    service.S3InstanceService
 	couchInstanceSvc service.CouchInstanceService
 	dockerHostSvc    service.DockerHostService
+	setupWizardSvc   service.SetupWizardService
 	telegramClientID string
 	noAuthEnabled    bool
 	credsEncrypted   bool
@@ -183,14 +184,25 @@ func (h *authHandler) GetConfig(
 		return nil, rerrors.Wrap(err, "check docker hosts availability")
 	}
 
-	return &artel_api.GetConfig_Response{
+	settings, err := h.setupWizardSvc.CurrentStatus(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error getting setup wizard status")
+	}
+
+	resp := &artel_api.GetConfig_Response{
 		TelegramClientId:     h.telegramClientID,
 		IsS3Available:        hasS3,
 		NoAuthEnabled:        h.noAuthEnabled,
 		CredsEncrypted:       h.credsEncrypted,
 		IsCouchAvailable:     hasCouch,
 		IsWorkbenchAvailable: hasDockerHosts,
-	}, nil
+		SetupCompleted:       settings.SetupCompleted,
+		PasswordAuthEnabled:  settings.PasswordAuthEnabled,
+		TelegramAuthEnabled:  settings.TelegramAuthEnabled,
+		SelfRegisterEnabled:  settings.RegistrationMode == domain.RegistrationModeSelfRegister,
+	}
+
+	return resp, nil
 }
 
 func (h *authHandler) Logout(ctx context.Context, req *artel_api.Logout_Request) (*artel_api.Logout_Response, error) {
@@ -267,7 +279,8 @@ type AuthImpl struct {
 func NewAuthImpl(
 	authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService,
 	couchInstanceSvc service.CouchInstanceService, noAuthEnabled bool,
-	credsEncrypted bool, dockerHostSvc service.DockerHostService, cookieSecure bool,
+	credsEncrypted bool, dockerHostSvc service.DockerHostService, setupWizardSvc service.SetupWizardService,
+	cookieSecure bool,
 ) *AuthImpl {
 	return &AuthImpl{
 		handler: &authHandler{
@@ -276,6 +289,7 @@ func NewAuthImpl(
 			s3InstanceSvc:    s3InstanceSvc,
 			couchInstanceSvc: couchInstanceSvc,
 			dockerHostSvc:    dockerHostSvc,
+			setupWizardSvc:   setupWizardSvc,
 			noAuthEnabled:    noAuthEnabled,
 			credsEncrypted:   credsEncrypted,
 		},

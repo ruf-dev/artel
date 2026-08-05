@@ -31,12 +31,61 @@ type Service interface {
 	MomService() MomService
 	TractService() TractService
 	PublicDocsService() PublicDocsService
+	SetupWizardService() SetupWizardService
+	AdminSystemSettingsService() AdminSystemSettingsService
 }
 
 type AdminUsersService interface {
 	ListUsers(ctx context.Context, req domain.ListUsersReq) ([]domain.User, int64, error)
 	GetUser(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
 	GetUserSessions(ctx context.Context, userUuid uuid.UUID) ([]domain.Session, error)
+	// CreateUser creates a new non-admin account from the admin users page — the caller is
+	// already authenticated and authorized as an administrator at the transport level, so this
+	// bypasses AuthService.Register's setup/registration-mode/auth-method checks.
+	CreateUser(ctx context.Context, email, password string) (domain.User, error)
+	// ChangePassword resets userUuid's password — used by an administrator on the admin users
+	// page.
+	ChangePassword(ctx context.Context, userUuid uuid.UUID, newPassword string) error
+}
+
+// AdminSystemSettingsService lets an administrator inspect and edit the single-row global
+// instance configuration (auth methods, registration mode) outside the first-run setup wizard —
+// see SetupWizardService for the wizard's own (pre-setup, unauthenticated) version of the same
+// underlying settings.
+type AdminSystemSettingsService interface {
+	GetSettings(ctx context.Context) (domain.SystemSettings, error)
+	// UpdateAuthMethods returns user_errors.AtLeastOneAuthMethodRequired if both are false.
+	UpdateAuthMethods(ctx context.Context, passwordEnabled, telegramEnabled bool) error
+	UpdateRegistrationMode(ctx context.Context, mode domain.RegistrationMode) error
+}
+
+// SetupWizardService drives the first-run setup wizard — a short-lived, unauthenticated flow
+// that runs once (SystemSettings.SetupCompleted == false) to pick auth methods/registration
+// mode and create the first administrator account. Every method except CurrentStatus and
+// RegenerateSetupToken requires a wizardSessionToken minted by SubmitToken, which proves
+// possession of the one-time setup token printed to server logs/stdout on first boot.
+// Wizard sessions are in-memory only (not persisted) and expire after 30 minutes.
+type SetupWizardService interface {
+	// CurrentStatus returns the instance's current setup/auth-policy state — used by the
+	// frontend to decide whether to show the wizard at all.
+	CurrentStatus(ctx context.Context) (domain.SystemSettings, error)
+	// RegenerateSetupToken mints a new one-time setup token, invalidating any previous one, and
+	// returns it in plaintext (only its hash is persisted).
+	RegenerateSetupToken(ctx context.Context) (plaintextToken string, err error)
+	// SubmitToken exchanges the one-time setup token for a short-lived wizard session token.
+	// Returns user_errors.SetupAlreadyCompleted if setup has already finished, or
+	// user_errors.WizardSessionInvalid if token does not match.
+	SubmitToken(ctx context.Context, token string) (wizardSessionToken string, err error)
+	// SelectAuthMethods enables/disables password and telegram login for the instance. Returns
+	// user_errors.AtLeastOneAuthMethodRequired if both are false.
+	SelectAuthMethods(ctx context.Context, wizardSessionToken string, passwordEnabled, telegramEnabled bool) error
+	SelectRegistrationMode(ctx context.Context, wizardSessionToken string, mode domain.RegistrationMode) error
+	// CompleteSetup creates the first administrator account (via password or telegram, whichever
+	// was enabled by SelectAuthMethods), marks setup complete, and returns a logged-in session
+	// for the new admin. Exactly one of password/telegramIdToken must be set.
+	CompleteSetup(
+		ctx context.Context, wizardSessionToken string, email, password, telegramIdToken string,
+	) (domain.Session, error)
 }
 
 // AdminSubscriptionsService lets an admin inspect and edit a user's plan assignment and
@@ -51,10 +100,17 @@ type AdminSubscriptionsService interface {
 }
 
 type AuthService interface {
+	// Register creates a new self-registered account. Returns user_errors.SetupNotCompleted if
+	// instance setup hasn't finished yet, user_errors.SelfRegistrationDisabled if
+	// RegistrationMode is admin_only, or user_errors.AuthMethodDisabled if password auth is off.
 	Register(ctx context.Context, email, password string) (domain.User, error)
+	// Login returns user_errors.SetupNotCompleted if instance setup hasn't finished yet, or
+	// user_errors.AuthMethodDisabled if password auth is off.
 	Login(ctx context.Context, email, password string) (domain.Session, error)
 	Logout(ctx context.Context, token string) error
 	ValidateToken(ctx context.Context, token string) (domain.User, error)
+	// LoginViaTelegram returns user_errors.SetupNotCompleted if instance setup hasn't finished
+	// yet, or user_errors.AuthMethodDisabled if telegram auth is off.
 	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
 	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
 	CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error
@@ -66,6 +122,21 @@ type AuthService interface {
 	// bypass authentication entirely when the server is configured with NoAuthEnabled.
 	// Every subsequent ValidateToken call returns this user regardless of the token presented.
 	EnsureNoAuthUser(ctx context.Context) (domain.User, error)
+
+	// RegisterAdmin creates a new administrator account, bypassing all setup/registration-mode/
+	// auth-method checks — used only by SetupWizardService.CompleteSetup's password path.
+	RegisterAdmin(ctx context.Context, email, password string) (domain.User, error)
+	// CreateUserUnchecked creates a new non-admin account, bypassing all setup/registration-mode/
+	// auth-method checks — used only by AdminUsersService.CreateUser, where the caller is already
+	// authenticated and authorized as an administrator at the transport level.
+	CreateUserUnchecked(ctx context.Context, email, password string) (domain.User, error)
+	// LoginOrRegisterAdminViaTelegram is the wizard-only variant of LoginViaTelegram: no
+	// setup/auth-method checks, and the resulting user (new or pre-existing) is promoted to
+	// administrator — used only by SetupWizardService.CompleteSetup's telegram path.
+	LoginOrRegisterAdminViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
+	// ChangePassword resets userUuid's password. Callers are responsible for authorizing the
+	// caller before invoking this — used by AdminUsersService.ChangePassword.
+	ChangePassword(ctx context.Context, userUuid uuid.UUID, newPassword string) error
 }
 
 type VaultService interface {

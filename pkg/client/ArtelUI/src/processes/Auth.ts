@@ -12,6 +12,8 @@ export interface Session {
 
 export interface IAuthService {
     LoginViaTelegram: (idToken: string) => Promise<Session>
+    LoginWithPassword: (email: string, password: string) => Promise<Session>
+    Register: (email: string, password: string) => Promise<void>
     FetchUserInfo: () => Promise<UserInfo>
 }
 
@@ -24,6 +26,22 @@ export class AuthService implements IAuthService {
         return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({
             token: res.token ?? "",
         }))
+    }
+
+    async LoginWithPassword(email: string, password: string): Promise<Session> {
+        const r: LoginRequest = {
+            password: {email, password},
+        } as LoginRequest
+
+        return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({
+            token: res.token ?? "",
+        }))
+    }
+
+    async Register(email: string, password: string): Promise<void> {
+        // Registration alone doesn't establish a session on the backend —
+        // the caller must follow up with LoginWithPassword to log in.
+        return AuthAPI.Register({email, password}, useUser.getState().auth.getInitReq()).then(() => undefined)
     }
 
     async FetchUserInfo(): Promise<UserInfo> {

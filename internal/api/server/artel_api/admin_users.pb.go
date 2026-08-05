@@ -7,15 +7,14 @@
 package artel_api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "go.redsock.ru/protoc-gen-npm/npmplugin"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -369,6 +368,78 @@ func (*GetUserSessions) Descriptor() ([]byte, []int) {
 	return file_admin_users_proto_rawDescGZIP(), []int{5}
 }
 
+type CreateArtelUser struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateArtelUser) Reset() {
+	*x = CreateArtelUser{}
+	mi := &file_admin_users_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateArtelUser) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateArtelUser) ProtoMessage() {}
+
+func (x *CreateArtelUser) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_users_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateArtelUser.ProtoReflect.Descriptor instead.
+func (*CreateArtelUser) Descriptor() ([]byte, []int) {
+	return file_admin_users_proto_rawDescGZIP(), []int{6}
+}
+
+type ChangeArtelUserPassword struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChangeArtelUserPassword) Reset() {
+	*x = ChangeArtelUserPassword{}
+	mi := &file_admin_users_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChangeArtelUserPassword) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangeArtelUserPassword) ProtoMessage() {}
+
+func (x *ChangeArtelUserPassword) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_users_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangeArtelUserPassword.ProtoReflect.Descriptor instead.
+func (*ChangeArtelUserPassword) Descriptor() ([]byte, []int) {
+	return file_admin_users_proto_rawDescGZIP(), []int{7}
+}
+
 type ListArtelUsers_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Search        string                 `protobuf:"bytes,1,opt,name=search,proto3" json:"search,omitempty"`
@@ -380,7 +451,7 @@ type ListArtelUsers_Request struct {
 
 func (x *ListArtelUsers_Request) Reset() {
 	*x = ListArtelUsers_Request{}
-	mi := &file_admin_users_proto_msgTypes[6]
+	mi := &file_admin_users_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -392,7 +463,7 @@ func (x *ListArtelUsers_Request) String() string {
 func (*ListArtelUsers_Request) ProtoMessage() {}
 
 func (x *ListArtelUsers_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_users_proto_msgTypes[6]
+	mi := &file_admin_users_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -439,7 +510,7 @@ type ListArtelUsers_Response struct {
 
 func (x *ListArtelUsers_Response) Reset() {
 	*x = ListArtelUsers_Response{}
-	mi := &file_admin_users_proto_msgTypes[7]
+	mi := &file_admin_users_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -451,7 +522,7 @@ func (x *ListArtelUsers_Response) String() string {
 func (*ListArtelUsers_Response) ProtoMessage() {}
 
 func (x *ListArtelUsers_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_users_proto_msgTypes[7]
+	mi := &file_admin_users_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -490,7 +561,7 @@ type GetArtelUser_Request struct {
 
 func (x *GetArtelUser_Request) Reset() {
 	*x = GetArtelUser_Request{}
-	mi := &file_admin_users_proto_msgTypes[8]
+	mi := &file_admin_users_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -502,7 +573,7 @@ func (x *GetArtelUser_Request) String() string {
 func (*GetArtelUser_Request) ProtoMessage() {}
 
 func (x *GetArtelUser_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_users_proto_msgTypes[8]
+	mi := &file_admin_users_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -534,7 +605,7 @@ type GetArtelUser_Response struct {
 
 func (x *GetArtelUser_Response) Reset() {
 	*x = GetArtelUser_Response{}
-	mi := &file_admin_users_proto_msgTypes[9]
+	mi := &file_admin_users_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -546,7 +617,7 @@ func (x *GetArtelUser_Response) String() string {
 func (*GetArtelUser_Response) ProtoMessage() {}
 
 func (x *GetArtelUser_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_users_proto_msgTypes[9]
+	mi := &file_admin_users_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -578,7 +649,7 @@ type GetUserSessions_Request struct {
 
 func (x *GetUserSessions_Request) Reset() {
 	*x = GetUserSessions_Request{}
-	mi := &file_admin_users_proto_msgTypes[10]
+	mi := &file_admin_users_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -590,7 +661,7 @@ func (x *GetUserSessions_Request) String() string {
 func (*GetUserSessions_Request) ProtoMessage() {}
 
 func (x *GetUserSessions_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_users_proto_msgTypes[10]
+	mi := &file_admin_users_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -622,7 +693,7 @@ type GetUserSessions_Response struct {
 
 func (x *GetUserSessions_Response) Reset() {
 	*x = GetUserSessions_Response{}
-	mi := &file_admin_users_proto_msgTypes[11]
+	mi := &file_admin_users_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -634,7 +705,7 @@ func (x *GetUserSessions_Response) String() string {
 func (*GetUserSessions_Response) ProtoMessage() {}
 
 func (x *GetUserSessions_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_users_proto_msgTypes[11]
+	mi := &file_admin_users_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -655,6 +726,190 @@ func (x *GetUserSessions_Response) GetSessions() []*UserSession {
 		return x.Sessions
 	}
 	return nil
+}
+
+type CreateArtelUser_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateArtelUser_Request) Reset() {
+	*x = CreateArtelUser_Request{}
+	mi := &file_admin_users_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateArtelUser_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateArtelUser_Request) ProtoMessage() {}
+
+func (x *CreateArtelUser_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_users_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateArtelUser_Request.ProtoReflect.Descriptor instead.
+func (*CreateArtelUser_Request) Descriptor() ([]byte, []int) {
+	return file_admin_users_proto_rawDescGZIP(), []int{6, 0}
+}
+
+func (x *CreateArtelUser_Request) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *CreateArtelUser_Request) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type CreateArtelUser_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *ArtelUserEntry        `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateArtelUser_Response) Reset() {
+	*x = CreateArtelUser_Response{}
+	mi := &file_admin_users_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateArtelUser_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateArtelUser_Response) ProtoMessage() {}
+
+func (x *CreateArtelUser_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_users_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateArtelUser_Response.ProtoReflect.Descriptor instead.
+func (*CreateArtelUser_Response) Descriptor() ([]byte, []int) {
+	return file_admin_users_proto_rawDescGZIP(), []int{6, 1}
+}
+
+func (x *CreateArtelUser_Response) GetUser() *ArtelUserEntry {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+type ChangeArtelUserPassword_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	NewPassword   string                 `protobuf:"bytes,2,opt,name=new_password,json=newPassword,proto3" json:"new_password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChangeArtelUserPassword_Request) Reset() {
+	*x = ChangeArtelUserPassword_Request{}
+	mi := &file_admin_users_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChangeArtelUserPassword_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangeArtelUserPassword_Request) ProtoMessage() {}
+
+func (x *ChangeArtelUserPassword_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_users_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangeArtelUserPassword_Request.ProtoReflect.Descriptor instead.
+func (*ChangeArtelUserPassword_Request) Descriptor() ([]byte, []int) {
+	return file_admin_users_proto_rawDescGZIP(), []int{7, 0}
+}
+
+func (x *ChangeArtelUserPassword_Request) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *ChangeArtelUserPassword_Request) GetNewPassword() string {
+	if x != nil {
+		return x.NewPassword
+	}
+	return ""
+}
+
+type ChangeArtelUserPassword_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChangeArtelUserPassword_Response) Reset() {
+	*x = ChangeArtelUserPassword_Response{}
+	mi := &file_admin_users_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChangeArtelUserPassword_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangeArtelUserPassword_Response) ProtoMessage() {}
+
+func (x *ChangeArtelUserPassword_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_users_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangeArtelUserPassword_Response.ProtoReflect.Descriptor instead.
+func (*ChangeArtelUserPassword_Response) Descriptor() ([]byte, []int) {
+	return file_admin_users_proto_rawDescGZIP(), []int{7, 1}
 }
 
 var File_admin_users_proto protoreflect.FileDescriptor
@@ -703,11 +958,25 @@ const file_admin_users_proto_rawDesc = "" +
 	"\aRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x1aF\n" +
 	"\bResponse\x12:\n" +
-	"\bsessions\x18\x01 \x03(\v2\x1e.artel_admin_users.UserSessionR\bsessions2\xb3\x03\n" +
+	"\bsessions\x18\x01 \x03(\v2\x1e.artel_admin_users.UserSessionR\bsessions\"\x91\x01\n" +
+	"\x0fCreateArtelUser\x1a;\n" +
+	"\aRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x1aA\n" +
+	"\bResponse\x125\n" +
+	"\x04user\x18\x01 \x01(\v2!.artel_admin_users.ArtelUserEntryR\x04user\"l\n" +
+	"\x17ChangeArtelUserPassword\x1aE\n" +
+	"\aRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12!\n" +
+	"\fnew_password\x18\x02 \x01(\tR\vnewPassword\x1a\n" +
+	"\n" +
+	"\bResponse2\xf6\x05\n" +
 	"\rAdminUsersAPI\x12\x89\x01\n" +
 	"\x0eListArtelUsers\x12).artel_admin_users.ListArtelUsers.Request\x1a*.artel_admin_users.ListArtelUsers.Response\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/admin_users/list\x12\x82\x01\n" +
 	"\fGetArtelUser\x12'.artel_admin_users.GetArtelUser.Request\x1a(.artel_admin_users.GetArtelUser.Response\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/admin_users/get\x12\x90\x01\n" +
-	"\x0fGetUserSessions\x12*.artel_admin_users.GetUserSessions.Request\x1a+.artel_admin_users.GetUserSessions.Response\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/admin_users/sessionsB\x1a\x92\x82\x19\n" +
+	"\x0fGetUserSessions\x12*.artel_admin_users.GetUserSessions.Request\x1a+.artel_admin_users.GetUserSessions.Response\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/admin_users/sessions\x12\x8e\x01\n" +
+	"\x0fCreateArtelUser\x12*.artel_admin_users.CreateArtelUser.Request\x1a+.artel_admin_users.CreateArtelUser.Response\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/admin_users/create\x12\xaf\x01\n" +
+	"\x17ChangeArtelUserPassword\x122.artel_admin_users.ChangeArtelUserPassword.Request\x1a3.artel_admin_users.ChangeArtelUserPassword.Response\"+\x82\xd3\xe4\x93\x02%:\x01*\" /api/admin_users/change_passwordB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
@@ -723,40 +992,51 @@ func file_admin_users_proto_rawDescGZIP() []byte {
 	return file_admin_users_proto_rawDescData
 }
 
-var file_admin_users_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_admin_users_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_admin_users_proto_goTypes = []any{
-	(*ArtelUserEntry)(nil),           // 0: artel_admin_users.ArtelUserEntry
-	(*ListArtelUsers)(nil),           // 1: artel_admin_users.ListArtelUsers
-	(*ArtelUserDetails)(nil),         // 2: artel_admin_users.ArtelUserDetails
-	(*GetArtelUser)(nil),             // 3: artel_admin_users.GetArtelUser
-	(*UserSession)(nil),              // 4: artel_admin_users.UserSession
-	(*GetUserSessions)(nil),          // 5: artel_admin_users.GetUserSessions
-	(*ListArtelUsers_Request)(nil),   // 6: artel_admin_users.ListArtelUsers.Request
-	(*ListArtelUsers_Response)(nil),  // 7: artel_admin_users.ListArtelUsers.Response
-	(*GetArtelUser_Request)(nil),     // 8: artel_admin_users.GetArtelUser.Request
-	(*GetArtelUser_Response)(nil),    // 9: artel_admin_users.GetArtelUser.Response
-	(*GetUserSessions_Request)(nil),  // 10: artel_admin_users.GetUserSessions.Request
-	(*GetUserSessions_Response)(nil), // 11: artel_admin_users.GetUserSessions.Response
-	(*timestamppb.Timestamp)(nil),    // 12: google.protobuf.Timestamp
+	(*ArtelUserEntry)(nil),                   // 0: artel_admin_users.ArtelUserEntry
+	(*ListArtelUsers)(nil),                   // 1: artel_admin_users.ListArtelUsers
+	(*ArtelUserDetails)(nil),                 // 2: artel_admin_users.ArtelUserDetails
+	(*GetArtelUser)(nil),                     // 3: artel_admin_users.GetArtelUser
+	(*UserSession)(nil),                      // 4: artel_admin_users.UserSession
+	(*GetUserSessions)(nil),                  // 5: artel_admin_users.GetUserSessions
+	(*CreateArtelUser)(nil),                  // 6: artel_admin_users.CreateArtelUser
+	(*ChangeArtelUserPassword)(nil),          // 7: artel_admin_users.ChangeArtelUserPassword
+	(*ListArtelUsers_Request)(nil),           // 8: artel_admin_users.ListArtelUsers.Request
+	(*ListArtelUsers_Response)(nil),          // 9: artel_admin_users.ListArtelUsers.Response
+	(*GetArtelUser_Request)(nil),             // 10: artel_admin_users.GetArtelUser.Request
+	(*GetArtelUser_Response)(nil),            // 11: artel_admin_users.GetArtelUser.Response
+	(*GetUserSessions_Request)(nil),          // 12: artel_admin_users.GetUserSessions.Request
+	(*GetUserSessions_Response)(nil),         // 13: artel_admin_users.GetUserSessions.Response
+	(*CreateArtelUser_Request)(nil),          // 14: artel_admin_users.CreateArtelUser.Request
+	(*CreateArtelUser_Response)(nil),         // 15: artel_admin_users.CreateArtelUser.Response
+	(*ChangeArtelUserPassword_Request)(nil),  // 16: artel_admin_users.ChangeArtelUserPassword.Request
+	(*ChangeArtelUserPassword_Response)(nil), // 17: artel_admin_users.ChangeArtelUserPassword.Response
+	(*timestamppb.Timestamp)(nil),            // 18: google.protobuf.Timestamp
 }
 var file_admin_users_proto_depIdxs = []int32{
-	12, // 0: artel_admin_users.ArtelUserEntry.created_at:type_name -> google.protobuf.Timestamp
-	12, // 1: artel_admin_users.UserSession.created_at:type_name -> google.protobuf.Timestamp
-	12, // 2: artel_admin_users.UserSession.expires_at:type_name -> google.protobuf.Timestamp
+	18, // 0: artel_admin_users.ArtelUserEntry.created_at:type_name -> google.protobuf.Timestamp
+	18, // 1: artel_admin_users.UserSession.created_at:type_name -> google.protobuf.Timestamp
+	18, // 2: artel_admin_users.UserSession.expires_at:type_name -> google.protobuf.Timestamp
 	0,  // 3: artel_admin_users.ListArtelUsers.Response.users:type_name -> artel_admin_users.ArtelUserEntry
 	2,  // 4: artel_admin_users.GetArtelUser.Response.user:type_name -> artel_admin_users.ArtelUserDetails
 	4,  // 5: artel_admin_users.GetUserSessions.Response.sessions:type_name -> artel_admin_users.UserSession
-	6,  // 6: artel_admin_users.AdminUsersAPI.ListArtelUsers:input_type -> artel_admin_users.ListArtelUsers.Request
-	8,  // 7: artel_admin_users.AdminUsersAPI.GetArtelUser:input_type -> artel_admin_users.GetArtelUser.Request
-	10, // 8: artel_admin_users.AdminUsersAPI.GetUserSessions:input_type -> artel_admin_users.GetUserSessions.Request
-	7,  // 9: artel_admin_users.AdminUsersAPI.ListArtelUsers:output_type -> artel_admin_users.ListArtelUsers.Response
-	9,  // 10: artel_admin_users.AdminUsersAPI.GetArtelUser:output_type -> artel_admin_users.GetArtelUser.Response
-	11, // 11: artel_admin_users.AdminUsersAPI.GetUserSessions:output_type -> artel_admin_users.GetUserSessions.Response
-	9,  // [9:12] is the sub-list for method output_type
-	6,  // [6:9] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	0,  // 6: artel_admin_users.CreateArtelUser.Response.user:type_name -> artel_admin_users.ArtelUserEntry
+	8,  // 7: artel_admin_users.AdminUsersAPI.ListArtelUsers:input_type -> artel_admin_users.ListArtelUsers.Request
+	10, // 8: artel_admin_users.AdminUsersAPI.GetArtelUser:input_type -> artel_admin_users.GetArtelUser.Request
+	12, // 9: artel_admin_users.AdminUsersAPI.GetUserSessions:input_type -> artel_admin_users.GetUserSessions.Request
+	14, // 10: artel_admin_users.AdminUsersAPI.CreateArtelUser:input_type -> artel_admin_users.CreateArtelUser.Request
+	16, // 11: artel_admin_users.AdminUsersAPI.ChangeArtelUserPassword:input_type -> artel_admin_users.ChangeArtelUserPassword.Request
+	9,  // 12: artel_admin_users.AdminUsersAPI.ListArtelUsers:output_type -> artel_admin_users.ListArtelUsers.Response
+	11, // 13: artel_admin_users.AdminUsersAPI.GetArtelUser:output_type -> artel_admin_users.GetArtelUser.Response
+	13, // 14: artel_admin_users.AdminUsersAPI.GetUserSessions:output_type -> artel_admin_users.GetUserSessions.Response
+	15, // 15: artel_admin_users.AdminUsersAPI.CreateArtelUser:output_type -> artel_admin_users.CreateArtelUser.Response
+	17, // 16: artel_admin_users.AdminUsersAPI.ChangeArtelUserPassword:output_type -> artel_admin_users.ChangeArtelUserPassword.Response
+	12, // [12:17] is the sub-list for method output_type
+	7,  // [7:12] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_admin_users_proto_init() }
@@ -770,7 +1050,7 @@ func file_admin_users_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_admin_users_proto_rawDesc), len(file_admin_users_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

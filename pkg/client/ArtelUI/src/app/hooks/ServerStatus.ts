@@ -21,6 +21,10 @@ export async function pingServer(): Promise<boolean> {
         })
         useAppConfig.getState().setNoAuthEnabled(cfg.noAuthEnabled === true)
         useAppConfig.getState().setCredsEncrypted(cfg.credsEncrypted === true)
+        useAppConfig.getState().setSetupCompleted(cfg.setupCompleted === true)
+        useAppConfig.getState().setPasswordAuthEnabled(cfg.passwordAuthEnabled === true)
+        useAppConfig.getState().setTelegramAuthEnabled(cfg.telegramAuthEnabled === true)
+        useAppConfig.getState().setSelfRegisterEnabled(cfg.selfRegisterEnabled === true)
         return true
     } catch (err) {
         // Three cases mean "down":

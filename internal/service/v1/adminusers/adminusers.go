@@ -14,10 +14,14 @@ type Service struct {
 	users         repository.Users
 	sessions      repository.Sessions
 	subscriptions service.SubscriptionService
+	auth          service.AuthService
 }
 
-func New(users repository.Users, sessions repository.Sessions, subscriptions service.SubscriptionService) *Service {
-	adminUsers := &Service{users: users, sessions: sessions, subscriptions: subscriptions}
+func New(
+	users repository.Users, sessions repository.Sessions, subscriptions service.SubscriptionService,
+	auth service.AuthService,
+) *Service {
+	adminUsers := &Service{users: users, sessions: sessions, subscriptions: subscriptions, auth: auth}
 
 	return adminUsers
 }
@@ -54,4 +58,22 @@ func (s *Service) GetUserSessions(ctx context.Context, userUuid uuid.UUID) ([]do
 	}
 
 	return sessions, nil
+}
+
+func (s *Service) CreateUser(ctx context.Context, email, password string) (domain.User, error) {
+	user, err := s.auth.CreateUserUnchecked(ctx, email, password)
+	if err != nil {
+		return domain.User{}, rerrors.Wrap(err, "error creating user")
+	}
+
+	return user, nil
+}
+
+func (s *Service) ChangePassword(ctx context.Context, userUuid uuid.UUID, newPassword string) error {
+	err := s.auth.ChangePassword(ctx, userUuid, newPassword)
+	if err != nil {
+		return rerrors.Wrap(err, "error changing password")
+	}
+
+	return nil
 }

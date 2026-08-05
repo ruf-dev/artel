@@ -21,6 +21,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptionplans"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/systemsettings"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tract_templates"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/tracts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggerpresets"
@@ -60,6 +61,7 @@ type Repos struct {
 	tractTemplates        repository.TractTemplatesRepo
 	triggers              repository.TriggersRepo
 	triggerPresets        repository.TriggerPresetsRepo
+	systemSettings        repository.SystemSettingsRepo
 
 	txManager tx_manager.TxManager
 }
@@ -168,6 +170,10 @@ func (r Repos) TriggerPresets() repository.TriggerPresetsRepo {
 	return r.triggerPresets
 }
 
+func (r Repos) SystemSettings() repository.SystemSettingsRepo {
+	return r.systemSettings
+}
+
 func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 	txManager := tx_manager.New(db)
@@ -199,6 +205,7 @@ func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 		tractTemplates:        tract_templates.New(q, txManager),
 		triggers:              triggers.New(q),
 		triggerPresets:        triggerpresets.New(q),
+		systemSettings:        systemsettings.New(q),
 
 		txManager: txManager,
 	}

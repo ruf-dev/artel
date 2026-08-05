@@ -171,6 +171,12 @@ func (s *GitlabTriggerE2ESuite) SetupSuite() {
 	s.Require().NoError(err, "init services")
 	s.svcs = svcs
 
+	err = s.repos.SystemSettings().CompleteSetup(context.Background())
+	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
+
+	err = s.repos.SystemSettings().UpdateRegistrationMode(context.Background(), domain.RegistrationModeSelfRegister)
+	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+
 	// Tract is normally wired in internal/app/custom.go (not svcv1.New) because its
 	// ToolExecutor composes the already-built Mcp/Mom services — mirror that wiring exactly,
 	// same as tests/tract_e2e, plus the new TriggerPresets repo.

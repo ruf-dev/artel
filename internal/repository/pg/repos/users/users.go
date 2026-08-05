@@ -194,6 +194,20 @@ func (r *UsersRepo) UpdatePhotoUrl(ctx context0.Context, userUuid uuid.UUID, pho
 	return nil
 }
 
+func (r *UsersRepo) UpdatePasswordHash(ctx context0.Context, userUuid uuid.UUID, passwordHash string) error {
+	params := artel_q.UpdateUserPasswordHashParams{
+		ID:           userUuid,
+		PasswordHash: passwordHash,
+	}
+
+	err := r.q.UpdateUserPasswordHash(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error updating user password hash")
+	}
+
+	return nil
+}
+
 func (r *UsersRepo) GetTelegramPhotoUrl(ctx context0.Context, userUuid uuid.UUID) (string, error) {
 	photoUrl, err := r.q.GetTelegramPhotoUrlByUserId(ctx, userUuid)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/admincouchsvc"
+	"github.com/ruf-dev/artel/internal/service/v1/adminsettings"
 	"github.com/ruf-dev/artel/internal/service/v1/adminsubscriptions"
 	"github.com/ruf-dev/artel/internal/service/v1/adminusers"
 	"github.com/ruf-dev/artel/internal/service/v1/auth"
@@ -17,6 +18,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/prompt"
 	"github.com/ruf-dev/artel/internal/service/v1/public_docs"
 	"github.com/ruf-dev/artel/internal/service/v1/s3instances"
+	"github.com/ruf-dev/artel/internal/service/v1/setupwizard"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
 	"github.com/ruf-dev/artel/internal/service/v1/vault"
@@ -41,6 +43,8 @@ type Services struct {
 	ExternalConnections service.ExternalConnectionService
 	Mom                 service.MomService
 	PublicDocs          service.PublicDocsService
+	SetupWizard         service.SetupWizardService
+	AdminSettings       service.AdminSystemSettingsService
 	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
@@ -108,11 +112,13 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Prompt:              prompt.New(repo.Prompts()),
 		TaskTracker:         tasktracker.New(repo.ExternalConnections(), externalConnectionsSvc, momSvc),
 		Notes:               notes.New(repo, subscriptionSvc),
-		AdminUsers:          adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc),
+		AdminUsers:          adminusers.New(repo.Users(), repo.Sessions(), subscriptionSvc, authSvc),
 		AdminSubscriptions:  adminsubscriptions.New(repo.SubscriptionPlans(), repo.Subscriptions()),
 		ExternalConnections: externalConnectionsSvc,
 		Mom:                 momSvc,
 		PublicDocs:          public_docs.New(repo),
+		SetupWizard:         setupwizard.New(repo.SystemSettings(), authSvc),
+		AdminSettings:       adminsettings.New(repo.SystemSettings()),
 	}
 
 	return services, nil
@@ -195,4 +201,12 @@ func (s *Services) WorkbenchService() service.WorkbenchService {
 
 func (s *Services) PublicDocsService() service.PublicDocsService {
 	return s.PublicDocs
+}
+
+func (s *Services) SetupWizardService() service.SetupWizardService {
+	return s.SetupWizard
+}
+
+func (s *Services) AdminSystemSettingsService() service.AdminSystemSettingsService {
+	return s.AdminSettings
 }

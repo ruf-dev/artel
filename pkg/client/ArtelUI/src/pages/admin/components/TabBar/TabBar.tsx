@@ -47,6 +47,13 @@ export default function TabBar({tab, onTabChange}: TabBarProps) {
             >
                 Docker API
             </Button>
+            <Button
+                variant="unstyled"
+                className={cn(cls.Tab, tab === "settings" && cls.TabActive)}
+                onClick={() => onTabChange("settings")}
+            >
+                Settings
+            </Button>
         </div>
     )
 }

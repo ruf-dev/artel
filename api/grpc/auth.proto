@@ -109,6 +109,10 @@ message GetConfig {
     bool creds_encrypted = 4;
     bool is_couch_available = 5;
     bool is_workbench_available = 6;
+    bool setup_completed = 7;
+    bool password_auth_enabled = 8;
+    bool telegram_auth_enabled = 9;
+    bool self_register_enabled = 10;
   }
 }
 

@@ -55,6 +55,22 @@ func (f *fakeAuthService) EnsureNoAuthUser(_ context.Context) (domain.User, erro
 	panic("not implemented")
 }
 
+func (f *fakeAuthService) RegisterAdmin(_ context.Context, _, _ string) (domain.User, error) {
+	panic("not implemented")
+}
+
+func (f *fakeAuthService) CreateUserUnchecked(_ context.Context, _, _ string) (domain.User, error) {
+	panic("not implemented")
+}
+
+func (f *fakeAuthService) LoginOrRegisterAdminViaTelegram(_ context.Context, _ string) (domain.Session, error) {
+	panic("not implemented")
+}
+
+func (f *fakeAuthService) ChangePassword(_ context.Context, _ uuid.UUID, _ string) error {
+	panic("not implemented")
+}
+
 // fakeS3InstanceService is a minimal in-memory service.S3InstanceService used to test
 // authHandler.GetConfig. Only HasS3Instances is configurable — GetConfig never calls the rest.
 type fakeS3InstanceService struct {
@@ -178,53 +194,111 @@ func (f *fakeDockerHostService) HasDockerHosts(_ context.Context) (bool, error) 
 	return f.hasResult, nil
 }
 
+// fakeSetupWizardService is a minimal in-memory service.SetupWizardService used to test
+// authHandler.GetConfig. Only CurrentStatus is configurable — GetConfig never calls the rest.
+type fakeSetupWizardService struct {
+	status domain.SystemSettings
+	err    error
+}
+
+func (f *fakeSetupWizardService) CurrentStatus(_ context.Context) (domain.SystemSettings, error) {
+	if f.err != nil {
+		return domain.SystemSettings{}, f.err
+	}
+
+	return f.status, nil
+}
+
+func (f *fakeSetupWizardService) RegenerateSetupToken(_ context.Context) (string, error) {
+	panic("not implemented")
+}
+
+func (f *fakeSetupWizardService) SubmitToken(_ context.Context, _ string) (string, error) {
+	panic("not implemented")
+}
+
+func (f *fakeSetupWizardService) SelectAuthMethods(_ context.Context, _ string, _, _ bool) error {
+	panic("not implemented")
+}
+
+func (f *fakeSetupWizardService) SelectRegistrationMode(_ context.Context, _ string, _ domain.RegistrationMode) error {
+	panic("not implemented")
+}
+
+func (f *fakeSetupWizardService) CompleteSetup(
+	_ context.Context, _, _, _, _ string,
+) (domain.Session, error) {
+	panic("not implemented")
+}
+
 var (
 	_ service.AuthService          = (*fakeAuthService)(nil)
 	_ service.S3InstanceService    = (*fakeS3InstanceService)(nil)
 	_ service.CouchInstanceService = (*fakeCouchInstanceService)(nil)
 	_ service.DockerHostService    = (*fakeDockerHostService)(nil)
+	_ service.SetupWizardService   = (*fakeSetupWizardService)(nil)
 )
 
 func TestAuthHandler_GetConfig(t *testing.T) {
 	testCases := []struct {
-		name           string
-		hasS3          bool
-		hasCouch       bool
-		noAuthEnabled  bool
-		credsEncrypted bool
-		hasDockerHosts bool
+		name                string
+		hasS3               bool
+		hasCouch            bool
+		noAuthEnabled       bool
+		credsEncrypted      bool
+		hasDockerHosts      bool
+		setupCompleted      bool
+		passwordAuthEnabled bool
+		telegramAuthEnabled bool
+		registrationMode    domain.RegistrationMode
 	}{
 		{
-			name:           "all flags false",
-			hasS3:          false,
-			hasCouch:       false,
-			noAuthEnabled:  false,
-			credsEncrypted: false,
-			hasDockerHosts: false,
+			name:                "all flags false",
+			hasS3:               false,
+			hasCouch:            false,
+			noAuthEnabled:       false,
+			credsEncrypted:      false,
+			hasDockerHosts:      false,
+			setupCompleted:      false,
+			passwordAuthEnabled: false,
+			telegramAuthEnabled: false,
+			registrationMode:    domain.RegistrationModeAdminOnly,
 		},
 		{
-			name:           "all flags true",
-			hasS3:          true,
-			hasCouch:       true,
-			noAuthEnabled:  true,
-			credsEncrypted: true,
-			hasDockerHosts: true,
+			name:                "all flags true",
+			hasS3:               true,
+			hasCouch:            true,
+			noAuthEnabled:       true,
+			credsEncrypted:      true,
+			hasDockerHosts:      true,
+			setupCompleted:      true,
+			passwordAuthEnabled: true,
+			telegramAuthEnabled: true,
+			registrationMode:    domain.RegistrationModeSelfRegister,
 		},
 		{
-			name:           "mixed flags",
-			hasS3:          true,
-			hasCouch:       false,
-			noAuthEnabled:  false,
-			credsEncrypted: true,
-			hasDockerHosts: false,
+			name:                "mixed flags",
+			hasS3:               true,
+			hasCouch:            false,
+			noAuthEnabled:       false,
+			credsEncrypted:      true,
+			hasDockerHosts:      false,
+			setupCompleted:      true,
+			passwordAuthEnabled: false,
+			telegramAuthEnabled: true,
+			registrationMode:    domain.RegistrationModeAdminOnly,
 		},
 		{
-			name:           "workbench available only",
-			hasS3:          false,
-			hasCouch:       false,
-			noAuthEnabled:  false,
-			credsEncrypted: false,
-			hasDockerHosts: true,
+			name:                "workbench available only",
+			hasS3:               false,
+			hasCouch:            false,
+			noAuthEnabled:       false,
+			credsEncrypted:      false,
+			hasDockerHosts:      true,
+			setupCompleted:      false,
+			passwordAuthEnabled: false,
+			telegramAuthEnabled: false,
+			registrationMode:    domain.RegistrationModeAdminOnly,
 		},
 	}
 
@@ -233,12 +307,20 @@ func TestAuthHandler_GetConfig(t *testing.T) {
 			s3Svc := &fakeS3InstanceService{hasResult: tc.hasS3}
 			couchSvc := &fakeCouchInstanceService{hasResult: tc.hasCouch}
 			dockerHostSvc := &fakeDockerHostService{hasResult: tc.hasDockerHosts}
+			settings := domain.SystemSettings{
+				SetupCompleted:      tc.setupCompleted,
+				PasswordAuthEnabled: tc.passwordAuthEnabled,
+				TelegramAuthEnabled: tc.telegramAuthEnabled,
+				RegistrationMode:    tc.registrationMode,
+			}
+			setupWizardSvc := &fakeSetupWizardService{status: settings}
 
 			handler := &authHandler{
 				authSvc:          &fakeAuthService{},
 				s3InstanceSvc:    s3Svc,
 				couchInstanceSvc: couchSvc,
 				dockerHostSvc:    dockerHostSvc,
+				setupWizardSvc:   setupWizardSvc,
 				telegramClientID: "test-client-id",
 				noAuthEnabled:    tc.noAuthEnabled,
 				credsEncrypted:   tc.credsEncrypted,
@@ -252,6 +334,10 @@ func TestAuthHandler_GetConfig(t *testing.T) {
 			require.Equal(t, tc.noAuthEnabled, resp.NoAuthEnabled)
 			require.Equal(t, tc.credsEncrypted, resp.CredsEncrypted)
 			require.Equal(t, tc.hasDockerHosts, resp.IsWorkbenchAvailable)
+			require.Equal(t, tc.setupCompleted, resp.SetupCompleted)
+			require.Equal(t, tc.passwordAuthEnabled, resp.PasswordAuthEnabled)
+			require.Equal(t, tc.telegramAuthEnabled, resp.TelegramAuthEnabled)
+			require.Equal(t, tc.registrationMode == domain.RegistrationModeSelfRegister, resp.SelfRegisterEnabled)
 		})
 	}
 }
@@ -299,6 +385,26 @@ func TestAuthHandler_GetConfig_PropagatesDockerHostsError(t *testing.T) {
 		s3InstanceSvc:    s3Svc,
 		couchInstanceSvc: couchSvc,
 		dockerHostSvc:    dockerHostSvc,
+	}
+
+	resp, err := handler.GetConfig(context.Background(), nil)
+	require.Error(t, err)
+	require.Nil(t, resp)
+}
+
+func TestAuthHandler_GetConfig_PropagatesSetupWizardError(t *testing.T) {
+	setupErr := errors.New("setup wizard status unavailable")
+	s3Svc := &fakeS3InstanceService{}
+	couchSvc := &fakeCouchInstanceService{}
+	dockerHostSvc := &fakeDockerHostService{}
+	setupWizardSvc := &fakeSetupWizardService{err: setupErr}
+
+	handler := &authHandler{
+		authSvc:          &fakeAuthService{},
+		s3InstanceSvc:    s3Svc,
+		couchInstanceSvc: couchSvc,
+		dockerHostSvc:    dockerHostSvc,
+		setupWizardSvc:   setupWizardSvc,
 	}
 
 	resp, err := handler.GetConfig(context.Background(), nil)

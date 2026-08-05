@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package artel_admin_system_settings;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+import "setup_wizard.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service AdminSystemSettingsAPI {
+  rpc GetSettings(GetSettings.Request) returns (GetSettings.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_system_settings/get"
+      body: "*"
+    };
+  };
+  rpc UpdateAuthMethods(UpdateAuthMethods.Request) returns (UpdateAuthMethods.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_system_settings/update_auth_methods"
+      body: "*"
+    };
+  };
+  rpc UpdateRegistrationMode(UpdateRegistrationMode.Request) returns (UpdateRegistrationMode.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_system_settings/update_registration_mode"
+      body: "*"
+    };
+  };
+}
+
+message GetSettings {
+  message Request {}
+  message Response {
+    bool password_auth_enabled = 1;
+    bool telegram_auth_enabled = 2;
+    artel_setup_wizard.RegistrationMode registration_mode = 3;
+  }
+}
+
+message UpdateAuthMethods {
+  message Request {
+    bool password_enabled = 1;
+    bool telegram_enabled = 2;
+  }
+  message Response {}
+}
+
+message UpdateRegistrationMode {
+  message Request {
+    artel_setup_wizard.RegistrationMode mode = 1;
+  }
+  message Response {}
+}

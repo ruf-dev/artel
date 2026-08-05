@@ -7,15 +7,14 @@
 package artel_api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "go.redsock.ru/protoc-gen-npm/npmplugin"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -887,6 +886,10 @@ type GetConfig_Response struct {
 	CredsEncrypted       bool                   `protobuf:"varint,4,opt,name=creds_encrypted,json=credsEncrypted,proto3" json:"creds_encrypted,omitempty"`
 	IsCouchAvailable     bool                   `protobuf:"varint,5,opt,name=is_couch_available,json=isCouchAvailable,proto3" json:"is_couch_available,omitempty"`
 	IsWorkbenchAvailable bool                   `protobuf:"varint,6,opt,name=is_workbench_available,json=isWorkbenchAvailable,proto3" json:"is_workbench_available,omitempty"`
+	SetupCompleted       bool                   `protobuf:"varint,7,opt,name=setup_completed,json=setupCompleted,proto3" json:"setup_completed,omitempty"`
+	PasswordAuthEnabled  bool                   `protobuf:"varint,8,opt,name=password_auth_enabled,json=passwordAuthEnabled,proto3" json:"password_auth_enabled,omitempty"`
+	TelegramAuthEnabled  bool                   `protobuf:"varint,9,opt,name=telegram_auth_enabled,json=telegramAuthEnabled,proto3" json:"telegram_auth_enabled,omitempty"`
+	SelfRegisterEnabled  bool                   `protobuf:"varint,10,opt,name=self_register_enabled,json=selfRegisterEnabled,proto3" json:"self_register_enabled,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -959,6 +962,34 @@ func (x *GetConfig_Response) GetIsCouchAvailable() bool {
 func (x *GetConfig_Response) GetIsWorkbenchAvailable() bool {
 	if x != nil {
 		return x.IsWorkbenchAvailable
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetSetupCompleted() bool {
+	if x != nil {
+		return x.SetupCompleted
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetPasswordAuthEnabled() bool {
+	if x != nil {
+		return x.PasswordAuthEnabled
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetTelegramAuthEnabled() bool {
+	if x != nil {
+		return x.TelegramAuthEnabled
+	}
+	return false
+}
+
+func (x *GetConfig_Response) GetSelfRegisterEnabled() bool {
+	if x != nil {
+		return x.SelfRegisterEnabled
 	}
 	return false
 }
@@ -1117,16 +1148,21 @@ const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"expires_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12#\n" +
 	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\x12H\n" +
-	"\x12refresh_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x10refreshExpiresAt\"\xae\x02\n" +
+	"\x12refresh_expires_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x10refreshExpiresAt\"\xf3\x03\n" +
 	"\tGetConfig\x1a\t\n" +
-	"\aRequest\x1a\x95\x02\n" +
+	"\aRequest\x1a\xda\x03\n" +
 	"\bResponse\x12,\n" +
 	"\x12telegram_client_id\x18\x01 \x01(\tR\x10telegramClientId\x12&\n" +
 	"\x0fis_s3_available\x18\x02 \x01(\bR\risS3Available\x12&\n" +
 	"\x0fno_auth_enabled\x18\x03 \x01(\bR\rnoAuthEnabled\x12'\n" +
 	"\x0fcreds_encrypted\x18\x04 \x01(\bR\x0ecredsEncrypted\x12,\n" +
 	"\x12is_couch_available\x18\x05 \x01(\bR\x10isCouchAvailable\x124\n" +
-	"\x16is_workbench_available\x18\x06 \x01(\bR\x14isWorkbenchAvailable\"\xa0\x01\n" +
+	"\x16is_workbench_available\x18\x06 \x01(\bR\x14isWorkbenchAvailable\x12'\n" +
+	"\x0fsetup_completed\x18\a \x01(\bR\x0esetupCompleted\x122\n" +
+	"\x15password_auth_enabled\x18\b \x01(\bR\x13passwordAuthEnabled\x122\n" +
+	"\x15telegram_auth_enabled\x18\t \x01(\bR\x13telegramAuthEnabled\x122\n" +
+	"\x15self_register_enabled\x18\n" +
+	" \x01(\bR\x13selfRegisterEnabled\"\xa0\x01\n" +
 	"\vPermissions\x12)\n" +
 	"\x10is_administrator\x18\x01 \x01(\bR\x0fisAdministrator\x12\x1d\n" +
 	"\n" +

@@ -30,11 +30,14 @@ import UnsecureBanner from "@/segments/UnsecureBanner/UnsecureBanner.tsx"
 import {authService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
 import {useServerStatus} from "@/app/hooks/ServerStatus.ts"
+import {useAppConfig} from "@/app/hooks/AppConfig.ts"
 import ServiceUnavailablePage from "@/pages/service-unavailable/ServiceUnavailablePage.tsx"
+import SetupWizardPage from "@/pages/setup-wizard/SetupWizardPage.tsx"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export enum Path {
     InitPage = "/init",
+    SetupWizard = "/setup",
     HomePage = "/",
     McpKeysPage = "/mcp_keys",
     TaskTrackersPage = "/task-trackers",
@@ -82,6 +85,7 @@ const routes: RouteObject[] = [
         ],
     },
     {path: Path.InitPage, element: <InitPage/>, errorElement: <ErrorPage/>},
+    {path: Path.SetupWizard, element: <SetupWizardPage/>, errorElement: <ErrorPage/>},
     {path: Path.McpAuth, element: <McpAuthPage/>, errorElement: <ErrorPage/>},
     {path: Path.ClosedAlpha, element: <ClosedAlphaPage/>, errorElement: <ErrorPage/>},
     {path: Path.JoinVault, element: <JoinVaultPage/>, errorElement: <ErrorPage/>},
@@ -101,6 +105,10 @@ export default function Router() {
     const routeElement = useRoutes(routes)
 
     useEffect(() => {
+        if (!useAppConfig.getState().setupCompleted && location.pathname !== Path.SetupWizard) {
+            navigate(Path.SetupWizard)
+        }
+
         if (!auth.isAuthenticated()) return
 
         authService.FetchUserInfo().then(setUserInfo).catch(() => {})

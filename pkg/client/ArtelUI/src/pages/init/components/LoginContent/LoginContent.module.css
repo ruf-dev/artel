@@ -24,4 +24,9 @@
         color: var(--accent-fg-color);
         letter-spacing: -0.06rem;
     }
+
+    & .RegisterLink {
+        font-size: var(--font-size-md);
+        color: var(--secondary-fg-color);
+    }
 }

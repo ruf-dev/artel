@@ -471,6 +471,18 @@ type SubscriptionPlan struct {
 	UpdatedAt       time.Time
 }
 
+type SystemSetting struct {
+	ID                  int16
+	SetupCompleted      bool
+	PasswordAuthEnabled bool
+	TelegramAuthEnabled bool
+	RegistrationMode    string
+	SetupTokenHash      sql.NullString
+	SetupTokenIssuedAt  sql.NullTime
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+}
+
 type Tract struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID

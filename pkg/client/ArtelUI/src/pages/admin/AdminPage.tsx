@@ -12,9 +12,18 @@ import InstancesTab from "@/pages/admin/components/InstancesTab/InstancesTab.tsx
 import UsersTab from "@/pages/admin/components/UsersTab/UsersTab.tsx"
 import ArtelUsersTab from "@/pages/admin/components/ArtelUsersTab/ArtelUsersTab.tsx"
 import DockerApiTab from "@/pages/admin/components/DockerApiTab/DockerApiTab.tsx"
+import SettingsTab from "@/pages/admin/components/SettingsTab/SettingsTab.tsx"
 
 function resolveTab(value: string | null): Tab {
-    if (value === "couch_users" || value === "users" || value === "s3_instances" || value === "docker_api") return value
+    if (
+        value === "couch_users" ||
+        value === "users" ||
+        value === "s3_instances" ||
+        value === "docker_api" ||
+        value === "settings"
+    ) {
+        return value
+    }
     return "instances"
 }
 
@@ -67,6 +76,7 @@ export default function AdminPage() {
                 </div>
             )}
             {tab === "docker_api" && <DockerApiTab autoOpenAddDialog={autoOpenDockerDialog} />}
+            {tab === "settings" && <SettingsTab />}
         </div>
     )
 }

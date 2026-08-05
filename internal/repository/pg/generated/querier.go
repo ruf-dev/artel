@@ -14,6 +14,7 @@ import (
 
 type Querier interface {
 	AddVaultMember(ctx context.Context, arg AddVaultMemberParams) error
+	CompleteSetup(ctx context.Context) error
 	CouchInstanceExists(ctx context.Context) (bool, error)
 	CreateByUsername(ctx context.Context, arg CreateByUsernameParams) (CreateByUsernameRow, error)
 	CreateDefaultSubscription(ctx context.Context, userID uuid.UUID) error
@@ -64,6 +65,8 @@ type Querier interface {
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetSubscriptionPlan(ctx context.Context, planKey string) (SubscriptionPlan, error)
 	GetSubscriptionWithPlan(ctx context.Context, userID uuid.UUID) (GetSubscriptionWithPlanRow, error)
+	GetSystemSettings(ctx context.Context) (SystemSetting, error)
+	GetSystemSettingsForUpdate(ctx context.Context) (SystemSetting, error)
 	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (Tract, error)
 	GetTractRun(ctx context.Context, id uuid.UUID) (TractRun, error)
@@ -150,6 +153,7 @@ type Querier interface {
 	RotateTriggerSecret(ctx context.Context, arg RotateTriggerSecretParams) (Trigger, error)
 	S3InstanceExists(ctx context.Context) (bool, error)
 	SetMcpKeyAccess(ctx context.Context, arg SetMcpKeyAccessParams) error
+	SetSetupToken(ctx context.Context, arg SetSetupTokenParams) error
 	SetTractEnabled(ctx context.Context, arg SetTractEnabledParams) error
 	SetTriggerEnabled(ctx context.Context, arg SetTriggerEnabledParams) error
 	SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error
@@ -168,9 +172,12 @@ type Querier interface {
 	// set/replaced it. See internal/repository/pg/repos/dockerhosts/dockerhosts.go's Update.
 	UpdateDockerHost(ctx context.Context, arg UpdateDockerHostParams) error
 	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
+	UpdateSystemSettingsAuthMethods(ctx context.Context, arg UpdateSystemSettingsAuthMethodsParams) error
+	UpdateSystemSettingsRegistrationMode(ctx context.Context, registrationMode string) error
 	UpdateTract(ctx context.Context, arg UpdateTractParams) (Tract, error)
 	UpdateTractRunStatus(ctx context.Context, arg UpdateTractRunStatusParams) error
 	UpdateTractRunStepFinish(ctx context.Context, arg UpdateTractRunStepFinishParams) error
+	UpdateUserPasswordHash(ctx context.Context, arg UpdateUserPasswordHashParams) error
 	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error

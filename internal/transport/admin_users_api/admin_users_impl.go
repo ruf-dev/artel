@@ -128,3 +128,40 @@ func (a *AdminUsersImpl) GetUserSessions(
 
 	return resp, nil
 }
+
+func (a *AdminUsersImpl) CreateArtelUser(
+	ctx context.Context,
+	req *artel_api.CreateArtelUser_Request,
+) (*artel_api.CreateArtelUser_Response, error) {
+	user, err := a.svc.CreateUser(ctx, req.GetEmail(), req.GetPassword())
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error creating artel user")
+	}
+
+	entry := &artel_api.ArtelUserEntry{
+		UserId:    user.Uuid.String(),
+		Username:  user.Username,
+		Email:     user.Email,
+		CreatedAt: timestamppb.New(user.CreatedAt),
+	}
+	resp := &artel_api.CreateArtelUser_Response{User: entry}
+
+	return resp, nil
+}
+
+func (a *AdminUsersImpl) ChangeArtelUserPassword(
+	ctx context.Context,
+	req *artel_api.ChangeArtelUserPassword_Request,
+) (*artel_api.ChangeArtelUserPassword_Response, error) {
+	id, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error parsing user id")
+	}
+
+	err = a.svc.ChangePassword(ctx, id, req.GetNewPassword())
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error changing artel user password")
+	}
+
+	return &artel_api.ChangeArtelUserPassword_Response{}, nil
+}

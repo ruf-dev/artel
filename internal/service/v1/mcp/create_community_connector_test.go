@@ -125,6 +125,22 @@ func (f *fakeAuthService) EnsureNoAuthUser(_ context.Context) (domain.User, erro
 	return domain.User{}, nil
 }
 
+func (f *fakeAuthService) RegisterAdmin(_ context.Context, _, _ string) (domain.User, error) {
+	return domain.User{}, nil
+}
+
+func (f *fakeAuthService) CreateUserUnchecked(_ context.Context, _, _ string) (domain.User, error) {
+	return domain.User{}, nil
+}
+
+func (f *fakeAuthService) LoginOrRegisterAdminViaTelegram(_ context.Context, _ string) (domain.Session, error) {
+	return domain.Session{}, nil
+}
+
+func (f *fakeAuthService) ChangePassword(_ context.Context, _ uuid.UUID, _ string) error {
+	return nil
+}
+
 func communityConnectorParams(name string) map[string]interface{} {
 	return map[string]interface{}{
 		"name":        name,

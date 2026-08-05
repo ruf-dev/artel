@@ -18,6 +18,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
+	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
@@ -80,6 +81,12 @@ func (s *E2ESuite) SetupSuite() {
 	cfg := config.EnvironmentConfig{}
 	s.svcs, err = svcv1.New(s.repos, cfg)
 	s.Require().NoError(err, "init services")
+
+	err = s.repos.SystemSettings().CompleteSetup(ctx)
+	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
+
+	err = s.repos.SystemSettings().UpdateRegistrationMode(ctx, domain.RegistrationModeSelfRegister)
+	s.Require().NoError(err, "enable self-registration so tests can Register directly")
 
 	couchURL := envOrDefault("COUCH_URL", "http://localhost:15985")
 	couchUser := envOrDefault("COUCH_USER", "admin")

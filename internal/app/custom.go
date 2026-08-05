@@ -20,6 +20,7 @@ import (
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
+	"github.com/ruf-dev/artel/internal/service"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
@@ -27,6 +28,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport"
 	"github.com/ruf-dev/artel/internal/transport/admin_couch_api"
 	"github.com/ruf-dev/artel/internal/transport/admin_subscriptions_api"
+	"github.com/ruf-dev/artel/internal/transport/admin_system_settings_api"
 	"github.com/ruf-dev/artel/internal/transport/admin_users_api"
 	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/couch_instances_api"
@@ -39,6 +41,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/prompts_api"
 	"github.com/ruf-dev/artel/internal/transport/public_docs_api"
 	"github.com/ruf-dev/artel/internal/transport/s3_instances_api"
+	"github.com/ruf-dev/artel/internal/transport/setup_wizard_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
 	"github.com/ruf-dev/artel/internal/transport/tracts_api"
@@ -75,6 +78,11 @@ func (c *Custom) Init(a *App) error {
 	services, err := svcv1.New(repo, a.Cfg.Environment)
 	if err != nil {
 		return rerrors.Wrap(err, "init services")
+	}
+
+	err = ensureSetupToken(a.Ctx, services.SetupWizardService())
+	if err != nil {
+		return rerrors.Wrap(err, "error ensuring setup token")
 	}
 
 	// Workbench is constructed here (not in svcv1.New) because it composes
@@ -131,7 +139,8 @@ func (c *Custom) Init(a *App) error {
 	publicDocsImpl := public_docs_api.New(services.PublicDocsService(), cookieSecure)
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
-		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost, cookieSecure,
+		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost, services.SetupWizardService(),
+		cookieSecure,
 	)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance, cookieSecure)
 	dockerHostsImpl := docker_hosts_api.NewDockerHostsImpl(services.DockerHost, cookieSecure)
@@ -139,6 +148,8 @@ func (c *Custom) Init(a *App) error {
 	adminCouchImpl := admin_couch_api.New(services.AdminCouchService(), cookieSecure)
 	adminUsersImpl := admin_users_api.New(services.AdminUsersService(), cookieSecure)
 	adminSubscriptionsImpl := admin_subscriptions_api.New(services.AdminSubscriptionsService(), cookieSecure)
+	setupWizardImpl := setup_wizard_api.New(services.SetupWizardService(), cookieSecure)
+	adminSystemSettingsImpl := admin_system_settings_api.New(services.AdminSystemSettingsService(), cookieSecure)
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService(), cookieSecure)
 	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService(), cookieSecure)
 	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService(), cookieSecure)
@@ -169,6 +180,13 @@ func (c *Custom) Init(a *App) error {
 				pb.PublicDocsAPI_ListNotes_FullMethodName,
 				pb.PublicDocsAPI_GetNote_FullMethodName,
 				pb.PublicDocsAPI_ListTags_FullMethodName,
+				// SetupWizardAPI gates on the bespoke wizardSessionToken carried inside each
+				// request, checked by SetupWizardService itself — not by this interceptor.
+				pb.SetupWizardAPI_GetStatus_FullMethodName,
+				pb.SetupWizardAPI_SubmitToken_FullMethodName,
+				pb.SetupWizardAPI_SelectAuthMethods_FullMethodName,
+				pb.SetupWizardAPI_SelectRegistrationMode_FullMethodName,
+				pb.SetupWizardAPI_CompleteSetup_FullMethodName,
 			),
 			middleware.WithNoAuth(a.Cfg.Environment.NoAuthEnabled),
 		),
@@ -223,6 +241,7 @@ func (c *Custom) Init(a *App) error {
 			pb.PublicDocsAPI_ListFolders_FullMethodName,
 			pb.PublicDocsAPI_ListNotes_FullMethodName,
 			pb.PublicDocsAPI_ListTags_FullMethodName,
+			pb.SetupWizardAPI_GetStatus_FullMethodName,
 			pb.TaskTrackersAPI_ListTaskTrackers_FullMethodName,
 			pb.TaskTrackersAPI_ListTrelloBoards_FullMethodName,
 			pb.TractsAPI_GetRun_FullMethodName,
@@ -269,12 +288,17 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminUsersAPI_ListArtelUsers_FullMethodName,
 			pb.AdminUsersAPI_GetArtelUser_FullMethodName,
 			pb.AdminUsersAPI_GetUserSessions_FullMethodName,
+			pb.AdminUsersAPI_CreateArtelUser_FullMethodName,
+			pb.AdminUsersAPI_ChangeArtelUserPassword_FullMethodName,
 			pb.AdminSubscriptionsAPI_ListSubscriptionPlans_FullMethodName,
 			pb.AdminSubscriptionsAPI_GetUserSubscription_FullMethodName,
 			pb.AdminSubscriptionsAPI_UpdateUserSubscription_FullMethodName,
+			pb.AdminSystemSettingsAPI_GetSettings_FullMethodName,
+			pb.AdminSystemSettingsAPI_UpdateAuthMethods_FullMethodName,
+			pb.AdminSystemSettingsAPI_UpdateRegistrationMode_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl)
+	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
@@ -319,6 +343,35 @@ func initEncryption(encKeyHex string) (cryptoutil.Encryptor, error) {
 	}
 
 	return encryptor, nil
+}
+
+// ensureSetupToken regenerates and logs the one-time first-run setup token when instance setup
+// hasn't completed yet — this is the only way an operator learns the token, since it's never
+// persisted in plaintext (see SystemSettings.SetupTokenHash). Safe to call on every startup: once
+// setup completes, CurrentStatus reports SetupCompleted == true and this becomes a no-op.
+func ensureSetupToken(ctx context.Context, setupWizardSvc service.SetupWizardService) error {
+	settings, err := setupWizardSvc.CurrentStatus(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting setup wizard status")
+	}
+
+	if settings.SetupCompleted {
+		return nil
+	}
+
+	setupToken, err := setupWizardSvc.RegenerateSetupToken(ctx)
+	if err != nil {
+		return rerrors.Wrap(err, "error regenerating setup token")
+	}
+
+	log.Warn().Msgf(
+		"first-run setup token: %s — open the setup wizard and enter this token to finish "+
+			"configuring the instance. If you lose it, find it again via: "+
+			"docker logs <container> | grep \"setup token:\"",
+		setupToken,
+	)
+
+	return nil
 }
 
 // Start - launch custom handlers
