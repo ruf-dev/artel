@@ -4,6 +4,7 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import ConnectionDetailDialog from "@/dialogs/ConnectionDetailDialog/ConnectionDetailDialog.tsx"
 import ManageEmailDialog from "@/dialogs/ManageEmailDialog/ManageEmailDialog.tsx"
 import ManageGitlabDialog from "@/dialogs/ManageGitlabDialog/ManageGitlabDialog.tsx"
+import ManageTelegramDialog from "@/dialogs/ManageTelegramDialog/ManageTelegramDialog.tsx"
 import ManageTrelloDialog from "@/dialogs/ManageTrelloDialog/ManageTrelloDialog.tsx"
 import ProviderCard from "@/widgets/ProviderCard/ProviderCard.tsx"
 import cls from "@/pages/connections/components/ContentSegment/ContentSegment.module.css"
@@ -14,6 +15,7 @@ const PROVIDERS: {provider: ExternalProvider; name: string}[] = [
     {provider: ExternalProvider.EXTERNAL_PROVIDER_MIRO, name: "Miro"},
     {provider: ExternalProvider.EXTERNAL_PROVIDER_TRELLO, name: "Trello"},
     {provider: ExternalProvider.EXTERNAL_PROVIDER_GITLAB, name: "GitLab"},
+    {provider: ExternalProvider.EXTERNAL_PROVIDER_TELEGRAM, name: "Telegram"},
 ]
 
 export default function ContentSegment() {
@@ -30,6 +32,9 @@ export default function ContentSegment() {
         }
         if (provider === ExternalProvider.EXTERNAL_PROVIDER_GITLAB) {
             return <ManageGitlabDialog/>
+        }
+        if (provider === ExternalProvider.EXTERNAL_PROVIDER_TELEGRAM) {
+            return <ManageTelegramDialog/>
         }
         if (provider === ExternalProvider.EXTERNAL_PROVIDER_TRELLO) {
             return <ManageTrelloDialog/>

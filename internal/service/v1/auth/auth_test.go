@@ -11,6 +11,8 @@ import (
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -133,7 +135,19 @@ func newFakeUsersRepo() *fakeUsersRepo {
 	return &fakeUsersRepo{byID: map[uuid.UUID]domain.User{}}
 }
 
+// Create mirrors the real UsersRepo.Create, including the unique-email constraint the users
+// table enforces — a duplicate email returns user_errors.AlreadyExists, same as pg_err.UnwrapPgErr
+// translates a Postgres unique-violation, so tests can exercise the duplicate-registration path
+// without a real database.
 func (f *fakeUsersRepo) Create(_ context.Context, email, passwordHash string) (domain.User, error) {
+	if email != "" {
+		for _, existing := range f.byID {
+			if existing.Email == email {
+				return domain.User{}, rerrors.Wrap(user_errors.AlreadyExists, "error creating user")
+			}
+		}
+	}
+
 	user := domain.User{Uuid: uuid.New(), Email: email, PasswordHash: passwordHash}
 	f.byID[user.Uuid] = user
 
@@ -417,6 +431,30 @@ func TestServiceRegister(t *testing.T) {
 
 		if permissionsRepo.byUser[user.Uuid] {
 			t.Errorf("expected self-registered user to not be an administrator")
+		}
+	})
+
+	t.Run("rejects a duplicate email with AlreadyExists", func(t *testing.T) {
+		settings := domain.SystemSettings{
+			SetupCompleted:      true,
+			PasswordAuthEnabled: true,
+			RegistrationMode:    domain.RegistrationModeSelfRegister,
+		}
+		svc, _, _ := newTestAuthService(settings)
+
+		_, err := svc.Register(context.Background(), "dup@b.com", "pw")
+		if err != nil {
+			t.Fatalf("unexpected error on first registration: %v", err)
+		}
+
+		_, err = svc.Register(context.Background(), "dup@b.com", "pw")
+		if !errors.Is(err, user_errors.AlreadyExists) {
+			t.Fatalf("expected AlreadyExists, got %v", err)
+		}
+
+		st := status.Convert(err)
+		if st.Code() != codes.AlreadyExists {
+			t.Errorf("expected grpc code AlreadyExists, got %v", st.Code())
 		}
 	})
 }

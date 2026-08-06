@@ -287,6 +287,13 @@ var (
 		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
 
+	// telegram connection.
+	TelegramValidationFailed = rerrors.New(
+		"could not verify telegram bot token",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+
 	// anthropic / llm key connection.
 	LlmKeyValidationFailed = rerrors.New(
 		"could not verify the api key against the provider",

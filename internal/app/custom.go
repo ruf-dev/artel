@@ -195,10 +195,11 @@ func (c *Custom) Init(a *App) error {
 		// internal/middleware/csrf_interceptor.go) — native gRPC/CLI callers presenting a raw
 		// Authorization header are unaffected. The exempt list below is every read-only RPC,
 		// drafted from the Get*/List*/Has*/Check*/Watch* naming convention (mirrors the
-		// GrpcAdminInterceptor explicit-list idiom below). The five Check* RPCs were read
+		// GrpcAdminInterceptor explicit-list idiom below). The six Check* RPCs were read
 		// directly (externalconnections.Service.CheckAnthropicConnection/CheckEmailConnection/
-		// CheckGitlabConnection/CheckTrelloConnection, notes.Service.CheckImportConflicts) to
-		// confirm none of them mutate state before being added here.
+		// CheckGitlabConnection/CheckTelegramConnection/CheckTrelloConnection,
+		// notes.Service.CheckImportConflicts) to confirm none of them mutate state before
+		// being added here.
 		middleware.GrpcCSRFInterceptor(
 			pb.AdminCouchAPI_GetUserDatabaseAccess_FullMethodName,
 			pb.AdminCouchAPI_ListCouchDatabases_FullMethodName,
@@ -218,6 +219,7 @@ func (c *Custom) Init(a *App) error {
 			pb.ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName,
 			pb.ExternalConnectionsAPI_CheckEmailConnection_FullMethodName,
 			pb.ExternalConnectionsAPI_CheckGitlabConnection_FullMethodName,
+			pb.ExternalConnectionsAPI_CheckTelegramConnection_FullMethodName,
 			pb.ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName,
 			pb.ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName,
 			pb.ExternalConnectionsAPI_ListConnections_FullMethodName,

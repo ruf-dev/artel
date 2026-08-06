@@ -15,6 +15,7 @@ const (
 	ProviderEmail        = "email"
 	ProviderGitlab       = "gitlab"
 	ProviderAnthropic    = "anthropic"
+	ProviderTelegram     = "telegram"
 )
 
 type ExternalConnection struct {
@@ -80,4 +81,9 @@ type GitlabCredentials struct {
 type AnthropicKeyCredentials struct {
 	ApiKey  string `json:"api_key"`
 	BaseUrl string `json:"base_url,omitempty"` // optional override, e.g. a proxy/regional endpoint
+}
+
+// TelegramCredentials is stored encrypted in credentials_enc for the telegram provider.
+type TelegramCredentials struct {
+	BotToken string `json:"bot_token"`
 }

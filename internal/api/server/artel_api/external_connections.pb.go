@@ -32,6 +32,7 @@ const (
 	ExternalProvider_EXTERNAL_PROVIDER_EMAIL         ExternalProvider = 4
 	ExternalProvider_EXTERNAL_PROVIDER_GITLAB        ExternalProvider = 5
 	ExternalProvider_EXTERNAL_PROVIDER_ANTHROPIC     ExternalProvider = 6
+	ExternalProvider_EXTERNAL_PROVIDER_TELEGRAM      ExternalProvider = 7
 )
 
 // Enum value maps for ExternalProvider.
@@ -44,6 +45,7 @@ var (
 		4: "EXTERNAL_PROVIDER_EMAIL",
 		5: "EXTERNAL_PROVIDER_GITLAB",
 		6: "EXTERNAL_PROVIDER_ANTHROPIC",
+		7: "EXTERNAL_PROVIDER_TELEGRAM",
 	}
 	ExternalProvider_value = map[string]int32{
 		"EXTERNAL_PROVIDER_UNSPECIFIED":   0,
@@ -53,6 +55,7 @@ var (
 		"EXTERNAL_PROVIDER_EMAIL":         4,
 		"EXTERNAL_PROVIDER_GITLAB":        5,
 		"EXTERNAL_PROVIDER_ANTHROPIC":     6,
+		"EXTERNAL_PROVIDER_TELEGRAM":      7,
 	}
 )
 
@@ -1021,6 +1024,78 @@ func (*CheckTrelloConnection) Descriptor() ([]byte, []int) {
 	return file_external_connections_proto_rawDescGZIP(), []int{20}
 }
 
+type AddTelegramConnection struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddTelegramConnection) Reset() {
+	*x = AddTelegramConnection{}
+	mi := &file_external_connections_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddTelegramConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddTelegramConnection) ProtoMessage() {}
+
+func (x *AddTelegramConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddTelegramConnection.ProtoReflect.Descriptor instead.
+func (*AddTelegramConnection) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{21}
+}
+
+type CheckTelegramConnection struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckTelegramConnection) Reset() {
+	*x = CheckTelegramConnection{}
+	mi := &file_external_connections_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckTelegramConnection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckTelegramConnection) ProtoMessage() {}
+
+func (x *CheckTelegramConnection) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckTelegramConnection.ProtoReflect.Descriptor instead.
+func (*CheckTelegramConnection) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{22}
+}
+
 type AddAnthropicConnection struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -1029,7 +1104,7 @@ type AddAnthropicConnection struct {
 
 func (x *AddAnthropicConnection) Reset() {
 	*x = AddAnthropicConnection{}
-	mi := &file_external_connections_proto_msgTypes[21]
+	mi := &file_external_connections_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1041,7 +1116,7 @@ func (x *AddAnthropicConnection) String() string {
 func (*AddAnthropicConnection) ProtoMessage() {}
 
 func (x *AddAnthropicConnection) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[21]
+	mi := &file_external_connections_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1054,7 +1129,7 @@ func (x *AddAnthropicConnection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddAnthropicConnection.ProtoReflect.Descriptor instead.
 func (*AddAnthropicConnection) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{21}
+	return file_external_connections_proto_rawDescGZIP(), []int{23}
 }
 
 type CheckAnthropicConnection struct {
@@ -1065,7 +1140,7 @@ type CheckAnthropicConnection struct {
 
 func (x *CheckAnthropicConnection) Reset() {
 	*x = CheckAnthropicConnection{}
-	mi := &file_external_connections_proto_msgTypes[22]
+	mi := &file_external_connections_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1077,7 +1152,7 @@ func (x *CheckAnthropicConnection) String() string {
 func (*CheckAnthropicConnection) ProtoMessage() {}
 
 func (x *CheckAnthropicConnection) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[22]
+	mi := &file_external_connections_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1090,7 +1165,7 @@ func (x *CheckAnthropicConnection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAnthropicConnection.ProtoReflect.Descriptor instead.
 func (*CheckAnthropicConnection) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{22}
+	return file_external_connections_proto_rawDescGZIP(), []int{24}
 }
 
 type AddGenericConnection struct {
@@ -1101,7 +1176,7 @@ type AddGenericConnection struct {
 
 func (x *AddGenericConnection) Reset() {
 	*x = AddGenericConnection{}
-	mi := &file_external_connections_proto_msgTypes[23]
+	mi := &file_external_connections_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1113,7 +1188,7 @@ func (x *AddGenericConnection) String() string {
 func (*AddGenericConnection) ProtoMessage() {}
 
 func (x *AddGenericConnection) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[23]
+	mi := &file_external_connections_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1126,7 +1201,7 @@ func (x *AddGenericConnection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddGenericConnection.ProtoReflect.Descriptor instead.
 func (*AddGenericConnection) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{23}
+	return file_external_connections_proto_rawDescGZIP(), []int{25}
 }
 
 type InitiateGoogleOAuth_Request struct {
@@ -1138,7 +1213,7 @@ type InitiateGoogleOAuth_Request struct {
 
 func (x *InitiateGoogleOAuth_Request) Reset() {
 	*x = InitiateGoogleOAuth_Request{}
-	mi := &file_external_connections_proto_msgTypes[25]
+	mi := &file_external_connections_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1150,7 +1225,7 @@ func (x *InitiateGoogleOAuth_Request) String() string {
 func (*InitiateGoogleOAuth_Request) ProtoMessage() {}
 
 func (x *InitiateGoogleOAuth_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[25]
+	mi := &file_external_connections_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1182,7 +1257,7 @@ type InitiateGoogleOAuth_Response struct {
 
 func (x *InitiateGoogleOAuth_Response) Reset() {
 	*x = InitiateGoogleOAuth_Response{}
-	mi := &file_external_connections_proto_msgTypes[26]
+	mi := &file_external_connections_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1194,7 +1269,7 @@ func (x *InitiateGoogleOAuth_Response) String() string {
 func (*InitiateGoogleOAuth_Response) ProtoMessage() {}
 
 func (x *InitiateGoogleOAuth_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[26]
+	mi := &file_external_connections_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1225,7 +1300,7 @@ type ListConnections_Request struct {
 
 func (x *ListConnections_Request) Reset() {
 	*x = ListConnections_Request{}
-	mi := &file_external_connections_proto_msgTypes[27]
+	mi := &file_external_connections_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1237,7 +1312,7 @@ func (x *ListConnections_Request) String() string {
 func (*ListConnections_Request) ProtoMessage() {}
 
 func (x *ListConnections_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[27]
+	mi := &file_external_connections_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1262,7 +1337,7 @@ type ListConnections_Response struct {
 
 func (x *ListConnections_Response) Reset() {
 	*x = ListConnections_Response{}
-	mi := &file_external_connections_proto_msgTypes[28]
+	mi := &file_external_connections_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1274,7 +1349,7 @@ func (x *ListConnections_Response) String() string {
 func (*ListConnections_Response) ProtoMessage() {}
 
 func (x *ListConnections_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[28]
+	mi := &file_external_connections_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1306,7 +1381,7 @@ type DisconnectProvider_Request struct {
 
 func (x *DisconnectProvider_Request) Reset() {
 	*x = DisconnectProvider_Request{}
-	mi := &file_external_connections_proto_msgTypes[29]
+	mi := &file_external_connections_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1318,7 +1393,7 @@ func (x *DisconnectProvider_Request) String() string {
 func (*DisconnectProvider_Request) ProtoMessage() {}
 
 func (x *DisconnectProvider_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[29]
+	mi := &file_external_connections_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1349,7 +1424,7 @@ type DisconnectProvider_Response struct {
 
 func (x *DisconnectProvider_Response) Reset() {
 	*x = DisconnectProvider_Response{}
-	mi := &file_external_connections_proto_msgTypes[30]
+	mi := &file_external_connections_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1361,7 +1436,7 @@ func (x *DisconnectProvider_Response) String() string {
 func (*DisconnectProvider_Response) ProtoMessage() {}
 
 func (x *DisconnectProvider_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[30]
+	mi := &file_external_connections_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1386,7 +1461,7 @@ type DisconnectConnection_Request struct {
 
 func (x *DisconnectConnection_Request) Reset() {
 	*x = DisconnectConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[31]
+	mi := &file_external_connections_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1398,7 +1473,7 @@ func (x *DisconnectConnection_Request) String() string {
 func (*DisconnectConnection_Request) ProtoMessage() {}
 
 func (x *DisconnectConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[31]
+	mi := &file_external_connections_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1429,7 +1504,7 @@ type DisconnectConnection_Response struct {
 
 func (x *DisconnectConnection_Response) Reset() {
 	*x = DisconnectConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[32]
+	mi := &file_external_connections_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1441,7 +1516,7 @@ func (x *DisconnectConnection_Response) String() string {
 func (*DisconnectConnection_Response) ProtoMessage() {}
 
 func (x *DisconnectConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[32]
+	mi := &file_external_connections_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1465,7 +1540,7 @@ type GooglePickerToken_Request struct {
 
 func (x *GooglePickerToken_Request) Reset() {
 	*x = GooglePickerToken_Request{}
-	mi := &file_external_connections_proto_msgTypes[33]
+	mi := &file_external_connections_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1477,7 +1552,7 @@ func (x *GooglePickerToken_Request) String() string {
 func (*GooglePickerToken_Request) ProtoMessage() {}
 
 func (x *GooglePickerToken_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[33]
+	mi := &file_external_connections_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1502,7 +1577,7 @@ type GooglePickerToken_Response struct {
 
 func (x *GooglePickerToken_Response) Reset() {
 	*x = GooglePickerToken_Response{}
-	mi := &file_external_connections_proto_msgTypes[34]
+	mi := &file_external_connections_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1514,7 +1589,7 @@ func (x *GooglePickerToken_Response) String() string {
 func (*GooglePickerToken_Response) ProtoMessage() {}
 
 func (x *GooglePickerToken_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[34]
+	mi := &file_external_connections_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1547,7 +1622,7 @@ type AddSpreadsheet_Request struct {
 
 func (x *AddSpreadsheet_Request) Reset() {
 	*x = AddSpreadsheet_Request{}
-	mi := &file_external_connections_proto_msgTypes[35]
+	mi := &file_external_connections_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1559,7 +1634,7 @@ func (x *AddSpreadsheet_Request) String() string {
 func (*AddSpreadsheet_Request) ProtoMessage() {}
 
 func (x *AddSpreadsheet_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[35]
+	mi := &file_external_connections_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1598,7 +1673,7 @@ type AddSpreadsheet_Response struct {
 
 func (x *AddSpreadsheet_Response) Reset() {
 	*x = AddSpreadsheet_Response{}
-	mi := &file_external_connections_proto_msgTypes[36]
+	mi := &file_external_connections_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1610,7 +1685,7 @@ func (x *AddSpreadsheet_Response) String() string {
 func (*AddSpreadsheet_Response) ProtoMessage() {}
 
 func (x *AddSpreadsheet_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[36]
+	mi := &file_external_connections_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1641,7 +1716,7 @@ type ListSpreadsheets_Request struct {
 
 func (x *ListSpreadsheets_Request) Reset() {
 	*x = ListSpreadsheets_Request{}
-	mi := &file_external_connections_proto_msgTypes[37]
+	mi := &file_external_connections_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1653,7 +1728,7 @@ func (x *ListSpreadsheets_Request) String() string {
 func (*ListSpreadsheets_Request) ProtoMessage() {}
 
 func (x *ListSpreadsheets_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[37]
+	mi := &file_external_connections_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1678,7 +1753,7 @@ type ListSpreadsheets_Response struct {
 
 func (x *ListSpreadsheets_Response) Reset() {
 	*x = ListSpreadsheets_Response{}
-	mi := &file_external_connections_proto_msgTypes[38]
+	mi := &file_external_connections_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1690,7 +1765,7 @@ func (x *ListSpreadsheets_Response) String() string {
 func (*ListSpreadsheets_Response) ProtoMessage() {}
 
 func (x *ListSpreadsheets_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[38]
+	mi := &file_external_connections_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1722,7 +1797,7 @@ type RemoveSpreadsheet_Request struct {
 
 func (x *RemoveSpreadsheet_Request) Reset() {
 	*x = RemoveSpreadsheet_Request{}
-	mi := &file_external_connections_proto_msgTypes[39]
+	mi := &file_external_connections_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1734,7 +1809,7 @@ func (x *RemoveSpreadsheet_Request) String() string {
 func (*RemoveSpreadsheet_Request) ProtoMessage() {}
 
 func (x *RemoveSpreadsheet_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[39]
+	mi := &file_external_connections_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1765,7 +1840,7 @@ type RemoveSpreadsheet_Response struct {
 
 func (x *RemoveSpreadsheet_Response) Reset() {
 	*x = RemoveSpreadsheet_Response{}
-	mi := &file_external_connections_proto_msgTypes[40]
+	mi := &file_external_connections_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1777,7 +1852,7 @@ func (x *RemoveSpreadsheet_Response) String() string {
 func (*RemoveSpreadsheet_Response) ProtoMessage() {}
 
 func (x *RemoveSpreadsheet_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[40]
+	mi := &file_external_connections_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1807,7 +1882,7 @@ type AddEmailConnection_Request struct {
 
 func (x *AddEmailConnection_Request) Reset() {
 	*x = AddEmailConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[41]
+	mi := &file_external_connections_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1819,7 +1894,7 @@ func (x *AddEmailConnection_Request) String() string {
 func (*AddEmailConnection_Request) ProtoMessage() {}
 
 func (x *AddEmailConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[41]
+	mi := &file_external_connections_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1886,7 +1961,7 @@ type AddEmailConnection_Response struct {
 
 func (x *AddEmailConnection_Response) Reset() {
 	*x = AddEmailConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[42]
+	mi := &file_external_connections_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1898,7 +1973,7 @@ func (x *AddEmailConnection_Response) String() string {
 func (*AddEmailConnection_Response) ProtoMessage() {}
 
 func (x *AddEmailConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[42]
+	mi := &file_external_connections_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1935,7 +2010,7 @@ type CheckEmailConnection_Request struct {
 
 func (x *CheckEmailConnection_Request) Reset() {
 	*x = CheckEmailConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[43]
+	mi := &file_external_connections_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1947,7 +2022,7 @@ func (x *CheckEmailConnection_Request) String() string {
 func (*CheckEmailConnection_Request) ProtoMessage() {}
 
 func (x *CheckEmailConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[43]
+	mi := &file_external_connections_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2013,7 +2088,7 @@ type CheckEmailConnection_Response struct {
 
 func (x *CheckEmailConnection_Response) Reset() {
 	*x = CheckEmailConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[44]
+	mi := &file_external_connections_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2025,7 +2100,7 @@ func (x *CheckEmailConnection_Response) String() string {
 func (*CheckEmailConnection_Response) ProtoMessage() {}
 
 func (x *CheckEmailConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[44]
+	mi := &file_external_connections_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2050,7 +2125,7 @@ type ListMailServerSuggestions_Request struct {
 
 func (x *ListMailServerSuggestions_Request) Reset() {
 	*x = ListMailServerSuggestions_Request{}
-	mi := &file_external_connections_proto_msgTypes[45]
+	mi := &file_external_connections_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2062,7 +2137,7 @@ func (x *ListMailServerSuggestions_Request) String() string {
 func (*ListMailServerSuggestions_Request) ProtoMessage() {}
 
 func (x *ListMailServerSuggestions_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[45]
+	mi := &file_external_connections_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2094,7 +2169,7 @@ type ListMailServerSuggestions_Response struct {
 
 func (x *ListMailServerSuggestions_Response) Reset() {
 	*x = ListMailServerSuggestions_Response{}
-	mi := &file_external_connections_proto_msgTypes[46]
+	mi := &file_external_connections_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2106,7 +2181,7 @@ func (x *ListMailServerSuggestions_Response) String() string {
 func (*ListMailServerSuggestions_Response) ProtoMessage() {}
 
 func (x *ListMailServerSuggestions_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[46]
+	mi := &file_external_connections_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2139,7 +2214,7 @@ type AddGitlabConnection_Request struct {
 
 func (x *AddGitlabConnection_Request) Reset() {
 	*x = AddGitlabConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[47]
+	mi := &file_external_connections_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2151,7 +2226,7 @@ func (x *AddGitlabConnection_Request) String() string {
 func (*AddGitlabConnection_Request) ProtoMessage() {}
 
 func (x *AddGitlabConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[47]
+	mi := &file_external_connections_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2190,7 +2265,7 @@ type AddGitlabConnection_Response struct {
 
 func (x *AddGitlabConnection_Response) Reset() {
 	*x = AddGitlabConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[48]
+	mi := &file_external_connections_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2202,7 +2277,7 @@ func (x *AddGitlabConnection_Response) String() string {
 func (*AddGitlabConnection_Response) ProtoMessage() {}
 
 func (x *AddGitlabConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[48]
+	mi := &file_external_connections_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2235,7 +2310,7 @@ type CheckGitlabConnection_Request struct {
 
 func (x *CheckGitlabConnection_Request) Reset() {
 	*x = CheckGitlabConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[49]
+	mi := &file_external_connections_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2247,7 +2322,7 @@ func (x *CheckGitlabConnection_Request) String() string {
 func (*CheckGitlabConnection_Request) ProtoMessage() {}
 
 func (x *CheckGitlabConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[49]
+	mi := &file_external_connections_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2286,7 +2361,7 @@ type CheckGitlabConnection_Response struct {
 
 func (x *CheckGitlabConnection_Response) Reset() {
 	*x = CheckGitlabConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[50]
+	mi := &file_external_connections_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2298,7 +2373,7 @@ func (x *CheckGitlabConnection_Response) String() string {
 func (*CheckGitlabConnection_Response) ProtoMessage() {}
 
 func (x *CheckGitlabConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[50]
+	mi := &file_external_connections_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2329,7 +2404,7 @@ type GenerateGitlabWebhookSecret_Request struct {
 
 func (x *GenerateGitlabWebhookSecret_Request) Reset() {
 	*x = GenerateGitlabWebhookSecret_Request{}
-	mi := &file_external_connections_proto_msgTypes[51]
+	mi := &file_external_connections_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2341,7 +2416,7 @@ func (x *GenerateGitlabWebhookSecret_Request) String() string {
 func (*GenerateGitlabWebhookSecret_Request) ProtoMessage() {}
 
 func (x *GenerateGitlabWebhookSecret_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[51]
+	mi := &file_external_connections_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2367,7 +2442,7 @@ type GenerateGitlabWebhookSecret_Response struct {
 
 func (x *GenerateGitlabWebhookSecret_Response) Reset() {
 	*x = GenerateGitlabWebhookSecret_Response{}
-	mi := &file_external_connections_proto_msgTypes[52]
+	mi := &file_external_connections_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2379,7 +2454,7 @@ func (x *GenerateGitlabWebhookSecret_Response) String() string {
 func (*GenerateGitlabWebhookSecret_Response) ProtoMessage() {}
 
 func (x *GenerateGitlabWebhookSecret_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[52]
+	mi := &file_external_connections_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2419,7 +2494,7 @@ type AddTrelloConnection_Request struct {
 
 func (x *AddTrelloConnection_Request) Reset() {
 	*x = AddTrelloConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[53]
+	mi := &file_external_connections_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2431,7 +2506,7 @@ func (x *AddTrelloConnection_Request) String() string {
 func (*AddTrelloConnection_Request) ProtoMessage() {}
 
 func (x *AddTrelloConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[53]
+	mi := &file_external_connections_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2470,7 +2545,7 @@ type AddTrelloConnection_Response struct {
 
 func (x *AddTrelloConnection_Response) Reset() {
 	*x = AddTrelloConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[54]
+	mi := &file_external_connections_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2482,7 +2557,7 @@ func (x *AddTrelloConnection_Response) String() string {
 func (*AddTrelloConnection_Response) ProtoMessage() {}
 
 func (x *AddTrelloConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[54]
+	mi := &file_external_connections_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2515,7 +2590,7 @@ type CheckTrelloConnection_Request struct {
 
 func (x *CheckTrelloConnection_Request) Reset() {
 	*x = CheckTrelloConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[55]
+	mi := &file_external_connections_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2527,7 +2602,7 @@ func (x *CheckTrelloConnection_Request) String() string {
 func (*CheckTrelloConnection_Request) ProtoMessage() {}
 
 func (x *CheckTrelloConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[55]
+	mi := &file_external_connections_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2566,7 +2641,7 @@ type CheckTrelloConnection_Response struct {
 
 func (x *CheckTrelloConnection_Response) Reset() {
 	*x = CheckTrelloConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[56]
+	mi := &file_external_connections_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2578,7 +2653,7 @@ func (x *CheckTrelloConnection_Response) String() string {
 func (*CheckTrelloConnection_Response) ProtoMessage() {}
 
 func (x *CheckTrelloConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[56]
+	mi := &file_external_connections_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2601,6 +2676,182 @@ func (x *CheckTrelloConnection_Response) GetFullName() string {
 	return ""
 }
 
+type AddTelegramConnection_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BotToken      string                 `protobuf:"bytes,1,opt,name=bot_token,json=botToken,proto3" json:"bot_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddTelegramConnection_Request) Reset() {
+	*x = AddTelegramConnection_Request{}
+	mi := &file_external_connections_proto_msgTypes[59]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddTelegramConnection_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddTelegramConnection_Request) ProtoMessage() {}
+
+func (x *AddTelegramConnection_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[59]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddTelegramConnection_Request.ProtoReflect.Descriptor instead.
+func (*AddTelegramConnection_Request) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{21, 0}
+}
+
+func (x *AddTelegramConnection_Request) GetBotToken() string {
+	if x != nil {
+		return x.BotToken
+	}
+	return ""
+}
+
+type AddTelegramConnection_Response struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Connection    *ExternalConnectionInfo `protobuf:"bytes,1,opt,name=connection,proto3" json:"connection,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddTelegramConnection_Response) Reset() {
+	*x = AddTelegramConnection_Response{}
+	mi := &file_external_connections_proto_msgTypes[60]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddTelegramConnection_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddTelegramConnection_Response) ProtoMessage() {}
+
+func (x *AddTelegramConnection_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[60]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddTelegramConnection_Response.ProtoReflect.Descriptor instead.
+func (*AddTelegramConnection_Response) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{21, 1}
+}
+
+func (x *AddTelegramConnection_Response) GetConnection() *ExternalConnectionInfo {
+	if x != nil {
+		return x.Connection
+	}
+	return nil
+}
+
+type CheckTelegramConnection_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BotToken      string                 `protobuf:"bytes,1,opt,name=bot_token,json=botToken,proto3" json:"bot_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckTelegramConnection_Request) Reset() {
+	*x = CheckTelegramConnection_Request{}
+	mi := &file_external_connections_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckTelegramConnection_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckTelegramConnection_Request) ProtoMessage() {}
+
+func (x *CheckTelegramConnection_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckTelegramConnection_Request.ProtoReflect.Descriptor instead.
+func (*CheckTelegramConnection_Request) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{22, 0}
+}
+
+func (x *CheckTelegramConnection_Request) GetBotToken() string {
+	if x != nil {
+		return x.BotToken
+	}
+	return ""
+}
+
+type CheckTelegramConnection_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BotUsername   string                 `protobuf:"bytes,1,opt,name=bot_username,json=botUsername,proto3" json:"bot_username,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckTelegramConnection_Response) Reset() {
+	*x = CheckTelegramConnection_Response{}
+	mi := &file_external_connections_proto_msgTypes[62]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckTelegramConnection_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckTelegramConnection_Response) ProtoMessage() {}
+
+func (x *CheckTelegramConnection_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_external_connections_proto_msgTypes[62]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckTelegramConnection_Response.ProtoReflect.Descriptor instead.
+func (*CheckTelegramConnection_Response) Descriptor() ([]byte, []int) {
+	return file_external_connections_proto_rawDescGZIP(), []int{22, 1}
+}
+
+func (x *CheckTelegramConnection_Response) GetBotUsername() string {
+	if x != nil {
+		return x.BotUsername
+	}
+	return ""
+}
+
 type AddAnthropicConnection_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ApiKey        string                 `protobuf:"bytes,1,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
@@ -2612,7 +2863,7 @@ type AddAnthropicConnection_Request struct {
 
 func (x *AddAnthropicConnection_Request) Reset() {
 	*x = AddAnthropicConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[57]
+	mi := &file_external_connections_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2624,7 +2875,7 @@ func (x *AddAnthropicConnection_Request) String() string {
 func (*AddAnthropicConnection_Request) ProtoMessage() {}
 
 func (x *AddAnthropicConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[57]
+	mi := &file_external_connections_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2637,7 +2888,7 @@ func (x *AddAnthropicConnection_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddAnthropicConnection_Request.ProtoReflect.Descriptor instead.
 func (*AddAnthropicConnection_Request) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{21, 0}
+	return file_external_connections_proto_rawDescGZIP(), []int{23, 0}
 }
 
 func (x *AddAnthropicConnection_Request) GetApiKey() string {
@@ -2670,7 +2921,7 @@ type AddAnthropicConnection_Response struct {
 
 func (x *AddAnthropicConnection_Response) Reset() {
 	*x = AddAnthropicConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[58]
+	mi := &file_external_connections_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2682,7 +2933,7 @@ func (x *AddAnthropicConnection_Response) String() string {
 func (*AddAnthropicConnection_Response) ProtoMessage() {}
 
 func (x *AddAnthropicConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[58]
+	mi := &file_external_connections_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2695,7 +2946,7 @@ func (x *AddAnthropicConnection_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddAnthropicConnection_Response.ProtoReflect.Descriptor instead.
 func (*AddAnthropicConnection_Response) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{21, 1}
+	return file_external_connections_proto_rawDescGZIP(), []int{23, 1}
 }
 
 func (x *AddAnthropicConnection_Response) GetConnection() *ExternalConnectionInfo {
@@ -2718,7 +2969,7 @@ type CheckAnthropicConnection_Request struct {
 
 func (x *CheckAnthropicConnection_Request) Reset() {
 	*x = CheckAnthropicConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[59]
+	mi := &file_external_connections_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2730,7 +2981,7 @@ func (x *CheckAnthropicConnection_Request) String() string {
 func (*CheckAnthropicConnection_Request) ProtoMessage() {}
 
 func (x *CheckAnthropicConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[59]
+	mi := &file_external_connections_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2743,7 +2994,7 @@ func (x *CheckAnthropicConnection_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAnthropicConnection_Request.ProtoReflect.Descriptor instead.
 func (*CheckAnthropicConnection_Request) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{22, 0}
+	return file_external_connections_proto_rawDescGZIP(), []int{24, 0}
 }
 
 func (x *CheckAnthropicConnection_Request) GetApiKey() string {
@@ -2777,7 +3028,7 @@ type CheckAnthropicConnection_Response struct {
 
 func (x *CheckAnthropicConnection_Response) Reset() {
 	*x = CheckAnthropicConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[60]
+	mi := &file_external_connections_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2789,7 +3040,7 @@ func (x *CheckAnthropicConnection_Response) String() string {
 func (*CheckAnthropicConnection_Response) ProtoMessage() {}
 
 func (x *CheckAnthropicConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[60]
+	mi := &file_external_connections_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2802,7 +3053,7 @@ func (x *CheckAnthropicConnection_Response) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use CheckAnthropicConnection_Response.ProtoReflect.Descriptor instead.
 func (*CheckAnthropicConnection_Response) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{22, 1}
+	return file_external_connections_proto_rawDescGZIP(), []int{24, 1}
 }
 
 func (x *CheckAnthropicConnection_Response) GetAvailableModels() []string {
@@ -2829,7 +3080,7 @@ type AddGenericConnection_Request struct {
 
 func (x *AddGenericConnection_Request) Reset() {
 	*x = AddGenericConnection_Request{}
-	mi := &file_external_connections_proto_msgTypes[61]
+	mi := &file_external_connections_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2841,7 +3092,7 @@ func (x *AddGenericConnection_Request) String() string {
 func (*AddGenericConnection_Request) ProtoMessage() {}
 
 func (x *AddGenericConnection_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[61]
+	mi := &file_external_connections_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2854,7 +3105,7 @@ func (x *AddGenericConnection_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddGenericConnection_Request.ProtoReflect.Descriptor instead.
 func (*AddGenericConnection_Request) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{23, 0}
+	return file_external_connections_proto_rawDescGZIP(), []int{25, 0}
 }
 
 func (x *AddGenericConnection_Request) GetProvider() string {
@@ -2880,7 +3131,7 @@ type AddGenericConnection_Response struct {
 
 func (x *AddGenericConnection_Response) Reset() {
 	*x = AddGenericConnection_Response{}
-	mi := &file_external_connections_proto_msgTypes[62]
+	mi := &file_external_connections_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2892,7 +3143,7 @@ func (x *AddGenericConnection_Response) String() string {
 func (*AddGenericConnection_Response) ProtoMessage() {}
 
 func (x *AddGenericConnection_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_external_connections_proto_msgTypes[62]
+	mi := &file_external_connections_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2905,7 +3156,7 @@ func (x *AddGenericConnection_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddGenericConnection_Response.ProtoReflect.Descriptor instead.
 func (*AddGenericConnection_Response) Descriptor() ([]byte, []int) {
-	return file_external_connections_proto_rawDescGZIP(), []int{23, 1}
+	return file_external_connections_proto_rawDescGZIP(), []int{25, 1}
 }
 
 func (x *AddGenericConnection_Response) GetConnection() *ExternalConnectionInfo {
@@ -3050,7 +3301,19 @@ const file_external_connections_proto_rawDesc = "" +
 	"\aapi_key\x18\x01 \x01(\tR\x06apiKey\x12\x1b\n" +
 	"\tapi_token\x18\x02 \x01(\tR\bapiToken\x1a'\n" +
 	"\bResponse\x12\x1b\n" +
-	"\tfull_name\x18\x01 \x01(\tR\bfullName\"\xcb\x01\n" +
+	"\tfull_name\x18\x01 \x01(\tR\bfullName\"\x8e\x01\n" +
+	"\x15AddTelegramConnection\x1a&\n" +
+	"\aRequest\x12\x1b\n" +
+	"\tbot_token\x18\x01 \x01(\tR\bbotToken\x1aM\n" +
+	"\bResponse\x12A\n" +
+	"\n" +
+	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
+	"connection\"p\n" +
+	"\x17CheckTelegramConnection\x1a&\n" +
+	"\aRequest\x12\x1b\n" +
+	"\tbot_token\x18\x01 \x01(\tR\bbotToken\x1a-\n" +
+	"\bResponse\x12!\n" +
+	"\fbot_username\x18\x01 \x01(\tR\vbotUsername\"\xcb\x01\n" +
 	"\x16AddAnthropicConnection\x1ab\n" +
 	"\aRequest\x12\x17\n" +
 	"\aapi_key\x18\x01 \x01(\tR\x06apiKey\x12\x19\n" +
@@ -3078,7 +3341,7 @@ const file_external_connections_proto_rawDesc = "" +
 	"\bResponse\x12A\n" +
 	"\n" +
 	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
-	"connection*\xf0\x01\n" +
+	"connection*\x90\x02\n" +
 	"\x10ExternalProvider\x12!\n" +
 	"\x1dEXTERNAL_PROVIDER_UNSPECIFIED\x10\x00\x12#\n" +
 	"\x1fEXTERNAL_PROVIDER_GOOGLE_SHEETS\x10\x01\x12\x1c\n" +
@@ -3086,7 +3349,8 @@ const file_external_connections_proto_rawDesc = "" +
 	"\x16EXTERNAL_PROVIDER_MIRO\x10\x03\x12\x1b\n" +
 	"\x17EXTERNAL_PROVIDER_EMAIL\x10\x04\x12\x1c\n" +
 	"\x18EXTERNAL_PROVIDER_GITLAB\x10\x05\x12\x1f\n" +
-	"\x1bEXTERNAL_PROVIDER_ANTHROPIC\x10\x062\x83\x18\n" +
+	"\x1bEXTERNAL_PROVIDER_ANTHROPIC\x10\x06\x12\x1e\n" +
+	"\x1aEXTERNAL_PROVIDER_TELEGRAM\x10\a2\xcf\x1a\n" +
 	"\x16ExternalConnectionsAPI\x12\x9c\x01\n" +
 	"\x13InitiateGoogleOAuth\x12&.artel_api.InitiateGoogleOAuth.Request\x1a'.artel_api.InitiateGoogleOAuth.Response\"4\x82\xd3\xe4\x93\x02.:\x01*\")/api/external-connections/google/initiate\x12\x85\x01\n" +
 	"\x0fListConnections\x12\".artel_api.ListConnections.Request\x1a#.artel_api.ListConnections.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/external-connections/list\x12\x94\x01\n" +
@@ -3103,7 +3367,9 @@ const file_external_connections_proto_rawDesc = "" +
 	"\x15CheckGitlabConnection\x12(.artel_api.CheckGitlabConnection.Request\x1a).artel_api.CheckGitlabConnection.Response\"1\x82\xd3\xe4\x93\x02+:\x01*\"&/api/external-connections/gitlab/check\x12\xba\x01\n" +
 	"\x1bGenerateGitlabWebhookSecret\x12..artel_api.GenerateGitlabWebhookSecret.Request\x1a/.artel_api.GenerateGitlabWebhookSecret.Response\":\x82\xd3\xe4\x93\x024:\x01*\"//api/external-connections/gitlab/webhook-secret\x12\x97\x01\n" +
 	"\x13AddTrelloConnection\x12&.artel_api.AddTrelloConnection.Request\x1a'.artel_api.AddTrelloConnection.Response\"/\x82\xd3\xe4\x93\x02):\x01*\"$/api/external-connections/trello/add\x12\x9f\x01\n" +
-	"\x15CheckTrelloConnection\x12(.artel_api.CheckTrelloConnection.Request\x1a).artel_api.CheckTrelloConnection.Response\"1\x82\xd3\xe4\x93\x02+:\x01*\"&/api/external-connections/trello/check\x12\xa3\x01\n" +
+	"\x15CheckTrelloConnection\x12(.artel_api.CheckTrelloConnection.Request\x1a).artel_api.CheckTrelloConnection.Response\"1\x82\xd3\xe4\x93\x02+:\x01*\"&/api/external-connections/trello/check\x12\x9f\x01\n" +
+	"\x15AddTelegramConnection\x12(.artel_api.AddTelegramConnection.Request\x1a).artel_api.AddTelegramConnection.Response\"1\x82\xd3\xe4\x93\x02+:\x01*\"&/api/external-connections/telegram/add\x12\xa7\x01\n" +
+	"\x17CheckTelegramConnection\x12*.artel_api.CheckTelegramConnection.Request\x1a+.artel_api.CheckTelegramConnection.Response\"3\x82\xd3\xe4\x93\x02-:\x01*\"(/api/external-connections/telegram/check\x12\xa3\x01\n" +
 	"\x16AddAnthropicConnection\x12).artel_api.AddAnthropicConnection.Request\x1a*.artel_api.AddAnthropicConnection.Response\"2\x82\xd3\xe4\x93\x02,:\x01*\"'/api/external-connections/anthropic/add\x12\xab\x01\n" +
 	"\x18CheckAnthropicConnection\x12+.artel_api.CheckAnthropicConnection.Request\x1a,.artel_api.CheckAnthropicConnection.Response\"4\x82\xd3\xe4\x93\x02.:\x01*\")/api/external-connections/anthropic/check\x12\x97\x01\n" +
 	"\x14AddGenericConnection\x12'.artel_api.AddGenericConnection.Request\x1a(.artel_api.AddGenericConnection.Response\",\x82\xd3\xe4\x93\x02&:\x01*\"!/api/external-connections/genericB\fZ\n" +
@@ -3122,7 +3388,7 @@ func file_external_connections_proto_rawDescGZIP() []byte {
 }
 
 var file_external_connections_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_external_connections_proto_msgTypes = make([]protoimpl.MessageInfo, 64)
+var file_external_connections_proto_msgTypes = make([]protoimpl.MessageInfo, 70)
 var file_external_connections_proto_goTypes = []any{
 	(ExternalProvider)(0),                        // 0: artel_api.ExternalProvider
 	(*GoogleConnectionInfo)(nil),                 // 1: artel_api.GoogleConnectionInfo
@@ -3146,52 +3412,58 @@ var file_external_connections_proto_goTypes = []any{
 	(*GenerateGitlabWebhookSecret)(nil),          // 19: artel_api.GenerateGitlabWebhookSecret
 	(*AddTrelloConnection)(nil),                  // 20: artel_api.AddTrelloConnection
 	(*CheckTrelloConnection)(nil),                // 21: artel_api.CheckTrelloConnection
-	(*AddAnthropicConnection)(nil),               // 22: artel_api.AddAnthropicConnection
-	(*CheckAnthropicConnection)(nil),             // 23: artel_api.CheckAnthropicConnection
-	(*AddGenericConnection)(nil),                 // 24: artel_api.AddGenericConnection
-	nil,                                          // 25: artel_api.GenericConnection.FieldsEntry
-	(*InitiateGoogleOAuth_Request)(nil),          // 26: artel_api.InitiateGoogleOAuth.Request
-	(*InitiateGoogleOAuth_Response)(nil),         // 27: artel_api.InitiateGoogleOAuth.Response
-	(*ListConnections_Request)(nil),              // 28: artel_api.ListConnections.Request
-	(*ListConnections_Response)(nil),             // 29: artel_api.ListConnections.Response
-	(*DisconnectProvider_Request)(nil),           // 30: artel_api.DisconnectProvider.Request
-	(*DisconnectProvider_Response)(nil),          // 31: artel_api.DisconnectProvider.Response
-	(*DisconnectConnection_Request)(nil),         // 32: artel_api.DisconnectConnection.Request
-	(*DisconnectConnection_Response)(nil),        // 33: artel_api.DisconnectConnection.Response
-	(*GooglePickerToken_Request)(nil),            // 34: artel_api.GooglePickerToken.Request
-	(*GooglePickerToken_Response)(nil),           // 35: artel_api.GooglePickerToken.Response
-	(*AddSpreadsheet_Request)(nil),               // 36: artel_api.AddSpreadsheet.Request
-	(*AddSpreadsheet_Response)(nil),              // 37: artel_api.AddSpreadsheet.Response
-	(*ListSpreadsheets_Request)(nil),             // 38: artel_api.ListSpreadsheets.Request
-	(*ListSpreadsheets_Response)(nil),            // 39: artel_api.ListSpreadsheets.Response
-	(*RemoveSpreadsheet_Request)(nil),            // 40: artel_api.RemoveSpreadsheet.Request
-	(*RemoveSpreadsheet_Response)(nil),           // 41: artel_api.RemoveSpreadsheet.Response
-	(*AddEmailConnection_Request)(nil),           // 42: artel_api.AddEmailConnection.Request
-	(*AddEmailConnection_Response)(nil),          // 43: artel_api.AddEmailConnection.Response
-	(*CheckEmailConnection_Request)(nil),         // 44: artel_api.CheckEmailConnection.Request
-	(*CheckEmailConnection_Response)(nil),        // 45: artel_api.CheckEmailConnection.Response
-	(*ListMailServerSuggestions_Request)(nil),    // 46: artel_api.ListMailServerSuggestions.Request
-	(*ListMailServerSuggestions_Response)(nil),   // 47: artel_api.ListMailServerSuggestions.Response
-	(*AddGitlabConnection_Request)(nil),          // 48: artel_api.AddGitlabConnection.Request
-	(*AddGitlabConnection_Response)(nil),         // 49: artel_api.AddGitlabConnection.Response
-	(*CheckGitlabConnection_Request)(nil),        // 50: artel_api.CheckGitlabConnection.Request
-	(*CheckGitlabConnection_Response)(nil),       // 51: artel_api.CheckGitlabConnection.Response
-	(*GenerateGitlabWebhookSecret_Request)(nil),  // 52: artel_api.GenerateGitlabWebhookSecret.Request
-	(*GenerateGitlabWebhookSecret_Response)(nil), // 53: artel_api.GenerateGitlabWebhookSecret.Response
-	(*AddTrelloConnection_Request)(nil),          // 54: artel_api.AddTrelloConnection.Request
-	(*AddTrelloConnection_Response)(nil),         // 55: artel_api.AddTrelloConnection.Response
-	(*CheckTrelloConnection_Request)(nil),        // 56: artel_api.CheckTrelloConnection.Request
-	(*CheckTrelloConnection_Response)(nil),       // 57: artel_api.CheckTrelloConnection.Response
-	(*AddAnthropicConnection_Request)(nil),       // 58: artel_api.AddAnthropicConnection.Request
-	(*AddAnthropicConnection_Response)(nil),      // 59: artel_api.AddAnthropicConnection.Response
-	(*CheckAnthropicConnection_Request)(nil),     // 60: artel_api.CheckAnthropicConnection.Request
-	(*CheckAnthropicConnection_Response)(nil),    // 61: artel_api.CheckAnthropicConnection.Response
-	(*AddGenericConnection_Request)(nil),         // 62: artel_api.AddGenericConnection.Request
-	(*AddGenericConnection_Response)(nil),        // 63: artel_api.AddGenericConnection.Response
-	nil,                                          // 64: artel_api.AddGenericConnection.Request.CredentialsEntry
+	(*AddTelegramConnection)(nil),                // 22: artel_api.AddTelegramConnection
+	(*CheckTelegramConnection)(nil),              // 23: artel_api.CheckTelegramConnection
+	(*AddAnthropicConnection)(nil),               // 24: artel_api.AddAnthropicConnection
+	(*CheckAnthropicConnection)(nil),             // 25: artel_api.CheckAnthropicConnection
+	(*AddGenericConnection)(nil),                 // 26: artel_api.AddGenericConnection
+	nil,                                          // 27: artel_api.GenericConnection.FieldsEntry
+	(*InitiateGoogleOAuth_Request)(nil),          // 28: artel_api.InitiateGoogleOAuth.Request
+	(*InitiateGoogleOAuth_Response)(nil),         // 29: artel_api.InitiateGoogleOAuth.Response
+	(*ListConnections_Request)(nil),              // 30: artel_api.ListConnections.Request
+	(*ListConnections_Response)(nil),             // 31: artel_api.ListConnections.Response
+	(*DisconnectProvider_Request)(nil),           // 32: artel_api.DisconnectProvider.Request
+	(*DisconnectProvider_Response)(nil),          // 33: artel_api.DisconnectProvider.Response
+	(*DisconnectConnection_Request)(nil),         // 34: artel_api.DisconnectConnection.Request
+	(*DisconnectConnection_Response)(nil),        // 35: artel_api.DisconnectConnection.Response
+	(*GooglePickerToken_Request)(nil),            // 36: artel_api.GooglePickerToken.Request
+	(*GooglePickerToken_Response)(nil),           // 37: artel_api.GooglePickerToken.Response
+	(*AddSpreadsheet_Request)(nil),               // 38: artel_api.AddSpreadsheet.Request
+	(*AddSpreadsheet_Response)(nil),              // 39: artel_api.AddSpreadsheet.Response
+	(*ListSpreadsheets_Request)(nil),             // 40: artel_api.ListSpreadsheets.Request
+	(*ListSpreadsheets_Response)(nil),            // 41: artel_api.ListSpreadsheets.Response
+	(*RemoveSpreadsheet_Request)(nil),            // 42: artel_api.RemoveSpreadsheet.Request
+	(*RemoveSpreadsheet_Response)(nil),           // 43: artel_api.RemoveSpreadsheet.Response
+	(*AddEmailConnection_Request)(nil),           // 44: artel_api.AddEmailConnection.Request
+	(*AddEmailConnection_Response)(nil),          // 45: artel_api.AddEmailConnection.Response
+	(*CheckEmailConnection_Request)(nil),         // 46: artel_api.CheckEmailConnection.Request
+	(*CheckEmailConnection_Response)(nil),        // 47: artel_api.CheckEmailConnection.Response
+	(*ListMailServerSuggestions_Request)(nil),    // 48: artel_api.ListMailServerSuggestions.Request
+	(*ListMailServerSuggestions_Response)(nil),   // 49: artel_api.ListMailServerSuggestions.Response
+	(*AddGitlabConnection_Request)(nil),          // 50: artel_api.AddGitlabConnection.Request
+	(*AddGitlabConnection_Response)(nil),         // 51: artel_api.AddGitlabConnection.Response
+	(*CheckGitlabConnection_Request)(nil),        // 52: artel_api.CheckGitlabConnection.Request
+	(*CheckGitlabConnection_Response)(nil),       // 53: artel_api.CheckGitlabConnection.Response
+	(*GenerateGitlabWebhookSecret_Request)(nil),  // 54: artel_api.GenerateGitlabWebhookSecret.Request
+	(*GenerateGitlabWebhookSecret_Response)(nil), // 55: artel_api.GenerateGitlabWebhookSecret.Response
+	(*AddTrelloConnection_Request)(nil),          // 56: artel_api.AddTrelloConnection.Request
+	(*AddTrelloConnection_Response)(nil),         // 57: artel_api.AddTrelloConnection.Response
+	(*CheckTrelloConnection_Request)(nil),        // 58: artel_api.CheckTrelloConnection.Request
+	(*CheckTrelloConnection_Response)(nil),       // 59: artel_api.CheckTrelloConnection.Response
+	(*AddTelegramConnection_Request)(nil),        // 60: artel_api.AddTelegramConnection.Request
+	(*AddTelegramConnection_Response)(nil),       // 61: artel_api.AddTelegramConnection.Response
+	(*CheckTelegramConnection_Request)(nil),      // 62: artel_api.CheckTelegramConnection.Request
+	(*CheckTelegramConnection_Response)(nil),     // 63: artel_api.CheckTelegramConnection.Response
+	(*AddAnthropicConnection_Request)(nil),       // 64: artel_api.AddAnthropicConnection.Request
+	(*AddAnthropicConnection_Response)(nil),      // 65: artel_api.AddAnthropicConnection.Response
+	(*CheckAnthropicConnection_Request)(nil),     // 66: artel_api.CheckAnthropicConnection.Request
+	(*CheckAnthropicConnection_Response)(nil),    // 67: artel_api.CheckAnthropicConnection.Response
+	(*AddGenericConnection_Request)(nil),         // 68: artel_api.AddGenericConnection.Request
+	(*AddGenericConnection_Response)(nil),        // 69: artel_api.AddGenericConnection.Response
+	nil,                                          // 70: artel_api.AddGenericConnection.Request.CredentialsEntry
 }
 var file_external_connections_proto_depIdxs = []int32{
-	25, // 0: artel_api.GenericConnection.fields:type_name -> artel_api.GenericConnection.FieldsEntry
+	27, // 0: artel_api.GenericConnection.fields:type_name -> artel_api.GenericConnection.FieldsEntry
 	0,  // 1: artel_api.ExternalConnectionInfo.provider:type_name -> artel_api.ExternalProvider
 	1,  // 2: artel_api.ExternalConnectionInfo.google:type_name -> artel_api.GoogleConnectionInfo
 	2,  // 3: artel_api.ExternalConnectionInfo.generic:type_name -> artel_api.GenericConnection
@@ -3203,52 +3475,57 @@ var file_external_connections_proto_depIdxs = []int32{
 	3,  // 9: artel_api.AddGitlabConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
 	3,  // 10: artel_api.GenerateGitlabWebhookSecret.Response.connection:type_name -> artel_api.ExternalConnectionInfo
 	3,  // 11: artel_api.AddTrelloConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	3,  // 12: artel_api.AddAnthropicConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	64, // 13: artel_api.AddGenericConnection.Request.credentials:type_name -> artel_api.AddGenericConnection.Request.CredentialsEntry
-	3,  // 14: artel_api.AddGenericConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	26, // 15: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
-	28, // 16: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
-	30, // 17: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
-	32, // 18: artel_api.ExternalConnectionsAPI.DisconnectConnection:input_type -> artel_api.DisconnectConnection.Request
-	34, // 19: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:input_type -> artel_api.GooglePickerToken.Request
-	36, // 20: artel_api.ExternalConnectionsAPI.AddSpreadsheet:input_type -> artel_api.AddSpreadsheet.Request
-	38, // 21: artel_api.ExternalConnectionsAPI.ListSpreadsheets:input_type -> artel_api.ListSpreadsheets.Request
-	40, // 22: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:input_type -> artel_api.RemoveSpreadsheet.Request
-	42, // 23: artel_api.ExternalConnectionsAPI.AddEmailConnection:input_type -> artel_api.AddEmailConnection.Request
-	44, // 24: artel_api.ExternalConnectionsAPI.CheckEmailConnection:input_type -> artel_api.CheckEmailConnection.Request
-	46, // 25: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:input_type -> artel_api.ListMailServerSuggestions.Request
-	48, // 26: artel_api.ExternalConnectionsAPI.AddGitlabConnection:input_type -> artel_api.AddGitlabConnection.Request
-	50, // 27: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:input_type -> artel_api.CheckGitlabConnection.Request
-	52, // 28: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:input_type -> artel_api.GenerateGitlabWebhookSecret.Request
-	54, // 29: artel_api.ExternalConnectionsAPI.AddTrelloConnection:input_type -> artel_api.AddTrelloConnection.Request
-	56, // 30: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:input_type -> artel_api.CheckTrelloConnection.Request
-	58, // 31: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:input_type -> artel_api.AddAnthropicConnection.Request
-	60, // 32: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:input_type -> artel_api.CheckAnthropicConnection.Request
-	62, // 33: artel_api.ExternalConnectionsAPI.AddGenericConnection:input_type -> artel_api.AddGenericConnection.Request
-	27, // 34: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
-	29, // 35: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
-	31, // 36: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
-	33, // 37: artel_api.ExternalConnectionsAPI.DisconnectConnection:output_type -> artel_api.DisconnectConnection.Response
-	35, // 38: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:output_type -> artel_api.GooglePickerToken.Response
-	37, // 39: artel_api.ExternalConnectionsAPI.AddSpreadsheet:output_type -> artel_api.AddSpreadsheet.Response
-	39, // 40: artel_api.ExternalConnectionsAPI.ListSpreadsheets:output_type -> artel_api.ListSpreadsheets.Response
-	41, // 41: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:output_type -> artel_api.RemoveSpreadsheet.Response
-	43, // 42: artel_api.ExternalConnectionsAPI.AddEmailConnection:output_type -> artel_api.AddEmailConnection.Response
-	45, // 43: artel_api.ExternalConnectionsAPI.CheckEmailConnection:output_type -> artel_api.CheckEmailConnection.Response
-	47, // 44: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:output_type -> artel_api.ListMailServerSuggestions.Response
-	49, // 45: artel_api.ExternalConnectionsAPI.AddGitlabConnection:output_type -> artel_api.AddGitlabConnection.Response
-	51, // 46: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:output_type -> artel_api.CheckGitlabConnection.Response
-	53, // 47: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:output_type -> artel_api.GenerateGitlabWebhookSecret.Response
-	55, // 48: artel_api.ExternalConnectionsAPI.AddTrelloConnection:output_type -> artel_api.AddTrelloConnection.Response
-	57, // 49: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:output_type -> artel_api.CheckTrelloConnection.Response
-	59, // 50: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:output_type -> artel_api.AddAnthropicConnection.Response
-	61, // 51: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:output_type -> artel_api.CheckAnthropicConnection.Response
-	63, // 52: artel_api.ExternalConnectionsAPI.AddGenericConnection:output_type -> artel_api.AddGenericConnection.Response
-	34, // [34:53] is the sub-list for method output_type
-	15, // [15:34] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	3,  // 12: artel_api.AddTelegramConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	3,  // 13: artel_api.AddAnthropicConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	70, // 14: artel_api.AddGenericConnection.Request.credentials:type_name -> artel_api.AddGenericConnection.Request.CredentialsEntry
+	3,  // 15: artel_api.AddGenericConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	28, // 16: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
+	30, // 17: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
+	32, // 18: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
+	34, // 19: artel_api.ExternalConnectionsAPI.DisconnectConnection:input_type -> artel_api.DisconnectConnection.Request
+	36, // 20: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:input_type -> artel_api.GooglePickerToken.Request
+	38, // 21: artel_api.ExternalConnectionsAPI.AddSpreadsheet:input_type -> artel_api.AddSpreadsheet.Request
+	40, // 22: artel_api.ExternalConnectionsAPI.ListSpreadsheets:input_type -> artel_api.ListSpreadsheets.Request
+	42, // 23: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:input_type -> artel_api.RemoveSpreadsheet.Request
+	44, // 24: artel_api.ExternalConnectionsAPI.AddEmailConnection:input_type -> artel_api.AddEmailConnection.Request
+	46, // 25: artel_api.ExternalConnectionsAPI.CheckEmailConnection:input_type -> artel_api.CheckEmailConnection.Request
+	48, // 26: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:input_type -> artel_api.ListMailServerSuggestions.Request
+	50, // 27: artel_api.ExternalConnectionsAPI.AddGitlabConnection:input_type -> artel_api.AddGitlabConnection.Request
+	52, // 28: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:input_type -> artel_api.CheckGitlabConnection.Request
+	54, // 29: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:input_type -> artel_api.GenerateGitlabWebhookSecret.Request
+	56, // 30: artel_api.ExternalConnectionsAPI.AddTrelloConnection:input_type -> artel_api.AddTrelloConnection.Request
+	58, // 31: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:input_type -> artel_api.CheckTrelloConnection.Request
+	60, // 32: artel_api.ExternalConnectionsAPI.AddTelegramConnection:input_type -> artel_api.AddTelegramConnection.Request
+	62, // 33: artel_api.ExternalConnectionsAPI.CheckTelegramConnection:input_type -> artel_api.CheckTelegramConnection.Request
+	64, // 34: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:input_type -> artel_api.AddAnthropicConnection.Request
+	66, // 35: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:input_type -> artel_api.CheckAnthropicConnection.Request
+	68, // 36: artel_api.ExternalConnectionsAPI.AddGenericConnection:input_type -> artel_api.AddGenericConnection.Request
+	29, // 37: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
+	31, // 38: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
+	33, // 39: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
+	35, // 40: artel_api.ExternalConnectionsAPI.DisconnectConnection:output_type -> artel_api.DisconnectConnection.Response
+	37, // 41: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:output_type -> artel_api.GooglePickerToken.Response
+	39, // 42: artel_api.ExternalConnectionsAPI.AddSpreadsheet:output_type -> artel_api.AddSpreadsheet.Response
+	41, // 43: artel_api.ExternalConnectionsAPI.ListSpreadsheets:output_type -> artel_api.ListSpreadsheets.Response
+	43, // 44: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:output_type -> artel_api.RemoveSpreadsheet.Response
+	45, // 45: artel_api.ExternalConnectionsAPI.AddEmailConnection:output_type -> artel_api.AddEmailConnection.Response
+	47, // 46: artel_api.ExternalConnectionsAPI.CheckEmailConnection:output_type -> artel_api.CheckEmailConnection.Response
+	49, // 47: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:output_type -> artel_api.ListMailServerSuggestions.Response
+	51, // 48: artel_api.ExternalConnectionsAPI.AddGitlabConnection:output_type -> artel_api.AddGitlabConnection.Response
+	53, // 49: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:output_type -> artel_api.CheckGitlabConnection.Response
+	55, // 50: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:output_type -> artel_api.GenerateGitlabWebhookSecret.Response
+	57, // 51: artel_api.ExternalConnectionsAPI.AddTrelloConnection:output_type -> artel_api.AddTrelloConnection.Response
+	59, // 52: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:output_type -> artel_api.CheckTrelloConnection.Response
+	61, // 53: artel_api.ExternalConnectionsAPI.AddTelegramConnection:output_type -> artel_api.AddTelegramConnection.Response
+	63, // 54: artel_api.ExternalConnectionsAPI.CheckTelegramConnection:output_type -> artel_api.CheckTelegramConnection.Response
+	65, // 55: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:output_type -> artel_api.AddAnthropicConnection.Response
+	67, // 56: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:output_type -> artel_api.CheckAnthropicConnection.Response
+	69, // 57: artel_api.ExternalConnectionsAPI.AddGenericConnection:output_type -> artel_api.AddGenericConnection.Response
+	37, // [37:58] is the sub-list for method output_type
+	16, // [16:37] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_external_connections_proto_init() }
@@ -3266,7 +3543,7 @@ func file_external_connections_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_external_connections_proto_rawDesc), len(file_external_connections_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   64,
+			NumMessages:   70,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -561,6 +561,70 @@
         ]
       }
     },
+    "/api/external-connections/telegram/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddTelegramConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddTelegramConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddTelegramConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/telegram/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckTelegramConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckTelegramConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckTelegramConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/trello/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddTrelloConnection",
@@ -744,6 +808,22 @@
         }
       }
     },
+    "artel_apiAddTelegramConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "botToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddTelegramConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddTrelloConnectionRequest": {
       "type": "object",
       "properties": {
@@ -839,6 +919,22 @@
         }
       }
     },
+    "artel_apiCheckTelegramConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "botToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiCheckTelegramConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "botUsername": {
+          "type": "string"
+        }
+      }
+    },
     "artel_apiCheckTrelloConnectionRequest": {
       "type": "object",
       "properties": {
@@ -915,7 +1011,8 @@
         "EXTERNAL_PROVIDER_MIRO",
         "EXTERNAL_PROVIDER_EMAIL",
         "EXTERNAL_PROVIDER_GITLAB",
-        "EXTERNAL_PROVIDER_ANTHROPIC"
+        "EXTERNAL_PROVIDER_ANTHROPIC",
+        "EXTERNAL_PROVIDER_TELEGRAM"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },

@@ -35,6 +35,8 @@ const (
 	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
 	ExternalConnectionsAPI_AddTrelloConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddTrelloConnection"
 	ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection"
+	ExternalConnectionsAPI_AddTelegramConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddTelegramConnection"
+	ExternalConnectionsAPI_CheckTelegramConnection_FullMethodName     = "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection"
 	ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection"
 	ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName    = "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection"
 	ExternalConnectionsAPI_AddGenericConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddGenericConnection"
@@ -63,6 +65,8 @@ type ExternalConnectionsAPIClient interface {
 	GenerateGitlabWebhookSecret(ctx context.Context, in *GenerateGitlabWebhookSecret_Request, opts ...grpc.CallOption) (*GenerateGitlabWebhookSecret_Response, error)
 	AddTrelloConnection(ctx context.Context, in *AddTrelloConnection_Request, opts ...grpc.CallOption) (*AddTrelloConnection_Response, error)
 	CheckTrelloConnection(ctx context.Context, in *CheckTrelloConnection_Request, opts ...grpc.CallOption) (*CheckTrelloConnection_Response, error)
+	AddTelegramConnection(ctx context.Context, in *AddTelegramConnection_Request, opts ...grpc.CallOption) (*AddTelegramConnection_Response, error)
+	CheckTelegramConnection(ctx context.Context, in *CheckTelegramConnection_Request, opts ...grpc.CallOption) (*CheckTelegramConnection_Response, error)
 	AddAnthropicConnection(ctx context.Context, in *AddAnthropicConnection_Request, opts ...grpc.CallOption) (*AddAnthropicConnection_Response, error)
 	CheckAnthropicConnection(ctx context.Context, in *CheckAnthropicConnection_Request, opts ...grpc.CallOption) (*CheckAnthropicConnection_Response, error)
 	AddGenericConnection(ctx context.Context, in *AddGenericConnection_Request, opts ...grpc.CallOption) (*AddGenericConnection_Response, error)
@@ -236,6 +240,26 @@ func (c *externalConnectionsAPIClient) CheckTrelloConnection(ctx context.Context
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) AddTelegramConnection(ctx context.Context, in *AddTelegramConnection_Request, opts ...grpc.CallOption) (*AddTelegramConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddTelegramConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddTelegramConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) CheckTelegramConnection(ctx context.Context, in *CheckTelegramConnection_Request, opts ...grpc.CallOption) (*CheckTelegramConnection_Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckTelegramConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_CheckTelegramConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *externalConnectionsAPIClient) AddAnthropicConnection(ctx context.Context, in *AddAnthropicConnection_Request, opts ...grpc.CallOption) (*AddAnthropicConnection_Response, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddAnthropicConnection_Response)
@@ -289,6 +313,8 @@ type ExternalConnectionsAPIServer interface {
 	GenerateGitlabWebhookSecret(context.Context, *GenerateGitlabWebhookSecret_Request) (*GenerateGitlabWebhookSecret_Response, error)
 	AddTrelloConnection(context.Context, *AddTrelloConnection_Request) (*AddTrelloConnection_Response, error)
 	CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error)
+	AddTelegramConnection(context.Context, *AddTelegramConnection_Request) (*AddTelegramConnection_Response, error)
+	CheckTelegramConnection(context.Context, *CheckTelegramConnection_Request) (*CheckTelegramConnection_Response, error)
 	AddAnthropicConnection(context.Context, *AddAnthropicConnection_Request) (*AddAnthropicConnection_Response, error)
 	CheckAnthropicConnection(context.Context, *CheckAnthropicConnection_Request) (*CheckAnthropicConnection_Response, error)
 	AddGenericConnection(context.Context, *AddGenericConnection_Request) (*AddGenericConnection_Response, error)
@@ -349,6 +375,12 @@ func (UnimplementedExternalConnectionsAPIServer) AddTrelloConnection(context.Con
 }
 func (UnimplementedExternalConnectionsAPIServer) CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method CheckTrelloConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddTelegramConnection(context.Context, *AddTelegramConnection_Request) (*AddTelegramConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddTelegramConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) CheckTelegramConnection(context.Context, *CheckTelegramConnection_Request) (*CheckTelegramConnection_Response, error) {
+	return nil, status.Error(codes.Unimplemented, "method CheckTelegramConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) AddAnthropicConnection(context.Context, *AddAnthropicConnection_Request) (*AddAnthropicConnection_Response, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddAnthropicConnection not implemented")
@@ -669,6 +701,42 @@ func _ExternalConnectionsAPI_CheckTrelloConnection_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_AddTelegramConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTelegramConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddTelegramConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddTelegramConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddTelegramConnection(ctx, req.(*AddTelegramConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_CheckTelegramConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckTelegramConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).CheckTelegramConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_CheckTelegramConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).CheckTelegramConnection(ctx, req.(*CheckTelegramConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ExternalConnectionsAPI_AddAnthropicConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddAnthropicConnection_Request)
 	if err := dec(in); err != nil {
@@ -793,6 +861,14 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckTrelloConnection",
 			Handler:    _ExternalConnectionsAPI_CheckTrelloConnection_Handler,
+		},
+		{
+			MethodName: "AddTelegramConnection",
+			Handler:    _ExternalConnectionsAPI_AddTelegramConnection_Handler,
+		},
+		{
+			MethodName: "CheckTelegramConnection",
+			Handler:    _ExternalConnectionsAPI_CheckTelegramConnection_Handler,
 		},
 		{
 			MethodName: "AddAnthropicConnection",

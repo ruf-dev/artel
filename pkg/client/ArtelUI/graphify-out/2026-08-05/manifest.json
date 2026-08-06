@@ -650,8 +650,8 @@
     "semantic_hash": ""
   },
   "src/pages/init/InitPage.tsx": {
-    "mtime": 1785933580.647678,
-    "ast_hash": "a5fdcec31ba004dd8c4b29d1e3157ec3",
+    "mtime": 1785935843.2447278,
+    "ast_hash": "379f32d7329f9168a75a477eba26394d",
     "semantic_hash": ""
   },
   "src/pages/join/JoinVaultPage.tsx": {

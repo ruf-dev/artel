@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
@@ -62,19 +63,21 @@ func LogInterceptor() grpc.ServerOption {
 		func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 			ctx = enrichCtxLogger(ctx)
 
-			fields := log.Ctx(ctx).Debug().
-				Str("method", info.FullMethod).
-				Any("request", req)
-
-			defer func() {
-				fields.Msg("incoming GRPC request")
-			}()
-
 			resp, err = handler(ctx, req)
 
-			fields = fields.
+			var event *zerolog.Event
+			if err != nil {
+				event = log.Ctx(ctx).Error()
+			} else {
+				event = log.Ctx(ctx).Debug()
+			}
+
+			event.
+				Str("method", info.FullMethod).
+				Any("request", req).
 				Err(err).
-				Any("response", resp)
+				Any("response", resp).
+				Msg("incoming GRPC request")
 
 			return resp, err
 		},

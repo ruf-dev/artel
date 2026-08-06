@@ -454,6 +454,8 @@ type ExternalConnectionService interface {
 	GenerateGitlabWebhookSecret(ctx context.Context) (domain.ExternalConnectionMeta, string, error)
 	AddTrelloConnection(ctx context.Context, apiKey, apiToken string) (domain.ExternalConnectionMeta, error)
 	CheckTrelloConnection(ctx context.Context, apiKey, apiToken string) (fullName string, err error)
+	AddTelegramConnection(ctx context.Context, botToken string) (domain.ExternalConnectionMeta, error)
+	CheckTelegramConnection(ctx context.Context, botToken string) (botUsername string, err error)
 	AddAnthropicConnection(
 		ctx context.Context, apiKey, baseUrl, defaultModel string,
 	) (domain.ExternalConnectionMeta, error)

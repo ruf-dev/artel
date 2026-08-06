@@ -38,7 +38,7 @@ func (r *UsersRepo) Create(ctx context0.Context, email, passwordHash string) (do
 
 	row, err := r.q.CreateUser(ctx, params)
 	if err != nil {
-		return domain.User{}, rerrors.Wrap(err, "error creating user")
+		return domain.User{}, rerrors.Wrap(pg_err.UnwrapPgErr(err), "error creating user")
 	}
 
 	u := domain.User{

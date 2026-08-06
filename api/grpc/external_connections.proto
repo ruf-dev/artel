@@ -122,6 +122,20 @@ service ExternalConnectionsAPI {
     };
   }
 
+  rpc AddTelegramConnection(AddTelegramConnection.Request) returns (AddTelegramConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/telegram/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckTelegramConnection(CheckTelegramConnection.Request) returns (CheckTelegramConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/telegram/check"
+      body: "*"
+    };
+  }
+
   rpc AddAnthropicConnection(AddAnthropicConnection.Request) returns (AddAnthropicConnection.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/anthropic/add"
@@ -152,6 +166,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_EMAIL = 4;
   EXTERNAL_PROVIDER_GITLAB = 5;
   EXTERNAL_PROVIDER_ANTHROPIC = 6;
+  EXTERNAL_PROVIDER_TELEGRAM = 7;
 }
 
 message GoogleConnectionInfo {
@@ -332,6 +347,24 @@ message CheckTrelloConnection {
   }
   message Response {
     string full_name = 1;
+  }
+}
+
+message AddTelegramConnection {
+  message Request {
+    string bot_token = 1;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckTelegramConnection {
+  message Request {
+    string bot_token = 1;
+  }
+  message Response {
+    string bot_username = 1;
   }
 }
 

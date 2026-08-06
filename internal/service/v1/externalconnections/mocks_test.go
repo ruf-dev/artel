@@ -8,6 +8,7 @@ import (
 
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
+	"github.com/ruf-dev/artel/internal/service"
 )
 
 // fakeExternalConnsRepo is a minimal in-memory repository.ExternalConnectionRepo used to verify
@@ -86,3 +87,50 @@ func (f *fakeExternalConnsRepo) DeleteByID(_ context.Context, _ uuid.UUID, id uu
 }
 
 var _ repository.ExternalConnectionRepo = (*fakeExternalConnsRepo)(nil)
+
+// fakeMomService is a minimal in-memory service.MomService used to verify what
+// ExecuteToolWithSecrets is called with, without a real MoM/http executor. Only
+// ExecuteToolWithSecrets is exercised by the telegram connection tests, so the remaining
+// interface methods are unused stubs.
+type fakeMomService struct {
+	result string
+	err    error
+
+	lastMcpName  string
+	lastToolName string
+	lastSecrets  map[string]interface{}
+}
+
+func (f *fakeMomService) ListToolsForKey(_ context.Context, _ uuid.UUID) ([]domain.McpToolDef, error) {
+	return nil, nil
+}
+
+func (f *fakeMomService) ExecuteToolForKey(
+	_ context.Context, _ uuid.UUID, _ string, _ map[string]interface{},
+) (string, error) {
+	return "", nil
+}
+
+func (f *fakeMomService) ExecuteToolForUserConnection(
+	_ context.Context, _ uuid.UUID, _ string, _ string, _ map[string]interface{},
+) (string, error) {
+	return "", nil
+}
+
+func (f *fakeMomService) ExecuteToolForConnection(
+	_ context.Context, _ uuid.UUID, _ string, _ string, _ map[string]interface{},
+) (string, error) {
+	return "", nil
+}
+
+func (f *fakeMomService) ExecuteToolWithSecrets(
+	_ context.Context, mcpName, toolName string, secrets, _ map[string]interface{},
+) (string, error) {
+	f.lastMcpName = mcpName
+	f.lastToolName = toolName
+	f.lastSecrets = secrets
+
+	return f.result, f.err
+}
+
+var _ service.MomService = (*fakeMomService)(nil)

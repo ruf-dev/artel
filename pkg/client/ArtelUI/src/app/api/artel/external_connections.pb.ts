@@ -25,6 +25,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_EMAIL = "EXTERNAL_PROVIDER_EMAIL",
   EXTERNAL_PROVIDER_GITLAB = "EXTERNAL_PROVIDER_GITLAB",
   EXTERNAL_PROVIDER_ANTHROPIC = "EXTERNAL_PROVIDER_ANTHROPIC",
+  EXTERNAL_PROVIDER_TELEGRAM = "EXTERNAL_PROVIDER_TELEGRAM",
 }
 
 export type GoogleConnectionInfo = {
@@ -225,6 +226,26 @@ export type CheckTrelloConnectionResponse = {
 
 export type CheckTrelloConnection = Record<string, never>;
 
+export type AddTelegramConnectionRequest = {
+  botToken?: string;
+};
+
+export type AddTelegramConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddTelegramConnection = Record<string, never>;
+
+export type CheckTelegramConnectionRequest = {
+  botToken?: string;
+};
+
+export type CheckTelegramConnectionResponse = {
+  botUsername?: string;
+};
+
+export type CheckTelegramConnection = Record<string, never>;
+
 export type AddAnthropicConnectionRequest = {
   apiKey?: string;
   baseUrl?: string;
@@ -309,6 +330,12 @@ export class ExternalConnectionsAPI {
   }
   static CheckTrelloConnection(this:void, req: CheckTrelloConnectionRequest, initReq?: fm.InitReq): Promise<CheckTrelloConnectionResponse> {
     return fm.fetchRequest<CheckTrelloConnectionResponse>(`/api/external-connections/trello/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddTelegramConnection(this:void, req: AddTelegramConnectionRequest, initReq?: fm.InitReq): Promise<AddTelegramConnectionResponse> {
+    return fm.fetchRequest<AddTelegramConnectionResponse>(`/api/external-connections/telegram/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckTelegramConnection(this:void, req: CheckTelegramConnectionRequest, initReq?: fm.InitReq): Promise<CheckTelegramConnectionResponse> {
+    return fm.fetchRequest<CheckTelegramConnectionResponse>(`/api/external-connections/telegram/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static AddAnthropicConnection(this:void, req: AddAnthropicConnectionRequest, initReq?: fm.InitReq): Promise<AddAnthropicConnectionResponse> {
     return fm.fetchRequest<AddAnthropicConnectionResponse>(`/api/external-connections/anthropic/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

@@ -15,82 +15,82 @@
     "semantic_hash": ""
   },
   "src/app/api/artel/admin_couch.pb.ts": {
-    "mtime": 1785925873.0339942,
+    "mtime": 1785941926.499601,
     "ast_hash": "3cf7f5a917da7c7ace9563a7d52b7484",
     "semantic_hash": ""
   },
   "src/app/api/artel/admin_users.pb.ts": {
-    "mtime": 1785925873.0342956,
+    "mtime": 1785941926.4999058,
     "ast_hash": "21e29d23505beb43cb12e58c84a2e619",
     "semantic_hash": ""
   },
   "src/app/api/artel/artel_api.pb.ts": {
-    "mtime": 1785925873.034358,
+    "mtime": 1785941926.499968,
     "ast_hash": "32219109938c9fe8185d6c262945811e",
     "semantic_hash": ""
   },
   "src/app/api/artel/auth.pb.ts": {
-    "mtime": 1785925873.0344098,
+    "mtime": 1785941926.5000193,
     "ast_hash": "5bbb28ad71c3ea662ddc191eb7e1195a",
     "semantic_hash": ""
   },
   "src/app/api/artel/couch_instances.pb.ts": {
-    "mtime": 1785925873.034459,
+    "mtime": 1785941926.500157,
     "ast_hash": "90ef0d2d2aba9c3e31e1c19d679218f7",
     "semantic_hash": ""
   },
   "src/app/api/artel/external_connections.pb.ts": {
-    "mtime": 1785925873.034752,
-    "ast_hash": "38d73cfc0db6544f2c3171ed3d9ee5b5",
+    "mtime": 1785941926.500515,
+    "ast_hash": "d69565c94bc7379453c77d7387ac0f9b",
     "semantic_hash": ""
   },
   "src/app/api/artel/fetch.pb.ts": {
-    "mtime": 1785925873.034892,
+    "mtime": 1785941926.5008483,
     "ast_hash": "611a00bd7dd14cbdfe7c5ea6170b6625",
     "semantic_hash": ""
   },
   "src/app/api/artel/index.ts": {
-    "mtime": 1785925873.0338008,
+    "mtime": 1785941926.4993074,
     "ast_hash": "9cd937ca22b6f339fbdb2a4fc32130c0",
     "semantic_hash": ""
   },
   "src/app/api/artel/mcp_keys.pb.ts": {
-    "mtime": 1785925873.0353918,
+    "mtime": 1785941926.5013347,
     "ast_hash": "93eb31f6856b9d98a42d6a024ace8b4d",
     "semantic_hash": ""
   },
   "src/app/api/artel/notes.pb.ts": {
-    "mtime": 1785925873.0356443,
+    "mtime": 1785941926.5014815,
     "ast_hash": "76f64d31a5e9126cd2911285e2a9a0e8",
     "semantic_hash": ""
   },
   "src/app/api/artel/prompts.pb.ts": {
-    "mtime": 1785925873.0361028,
+    "mtime": 1785941926.5017998,
     "ast_hash": "b6e69cd76667b8949344061bd673072b",
     "semantic_hash": ""
   },
   "src/app/api/artel/s3_instances.pb.ts": {
-    "mtime": 1785925873.036463,
+    "mtime": 1785941926.5020173,
     "ast_hash": "f3cf492e658d8a646340aeed5a45526e",
     "semantic_hash": ""
   },
   "src/app/api/artel/task_trackers.pb.ts": {
-    "mtime": 1785925873.0365984,
+    "mtime": 1785941926.5022736,
     "ast_hash": "6e507251f3f551857b4aca3e13e5ca02",
     "semantic_hash": ""
   },
   "src/app/api/artel/tracts.pb.ts": {
-    "mtime": 1785925873.036869,
+    "mtime": 1785941926.5029666,
     "ast_hash": "1c5eaf30b966c522583a86c1cbe371aa",
     "semantic_hash": ""
   },
   "src/app/api/artel/user_errors.pb.ts": {
-    "mtime": 1785925873.0369766,
+    "mtime": 1785941926.5036528,
     "ast_hash": "c1fd47388488059eb04c653408a032cc",
     "semantic_hash": ""
   },
   "src/app/api/artel/vaults.pb.ts": {
-    "mtime": 1785925873.0372126,
+    "mtime": 1785941926.5042572,
     "ast_hash": "87870a14d102e0c691100f925d04c583",
     "semantic_hash": ""
   },
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "src/app/hooks/ExternalConnections.ts": {
-    "mtime": 1785010465.1244178,
-    "ast_hash": "f14eefedcff928b6e60232a35de0b081",
+    "mtime": 1785942194.3231246,
+    "ast_hash": "90032abe6674dced1b692918169b273d",
     "semantic_hash": ""
   },
   "src/app/hooks/McpKeys.ts": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/app/routing/Router.tsx": {
-    "mtime": 1785935571.641793,
-    "ast_hash": "f86b11b4f4e342c66ca8ded926eba03a",
+    "mtime": 1785937021.2763717,
+    "ast_hash": "22429661d7e95721f5056840bfb6bd6d",
     "semantic_hash": ""
   },
   "src/app/utils/cn.ts": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "src/components/ProviderIcon/ProviderIcon.tsx": {
-    "mtime": 1784702682.8080695,
-    "ast_hash": "4cc400df3cfaded37faa497684ff1795",
+    "mtime": 1785942164.2826917,
+    "ast_hash": "9b1abf42596c27dd819e7331a23f957f",
     "semantic_hash": ""
   },
   "src/components/ProviderIcon/components/EmailIcon.tsx": {
@@ -625,8 +625,8 @@
     "semantic_hash": ""
   },
   "src/pages/closed-alpha/ClosedAlphaPage.tsx": {
-    "mtime": 1785933613.1276555,
-    "ast_hash": "4e4d1a0ceae96ef77faf0dab098aa427",
+    "mtime": 1785940767.4596515,
+    "ast_hash": "5de68fb094b701ae26b91f36cbdc8866",
     "semantic_hash": ""
   },
   "src/pages/connections/ConnectionsPage.tsx": {
@@ -635,8 +635,8 @@
     "semantic_hash": ""
   },
   "src/pages/connections/GoogleOAuthCallbackPage.tsx": {
-    "mtime": 1785933619.4546704,
-    "ast_hash": "f2ef91d3349ef9c85c0a52025ec870eb",
+    "mtime": 1785940761.0398095,
+    "ast_hash": "6b00b07450e1ec53e7994fab5cf4b671",
     "semantic_hash": ""
   },
   "src/pages/error/ErrorPage.tsx": {
@@ -645,18 +645,18 @@
     "semantic_hash": ""
   },
   "src/pages/home/HomePage.tsx": {
-    "mtime": 1785933587.7758975,
-    "ast_hash": "a0bee0a6530e087d32031284b4347feb",
+    "mtime": 1785940761.0412128,
+    "ast_hash": "2761e8915dc161c2c2806641113f0882",
     "semantic_hash": ""
   },
   "src/pages/init/InitPage.tsx": {
-    "mtime": 1785935843.2447278,
-    "ast_hash": "379f32d7329f9168a75a477eba26394d",
+    "mtime": 1785940782.516283,
+    "ast_hash": "50288995a30ec1291f9237b2e9cb331b",
     "semantic_hash": ""
   },
   "src/pages/join/JoinVaultPage.tsx": {
-    "mtime": 1785933607.3099473,
-    "ast_hash": "4be50503bddfe06477774a99d12c0ada",
+    "mtime": 1785940761.0425067,
+    "ast_hash": "59539097051d88f89697cfab0b3a5bac",
     "semantic_hash": ""
   },
   "src/pages/mcp-auth/McpAuthPage.tsx": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "src/pages/notes/NotesPage.tsx": {
-    "mtime": 1785933626.8843796,
-    "ast_hash": "e9bf98a102784fdec641f8b2fe302236",
+    "mtime": 1785940761.043241,
+    "ast_hash": "64ec4e6c8487b3d0bbf2c36cfb7e882c",
     "semantic_hash": ""
   },
   "src/pages/notes/components/BreadcrumbBar/BreadcrumbBar.tsx": {
@@ -800,8 +800,8 @@
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/TractCanvasBuilderPage.tsx": {
-    "mtime": 1785933655.5208516,
-    "ast_hash": "0eff079d21bc8796f77e8605b81f6457",
+    "mtime": 1785940778.5986505,
+    "ast_hash": "20c734c866772d5227d3a8a6d6f3b9f0",
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/TractCanvasListPage.tsx": {
@@ -920,8 +920,8 @@
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/dialogs/NewTractDialog/NewTractDialog.tsx": {
-    "mtime": 1785933661.284015,
-    "ast_hash": "bf7745572f725c7477b6398e8e20b006",
+    "mtime": 1785940761.0459282,
+    "ast_hash": "8ec636766a8aa561d6e3807a53ae0b9a",
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/icons/NodeIcon/NodeIcon.tsx": {
@@ -940,8 +940,8 @@
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/segments/ContentSegment/ContentSegment.tsx": {
-    "mtime": 1785933683.025734,
-    "ast_hash": "391146fde1d10258de4be661982d6b60",
+    "mtime": 1785940761.046414,
+    "ast_hash": "657deed03c74ff16569ede786a752970",
     "semantic_hash": ""
   },
   "src/pages/tract-canvas/widgets/TractCanvasCard/TractCanvasCard.tsx": {
@@ -970,8 +970,8 @@
     "semantic_hash": ""
   },
   "src/processes/ExternalConnections.ts": {
-    "mtime": 1785010465.1314728,
-    "ast_hash": "ab2a5fd13ed5b90d027062f12fbeb67e",
+    "mtime": 1785942212.9060683,
+    "ast_hash": "18809c347ec4d8bafbfb5e456443b30d",
     "semantic_hash": ""
   },
   "src/processes/McpKeys.ts": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": ""
   },
   "src/segments/Topbar/components/TopbarUserMenu/TopbarUserMenu.tsx": {
-    "mtime": 1785933690.9631789,
-    "ast_hash": "0bf83acfd48fdffad20c72c400fb0286",
+    "mtime": 1785940761.0480714,
+    "ast_hash": "1058c8a24d70adc05ddf7f54a7213d0c",
     "semantic_hash": ""
   },
   "src/segments/Topbar/components/TopbarUserMenuItem/TopbarUserMenuItem.tsx": {
@@ -1345,8 +1345,8 @@
     "semantic_hash": ""
   },
   "src/dialogs/ManageKeyDialog/components/ConnectionOptionList/ConnectionOptionList.tsx": {
-    "mtime": 1785933566.9433548,
-    "ast_hash": "ea3c64b82715ff05590d6e472a192ae4",
+    "mtime": 1785940761.036865,
+    "ast_hash": "7511575828f856e8a6b60feea1257489",
     "semantic_hash": ""
   },
   "src/dialogs/ManageKeyDialog/components/ConnectionsField/ConnectionsField.tsx": {
@@ -1535,8 +1535,8 @@
     "semantic_hash": ""
   },
   "src/pages/connections/components/ContentSegment/ContentSegment.tsx": {
-    "mtime": 1783974153.3368735,
-    "ast_hash": "9b60ee2edfad3e12f318fc4ce1f50bbc",
+    "mtime": 1785942177.9508305,
+    "ast_hash": "1a20fbfa827c1f74dee7f054a0f902df",
     "semantic_hash": ""
   },
   "src/pages/home/components/ContentSegment/ContentSegment.tsx": {
@@ -1550,8 +1550,8 @@
     "semantic_hash": ""
   },
   "src/pages/init/components/LoginContent/LoginContent.tsx": {
-    "mtime": 1785933574.1925516,
-    "ast_hash": "e112275c3eca57bc1ee1f5a978d5b54f",
+    "mtime": 1785940761.0418677,
+    "ast_hash": "1d13513b4fed47049f6a131289d1d1f9",
     "semantic_hash": ""
   },
   "src/pages/mcp-auth/components/McpLogin/McpLogin.tsx": {
@@ -1835,8 +1835,8 @@
     "semantic_hash": ""
   },
   "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ConnectionPicker/ConnectionPicker.tsx": {
-    "mtime": 1785933642.5002077,
-    "ast_hash": "729fc19a6ad44c427f88a2a0ef101949",
+    "mtime": 1785940761.0453136,
+    "ast_hash": "3fd6c0a7a7535691ec531340859cae35",
     "semantic_hash": ""
   },
   "src/pages/toolbox/components/ToolsDialog/components/ToolDetail/components/ImapActionView/ImapActionView.tsx": {
@@ -2080,8 +2080,8 @@
     "semantic_hash": ""
   },
   "src/segments/Topbar/components/TopbarMobileDrawer/TopbarMobileDrawer.tsx": {
-    "mtime": 1785933697.0991778,
-    "ast_hash": "8543fbb7a7f6859d21b8c7e4e07c0f72",
+    "mtime": 1785940761.0477707,
+    "ast_hash": "4c743234acc5969c91f97589be561359",
     "semantic_hash": ""
   },
   "src/segments/Topbar/components/TopbarMobileNavLink/TopbarMobileNavLink.tsx": {
@@ -2135,7 +2135,7 @@
     "semantic_hash": ""
   },
   "src/app/api/artel/admin_subscriptions.pb.ts": {
-    "mtime": 1785925873.034052,
+    "mtime": 1785941926.4996774,
     "ast_hash": "0194e428eb584597723eed44dc36c1f2",
     "semantic_hash": ""
   },
@@ -2255,8 +2255,8 @@
     "semantic_hash": ""
   },
   "src/dialogs/SelectRoadmapRootDialog/SelectRoadmapRootDialog.tsx": {
-    "mtime": 1785933554.2976289,
-    "ast_hash": "e1c6dff1f1d95274b8c96f7425d6a191",
+    "mtime": 1785940761.0379725,
+    "ast_hash": "ef8c657f1c36d56e68c84dc48bb4a928",
     "semantic_hash": ""
   },
   "src/dialogs/SelectRoadmapRootDialog/processes/trelloBrowse.ts": {
@@ -2280,8 +2280,8 @@
     "semantic_hash": ""
   },
   "src/pages/roadmap/RoadmapPage.tsx": {
-    "mtime": 1785933595.0050437,
-    "ast_hash": "6ea2ac21140aea653b9e32d7c72e1f3c",
+    "mtime": 1785940771.8872511,
+    "ast_hash": "9592bcf704fbbf3bba4244aacc38f1a4",
     "semantic_hash": ""
   },
   "src/pages/roadmap/components/RoadmapCanvasArea/RoadmapCanvasArea.tsx": {
@@ -2535,8 +2535,8 @@
     "semantic_hash": ""
   },
   "src/dialogs/InstantiateTemplateDialog/InstantiateTemplateDialog.tsx": {
-    "mtime": 1785933560.0851526,
-    "ast_hash": "af9a9840ee77e4a61903eabfd6881c5f",
+    "mtime": 1785940761.035366,
+    "ast_hash": "5d9404a0ba1a9a266586c335d03e829e",
     "semantic_hash": ""
   },
   "src/dialogs/InstantiateTemplateDialog/components/ConnectionSection/ConnectionSection.tsx": {
@@ -2710,8 +2710,8 @@
     "semantic_hash": ""
   },
   "src/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx": {
-    "mtime": 1785933635.8723838,
-    "ast_hash": "d9c22f5bd8b1f62fc402d3a262de3d50",
+    "mtime": 1785940761.0471978,
+    "ast_hash": "bfd8d4864b8aa0182c98d7098f9ee514",
     "semantic_hash": ""
   },
   "src/pages/workbench/components/WorkbenchStatusBadge/WorkbenchStatusBadge.tsx": {
@@ -2730,12 +2730,12 @@
     "semantic_hash": ""
   },
   "src/app/api/artel/docker_hosts.pb.ts": {
-    "mtime": 1785925873.0345101,
+    "mtime": 1785941926.5003119,
     "ast_hash": "ca87b759b255d54089fcf507e0f510f8",
     "semantic_hash": ""
   },
   "src/app/api/artel/public_docs.pb.ts": {
-    "mtime": 1785925873.0362902,
+    "mtime": 1785941926.5019643,
     "ast_hash": "c07d2793daf9abe3132e96de734647b2",
     "semantic_hash": ""
   },
@@ -2910,12 +2910,12 @@
     "semantic_hash": ""
   },
   "src/app/api/artel/admin_system_settings.pb.ts": {
-    "mtime": 1785925873.0341144,
+    "mtime": 1785941926.4997377,
     "ast_hash": "92f166d7580de879ac5b28df240ae20d",
     "semantic_hash": ""
   },
   "src/app/api/artel/setup_wizard.pb.ts": {
-    "mtime": 1785925873.0365522,
+    "mtime": 1785941926.5020673,
     "ast_hash": "d4f1f1790a6e1be285058bd15e9d34d3",
     "semantic_hash": ""
   },
@@ -2950,8 +2950,8 @@
     "semantic_hash": ""
   },
   "src/pages/setup-wizard/SetupWizardPage.tsx": {
-    "mtime": 1785933668.9611888,
-    "ast_hash": "10ff1108f3bf6d2240cc2bb5aa58352e",
+    "mtime": 1785940761.0443213,
+    "ast_hash": "04fd999da96e49ae6f97ebbec9601387",
     "semantic_hash": ""
   },
   "src/pages/setup-wizard/screens/TokenEntryScreen.tsx": {
@@ -2975,8 +2975,38 @@
     "semantic_hash": ""
   },
   "src/pages/setup-wizard/screens/CreateAdminScreen.tsx": {
-    "mtime": 1785933676.1426008,
-    "ast_hash": "cebc9319fbaaf495c4d3cb964cff85cd",
+    "mtime": 1785940761.0448406,
+    "ast_hash": "e65187acb681f64fdf2bdc513eebfdcc",
+    "semantic_hash": ""
+  },
+  "src/components/ProviderIcon/components/TelegramIcon.tsx": {
+    "mtime": 1785942151.1288202,
+    "ast_hash": "061d064d70f4d7d1eda711f4bee86d9b",
+    "semantic_hash": ""
+  },
+  "src/dialogs/ManageTelegramDialog/ManageTelegramDialog.tsx": {
+    "mtime": 1785942104.022583,
+    "ast_hash": "6ca59ddb13ec761211885fe333fe995b",
+    "semantic_hash": ""
+  },
+  "src/dialogs/ManageTelegramDialog/components/ConnectForm/ConnectForm.tsx": {
+    "mtime": 1785942124.9280298,
+    "ast_hash": "cd984d4376e35fe8070b7b575daa11c1",
+    "semantic_hash": ""
+  },
+  "src/dialogs/ManageTelegramDialog/components/ConnectedContent/ConnectedContent.tsx": {
+    "mtime": 1785942145.1448474,
+    "ast_hash": "d29a5ffbe017c3a9714f73a1f34a4f82",
+    "semantic_hash": ""
+  },
+  "src/dialogs/ManageTelegramDialog/components/DialogHead/DialogHead.tsx": {
+    "mtime": 1785942112.0707066,
+    "ast_hash": "e00ca112738bc9138583fcd545f29c55",
+    "semantic_hash": ""
+  },
+  "src/dialogs/ManageTelegramDialog/components/TelegramCheckButton/TelegramCheckButton.tsx": {
+    "mtime": 1785942136.7379405,
+    "ast_hash": "d9dd8fc190a10d620d4cb2f82f33616a",
     "semantic_hash": ""
   }
 }

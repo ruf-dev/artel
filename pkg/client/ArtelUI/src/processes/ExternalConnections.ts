@@ -1,6 +1,6 @@
 import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
-    AddGitlabConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest,
+    AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest,
     CheckAnthropicConnectionResponse, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
@@ -19,6 +19,7 @@ export interface IExternalConnectionsService {
     addEmailConnection: (req: AddEmailConnectionRequest) => Promise<ExternalConnectionInfo>
     addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<ExternalConnectionInfo>
     generateGitlabWebhookSecret: () => Promise<{connection: ExternalConnectionInfo; webhookSecret: string}>
+    addTelegramConnection: (req: AddTelegramConnectionRequest) => Promise<ExternalConnectionInfo>
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<ExternalConnectionInfo>
     addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<ExternalConnectionInfo>
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
@@ -89,6 +90,11 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     async generateGitlabWebhookSecret(): Promise<{connection: ExternalConnectionInfo; webhookSecret: string}> {
         const res = await ExternalConnectionsAPI.GenerateGitlabWebhookSecret({}, useUser.getState().auth.getInitReq())
         return {connection: res.connection!, webhookSecret: res.webhookSecret ?? ""}
+    }
+
+    async addTelegramConnection(req: AddTelegramConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddTelegramConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
     }
 
     async addTrelloConnection(req: AddTrelloConnectionRequest): Promise<ExternalConnectionInfo> {

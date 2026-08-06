@@ -61,6 +61,11 @@ type trelloConnectionMeta struct {
 	FullName string `json:"full_name"`
 }
 
+// telegramConnectionMeta is stored plaintext in metadata (non-sensitive display data).
+type telegramConnectionMeta struct {
+	BotUsername string `json:"bot_username"`
+}
+
 // anthropicConnectionMeta is stored plaintext in metadata (non-sensitive display data).
 type anthropicConnectionMeta struct {
 	KeyPreview      string `json:"key_preview"`
@@ -564,6 +569,74 @@ func (s *Service) CheckGitlabConnection(
 	return username, nil
 }
 
+// AddTelegramConnection validates the bot token against Telegram, then persists it.
+func (s *Service) AddTelegramConnection(
+	ctx context.Context,
+	botToken string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	botUsername, err := s.validateTelegramToken(ctx, botToken)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	creds := domain.TelegramCredentials{
+		BotToken: botToken,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error marshaling telegram credentials")
+	}
+
+	meta := telegramConnectionMeta{
+		BotUsername: botUsername,
+	}
+
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error marshaling telegram meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderTelegram,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "error saving telegram connection")
+	}
+
+	return toMeta(saved, botUsername), nil
+}
+
+// CheckTelegramConnection pings Telegram with the given bot token without persisting anything,
+// letting the caller confirm the token works before committing to AddTelegramConnection.
+func (s *Service) CheckTelegramConnection(
+	ctx context.Context,
+	botToken string,
+) (string, error) {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return "", user_errors.Unauthenticated
+	}
+
+	botUsername, err := s.validateTelegramToken(ctx, botToken)
+	if err != nil {
+		return "", err
+	}
+
+	return botUsername, nil
+}
+
 // AddTrelloConnection validates the API key/token pair against Trello, then persists it.
 func (s *Service) AddTrelloConnection(
 	ctx context.Context,
@@ -1052,6 +1125,43 @@ func (s *Service) validateGitlabToken(ctx context.Context, instanceUrl, personal
 	}
 
 	return userInfo.Username, nil
+}
+
+// telegramGetMeResponse mirrors Telegram's real getMe response shape:
+// {"ok": true, "result": {"id": 123, "is_bot": true, "first_name": "...", "username": "mybot"}}.
+type telegramGetMeResponse struct {
+	Ok     bool `json:"ok"`
+	Result struct {
+		Username string `json:"username"`
+	} `json:"result"`
+}
+
+// validateTelegramToken pings Telegram's getMe endpoint to confirm the bot token actually works
+// before anything is persisted, by running the same telegram.get_me MoM tool every later telegram
+// tool call goes through — just with a caller-supplied secrets map instead of one resolved from a
+// persisted external_connections row, since that row doesn't exist yet at this point.
+func (s *Service) validateTelegramToken(ctx context.Context, botToken string) (string, error) {
+	secrets := map[string]interface{}{
+		"bot_token": botToken,
+	}
+
+	result, err := s.mom.ExecuteToolWithSecrets(ctx, "telegram", "get_me", secrets, nil)
+	if err != nil {
+		return "", rerrors.Wrap(user_errors.TelegramValidationFailed, "error validating telegram bot token")
+	}
+
+	var resp telegramGetMeResponse
+
+	err = json.Unmarshal([]byte(result), &resp)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error parsing telegram validation response")
+	}
+
+	if !resp.Ok {
+		return "", rerrors.Wrap(user_errors.TelegramValidationFailed, "error validating telegram bot token")
+	}
+
+	return resp.Result.Username, nil
 }
 
 func (s *Service) freshGoogleCreds(
