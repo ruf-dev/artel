@@ -4,14 +4,12 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/rs/zerolog/log"
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox/closer"
 	"go.vervstack.ru/matreshka/pkg/matreshka/resources"
 
-	"github.com/pressly/goose/v3"
-
 	"github.com/ruf-dev/artel/internal/utils"
+	"github.com/ruf-dev/artel/migrations"
 )
 
 func Connect(cfg *resources.Postgres) (*sql.DB, error) {
@@ -34,24 +32,7 @@ func Migrate(cfg *resources.Postgres) error {
 	}
 	defer utils.CloseWithLog(conn, "postgres connection")
 
-	goose.SetLogger(sqlLogger{})
-
-	err = goose.SetDialect("postgres")
-	if err != nil {
-		return rerrors.Wrap(err, "error setting dialect")
-	}
-
-	mig := cfg.MigrationFolder()
-	if mig == "" {
-		mig = "./migrations"
-	}
-
-	err = goose.Up(conn, mig)
-	if err != nil {
-		return rerrors.Wrap(err, "error performing up")
-	}
-
-	return nil
+	return migrations.ApplyMigration(conn)
 }
 
 type DB interface {
@@ -66,14 +47,4 @@ type DB interface {
 
 	QueryRow(query string, args ...any) *sql.Row
 	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
-}
-
-type sqlLogger struct{}
-
-func (s sqlLogger) Fatalf(format string, v ...interface{}) {
-	log.Fatal().Msgf(format, v...)
-}
-
-func (s sqlLogger) Printf(format string, v ...interface{}) {
-	log.Printf(format, v...)
 }

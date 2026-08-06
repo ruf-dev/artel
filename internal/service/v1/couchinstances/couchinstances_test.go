@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/stretchr/testify/require"
@@ -99,7 +99,7 @@ func (f *fakeCouchInstancesRepo) Exists(_ context.Context) (bool, error) {
 	return f.existsResult, nil
 }
 
-func (f *fakeCouchInstancesRepo) WithTx(_ sqldb.DB) repository.CouchInstances {
+func (f *fakeCouchInstancesRepo) WithTx(_ postgres.DB) repository.CouchInstances {
 	return f
 }
 

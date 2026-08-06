@@ -26,7 +26,7 @@ err = a.Start()
 
 - **Postgres reachable.** `app.New()` opens the Postgres connection and runs
   the goose migrations embedded in `github.com/ruf-dev/artel/migrations`
-  (`migrations.ApplyMigration`, called from `internal/clients/sqldb.New`)
+  (`migrations.ApplyMigration`, called from `internal/clients/postgres.Migrate`)
   synchronously as part of startup. The `.sql` files are compiled into the
   binary via `go:embed`, so no `migrations/` folder needs to exist on disk
   for the embedding app. No CouchDB, S3, or MinIO connection is needed at

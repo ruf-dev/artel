@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
@@ -62,7 +62,7 @@ func (f *fakeVaults) GetBySlug(ctx context.Context, slug string) (domain.Vault, 
 	return f.getBySlug(ctx, slug)
 }
 
-func (f *fakeVaults) WithTx(sqldb.DB) repository.Vaults { return f }
+func (f *fakeVaults) WithTx(postgres.DB) repository.Vaults { return f }
 
 // fakeCouchInstances is a hand-written repository.CouchInstances exposing only Get's behavior
 // as configurable — the rest of the interface is unused by Service.
@@ -96,7 +96,7 @@ func (f *fakeCouchInstances) Delete(context.Context, uuid.UUID) error { return n
 
 func (f *fakeCouchInstances) Exists(context.Context) (bool, error) { return false, nil }
 
-func (f *fakeCouchInstances) WithTx(sqldb.DB) repository.CouchInstances { return f }
+func (f *fakeCouchInstances) WithTx(postgres.DB) repository.CouchInstances { return f }
 
 func newTestService(vaults *fakeVaults, instances *fakeCouchInstances) *Service {
 	return &Service{

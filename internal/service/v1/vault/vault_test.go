@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -69,7 +69,7 @@ func (f *fakeVaults) GetBySlug(context.Context, string) (domain.Vault, error) {
 	return domain.Vault{}, nil
 }
 
-func (f *fakeVaults) WithTx(sqldb.DB) repository.Vaults { return f }
+func (f *fakeVaults) WithTx(postgres.DB) repository.Vaults { return f }
 
 // fakeVaultMembers is a hand-written repository.VaultMembers exposing only Get's behavior as
 // configurable — the rest of the interface is unused by TestPublishVault.
@@ -95,7 +95,7 @@ func (f *fakeVaultMembers) ListByVaultWithUsers(context.Context, uuid.UUID) ([]d
 	return nil, nil
 }
 
-func (f *fakeVaultMembers) WithTx(sqldb.DB) repository.VaultMembers { return f }
+func (f *fakeVaultMembers) WithTx(postgres.DB) repository.VaultMembers { return f }
 
 func newPublishTestService(vaults *fakeVaults, members *fakeVaultMembers) *Service {
 	return &Service{

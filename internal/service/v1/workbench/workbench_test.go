@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -90,7 +90,7 @@ func (f *fakeWorkbenches) Delete(ctx context.Context, vaultID uuid.UUID) error {
 	return f.delete(ctx, vaultID)
 }
 
-func (f *fakeWorkbenches) WithTx(sqldb.DB) repository.Workbenches {
+func (f *fakeWorkbenches) WithTx(postgres.DB) repository.Workbenches {
 	return f
 }
 
@@ -152,7 +152,7 @@ func (f *fakeVaults) GetBySlug(context.Context, string) (domain.Vault, error) {
 	return domain.Vault{}, nil
 }
 
-func (f *fakeVaults) WithTx(sqldb.DB) repository.Vaults {
+func (f *fakeVaults) WithTx(postgres.DB) repository.Vaults {
 	return f
 }
 
@@ -237,7 +237,7 @@ func (f *fakeDockerHosts) PickLeastLoaded(ctx context.Context) (domain.DockerHos
 	return f.pickLeastLoaded(ctx)
 }
 
-func (f *fakeDockerHosts) WithTx(sqldb.DB) repository.DockerHosts {
+func (f *fakeDockerHosts) WithTx(postgres.DB) repository.DockerHosts {
 	return f
 }
 

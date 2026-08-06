@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -39,7 +39,7 @@ func (f *fakeCouchInstances) Delete(context.Context, uuid.UUID) error { return n
 
 func (f *fakeCouchInstances) Exists(context.Context) (bool, error) { return false, nil }
 
-func (f *fakeCouchInstances) WithTx(sqldb.DB) repository.CouchInstances { return f }
+func (f *fakeCouchInstances) WithTx(postgres.DB) repository.CouchInstances { return f }
 
 // fakeCouchAccounts is a hand-written repository.CouchAccounts exposing only
 // GetByUserAndInstance's behavior — the rest of the interface is unused by TestListVaults_Role.
@@ -63,7 +63,7 @@ func (f *fakeCouchAccounts) UpdatePassword(context.Context, string, uuid.UUID, s
 
 func (f *fakeCouchAccounts) Delete(context.Context, uuid.UUID) error { return nil }
 
-func (f *fakeCouchAccounts) WithTx(sqldb.DB) repository.CouchAccounts { return f }
+func (f *fakeCouchAccounts) WithTx(postgres.DB) repository.CouchAccounts { return f }
 
 // TestListVaults_Role asserts that ListVaults surfaces the caller's membership role (as set by
 // the repo's ListByMembership, per-vault) unchanged in each returned domain.Vault: "owner" for

@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
@@ -68,7 +68,12 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error initializing creds encryption")
 	}
 
-	pgConn, err := sqldb.New(a.Cfg.DataSources.Postgres)
+	err = postgres.Migrate(a.Cfg.DataSources.Postgres)
+	if err != nil {
+		return rerrors.Wrap(err, "error migrating postgres")
+	}
+
+	pgConn, err := postgres.Connect(a.Cfg.DataSources.Postgres)
 	if err != nil {
 		return rerrors.Wrap(err, "error creating postgres connection")
 	}

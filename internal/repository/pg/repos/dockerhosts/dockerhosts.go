@@ -9,7 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -23,7 +23,7 @@ type Repo struct {
 	encryptor cryptoutil.Encryptor
 }
 
-func New(db sqldb.DB, encryptor cryptoutil.Encryptor) *Repo {
+func New(db postgres.DB, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
 		q:         artel_q.New(db),
 		encryptor: encryptor,
@@ -205,7 +205,7 @@ func (r *Repo) PickLeastLoaded(ctx context.Context) (domain.DockerHost, error) {
 	return host, nil
 }
 
-func (r *Repo) WithTx(tx sqldb.DB) repository.DockerHosts {
+func (r *Repo) WithTx(tx postgres.DB) repository.DockerHosts {
 	return New(tx, r.encryptor)
 }
 

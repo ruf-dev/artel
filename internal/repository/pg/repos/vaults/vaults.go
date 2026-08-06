@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -20,7 +20,7 @@ type Repo struct {
 	encryptor cryptoutil.Encryptor
 }
 
-func New(db sqldb.DB, encryptor cryptoutil.Encryptor) *Repo {
+func New(db postgres.DB, encryptor cryptoutil.Encryptor) *Repo {
 	return &Repo{
 		q:         artel_q.New(db),
 		encryptor: encryptor,
@@ -328,7 +328,7 @@ func (r *Repo) GetBySlug(ctx context.Context, slug string) (domain.Vault, error)
 	return v, nil
 }
 
-func (r *Repo) WithTx(tx sqldb.DB) repository.Vaults {
+func (r *Repo) WithTx(tx postgres.DB) repository.Vaults {
 	return New(tx, r.encryptor)
 }
 

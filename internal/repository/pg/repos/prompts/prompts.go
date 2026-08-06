@@ -6,7 +6,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/utils"
@@ -15,7 +15,7 @@ import (
 )
 
 type Repo struct {
-	db sqldb.DB
+	db postgres.DB
 }
 
 func New(db *sql.DB) *Repo {

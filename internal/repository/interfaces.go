@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
@@ -95,7 +95,7 @@ type Vaults interface {
 	UnpublishVault(ctx context.Context, vaultID uuid.UUID) error
 	GetBySlug(ctx context.Context, slug string) (domain.Vault, error)
 
-	WithTx(tx sqldb.DB) Vaults
+	WithTx(tx postgres.DB) Vaults
 }
 
 // Workbenches is the pure-DB layer for the per-vault Docker workbench container — see
@@ -110,7 +110,7 @@ type Workbenches interface {
 	MarkRemoved(ctx context.Context, vaultID uuid.UUID) error
 	Delete(ctx context.Context, vaultID uuid.UUID) error
 
-	WithTx(tx sqldb.DB) Workbenches
+	WithTx(tx postgres.DB) Workbenches
 }
 
 type VaultMembers interface {
@@ -120,7 +120,7 @@ type VaultMembers interface {
 	ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMember, error)
 	ListByVaultWithUsers(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultMemberInfo, error)
 
-	WithTx(tx sqldb.DB) VaultMembers
+	WithTx(tx postgres.DB) VaultMembers
 }
 
 type VaultInvites interface {
@@ -131,7 +131,7 @@ type VaultInvites interface {
 	ListByVault(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error)
 	Revoke(ctx context.Context, id uuid.UUID) error
 
-	WithTx(tx sqldb.DB) VaultInvites
+	WithTx(tx postgres.DB) VaultInvites
 }
 
 type Sessions interface {
@@ -176,7 +176,7 @@ type CouchAccounts interface {
 	UpdatePassword(ctx context.Context, username string, instanceID uuid.UUID, passwordPlain string) error
 	Delete(ctx context.Context, id uuid.UUID) error
 
-	WithTx(tx sqldb.DB) CouchAccounts
+	WithTx(tx postgres.DB) CouchAccounts
 }
 
 type CouchInstances interface {
@@ -188,7 +188,7 @@ type CouchInstances interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 	Exists(ctx context.Context) (bool, error)
 
-	WithTx(tx sqldb.DB) CouchInstances
+	WithTx(tx postgres.DB) CouchInstances
 }
 
 type S3Instances interface {
@@ -204,7 +204,7 @@ type S3Instances interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 	Exists(ctx context.Context) (bool, error)
 
-	WithTx(tx sqldb.DB) S3Instances
+	WithTx(tx postgres.DB) S3Instances
 }
 
 // DockerHosts is the pure-DB layer for the admin-managed pool of Docker daemons that back
@@ -228,7 +228,7 @@ type DockerHosts interface {
 	// used by workbench.Service.CreateWorkbench to spread new workbenches across the pool.
 	PickLeastLoaded(ctx context.Context) (domain.DockerHost, error)
 
-	WithTx(tx sqldb.DB) DockerHosts
+	WithTx(tx postgres.DB) DockerHosts
 }
 
 type UserPermissionsRepo interface {

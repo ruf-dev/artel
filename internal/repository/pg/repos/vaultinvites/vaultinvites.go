@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -15,7 +15,7 @@ type Repo struct {
 	q *artel_q.Queries
 }
 
-func New(db sqldb.DB) *Repo {
+func New(db postgres.DB) *Repo {
 	return &Repo{
 		q: artel_q.New(db),
 	}
@@ -74,7 +74,7 @@ func (r *Repo) Revoke(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (r *Repo) WithTx(tx sqldb.DB) repository.VaultInvites {
+func (r *Repo) WithTx(tx postgres.DB) repository.VaultInvites {
 	return New(tx)
 }
 

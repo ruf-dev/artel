@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"go.redsock.ru/rerrors"
 
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -19,10 +19,10 @@ import (
 
 type UsersRepo struct {
 	q  *artel_q.Queries
-	db sqldb.DB
+	db postgres.DB
 }
 
-func New(q *artel_q.Queries, db sqldb.DB) *UsersRepo {
+func New(q *artel_q.Queries, db postgres.DB) *UsersRepo {
 	return &UsersRepo{q: q, db: db}
 }
 

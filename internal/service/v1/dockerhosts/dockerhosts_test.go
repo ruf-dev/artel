@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/ruf-dev/artel/internal/clients/sqldb"
+	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/stretchr/testify/require"
@@ -126,7 +126,7 @@ func (f *fakeDockerHostsRepo) PickLeastLoaded(_ context.Context) (domain.DockerH
 	return domain.DockerHost{}, errors.New("no hosts")
 }
 
-func (f *fakeDockerHostsRepo) WithTx(_ sqldb.DB) repository.DockerHosts {
+func (f *fakeDockerHostsRepo) WithTx(_ postgres.DB) repository.DockerHosts {
 	return f
 }
 
