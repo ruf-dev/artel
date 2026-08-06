@@ -1,7 +1,10 @@
 import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
     AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
-    CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse, ExternalConnectionInfo,
+    AddOpenAIConnectionRequest,
+    CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
+    CheckOpenAIConnectionRequest, CheckOpenAIConnectionResponse,
+    ExternalConnectionInfo,
     ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
@@ -24,6 +27,8 @@ export interface IExternalConnectionsService {
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<ExternalConnectionInfo>
     addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<ExternalConnectionInfo>
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
+    addOpenAIConnection: (req: AddOpenAIConnectionRequest) => Promise<ExternalConnectionInfo>
+    checkOpenAIConnection: (req: CheckOpenAIConnectionRequest) => Promise<CheckOpenAIConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<ExternalConnectionInfo>
 }
 
@@ -110,6 +115,15 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async checkAnthropicConnection(req: CheckAnthropicConnectionRequest): Promise<CheckAnthropicConnectionResponse> {
         return ExternalConnectionsAPI.CheckAnthropicConnection(req, useUser.getState().auth.getInitReq())
+    }
+
+    async addOpenAIConnection(req: AddOpenAIConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddOpenAIConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
+    }
+
+    async checkOpenAIConnection(req: CheckOpenAIConnectionRequest): Promise<CheckOpenAIConnectionResponse> {
+        return ExternalConnectionsAPI.CheckOpenAIConnection(req, useUser.getState().auth.getInitReq())
     }
 
     async addGenericConnection(req: AddGenericConnectionRequest): Promise<ExternalConnectionInfo> {

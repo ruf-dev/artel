@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
+	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
@@ -245,4 +246,237 @@ func TestAnthropicKeyPreview(t *testing.T) {
 	require.Equal(t, "...ab12", anthropicKeyPreview("sk-ant-api03-verylongkeyab12"))
 	require.Equal(t, "...ab", anthropicKeyPreview("ab"))
 	require.Equal(t, "...", anthropicKeyPreview(""))
+}
+
+// TestValidateOpenAIKey_Success verifies a successful models-list response against a fake
+// OpenAI endpoint is returned as-is (mirrors internal/clients/openai/client_test.go's
+// TestListModels_Success fixture).
+func TestValidateOpenAIKey_Success(t *testing.T) {
+	body := `{
+		"object": "list",
+		"data": [
+			{"id": "gpt-4o", "object": "model", "created": 1715367049, "owned_by": "system"},
+			{"id": "gpt-4o-mini", "object": "model", "created": 1721172741, "owned_by": "system"}
+		]
+	}`
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		_, err := w.Write([]byte(body))
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	svc := newValidationTestService()
+
+	models, err := svc.validateOpenAIKey(context.Background(), "test-api-key", server.URL, "")
+	require.NoError(t, err)
+
+	want := []openaiClient.ModelInfo{
+		{Id: "gpt-4o", OwnedBy: "system"},
+		{Id: "gpt-4o-mini", OwnedBy: "system"},
+	}
+	require.Equal(t, want, models)
+}
+
+// TestValidateOpenAIKey_AuthFailure verifies a 401 from the provider surfaces as
+// user_errors.LlmKeyRejected rather than a raw transport error.
+func TestValidateOpenAIKey_AuthFailure(t *testing.T) {
+	body := `{
+		"error": {
+			"message": "Incorrect API key provided",
+			"type": "invalid_request_error",
+			"param": null,
+			"code": "invalid_api_key"
+		}
+	}`
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+
+		_, err := w.Write([]byte(body))
+		require.NoError(t, err)
+	}))
+	defer server.Close()
+
+	svc := newValidationTestService()
+
+	models, err := svc.validateOpenAIKey(context.Background(), "bad-api-key", server.URL, "")
+	require.Error(t, err)
+	require.Nil(t, models)
+	require.ErrorIs(t, err, user_errors.LlmKeyRejected)
+}
+
+// TestValidateOpenAIKey_ModelListingUnsupported verifies a 404 from the provider (a
+// non-official OpenAI-compatible endpoint that doesn't implement GET /v1/models) surfaces as
+// user_errors.LlmKeyModelListingUnsupported when the caller supplied no fallback model to ping.
+func TestValidateOpenAIKey_ModelListingUnsupported(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+
+	svc := newValidationTestService()
+
+	models, err := svc.validateOpenAIKey(context.Background(), "test-api-key", server.URL, "")
+	require.Error(t, err)
+	require.Nil(t, models)
+	require.ErrorIs(t, err, user_errors.LlmKeyModelListingUnsupported)
+}
+
+// TestValidateOpenAIKey_FallbackPingSucceeds verifies that when GET /v1/models 404s but the
+// caller supplied a defaultModel, validation falls back to a minimal completion against that
+// model and succeeds if the provider accepts it — the case that unblocks non-official
+// OpenAI-compatible providers that only implement the Chat Completions API.
+func TestValidateOpenAIKey_FallbackPingSucceeds(t *testing.T) {
+	completionBody := `{
+		"id": "chatcmpl-abc123",
+		"object": "chat.completion",
+		"created": 1715367049,
+		"model": "custom-model",
+		"choices": [
+			{"index": 0, "message": {"role": "assistant", "content": "hi"}, "logprobs": null, "finish_reason": "stop"}
+		],
+		"usage": {"prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2}
+	}`
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/chat/completions" {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+
+			_, err := w.Write([]byte(completionBody))
+			require.NoError(t, err)
+
+			return
+		}
+
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+
+	svc := newValidationTestService()
+
+	models, err := svc.validateOpenAIKey(context.Background(), "test-api-key", server.URL, "custom-model")
+	require.NoError(t, err)
+	require.Empty(t, models)
+}
+
+// TestValidateOpenAIKey_FallbackPingFails verifies that when both GET /v1/models and the
+// fallback ping fail, validation reports the key as rejected rather than silently succeeding.
+func TestValidateOpenAIKey_FallbackPingFails(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+
+	svc := newValidationTestService()
+
+	models, err := svc.validateOpenAIKey(context.Background(), "test-api-key", server.URL, "custom-model")
+	require.Error(t, err)
+	require.Nil(t, models)
+	require.ErrorIs(t, err, user_errors.LlmKeyRejected)
+}
+
+// TestValidateOpenAIKey_ProviderUnreachable verifies a network-level failure (no server
+// listening at all, as opposed to an API error response) surfaces as
+// user_errors.LlmKeyProviderUnreachable.
+func TestValidateOpenAIKey_ProviderUnreachable(t *testing.T) {
+	svc := newValidationTestService()
+
+	models, err := svc.validateOpenAIKey(context.Background(), "test-api-key", "http://127.0.0.1:1", "")
+	require.Error(t, err)
+	require.Nil(t, models)
+	require.ErrorIs(t, err, user_errors.LlmKeyProviderUnreachable)
+}
+
+// TestValidateOpenAIKey_DefaultBaseUrl verifies a blank baseUrl is resolved to
+// openaiDefaultBaseUrl rather than being sent to the SDK as-is (which would fall back to the
+// SDK's own default host instead of this package's documented default).
+func TestValidateOpenAIKey_DefaultBaseUrl(t *testing.T) {
+	svc := newValidationTestService()
+
+	require.Equal(t, openaiDefaultBaseUrl, resolveOpenAIBaseUrl(""))
+	require.Equal(t, "https://example.com", resolveOpenAIBaseUrl("https://example.com"))
+
+	_ = svc
+}
+
+// TestRecommendedDefaultOpenAIModel_UsesProvidedDefault verifies an explicit defaultModel wins
+// over the model list, even when it isn't in the allowlist.
+func TestRecommendedDefaultOpenAIModel_UsesProvidedDefault(t *testing.T) {
+	models := []openaiClient.ModelInfo{
+		{Id: "gpt-4o"},
+		{Id: "gpt-4o-mini"},
+	}
+
+	got := recommendedDefaultOpenAIModel("ft:gpt-4o:custom", models)
+	require.Equal(t, "ft:gpt-4o:custom", got)
+}
+
+// TestRecommendedDefaultOpenAIModel_PrefersGpt4oOverMini verifies that, absent an explicit
+// default, gpt-4o is preferred over gpt-4o-mini when both are present in the catalog — unlike
+// Anthropic's "first entry wins" heuristic, order in the response is not a usable signal here.
+func TestRecommendedDefaultOpenAIModel_PrefersGpt4oOverMini(t *testing.T) {
+	models := []openaiClient.ModelInfo{
+		{Id: "gpt-4o-mini"},
+		{Id: "text-embedding-3-large"},
+		{Id: "gpt-4o"},
+	}
+
+	got := recommendedDefaultOpenAIModel("", models)
+	require.Equal(t, "gpt-4o", got)
+}
+
+// TestRecommendedDefaultOpenAIModel_FallsBackToMiniWhenGpt4oAbsent verifies the allowlist walks
+// to the next entry when the top preference isn't present in the catalog.
+func TestRecommendedDefaultOpenAIModel_FallsBackToMiniWhenGpt4oAbsent(t *testing.T) {
+	models := []openaiClient.ModelInfo{
+		{Id: "gpt-4-turbo"},
+		{Id: "gpt-4o-mini"},
+	}
+
+	got := recommendedDefaultOpenAIModel("", models)
+	require.Equal(t, "gpt-4o-mini", got)
+}
+
+// TestRecommendedDefaultOpenAIModel_NoneAllowlisted verifies "" is returned rather than guessing
+// at an arbitrary entry when none of the allowlisted models are present.
+func TestRecommendedDefaultOpenAIModel_NoneAllowlisted(t *testing.T) {
+	models := []openaiClient.ModelInfo{
+		{Id: "text-embedding-3-large"},
+		{Id: "whisper-1"},
+	}
+
+	got := recommendedDefaultOpenAIModel("", models)
+	require.Equal(t, "", got)
+}
+
+// TestRecommendedDefaultOpenAIModel_EmptyModels verifies an empty model list with no explicit
+// default doesn't panic and returns an empty string.
+func TestRecommendedDefaultOpenAIModel_EmptyModels(t *testing.T) {
+	got := recommendedDefaultOpenAIModel("", nil)
+	require.Equal(t, "", got)
+}
+
+// TestOpenAIModelIds verifies model IDs are extracted in order.
+func TestOpenAIModelIds(t *testing.T) {
+	models := []openaiClient.ModelInfo{
+		{Id: "gpt-4o"},
+		{Id: "gpt-4o-mini"},
+	}
+
+	require.Equal(t, []string{"gpt-4o", "gpt-4o-mini"}, openaiModelIds(models))
+	require.Equal(t, []string{}, openaiModelIds(nil))
+}
+
+// TestOpenAIKeyPreview verifies the preview never exposes more than the trailing 4 characters
+// of the key, and doesn't panic on a short key.
+func TestOpenAIKeyPreview(t *testing.T) {
+	require.Equal(t, "...ab12", openaiKeyPreview("sk-proj-verylongkeyab12"))
+	require.Equal(t, "...ab", openaiKeyPreview("ab"))
+	require.Equal(t, "...", openaiKeyPreview(""))
 }

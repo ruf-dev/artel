@@ -1,17 +1,17 @@
 import {Button} from "@vervstack/chures"
 
-import cls from "@/dialogs/ManageAnthropicDialog/components/ConnectedContent/ConnectedContent.module.css"
+import cls from "@/components/LlmKeyConnectedContent/LlmKeyConnectedContent.module.css"
 
-interface ConnectedContentProps {
+interface LlmKeyConnectedContentProps {
     fields: Record<string, string>
     onDisconnect: () => void
 }
 
-export default function ConnectedContent({fields, onDisconnect}: ConnectedContentProps) {
+export default function LlmKeyConnectedContent({fields, onDisconnect}: LlmKeyConnectedContentProps) {
     const availableModels = fields.available_models ? fields.available_models.split(",").filter(Boolean) : []
 
     return (
-        <div className={cls.ConnectedContentContainer}>
+        <div className={cls.LlmKeyConnectedContentContainer}>
             <p className={cls.ModalSub}>
                 Connected with key <b>{fields.key_preview}</b>.
             </p>

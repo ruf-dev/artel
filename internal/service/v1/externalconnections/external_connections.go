@@ -19,6 +19,7 @@ import (
 	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/imap"
+	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
@@ -40,6 +41,10 @@ const gitlabDefaultInstanceURL = "https://gitlab.com"
 // anthropicDefaultBaseUrl is used when the caller doesn't override the API host (e.g. for a
 // proxy/regional endpoint).
 const anthropicDefaultBaseUrl = "https://api.anthropic.com"
+
+// openaiDefaultBaseUrl is used when the caller doesn't override the API host (e.g. for a
+// proxy/regional endpoint or an OpenAI-compatible third-party provider).
+const openaiDefaultBaseUrl = "https://api.openai.com/v1"
 
 // emailConnectionCheckTimeout bounds each of the IMAP/SMTP dial+auth round trips in
 // CheckEmailConnection, so a host that never responds fails fast instead of hanging the request.
@@ -68,6 +73,14 @@ type telegramConnectionMeta struct {
 
 // anthropicConnectionMeta is stored plaintext in metadata (non-sensitive display data).
 type anthropicConnectionMeta struct {
+	KeyPreview      string `json:"key_preview"`
+	DefaultModel    string `json:"default_model"`
+	AvailableModels string `json:"available_models"` // comma-joined model IDs; genericDetails only keeps string values
+	LastVerifiedAt  string `json:"last_verified_at"` // RFC3339
+}
+
+// openaiConnectionMeta is stored plaintext in metadata (non-sensitive display data).
+type openaiConnectionMeta struct {
 	KeyPreview      string `json:"key_preview"`
 	DefaultModel    string `json:"default_model"`
 	AvailableModels string `json:"available_models"` // comma-joined model IDs; genericDetails only keeps string values
@@ -989,6 +1002,227 @@ func anthropicModelIds(models []anthropicClient.ModelInfo) []string {
 // anthropicKeyPreview returns a display-safe suffix of apiKey (e.g. "...ab12") for
 // anthropicConnectionMeta.KeyPreview — never the full key.
 func anthropicKeyPreview(apiKey string) string {
+	const previewLen = 4
+
+	if len(apiKey) <= previewLen {
+		return "..." + apiKey
+	}
+
+	return "..." + apiKey[len(apiKey)-previewLen:]
+}
+
+// AddOpenAIConnection validates the API key against OpenAI, then persists it. A blank
+// apiKey means "keep the current key" when editing an existing connection, mirroring
+// AddAnthropicConnection's storedAnthropicApiKey fallback.
+func (s *Service) AddOpenAIConnection(
+	ctx context.Context,
+	apiKey, baseUrl, defaultModel string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	if apiKey == "" {
+		var err error
+
+		apiKey, err = s.storedOpenAIApiKey(ctx, uc.UserUuid)
+		if err != nil {
+			return domain.ExternalConnectionMeta{}, err
+		}
+	}
+
+	models, err := s.validateOpenAIKey(ctx, apiKey, baseUrl, defaultModel)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	resolvedDefaultModel := recommendedDefaultOpenAIModel(defaultModel, models)
+
+	creds := domain.OpenAIKeyCredentials{
+		ApiKey:  apiKey,
+		BaseUrl: baseUrl,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal openai credentials")
+	}
+
+	meta := openaiConnectionMeta{
+		KeyPreview:      openaiKeyPreview(apiKey),
+		DefaultModel:    resolvedDefaultModel,
+		AvailableModels: strings.Join(openaiModelIds(models), ","),
+		LastVerifiedAt:  time.Now().UTC().Format(time.RFC3339),
+	}
+
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal openai meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderOpenAI,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save openai connection")
+	}
+
+	displayName := "GPT (OpenAI)"
+	if resolvedDefaultModel != "" {
+		displayName = resolvedDefaultModel
+	}
+
+	return toMeta(saved, displayName), nil
+}
+
+// CheckOpenAIConnection pings the provider with the given key without persisting anything,
+// letting the caller confirm it works — and preview the available model catalog — before
+// committing to AddOpenAIConnection.
+func (s *Service) CheckOpenAIConnection(
+	ctx context.Context,
+	apiKey, baseUrl, defaultModel string,
+) ([]openaiClient.ModelInfo, string, error) {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return nil, "", user_errors.Unauthenticated
+	}
+
+	models, err := s.validateOpenAIKey(ctx, apiKey, baseUrl, defaultModel)
+	if err != nil {
+		return nil, "", err
+	}
+
+	recommendedDefault := recommendedDefaultOpenAIModel(defaultModel, models)
+
+	return models, recommendedDefault, nil
+}
+
+// storedOpenAIApiKey resolves the API key of the user's existing openai connection, used to
+// fall back when the caller submits a blank key (edit forms leave it blank to mean "keep the
+// current key").
+func (s *Service) storedOpenAIApiKey(ctx context.Context, userUuid uuid.UUID) (string, error) {
+	existing, err := s.connections.GetByUserAndProvider(ctx, userUuid, domain.ProviderOpenAI)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error loading existing openai connection")
+	}
+
+	if !existing.Valid {
+		return "", user_errors.LlmKeyRequired
+	}
+
+	var creds domain.OpenAIKeyCredentials
+
+	err = json.Unmarshal(existing.V.CredentialsJSON, &creds)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error parsing existing openai credentials")
+	}
+
+	return creds.ApiKey, nil
+}
+
+// validateOpenAIKey resolves baseUrl to openaiDefaultBaseUrl when blank, then confirms the
+// key actually authenticates against the provider by listing its model catalog. ListModels is a
+// zero-token metadata call, so it doubles as key validation before anything is persisted.
+//
+// Non-official OpenAI-compatible providers frequently mirror only the Chat Completions API and
+// don't implement GET /v1/models at all, which surfaces as a 404 here rather than an auth
+// failure. In that case, when the caller supplied defaultModel, fall back to a minimal Ping
+// against that model instead of failing outright — the model catalog stays empty (there's no
+// listing endpoint to populate it from) but the key itself is still confirmed to work.
+func (s *Service) validateOpenAIKey(
+	ctx context.Context,
+	apiKey, baseUrl, defaultModel string,
+) ([]openaiClient.ModelInfo, error) {
+	client := openaiClient.New(apiKey, resolveOpenAIBaseUrl(baseUrl))
+
+	models, err := client.ListModels(ctx)
+	if err == nil {
+		return models, nil
+	}
+
+	statusCode, hasStatusCode := openaiClient.StatusCode(err)
+
+	switch {
+	case hasStatusCode && (statusCode == http.StatusUnauthorized || statusCode == http.StatusForbidden):
+		return nil, rerrors.Wrap(user_errors.LlmKeyRejected, "openai rejected the api key")
+	case hasStatusCode && statusCode == http.StatusNotFound && defaultModel != "":
+		pingErr := client.Ping(ctx, defaultModel)
+		if pingErr != nil {
+			return nil, rerrors.Wrap(user_errors.LlmKeyRejected, "error pinging openai-compatible endpoint with fallback model")
+		}
+
+		return nil, nil
+	case hasStatusCode && statusCode == http.StatusNotFound:
+		return nil, rerrors.Wrap(user_errors.LlmKeyModelListingUnsupported, "provider does not implement GET /v1/models")
+	case hasStatusCode:
+		return nil, rerrors.Wrap(user_errors.LlmKeyValidationFailed, "error listing openai models")
+	default:
+		return nil, rerrors.Wrap(user_errors.LlmKeyProviderUnreachable, "error connecting to openai-compatible endpoint")
+	}
+}
+
+// resolveOpenAIBaseUrl returns baseUrl unchanged when set, or openaiDefaultBaseUrl when
+// blank.
+func resolveOpenAIBaseUrl(baseUrl string) string {
+	if baseUrl == "" {
+		return openaiDefaultBaseUrl
+	}
+
+	return baseUrl
+}
+
+// openaiModelAllowlist is the preference order recommendedDefaultOpenAIModel falls back to when
+// the caller doesn't set a default model. Ordered most- to least-preferred.
+var openaiModelAllowlist = []string{"gpt-4o", "gpt-4o-mini", "gpt-4-turbo"}
+
+// recommendedDefaultOpenAIModel returns the caller's chosen default model if set. Otherwise it
+// picks the first entry of openaiModelAllowlist present in models.
+//
+// This differs from recommendedDefaultAnthropicModel's "first entry" heuristic deliberately:
+// OpenAI's GET /v1/models response is not reverse-chronological and mixes in non-chat models
+// (embeddings, moderation, TTS, etc.), so "first entry" is not a safe signal of "newest/best chat
+// model" the way it is for Anthropic. If none of the allowlisted models are present, "" is
+// returned rather than guessing at an arbitrary entry.
+func recommendedDefaultOpenAIModel(defaultModel string, models []openaiClient.ModelInfo) string {
+	if defaultModel != "" {
+		return defaultModel
+	}
+
+	available := make(map[string]bool, len(models))
+	for _, m := range models {
+		available[m.Id] = true
+	}
+
+	for _, candidate := range openaiModelAllowlist {
+		if available[candidate] {
+			return candidate
+		}
+	}
+
+	return ""
+}
+
+// openaiModelIds extracts the Id field from each model, preserving order.
+func openaiModelIds(models []openaiClient.ModelInfo) []string {
+	ids := make([]string, len(models))
+
+	for i, m := range models {
+		ids[i] = m.Id
+	}
+
+	return ids
+}
+
+// openaiKeyPreview returns a display-safe suffix of apiKey (e.g. "...ab12") for
+// openaiConnectionMeta.KeyPreview — never the full key.
+func openaiKeyPreview(apiKey string) string {
 	const previewLen = 4
 
 	if len(apiKey) <= previewLen {

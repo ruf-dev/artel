@@ -6,14 +6,25 @@ import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import ProviderCard from "@/widgets/ProviderCard/ProviderCard.tsx"
 import ComingSoonCard from "@/components/ComingSoonCard/ComingSoonCard.tsx"
 import ManageAnthropicDialog from "@/dialogs/ManageAnthropicDialog/ManageAnthropicDialog.tsx"
+import ManageOpenAIDialog from "@/dialogs/ManageOpenAIDialog/ManageOpenAIDialog.tsx"
 import claudeIcon from "@/icons/llm/claude-color.svg"
+import gptIcon from "@/icons/llm/gpt-color.svg"
 import cls from "@/pages/connections/components/BYOKSection/BYOKSection.module.css"
 
-const LLM_BYOK_PROVIDERS: {provider: ExternalProvider; name: string; icon: ReactNode}[] = [
+type LlmProvider = {provider: ExternalProvider; name: string; icon: ReactNode; dialogFactory: () => React.ReactElement}
+
+const LLM_BYOK_PROVIDERS: LlmProvider[] = [
     {
         provider: ExternalProvider.EXTERNAL_PROVIDER_ANTHROPIC,
         name: "Claude (Anthropic)",
         icon: <img src={claudeIcon} alt="Claude" className={cls.ProviderIconImage}/>,
+        dialogFactory: () => <ManageAnthropicDialog/>,
+    },
+    {
+        provider: ExternalProvider.EXTERNAL_PROVIDER_OPENAI,
+        name: "GPT (OpenAI)",
+        icon: <img src={gptIcon} alt="GPT" className={cls.ProviderIconImage}/>,
+        dialogFactory: () => <ManageOpenAIDialog/>,
     },
 ]
 
@@ -36,7 +47,7 @@ export default function BYOKSection() {
             <section className={cls.Section}>
                 <h2 className={cls.SectionTitle}>LLM Keys</h2>
                 <div className={cls.Grid}>
-                    {LLM_BYOK_PROVIDERS.map(({provider, name, icon}) => (
+                    {LLM_BYOK_PROVIDERS.map(({provider, name, icon, dialogFactory}) => (
                         <ProviderCard
                             key={provider}
                             provider={provider}
@@ -44,7 +55,7 @@ export default function BYOKSection() {
                             icon={icon}
                             connections={getConnections(provider)}
                             loading={loading}
-                            onClick={() => OpenDialog(<ManageAnthropicDialog/>)}
+                            onClick={() => OpenDialog(dialogFactory())}
                         />
                     ))}
                 </div>

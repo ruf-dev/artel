@@ -1,29 +1,31 @@
 import {useState} from "react"
 import {Button} from "@vervstack/chures"
 
-import {CheckAnthropicConnectionRequest} from "@/app/api/artel/external_connections.pb.ts"
-import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
+import type {
+    CheckAnthropicConnectionRequest,
+    CheckAnthropicConnectionResponse,
+} from "@/app/api/artel/external_connections.pb.ts"
 import {grpcErrorMessage, isGrpcError} from "@/processes/grpcErrors.ts"
-import cls from "@/dialogs/ManageAnthropicDialog/components/AnthropicCheckButton/AnthropicCheckButton.module.css"
+import cls from "@/components/LlmKeyCheckButton/LlmKeyCheckButton.module.css"
 
 export type CheckStatus = "idle" | "checking" | "ok" | "fail"
 
-interface AnthropicCheckButtonProps {
+interface LlmKeyCheckButtonProps {
     req: CheckAnthropicConnectionRequest
     disabled?: boolean
     onResult: (verified: boolean, recommendedDefaultModel?: string) => void
     onError: (message: string | null) => void
+    checkConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
 }
 
-export default function AnthropicCheckButton({req, disabled, onResult, onError}: AnthropicCheckButtonProps) {
+export default function LlmKeyCheckButton({req, disabled, onResult, onError, checkConnection}: LlmKeyCheckButtonProps) {
     const [status, setStatus] = useState<CheckStatus>("idle")
     const [modelCount, setModelCount] = useState(0)
-    const {checkAnthropicConnection} = useExternalConnections()
 
     function handleCheck() {
         setStatus("checking")
         onError(null)
-        checkAnthropicConnection(req)
+        checkConnection(req)
             .then(resp => {
                 setStatus("ok")
                 setModelCount(resp.availableModels?.length ?? 0)
@@ -37,7 +39,7 @@ export default function AnthropicCheckButton({req, disabled, onResult, onError}:
     }
 
     return (
-        <div className={cls.AnthropicCheckButtonContainer}>
+        <div className={cls.LlmKeyCheckButtonContainer}>
             {status === "ok" && <span className={cls.BadgeOk}>{modelCount} models available</span>}
             {status === "fail" && <span className={cls.BadgeFail}>Failed</span>}
             <Button variant="secondary" onClick={handleCheck} disabled={disabled || status === "checking"}>

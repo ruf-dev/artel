@@ -26,6 +26,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_GITLAB = "EXTERNAL_PROVIDER_GITLAB",
   EXTERNAL_PROVIDER_ANTHROPIC = "EXTERNAL_PROVIDER_ANTHROPIC",
   EXTERNAL_PROVIDER_TELEGRAM = "EXTERNAL_PROVIDER_TELEGRAM",
+  EXTERNAL_PROVIDER_OPENAI = "EXTERNAL_PROVIDER_OPENAI",
 }
 
 export type GoogleConnectionInfo = {
@@ -271,6 +272,31 @@ export type CheckAnthropicConnectionResponse = {
 
 export type CheckAnthropicConnection = Record<string, never>;
 
+export type AddOpenAIConnectionRequest = {
+  apiKey?: string;
+  baseUrl?: string;
+  defaultModel?: string;
+};
+
+export type AddOpenAIConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddOpenAIConnection = Record<string, never>;
+
+export type CheckOpenAIConnectionRequest = {
+  apiKey?: string;
+  baseUrl?: string;
+  defaultModel?: string;
+};
+
+export type CheckOpenAIConnectionResponse = {
+  availableModels?: string[];
+  recommendedDefaultModel?: string;
+};
+
+export type CheckOpenAIConnection = Record<string, never>;
+
 export type AddGenericConnectionRequest = {
   provider?: string;
   credentials?: Record<string, string>;
@@ -342,6 +368,12 @@ export class ExternalConnectionsAPI {
   }
   static CheckAnthropicConnection(this:void, req: CheckAnthropicConnectionRequest, initReq?: fm.InitReq): Promise<CheckAnthropicConnectionResponse> {
     return fm.fetchRequest<CheckAnthropicConnectionResponse>(`/api/external-connections/anthropic/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddOpenAIConnection(this:void, req: AddOpenAIConnectionRequest, initReq?: fm.InitReq): Promise<AddOpenAIConnectionResponse> {
+    return fm.fetchRequest<AddOpenAIConnectionResponse>(`/api/external-connections/openai/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckOpenAIConnection(this:void, req: CheckOpenAIConnectionRequest, initReq?: fm.InitReq): Promise<CheckOpenAIConnectionResponse> {
+    return fm.fetchRequest<CheckOpenAIConnectionResponse>(`/api/external-connections/openai/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static AddGenericConnection(this:void, req: AddGenericConnectionRequest, initReq?: fm.InitReq): Promise<AddGenericConnectionResponse> {
     return fm.fetchRequest<AddGenericConnectionResponse>(`/api/external-connections/generic`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

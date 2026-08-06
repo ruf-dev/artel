@@ -1,4 +1,4 @@
-.ConnectFormContainer {
+.LlmKeyConnectFormContainer {
     & .ModalSub {
         font-size: 0.8125rem;
         color: var(--color-fg-secondary);

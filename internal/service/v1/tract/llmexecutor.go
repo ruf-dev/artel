@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/clients/anthropic"
+	"github.com/ruf-dev/artel/internal/clients/openai"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
@@ -85,13 +86,22 @@ func (a *llmExecutorAdapter) Call(
 		return LlmCallResult{}, rerrors.Wrap(user_errors.TractConnectionNotOwned, connectionUuid.String())
 	}
 
-	if conn.Provider != domain.ProviderAnthropic {
+	switch conn.Provider {
+	case domain.ProviderAnthropic:
+		return callAnthropic(ctx, conn, req)
+	case domain.ProviderOpenAI:
+		return callOpenAI(ctx, conn, req)
+	default:
 		return LlmCallResult{}, rerrors.Wrap(user_errors.TractLlmConnectionProviderMismatch, connectionUuid.String())
 	}
+}
 
+// callAnthropic runs req against conn's Anthropic credentials. Split out of Call so the
+// per-provider branches in the provider switch stay readable.
+func callAnthropic(ctx context.Context, conn domain.ExternalConnection, req LlmCallRequest) (LlmCallResult, error) {
 	var creds domain.AnthropicKeyCredentials
 
-	err = json.Unmarshal(conn.CredentialsJSON, &creds)
+	err := json.Unmarshal(conn.CredentialsJSON, &creds)
 	if err != nil {
 		return LlmCallResult{}, rerrors.Wrap(err, "error unmarshaling anthropic credentials")
 	}
@@ -118,6 +128,43 @@ func (a *llmExecutorAdapter) Call(
 			OutputTokens:             result.Usage.OutputTokens,
 			CacheCreationInputTokens: result.Usage.CacheCreationInputTokens,
 			CacheReadInputTokens:     result.Usage.CacheReadInputTokens,
+		},
+	}
+
+	return callResult, nil
+}
+
+// callOpenAI runs req against conn's OpenAI credentials. CacheCreationInputTokens and
+// CacheReadInputTokens are left unset (zero value) on the result — OpenAI's Chat Completions
+// usage object has no cache-token analogue.
+func callOpenAI(ctx context.Context, conn domain.ExternalConnection, req LlmCallRequest) (LlmCallResult, error) {
+	var creds domain.OpenAIKeyCredentials
+
+	err := json.Unmarshal(conn.CredentialsJSON, &creds)
+	if err != nil {
+		return LlmCallResult{}, rerrors.Wrap(err, "error unmarshaling openai credentials")
+	}
+
+	client := openai.New(creds.ApiKey, creds.BaseUrl)
+
+	completeReq := openai.CompleteRequest{
+		Model:        req.Model,
+		SystemPrompt: req.SystemPrompt,
+		Prompt:       req.Prompt,
+		MaxTokens:    int64(req.MaxTokens),
+	}
+
+	result, err := client.Complete(ctx, completeReq)
+	if err != nil {
+		return LlmCallResult{}, rerrors.Wrap(user_errors.TractLlmCallFailed, err.Error())
+	}
+
+	callResult := LlmCallResult{
+		Text:  result.Text,
+		Model: req.Model,
+		Usage: LlmCallUsage{
+			InputTokens:  result.Usage.InputTokens,
+			OutputTokens: result.Usage.OutputTokens,
 		},
 	}
 

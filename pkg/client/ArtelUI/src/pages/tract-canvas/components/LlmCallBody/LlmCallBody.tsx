@@ -30,8 +30,9 @@ export default function LlmCallBody(props: Props) {
         props.onChangeSteps(replaceStep(props.rootSteps, step.id, updater))
     }
 
-    const anthropicConnections = connections.filter(c => c.provider === ExternalProvider.EXTERNAL_PROVIDER_ANTHROPIC)
-    const selectedConnection = anthropicConnections.find(c => c.id === step.llmConnectionId)
+    const LLM_PROVIDERS = [ExternalProvider.EXTERNAL_PROVIDER_ANTHROPIC, ExternalProvider.EXTERNAL_PROVIDER_OPENAI]
+    const llmConnections = connections.filter(c => c.provider && LLM_PROVIDERS.includes(c.provider))
+    const selectedConnection = llmConnections.find(c => c.id === step.llmConnectionId)
     const availableModels = selectedConnection?.generic?.fields?.available_models
         ? selectedConnection.generic.fields.available_models.split(",").filter(Boolean)
         : []
@@ -42,19 +43,19 @@ export default function LlmCallBody(props: Props) {
                 <NameField step={step} onRename={name => update(s => ({...s, name}))}/>
                 <div className={cls.Row}>
                     <span className={cls.Key}>connection</span>
-                    {anthropicConnections.length > 0 ? (
+                    {llmConnections.length > 0 ? (
                         <select
                             className={cn(cls.Select, !step.llmConnectionId && cls.InputInvalid)}
                             value={step.llmConnectionId ?? ""}
                             onChange={e => update(s => ({...s, llmConnectionId: e.target.value, llmModel: undefined}))}
                         >
                             <option value="">— select —</option>
-                            {anthropicConnections.map(c => (
+                            {llmConnections.map(c => (
                                 <option key={c.id} value={c.id}>{connectionLabel(c)}</option>
                             ))}
                         </select>
                     ) : (
-                        <p className={cls.Empty}>No Anthropic connections available.</p>
+                        <p className={cls.Empty}>No LLM connections available.</p>
                     )}
                 </div>
                 <div className={cls.Row}>

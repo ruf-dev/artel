@@ -9,6 +9,7 @@ import (
 	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
+	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -466,6 +467,12 @@ type ExternalConnectionService interface {
 	// WorkbenchService to inject ANTHROPIC_API_KEY when starting a workbench in api_key auth
 	// mode. Returns user_errors.LlmKeyRequired if userUuid has no anthropic connection.
 	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
+	AddOpenAIConnection(
+		ctx context.Context, apiKey, baseUrl, defaultModel string,
+	) (domain.ExternalConnectionMeta, error)
+	CheckOpenAIConnection(
+		ctx context.Context, apiKey, baseUrl, defaultModel string,
+	) (models []openaiClient.ModelInfo, recommendedDefaultModel string, err error)
 	AddGenericConnection(
 		ctx context.Context, provider string, credentials map[string]string,
 	) (domain.ExternalConnectionMeta, error)

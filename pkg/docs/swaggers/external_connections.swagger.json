@@ -561,6 +561,70 @@
         ]
       }
     },
+    "/api/external-connections/openai/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddOpenAIConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddOpenAIConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddOpenAIConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/openai/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckOpenAIConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckOpenAIConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckOpenAIConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/telegram/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddTelegramConnection",
@@ -789,6 +853,30 @@
         }
       }
     },
+    "artel_apiAddOpenAIConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        },
+        "baseUrl": {
+          "type": "string",
+          "title": "optional; defaults to https://api.openai.com/v1 — for OpenAI-compatible proxies, include\nany required path prefix the proxy expects (OpenAI's API is rooted at /v1, unlike Anthropic\nwhere base_url is just the host)"
+        },
+        "defaultModel": {
+          "type": "string",
+          "title": "optional; falls back to a recommended default from the live model list"
+        }
+      }
+    },
+    "artel_apiAddOpenAIConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddSpreadsheetRequest": {
       "type": "object",
       "properties": {
@@ -919,6 +1007,35 @@
         }
       }
     },
+    "artel_apiCheckOpenAIConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        },
+        "baseUrl": {
+          "type": "string"
+        },
+        "defaultModel": {
+          "type": "string",
+          "title": "optional; used as the fallback validation target when the provider doesn't support GET /v1/models"
+        }
+      }
+    },
+    "artel_apiCheckOpenAIConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "availableModels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendedDefaultModel": {
+          "type": "string"
+        }
+      }
+    },
     "artel_apiCheckTelegramConnectionRequest": {
       "type": "object",
       "properties": {
@@ -1012,7 +1129,8 @@
         "EXTERNAL_PROVIDER_EMAIL",
         "EXTERNAL_PROVIDER_GITLAB",
         "EXTERNAL_PROVIDER_ANTHROPIC",
-        "EXTERNAL_PROVIDER_TELEGRAM"
+        "EXTERNAL_PROVIDER_TELEGRAM",
+        "EXTERNAL_PROVIDER_OPENAI"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },

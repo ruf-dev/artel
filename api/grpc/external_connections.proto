@@ -150,6 +150,20 @@ service ExternalConnectionsAPI {
     };
   }
 
+  rpc AddOpenAIConnection(AddOpenAIConnection.Request) returns (AddOpenAIConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/openai/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckOpenAIConnection(CheckOpenAIConnection.Request) returns (CheckOpenAIConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/openai/check"
+      body: "*"
+    };
+  }
+
   rpc AddGenericConnection(AddGenericConnection.Request) returns (AddGenericConnection.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/generic"
@@ -167,6 +181,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_GITLAB = 5;
   EXTERNAL_PROVIDER_ANTHROPIC = 6;
   EXTERNAL_PROVIDER_TELEGRAM = 7;
+  EXTERNAL_PROVIDER_OPENAI = 8;
 }
 
 message GoogleConnectionInfo {
@@ -386,6 +401,32 @@ message CheckAnthropicConnection {
     // optional; used as the fallback validation target when the provider doesn't
     // support GET /v1/models (common for non-official Anthropic-compatible proxies)
     string default_model = 3;
+  }
+  message Response {
+    repeated string available_models          = 1;
+    string           recommended_default_model = 2;
+  }
+}
+
+message AddOpenAIConnection {
+  message Request {
+    string api_key       = 1;
+    // optional; defaults to https://api.openai.com/v1 — for OpenAI-compatible proxies, include
+    // any required path prefix the proxy expects (OpenAI's API is rooted at /v1, unlike Anthropic
+    // where base_url is just the host)
+    string base_url      = 2;
+    string default_model = 3; // optional; falls back to a recommended default from the live model list
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckOpenAIConnection {
+  message Request {
+    string api_key       = 1;
+    string base_url      = 2;
+    string default_model = 3; // optional; used as the fallback validation target when the provider doesn't support GET /v1/models
   }
   message Response {
     repeated string available_models          = 1;

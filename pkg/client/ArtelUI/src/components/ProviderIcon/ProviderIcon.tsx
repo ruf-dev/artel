@@ -6,6 +6,7 @@ import EmailIcon from "@/components/ProviderIcon/components/EmailIcon"
 import GitlabIcon from "@/components/ProviderIcon/components/GitlabIcon"
 import TelegramIcon from "@/components/ProviderIcon/components/TelegramIcon"
 import AnthropicIcon from "@/components/ProviderIcon/components/AnthropicIcon"
+import OpenAIIcon from "@/components/ProviderIcon/components/OpenAIIcon"
 import UnknownProviderIcon from "@/components/ProviderIcon/components/UnknownProviderIcon"
 
 export default function ProviderIcon({provider}: {provider?: ExternalProvider}) {
@@ -24,6 +25,8 @@ export default function ProviderIcon({provider}: {provider?: ExternalProvider}) 
             return <TelegramIcon/>
         case ExternalProvider.EXTERNAL_PROVIDER_ANTHROPIC:
             return <AnthropicIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_OPENAI:
+            return <OpenAIIcon/>
         default:
             return <UnknownProviderIcon/>
     }

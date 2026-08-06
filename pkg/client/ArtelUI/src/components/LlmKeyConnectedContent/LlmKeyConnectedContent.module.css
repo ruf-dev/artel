@@ -1,4 +1,4 @@
-.ConnectedContentContainer {
+.LlmKeyConnectedContentContainer {
     & .ModalSub {
         font-size: 0.8125rem;
         color: var(--color-fg-secondary);
