@@ -1,7 +1,8 @@
 import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
-    AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest,
-    CheckAnthropicConnectionResponse, ExternalConnectionInfo, ExternalConnectionsAPI, Spreadsheet,
+    AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
+    CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse, ExternalConnectionInfo,
+    ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"

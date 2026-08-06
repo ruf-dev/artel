@@ -38,7 +38,10 @@ export default function ConnectForm() {
             </p>
             <label className={cls.Field}>
                 <span className={cls.FieldLabel}>Bot API Token</span>
-                <Input type="text" inputClassName={cls.TokenInput} placeholder="123456789:ABCdefGHIjklmnoPQRstuvWXYz-1234567890" value={botToken}
+                <Input type="text"
+                       inputClassName={cls.TokenInput}
+                       placeholder="123456789:ABCdefGHIjklmnoPQRstuvWXYz-1234567890"
+                       value={botToken}
                     setValue={handleTokenChange} disabled={connecting} autoComplete="off"/>
                 <div className={cls.TokenHint}>
                     <a href="https://t.me/botfather" target="_blank" rel="noopener noreferrer">

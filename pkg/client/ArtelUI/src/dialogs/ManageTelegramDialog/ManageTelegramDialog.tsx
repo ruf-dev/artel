@@ -35,7 +35,8 @@ export default function ManageTelegramDialog() {
         <div className={cls.ModalContainer} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
             <DialogHead onClose={CloseDialog}/>
             {connection
-                ? <ConnectedContent botUsername={connection.generic?.fields?.bot_username ?? ""} onDisconnect={handleDisconnect}/>
+                ? <ConnectedContent botUsername={connection.generic?.fields?.bot_username ?? ""}
+                                    onDisconnect={handleDisconnect}/>
                 : <ConnectForm/>}
         </div>
     )

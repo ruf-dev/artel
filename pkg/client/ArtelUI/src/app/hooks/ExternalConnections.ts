@@ -2,8 +2,9 @@ import {create} from 'zustand'
 
 import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
-    AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest, CheckAnthropicConnectionRequest,
-    CheckAnthropicConnectionResponse, ExternalConnectionInfo, Spreadsheet,
+    AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
+    CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse, ExternalConnectionInfo,
+    Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
 
