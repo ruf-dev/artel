@@ -71,5 +71,10 @@ setup-e2e-env:
 # Runs the e2e-tagged test suites against a ready environment. The compose stack is left
 # running afterward (see setup-e2e-env) so repeated `make test-e2e` runs don't pay the
 # container startup cost each time.
+# -p 1 runs test packages one at a time: every suite here applies goose migrations against
+# the same shared tests/docker-compose.yaml Postgres instance in its setup, and goose's
+# version tracking isn't safe against concurrent runs against the same target DB — running
+# packages in parallel (Go's default) intermittently raced two suites' migration runs against
+# each other, failing with spurious "column/type already exists" errors.
 test-e2e: setup-e2e-env
-	go test -tags e2e ./tests/...
+	go test -tags e2e -p 1 ./tests/...
