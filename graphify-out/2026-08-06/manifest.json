@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/users/users.go": {
-    "mtime": 1785923962.5840077,
-    "ast_hash": "b3a9fd38de71c34435f4764b74d36a5c",
+    "mtime": 1786009956.6791723,
+    "ast_hash": "972279ef7d2e8eeb3925f33554a3d6e3",
     "semantic_hash": ""
   },
   "internal/repository/pg/repos/prompts/prompts.go": {
@@ -4800,8 +4800,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/auth/auth_test.go": {
-    "mtime": 1785925701.9122455,
-    "ast_hash": "976ea1fe8a177f40da984c82cf768ed6",
+    "mtime": 1786010091.3497133,
+    "ast_hash": "575f398a9b37bc2ddbb6eb46fec320b7",
     "semantic_hash": ""
   },
   "migrations/052_add_refresh_tokens.sql": {
@@ -6187,6 +6187,11 @@
   "pkg/client/ArtelUI/src/dialogs/ManageTelegramDialog/components/TelegramCheckButton/TelegramCheckButton.tsx": {
     "mtime": 1785942136.7379405,
     "ast_hash": "d9dd8fc190a10d620d4cb2f82f33616a",
+    "semantic_hash": ""
+  },
+  "internal/repository/pg/pg_err/err_test.go": {
+    "mtime": 1786010164.720728,
+    "ast_hash": "266f9c6c1c96f4fa462df70601eeb905",
     "semantic_hash": ""
   }
 }
