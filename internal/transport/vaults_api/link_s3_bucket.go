@@ -17,12 +17,17 @@ func (v *VaultsImpl) LinkS3Bucket(
 		return nil, rerrors.Wrap(err, "parse vault id")
 	}
 
-	s3InstanceID, err := uuid.Parse(req.S3InstanceId)
-	if err != nil {
-		return nil, rerrors.Wrap(err, "parse s3 instance id")
+	var s3InstanceIDPtr *uuid.UUID
+	if req.S3InstanceId != "" {
+		var s3InstanceID uuid.UUID
+		s3InstanceID, err = uuid.Parse(req.S3InstanceId)
+		if err != nil {
+			return nil, rerrors.Wrap(err, "parse s3 instance id")
+		}
+		s3InstanceIDPtr = &s3InstanceID
 	}
 
-	err = v.vaultSvc.LinkS3Bucket(ctx, vaultID, s3InstanceID, req.BucketName)
+	err = v.vaultSvc.LinkS3Bucket(ctx, vaultID, s3InstanceIDPtr, req.BucketName)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "link s3 bucket")
 	}

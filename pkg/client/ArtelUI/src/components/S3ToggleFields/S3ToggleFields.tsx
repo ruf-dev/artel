@@ -1,8 +1,8 @@
 import {Toggle} from "@vervstack/chures"
 
-import cls from "@/components/S3InstanceFormDialog/S3InstanceFormDialog.module.css"
+import cls from "@/components/S3ToggleFields/S3ToggleFields.module.css"
 
-interface Props {
+interface S3ToggleFieldsProps {
     useSsl: boolean
     pathStyle: boolean
     disabled: boolean
@@ -10,9 +10,11 @@ interface Props {
     onPathStyleChange: (v: boolean) => void
 }
 
-export default function S3ToggleFields({useSsl, pathStyle, disabled, onUseSslChange, onPathStyleChange}: Props) {
+export default function S3ToggleFields(
+    {useSsl, pathStyle, disabled, onUseSslChange, onPathStyleChange}: S3ToggleFieldsProps,
+) {
     return (
-        <div className={cls.ToggleGroup}>
+        <div className={cls.S3ToggleFieldsContainer}>
             <Toggle
                 checked={useSsl}
                 onChange={onUseSslChange}

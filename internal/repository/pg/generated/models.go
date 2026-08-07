@@ -330,6 +330,7 @@ type CouchInstance struct {
 	Username    string
 	PasswordEnc []byte
 	CreatedAt   time.Time
+	OwnerUserID uuid.NullUUID
 }
 
 type DockerHost struct {
@@ -441,6 +442,7 @@ type S3Instance struct {
 	UseSsl       bool
 	PathStyle    bool
 	CreatedAt    time.Time
+	OwnerUserID  uuid.NullUUID
 }
 
 type Session struct {

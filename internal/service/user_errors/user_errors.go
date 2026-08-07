@@ -321,6 +321,20 @@ var (
 		rerrors.WithHttpStatus(http.StatusBadRequest),
 	)
 
+	// s3 (byok) connection.
+	S3ConnectionValidationFailed = rerrors.New(
+		"could not connect to the s3-compatible endpoint with the provided settings",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+
+	// couchdb (byok) connection.
+	CouchDBConnectionValidationFailed = rerrors.New(
+		"could not connect to the couchdb server with the provided settings",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+
 	// workbench.
 	WorkbenchMissingAnthropicConnection = rerrors.New(
 		"no anthropic api key connected for this account; connect one before starting this workbench in api_key mode",

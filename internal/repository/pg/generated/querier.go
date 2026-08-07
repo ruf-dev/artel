@@ -35,6 +35,8 @@ type Querier interface {
 	DeleteMcpConnector(ctx context.Context, arg DeleteMcpConnectorParams) error
 	DeleteMcpDefinition(ctx context.Context, name string) error
 	DeleteMcpSpreadsheet(ctx context.Context, arg DeleteMcpSpreadsheetParams) error
+	DeleteOwnedCouchInstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error
+	DeleteOwnedS3InstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
 	DeleteS3Instance(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, token string) error
@@ -47,7 +49,7 @@ type Querier interface {
 	DockerHostExists(ctx context.Context) (bool, error)
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
-	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error)
+	GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (GetCouchInstanceWithCredsRow, error)
 	GetDockerHost(ctx context.Context, id uuid.UUID) (GetDockerHostRow, error)
 	GetDockerHostWithCreds(ctx context.Context, id uuid.UUID) (DockerHost, error)
 	GetExternalConnectionByID(ctx context.Context, id uuid.UUID) (ExternalConnection, error)
@@ -58,7 +60,7 @@ type Querier interface {
 	GetMcpTool(ctx context.Context, arg GetMcpToolParams) (McpTool, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)
-	GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (S3Instance, error)
+	GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (GetS3InstanceWithCredsRow, error)
 	GetSessionByToken(ctx context.Context, token string) (GetSessionByTokenRow, error)
 	GetSessionWithUser(ctx context.Context, token string) (GetSessionWithUserRow, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
@@ -139,10 +141,15 @@ type Querier interface {
 	MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error
 	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error
 	PickLeastLoadedDockerHost(ctx context.Context) (PickLeastLoadedDockerHostRow, error)
+	PickOwnedCouchInstance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedCouchInstanceRow, error)
+	PickOwnedS3Instance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedS3InstanceRow, error)
 	PublishVault(ctx context.Context, arg PublishVaultParams) (PublishVaultRow, error)
-	RandomPickCouchInstance(ctx context.Context) (CouchInstance, error)
+	RandomPickCouchInstance(ctx context.Context) (RandomPickCouchInstanceRow, error)
+	RandomPickS3Instance(ctx context.Context) (RandomPickS3InstanceRow, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RegisterDockerHost(ctx context.Context, arg RegisterDockerHostParams) (uuid.UUID, error)
+	RegisterOwnedCouchInstance(ctx context.Context, arg RegisterOwnedCouchInstanceParams) (uuid.UUID, error)
+	RegisterOwnedS3Instance(ctx context.Context, arg RegisterOwnedS3InstanceParams) (uuid.UUID, error)
 	RegisterS3Instance(ctx context.Context, arg RegisterS3InstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error

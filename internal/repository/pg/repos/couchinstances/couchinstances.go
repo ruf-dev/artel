@@ -2,6 +2,8 @@ package couchinstances
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/clients/postgres"
@@ -139,6 +141,98 @@ func (r *Repo) RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount,
 	}
 
 	return result, nil
+}
+
+// PickForUser tries userID's owned instance first, falling back to RandomPick's shared admin
+// pool when they have none — see repository.CouchInstances.PickForUser.
+func (r *Repo) PickForUser(ctx context.Context, userID uuid.UUID) (domain.CouchInstanceWithAccount, error) {
+	owned, err := r.GetOwned(ctx, userID)
+	if err != nil {
+		return domain.CouchInstanceWithAccount{}, rerrors.Wrap(err, "get owned couch instance")
+	}
+
+	if owned.Valid {
+		result := domain.CouchInstanceWithAccount{
+			Instance: owned.V,
+			Account:  nil,
+		}
+
+		return result, nil
+	}
+
+	result, err := r.RandomPick(ctx)
+	if err != nil {
+		return domain.CouchInstanceWithAccount{}, rerrors.Wrap(err, "random pick couch instance")
+	}
+
+	return result, nil
+}
+
+// GetOwned returns the instance owned by userID, if any — see repository.CouchInstances.GetOwned.
+func (r *Repo) GetOwned(ctx context.Context, userID uuid.UUID) (sql.Null[domain.CouchInstance], error) {
+	ownerUserID := uuid.NullUUID{UUID: userID, Valid: true}
+
+	row, err := r.q.PickOwnedCouchInstance(ctx, ownerUserID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.Null[domain.CouchInstance]{}, nil
+		}
+
+		return sql.Null[domain.CouchInstance]{}, rerrors.Wrap(err, "pick owned couch instance")
+	}
+
+	decrypted, err := r.encryptor.Decrypt(row.PasswordEnc)
+	if err != nil {
+		return sql.Null[domain.CouchInstance]{}, rerrors.Wrap(err, "decrypt password")
+	}
+
+	instance := domain.CouchInstance{
+		Uuid:      row.ID,
+		Url:       row.Url,
+		Username:  row.Username,
+		Password:  string(decrypted),
+		CreatedAt: row.CreatedAt,
+	}
+
+	result := sql.Null[domain.CouchInstance]{V: instance, Valid: true}
+
+	return result, nil
+}
+
+// RegisterOwned is like Register but stamps owner_user_id — see
+// repository.CouchInstances.RegisterOwned.
+func (r *Repo) RegisterOwned(
+	ctx context.Context, ownerUserID uuid.UUID, url, username string, passwordPlain []byte,
+) (uuid.UUID, error) {
+	passwordEnc, err := r.encryptor.Encrypt(passwordPlain)
+	if err != nil {
+		return uuid.UUID{}, rerrors.Wrap(err, "encrypt password")
+	}
+
+	params := artel_q.RegisterOwnedCouchInstanceParams{
+		Url:         url,
+		Username:    username,
+		PasswordEnc: passwordEnc,
+		OwnerUserID: uuid.NullUUID{UUID: ownerUserID, Valid: true},
+	}
+
+	id, err := r.q.RegisterOwnedCouchInstance(ctx, params)
+	if err != nil {
+		return uuid.UUID{}, pg_err.UnwrapPgErr(err)
+	}
+
+	return id, nil
+}
+
+// DeleteOwnedIfUnreferenced removes ownerUserID's owned instance row if no vault references it
+// — see repository.CouchInstances.DeleteOwnedIfUnreferenced.
+func (r *Repo) DeleteOwnedIfUnreferenced(ctx context.Context, ownerUserID uuid.UUID) error {
+	err := r.q.DeleteOwnedCouchInstanceIfUnreferenced(ctx, uuid.NullUUID{UUID: ownerUserID, Valid: true})
+	if err != nil {
+		return rerrors.Wrap(err, "delete owned couch instance if unreferenced")
+	}
+
+	return nil
 }
 
 func (r *Repo) Exists(ctx context.Context) (bool, error) {

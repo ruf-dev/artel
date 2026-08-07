@@ -17,9 +17,11 @@ import (
 	"golang.org/x/oauth2"
 
 	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/imap"
 	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
+	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
@@ -94,6 +96,8 @@ type Service struct {
 	mailServerSuggestions repository.MailServerSuggestions
 	oauthCfg              *oauth2.Config
 	mom                   service.MomService
+	couchInstances        repository.CouchInstances
+	s3Instances           repository.S3Instances
 }
 
 func New(
@@ -103,6 +107,8 @@ func New(
 	mailServerSuggestions repository.MailServerSuggestions,
 	oauthCfg *oauth2.Config,
 	mom service.MomService,
+	couchInstances repository.CouchInstances,
+	s3Instances repository.S3Instances,
 ) *Service {
 	return &Service{
 		connections:           connections,
@@ -111,6 +117,8 @@ func New(
 		mailServerSuggestions: mailServerSuggestions,
 		oauthCfg:              oauthCfg,
 		mom:                   mom,
+		couchInstances:        couchInstances,
+		s3Instances:           s3Instances,
 	}
 }
 
@@ -231,6 +239,37 @@ func (s *Service) DisconnectProvider(ctx context.Context, provider string) error
 	err := s.connections.Delete(ctx, uc.UserUuid, provider)
 	if err != nil {
 		return rerrors.Wrap(err, "error disconnecting provider")
+	}
+
+	err = s.cleanupOwnedInstance(ctx, uc.UserUuid, provider)
+	if err != nil {
+		return rerrors.Wrap(err, "error cleaning up owned storage instance")
+	}
+
+	return nil
+}
+
+// cleanupOwnedInstance removes the caller's owned couch/s3 pool row (migrations/066_instance_owner_scoping.sql)
+// after disconnecting a BYOK couchdb/s3 provider, but only when no vault currently references it
+// — see repository.CouchInstances/S3Instances.DeleteOwnedIfUnreferenced. No-op for every other
+// provider.
+//
+// Known limitation, intentionally not handled further: if a vault already references the owned
+// instance, the row is left in place so that vault keeps working. It remains resolvable via
+// PickForUser for the same user until a new BYOK connection overwrites it (syncOwnedS3Instance /
+// syncOwnedCouchInstance update the existing row in place rather than creating a second one).
+func (s *Service) cleanupOwnedInstance(ctx context.Context, userUuid uuid.UUID, provider string) error {
+	switch provider {
+	case domain.ProviderCouchDB:
+		err := s.couchInstances.DeleteOwnedIfUnreferenced(ctx, userUuid)
+		if err != nil {
+			return rerrors.Wrap(err, "delete owned couch instance if unreferenced")
+		}
+	case domain.ProviderS3:
+		err := s.s3Instances.DeleteOwnedIfUnreferenced(ctx, userUuid)
+		if err != nil {
+			return rerrors.Wrap(err, "delete owned s3 instance if unreferenced")
+		}
 	}
 
 	return nil
@@ -915,6 +954,250 @@ func (s *Service) AddGenericConnection(
 	}
 
 	return toMeta(saved, provider), nil
+}
+
+// AddS3Connection validates connectivity against the S3-compatible endpoint, then persists it and
+// syncs the caller's owned s3_instances pool row (migrations/066_instance_owner_scoping.sql) so
+// new vaults resolve to it automatically instead of the shared admin pool — see
+// vault.Service.LinkS3Bucket's PickForUser.
+func (s *Service) AddS3Connection(
+	ctx context.Context,
+	endpoint, region, accessKey, secretKey string,
+	useSSL, pathStyle bool,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	err := s.testS3Connection(ctx, endpoint, region, accessKey, secretKey, useSSL, pathStyle)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	creds := domain.S3KeyCredentials{
+		Endpoint:  endpoint,
+		Region:    region,
+		AccessKey: accessKey,
+		SecretKey: secretKey,
+		UseSSL:    useSSL,
+		PathStyle: pathStyle,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal s3 credentials")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderS3,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save s3 connection")
+	}
+
+	err = s.syncOwnedS3Instance(ctx, uc.UserUuid, endpoint, region, accessKey, secretKey, useSSL, pathStyle)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "sync owned s3 instance")
+	}
+
+	return toMeta(saved, endpoint), nil
+}
+
+// CheckS3Connection pings the S3-compatible endpoint with the given credentials without
+// persisting anything, letting the caller confirm they work before committing to
+// AddS3Connection.
+func (s *Service) CheckS3Connection(
+	ctx context.Context,
+	endpoint, region, accessKey, secretKey string,
+	useSSL, pathStyle bool,
+) error {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	err := s.testS3Connection(ctx, endpoint, region, accessKey, secretKey, useSSL, pathStyle)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// testS3Connection confirms endpoint/credentials work by listing buckets — a bucket-less
+// reachability check (mirrors s3instances.Service.TestS3Instance, which does the same for
+// admin-pool instances).
+func (s *Service) testS3Connection(
+	ctx context.Context,
+	endpoint, region, accessKey, secretKey string,
+	useSSL, pathStyle bool,
+) error {
+	cfg := s3client.Config{
+		Endpoint:  endpoint,
+		Region:    region,
+		AccessKey: accessKey,
+		SecretKey: secretKey,
+		UseSSL:    useSSL,
+		PathStyle: pathStyle,
+	}
+
+	err := s3client.TestConnection(ctx, cfg)
+	if err != nil {
+		return rerrors.Wrap(user_errors.S3ConnectionValidationFailed, "error connecting to s3-compatible endpoint")
+	}
+
+	return nil
+}
+
+// syncOwnedS3Instance mirrors a BYOK s3 connection into userUuid's owned s3_instances pool row,
+// updating it in place if one already exists (so a second BYOK save doesn't create a duplicate
+// pool row) or registering a new one otherwise.
+func (s *Service) syncOwnedS3Instance(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	endpoint, region, accessKey, secretKey string,
+	useSSL, pathStyle bool,
+) error {
+	owned, err := s.s3Instances.GetOwned(ctx, userUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get owned s3 instance")
+	}
+
+	if owned.Valid {
+		err = s.s3Instances.Update(ctx, owned.V.Uuid, endpoint, region, useSSL, pathStyle, accessKey, []byte(secretKey))
+		if err != nil {
+			return rerrors.Wrap(err, "update owned s3 instance")
+		}
+
+		return nil
+	}
+
+	_, err = s.s3Instances.RegisterOwned(ctx, userUuid, endpoint, region, useSSL, pathStyle, accessKey, []byte(secretKey))
+	if err != nil {
+		return rerrors.Wrap(err, "register owned s3 instance")
+	}
+
+	return nil
+}
+
+// AddCouchDBConnection validates connectivity against the CouchDB server, then persists it and
+// syncs the caller's owned couch_instances pool row (migrations/066_instance_owner_scoping.sql)
+// so new vaults resolve to it automatically instead of the shared admin pool — see
+// vault.Service.CreateVault's PickForUser.
+func (s *Service) AddCouchDBConnection(
+	ctx context.Context,
+	url, username, password string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	err := s.testCouchDBConnection(ctx, url, username, password)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	creds := domain.CouchDBKeyCredentials{
+		URL:      url,
+		Username: username,
+		Password: password,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal couchdb credentials")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderCouchDB,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save couchdb connection")
+	}
+
+	err = s.syncOwnedCouchInstance(ctx, uc.UserUuid, url, username, password)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "sync owned couch instance")
+	}
+
+	return toMeta(saved, url), nil
+}
+
+// CheckCouchDBConnection pings the CouchDB server with the given credentials without persisting
+// anything, letting the caller confirm they work before committing to AddCouchDBConnection.
+func (s *Service) CheckCouchDBConnection(ctx context.Context, url, username, password string) error {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	err := s.testCouchDBConnection(ctx, url, username, password)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// testCouchDBConnection confirms url/credentials work via GetSetupStatus — a read-only check
+// (DBExists + a GET against /_cluster_setup) that never mutates the target server, unlike
+// Client.Setup which provisions the _users/_replicator system databases.
+func (s *Service) testCouchDBConnection(ctx context.Context, url, username, password string) error {
+	cfg := couchdb.Config{
+		BaseURL:  url,
+		User:     username,
+		Password: password,
+	}
+
+	client, err := couchdb.New(cfg)
+	if err != nil {
+		return rerrors.Wrap(user_errors.CouchDBConnectionValidationFailed, "error creating couchdb client")
+	}
+
+	_, err = client.GetSetupStatus(ctx)
+	if err != nil {
+		return rerrors.Wrap(user_errors.CouchDBConnectionValidationFailed, "error connecting to couchdb server")
+	}
+
+	return nil
+}
+
+// syncOwnedCouchInstance mirrors a BYOK couchdb connection into userUuid's owned couch_instances
+// pool row, updating it in place if one already exists (so a second BYOK save doesn't create a
+// duplicate pool row) or registering a new one otherwise.
+func (s *Service) syncOwnedCouchInstance(ctx context.Context, userUuid uuid.UUID, url, username, password string) error {
+	owned, err := s.couchInstances.GetOwned(ctx, userUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get owned couch instance")
+	}
+
+	if owned.Valid {
+		err = s.couchInstances.Update(ctx, owned.V.Uuid, url, username, []byte(password))
+		if err != nil {
+			return rerrors.Wrap(err, "update owned couch instance")
+		}
+
+		return nil
+	}
+
+	_, err = s.couchInstances.RegisterOwned(ctx, userUuid, url, username, []byte(password))
+	if err != nil {
+		return rerrors.Wrap(err, "register owned couch instance")
+	}
+
+	return nil
 }
 
 // validateAnthropicKey resolves baseUrl to anthropicDefaultBaseUrl when blank, then confirms the

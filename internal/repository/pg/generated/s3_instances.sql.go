@@ -12,6 +12,17 @@ import (
 	"github.com/google/uuid"
 )
 
+const deleteOwnedS3InstanceIfUnreferenced = `-- name: DeleteOwnedS3InstanceIfUnreferenced :exec
+DELETE FROM s3_instances
+WHERE owner_user_id = $1
+  AND NOT EXISTS (SELECT 1 FROM vaults WHERE vaults.s3_instance_id = s3_instances.id)
+`
+
+func (q *Queries) DeleteOwnedS3InstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error {
+	_, err := q.db.ExecContext(ctx, deleteOwnedS3InstanceIfUnreferenced, ownerUserID)
+	return err
+}
+
 const deleteS3Instance = `-- name: DeleteS3Instance :exec
 DELETE FROM s3_instances WHERE id = $1
 `
@@ -54,9 +65,20 @@ const getS3InstanceWithCreds = `-- name: GetS3InstanceWithCreds :one
 SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances WHERE id = $1
 `
 
-func (q *Queries) GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (S3Instance, error) {
+type GetS3InstanceWithCredsRow struct {
+	ID           uuid.UUID
+	Endpoint     string
+	Region       string
+	AccessKey    string
+	SecretKeyEnc []byte
+	UseSsl       bool
+	PathStyle    bool
+	CreatedAt    time.Time
+}
+
+func (q *Queries) GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (GetS3InstanceWithCredsRow, error) {
 	row := q.db.QueryRowContext(ctx, getS3InstanceWithCreds, id)
-	var i S3Instance
+	var i GetS3InstanceWithCredsRow
 	err := row.Scan(
 		&i.ID,
 		&i.Endpoint,
@@ -113,6 +135,99 @@ func (q *Queries) ListS3Instances(ctx context.Context) ([]ListS3InstancesRow, er
 		return nil, err
 	}
 	return items, nil
+}
+
+const pickOwnedS3Instance = `-- name: PickOwnedS3Instance :one
+SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances WHERE owner_user_id = $1 LIMIT 1
+`
+
+type PickOwnedS3InstanceRow struct {
+	ID           uuid.UUID
+	Endpoint     string
+	Region       string
+	AccessKey    string
+	SecretKeyEnc []byte
+	UseSsl       bool
+	PathStyle    bool
+	CreatedAt    time.Time
+}
+
+func (q *Queries) PickOwnedS3Instance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedS3InstanceRow, error) {
+	row := q.db.QueryRowContext(ctx, pickOwnedS3Instance, ownerUserID)
+	var i PickOwnedS3InstanceRow
+	err := row.Scan(
+		&i.ID,
+		&i.Endpoint,
+		&i.Region,
+		&i.AccessKey,
+		&i.SecretKeyEnc,
+		&i.UseSsl,
+		&i.PathStyle,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const randomPickS3Instance = `-- name: RandomPickS3Instance :one
+SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances ORDER BY RANDOM() LIMIT 1
+`
+
+type RandomPickS3InstanceRow struct {
+	ID           uuid.UUID
+	Endpoint     string
+	Region       string
+	AccessKey    string
+	SecretKeyEnc []byte
+	UseSsl       bool
+	PathStyle    bool
+	CreatedAt    time.Time
+}
+
+func (q *Queries) RandomPickS3Instance(ctx context.Context) (RandomPickS3InstanceRow, error) {
+	row := q.db.QueryRowContext(ctx, randomPickS3Instance)
+	var i RandomPickS3InstanceRow
+	err := row.Scan(
+		&i.ID,
+		&i.Endpoint,
+		&i.Region,
+		&i.AccessKey,
+		&i.SecretKeyEnc,
+		&i.UseSsl,
+		&i.PathStyle,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const registerOwnedS3Instance = `-- name: RegisterOwnedS3Instance :one
+INSERT INTO s3_instances (endpoint, region, access_key, secret_key_enc, use_ssl, path_style, owner_user_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING id
+`
+
+type RegisterOwnedS3InstanceParams struct {
+	Endpoint     string
+	Region       string
+	AccessKey    string
+	SecretKeyEnc []byte
+	UseSsl       bool
+	PathStyle    bool
+	OwnerUserID  uuid.NullUUID
+}
+
+func (q *Queries) RegisterOwnedS3Instance(ctx context.Context, arg RegisterOwnedS3InstanceParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, registerOwnedS3Instance,
+		arg.Endpoint,
+		arg.Region,
+		arg.AccessKey,
+		arg.SecretKeyEnc,
+		arg.UseSsl,
+		arg.PathStyle,
+		arg.OwnerUserID,
+	)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const registerS3Instance = `-- name: RegisterS3Instance :one

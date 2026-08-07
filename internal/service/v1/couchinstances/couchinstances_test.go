@@ -2,6 +2,7 @@ package couchinstances
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"testing"
 
@@ -61,6 +62,36 @@ func (f *fakeCouchInstancesRepo) RandomPick(_ context.Context) (domain.CouchInst
 	}
 
 	return domain.CouchInstanceWithAccount{}, errors.New("no instances")
+}
+
+// PickForUser is unexercised by TestService_HasCouchInstances — it just falls back to RandomPick,
+// since this fake has no notion of ownership.
+func (f *fakeCouchInstancesRepo) PickForUser(ctx context.Context, _ uuid.UUID) (domain.CouchInstanceWithAccount, error) {
+	return f.RandomPick(ctx)
+}
+
+// GetOwned is unexercised by TestService_HasCouchInstances — always reports no owned instance.
+func (f *fakeCouchInstancesRepo) GetOwned(_ context.Context, _ uuid.UUID) (sql.Null[domain.CouchInstance], error) {
+	return sql.Null[domain.CouchInstance]{}, nil
+}
+
+// RegisterOwned is unexercised by TestService_HasCouchInstances — behaves like Register.
+func (f *fakeCouchInstancesRepo) RegisterOwned(
+	_ context.Context, _ uuid.UUID, url, username string, _ []byte,
+) (uuid.UUID, error) {
+	id := uuid.New()
+	f.instances[id] = domain.CouchInstance{
+		Uuid:     id,
+		Url:      url,
+		Username: username,
+	}
+
+	return id, nil
+}
+
+// DeleteOwnedIfUnreferenced is unexercised by TestService_HasCouchInstances — always a no-op.
+func (f *fakeCouchInstancesRepo) DeleteOwnedIfUnreferenced(_ context.Context, _ uuid.UUID) error {
+	return nil
 }
 
 func (f *fakeCouchInstancesRepo) List(_ context.Context) ([]domain.CouchInstance, error) {

@@ -15,7 +15,7 @@ import (
 )
 
 func newGenericConnectionTestService(connections *fakeExternalConnsRepo) *Service {
-	return New(connections, nil, nil, nil, nil, nil)
+	return New(connections, nil, nil, nil, nil, nil, nil, nil)
 }
 
 func TestAddGenericConnection_Unauthenticated_Errors(t *testing.T) {

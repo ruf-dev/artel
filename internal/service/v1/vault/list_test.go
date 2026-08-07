@@ -2,6 +2,7 @@ package vault
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
 	"github.com/google/uuid"
@@ -31,11 +32,25 @@ func (f *fakeCouchInstances) RandomPick(context.Context) (domain.CouchInstanceWi
 
 func (f *fakeCouchInstances) List(context.Context) ([]domain.CouchInstance, error) { return nil, nil }
 
+func (f *fakeCouchInstances) PickForUser(context.Context, uuid.UUID) (domain.CouchInstanceWithAccount, error) {
+	return domain.CouchInstanceWithAccount{}, nil
+}
+
+func (f *fakeCouchInstances) GetOwned(context.Context, uuid.UUID) (sql.Null[domain.CouchInstance], error) {
+	return sql.Null[domain.CouchInstance]{}, nil
+}
+
 func (f *fakeCouchInstances) Update(context.Context, uuid.UUID, string, string, []byte) error {
 	return nil
 }
 
+func (f *fakeCouchInstances) RegisterOwned(context.Context, uuid.UUID, string, string, []byte) (uuid.UUID, error) {
+	return uuid.Nil, nil
+}
+
 func (f *fakeCouchInstances) Delete(context.Context, uuid.UUID) error { return nil }
+
+func (f *fakeCouchInstances) DeleteOwnedIfUnreferenced(context.Context, uuid.UUID) error { return nil }
 
 func (f *fakeCouchInstances) Exists(context.Context) (bool, error) { return false, nil }
 

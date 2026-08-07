@@ -3,9 +3,11 @@ import {create} from 'zustand'
 import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
     AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
-    AddOpenAIConnectionRequest,
+    AddOpenAIConnectionRequest, AddS3ConnectionRequest, AddCouchDBConnectionRequest,
     CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
     CheckOpenAIConnectionRequest, CheckOpenAIConnectionResponse,
+    CheckS3ConnectionRequest, CheckS3ConnectionResponse,
+    CheckCouchDBConnectionRequest, CheckCouchDBConnectionResponse,
     ExternalConnectionInfo,
     Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
@@ -33,6 +35,10 @@ interface ExternalConnectionsState {
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
     addOpenAIConnection: (req: AddOpenAIConnectionRequest) => Promise<void>
     checkOpenAIConnection: (req: CheckOpenAIConnectionRequest) => Promise<CheckOpenAIConnectionResponse>
+    addS3Connection: (req: AddS3ConnectionRequest) => Promise<void>
+    checkS3Connection: (req: CheckS3ConnectionRequest) => Promise<CheckS3ConnectionResponse>
+    addCouchDBConnection: (req: AddCouchDBConnectionRequest) => Promise<void>
+    checkCouchDBConnection: (req: CheckCouchDBConnectionRequest) => Promise<CheckCouchDBConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<void>
 }
 
@@ -131,6 +137,24 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
 
     checkOpenAIConnection: async (req: CheckOpenAIConnectionRequest) => {
         return externalConnectionsService.checkOpenAIConnection(req)
+    },
+
+    addS3Connection: async (req: AddS3ConnectionRequest) => {
+        await externalConnectionsService.addS3Connection(req)
+        await get().fetch()
+    },
+
+    checkS3Connection: async (req: CheckS3ConnectionRequest) => {
+        return externalConnectionsService.checkS3Connection(req)
+    },
+
+    addCouchDBConnection: async (req: AddCouchDBConnectionRequest) => {
+        await externalConnectionsService.addCouchDBConnection(req)
+        await get().fetch()
+    },
+
+    checkCouchDBConnection: async (req: CheckCouchDBConnectionRequest) => {
+        return externalConnectionsService.checkCouchDBConnection(req)
     },
 
     addGenericConnection: async (req: AddGenericConnectionRequest) => {

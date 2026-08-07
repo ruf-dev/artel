@@ -82,6 +82,8 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		repo.MailServerSuggestions(),
 		oauthCfg,
 		momSvc,
+		repo.CouchInstances(),
+		repo.S3Instances(),
 	)
 	// Also hoisted ahead of the literal: mcp.New needs service.AuthService (to gate
 	// create_community_connector on CheckIsAdmin and to resolve the caller's email for a new

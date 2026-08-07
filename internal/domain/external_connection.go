@@ -17,6 +17,8 @@ const (
 	ProviderAnthropic    = "anthropic"
 	ProviderTelegram     = "telegram"
 	ProviderOpenAI       = "openai"
+	ProviderS3           = "s3"
+	ProviderCouchDB      = "couchdb"
 )
 
 type ExternalConnection struct {
@@ -93,4 +95,21 @@ type TelegramCredentials struct {
 type OpenAIKeyCredentials struct {
 	ApiKey  string `json:"api_key"`
 	BaseUrl string `json:"base_url,omitempty"` // optional override, e.g. a proxy/regional endpoint
+}
+
+// S3KeyCredentials is stored encrypted in credentials_enc for the s3 provider.
+type S3KeyCredentials struct {
+	Endpoint  string `json:"endpoint"`
+	Region    string `json:"region,omitempty"`
+	AccessKey string `json:"access_key"`
+	SecretKey string `json:"secret_key"`
+	UseSSL    bool   `json:"use_ssl"`
+	PathStyle bool   `json:"path_style"`
+}
+
+// CouchDBKeyCredentials is stored encrypted in credentials_enc for the couchdb provider.
+type CouchDBKeyCredentials struct {
+	URL      string `json:"url"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

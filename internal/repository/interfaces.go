@@ -183,9 +183,26 @@ type CouchInstances interface {
 	Register(ctx context.Context, url, username string, passwordPlain []byte) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.CouchInstance, error)
 	RandomPick(ctx context.Context) (domain.CouchInstanceWithAccount, error)
+	// PickForUser resolves storage instance selection for vault creation: prefers an instance
+	// userID owns (a BYOK couchdb connection), falling back to RandomPick's shared admin pool
+	// when they have none.
+	PickForUser(ctx context.Context, userID uuid.UUID) (domain.CouchInstanceWithAccount, error)
+	// GetOwned returns the instance owned by userID, if any — used by the service layer to
+	// decide between RegisterOwned (insert) and Update (already owns one) when syncing a BYOK
+	// couchdb connection.
+	GetOwned(ctx context.Context, userID uuid.UUID) (sql.Null[domain.CouchInstance], error)
 	List(ctx context.Context) ([]domain.CouchInstance, error)
 	Update(ctx context.Context, id uuid.UUID, url, username string, passwordPlain []byte) error
+	// RegisterOwned is like Register but stamps owner_user_id, marking the row as ownerUserID's
+	// BYOK instance rather than an admin pool entry.
+	RegisterOwned(
+		ctx context.Context, ownerUserID uuid.UUID, url, username string, passwordPlain []byte,
+	) (uuid.UUID, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+	// DeleteOwnedIfUnreferenced removes ownerUserID's owned instance row, but only if no vault
+	// currently references it — called on BYOK couchdb disconnect. No-op if ownerUserID has no
+	// owned row.
+	DeleteOwnedIfUnreferenced(ctx context.Context, ownerUserID uuid.UUID) error
 	Exists(ctx context.Context) (bool, error)
 
 	WithTx(tx postgres.DB) CouchInstances
@@ -196,12 +213,30 @@ type S3Instances interface {
 		ctx context.Context, endpoint, region string, useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte,
 	) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.S3Instance, error)
+	// PickForUser resolves storage instance selection for vault S3 linking: prefers an instance
+	// userID owns (a BYOK s3 connection), falling back to a random pick from the shared admin
+	// pool when they have none.
+	PickForUser(ctx context.Context, userID uuid.UUID) (domain.S3Instance, error)
+	// GetOwned returns the instance owned by userID, if any — used by the service layer to
+	// decide between RegisterOwned (insert) and Update (already owns one) when syncing a BYOK
+	// s3 connection.
+	GetOwned(ctx context.Context, userID uuid.UUID) (sql.Null[domain.S3Instance], error)
 	List(ctx context.Context) ([]domain.S3Instance, error)
 	Update(
 		ctx context.Context, id uuid.UUID, endpoint, region string,
 		useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte,
 	) error
+	// RegisterOwned is like Register but stamps owner_user_id, marking the row as ownerUserID's
+	// BYOK instance rather than an admin pool entry.
+	RegisterOwned(
+		ctx context.Context, ownerUserID uuid.UUID, endpoint, region string,
+		useSSL, pathStyle bool, accessKey string, secretKeyPlain []byte,
+	) (uuid.UUID, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+	// DeleteOwnedIfUnreferenced removes ownerUserID's owned instance row, but only if no vault
+	// currently references it — called on BYOK s3 disconnect. No-op if ownerUserID has no owned
+	// row.
+	DeleteOwnedIfUnreferenced(ctx context.Context, ownerUserID uuid.UUID) error
 	Exists(ctx context.Context) (bool, error)
 
 	WithTx(tx postgres.DB) S3Instances

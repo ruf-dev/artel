@@ -27,6 +27,8 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_ANTHROPIC = "EXTERNAL_PROVIDER_ANTHROPIC",
   EXTERNAL_PROVIDER_TELEGRAM = "EXTERNAL_PROVIDER_TELEGRAM",
   EXTERNAL_PROVIDER_OPENAI = "EXTERNAL_PROVIDER_OPENAI",
+  EXTERNAL_PROVIDER_S3 = "EXTERNAL_PROVIDER_S3",
+  EXTERNAL_PROVIDER_COUCHDB = "EXTERNAL_PROVIDER_COUCHDB",
 }
 
 export type GoogleConnectionInfo = {
@@ -297,6 +299,56 @@ export type CheckOpenAIConnectionResponse = {
 
 export type CheckOpenAIConnection = Record<string, never>;
 
+export type AddS3ConnectionRequest = {
+  endpoint?: string;
+  region?: string;
+  accessKey?: string;
+  secretKey?: string;
+  useSsl?: boolean;
+  pathStyle?: boolean;
+};
+
+export type AddS3ConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddS3Connection = Record<string, never>;
+
+export type CheckS3ConnectionRequest = {
+  endpoint?: string;
+  region?: string;
+  accessKey?: string;
+  secretKey?: string;
+  useSsl?: boolean;
+  pathStyle?: boolean;
+};
+
+export type CheckS3ConnectionResponse = Record<string, never>;
+
+export type CheckS3Connection = Record<string, never>;
+
+export type AddCouchDBConnectionRequest = {
+  url?: string;
+  username?: string;
+  password?: string;
+};
+
+export type AddCouchDBConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddCouchDBConnection = Record<string, never>;
+
+export type CheckCouchDBConnectionRequest = {
+  url?: string;
+  username?: string;
+  password?: string;
+};
+
+export type CheckCouchDBConnectionResponse = Record<string, never>;
+
+export type CheckCouchDBConnection = Record<string, never>;
+
 export type AddGenericConnectionRequest = {
   provider?: string;
   credentials?: Record<string, string>;
@@ -377,5 +429,17 @@ export class ExternalConnectionsAPI {
   }
   static AddGenericConnection(this:void, req: AddGenericConnectionRequest, initReq?: fm.InitReq): Promise<AddGenericConnectionResponse> {
     return fm.fetchRequest<AddGenericConnectionResponse>(`/api/external-connections/generic`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddS3Connection(this:void, req: AddS3ConnectionRequest, initReq?: fm.InitReq): Promise<AddS3ConnectionResponse> {
+    return fm.fetchRequest<AddS3ConnectionResponse>(`/api/external-connections/s3/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckS3Connection(this:void, req: CheckS3ConnectionRequest, initReq?: fm.InitReq): Promise<CheckS3ConnectionResponse> {
+    return fm.fetchRequest<CheckS3ConnectionResponse>(`/api/external-connections/s3/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddCouchDBConnection(this:void, req: AddCouchDBConnectionRequest, initReq?: fm.InitReq): Promise<AddCouchDBConnectionResponse> {
+    return fm.fetchRequest<AddCouchDBConnectionResponse>(`/api/external-connections/couchdb/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckCouchDBConnection(this:void, req: CheckCouchDBConnectionRequest, initReq?: fm.InitReq): Promise<CheckCouchDBConnectionResponse> {
+    return fm.fetchRequest<CheckCouchDBConnectionResponse>(`/api/external-connections/couchdb/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

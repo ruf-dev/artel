@@ -268,7 +268,7 @@ func (s *QuotaSuite) TestS3QuotaExceeded_RejectsUploadBeforeWrite() {
 
 	bucketName := fmt.Sprintf("quota-test-%08x", rand.Uint32())
 
-	err = s.svcs.Vault.LinkS3Bucket(user.userCtx, user.vaultUuid, s3InstanceUuid, bucketName)
+	err = s.svcs.Vault.LinkS3Bucket(user.userCtx, user.vaultUuid, &s3InstanceUuid, bucketName)
 	s.Require().NoError(err, "link s3 bucket to vault")
 
 	// Vaults default to storing binaries in CouchDB (use_couchdb_for_binaries defaults true —

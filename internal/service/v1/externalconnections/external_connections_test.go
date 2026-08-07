@@ -18,7 +18,7 @@ import (
 // anthropicKeyPreview) never touch the repository, pending-codes store, spreadsheets repo, mail
 // suggestions repo, oauth config, or mom service, so nil stand-ins are safe.
 func newValidationTestService() *Service {
-	return New(nil, nil, nil, nil, nil, nil)
+	return New(nil, nil, nil, nil, nil, nil, nil, nil)
 }
 
 // TestValidateAnthropicKey_Success verifies a successful models-list response against a fake

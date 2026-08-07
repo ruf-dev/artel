@@ -15,7 +15,7 @@ import (
 )
 
 func newTelegramConnectionTestService(connections *fakeExternalConnsRepo, mom *fakeMomService) *Service {
-	return New(connections, nil, nil, nil, nil, mom)
+	return New(connections, nil, nil, nil, nil, mom, nil, nil)
 }
 
 func TestAddTelegramConnection_Unauthenticated_Errors(t *testing.T) {

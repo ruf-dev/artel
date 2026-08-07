@@ -32,6 +32,17 @@ func (q *Queries) DeleteCouchInstance(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteOwnedCouchInstanceIfUnreferenced = `-- name: DeleteOwnedCouchInstanceIfUnreferenced :exec
+DELETE FROM couch_instances
+WHERE owner_user_id = $1
+  AND NOT EXISTS (SELECT 1 FROM vaults WHERE vaults.couch_instance_id = couch_instances.id)
+`
+
+func (q *Queries) DeleteOwnedCouchInstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error {
+	_, err := q.db.ExecContext(ctx, deleteOwnedCouchInstanceIfUnreferenced, ownerUserID)
+	return err
+}
+
 const getCouchInstance = `-- name: GetCouchInstance :one
 SELECT id, url, username, created_at FROM couch_instances WHERE id = $1
 `
@@ -59,9 +70,17 @@ const getCouchInstanceWithCreds = `-- name: GetCouchInstanceWithCreds :one
 SELECT id, url, username, password_enc, created_at FROM couch_instances WHERE id = $1
 `
 
-func (q *Queries) GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (CouchInstance, error) {
+type GetCouchInstanceWithCredsRow struct {
+	ID          uuid.UUID
+	Url         string
+	Username    string
+	PasswordEnc []byte
+	CreatedAt   time.Time
+}
+
+func (q *Queries) GetCouchInstanceWithCreds(ctx context.Context, id uuid.UUID) (GetCouchInstanceWithCredsRow, error) {
 	row := q.db.QueryRowContext(ctx, getCouchInstanceWithCreds, id)
-	var i CouchInstance
+	var i GetCouchInstanceWithCredsRow
 	err := row.Scan(
 		&i.ID,
 		&i.Url,
@@ -111,13 +130,46 @@ func (q *Queries) ListCouchInstances(ctx context.Context) ([]ListCouchInstancesR
 	return items, nil
 }
 
+const pickOwnedCouchInstance = `-- name: PickOwnedCouchInstance :one
+SELECT id, url, username, password_enc, created_at FROM couch_instances WHERE owner_user_id = $1 LIMIT 1
+`
+
+type PickOwnedCouchInstanceRow struct {
+	ID          uuid.UUID
+	Url         string
+	Username    string
+	PasswordEnc []byte
+	CreatedAt   time.Time
+}
+
+func (q *Queries) PickOwnedCouchInstance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedCouchInstanceRow, error) {
+	row := q.db.QueryRowContext(ctx, pickOwnedCouchInstance, ownerUserID)
+	var i PickOwnedCouchInstanceRow
+	err := row.Scan(
+		&i.ID,
+		&i.Url,
+		&i.Username,
+		&i.PasswordEnc,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const randomPickCouchInstance = `-- name: RandomPickCouchInstance :one
 SELECT id, url, username, password_enc, created_at FROM couch_instances ORDER BY RANDOM() LIMIT 1
 `
 
-func (q *Queries) RandomPickCouchInstance(ctx context.Context) (CouchInstance, error) {
+type RandomPickCouchInstanceRow struct {
+	ID          uuid.UUID
+	Url         string
+	Username    string
+	PasswordEnc []byte
+	CreatedAt   time.Time
+}
+
+func (q *Queries) RandomPickCouchInstance(ctx context.Context) (RandomPickCouchInstanceRow, error) {
 	row := q.db.QueryRowContext(ctx, randomPickCouchInstance)
-	var i CouchInstance
+	var i RandomPickCouchInstanceRow
 	err := row.Scan(
 		&i.ID,
 		&i.Url,
@@ -142,6 +194,31 @@ type RegisterCouchInstanceParams struct {
 
 func (q *Queries) RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error) {
 	row := q.db.QueryRowContext(ctx, registerCouchInstance, arg.Url, arg.Username, arg.PasswordEnc)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const registerOwnedCouchInstance = `-- name: RegisterOwnedCouchInstance :one
+INSERT INTO couch_instances (url, username, password_enc, owner_user_id)
+VALUES ($1, $2, $3, $4)
+RETURNING id
+`
+
+type RegisterOwnedCouchInstanceParams struct {
+	Url         string
+	Username    string
+	PasswordEnc []byte
+	OwnerUserID uuid.NullUUID
+}
+
+func (q *Queries) RegisterOwnedCouchInstance(ctx context.Context, arg RegisterOwnedCouchInstanceParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, registerOwnedCouchInstance,
+		arg.Url,
+		arg.Username,
+		arg.PasswordEnc,
+		arg.OwnerUserID,
+	)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

@@ -42,6 +42,10 @@ const (
 	ExternalConnectionsAPI_AddOpenAIConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection"
 	ExternalConnectionsAPI_CheckOpenAIConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection"
 	ExternalConnectionsAPI_AddGenericConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddGenericConnection"
+	ExternalConnectionsAPI_AddS3Connection_FullMethodName             = "/artel_api.ExternalConnectionsAPI/AddS3Connection"
+	ExternalConnectionsAPI_CheckS3Connection_FullMethodName           = "/artel_api.ExternalConnectionsAPI/CheckS3Connection"
+	ExternalConnectionsAPI_AddCouchDBConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection"
+	ExternalConnectionsAPI_CheckCouchDBConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -74,6 +78,10 @@ type ExternalConnectionsAPIClient interface {
 	AddOpenAIConnection(ctx context.Context, in *AddOpenAIConnection_Request, opts ...grpc.CallOption) (*AddOpenAIConnection_Response, error)
 	CheckOpenAIConnection(ctx context.Context, in *CheckOpenAIConnection_Request, opts ...grpc.CallOption) (*CheckOpenAIConnection_Response, error)
 	AddGenericConnection(ctx context.Context, in *AddGenericConnection_Request, opts ...grpc.CallOption) (*AddGenericConnection_Response, error)
+	AddS3Connection(ctx context.Context, in *AddS3Connection_Request, opts ...grpc.CallOption) (*AddS3Connection_Response, error)
+	CheckS3Connection(ctx context.Context, in *CheckS3Connection_Request, opts ...grpc.CallOption) (*CheckS3Connection_Response, error)
+	AddCouchDBConnection(ctx context.Context, in *AddCouchDBConnection_Request, opts ...grpc.CallOption) (*AddCouchDBConnection_Response, error)
+	CheckCouchDBConnection(ctx context.Context, in *CheckCouchDBConnection_Request, opts ...grpc.CallOption) (*CheckCouchDBConnection_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -291,6 +299,42 @@ func (c *externalConnectionsAPIClient) AddGenericConnection(ctx context.Context,
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) AddS3Connection(ctx context.Context, in *AddS3Connection_Request, opts ...grpc.CallOption) (*AddS3Connection_Response, error) {
+	out := new(AddS3Connection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddS3Connection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) CheckS3Connection(ctx context.Context, in *CheckS3Connection_Request, opts ...grpc.CallOption) (*CheckS3Connection_Response, error) {
+	out := new(CheckS3Connection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_CheckS3Connection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) AddCouchDBConnection(ctx context.Context, in *AddCouchDBConnection_Request, opts ...grpc.CallOption) (*AddCouchDBConnection_Response, error) {
+	out := new(AddCouchDBConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddCouchDBConnection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *externalConnectionsAPIClient) CheckCouchDBConnection(ctx context.Context, in *CheckCouchDBConnection_Request, opts ...grpc.CallOption) (*CheckCouchDBConnection_Response, error) {
+	out := new(CheckCouchDBConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_CheckCouchDBConnection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility
@@ -321,6 +365,10 @@ type ExternalConnectionsAPIServer interface {
 	AddOpenAIConnection(context.Context, *AddOpenAIConnection_Request) (*AddOpenAIConnection_Response, error)
 	CheckOpenAIConnection(context.Context, *CheckOpenAIConnection_Request) (*CheckOpenAIConnection_Response, error)
 	AddGenericConnection(context.Context, *AddGenericConnection_Request) (*AddGenericConnection_Response, error)
+	AddS3Connection(context.Context, *AddS3Connection_Request) (*AddS3Connection_Response, error)
+	CheckS3Connection(context.Context, *CheckS3Connection_Request) (*CheckS3Connection_Response, error)
+	AddCouchDBConnection(context.Context, *AddCouchDBConnection_Request) (*AddCouchDBConnection_Response, error)
+	CheckCouchDBConnection(context.Context, *CheckCouchDBConnection_Request) (*CheckCouchDBConnection_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -396,6 +444,18 @@ func (UnimplementedExternalConnectionsAPIServer) CheckOpenAIConnection(context.C
 }
 func (UnimplementedExternalConnectionsAPIServer) AddGenericConnection(context.Context, *AddGenericConnection_Request) (*AddGenericConnection_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGenericConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddS3Connection(context.Context, *AddS3Connection_Request) (*AddS3Connection_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddS3Connection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) CheckS3Connection(context.Context, *CheckS3Connection_Request) (*CheckS3Connection_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckS3Connection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) AddCouchDBConnection(context.Context, *AddCouchDBConnection_Request) (*AddCouchDBConnection_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCouchDBConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) CheckCouchDBConnection(context.Context, *CheckCouchDBConnection_Request) (*CheckCouchDBConnection_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckCouchDBConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -825,6 +885,78 @@ func _ExternalConnectionsAPI_AddGenericConnection_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_AddS3Connection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddS3Connection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddS3Connection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddS3Connection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddS3Connection(ctx, req.(*AddS3Connection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_CheckS3Connection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckS3Connection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).CheckS3Connection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_CheckS3Connection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).CheckS3Connection(ctx, req.(*CheckS3Connection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_AddCouchDBConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCouchDBConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).AddCouchDBConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_AddCouchDBConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).AddCouchDBConnection(ctx, req.(*AddCouchDBConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExternalConnectionsAPI_CheckCouchDBConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckCouchDBConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).CheckCouchDBConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_CheckCouchDBConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).CheckCouchDBConnection(ctx, req.(*CheckCouchDBConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -923,6 +1055,22 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddGenericConnection",
 			Handler:    _ExternalConnectionsAPI_AddGenericConnection_Handler,
+		},
+		{
+			MethodName: "AddS3Connection",
+			Handler:    _ExternalConnectionsAPI_AddS3Connection_Handler,
+		},
+		{
+			MethodName: "CheckS3Connection",
+			Handler:    _ExternalConnectionsAPI_CheckS3Connection_Handler,
+		},
+		{
+			MethodName: "AddCouchDBConnection",
+			Handler:    _ExternalConnectionsAPI_AddCouchDBConnection_Handler,
+		},
+		{
+			MethodName: "CheckCouchDBConnection",
+			Handler:    _ExternalConnectionsAPI_CheckCouchDBConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

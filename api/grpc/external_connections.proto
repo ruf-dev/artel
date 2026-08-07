@@ -170,6 +170,34 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddS3Connection(AddS3Connection.Request) returns (AddS3Connection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/s3/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckS3Connection(CheckS3Connection.Request) returns (CheckS3Connection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/s3/check"
+      body: "*"
+    };
+  }
+
+  rpc AddCouchDBConnection(AddCouchDBConnection.Request) returns (AddCouchDBConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/couchdb/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckCouchDBConnection(CheckCouchDBConnection.Request) returns (CheckCouchDBConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/couchdb/check"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -182,6 +210,8 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_ANTHROPIC = 6;
   EXTERNAL_PROVIDER_TELEGRAM = 7;
   EXTERNAL_PROVIDER_OPENAI = 8;
+  EXTERNAL_PROVIDER_S3 = 9;
+  EXTERNAL_PROVIDER_COUCHDB = 10;
 }
 
 message GoogleConnectionInfo {
@@ -432,6 +462,52 @@ message CheckOpenAIConnection {
     repeated string available_models          = 1;
     string           recommended_default_model = 2;
   }
+}
+
+message AddS3Connection {
+  message Request {
+    string endpoint    = 1;
+    string region      = 2;
+    string access_key  = 3;
+    string secret_key  = 4;
+    bool   use_ssl     = 5;
+    bool   path_style  = 6;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckS3Connection {
+  message Request {
+    string endpoint    = 1;
+    string region      = 2;
+    string access_key  = 3;
+    string secret_key  = 4;
+    bool   use_ssl     = 5;
+    bool   path_style  = 6;
+  }
+  message Response {}
+}
+
+message AddCouchDBConnection {
+  message Request {
+    string url      = 1;
+    string username = 2;
+    string password = 3;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckCouchDBConnection {
+  message Request {
+    string url      = 1;
+    string username = 2;
+    string password = 3;
+  }
+  message Response {}
 }
 
 message AddGenericConnection {

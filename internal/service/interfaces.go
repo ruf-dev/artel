@@ -152,7 +152,10 @@ type VaultService interface {
 	ListInviteLinks(ctx context.Context, vaultID uuid.UUID) ([]domain.VaultInvite, error)
 	RevokeInviteLink(ctx context.Context, inviteID uuid.UUID) error
 	AcceptInvite(ctx context.Context, token string) error
-	LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error
+	// LinkS3Bucket links vaultID to an S3 bucket. When s3InstanceID is nil, the instance is
+	// auto-resolved for the caller (see vault.Service.resolveS3Instance) instead of requiring an
+	// explicit id.
+	LinkS3Bucket(ctx context.Context, vaultID uuid.UUID, s3InstanceID *uuid.UUID, bucketName string) error
 	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error
 	PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error)
@@ -476,4 +479,14 @@ type ExternalConnectionService interface {
 	AddGenericConnection(
 		ctx context.Context, provider string, credentials map[string]string,
 	) (domain.ExternalConnectionMeta, error)
+	AddS3Connection(
+		ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool,
+	) (domain.ExternalConnectionMeta, error)
+	CheckS3Connection(
+		ctx context.Context, endpoint, region, accessKey, secretKey string, useSSL, pathStyle bool,
+	) error
+	AddCouchDBConnection(
+		ctx context.Context, url, username, password string,
+	) (domain.ExternalConnectionMeta, error)
+	CheckCouchDBConnection(ctx context.Context, url, username, password string) error
 }

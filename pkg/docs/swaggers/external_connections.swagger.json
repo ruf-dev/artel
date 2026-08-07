@@ -80,6 +80,70 @@
         ]
       }
     },
+    "/api/external-connections/couchdb/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddCouchDBConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddCouchDBConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddCouchDBConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/couchdb/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckCouchDBConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckCouchDBConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckCouchDBConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/disconnect": {
       "post": {
         "operationId": "ExternalConnectionsAPI_DisconnectProvider",
@@ -625,6 +689,70 @@
         ]
       }
     },
+    "/api/external-connections/s3/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddS3Connection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddS3ConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddS3ConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/s3/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckS3Connection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckS3ConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckS3ConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/telegram/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddTelegramConnection",
@@ -779,6 +907,28 @@
         }
       }
     },
+    "artel_apiAddCouchDBConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddCouchDBConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddEmailConnectionRequest": {
       "type": "object",
       "properties": {
@@ -877,6 +1027,37 @@
         }
       }
     },
+    "artel_apiAddS3ConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "accessKey": {
+          "type": "string"
+        },
+        "secretKey": {
+          "type": "string"
+        },
+        "useSsl": {
+          "type": "boolean"
+        },
+        "pathStyle": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_apiAddS3ConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddSpreadsheetRequest": {
       "type": "object",
       "properties": {
@@ -960,6 +1141,23 @@
         }
       }
     },
+    "artel_apiCheckCouchDBConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiCheckCouchDBConnectionResponse": {
+      "type": "object"
+    },
     "artel_apiCheckEmailConnectionRequest": {
       "type": "object",
       "properties": {
@@ -1035,6 +1233,32 @@
           "type": "string"
         }
       }
+    },
+    "artel_apiCheckS3ConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "accessKey": {
+          "type": "string"
+        },
+        "secretKey": {
+          "type": "string"
+        },
+        "useSsl": {
+          "type": "boolean"
+        },
+        "pathStyle": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_apiCheckS3ConnectionResponse": {
+      "type": "object"
     },
     "artel_apiCheckTelegramConnectionRequest": {
       "type": "object",
@@ -1130,7 +1354,9 @@
         "EXTERNAL_PROVIDER_GITLAB",
         "EXTERNAL_PROVIDER_ANTHROPIC",
         "EXTERNAL_PROVIDER_TELEGRAM",
-        "EXTERNAL_PROVIDER_OPENAI"
+        "EXTERNAL_PROVIDER_OPENAI",
+        "EXTERNAL_PROVIDER_S3",
+        "EXTERNAL_PROVIDER_COUCHDB"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },

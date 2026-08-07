@@ -8,7 +8,7 @@ import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import FormField from "@/components/FormField/FormField.tsx"
 import Input from "@/components/atoms/Input/Input.tsx"
-import S3ToggleFields from "@/components/S3InstanceFormDialog/components/S3ToggleFields.tsx"
+import S3ToggleFields from "@/components/S3ToggleFields/S3ToggleFields.tsx"
 
 interface Props {
     initial?: GetS3InstanceResponse

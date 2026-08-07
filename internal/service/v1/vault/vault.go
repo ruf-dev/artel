@@ -62,13 +62,13 @@ func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vau
 			vaultsRepo := s.vaultsRepo.WithTx(tx)
 			vaultMembersRepo := s.vaultMembersRepo.WithTx(tx)
 
-			instanceWithAccount, err := couchInstanceRepo.RandomPick(ctx)
+			instanceWithAccount, err := couchInstanceRepo.PickForUser(ctx, uc.UserUuid)
 			if err != nil {
 				if errors.Is(err, user_errors.NotFound) {
 					return rerrors.Wrap(user_errors.NoCouchDbInstance)
 				}
 
-				return rerrors.Wrap(err, "pick random couch instance")
+				return rerrors.Wrap(err, "pick couch instance for user")
 			}
 
 			couchClient, err := newCouchClient(instanceWithAccount.Instance)
@@ -271,10 +271,13 @@ func (s *Service) RemoveMember(ctx context.Context, vaultID, targetUserUuid uuid
 	return nil
 }
 
-func (s *Service) LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.UUID, bucketName string) error {
-	instance, err := s.s3InstancesRepo.Get(ctx, s3InstanceID)
+// LinkS3Bucket links vaultID to an S3 bucket on s3InstanceID. When s3InstanceID is nil, the
+// instance is auto-resolved via s3InstancesRepo.PickForUser (prefers the caller's BYOK s3
+// connection, falling back to the shared admin pool) instead of requiring an explicit id.
+func (s *Service) LinkS3Bucket(ctx context.Context, vaultID uuid.UUID, s3InstanceID *uuid.UUID, bucketName string) error {
+	instance, err := s.resolveS3Instance(ctx, s3InstanceID)
 	if err != nil {
-		return rerrors.Wrap(err, "get s3 instance")
+		return rerrors.Wrap(err, "resolve s3 instance")
 	}
 
 	cfg := s3client.Config{
@@ -296,12 +299,37 @@ func (s *Service) LinkS3Bucket(ctx context.Context, vaultID, s3InstanceID uuid.U
 		return rerrors.Wrap(err, "ensure bucket exists")
 	}
 
-	err = s.vaultsRepo.LinkS3Bucket(ctx, vaultID, s3InstanceID, bucketName)
+	err = s.vaultsRepo.LinkS3Bucket(ctx, vaultID, instance.Uuid, bucketName)
 	if err != nil {
 		return rerrors.Wrap(err, "link vault s3 bucket")
 	}
 
 	return nil
+}
+
+// resolveS3Instance returns the instance at s3InstanceID when given, otherwise auto-resolves one
+// for the caller via s3InstancesRepo.PickForUser.
+func (s *Service) resolveS3Instance(ctx context.Context, s3InstanceID *uuid.UUID) (domain.S3Instance, error) {
+	if s3InstanceID != nil {
+		instance, err := s.s3InstancesRepo.Get(ctx, *s3InstanceID)
+		if err != nil {
+			return domain.S3Instance{}, rerrors.Wrap(err, "get s3 instance")
+		}
+
+		return instance, nil
+	}
+
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.S3Instance{}, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	instance, err := s.s3InstancesRepo.PickForUser(ctx, uc.UserUuid)
+	if err != nil {
+		return domain.S3Instance{}, rerrors.Wrap(err, "pick s3 instance for user")
+	}
+
+	return instance, nil
 }
 
 func (s *Service) UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error {

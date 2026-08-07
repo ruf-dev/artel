@@ -1,9 +1,11 @@
 import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
     AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
-    AddOpenAIConnectionRequest,
+    AddOpenAIConnectionRequest, AddS3ConnectionRequest, AddCouchDBConnectionRequest,
     CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
     CheckOpenAIConnectionRequest, CheckOpenAIConnectionResponse,
+    CheckS3ConnectionRequest, CheckS3ConnectionResponse,
+    CheckCouchDBConnectionRequest, CheckCouchDBConnectionResponse,
     ExternalConnectionInfo,
     ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
@@ -29,6 +31,10 @@ export interface IExternalConnectionsService {
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
     addOpenAIConnection: (req: AddOpenAIConnectionRequest) => Promise<ExternalConnectionInfo>
     checkOpenAIConnection: (req: CheckOpenAIConnectionRequest) => Promise<CheckOpenAIConnectionResponse>
+    addS3Connection: (req: AddS3ConnectionRequest) => Promise<ExternalConnectionInfo>
+    checkS3Connection: (req: CheckS3ConnectionRequest) => Promise<CheckS3ConnectionResponse>
+    addCouchDBConnection: (req: AddCouchDBConnectionRequest) => Promise<ExternalConnectionInfo>
+    checkCouchDBConnection: (req: CheckCouchDBConnectionRequest) => Promise<CheckCouchDBConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<ExternalConnectionInfo>
 }
 
@@ -124,6 +130,24 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async checkOpenAIConnection(req: CheckOpenAIConnectionRequest): Promise<CheckOpenAIConnectionResponse> {
         return ExternalConnectionsAPI.CheckOpenAIConnection(req, useUser.getState().auth.getInitReq())
+    }
+
+    async addS3Connection(req: AddS3ConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddS3Connection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
+    }
+
+    async checkS3Connection(req: CheckS3ConnectionRequest): Promise<CheckS3ConnectionResponse> {
+        return ExternalConnectionsAPI.CheckS3Connection(req, useUser.getState().auth.getInitReq())
+    }
+
+    async addCouchDBConnection(req: AddCouchDBConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddCouchDBConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
+    }
+
+    async checkCouchDBConnection(req: CheckCouchDBConnectionRequest): Promise<CheckCouchDBConnectionResponse> {
+        return ExternalConnectionsAPI.CheckCouchDBConnection(req, useUser.getState().auth.getInitReq())
     }
 
     async addGenericConnection(req: AddGenericConnectionRequest): Promise<ExternalConnectionInfo> {
