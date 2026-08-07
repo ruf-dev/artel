@@ -95,7 +95,7 @@
     "semantic_hash": ""
   },
   "internal/clients/couchdb/users.go": {
-    "mtime": 1783187441.3242438,
+    "mtime": 1786101424.764704,
     "ast_hash": "aee44730d8155bca9070b2f2f38514c8",
     "semantic_hash": ""
   },
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "internal/clients/couchdb/client.go": {
-    "mtime": 1786098817.5194468,
-    "ast_hash": "ec0a3c4ac27b4e8a42fffebd395375c5",
+    "mtime": 1786101401.9851568,
+    "ast_hash": "2455f4b88a3db352d67c27940f4b74a1",
     "semantic_hash": ""
   },
   "internal/clients/couchdb/db_create.go": {
@@ -120,7 +120,7 @@
     "semantic_hash": ""
   },
   "internal/clients/couchdb/user_create.go": {
-    "mtime": 1783187441.5301368,
+    "mtime": 1786101409.6872804,
     "ast_hash": "2dc719cab755617adbdb79204078cc9f",
     "semantic_hash": ""
   },
@@ -1020,8 +1020,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1784828278.7756555,
-    "ast_hash": "a1e1d61de9fb54d2d6b062dc15bfe2a5",
+    "mtime": 1786100421.7539122,
+    "ast_hash": "8d33a5a4de5615c9b54c0aa0c0a0bbce",
     "semantic_hash": ""
   },
   "config/config.yaml": {
@@ -1180,8 +1180,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/e2e_test.go": {
-    "mtime": 1786098529.1747174,
-    "ast_hash": "facadac79311201521d8e95167991b9b",
+    "mtime": 1786100876.234896,
+    "ast_hash": "8136f97d8e7d1b3b3ee5e0452ca89205",
     "semantic_hash": ""
   },
   "tests/vault/vault_test.go": {
@@ -1200,8 +1200,8 @@
     "semantic_hash": ""
   },
   "internal/clients/couchdb/log_transport.go": {
-    "mtime": 1783187441.1485922,
-    "ast_hash": "3aee9666c41717ed10f34c63dae30450",
+    "mtime": 1786101392.5453405,
+    "ast_hash": "f967a08aae29de3551be06f1acf1bdc5",
     "semantic_hash": ""
   },
   "internal/clients/googleapi/client.go": {
@@ -2220,8 +2220,8 @@
     "semantic_hash": ""
   },
   "tests/tract_e2e/tract_e2e_test.go": {
-    "mtime": 1786098529.1744492,
-    "ast_hash": "1c98a7ed17f5c69df869dbf5724e6cb7",
+    "mtime": 1786100868.2931926,
+    "ast_hash": "2b0c2388edb99e4a8f283c9b5a6dee7a",
     "semantic_hash": ""
   },
   "internal/clients/s3/client.go": {
@@ -2685,8 +2685,8 @@
     "semantic_hash": ""
   },
   "tests/gitlab_trigger_e2e/gitlab_trigger_e2e_test.go": {
-    "mtime": 1786098231.8577626,
-    "ast_hash": "95f8c5234172c1713928af27e081e232",
+    "mtime": 1786100973.6336777,
+    "ast_hash": "98e14234b23f504facccf1780025dd75",
     "semantic_hash": ""
   },
   "internal/repository/pg/generated/trigger_presets.sql.go": {
@@ -4720,8 +4720,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/quota_test.go": {
-    "mtime": 1786098529.1743186,
-    "ast_hash": "ec2b37830b8d7766cfa5281debc782a6",
+    "mtime": 1786100876.2348924,
+    "ast_hash": "53a692f399329cd514d7a3e905655c95",
     "semantic_hash": ""
   },
   "docs/ideas/data_aggregation.md": {
@@ -6060,13 +6060,23 @@
     "semantic_hash": ""
   },
   "tests/e2e/byok_storage_test.go": {
-    "mtime": 1786098529.1743193,
-    "ast_hash": "4c3f0fc42e9223f29bfedfa7050359f0",
+    "mtime": 1786100876.2348716,
+    "ast_hash": "aea2d23cb4912a2e1682928cc0fe40d0",
     "semantic_hash": ""
   },
   "tests/harness/harness.go": {
-    "mtime": 1786098966.4071789,
-    "ast_hash": "e16b64e444128c24bc77b04593ba058d",
+    "mtime": 1786101107.4156568,
+    "ast_hash": "7eefcc4df9e657bbe7c67fb9ab4d5b12",
+    "semantic_hash": ""
+  },
+  "internal/clients/s3/bucket_admin.go": {
+    "mtime": 1786100312.1554296,
+    "ast_hash": "748e2f4f48de849490180853cbbb12b0",
+    "semantic_hash": ""
+  },
+  "tests/bootstrap/bootstrap_test.go": {
+    "mtime": 1786100397.5203493,
+    "ast_hash": "85cbc11613baf6ac46026ee4b0adea5a",
     "semantic_hash": ""
   }
 }
