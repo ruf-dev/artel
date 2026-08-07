@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/go-kivik/kivik/v4"
 	kivikcouch "github.com/go-kivik/kivik/v4/couchdb"
@@ -13,6 +14,16 @@ import (
 	"github.com/ruf-dev/artel/internal/utils"
 
 	"go.redsock.ru/rerrors"
+)
+
+// enableSingleNodeMaxAttempts and enableSingleNodeRetryDelay bound the retry in enableSingleNode
+// — see that function's comment for why a retry is needed at all here. This is on top of, not a
+// replacement for, loggingTransport's own retry of a transient 401 (log_transport.go) — this one
+// also covers enable_single_node's own 400 ("already enabled") short-circuit, which isn't a retry
+// case at the transport layer.
+const (
+	enableSingleNodeMaxAttempts = 5
+	enableSingleNodeRetryDelay  = 300 * time.Millisecond
 )
 
 type Config struct {
@@ -75,6 +86,12 @@ func (c *Client) Setup(ctx context.Context) error {
 	return nil
 }
 
+// enableSingleNode retries on failure: when multiple callers hit /_cluster_setup concurrently
+// against the same fresh CouchDB node (e.g. several test suites racing to set up the one shared
+// instance at once), CouchDB can transiently reject a request with "Unauthorized" while it's still
+// propagating the admin credentials this same call is in the middle of writing — a caller that
+// eventually retries against the now-stabilized node succeeds. A 400 Bad Request (single node
+// already enabled) is treated as success, not retried.
 func (c *Client) enableSingleNode(ctx context.Context) error {
 	payload := map[string]interface{}{
 		"action":       "enable_single_node",
@@ -83,12 +100,20 @@ func (c *Client) enableSingleNode(ctx context.Context) error {
 		"password":     c.password,
 	}
 
-	err := c.kivik.ClusterSetup(ctx, payload)
-	if err != nil && kivik.HTTPStatus(err) != http.StatusBadRequest {
-		return rerrors.Wrap(err, "cluster setup")
+	var err error
+
+	for attempt := 0; attempt < enableSingleNodeMaxAttempts; attempt++ {
+		err = c.kivik.ClusterSetup(ctx, payload)
+		if err == nil || kivik.HTTPStatus(err) == http.StatusBadRequest {
+			return nil
+		}
+
+		if attempt < enableSingleNodeMaxAttempts-1 {
+			time.Sleep(enableSingleNodeRetryDelay)
+		}
 	}
 
-	return nil
+	return rerrors.Wrap(err, "cluster setup")
 }
 
 func (c *Client) GetSetupStatus(ctx context.Context) (SetupStatus, error) {
