@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/vault/vault.go": {
-    "mtime": 1786089557.542231,
-    "ast_hash": "95f47297939eae60675e52068d09c0a1",
+    "mtime": 1786096742.1300147,
+    "ast_hash": "a71a133df909228288ef2ece758d7fa8",
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
@@ -1185,8 +1185,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/e2e_test.go": {
-    "mtime": 1785930555.5103502,
-    "ast_hash": "4a37654a3a6829f7e9a57f5186d0f4d8",
+    "mtime": 1786096462.7599757,
+    "ast_hash": "ea4da0888ddba2e76d98dda6e2d0aeb4",
     "semantic_hash": ""
   },
   "tests/vault/vault_test.go": {
@@ -2585,8 +2585,8 @@
     "semantic_hash": ""
   },
   "internal/transport/vaults_api/link_s3_bucket.go": {
-    "mtime": 1786094120.2195146,
-    "ast_hash": "46ec2afccd9d489e669461aea9e6e9c8",
+    "mtime": 1786095484.6937325,
+    "ast_hash": "1ce14c48c1dff70cf598e380c5e87774",
     "semantic_hash": ""
   },
   "internal/transport/s3_instances_api/s3_instances_impl.go": {

@@ -2585,8 +2585,8 @@
     "semantic_hash": ""
   },
   "internal/transport/vaults_api/link_s3_bucket.go": {
-    "mtime": 1786089568.2201731,
-    "ast_hash": "54fac7206224997a4b396a5cfe0051f9",
+    "mtime": 1786094120.2195146,
+    "ast_hash": "46ec2afccd9d489e669461aea9e6e9c8",
     "semantic_hash": ""
   },
   "internal/transport/s3_instances_api/s3_instances_impl.go": {
@@ -4800,8 +4800,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/quota_test.go": {
-    "mtime": 1786020350.241636,
-    "ast_hash": "2454ee0ceececee2465a702904a36b1d",
+    "mtime": 1786094522.8169236,
+    "ast_hash": "16e79227f7d6de8231295716a2f57f17",
     "semantic_hash": ""
   },
   "docs/ideas/data_aggregation.md": {
@@ -6312,6 +6312,11 @@
   "pkg/client/ArtelUI/src/dialogs/ManageS3Dialog/ManageS3Dialog.tsx": {
     "mtime": 1786090560.9552944,
     "ast_hash": "23bee148f6f797a5ab4028b9fd5d2226",
+    "semantic_hash": ""
+  },
+  "tests/e2e/byok_storage_test.go": {
+    "mtime": 1786094633.4584384,
+    "ast_hash": "a955936f7b4614387d6123f78313476b",
     "semantic_hash": ""
   }
 }

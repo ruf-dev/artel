@@ -1672,6 +1672,8 @@
   "1670": "post",
   "1671": "DrawerCloseButton.tsx",
   "1672": "RegisterAdminCouchAPIServer",
+  "1673": "QuotaOverrideRow.tsx",
+  "1674": ".DeleteCommunityConnector",
   "1677": "DeleteVault_Response",
   "1682": "definitions",
   "1683": "artel_admin_usersArtelUserDetails",
