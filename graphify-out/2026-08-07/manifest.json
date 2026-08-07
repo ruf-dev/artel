@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "internal/service/v1/vault/vault.go": {
-    "mtime": 1786096742.1300147,
-    "ast_hash": "a71a133df909228288ef2ece758d7fa8",
+    "mtime": 1786097020.3647258,
+    "ast_hash": "4d2c71969f702df8fa144a170b35150f",
     "semantic_hash": ""
   },
   "internal/service/user_errors/user_errors.go": {
@@ -1185,8 +1185,8 @@
     "semantic_hash": ""
   },
   "tests/e2e/e2e_test.go": {
-    "mtime": 1786096462.7599757,
-    "ast_hash": "ea4da0888ddba2e76d98dda6e2d0aeb4",
+    "mtime": 1786097187.0931334,
+    "ast_hash": "71721b7b85499c07e5cdada7ae282fb1",
     "semantic_hash": ""
   },
   "tests/vault/vault_test.go": {
