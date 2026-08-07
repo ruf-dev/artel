@@ -10,6 +10,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/domain"
@@ -18,7 +20,6 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
-	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
@@ -449,8 +450,15 @@ func (s *Service) ensureCouchUserExists(ctx context.Context,
 	}
 
 	err = adminClient.CreateUser(ctx, uc.UserName, couchPassword, []string{})
-	if err != nil && !errors.Is(err, user_errors.UserAlreadyExistInCouchDb) {
-		return rerrors.Wrap(err, "create user in couch")
+	if err != nil {
+		if !errors.Is(err, user_errors.UserAlreadyExistInCouchDb) {
+			return rerrors.Wrap(err, "create user in couch")
+		}
+
+		err = adminClient.UpdateUser(ctx, uc.UserName, couchPassword, []string{})
+		if err != nil {
+			return rerrors.Wrap(err, "update existing couch user password")
+		}
 	}
 
 	account, err := couchAccountsRepo.Upsert(ctx,
