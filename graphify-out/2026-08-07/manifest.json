@@ -1,7 +1,7 @@
 {
   "cmd/service/main.go": {
-    "mtime": 1783187442.5958517,
-    "ast_hash": "df3295607a1b7ff7712b1f7af2da3465",
+    "mtime": 1786052144.8841221,
+    "ast_hash": "fc730cf6ba39682cabdeed28d3694b69",
     "semantic_hash": ""
   },
   "migrations/017_mcp_keys_access.sql": {
@@ -795,8 +795,8 @@
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/package.json": {
-    "mtime": 1785010465.1208522,
-    "ast_hash": "a0b1834014982f3ee637a273e84edc13",
+    "mtime": 1786052139.667698,
+    "ast_hash": "d61939a0313373d6399a7c4a09e3174b",
     "semantic_hash": ""
   },
   "pkg/client/ArtelUI/tsconfig.json": {
@@ -1015,8 +1015,8 @@
     "semantic_hash": "efe69848f390f9e4ce49514adffda4dd"
   },
   "README.md": {
-    "mtime": 1784828288.8498514,
-    "ast_hash": "b8dfb114ae7e24000bad86635a002f4e",
+    "mtime": 1786052135.529733,
+    "ast_hash": "ef0e97c51fc8d0c4a9224adcd4fe654a",
     "semantic_hash": ""
   },
   ".golangci.yaml": {
@@ -6222,6 +6222,11 @@
   "pkg/client/ArtelUI/src/icons/llm/gpt-color.svg": {
     "mtime": 1786051430.8703105,
     "ast_hash": "b6598021eab8dfb3e532c79a1c1246a4",
+    "semantic_hash": ""
+  },
+  "TRADEMARK.md": {
+    "mtime": 1786052130.106191,
+    "ast_hash": "50d27d53c54fc587882501d031fc32cc",
     "semantic_hash": ""
   }
 }

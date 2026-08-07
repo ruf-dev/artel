@@ -1414,6 +1414,7 @@
   "1412": "ListVaults",
   "1413": "check_openai.go",
   "1414": "AddMember",
+  "1415": "ComingSoonCard.tsx",
   "1417": "RemoveMember",
   "1419": "UnimplementedVaultsAPIServer",
   "1420": "Keyfunc",
