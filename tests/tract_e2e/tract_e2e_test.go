@@ -3,9 +3,10 @@
 package tract_e2e_test
 
 // Covers the tract basic scenario end-to-end against real Postgres/CouchDB (via
-// tests/docker-compose.yaml), calling the service layer directly the same way
-// internal/app/custom.go wires it — no mocks. Kept in its own package (rather than
-// tests/e2e) so it doesn't depend on that package's other files compiling.
+// tests/docker-compose.yaml), driving it through the real TractsAPI gRPC surface (via
+// tests/harness's bufconn server + auth interceptor) rather than calling the service layer
+// directly. Kept in its own package (rather than tests/e2e) so it doesn't depend on that
+// package's other files compiling.
 //
 // Run: docker compose -f tests/docker-compose.yaml up -d
 //      go test -tags e2e ./tests/tract_e2e/...
@@ -13,39 +14,27 @@ package tract_e2e_test
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"math/rand/v2"
 	"net/http"
-	"os"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/suite"
+
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/config"
-	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
-	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
-	"github.com/ruf-dev/artel/migrations"
-	"github.com/stretchr/testify/suite"
+	"github.com/ruf-dev/artel/internal/transport/auth_api"
+	"github.com/ruf-dev/artel/internal/transport/tracts_api"
+	"github.com/ruf-dev/artel/tests/harness"
 )
-
-func envOrDefault(key, def string) string {
-	v := os.Getenv(key)
-	if v != "" {
-		return v
-	}
-	return def
-}
-
-func randomEmail() string {
-	return fmt.Sprintf("tract_e2e_%08x@test.local", rand.Uint32())
-}
 
 // putCouchDatabase creates dbName on the test CouchDB instance — the vault row this test
 // creates bypasses the real Vault.CreateVault provisioning, so the database itself needs to
@@ -93,6 +82,9 @@ type TractE2ESuite struct {
 	couchURL      string
 	couchUser     string
 	couchPass     string
+
+	authClient  pb.AuthAPIClient
+	tractClient pb.TractsAPIClient
 }
 
 func TestTractE2E(t *testing.T) {
@@ -102,32 +94,12 @@ func TestTractE2E(t *testing.T) {
 func (s *TractE2ESuite) SetupSuite() {
 	ctx := context.Background()
 
-	pgDSN := envOrDefault("PG_DSN", "postgres://artel:artel_db@localhost:15434/artel_db?sslmode=disable")
-	db, err := sql.Open("postgres", pgDSN)
-	s.Require().NoError(err, "open postgres")
-
-	err = db.Ping()
-	s.Require().NoError(err, "ping postgres — is tests/docker-compose.yaml up?")
-	s.db = db
-
-	err = migrations.ApplyMigration(db)
-	s.Require().NoError(err, "run migrations")
-
-	encKey := make([]byte, 32)
-	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
-	s.Require().NoError(err, "create AES encryptor")
-	s.repos = repopg.New(db, encryptor)
+	s.db = harness.OpenPostgres(s.T())
 
 	cfg := config.EnvironmentConfig{}
-	svcs, err := svcv1.New(s.repos, cfg)
-	s.Require().NoError(err, "init services")
-	s.svcs = svcs
 
-	err = s.repos.SystemSettings().CompleteSetup(ctx)
-	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
-
-	err = s.repos.SystemSettings().UpdateRegistrationMode(ctx, domain.RegistrationModeSelfRegister)
-	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+	var credsEncrypted bool
+	s.repos, s.svcs, credsEncrypted = harness.BuildServices(s.T(), s.db, cfg)
 
 	// Tract is normally wired in internal/app/custom.go (not svcv1.New) because its
 	// ToolExecutor composes the already-built Mcp/Mom services — mirror that wiring exactly
@@ -149,48 +121,80 @@ func (s *TractE2ESuite) SetupSuite() {
 	)
 	s.svcs.McpService().SetTractService(ctx, s.svcs.TractService())
 
-	s.couchURL = envOrDefault("COUCH_URL", "http://localhost:15985")
-	s.couchUser = envOrDefault("COUCH_USER", "admin")
-	s.couchPass = envOrDefault("COUCH_PASS", "admin")
+	s.couchURL = harness.CouchURL(s.T())
+	s.couchUser, s.couchPass = harness.CouchCreds(s.T())
 
-	s.couchInstance, err = s.svcs.CouchInstance.RegisterCouchInstance(ctx, s.couchURL, s.couchUser, s.couchPass)
-	s.Require().NoError(err, "register couch instance")
+	s.couchInstance = harness.GetCouchInstance(s.T(), ctx, s.svcs, s.couchURL)
+
+	authImpl := auth_api.NewAuthImpl(
+		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
+		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
+		false,
+	)
+	tractsImpl := tracts_api.New(ctx, s.svcs.TractService(), false)
+
+	conn := harness.NewBufconnServer(s.T(), s.svcs, authImpl.Register, tractsImpl.Register)
+
+	s.authClient = pb.NewAuthAPIClient(conn)
+	s.tractClient = pb.NewTractsAPIClient(conn)
 }
 
 func (s *TractE2ESuite) TearDownSuite() {
-	ctx := context.Background()
-	if s.couchInstance != "" {
-		err := s.svcs.CouchInstance.DeleteCouchInstance(ctx, s.couchInstance)
-		s.NoError(err)
-	}
 	if s.db != nil {
 		err := s.db.Close()
 		s.NoError(err)
 	}
 }
 
+// registerAndLogin registers+logs in a fresh user via the real AuthAPI RPCs, stamps the
+// username stand-in row (see e2e_test.go's comment on why — the real auth interceptor reads
+// UserName off the persisted row), and returns an authenticated context plus the user's uuid.
+func (s *TractE2ESuite) registerAndLogin(slug string) (context.Context, uuid.UUID) {
+	email := slug + "@test.local"
+	password := "test-password-" + slug
+
+	registerReq := &pb.Register_Request{
+		Email:    email,
+		Password: password,
+	}
+	registerResp, err := s.authClient.Register(context.Background(), registerReq)
+	s.Require().NoError(err)
+
+	userUuid, err := uuid.Parse(registerResp.Id)
+	s.Require().NoError(err)
+	s.T().Cleanup(func() {
+		_ = s.repos.Users().Delete(context.Background(), userUuid)
+	})
+
+	_, err = s.db.Exec(`UPDATE users SET username = $1 WHERE id = $2`, slug, registerResp.Id)
+	s.Require().NoError(err, "set username stand-in for vault creation")
+
+	passwordCreds := &pb.PasswordCredentials{Email: email, Password: password}
+	loginMethod := &pb.Login_Request_Password{Password: passwordCreds}
+	loginReq := &pb.Login_Request{Method: loginMethod}
+	loginResp, err := s.authClient.Login(context.Background(), loginReq)
+	s.Require().NoError(err)
+	s.Require().NotEmpty(loginResp.Token)
+
+	authedCtx := harness.AuthedContext(context.Background(), loginResp.Token)
+
+	return authedCtx, userUuid
+}
+
 // TestTractBasicScenario mirrors the UI's create -> add step -> save -> run -> view run flow:
 // create a tract with one builtin action step, create and link a manual trigger, run it, then
 // read the run back and assert the step completed.
 func (s *TractE2ESuite) TestTractBasicScenario() {
-	ctx := context.Background()
+	slug := harness.Slug(s.T())
 
-	email := randomEmail()
-	user, err := s.svcs.Auth.Register(ctx, email, "test-password-e2e")
-	s.Require().NoError(err)
-	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
-	})
-
-	uc := user_context.UserContext{UserUuid: user.Uuid}
-	userCtx := user_context.WithUserContext(ctx, uc)
+	authedCtx, userUuid := s.registerAndLogin(slug)
 
 	// The list_files action step below is a builtin vault tool that resolves against *a* real
 	// vault (by membership, then by its CouchDB database) — bypass the real CouchDB
 	// provisioning (Vault.CreateVault) by pointing a vault row directly at our own throwaway
 	// couch instance and creating the database it names.
-	const vaultDbName = "e2e_tract_vault_db"
-	err = putCouchDatabase(s.couchURL, s.couchUser, s.couchPass, vaultDbName)
+	vaultDbName := slug + "_vault_db"
+	err := putCouchDatabase(s.couchURL, s.couchUser, s.couchPass, vaultDbName)
 	s.Require().NoError(err, "create couch database for vault")
 	s.T().Cleanup(func() {
 		_ = deleteCouchDatabase(s.couchURL, s.couchUser, s.couchPass, vaultDbName)
@@ -199,7 +203,7 @@ func (s *TractE2ESuite) TestTractBasicScenario() {
 	couchInstanceUuid, err := uuid.Parse(s.couchInstance)
 	s.Require().NoError(err)
 	testVault, err := s.repos.Vaults().
-		Upsert(ctx, user.Uuid, couchInstanceUuid, "e2e_tract_vault", vaultDbName, "active", "")
+		Upsert(context.Background(), userUuid, couchInstanceUuid, slug+"_vault", vaultDbName, "active", "")
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
 		_ = s.repos.Vaults().Delete(context.Background(), testVault.Uuid)
@@ -207,55 +211,88 @@ func (s *TractE2ESuite) TestTractBasicScenario() {
 
 	// ExecuteBuiltinToolForUser resolves the vault via membership, not vault ownership —
 	// without this row the run fails with "no vault available to run a builtin tool".
-	err = s.repos.VaultMembers().Add(ctx, testVault.Uuid, user.Uuid, artel_q.VaultRoleOwner)
+	err = s.repos.VaultMembers().Add(context.Background(), testVault.Uuid, userUuid, artel_q.VaultRoleOwner)
 	s.Require().NoError(err)
 
-	// 1. Create a tract with a single builtin action step.
-	step := domain.TractStep{
-		Id:     "list_files",
-		Name:   "list_files",
-		Type:   "action",
+	// 1. Create a tract with a single builtin action step, via the real CreateTract RPC.
+	actionStep := &pb.ActionStep{
 		Mcp:    "artel",
 		Tool:   "list_files",
 		Params: map[string]string{},
 	}
-	definition := domain.TractDefinition{Steps: []domain.TractStep{step}}
-	tr, warnings, err := s.svcs.Tract.CreateTract(userCtx, "e2e basic tract", "", definition)
+	step := &pb.TractStep{
+		Id:   "list_files",
+		Name: "list_files",
+		Kind: &pb.TractStep_Action{Action: actionStep},
+	}
+	definition := &pb.TractDefinition{Steps: []*pb.TractStep{step}}
+	createTractReq := &pb.CreateTract_Request{
+		Name:       "e2e basic tract",
+		Definition: definition,
+	}
+	createTractResp, err := s.tractClient.CreateTract(authedCtx, createTractReq)
 	s.Require().NoError(err)
-	s.Empty(warnings)
+	s.Empty(createTractResp.Warnings)
+
+	tractUuid := createTractResp.Tract.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTract(context.Background(), tr.Uuid)
+		deleteTractReq := &pb.DeleteTract_Request{Uuid: tractUuid}
+		_, _ = s.tractClient.DeleteTract(authedCtx, deleteTractReq)
 	})
 
 	// 2. Create and link a manual trigger — the same "Add trigger" flow the Trigger inspector
 	// panel drives.
-	payloadSchema := domain.ToolSchema{Properties: map[string]domain.ToolProperty{}}
-	trigger, _, err := s.svcs.Tract.CreateTrigger(
-		userCtx,
-		"e2e manual trigger",
-		"manual",
-		"generic",
-		json.RawMessage(`{}`),
-		payloadSchema,
-	)
+	createTriggerReq := &pb.CreateTrigger_Request{
+		Name:          "e2e manual trigger",
+		Kind:          "manual",
+		Source:        "generic",
+		Config:        "{}",
+		PayloadSchema: "{}",
+	}
+	createTriggerResp, err := s.tractClient.CreateTrigger(authedCtx, createTriggerReq)
 	s.Require().NoError(err)
+
+	triggerUuid := createTriggerResp.Trigger.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTrigger(context.Background(), trigger.Uuid)
+		deleteTriggerReq := &pb.DeleteTrigger_Request{Uuid: triggerUuid}
+		_, _ = s.tractClient.DeleteTrigger(authedCtx, deleteTriggerReq)
 	})
 
-	err = s.svcs.Tract.LinkTrigger(userCtx, trigger.Uuid, tr.Uuid, nil)
+	linkTriggerReq := &pb.LinkTrigger_Request{TriggerUuid: triggerUuid, TractUuid: tractUuid}
+	_, err = s.tractClient.LinkTrigger(authedCtx, linkTriggerReq)
 	s.Require().NoError(err)
 
-	// 3. Run it — the same call the canvas builder's Run button makes — and assert it completes.
-	run, err := s.svcs.Tract.StartRun(userCtx, tr, json.RawMessage(`{}`), tract.StartedByManual, trigger.Uuid)
+	// 3. Run it — the same call the canvas builder's Run button makes. RunTract fires the
+	// engine asynchronously against the server-lifecycle context and returns immediately with
+	// an empty response (see tracts_api.RunTract's doc comment), unlike calling
+	// tract.Service.StartRun directly, which returned the finished run synchronously — so poll
+	// ListRuns until the run leaves "running", same pattern gitlab_trigger_e2e uses for its
+	// webhook-triggered runs.
+	runTractReq := &pb.RunTract_Request{TractUuid: tractUuid, Params: "{}"}
+	_, err = s.tractClient.RunTract(authedCtx, runTractReq)
 	s.Require().NoError(err)
-	s.Equal(domain.TractRunDone, run.Status)
+
+	var runItem *pb.TractRunItem
+	s.Require().Eventually(func() bool {
+		listRunsReq := &pb.ListRuns_Request{TractUuid: tractUuid, Limit: 1}
+		listRunsResp, listErr := s.tractClient.ListRuns(authedCtx, listRunsReq)
+		if listErr != nil || len(listRunsResp.Runs) == 0 {
+			return false
+		}
+
+		runItem = listRunsResp.Runs[0]
+
+		return runItem.Status != string(domain.TractRunRunning)
+	}, 5*time.Second, 50*time.Millisecond, "tract run did not finish")
+
+	s.Equal(string(domain.TractRunDone), runItem.Status)
 
 	// 4. Read the run back — the same call the log panel makes — and assert the step recorded.
-	gotRun, steps, err := s.svcs.Tract.GetRun(userCtx, run.Uuid)
+	getRunReq := &pb.GetRun_Request{RunUuid: runItem.Uuid}
+	getRunResp, err := s.tractClient.GetRun(authedCtx, getRunReq)
 	s.Require().NoError(err)
-	s.Equal(domain.TractRunDone, gotRun.Status)
-	s.Require().Len(steps, 1)
-	s.Equal("list_files", steps[0].StepId)
-	s.Equal(domain.TractRunStepDone, steps[0].Status)
+	s.Equal(string(domain.TractRunDone), getRunResp.Run.Status)
+	s.Require().Len(getRunResp.Steps, 1)
+	s.Equal("list_files", getRunResp.Steps[0].StepId)
+	s.Equal(string(domain.TractRunStepDone), getRunResp.Steps[0].Status)
 }

@@ -36,6 +36,15 @@ client-setup:
 client:
 	cd pkg/client/ArtelUI && vite
 
+# Runs the Go backend (-dev flag loads config/dev.yaml) and the Vite dev server
+# together, so `make dev-serve` gives a full local dev stack in one command.
+# trap kill 0 tears down both processes together on Ctrl+C or exit.
+dev-serve:
+	@trap 'kill 0' EXIT; \
+	(cd pkg/client/ArtelUI && vite) & \
+	go run ./cmd/service -dev; \
+	wait
+
 ### local dev environment
 setup-dev-env:
 	docker compose up -d
@@ -71,10 +80,16 @@ setup-e2e-env:
 # Runs the e2e-tagged test suites against a ready environment. The compose stack is left
 # running afterward (see setup-e2e-env) so repeated `make test-e2e` runs don't pay the
 # container startup cost each time.
-# -p 1 runs test packages one at a time: every suite here applies goose migrations against
-# the same shared tests/docker-compose.yaml Postgres instance in its setup, and goose's
-# version tracking isn't safe against concurrent runs against the same target DB — running
-# packages in parallel (Go's default) intermittently raced two suites' migration runs against
-# each other, failing with spurious "column/type already exists" errors.
+#
+# Provisioning (migrations, CouchDB/S3 admin-pool instances, system_settings setup) now happens
+# exactly once per run via tests/bootstrap's TestEnvSetup, instead of once per suite — so suites no
+# longer race each other's goose migrations and can run with Go's default cross-package
+# parallelism (no more -p 1). tests/bootstrap is gated behind an extra e2e_bootstrap build tag so
+# it's invoked explicitly here rather than picked up by the `./tests/...` wildcard sweep below.
+# TestEnvCleanup always runs after, even on suite failure, via capturing $$status and exiting with
+# it at the end — leaving the shared stack empty for whoever inspects it next.
 test-e2e: setup-e2e-env
-	go test -tags e2e -p 1 ./tests/...
+	go test -tags "e2e e2e_bootstrap" -count=1 ./tests/bootstrap/... -run TestEnvSetup
+	go test -tags e2e ./tests/...; status=$$?; \
+	go test -tags "e2e e2e_bootstrap" -count=1 ./tests/bootstrap/... -run TestEnvCleanup; \
+	exit $$status

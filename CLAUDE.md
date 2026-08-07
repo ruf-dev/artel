@@ -51,12 +51,24 @@ planned layers, service layout, and key dependencies.
   `tests/gitlab_trigger_e2e`) and are gated behind the `e2e` build tag, so they're excluded from
   `go test ./...` by default.
 
-Bring up the test backends (Postgres, CouchDB, MinIO) once per session:
+`make test-e2e` is the standard entrypoint: it brings up the test backends (Postgres, CouchDB, MinIO
+on ports 15434/15985/19000, left running afterward so repeated runs don't pay container startup
+cost), runs the one-time bootstrap setup (migrations, CouchDB/S3 admin-pool instance registration,
+system_settings setup — see `tests/bootstrap`), runs the e2e suites, then always runs bootstrap
+cleanup after — even on suite failure — leaving the shared stack empty for the next run:
 
 ```bash
-docker compose -f tests/docker-compose.yaml up -d   # postgres:15434, couchdb:15985, minio:19000
-go test -tags e2e ./tests/...                        # or scope to one suite, e.g. ./tests/e2e/...
-docker compose -f tests/docker-compose.yaml down     # tear down when done
+make test-e2e
+```
+
+To scope to one suite during iteration, bring the stack up once, then run the suite directly
+against it (the bootstrap step must have run at least once first so the suites' `harness.GetCouchInstance`/
+`GetS3Instance` lookups find a registered pool instance):
+
+```bash
+docker compose -f tests/docker-compose.yaml up -d --wait
+go test -tags "e2e e2e_bootstrap" -count=1 ./tests/bootstrap/... -run TestEnvSetup
+go test -tags e2e ./tests/e2e/...
 ```
 
 Suites default to `localhost` + the ports above; override via `PG_DSN`, `COUCH_URL`/`COUCH_USER`/`COUCH_PASS`,

@@ -8,34 +8,26 @@ import (
 	"database/sql"
 	"fmt"
 	"math/rand/v2"
-	"net"
 	"strings"
 	"testing"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/test/bufconn"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/config"
-	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
-	"github.com/ruf-dev/artel/internal/middleware"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
+	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/external_connections_api"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
-	"github.com/ruf-dev/artel/migrations"
+	"github.com/ruf-dev/artel/tests/harness"
 )
-
-const byokBufSize = 1024 * 1024
 
 // ByokStorageSuite is the first suite in this codebase to drive requests through a real
 // *grpc.Server (over an in-memory bufconn listener) instead of calling service methods directly
@@ -50,10 +42,7 @@ type ByokStorageSuite struct {
 	svcs            *svcv1.Services
 	couchInstanceID string
 
-	grpcServer *grpc.Server
-	listener   *bufconn.Listener
-	conn       *grpc.ClientConn
-
+	authClient   pb.AuthAPIClient
 	ecClient     pb.ExternalConnectionsAPIClient
 	vaultsClient pb.VaultsAPIClient
 }
@@ -65,139 +54,99 @@ func TestByokStorage(t *testing.T) {
 func (s *ByokStorageSuite) SetupSuite() {
 	ctx := context.Background()
 
-	pgDSN := envOrDefault("PG_DSN", "postgres://artel:artel_db@localhost:15434/artel_db?sslmode=disable")
-	db, err := sql.Open("postgres", pgDSN)
-	s.Require().NoError(err, "open postgres")
-
-	err = db.Ping()
-	s.Require().NoError(err, "ping postgres — is the container running?")
-	s.db = db
-
-	err = migrations.ApplyMigration(db)
-	s.Require().NoError(err, "run migrations")
-
-	encKey := make([]byte, 32)
-	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
-	s.Require().NoError(err, "create AES encryptor")
-	s.repos = repopg.New(db, encryptor)
+	s.db = harness.OpenPostgres(s.T())
 
 	cfg := config.EnvironmentConfig{}
-	s.svcs, err = svcv1.New(s.repos, cfg)
-	s.Require().NoError(err, "init services")
 
-	err = s.repos.SystemSettings().CompleteSetup(ctx)
-	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
+	var credsEncrypted bool
+	s.repos, s.svcs, credsEncrypted = harness.BuildServices(s.T(), s.db, cfg)
 
-	err = s.repos.SystemSettings().UpdateRegistrationMode(ctx, domain.RegistrationModeSelfRegister)
-	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+	couchURL := harness.CouchURL(s.T())
 
-	couchURL := envOrDefault("COUCH_URL", "http://localhost:15985")
-	couchUser := envOrDefault("COUCH_USER", "admin")
-	couchPass := envOrDefault("COUCH_PASS", "admin")
+	s.couchInstanceID = harness.GetCouchInstance(s.T(), ctx, s.svcs, couchURL)
 
-	s.couchInstanceID, err = s.svcs.CouchInstance.RegisterCouchInstance(ctx, couchURL, couchUser, couchPass)
-	s.Require().NoError(err, "register couch instance")
-
-	s.startGrpcServer()
+	s.startGrpcServer(credsEncrypted)
 }
 
 // startGrpcServer builds a real *grpc.Server chained with the production auth interceptor
-// (middleware.GrpcAuthInterceptor — not WithNoAuth), registers the ExternalConnectionsAPI and
-// VaultsAPI implementations onto it, and serves it over an in-memory bufconn listener so the
+// (middleware.GrpcAuthInterceptor — not WithNoAuth), registers the AuthAPI, ExternalConnectionsAPI
+// and VaultsAPI implementations onto it, and serves it over an in-memory bufconn listener so the
 // suite's RPCs travel through the real transport + auth stack without binding a TCP port.
-func (s *ByokStorageSuite) startGrpcServer() {
+func (s *ByokStorageSuite) startGrpcServer(credsEncrypted bool) {
+	authImpl := auth_api.NewAuthImpl(
+		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
+		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
+		false,
+	)
 	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, false)
 	externalConnectionsImpl := external_connections_api.New(s.svcs.ExternalConnectionService(), false)
 
-	authOption := middleware.GrpcAuthInterceptor(s.svcs)
-
-	s.grpcServer = grpc.NewServer(authOption)
-	vaultsImpl.Register(s.grpcServer)
-	externalConnectionsImpl.Register(s.grpcServer)
-
-	s.listener = bufconn.Listen(byokBufSize)
-
-	go func() {
-		_ = s.grpcServer.Serve(s.listener)
-	}()
-
-	dialer := func(ctx context.Context, _ string) (net.Conn, error) {
-		return s.listener.DialContext(ctx)
-	}
-
-	conn, err := grpc.NewClient(
-		"passthrough:///bufnet",
-		grpc.WithContextDialer(dialer),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	conn := harness.NewBufconnServer(
+		s.T(), s.svcs, authImpl.Register, vaultsImpl.Register, externalConnectionsImpl.Register,
 	)
-	s.Require().NoError(err, "dial bufconn grpc client")
-	s.conn = conn
 
+	s.authClient = pb.NewAuthAPIClient(conn)
 	s.ecClient = pb.NewExternalConnectionsAPIClient(conn)
 	s.vaultsClient = pb.NewVaultsAPIClient(conn)
 }
 
 func (s *ByokStorageSuite) TearDownSuite() {
-	ctx := context.Background()
-
-	if s.conn != nil {
-		_ = s.conn.Close()
-	}
-
-	if s.grpcServer != nil {
-		s.grpcServer.Stop()
-	}
-
-	if s.couchInstanceID != "" {
-		err := s.svcs.CouchInstance.DeleteCouchInstance(ctx, s.couchInstanceID)
-		s.NoError(err, "delete couch instance")
-	}
-
 	if s.db != nil {
 		err := s.db.Close()
 		s.NoError(err, "close db")
 	}
 }
 
-// registerAndAuthenticate registers+logs in a fresh user via the service layer directly (mirrors
-// e2e_test.go/quota_test.go), then returns a context carrying the session token as outgoing gRPC
-// metadata the same way the production auth interceptor expects to read it back (see
-// middleware/cookie_annotator.go's authHeader const and auth_interceptor.go's authWithSession).
-func (s *ByokStorageSuite) registerAndAuthenticate(namePrefix string) (context.Context, uuid.UUID) {
+// registerAndAuthenticate registers+logs in a fresh user via the real AuthAPI RPC (mirrors
+// e2e_test.go's TestUserSessionVaultMCPWriteNotesRead), then returns a context carrying the
+// session token as outgoing gRPC metadata the same way the production auth interceptor expects to
+// read it back (see middleware/cookie_annotator.go's authHeader const and
+// auth_interceptor.go's authWithSession).
+func (s *ByokStorageSuite) registerAndAuthenticate() (context.Context, uuid.UUID) {
 	ctx := context.Background()
 
-	email := randomEmail()
-	password := "test-password-" + namePrefix
+	slug := harness.Slug(s.T())
+	email := slug + "@test.local"
+	// A fixed password, not slug-derived: bcrypt rejects passwords over 72 bytes, and slug embeds
+	// the full (possibly long, subtest-qualified) t.Name() — uniqueness only matters for email.
+	password := "test-password-byok"
 
-	user, err := s.svcs.Auth.Register(ctx, email, password)
+	registerReq := &pb.Register_Request{Email: email, Password: password}
+
+	registerResp, err := s.authClient.Register(ctx, registerReq)
+	s.Require().NoError(err)
+
+	userUuid, err := uuid.Parse(registerResp.Id)
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
+		_ = s.repos.Users().Delete(context.Background(), userUuid)
 	})
 
 	// Email/password registration never populates domain.User.Username (defaults to "" — see
 	// migrations/007_telegram_auth.sql). Vault creation derives the CouchDB database name from
 	// it (sanitizeCouchDBName(uc.UserName + "-" + vaultName + "-vault")), and an empty UserName
 	// produces a name starting with "-", which CouchDB rejects. Because this suite authenticates
-	// through the real gRPC auth interceptor (which reads UserName off the persisted user row,
-	// unlike e2e_test.go/quota_test.go which build a UserContext by hand), the stand-in has to be
-	// written to the row itself rather than only into a locally built context.
-	localPart := strings.SplitN(email, "@", 2)[0]
-
-	_, err = s.db.Exec(`UPDATE users SET username = $1 WHERE id = $2`, localPart, user.Uuid)
+	// through the real gRPC auth interceptor (which reads UserName off the persisted user row),
+	// the stand-in has to be written to the row itself rather than only into a locally built
+	// context.
+	_, err = s.db.Exec(`UPDATE users SET username = $1 WHERE id = $2`, slug, userUuid)
 	s.Require().NoError(err, "set username stand-in for vault creation")
 
-	session, err := s.svcs.Auth.Login(ctx, email, password)
+	passwordCreds := &pb.PasswordCredentials{Email: email, Password: password}
+	loginMethod := &pb.Login_Request_Password{Password: passwordCreds}
+	loginReq := &pb.Login_Request{Method: loginMethod}
+
+	loginResp, err := s.authClient.Login(ctx, loginReq)
 	s.Require().NoError(err)
-	s.Require().NotEmpty(session.Token)
+	s.Require().NotEmpty(loginResp.Token)
 
-	authedCtx := metadata.AppendToOutgoingContext(ctx, "authorization", session.Token)
+	authedCtx := harness.AuthedContext(ctx, loginResp.Token)
 
-	return authedCtx, user.Uuid
+	return authedCtx, userUuid
 }
 
 func (s *ByokStorageSuite) TestAddCouchDBConnection_PersistsAndVaultUsesOwnedInstance() {
-	ctx, userUuid := s.registerAndAuthenticate("couch_byok")
+	ctx, userUuid := s.registerAndAuthenticate()
 
 	// couch_instances.url carries a UNIQUE constraint (migrations/002_couch_instances.sql), so
 	// this can't reuse the exact URL string SetupSuite already registered for the admin pool
@@ -256,7 +205,7 @@ func (s *ByokStorageSuite) TestAddCouchDBConnection_PersistsAndVaultUsesOwnedIns
 }
 
 func (s *ByokStorageSuite) TestAddS3Connection_PersistsAndLinkS3BucketAutoResolves() {
-	ctx, userUuid := s.registerAndAuthenticate("s3_byok")
+	ctx, userUuid := s.registerAndAuthenticate()
 
 	addReq := &pb.AddS3Connection_Request{
 		Endpoint:  envOrDefault("S3_ENDPOINT", "localhost:19000"),
@@ -326,7 +275,7 @@ func (s *ByokStorageSuite) TestAddS3Connection_PersistsAndLinkS3BucketAutoResolv
 }
 
 func (s *ByokStorageSuite) TestCreateVault_NoOwnedConnection_FallsBackToPool() {
-	ctx, _ := s.registerAndAuthenticate("no_byok")
+	ctx, _ := s.registerAndAuthenticate()
 
 	createResp, err := s.vaultsClient.CreateVault(ctx, &pb.CreateVault_Request{Name: "pool_fallback_vault"})
 	s.Require().NoError(err, "CreateVault rpc should succeed for a user with no BYOK connections")
@@ -351,7 +300,7 @@ func (s *ByokStorageSuite) TestCreateVault_NoOwnedConnection_FallsBackToPool() {
 }
 
 func (s *ByokStorageSuite) TestAddCouchDBConnection_BadCredentials_RejectsAndPersistsNothing() {
-	ctx, userUuid := s.registerAndAuthenticate("bad_couch")
+	ctx, userUuid := s.registerAndAuthenticate()
 
 	addReq := &pb.AddCouchDBConnection_Request{
 		Url:      "http://localhost:1",

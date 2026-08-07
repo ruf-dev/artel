@@ -17,45 +17,32 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
-	"math/rand/v2"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
+
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/config"
-	"github.com/ruf-dev/artel/internal/cryptoutil"
 	"github.com/ruf-dev/artel/internal/domain"
-	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
+	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/gitlab_webhook"
-	"github.com/ruf-dev/artel/migrations"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
+	"github.com/ruf-dev/artel/internal/transport/tracts_api"
+	"github.com/ruf-dev/artel/tests/harness"
 )
-
-func envOrDefault(key, def string) string {
-	v := os.Getenv(key)
-	if v != "" {
-		return v
-	}
-
-	return def
-}
-
-func randomEmail() string {
-	return fmt.Sprintf("gitlab_trigger_e2e_%08x@test.local", rand.Uint32())
-}
 
 // mockGitlabServer records every create_merge_request / add_comment call it receives and
 // answers with just enough shape for the tract engine to parse a usable response: a
@@ -143,6 +130,9 @@ type GitlabTriggerE2ESuite struct {
 	db    *sql.DB
 	repos *repopg.Repos
 	svcs  *svcv1.Services
+
+	authClient  pb.AuthAPIClient
+	tractClient pb.TractsAPIClient
 }
 
 func TestGitlabTriggerE2E(t *testing.T) {
@@ -150,32 +140,14 @@ func TestGitlabTriggerE2E(t *testing.T) {
 }
 
 func (s *GitlabTriggerE2ESuite) SetupSuite() {
-	pgDSN := envOrDefault("PG_DSN", "postgres://artel:artel_db@localhost:15434/artel_db?sslmode=disable")
-	db, err := sql.Open("postgres", pgDSN)
-	s.Require().NoError(err, "open postgres")
+	ctx := context.Background()
 
-	err = db.Ping()
-	s.Require().NoError(err, "ping postgres — is tests/docker-compose.yaml up?")
-	s.db = db
-
-	err = migrations.ApplyMigration(db)
-	s.Require().NoError(err, "run migrations")
-
-	encKey := make([]byte, 32)
-	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
-	s.Require().NoError(err, "create AES encryptor")
-	s.repos = repopg.New(db, encryptor)
+	s.db = harness.OpenPostgres(s.T())
 
 	cfg := config.EnvironmentConfig{}
-	svcs, err := svcv1.New(s.repos, cfg)
-	s.Require().NoError(err, "init services")
-	s.svcs = svcs
 
-	err = s.repos.SystemSettings().CompleteSetup(context.Background())
-	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
-
-	err = s.repos.SystemSettings().UpdateRegistrationMode(context.Background(), domain.RegistrationModeSelfRegister)
-	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+	var credsEncrypted bool
+	s.repos, s.svcs, credsEncrypted = harness.BuildServices(s.T(), s.db, cfg)
 
 	// Tract is normally wired in internal/app/custom.go (not svcv1.New) because its
 	// ToolExecutor composes the already-built Mcp/Mom services — mirror that wiring exactly,
@@ -195,7 +167,19 @@ func (s *GitlabTriggerE2ESuite) SetupSuite() {
 		scriptEngines,
 		tractLlmExecutor,
 	)
-	s.svcs.McpService().SetTractService(context.Background(), s.svcs.TractService())
+	s.svcs.McpService().SetTractService(ctx, s.svcs.TractService())
+
+	authImpl := auth_api.NewAuthImpl(
+		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
+		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
+		false,
+	)
+	tractsImpl := tracts_api.New(ctx, s.svcs.TractService(), false)
+
+	conn := harness.NewBufconnServer(s.T(), s.svcs, authImpl.Register, tractsImpl.Register)
+
+	s.authClient = pb.NewAuthAPIClient(conn)
+	s.tractClient = pb.NewTractsAPIClient(conn)
 }
 
 func (s *GitlabTriggerE2ESuite) TearDownSuite() {
@@ -203,6 +187,41 @@ func (s *GitlabTriggerE2ESuite) TearDownSuite() {
 		err := s.db.Close()
 		s.NoError(err)
 	}
+}
+
+// registerAndLogin registers+logs in a fresh user via the real AuthAPI RPCs and returns an
+// authenticated context plus the raw string user id (external_connections.user_uuid etc. still
+// take the parsed uuid.UUID where needed at call sites).
+func (s *GitlabTriggerE2ESuite) registerAndLogin(slug string) (context.Context, string) {
+	email := slug + "@test.local"
+	// A fixed literal, not slug-derived — some subtest names in this suite are long enough that
+	// "test-password-"+slug exceeds bcrypt's 72-byte input cap. Uniqueness comes from email.
+	const password = "test-password-e2e"
+
+	registerReq := &pb.Register_Request{
+		Email:    email,
+		Password: password,
+	}
+	registerResp, err := s.authClient.Register(context.Background(), registerReq)
+	s.Require().NoError(err)
+
+	s.T().Cleanup(func() {
+		userUuid, parseErr := uuid.Parse(registerResp.Id)
+		if parseErr == nil {
+			_ = s.repos.Users().Delete(context.Background(), userUuid)
+		}
+	})
+
+	passwordCreds := &pb.PasswordCredentials{Email: email, Password: password}
+	loginMethod := &pb.Login_Request_Password{Password: passwordCreds}
+	loginReq := &pb.Login_Request{Method: loginMethod}
+	loginResp, err := s.authClient.Login(context.Background(), loginReq)
+	s.Require().NoError(err)
+	s.Require().NotEmpty(loginResp.Token)
+
+	authedCtx := harness.AuthedContext(context.Background(), loginResp.Token)
+
+	return authedCtx, registerResp.Id
 }
 
 // TestGitlabPushTriggersMergeRequestAndComment drives the full preset flow: connect GitLab
@@ -213,17 +232,12 @@ func (s *GitlabTriggerE2ESuite) TearDownSuite() {
 // gitlab_webhook.Handler and assert the mocked GitLab API received one create_merge_request call
 // followed by one add_comment call with body "Created via Artel".
 func (s *GitlabTriggerE2ESuite) TestGitlabPushTriggersMergeRequestAndComment() {
-	ctx := context.Background()
+	slug := harness.Slug(s.T())
 
-	email := randomEmail()
-	user, err := s.svcs.Auth.Register(ctx, email, "test-password-e2e")
+	authedCtx, userUuidStr := s.registerAndLogin(slug)
+
+	userUuid, err := uuid.Parse(userUuidStr)
 	s.Require().NoError(err)
-	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
-	})
-
-	uc := user_context.UserContext{UserUuid: user.Uuid}
-	userCtx := user_context.WithUserContext(ctx, uc)
 
 	mockGitlab := &mockGitlabServer{}
 	mockServer := httptest.NewServer(mockGitlab)
@@ -242,25 +256,22 @@ func (s *GitlabTriggerE2ESuite) TestGitlabPushTriggersMergeRequestAndComment() {
 	credsJSON, err := json.Marshal(creds)
 	s.Require().NoError(err)
 
-	conn := domain.ExternalConnection{
-		UserUuid:        user.Uuid,
+	newConn := domain.ExternalConnection{
+		UserUuid:        userUuid,
 		Provider:        domain.ProviderGitlab,
 		ProviderType:    artel_q.ExternalProviderTypeApiKey,
 		CredentialsJSON: credsJSON,
 	}
 
-	savedConn, err := s.repos.ExternalConnections().Upsert(ctx, conn)
+	savedConn, err := s.repos.ExternalConnections().Upsert(context.Background(), newConn)
 	s.Require().NoError(err)
 
 	// 2. Create a tract with two GitLab MoM action steps: create a merge request from the
 	// pushed branch, then comment on it.
-	createMrStep := domain.TractStep{
-		Id:             "create_mr",
-		Name:           "create_mr",
-		Type:           "action",
+	createMrAction := &pb.ActionStep{
 		Mcp:            "gitlab",
 		Tool:           "create_merge_request",
-		ConnectionUuid: savedConn.Uuid,
+		ConnectionUuid: savedConn.Uuid.String(),
 		Params: map[string]string{
 			"project_id":    "{{ trigger.project.id }}",
 			"source_branch": "{{ trigger.branch }}",
@@ -268,14 +279,16 @@ func (s *GitlabTriggerE2ESuite) TestGitlabPushTriggersMergeRequestAndComment() {
 			"title":         "Automated MR from {{ trigger.branch }}",
 		},
 	}
+	createMrStep := &pb.TractStep{
+		Id:   "create_mr",
+		Name: "create_mr",
+		Kind: &pb.TractStep_Action{Action: createMrAction},
+	}
 
-	addCommentStep := domain.TractStep{
-		Id:             "add_comment",
-		Name:           "add_comment",
-		Type:           "action",
+	addCommentAction := &pb.ActionStep{
 		Mcp:            "gitlab",
 		Tool:           "add_comment",
-		ConnectionUuid: savedConn.Uuid,
+		ConnectionUuid: savedConn.Uuid.String(),
 		Params: map[string]string{
 			"project_id":    "{{ trigger.project.id }}",
 			"noteable_type": "merge_requests",
@@ -283,27 +296,47 @@ func (s *GitlabTriggerE2ESuite) TestGitlabPushTriggersMergeRequestAndComment() {
 			"body":          "Created via Artel",
 		},
 	}
+	addCommentStep := &pb.TractStep{
+		Id:   "add_comment",
+		Name: "add_comment",
+		Kind: &pb.TractStep_Action{Action: addCommentAction},
+	}
 
-	definition := domain.TractDefinition{Steps: []domain.TractStep{createMrStep, addCommentStep}}
-	tr, warnings, err := s.svcs.Tract.CreateTract(userCtx, "e2e gitlab push tract", "", definition)
+	definition := &pb.TractDefinition{Steps: []*pb.TractStep{createMrStep, addCommentStep}}
+	createTractReq := &pb.CreateTract_Request{
+		Name:       "e2e gitlab push tract",
+		Definition: definition,
+	}
+	createTractResp, err := s.tractClient.CreateTract(authedCtx, createTractReq)
 	s.Require().NoError(err)
-	s.Empty(warnings)
+	s.Empty(createTractResp.Warnings)
+
+	tractUuid := createTractResp.Tract.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTract(context.Background(), tr.Uuid)
+		deleteTractReq := &pb.DeleteTract_Request{Uuid: tractUuid}
+		_, _ = s.tractClient.DeleteTract(authedCtx, deleteTractReq)
 	})
 
 	// 3. Create the gitlab_push trigger — provider-linked, so it shares savedConn's webhook
 	// URL/secret instead of minting its own.
-	trigger, rawToken, err := s.svcs.Tract.CreateTrigger(
-		userCtx, "e2e gitlab push trigger", "webhook", tract.SourceGitlabPush, nil, domain.ToolSchema{},
-	)
+	createTriggerReq := &pb.CreateTrigger_Request{
+		Name:          "e2e gitlab push trigger",
+		Kind:          "webhook",
+		Source:        tract.SourceGitlabPush,
+		PayloadSchema: "{}",
+	}
+	createTriggerResp, err := s.tractClient.CreateTrigger(authedCtx, createTriggerReq)
 	s.Require().NoError(err)
-	s.Empty(rawToken, "provider-linked triggers must not mint their own secret")
+	s.Empty(createTriggerResp.WebhookToken, "provider-linked triggers must not mint their own secret")
+
+	triggerUuid := createTriggerResp.Trigger.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTrigger(context.Background(), trigger.Uuid)
+		deleteTriggerReq := &pb.DeleteTrigger_Request{Uuid: triggerUuid}
+		_, _ = s.tractClient.DeleteTrigger(authedCtx, deleteTriggerReq)
 	})
 
-	err = s.svcs.Tract.LinkTrigger(userCtx, trigger.Uuid, tr.Uuid, nil)
+	linkTriggerReq := &pb.LinkTrigger_Request{TriggerUuid: triggerUuid, TractUuid: tractUuid}
+	_, err = s.tractClient.LinkTrigger(authedCtx, linkTriggerReq)
 	s.Require().NoError(err)
 
 	// 4. Fire a simulated GitLab push webhook straight at the shared connection endpoint —
@@ -337,20 +370,21 @@ func (s *GitlabTriggerE2ESuite) TestGitlabPushTriggersMergeRequestAndComment() {
 	s.Equal(http.StatusOK, rec.Code)
 
 	// 5. DispatchTrigger spawns StartRun asynchronously — poll until the run finishes.
-	var run domain.TractRun
+	var runItem *pb.TractRunItem
 
 	s.Require().Eventually(func() bool {
-		runs, listErr := s.svcs.Tract.ListRuns(userCtx, tr.Uuid, 1)
-		if listErr != nil || len(runs) == 0 {
+		listRunsReq := &pb.ListRuns_Request{TractUuid: tractUuid, Limit: 1}
+		listRunsResp, listErr := s.tractClient.ListRuns(authedCtx, listRunsReq)
+		if listErr != nil || len(listRunsResp.Runs) == 0 {
 			return false
 		}
 
-		run = runs[0]
+		runItem = listRunsResp.Runs[0]
 
-		return run.Status != domain.TractRunRunning
+		return runItem.Status != string(domain.TractRunRunning)
 	}, 5*time.Second, 50*time.Millisecond, "tract run did not finish")
 
-	require.Equal(s.T(), domain.TractRunDone, run.Status, "run error: %s", run.Error)
+	require.Equal(s.T(), string(domain.TractRunDone), runItem.Status, "run error: %s", runItem.Error)
 
 	// 6. Assert the mocked GitLab API actually saw one create_merge_request call followed by
 	// one add_comment call with the expected params. create_merge_request sends its params as a
@@ -375,17 +409,12 @@ func (s *GitlabTriggerE2ESuite) TestGitlabPushTriggersMergeRequestAndComment() {
 // new get_merge_request_diff tool followed by update_merge_request (writing a description back
 // onto the MR) — the two GitLab tool gaps from the same migration.
 func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestMergedTriggersDiffAndDescriptionUpdate() {
-	ctx := context.Background()
+	slug := harness.Slug(s.T())
 
-	email := randomEmail()
-	user, err := s.svcs.Auth.Register(ctx, email, "test-password-e2e")
+	authedCtx, userUuidStr := s.registerAndLogin(slug)
+
+	userUuid, err := uuid.Parse(userUuidStr)
 	s.Require().NoError(err)
-	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
-	})
-
-	uc := user_context.UserContext{UserUuid: user.Uuid}
-	userCtx := user_context.WithUserContext(ctx, uc)
 
 	mockGitlab := &mockGitlabServer{}
 	mockServer := httptest.NewServer(mockGitlab)
@@ -401,65 +430,84 @@ func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestMergedTriggersDiffAndDescr
 	credsJSON, err := json.Marshal(creds)
 	s.Require().NoError(err)
 
-	conn := domain.ExternalConnection{
-		UserUuid:        user.Uuid,
+	newConn := domain.ExternalConnection{
+		UserUuid:        userUuid,
 		Provider:        domain.ProviderGitlab,
 		ProviderType:    artel_q.ExternalProviderTypeApiKey,
 		CredentialsJSON: credsJSON,
 	}
 
-	savedConn, err := s.repos.ExternalConnections().Upsert(ctx, conn)
+	savedConn, err := s.repos.ExternalConnections().Upsert(context.Background(), newConn)
 	s.Require().NoError(err)
 
 	// Tract: read the merged MR's diff, then write a description back onto it — the exact flow
 	// the "MR merged" preset + diff/description tools were added for.
-	getDiffStep := domain.TractStep{
-		Id:             "get_diff",
-		Name:           "get_diff",
-		Type:           "action",
+	getDiffAction := &pb.ActionStep{
 		Mcp:            "gitlab",
 		Tool:           "get_merge_request_diff",
-		ConnectionUuid: savedConn.Uuid,
+		ConnectionUuid: savedConn.Uuid.String(),
 		Params: map[string]string{
 			"project_id": "{{ trigger.project.id }}",
 			"mr_iid":     "{{ trigger.mr_iid }}",
 		},
 	}
+	getDiffStep := &pb.TractStep{
+		Id:   "get_diff",
+		Name: "get_diff",
+		Kind: &pb.TractStep_Action{Action: getDiffAction},
+	}
 
-	updateMrStep := domain.TractStep{
-		Id:             "update_mr",
-		Name:           "update_mr",
-		Type:           "action",
+	updateMrAction := &pb.ActionStep{
 		Mcp:            "gitlab",
 		Tool:           "update_merge_request",
-		ConnectionUuid: savedConn.Uuid,
+		ConnectionUuid: savedConn.Uuid.String(),
 		Params: map[string]string{
 			"project_id":  "{{ trigger.project.id }}",
 			"mr_iid":      "{{ trigger.mr_iid }}",
 			"description": "Work done: reviewed the diff",
 		},
 	}
+	updateMrStep := &pb.TractStep{
+		Id:   "update_mr",
+		Name: "update_mr",
+		Kind: &pb.TractStep_Action{Action: updateMrAction},
+	}
 
-	definition := domain.TractDefinition{Steps: []domain.TractStep{getDiffStep, updateMrStep}}
-	tr, warnings, err := s.svcs.Tract.CreateTract(userCtx, "e2e gitlab mr merged tract", "", definition)
+	definition := &pb.TractDefinition{Steps: []*pb.TractStep{getDiffStep, updateMrStep}}
+	createTractReq := &pb.CreateTract_Request{
+		Name:       "e2e gitlab mr merged tract",
+		Definition: definition,
+	}
+	createTractResp, err := s.tractClient.CreateTract(authedCtx, createTractReq)
 	s.Require().NoError(err)
-	s.Empty(warnings)
+	s.Empty(createTractResp.Warnings)
+
+	tractUuid := createTractResp.Tract.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTract(context.Background(), tr.Uuid)
+		deleteTractReq := &pb.DeleteTract_Request{Uuid: tractUuid}
+		_, _ = s.tractClient.DeleteTract(authedCtx, deleteTractReq)
 	})
 
 	// gitlab_merge_request is provider-linked, same as gitlab_push — shares savedConn's webhook
 	// URL/secret, no per-trigger secret.
-	trigger, rawToken, err := s.svcs.Tract.CreateTrigger(
-		userCtx, "e2e gitlab mr merged trigger", "webhook", tract.SourceGitlabMergeRequest, nil, domain.ToolSchema{},
-	)
+	createTriggerReq := &pb.CreateTrigger_Request{
+		Name:          "e2e gitlab mr merged trigger",
+		Kind:          "webhook",
+		Source:        tract.SourceGitlabMergeRequest,
+		PayloadSchema: "{}",
+	}
+	createTriggerResp, err := s.tractClient.CreateTrigger(authedCtx, createTriggerReq)
 	s.Require().NoError(err)
-	s.Empty(rawToken, "provider-linked triggers must not mint their own secret")
+	s.Empty(createTriggerResp.WebhookToken, "provider-linked triggers must not mint their own secret")
+
+	triggerUuid := createTriggerResp.Trigger.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTrigger(context.Background(), trigger.Uuid)
+		deleteTriggerReq := &pb.DeleteTrigger_Request{Uuid: triggerUuid}
+		_, _ = s.tractClient.DeleteTrigger(authedCtx, deleteTriggerReq)
 	})
 
-	err = s.svcs.Tract.LinkTrigger(userCtx, trigger.Uuid, tr.Uuid, nil)
+	linkTriggerReq := &pb.LinkTrigger_Request{TriggerUuid: triggerUuid, TractUuid: tractUuid}
+	_, err = s.tractClient.LinkTrigger(authedCtx, linkTriggerReq)
 	s.Require().NoError(err)
 
 	// Fire a simulated GitLab "Merge Request Hook" delivery with action == "merge" — the shape
@@ -499,20 +547,21 @@ func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestMergedTriggersDiffAndDescr
 
 	s.Equal(http.StatusOK, rec.Code)
 
-	var run domain.TractRun
+	var runItem *pb.TractRunItem
 
 	s.Require().Eventually(func() bool {
-		runs, listErr := s.svcs.Tract.ListRuns(userCtx, tr.Uuid, 1)
-		if listErr != nil || len(runs) == 0 {
+		listRunsReq := &pb.ListRuns_Request{TractUuid: tractUuid, Limit: 1}
+		listRunsResp, listErr := s.tractClient.ListRuns(authedCtx, listRunsReq)
+		if listErr != nil || len(listRunsResp.Runs) == 0 {
 			return false
 		}
 
-		run = runs[0]
+		runItem = listRunsResp.Runs[0]
 
-		return run.Status != domain.TractRunRunning
+		return runItem.Status != string(domain.TractRunRunning)
 	}, 5*time.Second, 50*time.Millisecond, "tract run did not finish")
 
-	require.Equal(s.T(), domain.TractRunDone, run.Status, "run error: %s", run.Error)
+	require.Equal(s.T(), string(domain.TractRunDone), runItem.Status, "run error: %s", runItem.Error)
 
 	diffCalls := mockGitlab.DiffCalls()
 	s.Require().Len(diffCalls, 1)
@@ -529,17 +578,12 @@ func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestMergedTriggersDiffAndDescr
 // Request Hook header as a "merge" delivery, so without the body-level action check the trigger
 // would misfire on every MR event, not just merges.
 func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestNonMergeActionDoesNotTriggerRun() {
-	ctx := context.Background()
+	slug := harness.Slug(s.T())
 
-	email := randomEmail()
-	user, err := s.svcs.Auth.Register(ctx, email, "test-password-e2e")
+	authedCtx, userUuidStr := s.registerAndLogin(slug)
+
+	userUuid, err := uuid.Parse(userUuidStr)
 	s.Require().NoError(err)
-	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
-	})
-
-	uc := user_context.UserContext{UserUuid: user.Uuid}
-	userCtx := user_context.WithUserContext(ctx, uc)
 
 	mockGitlab := &mockGitlabServer{}
 	mockServer := httptest.NewServer(mockGitlab)
@@ -555,46 +599,63 @@ func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestNonMergeActionDoesNotTrigg
 	credsJSON, err := json.Marshal(creds)
 	s.Require().NoError(err)
 
-	conn := domain.ExternalConnection{
-		UserUuid:        user.Uuid,
+	newConn := domain.ExternalConnection{
+		UserUuid:        userUuid,
 		Provider:        domain.ProviderGitlab,
 		ProviderType:    artel_q.ExternalProviderTypeApiKey,
 		CredentialsJSON: credsJSON,
 	}
 
-	savedConn, err := s.repos.ExternalConnections().Upsert(ctx, conn)
+	savedConn, err := s.repos.ExternalConnections().Upsert(context.Background(), newConn)
 	s.Require().NoError(err)
 
-	getDiffStep := domain.TractStep{
-		Id:             "get_diff",
-		Name:           "get_diff",
-		Type:           "action",
+	getDiffAction := &pb.ActionStep{
 		Mcp:            "gitlab",
 		Tool:           "get_merge_request_diff",
-		ConnectionUuid: savedConn.Uuid,
+		ConnectionUuid: savedConn.Uuid.String(),
 		Params: map[string]string{
 			"project_id": "{{ trigger.project.id }}",
 			"mr_iid":     "{{ trigger.mr_iid }}",
 		},
 	}
+	getDiffStep := &pb.TractStep{
+		Id:   "get_diff",
+		Name: "get_diff",
+		Kind: &pb.TractStep_Action{Action: getDiffAction},
+	}
 
-	definition := domain.TractDefinition{Steps: []domain.TractStep{getDiffStep}}
-	tr, warnings, err := s.svcs.Tract.CreateTract(userCtx, "e2e gitlab mr non-merge tract", "", definition)
+	definition := &pb.TractDefinition{Steps: []*pb.TractStep{getDiffStep}}
+	createTractReq := &pb.CreateTract_Request{
+		Name:       "e2e gitlab mr non-merge tract",
+		Definition: definition,
+	}
+	createTractResp, err := s.tractClient.CreateTract(authedCtx, createTractReq)
 	s.Require().NoError(err)
-	s.Empty(warnings)
+	s.Empty(createTractResp.Warnings)
+
+	tractUuid := createTractResp.Tract.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTract(context.Background(), tr.Uuid)
+		deleteTractReq := &pb.DeleteTract_Request{Uuid: tractUuid}
+		_, _ = s.tractClient.DeleteTract(authedCtx, deleteTractReq)
 	})
 
-	trigger, _, err := s.svcs.Tract.CreateTrigger(
-		userCtx, "e2e gitlab mr non-merge trigger", "webhook", tract.SourceGitlabMergeRequest, nil, domain.ToolSchema{},
-	)
+	createTriggerReq := &pb.CreateTrigger_Request{
+		Name:          "e2e gitlab mr non-merge trigger",
+		Kind:          "webhook",
+		Source:        tract.SourceGitlabMergeRequest,
+		PayloadSchema: "{}",
+	}
+	createTriggerResp, err := s.tractClient.CreateTrigger(authedCtx, createTriggerReq)
 	s.Require().NoError(err)
+
+	triggerUuid := createTriggerResp.Trigger.Uuid
 	s.T().Cleanup(func() {
-		_ = s.svcs.Tract.DeleteTrigger(context.Background(), trigger.Uuid)
+		deleteTriggerReq := &pb.DeleteTrigger_Request{Uuid: triggerUuid}
+		_, _ = s.tractClient.DeleteTrigger(authedCtx, deleteTriggerReq)
 	})
 
-	err = s.svcs.Tract.LinkTrigger(userCtx, trigger.Uuid, tr.Uuid, nil)
+	linkTriggerReq := &pb.LinkTrigger_Request{TriggerUuid: triggerUuid, TractUuid: tractUuid}
+	_, err = s.tractClient.LinkTrigger(authedCtx, linkTriggerReq)
 	s.Require().NoError(err)
 
 	mrPayload := map[string]interface{}{
@@ -627,9 +688,10 @@ func (s *GitlabTriggerE2ESuite) TestGitlabMergeRequestNonMergeActionDoesNotTrigg
 	// Give any (incorrectly) spawned run a moment to appear, then assert none did.
 	time.Sleep(200 * time.Millisecond)
 
-	runs, err := s.svcs.Tract.ListRuns(userCtx, tr.Uuid, 10)
+	listRunsReq := &pb.ListRuns_Request{TractUuid: tractUuid, Limit: 10}
+	listRunsResp, err := s.tractClient.ListRuns(authedCtx, listRunsReq)
 	s.Require().NoError(err)
-	s.Empty(runs, "an 'update' action delivery must not fire the gitlab_merge_request (merged-only) trigger")
+	s.Empty(listRunsResp.Runs, "an 'update' action delivery must not fire the gitlab_merge_request (merged-only) trigger")
 
 	s.Empty(mockGitlab.DiffCalls(), "get_merge_request_diff must not have been called")
 }

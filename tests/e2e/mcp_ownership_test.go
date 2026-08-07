@@ -5,16 +5,15 @@ package e2e_test
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"math/rand/v2"
 	"testing"
 
 	_ "github.com/lib/pq"
-	"github.com/ruf-dev/artel/internal/cryptoutil"
+	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/domain"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
-	"github.com/ruf-dev/artel/migrations"
+	"github.com/ruf-dev/artel/tests/harness"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -25,7 +24,6 @@ import (
 // keep untouched).
 type McpOwnershipSuite struct {
 	suite.Suite
-	db    *sql.DB
 	repos *repopg.Repos
 }
 
@@ -34,29 +32,11 @@ func TestMcpOwnership(t *testing.T) {
 }
 
 func (s *McpOwnershipSuite) SetupSuite() {
-	pgDSN := envOrDefault("PG_DSN", "postgres://artel:artel_db@localhost:15434/artel_db?sslmode=disable")
+	db := harness.OpenPostgres(s.T())
 
-	db, err := sql.Open("postgres", pgDSN)
-	s.Require().NoError(err, "open postgres")
+	cfg := config.EnvironmentConfig{}
 
-	err = db.Ping()
-	s.Require().NoError(err, "ping postgres — is the container running?")
-	s.db = db
-
-	err = migrations.ApplyMigration(db)
-	s.Require().NoError(err, "run migrations")
-
-	encKey := make([]byte, 32)
-	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
-	s.Require().NoError(err, "create AES encryptor")
-	s.repos = repopg.New(db, encryptor)
-}
-
-func (s *McpOwnershipSuite) TearDownSuite() {
-	if s.db != nil {
-		err := s.db.Close()
-		s.NoError(err, "close db")
-	}
+	s.repos, _, _ = harness.BuildServices(s.T(), db, cfg)
 }
 
 func randomMcpName() string {
@@ -66,7 +46,9 @@ func randomMcpName() string {
 func (s *McpOwnershipSuite) TestCommunityMomRoundTrip() {
 	ctx := context.Background()
 
-	user, err := s.repos.Users().Create(ctx, randomEmail(), "unused-hash")
+	email := harness.Slug(s.T()) + "@test.local"
+
+	user, err := s.repos.Users().Create(ctx, email, "unused-hash")
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
 		_ = s.repos.Users().Delete(context.Background(), user.Uuid)

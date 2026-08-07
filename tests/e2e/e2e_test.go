@@ -8,23 +8,26 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"math/rand/v2"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/suite"
+
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/config"
-	"github.com/ruf-dev/artel/internal/cryptoutil"
-	"github.com/ruf-dev/artel/internal/domain"
-	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
+	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
-	"github.com/ruf-dev/artel/migrations"
-	"github.com/stretchr/testify/suite"
+	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
+	"github.com/ruf-dev/artel/internal/transport/notes_api"
+	"github.com/ruf-dev/artel/internal/transport/vaults_api"
+	"github.com/ruf-dev/artel/tests/harness"
 )
 
 func envOrDefault(key, def string) string {
@@ -32,10 +35,6 @@ func envOrDefault(key, def string) string {
 		return v
 	}
 	return def
-}
-
-func randomEmail() string {
-	return fmt.Sprintf("e2e_%08x@test.local", rand.Uint32())
 }
 
 func mcpCall(method string, params any) string {
@@ -53,57 +52,57 @@ type E2ESuite struct {
 	svcs            *svcv1.Services
 	mcpHdlr         *mcp_api.McpHandler
 	couchInstanceID string
+
+	authClient   pb.AuthAPIClient
+	vaultClient  pb.VaultsAPIClient
+	mcpKeyClient pb.McpKeysAPIClient
+	notesClient  pb.NotesAPIClient
 }
 
 func TestE2E(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(E2ESuite))
 }
 
 func (s *E2ESuite) SetupSuite() {
 	ctx := context.Background()
 
-	pgDSN := envOrDefault("PG_DSN", "postgres://artel:artel_db@localhost:15434/artel_db?sslmode=disable")
-	db, err := sql.Open("postgres", pgDSN)
-	s.Require().NoError(err, "open postgres")
-
-	err = db.Ping()
-	s.Require().NoError(err, "ping postgres — is the container running?")
-	s.db = db
-
-	err = migrations.ApplyMigration(db)
-	s.Require().NoError(err, "run migrations")
-
-	encKey := make([]byte, 32)
-	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
-	s.Require().NoError(err, "create AES encryptor")
-	s.repos = repopg.New(db, encryptor)
+	s.db = harness.OpenPostgres(s.T())
 
 	cfg := config.EnvironmentConfig{}
-	s.svcs, err = svcv1.New(s.repos, cfg)
-	s.Require().NoError(err, "init services")
 
-	err = s.repos.SystemSettings().CompleteSetup(ctx)
-	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
+	var credsEncrypted bool
+	s.repos, s.svcs, credsEncrypted = harness.BuildServices(s.T(), s.db, cfg)
 
-	err = s.repos.SystemSettings().UpdateRegistrationMode(ctx, domain.RegistrationModeSelfRegister)
-	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+	couchURL := harness.CouchURL(s.T())
 
-	couchURL := envOrDefault("COUCH_URL", "http://localhost:15985")
-	couchUser := envOrDefault("COUCH_USER", "admin")
-	couchPass := envOrDefault("COUCH_PASS", "admin")
-
-	s.couchInstanceID, err = s.svcs.CouchInstance.RegisterCouchInstance(ctx, couchURL, couchUser, couchPass)
-	s.Require().NoError(err, "register couch instance")
+	s.couchInstanceID = harness.GetCouchInstance(s.T(), ctx, s.svcs, couchURL)
 
 	s.mcpHdlr = mcp_api.NewMcpHandler(s.svcs.Mcp, s.svcs.Mom)
+
+	s.startGrpcServer(credsEncrypted)
+}
+func (s *E2ESuite) startGrpcServer(credsEncrypted bool) {
+	authImpl := auth_api.NewAuthImpl(
+		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
+		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
+		false,
+	)
+	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, false)
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom, false)
+	notesImpl := notes_api.NewNotesImpl(s.svcs.Notes, false)
+
+	conn := harness.NewBufconnServer(
+		s.T(), s.svcs, authImpl.Register, vaultsImpl.Register, mcpKeysImpl.Register, notesImpl.Register,
+	)
+
+	s.authClient = pb.NewAuthAPIClient(conn)
+	s.vaultClient = pb.NewVaultsAPIClient(conn)
+	s.mcpKeyClient = pb.NewMcpKeysAPIClient(conn)
+	s.notesClient = pb.NewNotesAPIClient(conn)
 }
 
 func (s *E2ESuite) TearDownSuite() {
-	ctx := context.Background()
-	if s.couchInstanceID != "" {
-		err := s.svcs.CouchInstance.DeleteCouchInstance(ctx, s.couchInstanceID)
-		s.NoError(err, "delete couch instance")
-	}
 	if s.db != nil {
 		err := s.db.Close()
 		s.NoError(err, "close db")
@@ -111,45 +110,77 @@ func (s *E2ESuite) TearDownSuite() {
 }
 
 func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
-	ctx := context.Background()
+	slug := harness.Slug(s.T())
+	email := slug + "@test.local"
+	password := "test-password-" + slug
 
-	// 1. Register user
-	email := randomEmail()
-	password := "test-password-e2e"
-	user, err := s.svcs.Auth.Register(ctx, email, password)
+	// 1. Register user via the real AuthAPI RPC
+	registerReq := &pb.Register_Request{
+		Email:    email,
+		Password: password,
+	}
+	registerResp, err := s.authClient.Register(context.Background(), registerReq)
 	s.Require().NoError(err)
+
+	userUuid := registerResp.Id
 	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
+		id, parseErr := uuid.Parse(userUuid)
+		if parseErr == nil {
+			_ = s.repos.Users().Delete(context.Background(), id)
+		}
 	})
 
-	// 2. Login → session
-	session, err := s.svcs.Auth.Login(ctx, email, password)
-	s.Require().NoError(err)
-	s.Require().NotEmpty(session.Token)
+	// Email/password registration never populates domain.User.Username (defaults to "" — see
+	// migrations/007_telegram_auth.sql). Vault creation derives the CouchDB database name from
+	// it, and an empty UserName produces a name starting with "-", which CouchDB rejects. This
+	// suite now authenticates through the real gRPC auth interceptor (which reads UserName off
+	// the persisted user row, unlike a hand-built user_context.UserContext), so the stand-in has
+	// to be written to the row itself.
+	_, err = s.db.Exec(`UPDATE users SET username = $1 WHERE id = $2`, slug, userUuid)
+	s.Require().NoError(err, "set username stand-in for vault creation")
 
-	// 3. Build user context (replaces the gRPC auth interceptor for direct service calls) —
-	// UserName must be non-empty: vault creation derives the CouchDB database name from it, and
-	// an empty UserName produces a name starting with "-", which CouchDB rejects. Email/password
-	// registration never populates domain.User.Username (it defaults to "" — see
-	// migrations/007_telegram_auth.sql), so a local-part stand-in is used here instead.
-	uc := user_context.UserContext{UserUuid: user.Uuid, UserName: strings.SplitN(email, "@", 2)[0]}
-	userCtx := user_context.WithUserContext(ctx, uc)
-
-	// 4. Create vault
-	vault, err := s.svcs.Vault.CreateVault(userCtx, "e2e_test_vault")
+	// 2. Login via the real AuthAPI RPC → session token
+	passwordCreds := &pb.PasswordCredentials{Email: email, Password: password}
+	loginMethod := &pb.Login_Request_Password{Password: passwordCreds}
+	loginReq := &pb.Login_Request{Method: loginMethod}
+	loginResp, err := s.authClient.Login(context.Background(), loginReq)
 	s.Require().NoError(err)
+	s.Require().NotEmpty(loginResp.Token)
+
+	// 3. Carry the session token as outgoing gRPC metadata, same as a real client authenticating
+	// against middleware.GrpcAuthInterceptor.
+	authedCtx := harness.AuthedContext(context.Background(), loginResp.Token)
+
+	// 4. Create vault via the real VaultsAPI RPC
+	createVaultReq := &pb.CreateVault_Request{Name: slug + "_vault"}
+	createVaultResp, err := s.vaultClient.CreateVault(authedCtx, createVaultReq)
+	s.Require().NoError(err)
+
+	vaultUuid := createVaultResp.Id
 	s.T().Cleanup(func() {
-		_ = s.svcs.Vault.DeleteVault(context.Background(), vault.Uuid)
+		id, parseErr := uuid.Parse(vaultUuid)
+		if parseErr == nil {
+			_ = s.svcs.Vault.DeleteVault(context.Background(), id)
+		}
 	})
 
-	// 5. Create MCP key for this vault
-	rawToken, key, err := s.svcs.Mcp.CreateKey(userCtx, vault.Uuid, "e2e-key")
+	// 5. Create MCP key via the real McpKeysAPI RPC
+	createKeyReq := &pb.CreateMcpKey_Request{
+		VaultId: vaultUuid,
+		Name:    slug + "_key",
+	}
+	createKeyResp, err := s.mcpKeyClient.CreateMcpKey(authedCtx, createKeyReq)
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
-		_ = s.svcs.Mcp.RevokeKey(context.Background(), key.Uuid)
+		id, parseErr := uuid.Parse(createKeyResp.Key.Id)
+		if parseErr == nil {
+			_ = s.svcs.Mcp.RevokeKey(context.Background(), id)
+		}
 	})
 
-	// 6. Write a note via MCP HTTP handler
+	// 6. Write a note via the real MCP JSON-RPC-over-HTTP handler — this surface isn't gRPC (it's
+	// the tool-call protocol AI clients speak), so httptest against the real handler already is
+	// the real transport for it, not a shortcut.
 	writeArgs := map[string]any{
 		"path":    "e2e/hello.md",
 		"content": "# Hello\nThis is a test note from the e2e suite.",
@@ -160,7 +191,7 @@ func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
 	}
 	body := mcpCall("tools/call", callParams)
 	req := httptest.NewRequest(http.MethodPost, "/mcp", strings.NewReader(body))
-	req.Header.Set("Authorization", "Bearer "+rawToken)
+	req.Header.Set("Authorization", "Bearer "+createKeyResp.RawToken)
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -177,12 +208,13 @@ func (s *E2ESuite) TestUserSessionVaultMCPWriteNotesRead() {
 	s.Require().NoError(err)
 	s.Require().Nil(rpcResp.Error, "mcp write_file returned rpc error: %+v", rpcResp.Error)
 
-	// 8. Read notes back via notes service API
-	notes, err := s.svcs.Notes.ListNotes(userCtx, vault.Uuid)
+	// 7. Read notes back via the real NotesAPI RPC
+	listNotesReq := &pb.ListNotes_Request{VaultId: vaultUuid}
+	listResp, err := s.notesClient.ListNotes(authedCtx, listNotesReq)
 	s.Require().NoError(err)
 
 	found := false
-	for _, n := range notes {
+	for _, n := range listResp.Notes {
 		if n.Path == "e2e/hello.md" {
 			found = true
 			break

@@ -17,15 +17,18 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
+	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/config"
-	"github.com/ruf-dev/artel/internal/cryptoutil"
-	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
+	"github.com/ruf-dev/artel/internal/transport/auth_api"
 	"github.com/ruf-dev/artel/internal/transport/mcp_api"
-	"github.com/ruf-dev/artel/migrations"
+	"github.com/ruf-dev/artel/internal/transport/mcp_keys_api"
+	"github.com/ruf-dev/artel/internal/transport/notes_api"
+	"github.com/ruf-dev/artel/internal/transport/vaults_api"
+	"github.com/ruf-dev/artel/tests/harness"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -42,6 +45,11 @@ type QuotaSuite struct {
 	mcpHdlr         *mcp_api.McpHandler
 	couchInstanceID string
 	s3InstanceID    string
+
+	authClient   pb.AuthAPIClient
+	vaultClient  pb.VaultsAPIClient
+	mcpKeyClient pb.McpKeysAPIClient
+	notesClient  pb.NotesAPIClient
 }
 
 func TestQuota(t *testing.T) {
@@ -51,66 +59,54 @@ func TestQuota(t *testing.T) {
 func (s *QuotaSuite) SetupSuite() {
 	ctx := context.Background()
 
-	pgDSN := envOrDefault("PG_DSN", "postgres://artel:artel_db@localhost:15434/artel_db?sslmode=disable")
-	db, err := sql.Open("postgres", pgDSN)
-	s.Require().NoError(err, "open postgres")
-
-	err = db.Ping()
-	s.Require().NoError(err, "ping postgres — is the container running?")
-	s.db = db
-
-	err = migrations.ApplyMigration(db)
-	s.Require().NoError(err, "run migrations")
-
-	encKey := make([]byte, 32)
-	encryptor, err := cryptoutil.NewAESEncryptor(encKey)
-	s.Require().NoError(err, "create AES encryptor")
-	s.repos = repopg.New(db, encryptor)
+	s.db = harness.OpenPostgres(s.T())
 
 	// SubscriptionsEnabled must be true here: with it false (the E2ESuite default) every
 	// quota check runs through FreeService, which always passes and never touches CouchDB/S3.
 	cfg := config.EnvironmentConfig{}
 	cfg.SubscriptionsEnabled = true
 
-	s.svcs, err = svcv1.New(s.repos, cfg)
-	s.Require().NoError(err, "init services")
+	var credsEncrypted bool
+	s.repos, s.svcs, credsEncrypted = harness.BuildServices(s.T(), s.db, cfg)
 
-	err = s.repos.SystemSettings().CompleteSetup(ctx)
-	s.Require().NoError(err, "complete setup so Register/Login aren't gated in tests")
+	couchURL := harness.CouchURL(s.T())
 
-	err = s.repos.SystemSettings().UpdateRegistrationMode(ctx, domain.RegistrationModeSelfRegister)
-	s.Require().NoError(err, "enable self-registration so tests can Register directly")
+	s.couchInstanceID = harness.GetCouchInstance(s.T(), ctx, s.svcs, couchURL)
 
-	couchURL := envOrDefault("COUCH_URL", "http://localhost:15985")
-	couchUser := envOrDefault("COUCH_USER", "admin")
-	couchPass := envOrDefault("COUCH_PASS", "admin")
+	s3Endpoint := harness.S3Endpoint(s.T())
 
-	s.couchInstanceID, err = s.svcs.CouchInstance.RegisterCouchInstance(ctx, couchURL, couchUser, couchPass)
-	s.Require().NoError(err, "register couch instance")
-
-	s3Endpoint := envOrDefault("S3_ENDPOINT", "localhost:19000")
-
-	s.s3InstanceID, err = s.svcs.S3Instance.RegisterS3Instance(
-		ctx, s3Endpoint, "us-east-1", "minioadmin", "minioadmin", false, true,
-	)
-	s.Require().NoError(err, "register s3 instance — is the MinIO container running?")
+	s.s3InstanceID = harness.GetS3Instance(s.T(), ctx, s.svcs, s3Endpoint)
 
 	s.mcpHdlr = mcp_api.NewMcpHandler(s.svcs.Mcp, s.svcs.Mom)
+
+	s.startGrpcServer(credsEncrypted)
+}
+
+// startGrpcServer builds a real *grpc.Server chained with the production auth interceptor,
+// registers the AuthAPI, VaultsAPI, McpKeysAPI and NotesAPI implementations onto it, and serves it
+// over an in-memory bufconn listener so the suite's RPCs travel through the real transport + auth
+// stack without binding a TCP port.
+func (s *QuotaSuite) startGrpcServer(credsEncrypted bool) {
+	authImpl := auth_api.NewAuthImpl(
+		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
+		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
+		false,
+	)
+	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, false)
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom, false)
+	notesImpl := notes_api.NewNotesImpl(s.svcs.Notes, false)
+
+	conn := harness.NewBufconnServer(
+		s.T(), s.svcs, authImpl.Register, vaultsImpl.Register, mcpKeysImpl.Register, notesImpl.Register,
+	)
+
+	s.authClient = pb.NewAuthAPIClient(conn)
+	s.vaultClient = pb.NewVaultsAPIClient(conn)
+	s.mcpKeyClient = pb.NewMcpKeysAPIClient(conn)
+	s.notesClient = pb.NewNotesAPIClient(conn)
 }
 
 func (s *QuotaSuite) TearDownSuite() {
-	ctx := context.Background()
-
-	if s.couchInstanceID != "" {
-		err := s.svcs.CouchInstance.DeleteCouchInstance(ctx, s.couchInstanceID)
-		s.NoError(err, "delete couch instance")
-	}
-
-	if s.s3InstanceID != "" {
-		err := s.svcs.S3Instance.DeleteS3Instance(ctx, s.s3InstanceID)
-		s.NoError(err, "delete s3 instance")
-	}
-
 	if s.db != nil {
 		err := s.db.Close()
 		s.NoError(err, "close db")
@@ -120,48 +116,98 @@ func (s *QuotaSuite) TearDownSuite() {
 type quotaTestUser struct {
 	userUuid  uuid.UUID
 	userCtx   context.Context
+	authedCtx context.Context
 	vaultUuid uuid.UUID
 	rawToken  string
 }
 
-// setupUser registers a user, creates a vault for them, and issues an MCP key scoped to it —
-// the minimum a caller needs to attempt a write.
-func (s *QuotaSuite) setupUser(namePrefix string) quotaTestUser {
+// setupUser registers a user via the real AuthAPI RPC, creates a vault for them via VaultsAPI, and
+// issues an MCP key scoped to it via McpKeysAPI — the minimum a caller needs to attempt a write.
+func (s *QuotaSuite) setupUser() quotaTestUser {
 	ctx := context.Background()
 
-	email := randomEmail()
+	slug := harness.Slug(s.T())
+	email := slug + "@test.local"
+	// A fixed password, not slug-derived: bcrypt rejects passwords over 72 bytes, and slug embeds
+	// the full (possibly long, subtest-qualified) t.Name() — uniqueness only matters for email.
 	password := "test-password-quota"
 
-	user, err := s.svcs.Auth.Register(ctx, email, password)
+	registerReq := &pb.Register_Request{Email: email, Password: password}
+
+	registerResp, err := s.authClient.Register(ctx, registerReq)
+	s.Require().NoError(err)
+
+	userUuid, err := uuid.Parse(registerResp.Id)
 	s.Require().NoError(err)
 	s.T().Cleanup(func() {
-		_ = s.repos.Users().Delete(context.Background(), user.Uuid)
+		_ = s.repos.Users().Delete(context.Background(), userUuid)
 	})
 
 	// UserName must be non-empty: vault creation derives the CouchDB database name from it, and
 	// an empty UserName produces a name starting with "-", which CouchDB rejects. Email/password
 	// registration never populates domain.User.Username (defaults to "" — see
-	// migrations/007_telegram_auth.sql), so a local-part stand-in is used here instead.
-	uc := user_context.UserContext{UserUuid: user.Uuid, UserName: strings.SplitN(email, "@", 2)[0]}
+	// migrations/007_telegram_auth.sql), so the slug is written directly onto the persisted user
+	// row, since this suite now authenticates through the real gRPC auth interceptor (which reads
+	// UserName off that row, not off a hand-built context).
+	_, err = s.db.Exec(`UPDATE users SET username = $1 WHERE id = $2`, slug, userUuid)
+	s.Require().NoError(err, "set username stand-in for vault creation")
+
+	// With SubscriptionsEnabled=true, middleware.authWithSession calls
+	// subscriptionService.CheckActive on every authenticated RPC — so the subscription has to be
+	// activated before CreateVault/CreateMcpKey below, not only once overrideQuota runs later in
+	// the test. overrideQuota itself re-activates (Upsert is idempotent) once it pins a quota
+	// bound.
+	_, err = s.repos.Subscriptions().Upsert(ctx, userUuid, true)
+	s.Require().NoError(err, "activate subscription so authenticated RPCs pass CheckActive")
+
+	passwordCreds := &pb.PasswordCredentials{Email: email, Password: password}
+	loginMethod := &pb.Login_Request_Password{Password: passwordCreds}
+	loginReq := &pb.Login_Request{Method: loginMethod}
+
+	loginResp, err := s.authClient.Login(ctx, loginReq)
+	s.Require().NoError(err)
+	s.Require().NotEmpty(loginResp.Token)
+
+	authedCtx := harness.AuthedContext(ctx, loginResp.Token)
+
+	createVaultReq := &pb.CreateVault_Request{Name: slug + "_vault"}
+
+	createVaultResp, err := s.vaultClient.CreateVault(authedCtx, createVaultReq)
+	s.Require().NoError(err)
+
+	vaultUuid, err := uuid.Parse(createVaultResp.Id)
+	s.Require().NoError(err)
+	s.T().Cleanup(func() {
+		_ = s.svcs.Vault.DeleteVault(context.Background(), vaultUuid)
+	})
+
+	createKeyReq := &pb.CreateMcpKey_Request{
+		VaultId: createVaultResp.Id,
+		Name:    slug + "_key",
+	}
+
+	createKeyResp, err := s.mcpKeyClient.CreateMcpKey(authedCtx, createKeyReq)
+	s.Require().NoError(err)
+	s.T().Cleanup(func() {
+		keyUuid, parseErr := uuid.Parse(createKeyResp.Key.Id)
+		if parseErr == nil {
+			_ = s.svcs.Mcp.RevokeKey(context.Background(), keyUuid)
+		}
+	})
+
+	// LinkS3Bucket/SetUseCouchDBForBinaries (used by TestS3QuotaExceeded_RejectsUploadBeforeWrite)
+	// are called directly against the service layer rather than through a gRPC client, and
+	// SetUseCouchDBForBinaries reads the caller's identity via user_context.GetUserContext — a
+	// hand-built context is still needed alongside the gRPC-authenticated one above.
+	uc := user_context.UserContext{UserUuid: userUuid, UserName: slug}
 	userCtx := user_context.WithUserContext(ctx, uc)
 
-	vault, err := s.svcs.Vault.CreateVault(userCtx, namePrefix+"_vault")
-	s.Require().NoError(err)
-	s.T().Cleanup(func() {
-		_ = s.svcs.Vault.DeleteVault(context.Background(), vault.Uuid)
-	})
-
-	rawToken, key, err := s.svcs.Mcp.CreateKey(userCtx, vault.Uuid, namePrefix+"_key")
-	s.Require().NoError(err)
-	s.T().Cleanup(func() {
-		_ = s.svcs.Mcp.RevokeKey(context.Background(), key.Uuid)
-	})
-
 	testUser := quotaTestUser{
-		userUuid:  user.Uuid,
+		userUuid:  userUuid,
 		userCtx:   userCtx,
-		vaultUuid: vault.Uuid,
-		rawToken:  rawToken,
+		authedCtx: authedCtx,
+		vaultUuid: vaultUuid,
+		rawToken:  createKeyResp.RawToken,
 	}
 
 	return testUser
@@ -230,7 +276,7 @@ func (s *QuotaSuite) callWriteFile(rawToken, path, content string) *mcpRpcError 
 // bytes — already-at-quota — and confirms a subsequent note write is rejected with a
 // CouchStorageQuotaExceeded error before CouchDB is touched, not written and then rolled back.
 func (s *QuotaSuite) TestCouchQuotaExceeded_RejectsWriteBeforeUpload() {
-	user := s.setupUser("couch_quota")
+	user := s.setupUser()
 
 	// Sanity check: with the default plan quota (5MB), a small note writes fine.
 	sanityPath := "quota/before.md"
@@ -245,11 +291,13 @@ func (s *QuotaSuite) TestCouchQuotaExceeded_RejectsWriteBeforeUpload() {
 	s.Require().NotNil(rpcErr, "write should be rejected once couch quota is exhausted")
 	s.Contains(rpcErr.Details, "couchdb storage quota exceeded", "error should explain the couch quota was exceeded")
 
-	notes, err := s.svcs.Notes.ListNotes(user.userCtx, user.vaultUuid)
+	listNotesReq := &pb.ListNotes_Request{VaultId: user.vaultUuid.String()}
+
+	listResp, err := s.notesClient.ListNotes(user.authedCtx, listNotesReq)
 	s.Require().NoError(err)
 
 	var paths []string
-	for _, n := range notes {
+	for _, n := range listResp.Notes {
 		paths = append(paths, n.Path)
 	}
 
@@ -261,7 +309,7 @@ func (s *QuotaSuite) TestCouchQuotaExceeded_RejectsWriteBeforeUpload() {
 // overrides the user's S3 quota down to zero, and confirms a subsequent binary upload is
 // rejected before any object is put into the bucket.
 func (s *QuotaSuite) TestS3QuotaExceeded_RejectsUploadBeforeWrite() {
-	user := s.setupUser("s3_quota")
+	user := s.setupUser()
 
 	s3InstanceUuid, err := uuid.Parse(s.s3InstanceID)
 	s.Require().NoError(err)
