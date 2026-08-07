@@ -58,6 +58,8 @@
         line-height: 1.4;
         color: var(--color-fg-secondary);
         overflow: hidden;
+        overflow-wrap: break-word;
+        white-space: normal;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 3;
