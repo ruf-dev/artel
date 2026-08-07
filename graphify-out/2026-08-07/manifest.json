@@ -6065,8 +6065,8 @@
     "semantic_hash": ""
   },
   "tests/harness/harness.go": {
-    "mtime": 1786097581.1607602,
-    "ast_hash": "6e52598785c581c54ad610ec911bf5b3",
+    "mtime": 1786097691.178262,
+    "ast_hash": "cf91c285943cba30a8011aaa63afd68e",
     "semantic_hash": ""
   }
 }
