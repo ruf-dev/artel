@@ -31,6 +31,9 @@ type McpKeyContext struct {
 	S3        *McpKeyS3Context // nil if the vault has no linked bucket
 
 	UseCouchDBForBinaries bool
+
+	// Postgres is nil unless the vault has an enabled (status=ready) Postgres database.
+	Postgres *McpKeyPostgresContext
 }
 
 // McpKeyS3Context carries the resolved S3-compatible bucket credentials for the vault behind
@@ -43,4 +46,15 @@ type McpKeyS3Context struct {
 	UseSSL    bool
 	PathStyle bool
 	Bucket    string
+}
+
+// McpKeyPostgresContext carries the resolved per-vault Postgres role credentials behind an
+// MCP key, when the vault has an enabled (status=ready) Postgres database.
+type McpKeyPostgresContext struct {
+	Host     string
+	Port     int
+	Database string
+	Username string
+	Password string
+	SSLMode  string
 }

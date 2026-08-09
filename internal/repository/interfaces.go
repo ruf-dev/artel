@@ -25,6 +25,8 @@ type Repo interface {
 	CouchAccounts() CouchAccounts
 	CouchInstances() CouchInstances
 	S3Instances() S3Instances
+	PostgresInstances() PostgresInstances
+	VaultPostgresDatabases() VaultPostgresDatabases
 	DockerHosts() DockerHosts
 	UserPermissions() UserPermissionsRepo
 	McpKeyRepository() McpKeyRepository
@@ -240,6 +242,63 @@ type S3Instances interface {
 	Exists(ctx context.Context) (bool, error)
 
 	WithTx(tx postgres.DB) S3Instances
+}
+
+// PostgresInstances is the pure-DB layer for the admin-managed pool of Postgres servers (admin
+// pool or BYOK) that per-vault databases are provisioned on — mirrors CouchInstances/S3Instances.
+// Unlike those two, domain.PostgresInstance surfaces OwnerUserUuid directly (per its doc comment),
+// so Get/List/RandomPick/etc. here populate it instead of leaving owner-scoping entirely to
+// GetOwned/RegisterOwned.
+type PostgresInstances interface {
+	Register(
+		ctx context.Context, host string, port int, adminDatabase, username string, passwordPlain []byte, sslMode string,
+	) (uuid.UUID, error)
+	Get(ctx context.Context, id uuid.UUID) (domain.PostgresInstance, error)
+	RandomPick(ctx context.Context) (domain.PostgresInstance, error)
+	// PickForUser resolves storage instance selection for vault postgres provisioning: prefers an
+	// instance userID owns (a BYOK postgres connection), falling back to RandomPick's shared admin
+	// pool when they have none.
+	PickForUser(ctx context.Context, userID uuid.UUID) (domain.PostgresInstance, error)
+	// GetOwned returns the instance owned by userID, if any — used by the service layer to
+	// decide between RegisterOwned (insert) and Update (already owns one) when syncing a BYOK
+	// postgres connection.
+	GetOwned(ctx context.Context, userID uuid.UUID) (sql.Null[domain.PostgresInstance], error)
+	List(ctx context.Context) ([]domain.PostgresInstance, error)
+	Update(
+		ctx context.Context, id uuid.UUID, host string, port int, adminDatabase, username string,
+		passwordPlain []byte, sslMode string,
+	) error
+	// RegisterOwned is like Register but stamps owner_user_id, marking the row as ownerUserID's
+	// BYOK instance rather than an admin pool entry.
+	RegisterOwned(
+		ctx context.Context, ownerUserID uuid.UUID, host string, port int, adminDatabase, username string,
+		passwordPlain []byte, sslMode string,
+	) (uuid.UUID, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+	// DeleteOwnedIfUnreferenced removes ownerUserID's owned instance row, but only if no vault
+	// postgres database currently references it — called on BYOK postgres disconnect. No-op if
+	// ownerUserID has no owned row.
+	DeleteOwnedIfUnreferenced(ctx context.Context, ownerUserID uuid.UUID) error
+	Exists(ctx context.Context) (bool, error)
+
+	WithTx(tx postgres.DB) PostgresInstances
+}
+
+// VaultPostgresDatabases is the pure-DB layer for the per-vault Postgres database+role
+// provisioned on a PostgresInstance — mirrors the Workbench provisioning→ready/error lifecycle
+// (see domain.VaultPostgresDatabase).
+type VaultPostgresDatabases interface {
+	Create(
+		ctx context.Context, vaultID, postgresInstanceID uuid.UUID, dbName, roleUsername string, rolePasswordPlain []byte,
+	) (domain.VaultPostgresDatabase, error)
+	// GetByVaultID returns Valid: false rather than an error when vaultID has no Postgres database
+	// provisioned — a vault without Postgres enabled is a normal state, not an error.
+	GetByVaultID(ctx context.Context, vaultID uuid.UUID) (sql.Null[domain.VaultPostgresDatabase], error)
+	MarkReady(ctx context.Context, vaultID uuid.UUID) error
+	MarkError(ctx context.Context, vaultID uuid.UUID, message string) error
+	Delete(ctx context.Context, vaultID uuid.UUID) error
+
+	WithTx(tx postgres.DB) VaultPostgresDatabases
 }
 
 // DockerHosts is the pure-DB layer for the admin-managed pool of Docker daemons that back

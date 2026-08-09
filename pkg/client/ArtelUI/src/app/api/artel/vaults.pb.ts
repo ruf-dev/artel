@@ -32,6 +32,8 @@ export type GetVaultResponse = {
   s3BucketName?: string;
   workbenchExists?: boolean;
   workbenchStatus?: string;
+  postgresEnabled?: boolean;
+  postgresStatus?: string;
 };
 
 export type GetVault = Record<string, never>;
@@ -222,6 +224,38 @@ export type SubmitWorkbenchLoginCodeResponse = Record<string, never>;
 
 export type SubmitWorkbenchLoginCode = Record<string, never>;
 
+export type EnablePostgresDatabaseRequest = {
+  vaultId?: string;
+};
+
+export type EnablePostgresDatabaseResponse = {
+  status?: string;
+  errorMessage?: string;
+};
+
+export type EnablePostgresDatabase = Record<string, never>;
+
+export type GetPostgresDatabaseRequest = {
+  vaultId?: string;
+};
+
+export type GetPostgresDatabaseResponse = {
+  status?: string;
+  errorMessage?: string;
+};
+
+export type GetPostgresDatabase = Record<string, never>;
+
+export type DisablePostgresDatabaseRequest = {
+  vaultId?: string;
+};
+
+export type DisablePostgresDatabaseResponse = {
+  status?: string;
+};
+
+export type DisablePostgresDatabase = Record<string, never>;
+
 export type VaultItem = {
   id?: string;
   name?: string;
@@ -233,6 +267,8 @@ export type VaultItem = {
   isPublic?: boolean;
   slug?: string;
   role?: string;
+  postgresEnabled?: boolean;
+  postgresStatus?: string;
 };
 
 export type VaultMemberInfo = {
@@ -315,5 +351,14 @@ export class VaultsAPI {
   }
   static SubmitWorkbenchLoginCode(this:void, req: SubmitWorkbenchLoginCodeRequest, initReq?: fm.InitReq): Promise<SubmitWorkbenchLoginCodeResponse> {
     return fm.fetchRequest<SubmitWorkbenchLoginCodeResponse>(`/api/vaults/workbench/login/submit`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static EnablePostgresDatabase(this:void, req: EnablePostgresDatabaseRequest, initReq?: fm.InitReq): Promise<EnablePostgresDatabaseResponse> {
+    return fm.fetchRequest<EnablePostgresDatabaseResponse>(`/api/vaults/postgres/enable`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static GetPostgresDatabase(this:void, req: GetPostgresDatabaseRequest, initReq?: fm.InitReq): Promise<GetPostgresDatabaseResponse> {
+    return fm.fetchRequest<GetPostgresDatabaseResponse>(`/api/vaults/postgres/get`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static DisablePostgresDatabase(this:void, req: DisablePostgresDatabaseRequest, initReq?: fm.InitReq): Promise<DisablePostgresDatabaseResponse> {
+    return fm.fetchRequest<DisablePostgresDatabaseResponse>(`/api/vaults/postgres/disable`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

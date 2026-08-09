@@ -4,10 +4,12 @@ import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
     AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
     AddOpenAIConnectionRequest, AddS3ConnectionRequest, AddCouchDBConnectionRequest,
+    AddPostgresConnectionRequest,
     CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
     CheckOpenAIConnectionRequest, CheckOpenAIConnectionResponse,
     CheckS3ConnectionRequest, CheckS3ConnectionResponse,
     CheckCouchDBConnectionRequest, CheckCouchDBConnectionResponse,
+    CheckPostgresConnectionRequest, CheckPostgresConnectionResponse,
     ExternalConnectionInfo,
     Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
@@ -39,9 +41,12 @@ interface ExternalConnectionsState {
     checkS3Connection: (req: CheckS3ConnectionRequest) => Promise<CheckS3ConnectionResponse>
     addCouchDBConnection: (req: AddCouchDBConnectionRequest) => Promise<void>
     checkCouchDBConnection: (req: CheckCouchDBConnectionRequest) => Promise<CheckCouchDBConnectionResponse>
+    addPostgresConnection: (req: AddPostgresConnectionRequest) => Promise<void>
+    checkPostgresConnection: (req: CheckPostgresConnectionRequest) => Promise<CheckPostgresConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<void>
 }
 
+// eslint-disable-next-line max-lines-per-function -- Zustand store with many methods
 export const useExternalConnections = create<ExternalConnectionsState>((set, get) => ({
     connections: [],
     loading: false,
@@ -155,6 +160,15 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
 
     checkCouchDBConnection: async (req: CheckCouchDBConnectionRequest) => {
         return externalConnectionsService.checkCouchDBConnection(req)
+    },
+
+    addPostgresConnection: async (req: AddPostgresConnectionRequest) => {
+        await externalConnectionsService.addPostgresConnection(req)
+        await get().fetch()
+    },
+
+    checkPostgresConnection: async (req: CheckPostgresConnectionRequest) => {
+        return externalConnectionsService.checkPostgresConnection(req)
     },
 
     addGenericConnection: async (req: AddGenericConnectionRequest) => {

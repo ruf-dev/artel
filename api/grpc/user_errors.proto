@@ -13,4 +13,7 @@ enum UserErrors {
   NoSubscription = 1;
   NoCouchDbInstance = 2;
   NoS3BucketLinked = 3; // vault has no linked S3 bucket; non-markdown file ops are unavailable
+  NoPostgresDatabaseLinked = 4; // vault has no enabled (status=ready) Postgres database
+  PostgresConnectionValidationFailed = 5; // BYOK Postgres connection check failed
+  PostgresDatabaseAlreadyEnabled = 6; // EnablePostgresDatabase called when one already exists
 }

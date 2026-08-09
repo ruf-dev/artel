@@ -689,6 +689,70 @@
         ]
       }
     },
+    "/api/external-connections/postgres/add": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_AddPostgresConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddPostgresConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiAddPostgresConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
+    "/api/external-connections/postgres/check": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_CheckPostgresConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckPostgresConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCheckPostgresConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/s3/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddS3Connection",
@@ -1027,6 +1091,38 @@
         }
       }
     },
+    "artel_apiAddPostgresConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "database": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "sslMode": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiAddPostgresConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "connection": {
+          "$ref": "#/definitions/artel_apiExternalConnectionInfo"
+        }
+      }
+    },
     "artel_apiAddS3ConnectionRequest": {
       "type": "object",
       "properties": {
@@ -1234,6 +1330,33 @@
         }
       }
     },
+    "artel_apiCheckPostgresConnectionRequest": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "database": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "sslMode": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiCheckPostgresConnectionResponse": {
+      "type": "object"
+    },
     "artel_apiCheckS3ConnectionRequest": {
       "type": "object",
       "properties": {
@@ -1356,7 +1479,8 @@
         "EXTERNAL_PROVIDER_TELEGRAM",
         "EXTERNAL_PROVIDER_OPENAI",
         "EXTERNAL_PROVIDER_S3",
-        "EXTERNAL_PROVIDER_COUCHDB"
+        "EXTERNAL_PROVIDER_COUCHDB",
+        "EXTERNAL_PROVIDER_POSTGRES"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },

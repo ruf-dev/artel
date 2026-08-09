@@ -1,6 +1,13 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 
-import {VaultItem, VaultMemberInfo, VaultInviteItem, VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
+import {
+    VaultItem,
+    VaultMemberInfo,
+    VaultInviteItem,
+    VaultsAPI,
+    EnablePostgresDatabaseResponse,
+    GetPostgresDatabaseResponse,
+} from "@/app/api/artel/vaults.pb.ts"
 import {vaultService} from "@/processes/Vaults.ts"
 import {retryOnStatus} from "@/processes/grpcErrors.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -76,6 +83,15 @@ export function useVaultMutations() {
         acceptInvite: async (token: string): Promise<string> => {
             const res = await VaultsAPI.AcceptInvite({token}, auth.getInitReq())
             return res.vaultId ?? ""
+        },
+        enablePostgresDatabase: async (vaultId: string): Promise<EnablePostgresDatabaseResponse> => {
+            return VaultsAPI.EnablePostgresDatabase({vaultId}, auth.getInitReq())
+        },
+        getPostgresDatabase: async (vaultId: string): Promise<GetPostgresDatabaseResponse> => {
+            return VaultsAPI.GetPostgresDatabase({vaultId}, auth.getInitReq())
+        },
+        disablePostgresDatabase: async (vaultId: string): Promise<void> => {
+            await VaultsAPI.DisablePostgresDatabase({vaultId}, auth.getInitReq())
         },
     }
 }

@@ -15,6 +15,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
 	"github.com/ruf-dev/artel/internal/service/v1/mom"
 	"github.com/ruf-dev/artel/internal/service/v1/notes"
+	"github.com/ruf-dev/artel/internal/service/v1/postgresinstances"
 	"github.com/ruf-dev/artel/internal/service/v1/prompt"
 	"github.com/ruf-dev/artel/internal/service/v1/public_docs"
 	"github.com/ruf-dev/artel/internal/service/v1/s3instances"
@@ -45,6 +46,7 @@ type Services struct {
 	PublicDocs          service.PublicDocsService
 	SetupWizard         service.SetupWizardService
 	AdminSettings       service.AdminSystemSettingsService
+	PostgresInstance    service.PostgresInstanceService
 	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
@@ -84,6 +86,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		momSvc,
 		repo.CouchInstances(),
 		repo.S3Instances(),
+		repo.PostgresInstances(),
 	)
 	// Also hoisted ahead of the literal: mcp.New needs service.AuthService (to gate
 	// create_community_connector on CheckIsAdmin and to resolve the caller's email for a new
@@ -93,7 +96,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 
 	services := &Services{
 		Auth:          authSvc,
-		Vault:         vault.New(repo),
+		Vault:         vault.New(repo, subscriptionSvc),
 		CouchInstance: couchinstances.New(repo),
 		S3Instance:    s3instances.New(repo),
 		DockerHost:    dockerhosts.New(repo),
@@ -109,6 +112,8 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			repo.ExternalConnections(),
 			subscriptionSvc,
 			authSvc,
+			repo.PostgresInstances(),
+			repo.VaultPostgresDatabases(),
 		),
 		Subscription:        subscriptionSvc,
 		Prompt:              prompt.New(repo.Prompts()),
@@ -121,6 +126,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		PublicDocs:          public_docs.New(repo),
 		SetupWizard:         setupwizard.New(repo.SystemSettings(), authSvc),
 		AdminSettings:       adminsettings.New(repo.SystemSettings()),
+		PostgresInstance:    postgresinstances.New(repo),
 	}
 
 	return services, nil
@@ -211,4 +217,8 @@ func (s *Services) SetupWizardService() service.SetupWizardService {
 
 func (s *Services) AdminSystemSettingsService() service.AdminSystemSettingsService {
 	return s.AdminSettings
+}
+
+func (s *Services) PostgresInstanceService() service.PostgresInstanceService {
+	return s.PostgresInstance
 }

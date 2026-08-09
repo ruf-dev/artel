@@ -9,6 +9,7 @@ import ManageAnthropicDialog from "@/dialogs/ManageAnthropicDialog/ManageAnthrop
 import ManageOpenAIDialog from "@/dialogs/ManageOpenAIDialog/ManageOpenAIDialog.tsx"
 import ManageCouchDBDialog from "@/dialogs/ManageCouchDBDialog/ManageCouchDBDialog.tsx"
 import ManageS3Dialog from "@/dialogs/ManageS3Dialog/ManageS3Dialog.tsx"
+import ManagePostgresDialog from "@/dialogs/ManagePostgresDialog/ManagePostgresDialog.tsx"
 import claudeIcon from "@/icons/llm/claude-color.svg"
 import gptIcon from "@/icons/llm/gpt-color.svg"
 import cls from "@/pages/connections/components/BYOKSection/BYOKSection.module.css"
@@ -45,6 +46,11 @@ const INFRA_BYOK_PROVIDERS: BYOKProvider[] = [
         provider: ExternalProvider.EXTERNAL_PROVIDER_S3,
         name: "S3 / MinIO",
         dialogFactory: () => <ManageS3Dialog/>,
+    },
+    {
+        provider: ExternalProvider.EXTERNAL_PROVIDER_POSTGRES,
+        name: "PostgreSQL",
+        dialogFactory: () => <ManagePostgresDialog/>,
     },
 ]
 

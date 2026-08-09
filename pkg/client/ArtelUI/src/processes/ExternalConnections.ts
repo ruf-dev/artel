@@ -2,10 +2,12 @@ import {
     AddAnthropicConnectionRequest, AddEmailConnectionRequest, AddGenericConnectionRequest,
     AddGitlabConnectionRequest, AddTelegramConnectionRequest, AddTrelloConnectionRequest,
     AddOpenAIConnectionRequest, AddS3ConnectionRequest, AddCouchDBConnectionRequest,
+    AddPostgresConnectionRequest,
     CheckAnthropicConnectionRequest, CheckAnthropicConnectionResponse,
     CheckOpenAIConnectionRequest, CheckOpenAIConnectionResponse,
     CheckS3ConnectionRequest, CheckS3ConnectionResponse,
     CheckCouchDBConnectionRequest, CheckCouchDBConnectionResponse,
+    CheckPostgresConnectionRequest, CheckPostgresConnectionResponse,
     ExternalConnectionInfo,
     ExternalConnectionsAPI, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
@@ -35,6 +37,8 @@ export interface IExternalConnectionsService {
     checkS3Connection: (req: CheckS3ConnectionRequest) => Promise<CheckS3ConnectionResponse>
     addCouchDBConnection: (req: AddCouchDBConnectionRequest) => Promise<ExternalConnectionInfo>
     checkCouchDBConnection: (req: CheckCouchDBConnectionRequest) => Promise<CheckCouchDBConnectionResponse>
+    addPostgresConnection: (req: AddPostgresConnectionRequest) => Promise<ExternalConnectionInfo>
+    checkPostgresConnection: (req: CheckPostgresConnectionRequest) => Promise<CheckPostgresConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<ExternalConnectionInfo>
 }
 
@@ -148,6 +152,15 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
 
     async checkCouchDBConnection(req: CheckCouchDBConnectionRequest): Promise<CheckCouchDBConnectionResponse> {
         return ExternalConnectionsAPI.CheckCouchDBConnection(req, useUser.getState().auth.getInitReq())
+    }
+
+    async addPostgresConnection(req: AddPostgresConnectionRequest): Promise<ExternalConnectionInfo> {
+        const res = await ExternalConnectionsAPI.AddPostgresConnection(req, useUser.getState().auth.getInitReq())
+        return res.connection!
+    }
+
+    async checkPostgresConnection(req: CheckPostgresConnectionRequest): Promise<CheckPostgresConnectionResponse> {
+        return ExternalConnectionsAPI.CheckPostgresConnection(req, useUser.getState().auth.getInitReq())
     }
 
     async addGenericConnection(req: AddGenericConnectionRequest): Promise<ExternalConnectionInfo> {

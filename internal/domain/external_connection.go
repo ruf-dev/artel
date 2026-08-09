@@ -19,6 +19,7 @@ const (
 	ProviderOpenAI       = "openai"
 	ProviderS3           = "s3"
 	ProviderCouchDB      = "couchdb"
+	ProviderPostgres     = "postgres"
 )
 
 type ExternalConnection struct {
@@ -112,4 +113,14 @@ type CouchDBKeyCredentials struct {
 	URL      string `json:"url"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+// PostgresKeyCredentials is stored encrypted in credentials_enc for the postgres provider.
+type PostgresKeyCredentials struct {
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Database string `json:"database"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	SSLMode  string `json:"ssl_mode"`
 }

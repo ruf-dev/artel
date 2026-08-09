@@ -14,38 +14,79 @@ import (
 
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
+	"github.com/ruf-dev/artel/internal/clients/vaultpg"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
+	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 )
 
+// adminClient is the narrow subset of vaultpg.AdminClient's methods postgres.go depends on —
+// vaultpg.AdminClient is a concrete struct; this interface exists so tests can exercise Service's
+// Postgres provisioning logic against a fake, without a live Postgres server. Mirrors the
+// dockerClient interface pattern in internal/service/v1/workbench/workbench.go.
+type adminClient interface {
+	EnsureRole(ctx context.Context, roleName, password string) error
+	EnsureDatabase(ctx context.Context, dbName, ownerRole string) error
+	DropDatabase(ctx context.Context, dbName string) error
+	DropRole(ctx context.Context, roleName string) error
+	Close() error
+}
+
 type Service struct {
-	vaultsRepo         repository.Vaults
-	vaultMembersRepo   repository.VaultMembers
-	vaultInvitesRepo   repository.VaultInvites
-	couchAccountsRepo  repository.CouchAccounts
-	couchInstancesRepo repository.CouchInstances
-	s3InstancesRepo    repository.S3Instances
+	vaultsRepo            repository.Vaults
+	vaultMembersRepo      repository.VaultMembers
+	vaultInvitesRepo      repository.VaultInvites
+	couchAccountsRepo     repository.CouchAccounts
+	couchInstancesRepo    repository.CouchInstances
+	s3InstancesRepo       repository.S3Instances
+	postgresInstancesRepo repository.PostgresInstances
+	vaultPostgresRepo     repository.VaultPostgresDatabases
+
+	subscriptions service.SubscriptionService
+
+	// newAdminClient builds a fresh adminClient pointed at a postgres_instances row's admin
+	// database — a constructor func field (rather than a stored client) since a fresh connection
+	// is opened per call, mirroring newDockerClient in internal/service/v1/workbench/workbench.go.
+	newAdminClient func(instance domain.PostgresInstance) (adminClient, error)
 
 	txManager tx_manager.TxManager
 }
 
 func New(
 	repo repository.Repo,
+	subscriptions service.SubscriptionService,
 ) *Service {
 	return &Service{
-		vaultsRepo:         repo.Vaults(),
-		vaultMembersRepo:   repo.VaultMembers(),
-		vaultInvitesRepo:   repo.VaultInvites(),
-		couchAccountsRepo:  repo.CouchAccounts(),
-		couchInstancesRepo: repo.CouchInstances(),
-		s3InstancesRepo:    repo.S3Instances(),
+		vaultsRepo:            repo.Vaults(),
+		vaultMembersRepo:      repo.VaultMembers(),
+		vaultInvitesRepo:      repo.VaultInvites(),
+		couchAccountsRepo:     repo.CouchAccounts(),
+		couchInstancesRepo:    repo.CouchInstances(),
+		s3InstancesRepo:       repo.S3Instances(),
+		postgresInstancesRepo: repo.PostgresInstances(),
+		vaultPostgresRepo:     repo.VaultPostgresDatabases(),
+
+		subscriptions: subscriptions,
+
+		newAdminClient: newRealAdminClient,
 
 		txManager: repo.TxManager(),
 	}
+}
+
+// newRealAdminClient wraps vaultpg.NewAdminClient behind the adminClient interface — the default
+// value of Service.newAdminClient in New, swapped out in tests.
+func newRealAdminClient(instance domain.PostgresInstance) (adminClient, error) {
+	client, err := vaultpg.NewAdminClient(instance)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error creating vaultpg admin client")
+	}
+
+	return client, nil
 }
 
 func (s *Service) CreateVault(ctx context.Context, vaultName string) (domain.Vault, error) {

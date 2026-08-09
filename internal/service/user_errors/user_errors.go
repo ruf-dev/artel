@@ -335,6 +335,25 @@ var (
 		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
 
+	// postgres (byok) connection / per-vault database.
+	PostgresConnectionValidationFailed = rerrors.New(
+		"could not connect to the postgres server with the provided settings",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	PostgresDatabaseAlreadyEnabled = rerrors.New(
+		"vault already has a postgres database enabled",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+		rerrors.WithPreconditionFailure("POSTGRES", "database", pb.UserErrors_PostgresDatabaseAlreadyEnabled.String()),
+	)
+	NoPostgresDatabaseLinked = rerrors.New(
+		"vault has no enabled postgres database; enable one before using postgres tools",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusFailedDependency),
+		rerrors.WithPreconditionFailure("POSTGRES", "database", pb.UserErrors_NoPostgresDatabaseLinked.String()),
+	)
+
 	// workbench.
 	WorkbenchMissingAnthropicConnection = rerrors.New(
 		"no anthropic api key connected for this account; connect one before starting this workbench in api_key mode",

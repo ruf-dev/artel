@@ -3,6 +3,7 @@ package externalconnections
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"io"
@@ -23,6 +24,7 @@ import (
 	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
+	"github.com/ruf-dev/artel/internal/clients/vaultpg"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
@@ -98,6 +100,7 @@ type Service struct {
 	mom                   service.MomService
 	couchInstances        repository.CouchInstances
 	s3Instances           repository.S3Instances
+	postgresInstances     repository.PostgresInstances
 }
 
 func New(
@@ -109,6 +112,7 @@ func New(
 	mom service.MomService,
 	couchInstances repository.CouchInstances,
 	s3Instances repository.S3Instances,
+	postgresInstances repository.PostgresInstances,
 ) *Service {
 	return &Service{
 		connections:           connections,
@@ -119,6 +123,7 @@ func New(
 		mom:                   mom,
 		couchInstances:        couchInstances,
 		s3Instances:           s3Instances,
+		postgresInstances:     postgresInstances,
 	}
 }
 
@@ -269,6 +274,11 @@ func (s *Service) cleanupOwnedInstance(ctx context.Context, userUuid uuid.UUID, 
 		err := s.s3Instances.DeleteOwnedIfUnreferenced(ctx, userUuid)
 		if err != nil {
 			return rerrors.Wrap(err, "delete owned s3 instance if unreferenced")
+		}
+	case domain.ProviderPostgres:
+		err := s.postgresInstances.DeleteOwnedIfUnreferenced(ctx, userUuid)
+		if err != nil {
+			return rerrors.Wrap(err, "delete owned postgres instance if unreferenced")
 		}
 	}
 
@@ -1195,6 +1205,141 @@ func (s *Service) syncOwnedCouchInstance(ctx context.Context, userUuid uuid.UUID
 	_, err = s.couchInstances.RegisterOwned(ctx, userUuid, url, username, []byte(password))
 	if err != nil {
 		return rerrors.Wrap(err, "register owned couch instance")
+	}
+
+	return nil
+}
+
+// AddPostgresConnection validates connectivity against the Postgres server, then persists it and
+// syncs the caller's owned postgres_instances pool row so a vault's EnablePostgresDatabase resolves
+// to it automatically instead of the shared admin pool — see vault.Service.EnablePostgresDatabase's
+// PickForUser.
+func (s *Service) AddPostgresConnection(
+	ctx context.Context,
+	host string, port int, database, username, password, sslMode string,
+) (domain.ExternalConnectionMeta, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.ExternalConnectionMeta{}, user_errors.Unauthenticated
+	}
+
+	err := s.checkPostgresConnection(ctx, host, port, database, username, password, sslMode)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, err
+	}
+
+	creds := domain.PostgresKeyCredentials{
+		Host:     host,
+		Port:     port,
+		Database: database,
+		Username: username,
+		Password: password,
+		SSLMode:  sslMode,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "marshal postgres credentials")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderPostgres,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save postgres connection")
+	}
+
+	err = s.syncOwnedPostgresInstance(ctx, uc.UserUuid, host, port, database, username, password, sslMode)
+	if err != nil {
+		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "sync owned postgres instance")
+	}
+
+	return toMeta(saved, host), nil
+}
+
+// CheckPostgresConnection pings the Postgres server with the given credentials without persisting
+// anything, letting the caller confirm they work before committing to AddPostgresConnection.
+func (s *Service) CheckPostgresConnection(
+	ctx context.Context,
+	host string, port int, database, username, password, sslMode string,
+) error {
+	_, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	err := s.checkPostgresConnection(ctx, host, port, database, username, password, sslMode)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// checkPostgresConnection confirms host/port/credentials work by opening a connection and pinging
+// it. vaultpg.AdminClient keeps its *sql.DB unexported and exposes no raw ping/query method (only
+// the DDL helpers EnsureRole/EnsureDatabase/DropDatabase/DropRole), so this opens its own *sql.DB
+// from vaultpg.Config.DSN() rather than going through AdminClient — mirrors
+// postgresinstances.Service.TestPostgresInstance, which has the same constraint for admin-pool
+// instances.
+func (s *Service) checkPostgresConnection(
+	ctx context.Context,
+	host string, port int, database, username, password, sslMode string,
+) error {
+	cfg := vaultpg.Config{
+		Host:     host,
+		Port:     port,
+		Database: database,
+		User:     username,
+		Password: password,
+		SSLMode:  sslMode,
+	}
+
+	db, err := sql.Open("postgres", cfg.DSN())
+	if err != nil {
+		return rerrors.Wrap(user_errors.PostgresConnectionValidationFailed, "error opening postgres connection")
+	}
+
+	defer utils.CloseWithLog(db, "postgres connection check")
+
+	err = db.PingContext(ctx)
+	if err != nil {
+		return rerrors.Wrap(user_errors.PostgresConnectionValidationFailed, "error connecting to postgres server")
+	}
+
+	return nil
+}
+
+// syncOwnedPostgresInstance mirrors a BYOK postgres connection into userUuid's owned
+// postgres_instances pool row, updating it in place if one already exists (so a second BYOK save
+// doesn't create a duplicate pool row) or registering a new one otherwise.
+func (s *Service) syncOwnedPostgresInstance(
+	ctx context.Context,
+	userUuid uuid.UUID,
+	host string, port int, database, username, password, sslMode string,
+) error {
+	owned, err := s.postgresInstances.GetOwned(ctx, userUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get owned postgres instance")
+	}
+
+	if owned.Valid {
+		err = s.postgresInstances.Update(ctx, owned.V.Uuid, host, port, database, username, []byte(password), sslMode)
+		if err != nil {
+			return rerrors.Wrap(err, "update owned postgres instance")
+		}
+
+		return nil
+	}
+
+	_, err = s.postgresInstances.RegisterOwned(ctx, userUuid, host, port, database, username, []byte(password), sslMode)
+	if err != nil {
+		return rerrors.Wrap(err, "register owned postgres instance")
 	}
 
 	return nil

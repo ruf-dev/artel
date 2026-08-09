@@ -14,6 +14,8 @@ import PublishToggle from
     "@/dialogs/ManageVaultDialog/widgets/VaultSettingsSection/components/PublishToggle/PublishToggle.tsx"
 import PublishSlugForm from
     "@/dialogs/ManageVaultDialog/widgets/VaultSettingsSection/components/PublishSlugForm/PublishSlugForm.tsx"
+import PostgresSection from
+    "@/dialogs/ManageVaultDialog/widgets/VaultSettingsSection/components/PostgresSection/PostgresSection.tsx"
 
 interface Props {
     vault: VaultItem
@@ -33,6 +35,7 @@ export default function VaultSettingsSection({vault, onChanged}: Props) {
 
     const [slugFormOpen, setSlugFormOpen] = useState(false)
     const [publishing, setPublishing] = useState(false)
+    const [postgresStatus, setPostgresStatus] = useState(vault.postgresStatus)
 
     useEffect(() => {
         AuthAPI.GetConfig({}, auth.getInitReq())
@@ -109,6 +112,14 @@ export default function VaultSettingsSection({vault, onChanged}: Props) {
                     onCancel={() => setSlugFormOpen(false)}
                 />
             )}
+            <PostgresSection
+                vaultId={vault.id ?? ""}
+                postgresStatus={postgresStatus}
+                onStatusChange={status => {
+                    setPostgresStatus(status)
+                    onChanged({postgresStatus: status})
+                }}
+            />
         </div>
     )
 }

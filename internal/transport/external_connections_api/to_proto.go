@@ -18,6 +18,7 @@ var providerToProto = map[string]pb.ExternalProvider{
 	domain.ProviderOpenAI:       pb.ExternalProvider_EXTERNAL_PROVIDER_OPENAI,
 	domain.ProviderS3:           pb.ExternalProvider_EXTERNAL_PROVIDER_S3,
 	domain.ProviderCouchDB:      pb.ExternalProvider_EXTERNAL_PROVIDER_COUCHDB,
+	domain.ProviderPostgres:     pb.ExternalProvider_EXTERNAL_PROVIDER_POSTGRES,
 }
 
 func ConnectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {

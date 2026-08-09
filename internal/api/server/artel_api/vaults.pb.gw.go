@@ -10,6 +10,7 @@ package artel_api
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,583 +25,576 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_VaultsAPI_CreateVault_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq CreateVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.CreateVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_CreateVault_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq CreateVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.CreateVault(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_GetVault_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.GetVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_GetVault_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.GetVault(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_ListVaults_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListVaults_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListVaults_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ListVaults(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_ListVaults_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListVaults_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListVaults_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListVaults(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_DeleteVault_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq DeleteVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.DeleteVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_DeleteVault_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq DeleteVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.DeleteVault(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_AddMember_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AddMember_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq AddMember_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.AddMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_AddMember_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AddMember_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq AddMember_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.AddMember(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_RemoveMember_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RemoveMember_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RemoveMember_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.RemoveMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_RemoveMember_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RemoveMember_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RemoveMember_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RemoveMember(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_ListMembers_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListMembers_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListMembers_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ListMembers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_ListMembers_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListMembers_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListMembers_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListMembers(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_CreateInviteLink_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateInviteLink_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq CreateInviteLink_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.CreateInviteLink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_CreateInviteLink_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateInviteLink_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq CreateInviteLink_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.CreateInviteLink(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_ListInviteLinks_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListInviteLinks_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListInviteLinks_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ListInviteLinks(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_ListInviteLinks_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListInviteLinks_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListInviteLinks_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListInviteLinks(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_RevokeInviteLink_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RevokeInviteLink_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RevokeInviteLink_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.RevokeInviteLink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_RevokeInviteLink_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RevokeInviteLink_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RevokeInviteLink_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RevokeInviteLink(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_AcceptInvite_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AcceptInvite_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq AcceptInvite_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.AcceptInvite(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_AcceptInvite_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AcceptInvite_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq AcceptInvite_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.AcceptInvite(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_LinkS3Bucket_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq LinkS3Bucket_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq LinkS3Bucket_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.LinkS3Bucket(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_LinkS3Bucket_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq LinkS3Bucket_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq LinkS3Bucket_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.LinkS3Bucket(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_UnlinkS3Bucket_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnlinkS3Bucket_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnlinkS3Bucket_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.UnlinkS3Bucket(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_UnlinkS3Bucket_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnlinkS3Bucket_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnlinkS3Bucket_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.UnlinkS3Bucket(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_SetVaultBinaryStorage_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SetVaultBinaryStorage_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq SetVaultBinaryStorage_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.SetVaultBinaryStorage(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_SetVaultBinaryStorage_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SetVaultBinaryStorage_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq SetVaultBinaryStorage_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.SetVaultBinaryStorage(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_PublishVault_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PublishVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq PublishVault_Request
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["vault_id"]
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["vault_id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
 	}
-
 	protoReq.VaultId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
-
 	msg, err := client.PublishVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_PublishVault_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PublishVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq PublishVault_Request
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["vault_id"]
+	val, ok := pathParams["vault_id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
 	}
-
 	protoReq.VaultId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
-
 	msg, err := server.PublishVault(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_UnpublishVault_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnpublishVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnpublishVault_Request
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["vault_id"]
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["vault_id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
 	}
-
 	protoReq.VaultId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
-
 	msg, err := client.UnpublishVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_UnpublishVault_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnpublishVault_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnpublishVault_Request
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["vault_id"]
+	val, ok := pathParams["vault_id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "vault_id")
 	}
-
 	protoReq.VaultId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "vault_id", err)
 	}
-
 	msg, err := server.UnpublishVault(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_CreateWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateWorkbench_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq CreateWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.CreateWorkbench(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_CreateWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateWorkbench_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq CreateWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.CreateWorkbench(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_StartWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq StartWorkbench_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq StartWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.StartWorkbench(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_StartWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq StartWorkbench_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq StartWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.StartWorkbench(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_StopWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq StopWorkbench_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq StopWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.StopWorkbench(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_StopWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq StopWorkbench_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq StopWorkbench_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.StopWorkbench(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_VaultsAPI_WatchWorkbenchLogin_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (VaultsAPI_WatchWorkbenchLoginClient, runtime.ServerMetadata, error) {
-	var protoReq WatchWorkbenchLogin_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq WatchWorkbenchLogin_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	stream, err := client.WatchWorkbenchLogin(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -611,50 +605,129 @@ func request_VaultsAPI_WatchWorkbenchLogin_0(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_VaultsAPI_SubmitWorkbenchLoginCode_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SubmitWorkbenchLoginCode_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq SubmitWorkbenchLoginCode_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.SubmitWorkbenchLoginCode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_VaultsAPI_SubmitWorkbenchLoginCode_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SubmitWorkbenchLoginCode_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq SubmitWorkbenchLoginCode_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.SubmitWorkbenchLoginCode(ctx, &protoReq)
 	return msg, metadata, err
+}
 
+func request_VaultsAPI_EnablePostgresDatabase_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq EnablePostgresDatabase_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.EnablePostgresDatabase(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_VaultsAPI_EnablePostgresDatabase_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq EnablePostgresDatabase_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.EnablePostgresDatabase(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_VaultsAPI_GetPostgresDatabase_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetPostgresDatabase_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.GetPostgresDatabase(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_VaultsAPI_GetPostgresDatabase_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetPostgresDatabase_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetPostgresDatabase(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_VaultsAPI_DisablePostgresDatabase_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq DisablePostgresDatabase_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.DisablePostgresDatabase(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_VaultsAPI_DisablePostgresDatabase_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq DisablePostgresDatabase_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.DisablePostgresDatabase(ctx, &protoReq)
+	return msg, metadata, err
 }
 
 // RegisterVaultsAPIHandlerServer registers the http handlers for service VaultsAPI to "mux".
 // UnaryRPC     :call VaultsAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterVaultsAPIHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server VaultsAPIServer) error {
-
-	mux.Handle("POST", pattern_VaultsAPI_CreateVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults/create"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -666,20 +739,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_CreateVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/get"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -691,20 +759,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_GetVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_ListVaults_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListVaults_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults/list"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -716,20 +779,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_ListVaults_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_DeleteVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_DeleteVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/delete"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -741,20 +799,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_DeleteVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_AddMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_AddMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/members/add"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/members/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -766,20 +819,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_AddMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/members/remove"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/members/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -791,20 +839,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_RemoveMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/members/list"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/members/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -816,20 +859,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_ListMembers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_CreateInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/create"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -841,20 +879,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_CreateInviteLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/invites/list"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/invites/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -866,20 +899,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_ListInviteLinks_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_RevokeInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_RevokeInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/revoke"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -891,20 +919,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_RevokeInviteLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_AcceptInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_AcceptInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AcceptInvite", runtime.WithHTTPPathPattern("/api/vaults/join"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AcceptInvite", runtime.WithHTTPPathPattern("/api/vaults/join"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -916,20 +939,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_AcceptInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_LinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_LinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/LinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/link"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/LinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/link"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -941,20 +959,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_LinkS3Bucket_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_UnlinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_UnlinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnlinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/unlink"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnlinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/unlink"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -966,20 +979,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_UnlinkS3Bucket_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_SetVaultBinaryStorage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_SetVaultBinaryStorage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SetVaultBinaryStorage", runtime.WithHTTPPathPattern("/api/vaults/binary-storage"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SetVaultBinaryStorage", runtime.WithHTTPPathPattern("/api/vaults/binary-storage"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -991,20 +999,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_SetVaultBinaryStorage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_PublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_PublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/PublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/publish"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/PublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/publish"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1016,20 +1019,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_PublishVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_UnpublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_UnpublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnpublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/unpublish"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnpublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/unpublish"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1041,20 +1039,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_UnpublishVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_CreateWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/create"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1066,20 +1059,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_CreateWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_StartWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_StartWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StartWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/start"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StartWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/start"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1091,20 +1079,15 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_StartWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_StopWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_StopWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StopWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/stop"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StopWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/stop"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1116,27 +1099,22 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_StopWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
-	mux.Handle("POST", pattern_VaultsAPI_WatchWorkbenchLogin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_WatchWorkbenchLogin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_SubmitWorkbenchLoginCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_SubmitWorkbenchLoginCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/submit"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/submit"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1148,9 +1126,67 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_SubmitWorkbenchLoginCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
+	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_EnablePostgresDatabase_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/EnablePostgresDatabase", runtime.WithHTTPPathPattern("/api/vaults/postgres/enable"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_VaultsAPI_EnablePostgresDatabase_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_EnablePostgresDatabase_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_GetPostgresDatabase_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetPostgresDatabase", runtime.WithHTTPPathPattern("/api/vaults/postgres/get"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_VaultsAPI_GetPostgresDatabase_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_GetPostgresDatabase_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_DisablePostgresDatabase_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DisablePostgresDatabase", runtime.WithHTTPPathPattern("/api/vaults/postgres/disable"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_VaultsAPI_DisablePostgresDatabase_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_DisablePostgresDatabase_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -1159,25 +1195,24 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 // RegisterVaultsAPIHandlerFromEndpoint is same as RegisterVaultsAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterVaultsAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
-
 	return RegisterVaultsAPIHandler(ctx, mux, conn)
 }
 
@@ -1191,16 +1226,13 @@ func RegisterVaultsAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "VaultsAPIClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "VaultsAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "VaultsAPIClient" to call the correct interceptors.
+// "VaultsAPIClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client VaultsAPIClient) error {
-
-	mux.Handle("POST", pattern_VaultsAPI_CreateVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults/create"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateVault", runtime.WithHTTPPathPattern("/api/vaults/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1211,18 +1243,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_CreateVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_GetVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/get"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetVault", runtime.WithHTTPPathPattern("/api/vaults/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1233,18 +1260,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_GetVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_ListVaults_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListVaults_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults/list"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListVaults", runtime.WithHTTPPathPattern("/api/vaults/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1255,18 +1277,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_ListVaults_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_DeleteVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_DeleteVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/delete"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteVault", runtime.WithHTTPPathPattern("/api/vaults/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1277,18 +1294,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_DeleteVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_AddMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_AddMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/members/add"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AddMember", runtime.WithHTTPPathPattern("/api/vaults/members/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1299,18 +1311,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_AddMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_RemoveMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/members/remove"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RemoveMember", runtime.WithHTTPPathPattern("/api/vaults/members/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1321,18 +1328,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_RemoveMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/members/list"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListMembers", runtime.WithHTTPPathPattern("/api/vaults/members/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1343,18 +1345,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_ListMembers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_CreateInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/create"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1365,18 +1362,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_CreateInviteLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_ListInviteLinks_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/invites/list"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/ListInviteLinks", runtime.WithHTTPPathPattern("/api/vaults/invites/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1387,18 +1379,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_ListInviteLinks_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_RevokeInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_RevokeInviteLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/revoke"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/RevokeInviteLink", runtime.WithHTTPPathPattern("/api/vaults/invites/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1409,18 +1396,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_RevokeInviteLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_AcceptInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_AcceptInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AcceptInvite", runtime.WithHTTPPathPattern("/api/vaults/join"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/AcceptInvite", runtime.WithHTTPPathPattern("/api/vaults/join"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1431,18 +1413,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_AcceptInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_LinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_LinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/LinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/link"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/LinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/link"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1453,18 +1430,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_LinkS3Bucket_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_UnlinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_UnlinkS3Bucket_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnlinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/unlink"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnlinkS3Bucket", runtime.WithHTTPPathPattern("/api/vaults/s3/unlink"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1475,18 +1447,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_UnlinkS3Bucket_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_SetVaultBinaryStorage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_SetVaultBinaryStorage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SetVaultBinaryStorage", runtime.WithHTTPPathPattern("/api/vaults/binary-storage"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SetVaultBinaryStorage", runtime.WithHTTPPathPattern("/api/vaults/binary-storage"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1497,18 +1464,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_SetVaultBinaryStorage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_PublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_PublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/PublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/publish"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/PublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/publish"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1519,18 +1481,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_PublishVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_UnpublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_UnpublishVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnpublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/unpublish"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/UnpublishVault", runtime.WithHTTPPathPattern("/api/vaults/{vault_id}/unpublish"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1541,18 +1498,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_UnpublishVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_CreateWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_CreateWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/create"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/CreateWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1563,18 +1515,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_CreateWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_StartWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_StartWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StartWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/start"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StartWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/start"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1585,18 +1532,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_StartWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_StopWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_StopWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StopWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/stop"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/StopWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/stop"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1607,18 +1549,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_StopWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_WatchWorkbenchLogin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_WatchWorkbenchLogin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/WatchWorkbenchLogin", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/watch"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/WatchWorkbenchLogin", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/watch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1629,18 +1566,13 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_WatchWorkbenchLogin_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_VaultsAPI_SubmitWorkbenchLoginCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_SubmitWorkbenchLoginCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/submit"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/submit"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1651,98 +1583,112 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_VaultsAPI_SubmitWorkbenchLoginCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_EnablePostgresDatabase_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/EnablePostgresDatabase", runtime.WithHTTPPathPattern("/api/vaults/postgres/enable"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_VaultsAPI_EnablePostgresDatabase_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_EnablePostgresDatabase_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_GetPostgresDatabase_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/GetPostgresDatabase", runtime.WithHTTPPathPattern("/api/vaults/postgres/get"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_VaultsAPI_GetPostgresDatabase_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_GetPostgresDatabase_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_VaultsAPI_DisablePostgresDatabase_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DisablePostgresDatabase", runtime.WithHTTPPathPattern("/api/vaults/postgres/disable"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_VaultsAPI_DisablePostgresDatabase_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_VaultsAPI_DisablePostgresDatabase_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_VaultsAPI_CreateVault_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "create"}, ""))
-
-	pattern_VaultsAPI_GetVault_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "get"}, ""))
-
-	pattern_VaultsAPI_ListVaults_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "list"}, ""))
-
-	pattern_VaultsAPI_DeleteVault_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "delete"}, ""))
-
-	pattern_VaultsAPI_AddMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "add"}, ""))
-
-	pattern_VaultsAPI_RemoveMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "remove"}, ""))
-
-	pattern_VaultsAPI_ListMembers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "list"}, ""))
-
-	pattern_VaultsAPI_CreateInviteLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "create"}, ""))
-
-	pattern_VaultsAPI_ListInviteLinks_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "list"}, ""))
-
-	pattern_VaultsAPI_RevokeInviteLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "revoke"}, ""))
-
-	pattern_VaultsAPI_AcceptInvite_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "join"}, ""))
-
-	pattern_VaultsAPI_LinkS3Bucket_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "s3", "link"}, ""))
-
-	pattern_VaultsAPI_UnlinkS3Bucket_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "s3", "unlink"}, ""))
-
-	pattern_VaultsAPI_SetVaultBinaryStorage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "binary-storage"}, ""))
-
-	pattern_VaultsAPI_PublishVault_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "publish"}, ""))
-
-	pattern_VaultsAPI_UnpublishVault_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "unpublish"}, ""))
-
-	pattern_VaultsAPI_CreateWorkbench_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "create"}, ""))
-
-	pattern_VaultsAPI_StartWorkbench_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "start"}, ""))
-
-	pattern_VaultsAPI_StopWorkbench_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "stop"}, ""))
-
-	pattern_VaultsAPI_WatchWorkbenchLogin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "vaults", "workbench", "login", "watch"}, ""))
-
+	pattern_VaultsAPI_CreateVault_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "create"}, ""))
+	pattern_VaultsAPI_GetVault_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "get"}, ""))
+	pattern_VaultsAPI_ListVaults_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "list"}, ""))
+	pattern_VaultsAPI_DeleteVault_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "delete"}, ""))
+	pattern_VaultsAPI_AddMember_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "add"}, ""))
+	pattern_VaultsAPI_RemoveMember_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "remove"}, ""))
+	pattern_VaultsAPI_ListMembers_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "members", "list"}, ""))
+	pattern_VaultsAPI_CreateInviteLink_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "create"}, ""))
+	pattern_VaultsAPI_ListInviteLinks_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "list"}, ""))
+	pattern_VaultsAPI_RevokeInviteLink_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "invites", "revoke"}, ""))
+	pattern_VaultsAPI_AcceptInvite_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "join"}, ""))
+	pattern_VaultsAPI_LinkS3Bucket_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "s3", "link"}, ""))
+	pattern_VaultsAPI_UnlinkS3Bucket_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "s3", "unlink"}, ""))
+	pattern_VaultsAPI_SetVaultBinaryStorage_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "vaults", "binary-storage"}, ""))
+	pattern_VaultsAPI_PublishVault_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "publish"}, ""))
+	pattern_VaultsAPI_UnpublishVault_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "vaults", "vault_id", "unpublish"}, ""))
+	pattern_VaultsAPI_CreateWorkbench_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "create"}, ""))
+	pattern_VaultsAPI_StartWorkbench_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "start"}, ""))
+	pattern_VaultsAPI_StopWorkbench_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "stop"}, ""))
+	pattern_VaultsAPI_WatchWorkbenchLogin_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "vaults", "workbench", "login", "watch"}, ""))
 	pattern_VaultsAPI_SubmitWorkbenchLoginCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "vaults", "workbench", "login", "submit"}, ""))
+	pattern_VaultsAPI_EnablePostgresDatabase_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "postgres", "enable"}, ""))
+	pattern_VaultsAPI_GetPostgresDatabase_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "postgres", "get"}, ""))
+	pattern_VaultsAPI_DisablePostgresDatabase_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "postgres", "disable"}, ""))
 )
 
 var (
-	forward_VaultsAPI_CreateVault_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_GetVault_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_ListVaults_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_DeleteVault_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_AddMember_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_RemoveMember_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_ListMembers_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_CreateInviteLink_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_ListInviteLinks_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_RevokeInviteLink_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_AcceptInvite_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_LinkS3Bucket_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_UnlinkS3Bucket_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_SetVaultBinaryStorage_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_PublishVault_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_UnpublishVault_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_CreateWorkbench_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_StartWorkbench_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_StopWorkbench_0 = runtime.ForwardResponseMessage
-
-	forward_VaultsAPI_WatchWorkbenchLogin_0 = runtime.ForwardResponseStream
-
+	forward_VaultsAPI_CreateVault_0              = runtime.ForwardResponseMessage
+	forward_VaultsAPI_GetVault_0                 = runtime.ForwardResponseMessage
+	forward_VaultsAPI_ListVaults_0               = runtime.ForwardResponseMessage
+	forward_VaultsAPI_DeleteVault_0              = runtime.ForwardResponseMessage
+	forward_VaultsAPI_AddMember_0                = runtime.ForwardResponseMessage
+	forward_VaultsAPI_RemoveMember_0             = runtime.ForwardResponseMessage
+	forward_VaultsAPI_ListMembers_0              = runtime.ForwardResponseMessage
+	forward_VaultsAPI_CreateInviteLink_0         = runtime.ForwardResponseMessage
+	forward_VaultsAPI_ListInviteLinks_0          = runtime.ForwardResponseMessage
+	forward_VaultsAPI_RevokeInviteLink_0         = runtime.ForwardResponseMessage
+	forward_VaultsAPI_AcceptInvite_0             = runtime.ForwardResponseMessage
+	forward_VaultsAPI_LinkS3Bucket_0             = runtime.ForwardResponseMessage
+	forward_VaultsAPI_UnlinkS3Bucket_0           = runtime.ForwardResponseMessage
+	forward_VaultsAPI_SetVaultBinaryStorage_0    = runtime.ForwardResponseMessage
+	forward_VaultsAPI_PublishVault_0             = runtime.ForwardResponseMessage
+	forward_VaultsAPI_UnpublishVault_0           = runtime.ForwardResponseMessage
+	forward_VaultsAPI_CreateWorkbench_0          = runtime.ForwardResponseMessage
+	forward_VaultsAPI_StartWorkbench_0           = runtime.ForwardResponseMessage
+	forward_VaultsAPI_StopWorkbench_0            = runtime.ForwardResponseMessage
+	forward_VaultsAPI_WatchWorkbenchLogin_0      = runtime.ForwardResponseStream
 	forward_VaultsAPI_SubmitWorkbenchLoginCode_0 = runtime.ForwardResponseMessage
+	forward_VaultsAPI_EnablePostgresDatabase_0   = runtime.ForwardResponseMessage
+	forward_VaultsAPI_GetPostgresDatabase_0      = runtime.ForwardResponseMessage
+	forward_VaultsAPI_DisablePostgresDatabase_0  = runtime.ForwardResponseMessage
 )

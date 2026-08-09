@@ -29,6 +29,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_OPENAI = "EXTERNAL_PROVIDER_OPENAI",
   EXTERNAL_PROVIDER_S3 = "EXTERNAL_PROVIDER_S3",
   EXTERNAL_PROVIDER_COUCHDB = "EXTERNAL_PROVIDER_COUCHDB",
+  EXTERNAL_PROVIDER_POSTGRES = "EXTERNAL_PROVIDER_POSTGRES",
 }
 
 export type GoogleConnectionInfo = {
@@ -349,6 +350,34 @@ export type CheckCouchDBConnectionResponse = Record<string, never>;
 
 export type CheckCouchDBConnection = Record<string, never>;
 
+export type AddPostgresConnectionRequest = {
+  host?: string;
+  port?: number;
+  database?: string;
+  username?: string;
+  password?: string;
+  sslMode?: string;
+};
+
+export type AddPostgresConnectionResponse = {
+  connection?: ExternalConnectionInfo;
+};
+
+export type AddPostgresConnection = Record<string, never>;
+
+export type CheckPostgresConnectionRequest = {
+  host?: string;
+  port?: number;
+  database?: string;
+  username?: string;
+  password?: string;
+  sslMode?: string;
+};
+
+export type CheckPostgresConnectionResponse = Record<string, never>;
+
+export type CheckPostgresConnection = Record<string, never>;
+
 export type AddGenericConnectionRequest = {
   provider?: string;
   credentials?: Record<string, string>;
@@ -441,5 +470,11 @@ export class ExternalConnectionsAPI {
   }
   static CheckCouchDBConnection(this:void, req: CheckCouchDBConnectionRequest, initReq?: fm.InitReq): Promise<CheckCouchDBConnectionResponse> {
     return fm.fetchRequest<CheckCouchDBConnectionResponse>(`/api/external-connections/couchdb/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static AddPostgresConnection(this:void, req: AddPostgresConnectionRequest, initReq?: fm.InitReq): Promise<AddPostgresConnectionResponse> {
+    return fm.fetchRequest<AddPostgresConnectionResponse>(`/api/external-connections/postgres/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CheckPostgresConnection(this:void, req: CheckPostgresConnectionRequest, initReq?: fm.InitReq): Promise<CheckPostgresConnectionResponse> {
+    return fm.fetchRequest<CheckPostgresConnectionResponse>(`/api/external-connections/postgres/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

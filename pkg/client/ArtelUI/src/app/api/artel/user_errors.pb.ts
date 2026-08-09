@@ -11,4 +11,7 @@ export enum UserErrors {
   NoSubscription = "NoSubscription",
   NoCouchDbInstance = "NoCouchDbInstance",
   NoS3BucketLinked = "NoS3BucketLinked",
+  NoPostgresDatabaseLinked = "NoPostgresDatabaseLinked",
+  PostgresConnectionValidationFailed = "PostgresConnectionValidationFailed",
+  PostgresDatabaseAlreadyEnabled = "PostgresDatabaseAlreadyEnabled",
 }

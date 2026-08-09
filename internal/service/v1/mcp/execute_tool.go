@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
+	"github.com/ruf-dev/artel/internal/clients/vaultpg"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
@@ -34,6 +35,10 @@ func (s *ServiceImpl) ExecuteTool(
 
 	if executors.IsTractTool(toolName) {
 		return s.executeTractTool(ctx, keyCtx.UserUuid, toolName, params)
+	}
+
+	if isPostgresTool(toolName) {
+		return s.executePostgresTool(ctx, keyCtx, toolName, params)
 	}
 
 	if toolName == executors.ToolWriteFile {
@@ -71,6 +76,48 @@ func (s *ServiceImpl) ExecuteTool(
 	result, err := s.vaultExecutor.Execute(ctx, toolName, client, bucket, params)
 	if err != nil {
 		return domain.ToolExecResult{}, rerrors.Wrap(err, "error executing vault tool")
+	}
+
+	return result, nil
+}
+
+// isPostgresTool reports whether name is one of the pg_* builtin tools.
+func isPostgresTool(name string) bool {
+	switch name {
+	case executors.ToolPgListTables, executors.ToolPgDescribeTable, executors.ToolPgQuery, executors.ToolPgExecute:
+		return true
+	}
+
+	return false
+}
+
+func (s *ServiceImpl) executePostgresTool(
+	ctx context.Context,
+	keyCtx domain.McpKeyContext,
+	toolName string,
+	params map[string]interface{},
+) (domain.ToolExecResult, error) {
+	if keyCtx.Postgres == nil {
+		return domain.ToolExecResult{}, user_errors.NoPostgresDatabaseLinked
+	}
+
+	cfg := vaultpg.Config{
+		Host:     keyCtx.Postgres.Host,
+		Port:     keyCtx.Postgres.Port,
+		Database: keyCtx.Postgres.Database,
+		User:     keyCtx.Postgres.Username,
+		Password: keyCtx.Postgres.Password,
+		SSLMode:  keyCtx.Postgres.SSLMode,
+	}
+
+	db, err := s.pgConnPool.Get(ctx, keyCtx.VaultUuid, cfg)
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "get vault postgres connection")
+	}
+
+	result, err := s.postgresExecutor.Execute(ctx, toolName, db, params)
+	if err != nil {
+		return domain.ToolExecResult{}, rerrors.Wrap(err, "error executing postgres tool")
 	}
 
 	return result, nil

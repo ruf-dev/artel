@@ -428,6 +428,18 @@ type PendingAuthCode struct {
 	ExpiresAt     time.Time
 }
 
+type PostgresInstance struct {
+	ID            uuid.UUID
+	Host          string
+	Port          int32
+	AdminDatabase string
+	Username      string
+	PasswordEnc   []byte
+	SslMode       string
+	OwnerUserID   uuid.NullUUID
+	CreatedAt     time.Time
+}
+
 type Prompt struct {
 	ID     ArtelPrompt
 	Prompt string
@@ -622,6 +634,18 @@ type VaultMember struct {
 	UserID    uuid.UUID
 	Role      VaultRole
 	CreatedAt time.Time
+}
+
+type VaultPostgresDatabase struct {
+	VaultID            uuid.UUID
+	PostgresInstanceID uuid.UUID
+	DatabaseName       string
+	RoleUsername       string
+	RolePasswordEnc    []byte
+	Status             string
+	ErrorMessage       string
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 }
 
 type Workbench struct {

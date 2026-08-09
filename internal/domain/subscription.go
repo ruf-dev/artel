@@ -15,6 +15,7 @@ const (
 	FeatureSpreadsheets SubscriptionFeature = "spreadsheets"
 	FeatureConnectors   SubscriptionFeature = "connectors"
 	FeatureTract        SubscriptionFeature = "tract"
+	FeaturePostgres     SubscriptionFeature = "postgres"
 )
 
 type FeatureSet struct {
@@ -24,6 +25,7 @@ type FeatureSet struct {
 	Spreadsheets bool `json:"spreadsheets"`
 	Connectors   bool `json:"connectors"`
 	Tract        bool `json:"tract"`
+	Postgres     bool `json:"postgres"`
 }
 
 func (f FeatureSet) Has(feature SubscriptionFeature) bool {
@@ -40,6 +42,8 @@ func (f FeatureSet) Has(feature SubscriptionFeature) bool {
 		return f.Connectors
 	case FeatureTract:
 		return f.Tract
+	case FeaturePostgres:
+		return f.Postgres
 	default:
 		return false
 	}
@@ -61,6 +65,8 @@ func (f FeatureSet) With(feature SubscriptionFeature, value bool) FeatureSet {
 		f.Connectors = value
 	case FeatureTract:
 		f.Tract = value
+	case FeaturePostgres:
+		f.Postgres = value
 	}
 
 	return f

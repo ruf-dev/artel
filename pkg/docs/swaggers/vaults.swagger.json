@@ -400,6 +400,102 @@
         ]
       }
     },
+    "/api/vaults/postgres/disable": {
+      "post": {
+        "operationId": "VaultsAPI_DisablePostgresDatabase",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsDisablePostgresDatabaseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsDisablePostgresDatabaseRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/postgres/enable": {
+      "post": {
+        "operationId": "VaultsAPI_EnablePostgresDatabase",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsEnablePostgresDatabaseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsEnablePostgresDatabaseRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/postgres/get": {
+      "post": {
+        "operationId": "VaultsAPI_GetPostgresDatabase",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsGetPostgresDatabaseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsGetPostgresDatabaseRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
     "/api/vaults/s3/link": {
       "post": {
         "operationId": "VaultsAPI_LinkS3Bucket",
@@ -814,6 +910,63 @@
     "artel_vaultsDeleteVaultResponse": {
       "type": "object"
     },
+    "artel_vaultsDisablePostgresDatabaseRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsDisablePostgresDatabaseResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "status: \"not_enabled\"/\"provisioning\"/\"ready\"/\"error\" (see domain.VaultPostgresStatus)."
+        }
+      }
+    },
+    "artel_vaultsEnablePostgresDatabaseRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsEnablePostgresDatabaseResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "status: \"not_enabled\"/\"provisioning\"/\"ready\"/\"error\" (see domain.VaultPostgresStatus)."
+        },
+        "errorMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsGetPostgresDatabaseRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsGetPostgresDatabaseResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "status: \"not_enabled\"/\"provisioning\"/\"ready\"/\"error\" (see domain.VaultPostgresStatus)."
+        },
+        "errorMessage": {
+          "type": "string"
+        }
+      }
+    },
     "artel_vaultsGetVaultRequest": {
       "type": "object",
       "properties": {
@@ -845,6 +998,13 @@
           "description": "workbench_exists is false when no workbenches row backs this vault yet — either the vault\npredates this feature, or the create-vault hook's CreateWorkbench call failed separately\n(e.g. no docker hosts were registered at the time — see docker_hosts table).\nworkbench_status is only meaningful when workbench_exists is true; one of\n\"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
         },
         "workbenchStatus": {
+          "type": "string"
+        },
+        "postgresEnabled": {
+          "type": "boolean",
+          "description": "postgres_enabled/postgres_status mirror EnablePostgresDatabase.Response — status is one of\n\"not_enabled\"/\"provisioning\"/\"ready\"/\"error\" (see domain.VaultPostgresStatus)."
+        },
+        "postgresStatus": {
           "type": "string"
         }
       }
@@ -1102,6 +1262,13 @@
         "role": {
           "type": "string",
           "description": "role is the calling user's membership role on this vault (\"owner\"/\"reader\"/\"maintainer\"),\nor \"\" if they have no membership row (e.g. viewing a public vault as a non-member)."
+        },
+        "postgresEnabled": {
+          "type": "boolean",
+          "description": "postgres_enabled/postgres_status mirror EnablePostgresDatabase.Response — status is one of\n\"not_enabled\"/\"provisioning\"/\"ready\"/\"error\" (see domain.VaultPostgresStatus)."
+        },
+        "postgresStatus": {
+          "type": "string"
         }
       }
     },

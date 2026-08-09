@@ -16,6 +16,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpkeys"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/mcpspreadsheets"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/pendingauthcodes"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/postgresinstances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/s3instances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
@@ -30,38 +31,41 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultinvites"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultmembers"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultpostgresdatabases"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaults"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/workbenches"
 	"github.com/ruf-dev/artel/internal/repository/pg/tx_manager"
 )
 
 type Repos struct {
-	users                 repository.Users
-	vaults                repository.Vaults
-	workbenches           repository.Workbenches
-	vaultMembers          repository.VaultMembers
-	vaultInvitesRepo      repository.VaultInvites
-	sessions              repository.Sessions
-	subscriptions         repository.Subscriptions
-	subscriptionPlans     repository.SubscriptionPlansRepo
-	couchAccounts         repository.CouchAccounts
-	couchInstances        repository.CouchInstances
-	s3Instances           repository.S3Instances
-	dockerHosts           repository.DockerHosts
-	userPermissions       repository.UserPermissionsRepo
-	mcpKey                repository.McpKeyRepository
-	pendingAuthCodes      repository.PendingAuthCodes
-	mailServerSuggestions repository.MailServerSuggestions
-	promptsRepo           repository.Prompts
-	externalConnections   repository.ExternalConnectionRepo
-	mcpSpreadsheets       repository.McpSpreadsheetsRepo
-	mcpDefinitions        repository.McpDefinitionsRepo
-	mcpConnectors         repository.McpConnectorsRepo
-	tracts                repository.TractsRepo
-	tractTemplates        repository.TractTemplatesRepo
-	triggers              repository.TriggersRepo
-	triggerPresets        repository.TriggerPresetsRepo
-	systemSettings        repository.SystemSettingsRepo
+	users                  repository.Users
+	vaults                 repository.Vaults
+	workbenches            repository.Workbenches
+	vaultMembers           repository.VaultMembers
+	vaultInvitesRepo       repository.VaultInvites
+	sessions               repository.Sessions
+	subscriptions          repository.Subscriptions
+	subscriptionPlans      repository.SubscriptionPlansRepo
+	couchAccounts          repository.CouchAccounts
+	couchInstances         repository.CouchInstances
+	s3Instances            repository.S3Instances
+	postgresInstances      repository.PostgresInstances
+	vaultPostgresDatabases repository.VaultPostgresDatabases
+	dockerHosts            repository.DockerHosts
+	userPermissions        repository.UserPermissionsRepo
+	mcpKey                 repository.McpKeyRepository
+	pendingAuthCodes       repository.PendingAuthCodes
+	mailServerSuggestions  repository.MailServerSuggestions
+	promptsRepo            repository.Prompts
+	externalConnections    repository.ExternalConnectionRepo
+	mcpSpreadsheets        repository.McpSpreadsheetsRepo
+	mcpDefinitions         repository.McpDefinitionsRepo
+	mcpConnectors          repository.McpConnectorsRepo
+	tracts                 repository.TractsRepo
+	tractTemplates         repository.TractTemplatesRepo
+	triggers               repository.TriggersRepo
+	triggerPresets         repository.TriggerPresetsRepo
+	systemSettings         repository.SystemSettingsRepo
 
 	txManager tx_manager.TxManager
 }
@@ -104,6 +108,14 @@ func (r Repos) CouchInstances() repository.CouchInstances {
 
 func (r Repos) S3Instances() repository.S3Instances {
 	return r.s3Instances
+}
+
+func (r Repos) PostgresInstances() repository.PostgresInstances {
+	return r.postgresInstances
+}
+
+func (r Repos) VaultPostgresDatabases() repository.VaultPostgresDatabases {
+	return r.vaultPostgresDatabases
 }
 
 func (r Repos) DockerHosts() repository.DockerHosts {
@@ -179,13 +191,15 @@ func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 	txManager := tx_manager.New(db)
 
 	return &Repos{
-		vaults:           vaults.New(db, encryptor),
-		workbenches:      workbenches.New(db),
-		vaultMembers:     vaultmembers.New(db),
-		vaultInvitesRepo: vaultinvites.New(db),
-		couchInstances:   couchinstances.New(db, encryptor),
-		s3Instances:      s3instances.New(db, encryptor),
-		dockerHosts:      dockerhosts.New(db, encryptor),
+		vaults:                 vaults.New(db, encryptor),
+		workbenches:            workbenches.New(db),
+		vaultMembers:           vaultmembers.New(db),
+		vaultInvitesRepo:       vaultinvites.New(db),
+		couchInstances:         couchinstances.New(db, encryptor),
+		s3Instances:            s3instances.New(db, encryptor),
+		postgresInstances:      postgresinstances.New(db, encryptor),
+		vaultPostgresDatabases: vaultpostgresdatabases.New(db, encryptor),
+		dockerHosts:            dockerhosts.New(db, encryptor),
 
 		users:                 users.New(q, db),
 		sessions:              sessions.New(q),

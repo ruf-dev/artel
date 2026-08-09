@@ -79,9 +79,9 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 	var s3Ctx *domain.McpKeyS3Context
 
 	if vault.S3InstanceUuid != nil {
-		s3Instance, err := s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
-		if err != nil {
-			return domain.McpKeyContext{}, rerrors.Wrap(err, "get s3 instance")
+		s3Instance, s3Err := s.s3Instances.Get(ctx, *vault.S3InstanceUuid)
+		if s3Err != nil {
+			return domain.McpKeyContext{}, rerrors.Wrap(s3Err, "get s3 instance")
 		}
 
 		s3Ctx = &domain.McpKeyS3Context{
@@ -95,6 +95,29 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 		}
 	}
 
+	var pgCtx *domain.McpKeyPostgresContext
+
+	vpgDB, err := s.vaultPostgresDatabases.GetByVaultID(ctx, mcpKey.VaultUuid)
+	if err != nil {
+		return domain.McpKeyContext{}, rerrors.Wrap(err, "get vault postgres database")
+	}
+
+	if vpgDB.Valid && vpgDB.V.Status == domain.VaultPostgresStatusReady {
+		pgInstance, pgErr := s.postgresInstances.Get(ctx, vpgDB.V.PostgresInstanceUuid)
+		if pgErr != nil {
+			return domain.McpKeyContext{}, rerrors.Wrap(pgErr, "get postgres instance")
+		}
+
+		pgCtx = &domain.McpKeyPostgresContext{
+			Host:     pgInstance.Host,
+			Port:     pgInstance.Port,
+			Database: vpgDB.V.DatabaseName,
+			Username: vpgDB.V.RoleUsername,
+			Password: vpgDB.V.RolePassword,
+			SSLMode:  pgInstance.SSLMode,
+		}
+	}
+
 	result := domain.McpKeyContext{
 		KeyUuid:   mcpKey.Uuid,
 		VaultUuid: mcpKey.VaultUuid,
@@ -104,6 +127,7 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 		CouchUser: couchInstance.Username,
 		CouchPass: couchInstance.Password,
 		S3:        s3Ctx,
+		Postgres:  pgCtx,
 
 		UseCouchDBForBinaries: vault.UseCouchDBForBinaries,
 	}

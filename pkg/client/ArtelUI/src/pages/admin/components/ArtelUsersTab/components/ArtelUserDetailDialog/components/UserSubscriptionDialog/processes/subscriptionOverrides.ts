@@ -9,6 +9,7 @@ export const FEATURES: {key: string, label: string}[] = [
     {key: "spreadsheets", label: "Spreadsheets"},
     {key: "connectors", label: "Connectors"},
     {key: "tract", label: "Tract"},
+    {key: "postgres", label: "PostgreSQL"},
 ]
 
 export function bytesToMb(bytes: string | undefined): number {

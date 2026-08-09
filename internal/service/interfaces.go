@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"time"
 
@@ -34,6 +35,7 @@ type Service interface {
 	PublicDocsService() PublicDocsService
 	SetupWizardService() SetupWizardService
 	AdminSystemSettingsService() AdminSystemSettingsService
+	PostgresInstanceService() PostgresInstanceService
 }
 
 type AdminUsersService interface {
@@ -160,6 +162,16 @@ type VaultService interface {
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error
 	PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error)
 	UnpublishVault(ctx context.Context, vaultID uuid.UUID) error
+
+	// EnablePostgresDatabase provisions a Postgres database+role for vaultID on a pool instance
+	// resolved via PostgresInstances.PickForUser (BYOK-owned preferred, admin pool fallback).
+	// Returns user_errors.PostgresDatabaseAlreadyEnabled if vaultID already has one.
+	EnablePostgresDatabase(ctx context.Context, vaultID uuid.UUID) (domain.VaultPostgresDatabase, error)
+	// GetPostgresDatabase returns vaultID's Postgres database row, Valid: false if none enabled.
+	GetPostgresDatabase(ctx context.Context, vaultID uuid.UUID) (sql.Null[domain.VaultPostgresDatabase], error)
+	// DisablePostgresDatabase best-effort drops vaultID's provisioned database+role, then deletes
+	// the row. No-op if none enabled.
+	DisablePostgresDatabase(ctx context.Context, vaultID uuid.UUID) error
 }
 
 // WorkbenchService manages the per-vault Docker workbench container — see
@@ -489,4 +501,28 @@ type ExternalConnectionService interface {
 		ctx context.Context, url, username, password string,
 	) (domain.ExternalConnectionMeta, error)
 	CheckCouchDBConnection(ctx context.Context, url, username, password string) error
+	AddPostgresConnection(
+		ctx context.Context, host string, port int, database, username, password, sslMode string,
+	) (domain.ExternalConnectionMeta, error)
+	CheckPostgresConnection(
+		ctx context.Context, host string, port int, database, username, password, sslMode string,
+	) error
+}
+
+// PostgresInstanceService is admin CRUD over the shared pool of Postgres servers (admin pool or
+// BYOK) that per-vault databases are provisioned on — mirrors S3InstanceService/CouchInstanceService.
+type PostgresInstanceService interface {
+	RegisterPostgresInstance(
+		ctx context.Context, host string, port int, adminDatabase, username, password, sslMode string,
+	) (string, error)
+	GetPostgresInstance(ctx context.Context, id string) (domain.PostgresInstance, error)
+	ListPostgresInstances(ctx context.Context) ([]domain.PostgresInstance, error)
+	UpdatePostgresInstance(
+		ctx context.Context, id, host string, port int, adminDatabase, username, password, sslMode string,
+	) error
+	DeletePostgresInstance(ctx context.Context, id string) error
+	// TestPostgresInstance opens a connection to id's admin database and pings it, without
+	// mutating anything — mirrors S3InstanceService.TestS3Instance.
+	TestPostgresInstance(ctx context.Context, id string) error
+	HasPostgresInstances(ctx context.Context) (bool, error)
 }

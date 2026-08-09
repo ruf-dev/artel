@@ -40,6 +40,18 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*p
 		log.Error().Err(wbErr).Str("vault_id", req.Id).Msg("error getting workbench status for vault")
 	}
 
+	postgresEnabled := false
+	postgresStatus := "not_enabled"
+	pgDB, pgErr := v.vaultSvc.GetPostgresDatabase(ctx, vaultID)
+	if pgErr != nil {
+		// Mirrors the workbench lookup above: a lookup failure over supplementary data must not
+		// fail GetVault as a whole, only skip enrichment for this field.
+		log.Error().Err(pgErr).Str("vault_id", req.Id).Msg("error getting postgres database status for vault")
+	} else if pgDB.Valid {
+		postgresEnabled = true
+		postgresStatus = string(pgDB.V.Status)
+	}
+
 	resp := &pb.GetVault_Response{
 		Id:              vault.Uuid.String(),
 		Name:            vault.Name,
@@ -48,6 +60,8 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*p
 		S3BucketName:    vault.S3BucketName,
 		WorkbenchExists: workbenchExists,
 		WorkbenchStatus: workbenchStatus,
+		PostgresEnabled: postgresEnabled,
+		PostgresStatus:  postgresStatus,
 	}
 
 	return resp, nil

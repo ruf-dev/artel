@@ -22,8 +22,9 @@ import (
 )
 
 // TestEnvSetup prepares the shared e2e stack for a fresh suite run: applies migrations, wipes any
-// state a previous (possibly crashed) run left behind, then provisions the CouchDB/S3 admin-pool
-// instances every suite looks up via harness.GetCouchInstance/GetS3Instance.
+// state a previous (possibly crashed) run left behind, then provisions the CouchDB/S3/Postgres
+// admin-pool instances every suite looks up via
+// harness.GetCouchInstance/GetS3Instance/GetPostgresInstance.
 func TestEnvSetup(t *testing.T) {
 	ctx := context.Background()
 
@@ -34,6 +35,10 @@ func TestEnvSetup(t *testing.T) {
 	couchUser, couchPass := harness.CouchCreds(t)
 	s3Endpoint := harness.S3Endpoint(t)
 	s3AccessKey, s3SecretKey := harness.S3Creds(t)
+	pgHost := harness.PostgresHost(t)
+	pgPort := harness.PostgresPort(t)
+	pgAdminDatabase := harness.PostgresAdminDatabase(t)
+	pgAdminUser, pgAdminPass := harness.PostgresAdminCreds(t)
 
 	// Reset first, in case a previous run crashed and left garbage behind.
 	harness.ResetPostgres(t, ctx, db)
@@ -46,6 +51,11 @@ func TestEnvSetup(t *testing.T) {
 
 	harness.ProvisionCouchInstance(t, ctx, svcs, couchURL, couchUser, couchPass)
 	harness.ProvisionS3Instance(t, ctx, svcs, s3Endpoint, s3AccessKey, s3SecretKey)
+	// The Postgres admin pool reuses the same physical server backing the app's own
+	// control-plane DB (see harness.PostgresHost's doc comment) rather than a second container —
+	// POSTGRES_HOST_AUTH_METHOD=trust in tests/docker-compose.yaml already makes "artel" an
+	// unauthenticated superuser, able to CREATE ROLE/DATABASE for tenant provisioning.
+	harness.ProvisionPostgresInstance(t, ctx, svcs, pgHost, pgPort, pgAdminDatabase, pgAdminUser, pgAdminPass, "disable")
 }
 
 // TestEnvCleanup wipes all test-created state after the suite run finishes, leaving the shared

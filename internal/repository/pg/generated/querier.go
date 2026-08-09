@@ -25,6 +25,7 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
+	CreateVaultPostgresDatabase(ctx context.Context, arg CreateVaultPostgresDatabaseParams) (VaultPostgresDatabase, error)
 	CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (Workbench, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
@@ -36,8 +37,10 @@ type Querier interface {
 	DeleteMcpDefinition(ctx context.Context, name string) error
 	DeleteMcpSpreadsheet(ctx context.Context, arg DeleteMcpSpreadsheetParams) error
 	DeleteOwnedCouchInstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error
+	DeleteOwnedPostgresInstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error
 	DeleteOwnedS3InstanceIfUnreferenced(ctx context.Context, ownerUserID uuid.NullUUID) error
 	DeletePendingAuthCode(ctx context.Context, code string) error
+	DeletePostgresInstance(ctx context.Context, id uuid.UUID) error
 	DeleteS3Instance(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, token string) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
@@ -45,6 +48,7 @@ type Querier interface {
 	DeleteTrigger(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
+	DeleteVaultPostgresDatabase(ctx context.Context, vaultID uuid.UUID) error
 	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
 	DockerHostExists(ctx context.Context) (bool, error)
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
@@ -59,6 +63,7 @@ type Querier interface {
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
 	GetMcpTool(ctx context.Context, arg GetMcpToolParams) (McpTool, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
+	GetPostgresInstance(ctx context.Context, id uuid.UUID) (PostgresInstance, error)
 	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)
 	GetS3InstanceWithCreds(ctx context.Context, id uuid.UUID) (GetS3InstanceWithCredsRow, error)
 	GetSessionByToken(ctx context.Context, token string) (GetSessionByTokenRow, error)
@@ -90,6 +95,7 @@ type Querier interface {
 	GetVaultBySlug(ctx context.Context, slug sql.NullString) (GetVaultBySlugRow, error)
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
+	GetVaultPostgresDatabaseByVaultID(ctx context.Context, vaultID uuid.UUID) (VaultPostgresDatabase, error)
 	GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) (Workbench, error)
 	IncrementTractTemplateInstallCount(ctx context.Context, id uuid.UUID) error
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
@@ -116,6 +122,7 @@ type Querier interface {
 	ListMcpKeysByVault(ctx context.Context, vaultID uuid.UUID) ([]McpKey, error)
 	ListMcpSpreadsheetsByUser(ctx context.Context, userID uuid.UUID) ([]McpSpreadsheet, error)
 	ListMcpToolsByMcpName(ctx context.Context, mcpName string) ([]McpTool, error)
+	ListPostgresInstances(ctx context.Context) ([]PostgresInstance, error)
 	ListS3Instances(ctx context.Context) ([]ListS3InstancesRow, error)
 	ListSubscriptionPlans(ctx context.Context) ([]SubscriptionPlan, error)
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
@@ -135,6 +142,8 @@ type Querier interface {
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
+	MarkVaultPostgresDatabaseError(ctx context.Context, arg MarkVaultPostgresDatabaseErrorParams) error
+	MarkVaultPostgresDatabaseReady(ctx context.Context, vaultID uuid.UUID) error
 	MarkWorkbenchConfiguring(ctx context.Context, vaultID uuid.UUID) error
 	MarkWorkbenchContainerCreated(ctx context.Context, arg MarkWorkbenchContainerCreatedParams) error
 	MarkWorkbenchRemoved(ctx context.Context, vaultID uuid.UUID) error
@@ -142,14 +151,19 @@ type Querier interface {
 	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error
 	PickLeastLoadedDockerHost(ctx context.Context) (PickLeastLoadedDockerHostRow, error)
 	PickOwnedCouchInstance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedCouchInstanceRow, error)
+	PickOwnedPostgresInstance(ctx context.Context, ownerUserID uuid.NullUUID) (PostgresInstance, error)
 	PickOwnedS3Instance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedS3InstanceRow, error)
+	PostgresInstanceExists(ctx context.Context) (bool, error)
 	PublishVault(ctx context.Context, arg PublishVaultParams) (PublishVaultRow, error)
 	RandomPickCouchInstance(ctx context.Context) (RandomPickCouchInstanceRow, error)
+	RandomPickPostgresInstance(ctx context.Context) (PostgresInstance, error)
 	RandomPickS3Instance(ctx context.Context) (RandomPickS3InstanceRow, error)
 	RegisterCouchInstance(ctx context.Context, arg RegisterCouchInstanceParams) (uuid.UUID, error)
 	RegisterDockerHost(ctx context.Context, arg RegisterDockerHostParams) (uuid.UUID, error)
 	RegisterOwnedCouchInstance(ctx context.Context, arg RegisterOwnedCouchInstanceParams) (uuid.UUID, error)
+	RegisterOwnedPostgresInstance(ctx context.Context, arg RegisterOwnedPostgresInstanceParams) (uuid.UUID, error)
 	RegisterOwnedS3Instance(ctx context.Context, arg RegisterOwnedS3InstanceParams) (uuid.UUID, error)
+	RegisterPostgresInstance(ctx context.Context, arg RegisterPostgresInstanceParams) (uuid.UUID, error)
 	RegisterS3Instance(ctx context.Context, arg RegisterS3InstanceParams) (uuid.UUID, error)
 	RemoveVaultMember(ctx context.Context, arg RemoveVaultMemberParams) error
 	RevokeMcpKey(ctx context.Context, id uuid.UUID) error
@@ -178,6 +192,7 @@ type Querier interface {
 	// alone), true with a NULL value when the caller cleared it, true with a value when the caller
 	// set/replaced it. See internal/repository/pg/repos/dockerhosts/dockerhosts.go's Update.
 	UpdateDockerHost(ctx context.Context, arg UpdateDockerHostParams) error
+	UpdatePostgresInstance(ctx context.Context, arg UpdatePostgresInstanceParams) error
 	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
 	UpdateSystemSettingsAuthMethods(ctx context.Context, arg UpdateSystemSettingsAuthMethodsParams) error
 	UpdateSystemSettingsRegistrationMode(ctx context.Context, registrationMode string) error

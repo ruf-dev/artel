@@ -16,6 +16,10 @@ const (
 func (s *ServiceImpl) ListTools(_ context.Context) ([]domain.McpToolDef, error) {
 	tools := executors.VaultToolDefinitions()
 	tools = append(tools, executors.TractToolDefinitions()...)
+	// Postgres tools are always advertised, regardless of whether the vault actually has a
+	// Postgres database enabled — mirrors write_file being listed even without a linked S3
+	// bucket; ExecuteTool is where keyCtx.Postgres == nil is checked and fails at call time.
+	tools = append(tools, executors.PostgresToolDefinitions()...)
 	connectionsTool := domain.McpToolDef{
 		ApiDescription: domain.ToolApiDescription{
 			Name:        toolConnections,

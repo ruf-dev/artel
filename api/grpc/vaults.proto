@@ -138,6 +138,24 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc EnablePostgresDatabase(EnablePostgresDatabase.Request) returns (EnablePostgresDatabase.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/postgres/enable"
+      body: "*"
+    };
+  };
+  rpc GetPostgresDatabase(GetPostgresDatabase.Request) returns (GetPostgresDatabase.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/postgres/get"
+      body: "*"
+    };
+  };
+  rpc DisablePostgresDatabase(DisablePostgresDatabase.Request) returns (DisablePostgresDatabase.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/postgres/disable"
+      body: "*"
+    };
+  };
 }
 
 message CreateVault {
@@ -168,6 +186,10 @@ message GetVault {
     // "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     bool workbench_exists = 6;
     string workbench_status = 7;
+    // postgres_enabled/postgres_status mirror EnablePostgresDatabase.Response — status is one of
+    // "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
+    bool postgres_enabled = 8;
+    string postgres_status = 9;
   }
 }
 
@@ -352,6 +374,38 @@ message SubmitWorkbenchLoginCode {
   message Response {}
 }
 
+message EnablePostgresDatabase {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    // status: "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
+    string status = 1;
+    string error_message = 2;
+  }
+}
+
+message GetPostgresDatabase {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    // status: "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
+    string status = 1;
+    string error_message = 2;
+  }
+}
+
+message DisablePostgresDatabase {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    // status: "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
+    string status = 1;
+  }
+}
+
 message VaultItem {
   string id = 1;
   string name = 2;
@@ -365,6 +419,10 @@ message VaultItem {
   // role is the calling user's membership role on this vault ("owner"/"reader"/"maintainer"),
   // or "" if they have no membership row (e.g. viewing a public vault as a non-member).
   string role = 10;
+  // postgres_enabled/postgres_status mirror EnablePostgresDatabase.Response — status is one of
+  // "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
+  bool postgres_enabled = 11;
+  string postgres_status = 12;
 }
 
 message VaultMemberInfo {

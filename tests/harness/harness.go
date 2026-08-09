@@ -19,6 +19,7 @@ import (
 	"net"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -96,6 +97,49 @@ func S3Creds(t *testing.T) (accessKey, secretKey string) {
 	return envOrDefault("S3_ACCESS_KEY", "minioadmin"), envOrDefault("S3_SECRET_KEY", "minioadmin")
 }
 
+// PostgresHost/PostgresPort return the coordinates of the shared e2e Postgres server (PG_HOST/
+// PG_PORT, defaulting to the tests/docker-compose.yaml instance on port 15434 — the same physical
+// server that backs the app's own control-plane DB, see OpenPostgres). The postgres_instances
+// admin-pool row registered by tests/bootstrap reuses this same server rather than standing up a
+// second Postgres container: POSTGRES_HOST_AUTH_METHOD=trust in tests/docker-compose.yaml means
+// the "artel" role is already an unauthenticated superuser, able to CREATE ROLE/DATABASE for
+// tenant provisioning, so a second container would add nothing.
+func PostgresHost(t *testing.T) string {
+	t.Helper()
+
+	return envOrDefault("PG_HOST", "localhost")
+}
+
+func PostgresPort(t *testing.T) int {
+	t.Helper()
+
+	portStr := envOrDefault("PG_PORT", "15434")
+
+	port, err := strconv.Atoi(portStr)
+	require.NoError(t, err, "parse PG_PORT")
+
+	return port
+}
+
+// PostgresAdminDatabase returns the maintenance database the postgres_instances admin-pool row
+// connects to for its DDL (CREATE ROLE/DATABASE) — the same database as the app's own
+// control-plane DB (PG_ADMIN_DATABASE, defaulting to "artel_db", the tests/docker-compose.yaml
+// POSTGRES_DB).
+func PostgresAdminDatabase(t *testing.T) string {
+	t.Helper()
+
+	return envOrDefault("PG_ADMIN_DATABASE", "artel_db")
+}
+
+// PostgresAdminCreds returns the shared e2e Postgres superuser credentials (PG_ADMIN_USER/
+// PG_ADMIN_PASSWORD, defaulting to artel/artel_db — the tests/docker-compose.yaml POSTGRES_USER,
+// and an arbitrary password since POSTGRES_HOST_AUTH_METHOD=trust ignores it).
+func PostgresAdminCreds(t *testing.T) (username, password string) {
+	t.Helper()
+
+	return envOrDefault("PG_ADMIN_USER", "artel"), envOrDefault("PG_ADMIN_PASSWORD", "artel_db")
+}
+
 // OpenPostgres opens the shared e2e Postgres instance (DSN from PG_DSN, defaulting to the
 // tests/docker-compose.yaml instance on port 15434) and pings it. Registers a t.Cleanup that
 // closes the DB when the test finishes, so callers don't have to. Does NOT run migrations — call
@@ -136,7 +180,11 @@ func ApplyMigrations(t *testing.T, db *sql.DB) {
 // tract_runs/tract_run_steps, trigger_links, mcp_spreadsheets, mcp_connectors, user_permissions —
 // see migrations/*.sql for the individual FKs). Two things don't cascade off users and need an
 // explicit sweep:
-//   - couch_instances / s3_instances pool rows (owner_user_id IS NULL — never owned by a user)
+//   - couch_instances / s3_instances / postgres_instances pool rows (owner_user_id IS NULL — never
+//     owned by a user). vault_postgres_databases rows referencing a pool instance have already
+//     cascaded away by this point (vault_postgres_databases.vault_id -> vaults ON DELETE CASCADE,
+//     and vaults itself cascades off users), so deleting the pool postgres_instances row here never
+//     trips its NOT NULL/NO ACTION FK from vault_postgres_databases.
 //   - mcps rows seeded by e2e tests: mcps.owner_user_id is ON DELETE SET NULL, not CASCADE (see
 //     migrations/060_mcp_ownership.sql), so community MoMs created by
 //     tests/e2e/mcp_ownership_test.go (named "e2e_ownership_mom_<hex>" via its randomMcpName
@@ -153,6 +201,9 @@ func ResetPostgres(t *testing.T, ctx context.Context, db *sql.DB) {
 
 	_, err = db.ExecContext(ctx, `DELETE FROM s3_instances WHERE owner_user_id IS NULL`)
 	require.NoError(t, err, "delete pool s3 instances")
+
+	_, err = db.ExecContext(ctx, `DELETE FROM postgres_instances WHERE owner_user_id IS NULL`)
+	require.NoError(t, err, "delete pool postgres instances")
 
 	_, err = db.ExecContext(ctx, `DELETE FROM mcps WHERE name LIKE 'e2e_%'`)
 	require.NoError(t, err, "delete e2e-seeded mcps")
@@ -280,6 +331,23 @@ func ProvisionS3Instance(
 	return id
 }
 
+// ProvisionPostgresInstance registers host:port as the e2e admin-pool Postgres instance —
+// RegisterPostgresInstance only persists an encrypted row (unlike CouchDB's Setup(), there's no
+// live network handshake to settle), so unlike ProvisionCouchInstance this needs no readiness
+// poll. Same one-shot guarantee as ProvisionCouchInstance/ProvisionS3Instance — called once from
+// tests/bootstrap.
+func ProvisionPostgresInstance(
+	t *testing.T, ctx context.Context, svcs *svcv1.Services,
+	host string, port int, adminDatabase, username, password, sslMode string,
+) string {
+	t.Helper()
+
+	id, err := svcs.PostgresInstance.RegisterPostgresInstance(ctx, host, port, adminDatabase, username, password, sslMode)
+	require.NoError(t, err, "register postgres instance")
+
+	return id
+}
+
 // GetCouchInstance looks up the id of the already-provisioned pool CouchDB instance at url.
 // Suites call this instead of registering their own — provisioning now happens exactly once, in
 // tests/bootstrap, before the suite run starts.
@@ -321,6 +389,33 @@ func GetS3Instance(t *testing.T, ctx context.Context, svcs *svcv1.Services, endp
 		"no s3 instance registered for endpoint %q — run the bootstrap setup step first "+
 			`(make test-e2e, or go test -tags "e2e e2e_bootstrap" ./tests/bootstrap/... -run TestEnvSetup)`,
 		endpoint,
+	)
+
+	return ""
+}
+
+// GetPostgresInstance looks up the id of the already-provisioned pool Postgres instance at
+// host:port. Unlike couch_instances.url/s3_instances.endpoint, postgres_instances carries no
+// UNIQUE constraint on host/port — a BYOK-owned row can legitimately share the same physical
+// host:port as the pool row (this suite's BYOK test reuses the one test-postgres container rather
+// than standing up a second server) — so this also filters on OwnerUserUuid == nil to find
+// specifically the pool row, not any owned row that happens to match.
+func GetPostgresInstance(t *testing.T, ctx context.Context, svcs *svcv1.Services, host string, port int) string {
+	t.Helper()
+
+	instances, err := svcs.PostgresInstance.ListPostgresInstances(ctx)
+	require.NoError(t, err, "list postgres instances")
+
+	for _, instance := range instances {
+		if instance.Host == host && instance.Port == port && instance.OwnerUserUuid == nil {
+			return instance.Uuid.String()
+		}
+	}
+
+	t.Fatalf(
+		"no pool postgres instance registered for %s:%d — run the bootstrap setup step first "+
+			`(make test-e2e, or go test -tags "e2e e2e_bootstrap" ./tests/bootstrap/... -run TestEnvSetup)`,
+		host, port,
 	)
 
 	return ""

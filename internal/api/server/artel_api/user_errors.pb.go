@@ -25,10 +25,13 @@ const (
 type UserErrors int32
 
 const (
-	UserErrors_UndefinedError    UserErrors = 0
-	UserErrors_NoSubscription    UserErrors = 1
-	UserErrors_NoCouchDbInstance UserErrors = 2
-	UserErrors_NoS3BucketLinked  UserErrors = 3 // vault has no linked S3 bucket; non-markdown file ops are unavailable
+	UserErrors_UndefinedError                     UserErrors = 0
+	UserErrors_NoSubscription                     UserErrors = 1
+	UserErrors_NoCouchDbInstance                  UserErrors = 2
+	UserErrors_NoS3BucketLinked                   UserErrors = 3 // vault has no linked S3 bucket; non-markdown file ops are unavailable
+	UserErrors_NoPostgresDatabaseLinked           UserErrors = 4 // vault has no enabled (status=ready) Postgres database
+	UserErrors_PostgresConnectionValidationFailed UserErrors = 5 // BYOK Postgres connection check failed
+	UserErrors_PostgresDatabaseAlreadyEnabled     UserErrors = 6 // EnablePostgresDatabase called when one already exists
 )
 
 // Enum value maps for UserErrors.
@@ -38,12 +41,18 @@ var (
 		1: "NoSubscription",
 		2: "NoCouchDbInstance",
 		3: "NoS3BucketLinked",
+		4: "NoPostgresDatabaseLinked",
+		5: "PostgresConnectionValidationFailed",
+		6: "PostgresDatabaseAlreadyEnabled",
 	}
 	UserErrors_value = map[string]int32{
-		"UndefinedError":    0,
-		"NoSubscription":    1,
-		"NoCouchDbInstance": 2,
-		"NoS3BucketLinked":  3,
+		"UndefinedError":                     0,
+		"NoSubscription":                     1,
+		"NoCouchDbInstance":                  2,
+		"NoS3BucketLinked":                   3,
+		"NoPostgresDatabaseLinked":           4,
+		"PostgresConnectionValidationFailed": 5,
+		"PostgresDatabaseAlreadyEnabled":     6,
 	}
 )
 
@@ -78,13 +87,16 @@ var File_user_errors_proto protoreflect.FileDescriptor
 
 const file_user_errors_proto_rawDesc = "" +
 	"\n" +
-	"\x11user_errors.proto\x12\tartel_api\x1a\tnpm.proto*a\n" +
+	"\x11user_errors.proto\x12\tartel_api\x1a\tnpm.proto*\xcb\x01\n" +
 	"\n" +
 	"UserErrors\x12\x12\n" +
 	"\x0eUndefinedError\x10\x00\x12\x12\n" +
 	"\x0eNoSubscription\x10\x01\x12\x15\n" +
 	"\x11NoCouchDbInstance\x10\x02\x12\x14\n" +
-	"\x10NoS3BucketLinked\x10\x03B\x1a\x92\x82\x19\n" +
+	"\x10NoS3BucketLinked\x10\x03\x12\x1c\n" +
+	"\x18NoPostgresDatabaseLinked\x10\x04\x12&\n" +
+	"\"PostgresConnectionValidationFailed\x10\x05\x12\"\n" +
+	"\x1ePostgresDatabaseAlreadyEnabled\x10\x06B\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 

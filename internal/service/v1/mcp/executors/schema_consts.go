@@ -37,6 +37,10 @@ const (
 	fieldDeleted      = "deleted"
 	fieldContent      = "content"
 	fieldEnabled      = "enabled"
+	fieldTableName    = "table_name"
+	fieldSql          = "sql"
+	fieldRows         = "rows"
+	fieldTruncated    = "truncated"
 )
 
 const msgConfirmation = "Confirmation message"

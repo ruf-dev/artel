@@ -198,6 +198,20 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc AddPostgresConnection(AddPostgresConnection.Request) returns (AddPostgresConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/postgres/add"
+      body: "*"
+    };
+  }
+
+  rpc CheckPostgresConnection(CheckPostgresConnection.Request) returns (CheckPostgresConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/postgres/check"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -212,6 +226,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_OPENAI = 8;
   EXTERNAL_PROVIDER_S3 = 9;
   EXTERNAL_PROVIDER_COUCHDB = 10;
+  EXTERNAL_PROVIDER_POSTGRES = 11;
 }
 
 message GoogleConnectionInfo {
@@ -506,6 +521,32 @@ message CheckCouchDBConnection {
     string url      = 1;
     string username = 2;
     string password = 3;
+  }
+  message Response {}
+}
+
+message AddPostgresConnection {
+  message Request {
+    string host      = 1;
+    int32  port      = 2;
+    string database  = 3;
+    string username  = 4;
+    string password  = 5;
+    string ssl_mode  = 6;
+  }
+  message Response {
+    ExternalConnectionInfo connection = 1;
+  }
+}
+
+message CheckPostgresConnection {
+  message Request {
+    string host      = 1;
+    int32  port      = 2;
+    string database  = 3;
+    string username  = 4;
+    string password  = 5;
+    string ssl_mode  = 6;
   }
   message Response {}
 }
