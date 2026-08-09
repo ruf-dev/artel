@@ -635,8 +635,8 @@
     "semantic_hash": ""
   },
   "internal/service/interfaces.go": {
-    "mtime": 1786219417.5830452,
-    "ast_hash": "2e527f386dc3286ce48fc02ff1cb48ec",
+    "mtime": 1786219552.6433792,
+    "ast_hash": "46e8636a3d247ea6fa07be0b967b9dad",
     "semantic_hash": ""
   },
   "internal/service/v1/impl.go": {
@@ -6192,6 +6192,16 @@
   "pkg/client/ArtelUI/src/dialogs/ManageVaultDialog/widgets/VaultSettingsSection/components/PostgresSection/PostgresSection.tsx": {
     "mtime": 1786219338.2719493,
     "ast_hash": "36179e94020b2bcb701fc0a1e5c43910",
+    "semantic_hash": ""
+  },
+  "internal/service/v1/externalconnections/postgres_test.go": {
+    "mtime": 1786219626.0529613,
+    "ast_hash": "641f8d68c4a0128023d02ea21447bed2",
+    "semantic_hash": ""
+  },
+  "internal/service/v1/vault/postgres_test.go": {
+    "mtime": 1786219667.395006,
+    "ast_hash": "29387e30b4087609eef1ffb49a40fb35",
     "semantic_hash": ""
   }
 }
