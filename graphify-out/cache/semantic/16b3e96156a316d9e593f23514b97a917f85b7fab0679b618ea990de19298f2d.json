@@ -1,1 +1,0 @@
-{"nodes": [{"id": "queries_pending_auth_codes_sql_table_pending_auth_codes", "label": "pending_auth_codes SQL table", "file_type": "code", "source_file": "internal/repository/pg/queries/pending_auth_codes.sql", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

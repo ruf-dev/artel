@@ -1,1 +1,0 @@
-{"nodes": [{"id": "vaultmembers_repo", "label": "vaultmembers.Repo", "file_type": "code", "source_file": "internal/repository/pg/repos/vaultmembers/vaultmembers.go", "source_location": "15", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

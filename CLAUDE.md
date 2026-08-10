@@ -144,7 +144,9 @@ Rules:
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough
   context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
-- Committing the graphify-out/ update is automated by the `Stop` hook in `.claude/settings.json` (silently commits only `graphify-out/` when it has uncommitted changes) — no manual commit needed.
+- `graphify-out/` is gitignored and local-only (not committed) — it grew unbounded as daily-dated snapshots and pushed the
+  repo over Go's 500MB module-zip limit when imported as a package elsewhere. Each clone/CI run regenerates it via
+  `graphify update .`; there is no cross-machine sharing of the graph.
 ## Client side changes
 
 When change frontend code read pkg/client/ArtelUI/CLAUDE.md before 

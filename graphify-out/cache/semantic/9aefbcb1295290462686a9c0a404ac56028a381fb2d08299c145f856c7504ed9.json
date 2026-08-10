@@ -1,1 +1,0 @@
-{"nodes": [{"id": "domain_pending_auth_code_pendingauthcode", "label": "PendingAuthCode", "file_type": "code", "source_file": "internal/domain/pending_auth_code.go", "source_location": "line 5", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

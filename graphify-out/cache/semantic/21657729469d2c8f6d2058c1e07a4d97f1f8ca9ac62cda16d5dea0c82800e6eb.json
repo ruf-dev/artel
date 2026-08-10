@@ -1,1 +1,0 @@
-{"nodes": [{"id": "service_vault_service", "label": "vault.Service", "file_type": "code", "source_file": "internal/service/v1/vault/vault.go", "source_location": "vault.go:22", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

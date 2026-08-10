@@ -1,1 +1,0 @@
-{"nodes": [{"id": "couchdb_errors_codes_errcodes", "label": "couchdb error codes", "file_type": "code", "source_file": "internal/clients/couchdb/errors_codes.go", "source_location": "7", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

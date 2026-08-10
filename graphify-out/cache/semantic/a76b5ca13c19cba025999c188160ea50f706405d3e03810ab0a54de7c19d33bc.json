@@ -1,1 +1,0 @@
-{"nodes": [{"id": "couchdb_user_create_createuser", "label": "couchdb.Client.CreateUser", "file_type": "code", "source_file": "internal/clients/couchdb/user_create.go", "source_location": "15", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

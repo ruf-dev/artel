@@ -30,3 +30,6 @@ node_modules
 
 # Internal implementation/planning notes, not for distribution
 docs/tasks/
+
+# graphify knowledge graph is a local dev-tool cache, not shipped with the service
+graphify-out/
