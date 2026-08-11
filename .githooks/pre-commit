@@ -6,3 +6,6 @@ make lint
 
 echo "Running go test..."
 go test ./...
+
+echo 'Building ui...'
+make build-ui
