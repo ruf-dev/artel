@@ -420,7 +420,7 @@ func (s *PostgresSuite) TestMcpPostgresRoundTrip_QueryExecuteListTables() {
 
 	var queryResult struct {
 		Rows      []map[string]interface{} `json:"rows"`
-		Truncated bool                      `json:"truncated"`
+		Truncated bool                     `json:"truncated"`
 	}
 
 	err = json.Unmarshal([]byte(queryResultText), &queryResult)

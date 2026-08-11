@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"go.redsock.ru/rerrors"
 	"go.redsock.ru/toolbox/closer"
@@ -32,7 +33,35 @@ func Migrate(cfg *resources.Postgres) error {
 	}
 	defer utils.CloseWithLog(conn, "postgres connection")
 
+	schema := cfg.Schema
+	if schema == "" {
+		schema = "public"
+	}
+
+	err = ensureSchemaExists(conn, schema)
+	if err != nil {
+		return rerrors.Wrap(err, "error ensuring postgres schema exists")
+	}
+
 	return migrations.ApplyMigration(conn)
+}
+
+func ensureSchemaExists(conn *sql.DB, schema string) error {
+	var exists bool
+
+	err := conn.QueryRow(
+		`SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname = $1)`,
+		schema,
+	).Scan(&exists)
+	if err != nil {
+		return rerrors.Wrap(err, "error checking postgres schema existence")
+	}
+
+	if !exists {
+		return rerrors.New(fmt.Sprintf("postgres schema %q does not exist — create it before starting artel (e.g. CREATE SCHEMA %q)", schema, schema))
+	}
+
+	return nil
 }
 
 type DB interface {
