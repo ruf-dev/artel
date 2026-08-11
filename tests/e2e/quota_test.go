@@ -90,11 +90,10 @@ func (s *QuotaSuite) startGrpcServer(credsEncrypted bool) {
 	authImpl := auth_api.NewAuthImpl(
 		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
 		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
-		false,
 	)
-	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, false)
-	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom, false)
-	notesImpl := notes_api.NewNotesImpl(s.svcs.Notes, false)
+	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench)
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom)
+	notesImpl := notes_api.NewNotesImpl(s.svcs.Notes)
 
 	conn := harness.NewBufconnServer(
 		s.T(), s.svcs, authImpl.Register, vaultsImpl.Register, mcpKeysImpl.Register, notesImpl.Register,

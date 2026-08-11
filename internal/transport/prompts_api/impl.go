@@ -22,12 +22,11 @@ var stringToPromptId = map[string]pb.PromptId{
 
 type PromptsImpl struct {
 	pb.UnimplementedPromptsAPIServer
-	promptSvc    service.PromptService
-	cookieSecure bool
+	promptSvc service.PromptService
 }
 
-func NewPromptsImpl(promptSvc service.PromptService, cookieSecure bool) *PromptsImpl {
-	return &PromptsImpl{promptSvc: promptSvc, cookieSecure: cookieSecure}
+func NewPromptsImpl(promptSvc service.PromptService) *PromptsImpl {
+	return &PromptsImpl{promptSvc: promptSvc}
 }
 
 func (p *PromptsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -35,7 +34,7 @@ func (p *PromptsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (p *PromptsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(p.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterPromptsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

@@ -13,12 +13,11 @@ import (
 
 type NotesImpl struct {
 	pb.UnimplementedNotesAPIServer
-	noteSvc      service.NotesService
-	cookieSecure bool
+	noteSvc service.NotesService
 }
 
-func NewNotesImpl(noteSvc service.NotesService, cookieSecure bool) *NotesImpl {
-	return &NotesImpl{noteSvc: noteSvc, cookieSecure: cookieSecure}
+func NewNotesImpl(noteSvc service.NotesService) *NotesImpl {
+	return &NotesImpl{noteSvc: noteSvc}
 }
 
 func (n *NotesImpl) Register(srv grpc.ServiceRegistrar) {
@@ -26,7 +25,7 @@ func (n *NotesImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (n *NotesImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(n.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterNotesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

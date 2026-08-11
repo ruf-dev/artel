@@ -172,9 +172,8 @@ func (s *GitlabTriggerE2ESuite) SetupSuite() {
 	authImpl := auth_api.NewAuthImpl(
 		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
 		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
-		false,
 	)
-	tractsImpl := tracts_api.New(ctx, s.svcs.TractService(), false)
+	tractsImpl := tracts_api.New(ctx, s.svcs.TractService())
 
 	conn := harness.NewBufconnServer(s.T(), s.svcs, authImpl.Register, tractsImpl.Register)
 

@@ -12,11 +12,10 @@ import (
 
 type Impl struct {
 	artel_api.UnimplementedVaultsAPIServer
-	cookieSecure bool
 }
 
-func New(cookieSecure bool) *Impl {
-	return &Impl{cookieSecure: cookieSecure}
+func New() *Impl {
+	return &Impl{}
 }
 
 func (impl *Impl) Register(server grpc.ServiceRegistrar) {
@@ -28,7 +27,7 @@ func (impl *Impl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (route string, handler http.Handler) {
-	gwHttpMux := transport.NewGatewayMux(impl.cookieSecure)
+	gwHttpMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterVaultsAPIHandlerFromEndpoint(
 		ctx,

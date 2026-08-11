@@ -90,11 +90,10 @@ func (s *PostgresSuite) startGrpcServer(credsEncrypted bool) {
 	authImpl := auth_api.NewAuthImpl(
 		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
 		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
-		false,
 	)
-	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, false)
-	externalConnectionsImpl := external_connections_api.New(s.svcs.ExternalConnectionService(), false)
-	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom, false)
+	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench)
+	externalConnectionsImpl := external_connections_api.New(s.svcs.ExternalConnectionService())
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom)
 
 	conn := harness.NewBufconnServer(
 		s.T(), s.svcs, authImpl.Register, vaultsImpl.Register, externalConnectionsImpl.Register, mcpKeysImpl.Register,

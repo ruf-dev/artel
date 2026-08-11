@@ -13,12 +13,11 @@ import (
 
 type ExternalConnectionsImpl struct {
 	pb.UnimplementedExternalConnectionsAPIServer
-	svc          service.ExternalConnectionService
-	cookieSecure bool
+	svc service.ExternalConnectionService
 }
 
-func New(svc service.ExternalConnectionService, cookieSecure bool) *ExternalConnectionsImpl {
-	return &ExternalConnectionsImpl{svc: svc, cookieSecure: cookieSecure}
+func New(svc service.ExternalConnectionService) *ExternalConnectionsImpl {
+	return &ExternalConnectionsImpl{svc: svc}
 }
 
 func (e *ExternalConnectionsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -30,7 +29,7 @@ func (e *ExternalConnectionsImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(e.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterExternalConnectionsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

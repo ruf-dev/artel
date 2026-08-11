@@ -5,7 +5,6 @@ package config
 // EnvironmentConfig holds parsed configuration values for this section.
 type EnvironmentConfig struct {
 	AllowedOrigins       string
-	CookieSecure         bool
 	CredsEncryptionKey   string
 	GoogleAPIKey         string
 	GoogleClientID       string

@@ -13,12 +13,11 @@ import (
 
 type TaskTrackersImpl struct {
 	pb.UnimplementedTaskTrackersAPIServer
-	trackerSvc   service.TaskTrackerService
-	cookieSecure bool
+	trackerSvc service.TaskTrackerService
 }
 
-func New(trackerSvc service.TaskTrackerService, cookieSecure bool) *TaskTrackersImpl {
-	return &TaskTrackersImpl{trackerSvc: trackerSvc, cookieSecure: cookieSecure}
+func New(trackerSvc service.TaskTrackerService) *TaskTrackersImpl {
+	return &TaskTrackersImpl{trackerSvc: trackerSvc}
 }
 
 func (t *TaskTrackersImpl) Register(srv grpc.ServiceRegistrar) {
@@ -30,7 +29,7 @@ func (t *TaskTrackersImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(t.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterTaskTrackersAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

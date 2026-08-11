@@ -15,11 +15,10 @@ import (
 type S3InstancesImpl struct {
 	artel_api.UnimplementedS3InstancesAPIServer
 	s3InstanceSvc service.S3InstanceService
-	cookieSecure  bool
 }
 
-func NewS3InstancesImpl(s3InstanceSvc service.S3InstanceService, cookieSecure bool) *S3InstancesImpl {
-	return &S3InstancesImpl{s3InstanceSvc: s3InstanceSvc, cookieSecure: cookieSecure}
+func NewS3InstancesImpl(s3InstanceSvc service.S3InstanceService) *S3InstancesImpl {
+	return &S3InstancesImpl{s3InstanceSvc: s3InstanceSvc}
 }
 
 func (s *S3InstancesImpl) Register(srv grpc.ServiceRegistrar) {
@@ -31,7 +30,7 @@ func (s *S3InstancesImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(s.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterS3InstancesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

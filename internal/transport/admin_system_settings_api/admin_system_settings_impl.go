@@ -17,12 +17,11 @@ import (
 // here is admin-only (see GrpcAdminInterceptor's admin-path list in internal/app/custom.go).
 type AdminSystemSettingsImpl struct {
 	artel_api.UnimplementedAdminSystemSettingsAPIServer
-	svc          service.AdminSystemSettingsService
-	cookieSecure bool
+	svc service.AdminSystemSettingsService
 }
 
-func New(svc service.AdminSystemSettingsService, cookieSecure bool) *AdminSystemSettingsImpl {
-	return &AdminSystemSettingsImpl{svc: svc, cookieSecure: cookieSecure}
+func New(svc service.AdminSystemSettingsService) *AdminSystemSettingsImpl {
+	return &AdminSystemSettingsImpl{svc: svc}
 }
 
 func (a *AdminSystemSettingsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -32,7 +31,7 @@ func (a *AdminSystemSettingsImpl) Register(srv grpc.ServiceRegistrar) {
 func (a *AdminSystemSettingsImpl) Gateway(
 	ctx context.Context, endpoint string, opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(a.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterAdminSystemSettingsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

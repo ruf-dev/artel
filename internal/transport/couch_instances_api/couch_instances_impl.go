@@ -15,11 +15,10 @@ import (
 type CouchInstancesImpl struct {
 	artel_api.UnimplementedCouchInstancesAPIServer
 	couchInstanceSvc service.CouchInstanceService
-	cookieSecure     bool
 }
 
-func NewCouchInstancesImpl(couchInstanceSvc service.CouchInstanceService, cookieSecure bool) *CouchInstancesImpl {
-	return &CouchInstancesImpl{couchInstanceSvc: couchInstanceSvc, cookieSecure: cookieSecure}
+func NewCouchInstancesImpl(couchInstanceSvc service.CouchInstanceService) *CouchInstancesImpl {
+	return &CouchInstancesImpl{couchInstanceSvc: couchInstanceSvc}
 }
 
 func (c *CouchInstancesImpl) Register(srv grpc.ServiceRegistrar) {
@@ -31,7 +30,7 @@ func (c *CouchInstancesImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(c.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterCouchInstancesAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

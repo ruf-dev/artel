@@ -13,13 +13,12 @@ import (
 
 type McpKeysImpl struct {
 	artel_api.UnimplementedMcpKeysAPIServer
-	mcpSvc       service.McpService
-	momSvc       service.MomService
-	cookieSecure bool
+	mcpSvc service.McpService
+	momSvc service.MomService
 }
 
-func NewMcpKeysImpl(mcpSvc service.McpService, momSvc service.MomService, cookieSecure bool) *McpKeysImpl {
-	return &McpKeysImpl{mcpSvc: mcpSvc, momSvc: momSvc, cookieSecure: cookieSecure}
+func NewMcpKeysImpl(mcpSvc service.McpService, momSvc service.MomService) *McpKeysImpl {
+	return &McpKeysImpl{mcpSvc: mcpSvc, momSvc: momSvc}
 }
 
 func (m *McpKeysImpl) Register(srv grpc.ServiceRegistrar) {
@@ -27,7 +26,7 @@ func (m *McpKeysImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (m *McpKeysImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(m.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterMcpKeysAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

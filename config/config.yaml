@@ -24,9 +24,6 @@ environment:
     - name: allowed_origins
       type: string
       value: ""
-    - name: cookie_secure
-      type: bool
-      value: true
     - name: creds_encryption_key
       type: string
       value: ""

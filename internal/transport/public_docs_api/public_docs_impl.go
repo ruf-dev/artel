@@ -14,11 +14,10 @@ import (
 type PublicDocsImpl struct {
 	pb.UnimplementedPublicDocsAPIServer
 	publicDocsSvc service.PublicDocsService
-	cookieSecure  bool
 }
 
-func New(publicDocsSvc service.PublicDocsService, cookieSecure bool) *PublicDocsImpl {
-	return &PublicDocsImpl{publicDocsSvc: publicDocsSvc, cookieSecure: cookieSecure}
+func New(publicDocsSvc service.PublicDocsService) *PublicDocsImpl {
+	return &PublicDocsImpl{publicDocsSvc: publicDocsSvc}
 }
 
 func (p *PublicDocsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -26,7 +25,7 @@ func (p *PublicDocsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (p *PublicDocsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(p.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterPublicDocsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

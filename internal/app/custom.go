@@ -130,8 +130,6 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error sweeping stale tract runs at startup")
 	}
 
-	cookieSecure := a.Cfg.Environment.CookieSecure
-
 	allowedOrigins := strings.Split(a.Cfg.Environment.AllowedOrigins, ",")
 
 	c.Transport, err = transport.NewServerManager(a.Ctx, a.MASTER, allowedOrigins)
@@ -139,32 +137,31 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error creating server manager")
 	}
 
-	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench, cookieSecure)
-	notesImpl := notes_api.NewNotesImpl(services.NotesService(), cookieSecure)
-	publicDocsImpl := public_docs_api.New(services.PublicDocsService(), cookieSecure)
+	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
+	notesImpl := notes_api.NewNotesImpl(services.NotesService())
+	publicDocsImpl := public_docs_api.New(services.PublicDocsService())
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
 		a.Cfg.Environment.NoAuthEnabled, !encryptor.IsPlainText(), services.DockerHost, services.SetupWizardService(),
-		cookieSecure,
 	)
-	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance, cookieSecure)
-	dockerHostsImpl := docker_hosts_api.NewDockerHostsImpl(services.DockerHost, cookieSecure)
-	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService(), cookieSecure)
-	adminCouchImpl := admin_couch_api.New(services.AdminCouchService(), cookieSecure)
-	adminUsersImpl := admin_users_api.New(services.AdminUsersService(), cookieSecure)
-	adminSubscriptionsImpl := admin_subscriptions_api.New(services.AdminSubscriptionsService(), cookieSecure)
-	setupWizardImpl := setup_wizard_api.New(services.SetupWizardService(), cookieSecure)
-	adminSystemSettingsImpl := admin_system_settings_api.New(services.AdminSystemSettingsService(), cookieSecure)
-	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService(), cookieSecure)
-	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService(), cookieSecure)
-	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService(), cookieSecure)
-	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService(), cookieSecure)
+	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance)
+	dockerHostsImpl := docker_hosts_api.NewDockerHostsImpl(services.DockerHost)
+	s3InstancesImpl := s3_instances_api.NewS3InstancesImpl(services.S3InstanceService())
+	adminCouchImpl := admin_couch_api.New(services.AdminCouchService())
+	adminUsersImpl := admin_users_api.New(services.AdminUsersService())
+	adminSubscriptionsImpl := admin_subscriptions_api.New(services.AdminSubscriptionsService())
+	setupWizardImpl := setup_wizard_api.New(services.SetupWizardService())
+	adminSystemSettingsImpl := admin_system_settings_api.New(services.AdminSystemSettingsService())
+	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(services.McpService(), services.MomService())
+	taskTrackersImpl := task_trackers_api.New(services.TaskTrackerService())
+	externalConnectionsImpl := external_connections_api.New(services.ExternalConnectionService())
+	promptsImpl := prompts_api.NewPromptsImpl(services.PromptService())
 	mcpHandler := mcp_api.NewMcpHandler(services.McpService(), services.MomService())
 	gitlabWebhookHandler := gitlab_webhook.New(
 		a.Ctx, repo.ExternalConnections(), repo.Triggers(), services.MomService(), services.TractService(),
 	)
 	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
-	tractsImpl := tracts_api.New(a.Ctx, services.TractService(), cookieSecure)
+	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 
 	otelServerHandler := otelgrpc.NewServerHandler()

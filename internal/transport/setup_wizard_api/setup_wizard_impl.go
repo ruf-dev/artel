@@ -23,12 +23,11 @@ import (
 // on the wizardSessionToken minted by SubmitToken, checked inside SetupWizardService itself.
 type SetupWizardImpl struct {
 	artel_api.UnimplementedSetupWizardAPIServer
-	svc          service.SetupWizardService
-	cookieSecure bool
+	svc service.SetupWizardService
 }
 
-func New(svc service.SetupWizardService, cookieSecure bool) *SetupWizardImpl {
-	return &SetupWizardImpl{svc: svc, cookieSecure: cookieSecure}
+func New(svc service.SetupWizardService) *SetupWizardImpl {
+	return &SetupWizardImpl{svc: svc}
 }
 
 func (s *SetupWizardImpl) Register(srv grpc.ServiceRegistrar) {
@@ -36,7 +35,7 @@ func (s *SetupWizardImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (s *SetupWizardImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(s.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterSetupWizardAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

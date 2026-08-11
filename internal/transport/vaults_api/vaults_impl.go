@@ -15,13 +15,10 @@ type VaultsImpl struct {
 	pb.UnimplementedVaultsAPIServer
 	vaultSvc     service.VaultService
 	workbenchSvc service.WorkbenchService
-	cookieSecure bool
 }
 
-func NewVaultsImpl(
-	vaultSvc service.VaultService, workbenchSvc service.WorkbenchService, cookieSecure bool,
-) *VaultsImpl {
-	return &VaultsImpl{vaultSvc: vaultSvc, workbenchSvc: workbenchSvc, cookieSecure: cookieSecure}
+func NewVaultsImpl(vaultSvc service.VaultService, workbenchSvc service.WorkbenchService) *VaultsImpl {
+	return &VaultsImpl{vaultSvc: vaultSvc, workbenchSvc: workbenchSvc}
 }
 
 func (v *VaultsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -29,7 +26,7 @@ func (v *VaultsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (v *VaultsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(v.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterVaultsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

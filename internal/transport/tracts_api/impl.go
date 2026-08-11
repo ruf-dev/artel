@@ -18,16 +18,14 @@ import (
 // the moment the RPC returns.
 type TractsImpl struct {
 	pb.UnimplementedTractsAPIServer
-	tractSvc     service.TractService
-	baseCtx      context.Context
-	cookieSecure bool
+	tractSvc service.TractService
+	baseCtx  context.Context
 }
 
-func New(baseCtx context.Context, tractSvc service.TractService, cookieSecure bool) *TractsImpl {
+func New(baseCtx context.Context, tractSvc service.TractService) *TractsImpl {
 	return &TractsImpl{
-		tractSvc:     tractSvc,
-		baseCtx:      baseCtx,
-		cookieSecure: cookieSecure,
+		tractSvc: tractSvc,
+		baseCtx:  baseCtx,
 	}
 }
 
@@ -36,7 +34,7 @@ func (t *TractsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (t *TractsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(t.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := pb.RegisterTractsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

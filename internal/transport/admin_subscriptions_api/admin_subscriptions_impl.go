@@ -16,12 +16,11 @@ import (
 
 type AdminSubscriptionsImpl struct {
 	artel_api.UnimplementedAdminSubscriptionsAPIServer
-	svc          service.AdminSubscriptionsService
-	cookieSecure bool
+	svc service.AdminSubscriptionsService
 }
 
-func New(svc service.AdminSubscriptionsService, cookieSecure bool) *AdminSubscriptionsImpl {
-	return &AdminSubscriptionsImpl{svc: svc, cookieSecure: cookieSecure}
+func New(svc service.AdminSubscriptionsService) *AdminSubscriptionsImpl {
+	return &AdminSubscriptionsImpl{svc: svc}
 }
 
 func (a *AdminSubscriptionsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -29,7 +28,7 @@ func (a *AdminSubscriptionsImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (a *AdminSubscriptionsImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(a.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterAdminSubscriptionsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

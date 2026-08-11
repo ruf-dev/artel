@@ -1,6 +1,6 @@
 app_info:
     name: github.com/ruf-dev/artel
-    version: v1.0.15
+    version: v1.0.20
     startup_duration: 10s
 data_sources:
     - resource_name: postgres
@@ -24,9 +24,6 @@ environment:
     - name: allowed_origins
       type: string
       value: ""
-    - name: cookie_secure
-      type: bool
-      value: true
     - name: creds_encryption_key
       type: string
       value: ""

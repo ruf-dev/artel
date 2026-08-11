@@ -15,11 +15,10 @@ import (
 type DockerHostsImpl struct {
 	artel_api.UnimplementedDockerHostsAPIServer
 	dockerHostSvc service.DockerHostService
-	cookieSecure  bool
 }
 
-func NewDockerHostsImpl(dockerHostSvc service.DockerHostService, cookieSecure bool) *DockerHostsImpl {
-	return &DockerHostsImpl{dockerHostSvc: dockerHostSvc, cookieSecure: cookieSecure}
+func NewDockerHostsImpl(dockerHostSvc service.DockerHostService) *DockerHostsImpl {
+	return &DockerHostsImpl{dockerHostSvc: dockerHostSvc}
 }
 
 func (d *DockerHostsImpl) Register(srv grpc.ServiceRegistrar) {
@@ -31,7 +30,7 @@ func (d *DockerHostsImpl) Gateway(
 	endpoint string,
 	opts ...grpc.DialOption,
 ) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(d.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterDockerHostsAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

@@ -14,12 +14,11 @@ import (
 
 type AdminCouchImpl struct {
 	artel_api.UnimplementedAdminCouchAPIServer
-	svc          service.AdminCouchService
-	cookieSecure bool
+	svc service.AdminCouchService
 }
 
-func New(svc service.AdminCouchService, cookieSecure bool) *AdminCouchImpl {
-	return &AdminCouchImpl{svc: svc, cookieSecure: cookieSecure}
+func New(svc service.AdminCouchService) *AdminCouchImpl {
+	return &AdminCouchImpl{svc: svc}
 }
 
 func (a *AdminCouchImpl) Register(srv grpc.ServiceRegistrar) {
@@ -27,7 +26,7 @@ func (a *AdminCouchImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (a *AdminCouchImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(a.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterAdminCouchAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {

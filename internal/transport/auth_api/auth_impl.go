@@ -272,15 +272,13 @@ func (h *authHandler) GetMe(ctx context.Context, _ *artel_api.GetMe_Request) (*a
 
 // AuthImpl satisfies transport.GrpcImpl and transport.GrpcWithGateway.
 type AuthImpl struct {
-	handler      *authHandler
-	cookieSecure bool
+	handler *authHandler
 }
 
 func NewAuthImpl(
 	authSvc service.AuthService, telegramClientID string, s3InstanceSvc service.S3InstanceService,
 	couchInstanceSvc service.CouchInstanceService, noAuthEnabled bool,
 	credsEncrypted bool, dockerHostSvc service.DockerHostService, setupWizardSvc service.SetupWizardService,
-	cookieSecure bool,
 ) *AuthImpl {
 	return &AuthImpl{
 		handler: &authHandler{
@@ -293,7 +291,6 @@ func NewAuthImpl(
 			noAuthEnabled:    noAuthEnabled,
 			credsEncrypted:   credsEncrypted,
 		},
-		cookieSecure: cookieSecure,
 	}
 }
 
@@ -302,7 +299,7 @@ func (a *AuthImpl) Register(srv grpc.ServiceRegistrar) {
 }
 
 func (a *AuthImpl) Gateway(ctx context.Context, endpoint string, opts ...grpc.DialOption) (string, http.Handler) {
-	gwMux := transport.NewGatewayMux(a.cookieSecure)
+	gwMux := transport.NewGatewayMux()
 
 	err := artel_api.RegisterAuthAPIHandlerFromEndpoint(ctx, gwMux, endpoint, opts)
 	if err != nil {
