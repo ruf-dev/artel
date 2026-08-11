@@ -144,7 +144,7 @@ func (c *Custom) Init(a *App) error {
 	publicDocsImpl := public_docs_api.New(services.PublicDocsService(), cookieSecure)
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
-		a.Cfg.Environment.NoAuthEnabled, encryptor.IsPlainText(), services.DockerHost, services.SetupWizardService(),
+		a.Cfg.Environment.NoAuthEnabled, !encryptor.IsPlainText(), services.DockerHost, services.SetupWizardService(),
 		cookieSecure,
 	)
 	couchInstancesImpl := couch_instances_api.NewCouchInstancesImpl(services.CouchInstance, cookieSecure)
