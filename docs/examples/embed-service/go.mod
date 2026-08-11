@@ -3,7 +3,7 @@ module github.com/ruf-dev/artel-embed-example
 go 1.25.5
 
 require (
-	github.com/ruf-dev/artel v0.0.0-00010101000000-000000000000
+	github.com/ruf-dev/artel v1.0.17
 	go.redsock.ru/toolbox v0.0.13
 )
 
@@ -53,6 +53,7 @@ require (
 	github.com/minio/minio-go/v7 v7.2.1 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/sys/sequential v0.7.0 // indirect
+	github.com/openai/openai-go v1.12.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
