@@ -26,6 +26,10 @@
     }
 
     & .RegisterLink {
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
         font-size: var(--font-size-md);
         color: var(--secondary-fg-color);
     }

@@ -10,6 +10,10 @@
     }
 
     & .SwitchLink {
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
         align-self: center;
         font-size: var(--font-size-md);
         color: var(--secondary-fg-color);
