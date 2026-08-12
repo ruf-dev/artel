@@ -22,13 +22,10 @@ func RequestSchemeAnnotator(_ context.Context, r *http.Request) metadata.MD {
 	return metadata.Pairs(RequestSecureKey, RequestSecureValue)
 }
 
-// requestIsSecure detects the request's original scheme. X-Forwarded-Proto wins if present —
-// production nginx (.verv/prod/artel.redsock.ru.ssl.conf) sets it on every proxied location, so
-// trusting it isn't a new trust boundary — and must equal "https" exactly (case-insensitive) to
-// count as secure; any other value is treated as insecure rather than falling through to the
-// r.TLS check. Absent the header, r.TLS != nil covers a direct TLS-terminated connection.
-// Stricter than the similar precedent in internal/transport/mcp_api/oauth.go's requestBaseURL,
-// which only needs the header to be non-empty.
+// requestIsSecure detects the request's original scheme. X-Forwarded-Proto wins if present, and
+// must equal "https" exactly (case-insensitive) to count as secure; any other value is treated as
+// insecure rather than falling through to the r.TLS check. Absent the header, r.TLS != nil covers
+// a direct TLS-terminated connection.
 func requestIsSecure(r *http.Request) bool {
 	if proto := r.Header.Get("X-Forwarded-Proto"); proto != "" {
 		return strings.EqualFold(proto, "https")

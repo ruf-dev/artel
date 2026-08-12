@@ -18,8 +18,6 @@ import (
 // login/refresh — the CSRF token is independent of the session tokens, never derived from them.
 const csrfTokenNonceBytes = 32
 
-// insecureCookieWarnOnce logs the plain-HTTP notice (see requestWasSecure) at most once per
-// process — every subsequent insecure cookie issuance stays silent.
 var insecureCookieWarnOnce sync.Once
 
 // CookieForwardResponseOption returns a runtime.WithForwardResponseOption hook for the shared
@@ -27,8 +25,8 @@ var insecureCookieWarnOnce sync.Once
 // when the handler explicitly set one of the x-set-cookie-*/x-clear-auth-cookies metadata keys
 // via grpc.SetHeader, which only a project's own login/refresh/logout handlers would do.
 //
-// The Secure attribute on every cookie it sets is decided per-request by requestWasSecure, fed by
-// RequestSchemeAnnotator — no config knob involved.
+// The Secure attribute on every cookie it sets is derived per request from
+// RequestSchemeAnnotator's metadata (see requestWasSecure) rather than a static config value.
 func CookieForwardResponseOption() func(context.Context, http.ResponseWriter, proto.Message) error {
 	return func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
 		serverMD, ok := runtime.ServerMetadataFromContext(ctx)
@@ -71,28 +69,24 @@ func CookieForwardResponseOption() func(context.Context, http.ResponseWriter, pr
 	}
 }
 
-// warnIfInsecure logs the plain-HTTP notice at most once per process, the first time a cookie
-// gets issued (set or cleared) without Secure — purely informational now that scheme detection is
-// automatic and there's no config value an operator could get wrong.
+// warnIfInsecure logs once, the first time any cookie is issued without Secure, so operators
+// running behind plain HTTP get one clear signal instead of per-request log spam.
 func warnIfInsecure(secure bool) {
 	if secure {
 		return
 	}
-
 	insecureCookieWarnOnce.Do(func() {
 		log.Warn().Msg("issuing auth cookies without Secure — this instance is serving over plain HTTP")
 	})
 }
 
 // requestWasSecure reports whether RequestSchemeAnnotator determined the originating HTTP
-// request was secure — see internal/middleware/request_scheme_annotator.go. Absence of
-// RequestSecureKey (including when ctx carries no incoming metadata at all) means false.
+// request was secure. Absence of the metadata key means false.
 func requestWasSecure(ctx context.Context) bool {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return false
 	}
-
 	return metadataValue(md, RequestSecureKey) == RequestSecureValue
 }
 
