@@ -393,6 +393,10 @@ func validateSlug(slug string) error {
 		return rerrors.Wrap(user_errors.VaultSlugInvalid)
 	}
 
+	if slug == domain.ReservedGithubDocsSlug {
+		return rerrors.Wrap(user_errors.VaultSlugInvalid)
+	}
+
 	if !vaultSlugPattern.MatchString(slug) {
 		return rerrors.Wrap(user_errors.VaultSlugInvalid)
 	}

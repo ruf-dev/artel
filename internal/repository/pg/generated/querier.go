@@ -195,6 +195,8 @@ type Querier interface {
 	UpdatePostgresInstance(ctx context.Context, arg UpdatePostgresInstanceParams) error
 	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
 	UpdateSystemSettingsAuthMethods(ctx context.Context, arg UpdateSystemSettingsAuthMethodsParams) error
+	UpdateSystemSettingsDefaultDocsSource(ctx context.Context, defaultDocsSource string) error
+	UpdateSystemSettingsDefaultDocsVault(ctx context.Context, defaultDocsVaultID uuid.NullUUID) error
 	UpdateSystemSettingsRegistrationMode(ctx context.Context, registrationMode string) error
 	UpdateTract(ctx context.Context, arg UpdateTractParams) (Tract, error)
 	UpdateTractRunStatus(ctx context.Context, arg UpdateTractRunStatusParams) error

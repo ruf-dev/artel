@@ -1,12 +1,14 @@
 -- name: GetSystemSettings :one
 SELECT id, setup_completed, password_auth_enabled, telegram_auth_enabled, registration_mode,
-       setup_token_hash, setup_token_issued_at, created_at, updated_at
+       setup_token_hash, setup_token_issued_at, created_at, updated_at, default_docs_vault_id,
+       default_docs_source
 FROM system_settings
 WHERE id = 1;
 
 -- name: GetSystemSettingsForUpdate :one
 SELECT id, setup_completed, password_auth_enabled, telegram_auth_enabled, registration_mode,
-       setup_token_hash, setup_token_issued_at, created_at, updated_at
+       setup_token_hash, setup_token_issued_at, created_at, updated_at, default_docs_vault_id,
+       default_docs_source
 FROM system_settings
 WHERE id = 1
 FOR UPDATE;
@@ -37,3 +39,12 @@ SET setup_completed  = TRUE,
     setup_token_hash = NULL,
     updated_at       = NOW()
 WHERE id = 1;
+
+-- name: UpdateSystemSettingsDefaultDocsVault :exec
+UPDATE system_settings
+SET default_docs_vault_id = $1,
+    updated_at             = NOW()
+WHERE id = 1;
+
+-- name: UpdateSystemSettingsDefaultDocsSource :exec
+UPDATE system_settings SET default_docs_source = $1, updated_at = NOW() WHERE id = 1;

@@ -1,0 +1,31 @@
+.PublishedVaultsGroupContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    & .GroupTitle {
+        font-size: var(--font-size-md);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.0275rem;
+        color: var(--color-fg-tertiary);
+        margin: 0;
+        padding: 0;
+    }
+
+    & .Empty {
+        font-size: var(--font-size-lg);
+        color: var(--color-fg-tertiary);
+        margin: 0;
+    }
+
+    & .RowList {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    & .ClearButton {
+        align-self: flex-start;
+    }
+}

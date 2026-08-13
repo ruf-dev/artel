@@ -3,12 +3,15 @@ import {useState, useEffect} from "react"
 import {
     AdminSystemSettingsAPI,
 } from "@/app/api/artel/admin_system_settings.pb.ts"
+import {DocsSource} from "@/app/api/artel/public_docs.pb.ts"
 import {RegistrationMode} from "@/app/api/artel/setup_wizard.pb.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast"
 import useUser from "@/hooks/user/User.ts"
 import cls from "@/pages/admin/components/SettingsTab/SettingsTab.module.css"
 import AuthMethodsSection from "@/pages/admin/components/SettingsTab/components/AuthMethodsSection/AuthMethodsSection.tsx" // eslint-disable-line max-len
 import RegistrationModeSection from "@/pages/admin/components/SettingsTab/components/RegistrationModeSection/RegistrationModeSection.tsx" // eslint-disable-line max-len
+import DefaultDocsVaultSection from "@/pages/admin/components/SettingsTab/components/DefaultDocsVaultSection/DefaultDocsVaultSection.tsx" // eslint-disable-line max-len
+import {createDocsSettingsHandlers} from "@/pages/admin/components/SettingsTab/processes/docsSettingsHandlers.ts"
 
 export default function SettingsTab() {
     const {auth} = useUser()
@@ -19,6 +22,8 @@ export default function SettingsTab() {
     const [registrationMode, setRegistrationMode] = useState<RegistrationMode>(
         RegistrationMode.ADMIN_ONLY,
     )
+    const [defaultDocsVaultId, setDefaultDocsVaultId] = useState("")
+    const [docsSource, setDocsSource] = useState<DocsSource>(DocsSource.VAULT)
 
     useEffect(() => {
         AdminSystemSettingsAPI.GetSettings({}, auth.getInitReq())
@@ -26,6 +31,8 @@ export default function SettingsTab() {
                 setPasswordAuthEnabled(res.passwordAuthEnabled ?? false)
                 setTelegramAuthEnabled(res.telegramAuthEnabled ?? false)
                 setRegistrationMode(res.registrationMode ?? RegistrationMode.ADMIN_ONLY)
+                setDefaultDocsVaultId(res.defaultDocsVaultId ?? "")
+                setDocsSource(res.defaultDocsSource ?? DocsSource.VAULT)
             })
             .catch(err => bakeError("Failed to load settings", err))
             .finally(() => setLoading(false))
@@ -72,6 +79,15 @@ export default function SettingsTab() {
             })
     }
 
+    const {handleDefaultDocsVaultChange, handleDocsSourceChange} = createDocsSettingsHandlers({
+        auth,
+        defaultDocsVaultId,
+        docsSource,
+        setDefaultDocsVaultId,
+        setDocsSource,
+        bakeError,
+    })
+
     if (loading) {
         return <div className={cls.SettingsTabContainer}>Loading settings…</div>
     }
@@ -87,6 +103,12 @@ export default function SettingsTab() {
             <RegistrationModeSection
                 registrationMode={registrationMode}
                 onRegistrationModeChange={handleRegistrationModeChange}
+            />
+            <DefaultDocsVaultSection
+                defaultDocsVaultId={defaultDocsVaultId}
+                onDefaultDocsVaultChange={handleDefaultDocsVaultChange}
+                docsSource={docsSource}
+                onDocsSourceChange={handleDocsSourceChange}
             />
         </div>
     )

@@ -8,6 +8,8 @@ package artel_q
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 const completeSetup = `-- name: CompleteSetup :exec
@@ -25,7 +27,8 @@ func (q *Queries) CompleteSetup(ctx context.Context) error {
 
 const getSystemSettings = `-- name: GetSystemSettings :one
 SELECT id, setup_completed, password_auth_enabled, telegram_auth_enabled, registration_mode,
-       setup_token_hash, setup_token_issued_at, created_at, updated_at
+       setup_token_hash, setup_token_issued_at, created_at, updated_at, default_docs_vault_id,
+       default_docs_source
 FROM system_settings
 WHERE id = 1
 `
@@ -43,13 +46,16 @@ func (q *Queries) GetSystemSettings(ctx context.Context) (SystemSetting, error) 
 		&i.SetupTokenIssuedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DefaultDocsVaultID,
+		&i.DefaultDocsSource,
 	)
 	return i, err
 }
 
 const getSystemSettingsForUpdate = `-- name: GetSystemSettingsForUpdate :one
 SELECT id, setup_completed, password_auth_enabled, telegram_auth_enabled, registration_mode,
-       setup_token_hash, setup_token_issued_at, created_at, updated_at
+       setup_token_hash, setup_token_issued_at, created_at, updated_at, default_docs_vault_id,
+       default_docs_source
 FROM system_settings
 WHERE id = 1
 FOR UPDATE
@@ -68,6 +74,8 @@ func (q *Queries) GetSystemSettingsForUpdate(ctx context.Context) (SystemSetting
 		&i.SetupTokenIssuedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DefaultDocsVaultID,
+		&i.DefaultDocsSource,
 	)
 	return i, err
 }
@@ -105,6 +113,27 @@ type UpdateSystemSettingsAuthMethodsParams struct {
 
 func (q *Queries) UpdateSystemSettingsAuthMethods(ctx context.Context, arg UpdateSystemSettingsAuthMethodsParams) error {
 	_, err := q.db.ExecContext(ctx, updateSystemSettingsAuthMethods, arg.PasswordAuthEnabled, arg.TelegramAuthEnabled)
+	return err
+}
+
+const updateSystemSettingsDefaultDocsSource = `-- name: UpdateSystemSettingsDefaultDocsSource :exec
+UPDATE system_settings SET default_docs_source = $1, updated_at = NOW() WHERE id = 1
+`
+
+func (q *Queries) UpdateSystemSettingsDefaultDocsSource(ctx context.Context, defaultDocsSource string) error {
+	_, err := q.db.ExecContext(ctx, updateSystemSettingsDefaultDocsSource, defaultDocsSource)
+	return err
+}
+
+const updateSystemSettingsDefaultDocsVault = `-- name: UpdateSystemSettingsDefaultDocsVault :exec
+UPDATE system_settings
+SET default_docs_vault_id = $1,
+    updated_at             = NOW()
+WHERE id = 1
+`
+
+func (q *Queries) UpdateSystemSettingsDefaultDocsVault(ctx context.Context, defaultDocsVaultID uuid.NullUUID) error {
+	_, err := q.db.ExecContext(ctx, updateSystemSettingsDefaultDocsVault, defaultDocsVaultID)
 	return err
 }
 

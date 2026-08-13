@@ -125,7 +125,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		Mom:                 momSvc,
 		PublicDocs:          public_docs.New(repo),
 		SetupWizard:         setupwizard.New(repo.SystemSettings(), authSvc),
-		AdminSettings:       adminsettings.New(repo.SystemSettings()),
+		AdminSettings:       adminsettings.New(repo.SystemSettings(), repo.Vaults()),
 		PostgresInstance:    postgresinstances.New(repo),
 	}
 

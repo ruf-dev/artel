@@ -80,6 +80,38 @@
         ]
       }
     },
+    "/api/admin_system_settings/update_default_docs_vault": {
+      "post": {
+        "operationId": "AdminSystemSettingsAPI_UpdateDefaultDocsVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateDefaultDocsVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateDefaultDocsVaultRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSystemSettingsAPI"
+        ]
+      }
+    },
     "/api/admin_system_settings/update_registration_mode": {
       "post": {
         "operationId": "AdminSystemSettingsAPI_UpdateRegistrationMode",
@@ -128,6 +160,19 @@
         },
         "registrationMode": {
           "$ref": "#/definitions/artel_setup_wizardRegistrationMode"
+        },
+        "defaultDocsVaultId": {
+          "type": "string",
+          "description": "default_docs_vault_id/_name/_slug are all empty strings when no default docs vault is\nconfigured."
+        },
+        "defaultDocsVaultName": {
+          "type": "string"
+        },
+        "defaultDocsVaultSlug": {
+          "type": "string"
+        },
+        "defaultDocsSource": {
+          "$ref": "#/definitions/artel_public_docsDocsSource"
         }
       }
     },
@@ -145,6 +190,20 @@
     "artel_admin_system_settingsUpdateAuthMethodsResponse": {
       "type": "object"
     },
+    "artel_admin_system_settingsUpdateDefaultDocsVaultRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/definitions/artel_public_docsDocsSource"
+        }
+      }
+    },
+    "artel_admin_system_settingsUpdateDefaultDocsVaultResponse": {
+      "type": "object"
+    },
     "artel_admin_system_settingsUpdateRegistrationModeRequest": {
       "type": "object",
       "properties": {
@@ -155,6 +214,15 @@
     },
     "artel_admin_system_settingsUpdateRegistrationModeResponse": {
       "type": "object"
+    },
+    "artel_public_docsDocsSource": {
+      "type": "string",
+      "enum": [
+        "VAULT",
+        "GITHUB"
+      ],
+      "default": "VAULT",
+      "description": "DocsSource selects what an unauthenticated visitor hitting `/docs` (no slug) is redirected to\n— either an admin-picked published vault or the built-in GitHub-backed quick-start guide. See\nsystem_settings.default_docs_source / domain.DocsSource."
     },
     "artel_setup_wizardRegistrationMode": {
       "type": "string",

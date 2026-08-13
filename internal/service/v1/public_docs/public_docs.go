@@ -13,18 +13,23 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/service/v1/public_docs/githubdocs"
 	"go.redsock.ru/rerrors"
 )
 
 type Service struct {
 	vaults         repository.Vaults
 	couchInstances repository.CouchInstances
+	systemSettings repository.SystemSettingsRepo
+	githubDocs     DocsResolver
 }
 
 func New(repo repository.Repo) *Service {
 	return &Service{
 		vaults:         repo.Vaults(),
 		couchInstances: repo.CouchInstances(),
+		systemSettings: repo.SystemSettings(),
+		githubDocs:     githubdocs.NewResolver(),
 	}
 }
 
@@ -73,8 +78,31 @@ func (s *Service) liveSyncClientForPublicVault(ctx context.Context, vault domain
 	return client, nil
 }
 
-func (s *Service) GetVaultBySlug(ctx context.Context, slug string) (domain.Vault, error) {
+// resolveDocsSource returns (vault, resolver, err) for slug — either a real published vault +
+// couchResolver, or the synthetic GitHub identity vault + s.githubDocs when slug is the
+// reserved GitHub docs slug. Centralizes the only CouchDB-vs-GitHub branch in this service.
+func (s *Service) resolveDocsSource(ctx context.Context, slug string) (domain.Vault, DocsResolver, error) {
+	if slug == domain.ReservedGithubDocsSlug {
+		return githubdocs.IdentityVault(), s.githubDocs, nil
+	}
+
 	vault, err := s.resolvePublicVault(ctx, slug)
+	if err != nil {
+		return domain.Vault{}, nil, err
+	}
+
+	client, err := s.liveSyncClientForPublicVault(ctx, vault)
+	if err != nil {
+		return domain.Vault{}, nil, err
+	}
+
+	resolver := couchResolver{client: client}
+
+	return vault, resolver, nil
+}
+
+func (s *Service) GetVaultBySlug(ctx context.Context, slug string) (domain.Vault, error) {
+	vault, _, err := s.resolveDocsSource(ctx, slug)
 	if err != nil {
 		return domain.Vault{}, err
 	}
@@ -83,59 +111,69 @@ func (s *Service) GetVaultBySlug(ctx context.Context, slug string) (domain.Vault
 }
 
 func (s *Service) ListFolders(ctx context.Context, slug string) ([]string, error) {
-	vault, err := s.resolvePublicVault(ctx, slug)
+	_, resolver, err := s.resolveDocsSource(ctx, slug)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := s.liveSyncClientForPublicVault(ctx, vault)
-	if err != nil {
-		return nil, err
-	}
-
-	return client.ListFolders(ctx)
+	return resolver.ListFolders(ctx)
 }
 
 func (s *Service) ListNotes(ctx context.Context, slug string) ([]couchdb.NoteEntry, error) {
-	vault, err := s.resolvePublicVault(ctx, slug)
+	_, resolver, err := s.resolveDocsSource(ctx, slug)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := s.liveSyncClientForPublicVault(ctx, vault)
-	if err != nil {
-		return nil, err
-	}
-
-	return client.ListNotes(ctx)
+	return resolver.ListNotes(ctx)
 }
 
 func (s *Service) GetNote(ctx context.Context, slug, path string) (couchdb.NoteDoc, error) {
-	vault, err := s.resolvePublicVault(ctx, slug)
+	_, resolver, err := s.resolveDocsSource(ctx, slug)
 	if err != nil {
 		return couchdb.NoteDoc{}, err
 	}
 
-	client, err := s.liveSyncClientForPublicVault(ctx, vault)
+	return resolver.GetNote(ctx, path)
+}
+
+// GetDefaultVault resolves the admin-configured default `/docs` vault
+// (SystemSettings.DefaultDocsVaultID). It returns user_errors.NotFound both when unset and when
+// the configured vault is no longer published — same "can't distinguish reason" contract
+// resolvePublicVault uses for an unknown/unpublished slug.
+func (s *Service) GetDefaultVault(ctx context.Context) (domain.Vault, error) {
+	settings, err := s.systemSettings.Get(ctx)
 	if err != nil {
-		return couchdb.NoteDoc{}, err
+		return domain.Vault{}, rerrors.Wrap(err, "error getting system settings")
 	}
 
-	return client.ReadNote(ctx, path)
+	if settings.DefaultDocsSource == domain.DocsSourceGithub {
+		return githubdocs.IdentityVault(), nil
+	}
+
+	if settings.DefaultDocsVaultID == nil {
+		return domain.Vault{}, rerrors.Wrap(user_errors.NotFound)
+	}
+
+	vault, err := s.vaults.GetByID(ctx, *settings.DefaultDocsVaultID)
+	if err != nil {
+		return domain.Vault{}, rerrors.Wrap(user_errors.NotFound)
+	}
+
+	if !vault.IsPublic {
+		return domain.Vault{}, rerrors.Wrap(user_errors.NotFound)
+	}
+
+	return vault, nil
 }
 
 func (s *Service) ListTags(ctx context.Context, slug string) ([]string, error) {
-	vault, err := s.resolvePublicVault(ctx, slug)
+	_, resolver, err := s.resolveDocsSource(ctx, slug)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := s.liveSyncClientForPublicVault(ctx, vault)
-	if err != nil {
-		return nil, err
-	}
-
-	tags, err := client.ListTags(ctx)
+	tags, err := resolver.ListTags(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "list tags")
 	}

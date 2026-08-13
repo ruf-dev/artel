@@ -7,6 +7,13 @@ import (
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
+// ReservedGithubDocsSlug is a sentinel `/docs/:slug` value that never belongs to a real vault —
+// vault.validateSlug rejects it outright. public_docs.Service recognizes it and routes to the
+// GitHub-backed quick-start resolver (internal/service/v1/public_docs/githubdocs) instead of
+// resolving a vaults row, letting GetDefaultVault point unauthenticated `/docs` visitors at the
+// built-in quick-start guide without any frontend route/RPC changes.
+const ReservedGithubDocsSlug = "github-quickstart"
+
 type Vault struct {
 	Uuid                  uuid.UUID
 	UserUuid              uuid.UUID

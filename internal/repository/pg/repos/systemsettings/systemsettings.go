@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -87,6 +88,29 @@ func (r *Repo) CompleteSetup(ctx context.Context) error {
 	return nil
 }
 
+func (r *Repo) UpdateDefaultDocsVault(ctx context.Context, vaultUuid *uuid.UUID) error {
+	param := uuid.NullUUID{Valid: vaultUuid != nil}
+	if vaultUuid != nil {
+		param.UUID = *vaultUuid
+	}
+
+	err := r.q.UpdateSystemSettingsDefaultDocsVault(ctx, param)
+	if err != nil {
+		return rerrors.Wrap(err, "error updating system settings default docs vault")
+	}
+
+	return nil
+}
+
+func (r *Repo) UpdateDefaultDocsSource(ctx context.Context, source domain.DocsSource) error {
+	err := r.q.UpdateSystemSettingsDefaultDocsSource(ctx, string(source))
+	if err != nil {
+		return rerrors.Wrap(err, "error updating system settings default docs source")
+	}
+
+	return nil
+}
+
 func settingsFromRow(row artel_q.SystemSetting) domain.SystemSettings {
 	settings := domain.SystemSettings{
 		SetupCompleted:      row.SetupCompleted,
@@ -97,6 +121,12 @@ func settingsFromRow(row artel_q.SystemSetting) domain.SystemSettings {
 		SetupTokenIssuedAt:  row.SetupTokenIssuedAt.Time,
 		CreatedAt:           row.CreatedAt,
 		UpdatedAt:           row.UpdatedAt,
+		DefaultDocsSource:   domain.DocsSource(row.DefaultDocsSource),
+	}
+
+	if row.DefaultDocsVaultID.Valid {
+		vaultUuid := row.DefaultDocsVaultID.UUID
+		settings.DefaultDocsVaultID = &vaultUuid
 	}
 
 	return settings

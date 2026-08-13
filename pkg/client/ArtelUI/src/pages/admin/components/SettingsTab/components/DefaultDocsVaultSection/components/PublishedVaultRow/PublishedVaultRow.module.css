@@ -1,0 +1,36 @@
+.PublishedVaultRowContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    background: var(--color-bg-secondary);
+    transition: background-color 160ms ease;
+
+    &:hover {
+        background: var(--color-bg-tertiary);
+    }
+
+    &.PublishedVaultRowDefault {
+        background: var(--color-bg-tertiary);
+    }
+
+    & .Info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        min-width: 0;
+    }
+
+    & .Name {
+        font-size: var(--font-size-lg);
+        font-weight: 500;
+        color: var(--color-fg-primary);
+    }
+
+    & .Slug {
+        font-size: var(--font-size-md);
+        color: var(--color-fg-tertiary);
+    }
+}

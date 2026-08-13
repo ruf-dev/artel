@@ -16,7 +16,7 @@ import RoadmapPage from "@/pages/roadmap/RoadmapPage.tsx"
 import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
 import DocsPage from "@/pages/docs/DocsPage.tsx"
-import {DEFAULT_DOCS_SLUG} from "@/pages/docs/processes/docsConstants.ts"
+import DocsDefaultRedirect from "@/pages/docs/DocsDefaultRedirect.tsx"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
 import ToolboxPage from "@/pages/toolbox/ToolboxPage.tsx"
 import TractCanvasListPage from "@/pages/tract-canvas/TractCanvasListPage.tsx"
@@ -92,7 +92,7 @@ const routes: RouteObject[] = [
     {path: Path.DocsPage, element: <DocsPage/>, errorElement: <ErrorPage/>},
     {
         path: Path.DocsPageDefault,
-        element: <Navigate to={`/docs/${DEFAULT_DOCS_SLUG}`} replace/>,
+        element: <DocsDefaultRedirect/>,
         errorElement: <ErrorPage/>,
     },
 ]

@@ -495,6 +495,8 @@ type SystemSetting struct {
 	SetupTokenIssuedAt  sql.NullTime
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
+	DefaultDocsVaultID  uuid.NullUUID
+	DefaultDocsSource   string
 }
 
 type Tract struct {

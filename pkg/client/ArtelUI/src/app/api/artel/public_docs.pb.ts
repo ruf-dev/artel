@@ -8,6 +8,11 @@
 import * as fm from "./fetch.pb";
 
 
+export enum DocsSource {
+  VAULT = "VAULT",
+  GITHUB = "GITHUB",
+}
+
 export type GetVaultBySlugRequest = {
   slug?: string;
 };
@@ -65,6 +70,16 @@ export type PublicDocsListTagsResponse = {
 
 export type PublicDocsListTags = Record<string, never>;
 
+export type GetDefaultVaultRequest = Record<string, never>;
+
+export type GetDefaultVaultResponse = {
+  id?: string;
+  name?: string;
+  slug?: string;
+};
+
+export type GetDefaultVault = Record<string, never>;
+
 export class PublicDocsAPI {
   static GetVaultBySlug(this:void, req: GetVaultBySlugRequest, initReq?: fm.InitReq): Promise<GetVaultBySlugResponse> {
     return fm.fetchRequest<GetVaultBySlugResponse>(`/api/public-docs/vault`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -80,5 +95,8 @@ export class PublicDocsAPI {
   }
   static ListTags(this:void, req: PublicDocsListTagsRequest, initReq?: fm.InitReq): Promise<PublicDocsListTagsResponse> {
     return fm.fetchRequest<PublicDocsListTagsResponse>(`/api/public-docs/tags`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static GetDefaultVault(this:void, req: GetDefaultVaultRequest, initReq?: fm.InitReq): Promise<GetDefaultVaultResponse> {
+    return fm.fetchRequest<GetDefaultVaultResponse>(`/api/public-docs/default-vault`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

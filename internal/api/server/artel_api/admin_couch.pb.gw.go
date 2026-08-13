@@ -10,6 +10,7 @@ package artel_api
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,210 +25,218 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_AdminCouchAPI_ListCouchUsers_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListCouchUsers_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListCouchUsers_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ListCouchUsers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_ListCouchUsers_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListCouchUsers_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListCouchUsers_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListCouchUsers(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminCouchAPI_DeleteCouchUser_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteCouchUser_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq DeleteCouchUser_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.DeleteCouchUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_DeleteCouchUser_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteCouchUser_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq DeleteCouchUser_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.DeleteCouchUser(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminCouchAPI_ChangeCouchUserPassword_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ChangeCouchUserPassword_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ChangeCouchUserPassword_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ChangeCouchUserPassword(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_ChangeCouchUserPassword_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ChangeCouchUserPassword_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ChangeCouchUserPassword_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ChangeCouchUserPassword(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminCouchAPI_ListCouchDatabases_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListCouchDatabases_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListCouchDatabases_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ListCouchDatabases(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_ListCouchDatabases_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListCouchDatabases_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListCouchDatabases_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListCouchDatabases(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminCouchAPI_GrantDatabaseAccess_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GrantDatabaseAccess_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GrantDatabaseAccess_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.GrantDatabaseAccess(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_GrantDatabaseAccess_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GrantDatabaseAccess_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GrantDatabaseAccess_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.GrantDatabaseAccess(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminCouchAPI_RevokeDatabaseAccess_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RevokeDatabaseAccess_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RevokeDatabaseAccess_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.RevokeDatabaseAccess(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_RevokeDatabaseAccess_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RevokeDatabaseAccess_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RevokeDatabaseAccess_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RevokeDatabaseAccess(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminCouchAPI_GetUserDatabaseAccess_0(ctx context.Context, marshaler runtime.Marshaler, client AdminCouchAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetUserDatabaseAccess_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetUserDatabaseAccess_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.GetUserDatabaseAccess(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminCouchAPI_GetUserDatabaseAccess_0(ctx context.Context, marshaler runtime.Marshaler, server AdminCouchAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetUserDatabaseAccess_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetUserDatabaseAccess_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.GetUserDatabaseAccess(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterAdminCouchAPIHandlerServer registers the http handlers for service AdminCouchAPI to "mux".
 // UnaryRPC     :call AdminCouchAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAdminCouchAPIHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AdminCouchAPIServer) error {
-
-	mux.Handle("POST", pattern_AdminCouchAPI_ListCouchUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_ListCouchUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchUsers", runtime.WithHTTPPathPattern("/api/admin_couch/users/list"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchUsers", runtime.WithHTTPPathPattern("/api/admin_couch/users/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -239,20 +248,15 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_ListCouchUsers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_DeleteCouchUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_DeleteCouchUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/DeleteCouchUser", runtime.WithHTTPPathPattern("/api/admin_couch/users/delete"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/DeleteCouchUser", runtime.WithHTTPPathPattern("/api/admin_couch/users/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -264,20 +268,15 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_DeleteCouchUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_ChangeCouchUserPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_ChangeCouchUserPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ChangeCouchUserPassword", runtime.WithHTTPPathPattern("/api/admin_couch/users/change-password"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ChangeCouchUserPassword", runtime.WithHTTPPathPattern("/api/admin_couch/users/change-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -289,20 +288,15 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_ChangeCouchUserPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_ListCouchDatabases_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_ListCouchDatabases_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchDatabases", runtime.WithHTTPPathPattern("/api/admin_couch/db/list"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchDatabases", runtime.WithHTTPPathPattern("/api/admin_couch/db/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -314,20 +308,15 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_ListCouchDatabases_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_GrantDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_GrantDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GrantDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/grant"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GrantDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/grant"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -339,20 +328,15 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_GrantDatabaseAccess_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_RevokeDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_RevokeDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/RevokeDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/revoke"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/RevokeDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -364,20 +348,15 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_RevokeDatabaseAccess_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_GetUserDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_GetUserDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GetUserDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/user-access"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GetUserDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/user-access"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -389,9 +368,7 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_GetUserDatabaseAccess_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -400,25 +377,24 @@ func RegisterAdminCouchAPIHandlerServer(ctx context.Context, mux *runtime.ServeM
 // RegisterAdminCouchAPIHandlerFromEndpoint is same as RegisterAdminCouchAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterAdminCouchAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
-
 	return RegisterAdminCouchAPIHandler(ctx, mux, conn)
 }
 
@@ -432,16 +408,13 @@ func RegisterAdminCouchAPIHandler(ctx context.Context, mux *runtime.ServeMux, co
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AdminCouchAPIClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AdminCouchAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "AdminCouchAPIClient" to call the correct interceptors.
+// "AdminCouchAPIClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AdminCouchAPIClient) error {
-
-	mux.Handle("POST", pattern_AdminCouchAPI_ListCouchUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_ListCouchUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchUsers", runtime.WithHTTPPathPattern("/api/admin_couch/users/list"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchUsers", runtime.WithHTTPPathPattern("/api/admin_couch/users/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -452,18 +425,13 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_ListCouchUsers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_DeleteCouchUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_DeleteCouchUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/DeleteCouchUser", runtime.WithHTTPPathPattern("/api/admin_couch/users/delete"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/DeleteCouchUser", runtime.WithHTTPPathPattern("/api/admin_couch/users/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -474,18 +442,13 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_DeleteCouchUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_ChangeCouchUserPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_ChangeCouchUserPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ChangeCouchUserPassword", runtime.WithHTTPPathPattern("/api/admin_couch/users/change-password"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ChangeCouchUserPassword", runtime.WithHTTPPathPattern("/api/admin_couch/users/change-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -496,18 +459,13 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_ChangeCouchUserPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_ListCouchDatabases_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_ListCouchDatabases_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchDatabases", runtime.WithHTTPPathPattern("/api/admin_couch/db/list"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/ListCouchDatabases", runtime.WithHTTPPathPattern("/api/admin_couch/db/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -518,18 +476,13 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_ListCouchDatabases_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_GrantDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_GrantDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GrantDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/grant"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GrantDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/grant"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -540,18 +493,13 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_GrantDatabaseAccess_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_RevokeDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_RevokeDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/RevokeDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/revoke"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/RevokeDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -562,18 +510,13 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_RevokeDatabaseAccess_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminCouchAPI_GetUserDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminCouchAPI_GetUserDatabaseAccess_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GetUserDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/user-access"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_couch.AdminCouchAPI/GetUserDatabaseAccess", runtime.WithHTTPPathPattern("/api/admin_couch/db/user-access"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -584,42 +527,27 @@ func RegisterAdminCouchAPIHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminCouchAPI_GetUserDatabaseAccess_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
 var (
-	pattern_AdminCouchAPI_ListCouchUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "users", "list"}, ""))
-
-	pattern_AdminCouchAPI_DeleteCouchUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "users", "delete"}, ""))
-
+	pattern_AdminCouchAPI_ListCouchUsers_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "users", "list"}, ""))
+	pattern_AdminCouchAPI_DeleteCouchUser_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "users", "delete"}, ""))
 	pattern_AdminCouchAPI_ChangeCouchUserPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "users", "change-password"}, ""))
-
-	pattern_AdminCouchAPI_ListCouchDatabases_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "list"}, ""))
-
-	pattern_AdminCouchAPI_GrantDatabaseAccess_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "grant"}, ""))
-
-	pattern_AdminCouchAPI_RevokeDatabaseAccess_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "revoke"}, ""))
-
-	pattern_AdminCouchAPI_GetUserDatabaseAccess_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "user-access"}, ""))
+	pattern_AdminCouchAPI_ListCouchDatabases_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "list"}, ""))
+	pattern_AdminCouchAPI_GrantDatabaseAccess_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "grant"}, ""))
+	pattern_AdminCouchAPI_RevokeDatabaseAccess_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "revoke"}, ""))
+	pattern_AdminCouchAPI_GetUserDatabaseAccess_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "admin_couch", "db", "user-access"}, ""))
 )
 
 var (
-	forward_AdminCouchAPI_ListCouchUsers_0 = runtime.ForwardResponseMessage
-
-	forward_AdminCouchAPI_DeleteCouchUser_0 = runtime.ForwardResponseMessage
-
+	forward_AdminCouchAPI_ListCouchUsers_0          = runtime.ForwardResponseMessage
+	forward_AdminCouchAPI_DeleteCouchUser_0         = runtime.ForwardResponseMessage
 	forward_AdminCouchAPI_ChangeCouchUserPassword_0 = runtime.ForwardResponseMessage
-
-	forward_AdminCouchAPI_ListCouchDatabases_0 = runtime.ForwardResponseMessage
-
-	forward_AdminCouchAPI_GrantDatabaseAccess_0 = runtime.ForwardResponseMessage
-
-	forward_AdminCouchAPI_RevokeDatabaseAccess_0 = runtime.ForwardResponseMessage
-
-	forward_AdminCouchAPI_GetUserDatabaseAccess_0 = runtime.ForwardResponseMessage
+	forward_AdminCouchAPI_ListCouchDatabases_0      = runtime.ForwardResponseMessage
+	forward_AdminCouchAPI_GrantDatabaseAccess_0     = runtime.ForwardResponseMessage
+	forward_AdminCouchAPI_RevokeDatabaseAccess_0    = runtime.ForwardResponseMessage
+	forward_AdminCouchAPI_GetUserDatabaseAccess_0   = runtime.ForwardResponseMessage
 )

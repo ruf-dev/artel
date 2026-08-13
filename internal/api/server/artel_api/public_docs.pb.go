@@ -7,14 +7,13 @@
 package artel_api
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "go.redsock.ru/protoc-gen-npm/npmplugin"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -23,6 +22,55 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+// DocsSource selects what an unauthenticated visitor hitting `/docs` (no slug) is redirected to
+// — either an admin-picked published vault or the built-in GitHub-backed quick-start guide. See
+// system_settings.default_docs_source / domain.DocsSource.
+type DocsSource int32
+
+const (
+	DocsSource_VAULT  DocsSource = 0
+	DocsSource_GITHUB DocsSource = 1
+)
+
+// Enum value maps for DocsSource.
+var (
+	DocsSource_name = map[int32]string{
+		0: "VAULT",
+		1: "GITHUB",
+	}
+	DocsSource_value = map[string]int32{
+		"VAULT":  0,
+		"GITHUB": 1,
+	}
+)
+
+func (x DocsSource) Enum() *DocsSource {
+	p := new(DocsSource)
+	*p = x
+	return p
+}
+
+func (x DocsSource) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DocsSource) Descriptor() protoreflect.EnumDescriptor {
+	return file_public_docs_proto_enumTypes[0].Descriptor()
+}
+
+func (DocsSource) Type() protoreflect.EnumType {
+	return &file_public_docs_proto_enumTypes[0]
+}
+
+func (x DocsSource) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DocsSource.Descriptor instead.
+func (DocsSource) EnumDescriptor() ([]byte, []int) {
+	return file_public_docs_proto_rawDescGZIP(), []int{0}
+}
 
 type GetVaultBySlug struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -256,6 +304,45 @@ func (*PublicDocsListTags) Descriptor() ([]byte, []int) {
 	return file_public_docs_proto_rawDescGZIP(), []int{5}
 }
 
+// GetDefaultVault resolves the admin-configured default `/docs` vault (system_settings.
+// default_docs_vault_id) — returns not-found when unset or when the configured vault is no
+// longer public, same "can't distinguish reason" contract as GetVaultBySlug.
+type GetDefaultVault struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDefaultVault) Reset() {
+	*x = GetDefaultVault{}
+	mi := &file_public_docs_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDefaultVault) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDefaultVault) ProtoMessage() {}
+
+func (x *GetDefaultVault) ProtoReflect() protoreflect.Message {
+	mi := &file_public_docs_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDefaultVault.ProtoReflect.Descriptor instead.
+func (*GetDefaultVault) Descriptor() ([]byte, []int) {
+	return file_public_docs_proto_rawDescGZIP(), []int{6}
+}
+
 type GetVaultBySlug_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Slug          string                 `protobuf:"bytes,1,opt,name=slug,proto3" json:"slug,omitempty"`
@@ -265,7 +352,7 @@ type GetVaultBySlug_Request struct {
 
 func (x *GetVaultBySlug_Request) Reset() {
 	*x = GetVaultBySlug_Request{}
-	mi := &file_public_docs_proto_msgTypes[6]
+	mi := &file_public_docs_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -277,7 +364,7 @@ func (x *GetVaultBySlug_Request) String() string {
 func (*GetVaultBySlug_Request) ProtoMessage() {}
 
 func (x *GetVaultBySlug_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[6]
+	mi := &file_public_docs_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -310,7 +397,7 @@ type GetVaultBySlug_Response struct {
 
 func (x *GetVaultBySlug_Response) Reset() {
 	*x = GetVaultBySlug_Response{}
-	mi := &file_public_docs_proto_msgTypes[7]
+	mi := &file_public_docs_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -322,7 +409,7 @@ func (x *GetVaultBySlug_Response) String() string {
 func (*GetVaultBySlug_Response) ProtoMessage() {}
 
 func (x *GetVaultBySlug_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[7]
+	mi := &file_public_docs_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -361,7 +448,7 @@ type PublicDocsListFolders_Request struct {
 
 func (x *PublicDocsListFolders_Request) Reset() {
 	*x = PublicDocsListFolders_Request{}
-	mi := &file_public_docs_proto_msgTypes[8]
+	mi := &file_public_docs_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -373,7 +460,7 @@ func (x *PublicDocsListFolders_Request) String() string {
 func (*PublicDocsListFolders_Request) ProtoMessage() {}
 
 func (x *PublicDocsListFolders_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[8]
+	mi := &file_public_docs_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -405,7 +492,7 @@ type PublicDocsListFolders_Response struct {
 
 func (x *PublicDocsListFolders_Response) Reset() {
 	*x = PublicDocsListFolders_Response{}
-	mi := &file_public_docs_proto_msgTypes[9]
+	mi := &file_public_docs_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -417,7 +504,7 @@ func (x *PublicDocsListFolders_Response) String() string {
 func (*PublicDocsListFolders_Response) ProtoMessage() {}
 
 func (x *PublicDocsListFolders_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[9]
+	mi := &file_public_docs_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -449,7 +536,7 @@ type PublicDocsListNotes_Request struct {
 
 func (x *PublicDocsListNotes_Request) Reset() {
 	*x = PublicDocsListNotes_Request{}
-	mi := &file_public_docs_proto_msgTypes[10]
+	mi := &file_public_docs_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -461,7 +548,7 @@ func (x *PublicDocsListNotes_Request) String() string {
 func (*PublicDocsListNotes_Request) ProtoMessage() {}
 
 func (x *PublicDocsListNotes_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[10]
+	mi := &file_public_docs_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -493,7 +580,7 @@ type PublicDocsListNotes_Response struct {
 
 func (x *PublicDocsListNotes_Response) Reset() {
 	*x = PublicDocsListNotes_Response{}
-	mi := &file_public_docs_proto_msgTypes[11]
+	mi := &file_public_docs_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -505,7 +592,7 @@ func (x *PublicDocsListNotes_Response) String() string {
 func (*PublicDocsListNotes_Response) ProtoMessage() {}
 
 func (x *PublicDocsListNotes_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[11]
+	mi := &file_public_docs_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -538,7 +625,7 @@ type PublicDocsGetNote_Request struct {
 
 func (x *PublicDocsGetNote_Request) Reset() {
 	*x = PublicDocsGetNote_Request{}
-	mi := &file_public_docs_proto_msgTypes[12]
+	mi := &file_public_docs_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -550,7 +637,7 @@ func (x *PublicDocsGetNote_Request) String() string {
 func (*PublicDocsGetNote_Request) ProtoMessage() {}
 
 func (x *PublicDocsGetNote_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[12]
+	mi := &file_public_docs_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -589,7 +676,7 @@ type PublicDocsGetNote_Response struct {
 
 func (x *PublicDocsGetNote_Response) Reset() {
 	*x = PublicDocsGetNote_Response{}
-	mi := &file_public_docs_proto_msgTypes[13]
+	mi := &file_public_docs_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -601,7 +688,7 @@ func (x *PublicDocsGetNote_Response) String() string {
 func (*PublicDocsGetNote_Response) ProtoMessage() {}
 
 func (x *PublicDocsGetNote_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[13]
+	mi := &file_public_docs_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +720,7 @@ type PublicDocsListTags_Request struct {
 
 func (x *PublicDocsListTags_Request) Reset() {
 	*x = PublicDocsListTags_Request{}
-	mi := &file_public_docs_proto_msgTypes[14]
+	mi := &file_public_docs_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -645,7 +732,7 @@ func (x *PublicDocsListTags_Request) String() string {
 func (*PublicDocsListTags_Request) ProtoMessage() {}
 
 func (x *PublicDocsListTags_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[14]
+	mi := &file_public_docs_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -677,7 +764,7 @@ type PublicDocsListTags_Response struct {
 
 func (x *PublicDocsListTags_Response) Reset() {
 	*x = PublicDocsListTags_Response{}
-	mi := &file_public_docs_proto_msgTypes[15]
+	mi := &file_public_docs_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -689,7 +776,7 @@ func (x *PublicDocsListTags_Response) String() string {
 func (*PublicDocsListTags_Response) ProtoMessage() {}
 
 func (x *PublicDocsListTags_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_public_docs_proto_msgTypes[15]
+	mi := &file_public_docs_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -710,6 +797,102 @@ func (x *PublicDocsListTags_Response) GetTags() []string {
 		return x.Tags
 	}
 	return nil
+}
+
+type GetDefaultVault_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDefaultVault_Request) Reset() {
+	*x = GetDefaultVault_Request{}
+	mi := &file_public_docs_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDefaultVault_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDefaultVault_Request) ProtoMessage() {}
+
+func (x *GetDefaultVault_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_public_docs_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDefaultVault_Request.ProtoReflect.Descriptor instead.
+func (*GetDefaultVault_Request) Descriptor() ([]byte, []int) {
+	return file_public_docs_proto_rawDescGZIP(), []int{6, 0}
+}
+
+type GetDefaultVault_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Slug          string                 `protobuf:"bytes,3,opt,name=slug,proto3" json:"slug,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDefaultVault_Response) Reset() {
+	*x = GetDefaultVault_Response{}
+	mi := &file_public_docs_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDefaultVault_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDefaultVault_Response) ProtoMessage() {}
+
+func (x *GetDefaultVault_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_public_docs_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDefaultVault_Response.ProtoReflect.Descriptor instead.
+func (*GetDefaultVault_Response) Descriptor() ([]byte, []int) {
+	return file_public_docs_proto_rawDescGZIP(), []int{6, 1}
+}
+
+func (x *GetDefaultVault_Response) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *GetDefaultVault_Response) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GetDefaultVault_Response) GetSlug() string {
+	if x != nil {
+		return x.Slug
+	}
+	return ""
 }
 
 var File_public_docs_proto protoreflect.FileDescriptor
@@ -746,13 +929,25 @@ const file_public_docs_proto_rawDesc = "" +
 	"\aRequest\x12\x12\n" +
 	"\x04slug\x18\x01 \x01(\tR\x04slug\x1a\x1e\n" +
 	"\bResponse\x12\x12\n" +
-	"\x04tags\x18\x01 \x03(\tR\x04tags2\xdf\x05\n" +
+	"\x04tags\x18\x01 \x03(\tR\x04tags\"`\n" +
+	"\x0fGetDefaultVault\x1a\t\n" +
+	"\aRequest\x1aB\n" +
+	"\bResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
+	"\x04slug\x18\x03 \x01(\tR\x04slug*#\n" +
+	"\n" +
+	"DocsSource\x12\t\n" +
+	"\x05VAULT\x10\x00\x12\n" +
+	"\n" +
+	"\x06GITHUB\x10\x012\xf7\x06\n" +
 	"\rPublicDocsAPI\x12\x8a\x01\n" +
 	"\x0eGetVaultBySlug\x12).artel_public_docs.GetVaultBySlug.Request\x1a*.artel_public_docs.GetVaultBySlug.Response\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/api/public-docs/vault\x12\x97\x01\n" +
 	"\vListFolders\x120.artel_public_docs.PublicDocsListFolders.Request\x1a1.artel_public_docs.PublicDocsListFolders.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/public-docs/folders\x12\x8e\x01\n" +
 	"\tListNotes\x12..artel_public_docs.PublicDocsListNotes.Request\x1a/.artel_public_docs.PublicDocsListNotes.Response\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/public-docs/list\x12\x87\x01\n" +
 	"\aGetNote\x12,.artel_public_docs.PublicDocsGetNote.Request\x1a-.artel_public_docs.PublicDocsGetNote.Response\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/public-docs/get\x12\x8b\x01\n" +
-	"\bListTags\x12-.artel_public_docs.PublicDocsListTags.Request\x1a..artel_public_docs.PublicDocsListTags.Response\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/public-docs/tagsB\x1a\x92\x82\x19\n" +
+	"\bListTags\x12-.artel_public_docs.PublicDocsListTags.Request\x1a..artel_public_docs.PublicDocsListTags.Response\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/public-docs/tags\x12\x95\x01\n" +
+	"\x0fGetDefaultVault\x12*.artel_public_docs.GetDefaultVault.Request\x1a+.artel_public_docs.GetDefaultVault.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/public-docs/default-vaultB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
@@ -768,39 +963,46 @@ func file_public_docs_proto_rawDescGZIP() []byte {
 	return file_public_docs_proto_rawDescData
 }
 
-var file_public_docs_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_public_docs_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_public_docs_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_public_docs_proto_goTypes = []any{
-	(*GetVaultBySlug)(nil),                 // 0: artel_public_docs.GetVaultBySlug
-	(*PublicDocsNoteItem)(nil),             // 1: artel_public_docs.PublicDocsNoteItem
-	(*PublicDocsListFolders)(nil),          // 2: artel_public_docs.PublicDocsListFolders
-	(*PublicDocsListNotes)(nil),            // 3: artel_public_docs.PublicDocsListNotes
-	(*PublicDocsGetNote)(nil),              // 4: artel_public_docs.PublicDocsGetNote
-	(*PublicDocsListTags)(nil),             // 5: artel_public_docs.PublicDocsListTags
-	(*GetVaultBySlug_Request)(nil),         // 6: artel_public_docs.GetVaultBySlug.Request
-	(*GetVaultBySlug_Response)(nil),        // 7: artel_public_docs.GetVaultBySlug.Response
-	(*PublicDocsListFolders_Request)(nil),  // 8: artel_public_docs.PublicDocsListFolders.Request
-	(*PublicDocsListFolders_Response)(nil), // 9: artel_public_docs.PublicDocsListFolders.Response
-	(*PublicDocsListNotes_Request)(nil),    // 10: artel_public_docs.PublicDocsListNotes.Request
-	(*PublicDocsListNotes_Response)(nil),   // 11: artel_public_docs.PublicDocsListNotes.Response
-	(*PublicDocsGetNote_Request)(nil),      // 12: artel_public_docs.PublicDocsGetNote.Request
-	(*PublicDocsGetNote_Response)(nil),     // 13: artel_public_docs.PublicDocsGetNote.Response
-	(*PublicDocsListTags_Request)(nil),     // 14: artel_public_docs.PublicDocsListTags.Request
-	(*PublicDocsListTags_Response)(nil),    // 15: artel_public_docs.PublicDocsListTags.Response
+	(DocsSource)(0),                        // 0: artel_public_docs.DocsSource
+	(*GetVaultBySlug)(nil),                 // 1: artel_public_docs.GetVaultBySlug
+	(*PublicDocsNoteItem)(nil),             // 2: artel_public_docs.PublicDocsNoteItem
+	(*PublicDocsListFolders)(nil),          // 3: artel_public_docs.PublicDocsListFolders
+	(*PublicDocsListNotes)(nil),            // 4: artel_public_docs.PublicDocsListNotes
+	(*PublicDocsGetNote)(nil),              // 5: artel_public_docs.PublicDocsGetNote
+	(*PublicDocsListTags)(nil),             // 6: artel_public_docs.PublicDocsListTags
+	(*GetDefaultVault)(nil),                // 7: artel_public_docs.GetDefaultVault
+	(*GetVaultBySlug_Request)(nil),         // 8: artel_public_docs.GetVaultBySlug.Request
+	(*GetVaultBySlug_Response)(nil),        // 9: artel_public_docs.GetVaultBySlug.Response
+	(*PublicDocsListFolders_Request)(nil),  // 10: artel_public_docs.PublicDocsListFolders.Request
+	(*PublicDocsListFolders_Response)(nil), // 11: artel_public_docs.PublicDocsListFolders.Response
+	(*PublicDocsListNotes_Request)(nil),    // 12: artel_public_docs.PublicDocsListNotes.Request
+	(*PublicDocsListNotes_Response)(nil),   // 13: artel_public_docs.PublicDocsListNotes.Response
+	(*PublicDocsGetNote_Request)(nil),      // 14: artel_public_docs.PublicDocsGetNote.Request
+	(*PublicDocsGetNote_Response)(nil),     // 15: artel_public_docs.PublicDocsGetNote.Response
+	(*PublicDocsListTags_Request)(nil),     // 16: artel_public_docs.PublicDocsListTags.Request
+	(*PublicDocsListTags_Response)(nil),    // 17: artel_public_docs.PublicDocsListTags.Response
+	(*GetDefaultVault_Request)(nil),        // 18: artel_public_docs.GetDefaultVault.Request
+	(*GetDefaultVault_Response)(nil),       // 19: artel_public_docs.GetDefaultVault.Response
 }
 var file_public_docs_proto_depIdxs = []int32{
-	1,  // 0: artel_public_docs.PublicDocsListNotes.Response.notes:type_name -> artel_public_docs.PublicDocsNoteItem
-	6,  // 1: artel_public_docs.PublicDocsAPI.GetVaultBySlug:input_type -> artel_public_docs.GetVaultBySlug.Request
-	8,  // 2: artel_public_docs.PublicDocsAPI.ListFolders:input_type -> artel_public_docs.PublicDocsListFolders.Request
-	10, // 3: artel_public_docs.PublicDocsAPI.ListNotes:input_type -> artel_public_docs.PublicDocsListNotes.Request
-	12, // 4: artel_public_docs.PublicDocsAPI.GetNote:input_type -> artel_public_docs.PublicDocsGetNote.Request
-	14, // 5: artel_public_docs.PublicDocsAPI.ListTags:input_type -> artel_public_docs.PublicDocsListTags.Request
-	7,  // 6: artel_public_docs.PublicDocsAPI.GetVaultBySlug:output_type -> artel_public_docs.GetVaultBySlug.Response
-	9,  // 7: artel_public_docs.PublicDocsAPI.ListFolders:output_type -> artel_public_docs.PublicDocsListFolders.Response
-	11, // 8: artel_public_docs.PublicDocsAPI.ListNotes:output_type -> artel_public_docs.PublicDocsListNotes.Response
-	13, // 9: artel_public_docs.PublicDocsAPI.GetNote:output_type -> artel_public_docs.PublicDocsGetNote.Response
-	15, // 10: artel_public_docs.PublicDocsAPI.ListTags:output_type -> artel_public_docs.PublicDocsListTags.Response
-	6,  // [6:11] is the sub-list for method output_type
-	1,  // [1:6] is the sub-list for method input_type
+	2,  // 0: artel_public_docs.PublicDocsListNotes.Response.notes:type_name -> artel_public_docs.PublicDocsNoteItem
+	8,  // 1: artel_public_docs.PublicDocsAPI.GetVaultBySlug:input_type -> artel_public_docs.GetVaultBySlug.Request
+	10, // 2: artel_public_docs.PublicDocsAPI.ListFolders:input_type -> artel_public_docs.PublicDocsListFolders.Request
+	12, // 3: artel_public_docs.PublicDocsAPI.ListNotes:input_type -> artel_public_docs.PublicDocsListNotes.Request
+	14, // 4: artel_public_docs.PublicDocsAPI.GetNote:input_type -> artel_public_docs.PublicDocsGetNote.Request
+	16, // 5: artel_public_docs.PublicDocsAPI.ListTags:input_type -> artel_public_docs.PublicDocsListTags.Request
+	18, // 6: artel_public_docs.PublicDocsAPI.GetDefaultVault:input_type -> artel_public_docs.GetDefaultVault.Request
+	9,  // 7: artel_public_docs.PublicDocsAPI.GetVaultBySlug:output_type -> artel_public_docs.GetVaultBySlug.Response
+	11, // 8: artel_public_docs.PublicDocsAPI.ListFolders:output_type -> artel_public_docs.PublicDocsListFolders.Response
+	13, // 9: artel_public_docs.PublicDocsAPI.ListNotes:output_type -> artel_public_docs.PublicDocsListNotes.Response
+	15, // 10: artel_public_docs.PublicDocsAPI.GetNote:output_type -> artel_public_docs.PublicDocsGetNote.Response
+	17, // 11: artel_public_docs.PublicDocsAPI.ListTags:output_type -> artel_public_docs.PublicDocsListTags.Response
+	19, // 12: artel_public_docs.PublicDocsAPI.GetDefaultVault:output_type -> artel_public_docs.GetDefaultVault.Response
+	7,  // [7:13] is the sub-list for method output_type
+	1,  // [1:7] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -816,13 +1018,14 @@ func file_public_docs_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_public_docs_proto_rawDesc), len(file_public_docs_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   16,
+			NumEnums:      1,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_public_docs_proto_goTypes,
 		DependencyIndexes: file_public_docs_proto_depIdxs,
+		EnumInfos:         file_public_docs_proto_enumTypes,
 		MessageInfos:      file_public_docs_proto_msgTypes,
 	}.Build()
 	File_public_docs_proto = out.File

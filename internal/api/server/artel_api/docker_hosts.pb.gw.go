@@ -10,6 +10,7 @@ package artel_api
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,158 +25,164 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_DockerHostsAPI_RegisterDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, client DockerHostsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RegisterDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RegisterDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.RegisterDockerHost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_DockerHostsAPI_RegisterDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, server DockerHostsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RegisterDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq RegisterDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RegisterDockerHost(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_DockerHostsAPI_GetDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, client DockerHostsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.GetDockerHost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_DockerHostsAPI_GetDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, server DockerHostsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.GetDockerHost(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_DockerHostsAPI_ListDockerHosts_0(ctx context.Context, marshaler runtime.Marshaler, client DockerHostsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListDockerHosts_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListDockerHosts_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.ListDockerHosts(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_DockerHostsAPI_ListDockerHosts_0(ctx context.Context, marshaler runtime.Marshaler, server DockerHostsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListDockerHosts_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ListDockerHosts_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ListDockerHosts(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_DockerHostsAPI_UpdateDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, client DockerHostsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UpdateDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.UpdateDockerHost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_DockerHostsAPI_UpdateDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, server DockerHostsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UpdateDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.UpdateDockerHost(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_DockerHostsAPI_DeleteDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, client DockerHostsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq DeleteDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.DeleteDockerHost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_DockerHostsAPI_DeleteDockerHost_0(ctx context.Context, marshaler runtime.Marshaler, server DockerHostsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DeleteDockerHost_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq DeleteDockerHost_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.DeleteDockerHost(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterDockerHostsAPIHandlerServer registers the http handlers for service DockerHostsAPI to "mux".
 // UnaryRPC     :call DockerHostsAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterDockerHostsAPIHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server DockerHostsAPIServer) error {
-
-	mux.Handle("POST", pattern_DockerHostsAPI_RegisterDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_RegisterDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/RegisterDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/add"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/RegisterDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -187,20 +194,15 @@ func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_RegisterDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_GetDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_GetDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/GetDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/get"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/GetDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -212,20 +214,15 @@ func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_GetDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_ListDockerHosts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_ListDockerHosts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/ListDockerHosts", runtime.WithHTTPPathPattern("/api/docker_hosts/list"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/ListDockerHosts", runtime.WithHTTPPathPattern("/api/docker_hosts/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -237,20 +234,15 @@ func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_ListDockerHosts_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_UpdateDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_UpdateDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/UpdateDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/update"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/UpdateDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -262,20 +254,15 @@ func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_UpdateDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_DeleteDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_DeleteDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/DeleteDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/delete"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/DeleteDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -287,9 +274,7 @@ func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_DeleteDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -298,25 +283,24 @@ func RegisterDockerHostsAPIHandlerServer(ctx context.Context, mux *runtime.Serve
 // RegisterDockerHostsAPIHandlerFromEndpoint is same as RegisterDockerHostsAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterDockerHostsAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
-
 	return RegisterDockerHostsAPIHandler(ctx, mux, conn)
 }
 
@@ -330,16 +314,13 @@ func RegisterDockerHostsAPIHandler(ctx context.Context, mux *runtime.ServeMux, c
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "DockerHostsAPIClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "DockerHostsAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "DockerHostsAPIClient" to call the correct interceptors.
+// "DockerHostsAPIClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterDockerHostsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client DockerHostsAPIClient) error {
-
-	mux.Handle("POST", pattern_DockerHostsAPI_RegisterDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_RegisterDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/RegisterDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/add"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/RegisterDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -350,18 +331,13 @@ func RegisterDockerHostsAPIHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_RegisterDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_GetDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_GetDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/GetDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/get"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/GetDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -372,18 +348,13 @@ func RegisterDockerHostsAPIHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_GetDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_ListDockerHosts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_ListDockerHosts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/ListDockerHosts", runtime.WithHTTPPathPattern("/api/docker_hosts/list"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/ListDockerHosts", runtime.WithHTTPPathPattern("/api/docker_hosts/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -394,18 +365,13 @@ func RegisterDockerHostsAPIHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_ListDockerHosts_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_UpdateDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_UpdateDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/UpdateDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/update"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/UpdateDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -416,18 +382,13 @@ func RegisterDockerHostsAPIHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_UpdateDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_DockerHostsAPI_DeleteDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_DockerHostsAPI_DeleteDockerHost_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/DeleteDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/delete"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_docker_hosts.DockerHostsAPI/DeleteDockerHost", runtime.WithHTTPPathPattern("/api/docker_hosts/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -438,34 +399,23 @@ func RegisterDockerHostsAPIHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_DockerHostsAPI_DeleteDockerHost_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
 var (
 	pattern_DockerHostsAPI_RegisterDockerHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "add"}, ""))
-
-	pattern_DockerHostsAPI_GetDockerHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "get"}, ""))
-
-	pattern_DockerHostsAPI_ListDockerHosts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "list"}, ""))
-
-	pattern_DockerHostsAPI_UpdateDockerHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "update"}, ""))
-
-	pattern_DockerHostsAPI_DeleteDockerHost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "delete"}, ""))
+	pattern_DockerHostsAPI_GetDockerHost_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "get"}, ""))
+	pattern_DockerHostsAPI_ListDockerHosts_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "list"}, ""))
+	pattern_DockerHostsAPI_UpdateDockerHost_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "update"}, ""))
+	pattern_DockerHostsAPI_DeleteDockerHost_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "docker_hosts", "delete"}, ""))
 )
 
 var (
 	forward_DockerHostsAPI_RegisterDockerHost_0 = runtime.ForwardResponseMessage
-
-	forward_DockerHostsAPI_GetDockerHost_0 = runtime.ForwardResponseMessage
-
-	forward_DockerHostsAPI_ListDockerHosts_0 = runtime.ForwardResponseMessage
-
-	forward_DockerHostsAPI_UpdateDockerHost_0 = runtime.ForwardResponseMessage
-
-	forward_DockerHostsAPI_DeleteDockerHost_0 = runtime.ForwardResponseMessage
+	forward_DockerHostsAPI_GetDockerHost_0      = runtime.ForwardResponseMessage
+	forward_DockerHostsAPI_ListDockerHosts_0    = runtime.ForwardResponseMessage
+	forward_DockerHostsAPI_UpdateDockerHost_0   = runtime.ForwardResponseMessage
+	forward_DockerHostsAPI_DeleteDockerHost_0   = runtime.ForwardResponseMessage
 )

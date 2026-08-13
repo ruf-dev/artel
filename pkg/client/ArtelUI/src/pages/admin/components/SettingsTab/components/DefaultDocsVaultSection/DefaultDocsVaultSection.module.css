@@ -1,0 +1,61 @@
+.DefaultDocsVaultSectionContainer {
+    margin-bottom: 3rem;
+
+    & .SectionTitle {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        margin: 0 0 0.5rem;
+        padding: 0;
+    }
+
+    & .SectionDescription {
+        font-size: var(--font-size-lg);
+        color: var(--color-fg-tertiary);
+        margin: 0 0 1.5rem;
+        line-height: 1.45;
+    }
+
+    & .SourceButtonGroup {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 0 0 1.5rem;
+
+        & .SourceButton {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            transition: all 160ms ease;
+
+            &.SourceButtonActive {
+                background: var(--coral);
+                color: var(--color-fg-white);
+            }
+        }
+    }
+
+    & .GithubNote {
+        font-size: var(--font-size-lg);
+        color: var(--color-fg-tertiary);
+        margin: 0;
+        line-height: 1.45;
+    }
+
+    & .Empty {
+        font-size: var(--font-size-lg);
+        color: var(--color-fg-tertiary);
+        margin: 0;
+    }
+
+    & .Groups {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    & .Separator {
+        border-top: var(--border-thickness) solid var(--color-bg-tertiary);
+    }
+}

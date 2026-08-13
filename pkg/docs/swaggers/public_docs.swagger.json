@@ -16,6 +16,38 @@
     "application/json"
   ],
   "paths": {
+    "/api/public-docs/default-vault": {
+      "post": {
+        "operationId": "PublicDocsAPI_GetDefaultVault",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsGetDefaultVaultResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_public_docsGetDefaultVaultRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PublicDocsAPI"
+        ]
+      }
+    },
     "/api/public-docs/folders": {
       "post": {
         "operationId": "PublicDocsAPI_ListFolders",
@@ -178,6 +210,23 @@
     }
   },
   "definitions": {
+    "artel_public_docsGetDefaultVaultRequest": {
+      "type": "object"
+    },
+    "artel_public_docsGetDefaultVaultResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
     "artel_public_docsGetVaultBySlugRequest": {
       "type": "object",
       "properties": {

@@ -1,0 +1,6 @@
+.DocsDefaultRedirectContainer {
+    display: flex;
+    flex-direction: column;
+    height: var(--page-height-full);
+    background: var(--color-bg-base);
+}

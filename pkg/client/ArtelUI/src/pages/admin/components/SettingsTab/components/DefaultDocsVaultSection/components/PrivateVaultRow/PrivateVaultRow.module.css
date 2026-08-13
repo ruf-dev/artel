@@ -1,0 +1,32 @@
+.PrivateVaultRowContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    background: var(--color-bg-secondary);
+    transition: background-color 160ms ease;
+
+    &:hover {
+        background: var(--color-bg-tertiary);
+    }
+
+    & .Row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    & .Name {
+        font-size: var(--font-size-lg);
+        font-weight: 500;
+        color: var(--color-fg-primary);
+    }
+
+    & .SlugForm {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+    }
+}

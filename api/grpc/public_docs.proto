@@ -52,6 +52,20 @@ service PublicDocsAPI {
       body: "*"
     };
   };
+  rpc GetDefaultVault(GetDefaultVault.Request) returns (GetDefaultVault.Response) {
+    option (google.api.http) = {
+      post: "/api/public-docs/default-vault"
+      body: "*"
+    };
+  };
+}
+
+// DocsSource selects what an unauthenticated visitor hitting `/docs` (no slug) is redirected to
+// — either an admin-picked published vault or the built-in GitHub-backed quick-start guide. See
+// system_settings.default_docs_source / domain.DocsSource.
+enum DocsSource {
+  VAULT = 0;
+  GITHUB = 1;
 }
 
 message GetVaultBySlug {
@@ -103,5 +117,17 @@ message PublicDocsListTags {
   }
   message Response {
     repeated string tags = 1;
+  }
+}
+
+// GetDefaultVault resolves the admin-configured default `/docs` vault (system_settings.
+// default_docs_vault_id) — returns not-found when unset or when the configured vault is no
+// longer public, same "can't distinguish reason" contract as GetVaultBySlug.
+message GetDefaultVault {
+  message Request {}
+  message Response {
+    string id = 1;
+    string name = 2;
+    string slug = 3;
   }
 }

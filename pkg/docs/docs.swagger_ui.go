@@ -35,6 +35,10 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "admin_subscriptions.swagger.json"),
 				},
 				{
+					Name: "PublicDocs",
+					URL:  path.Join(swaggerPath, "public_docs.swagger.json"),
+				},
+				{
 					Name: "Auth",
 					URL:  path.Join(swaggerPath, "auth.swagger.json"),
 				},
@@ -77,10 +81,6 @@ func Swagger() (p string, handler http.HandlerFunc) {
 				{
 					Name: "Prompts",
 					URL:  path.Join(swaggerPath, "prompts.swagger.json"),
-				},
-				{
-					Name: "PublicDocs",
-					URL:  path.Join(swaggerPath, "public_docs.swagger.json"),
 				},
 				{
 					Name: "S3Instances",

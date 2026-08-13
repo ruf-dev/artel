@@ -1,0 +1,9 @@
+.DocsEmptyStateContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--page-height-full);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-fg-disabled);
+}

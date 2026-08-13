@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"github.com/ruf-dev/artel/internal/api/server/artel_api"
 	"github.com/ruf-dev/artel/internal/domain"
@@ -45,7 +46,7 @@ func (a *AdminSystemSettingsImpl) GetSettings(
 	ctx context.Context,
 	_ *artel_api.GetSettings_Request,
 ) (*artel_api.GetSettings_Response, error) {
-	settings, err := a.svc.GetSettings(ctx)
+	settings, defaultVault, err := a.svc.GetSettings(ctx)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error getting system settings")
 	}
@@ -54,9 +55,41 @@ func (a *AdminSystemSettingsImpl) GetSettings(
 		PasswordAuthEnabled: settings.PasswordAuthEnabled,
 		TelegramAuthEnabled: settings.TelegramAuthEnabled,
 		RegistrationMode:    registrationModeToProto(settings.RegistrationMode),
+		DefaultDocsSource:   docsSourceToProto(settings.DefaultDocsSource),
+	}
+
+	if defaultVault.Uuid != uuid.Nil {
+		resp.DefaultDocsVaultId = defaultVault.Uuid.String()
+		resp.DefaultDocsVaultName = defaultVault.Name
+		resp.DefaultDocsVaultSlug = defaultVault.Slug
 	}
 
 	return resp, nil
+}
+
+func (a *AdminSystemSettingsImpl) UpdateDefaultDocsVault(
+	ctx context.Context,
+	req *artel_api.UpdateDefaultDocsVault_Request,
+) (*artel_api.UpdateDefaultDocsVault_Response, error) {
+	var vaultUuid *uuid.UUID
+
+	if req.GetVaultId() != "" {
+		parsed, err := uuid.Parse(req.GetVaultId())
+		if err != nil {
+			return nil, rerrors.Wrap(err, "error parsing vault id")
+		}
+
+		vaultUuid = &parsed
+	}
+
+	source := docsSourceFromProto(req.GetSource())
+
+	err := a.svc.UpdateDefaultDocsVault(ctx, vaultUuid, source)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error updating default docs vault")
+	}
+
+	return &artel_api.UpdateDefaultDocsVault_Response{}, nil
 }
 
 func (a *AdminSystemSettingsImpl) UpdateAuthMethods(
@@ -99,4 +132,20 @@ func registrationModeToProto(mode domain.RegistrationMode) artel_api.Registratio
 	}
 
 	return artel_api.RegistrationMode_ADMIN_ONLY
+}
+
+func docsSourceFromProto(source artel_api.DocsSource) domain.DocsSource {
+	if source == artel_api.DocsSource_GITHUB {
+		return domain.DocsSourceGithub
+	}
+
+	return domain.DocsSourceVault
+}
+
+func docsSourceToProto(source domain.DocsSource) artel_api.DocsSource {
+	if source == domain.DocsSourceGithub {
+		return artel_api.DocsSource_GITHUB
+	}
+
+	return artel_api.DocsSource_VAULT
 }

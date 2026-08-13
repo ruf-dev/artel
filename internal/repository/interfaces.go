@@ -484,6 +484,8 @@ type SystemSettingsRepo interface {
 	UpdateRegistrationMode(ctx context.Context, mode domain.RegistrationMode) error
 	SetSetupToken(ctx context.Context, tokenHash string, issuedAt time.Time) error
 	CompleteSetup(ctx context.Context) error
+	UpdateDefaultDocsVault(ctx context.Context, vaultUuid *uuid.UUID) error
+	UpdateDefaultDocsSource(ctx context.Context, source domain.DocsSource) error
 
 	WithTx(tx *sql.Tx) SystemSettingsRepo
 }

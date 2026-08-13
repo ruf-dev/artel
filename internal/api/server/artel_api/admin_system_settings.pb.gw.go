@@ -10,6 +10,7 @@ package artel_api
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,106 +25,137 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_AdminSystemSettingsAPI_GetSettings_0(ctx context.Context, marshaler runtime.Marshaler, client AdminSystemSettingsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetSettings_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetSettings_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.GetSettings(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminSystemSettingsAPI_GetSettings_0(ctx context.Context, marshaler runtime.Marshaler, server AdminSystemSettingsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetSettings_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq GetSettings_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.GetSettings(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminSystemSettingsAPI_UpdateAuthMethods_0(ctx context.Context, marshaler runtime.Marshaler, client AdminSystemSettingsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateAuthMethods_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UpdateAuthMethods_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.UpdateAuthMethods(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminSystemSettingsAPI_UpdateAuthMethods_0(ctx context.Context, marshaler runtime.Marshaler, server AdminSystemSettingsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateAuthMethods_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UpdateAuthMethods_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.UpdateAuthMethods(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_AdminSystemSettingsAPI_UpdateRegistrationMode_0(ctx context.Context, marshaler runtime.Marshaler, client AdminSystemSettingsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateRegistrationMode_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UpdateRegistrationMode_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.UpdateRegistrationMode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_AdminSystemSettingsAPI_UpdateRegistrationMode_0(ctx context.Context, marshaler runtime.Marshaler, server AdminSystemSettingsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateRegistrationMode_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UpdateRegistrationMode_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.UpdateRegistrationMode(ctx, &protoReq)
 	return msg, metadata, err
+}
 
+func request_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0(ctx context.Context, marshaler runtime.Marshaler, client AdminSystemSettingsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UpdateDefaultDocsVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.UpdateDefaultDocsVault(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0(ctx context.Context, marshaler runtime.Marshaler, server AdminSystemSettingsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UpdateDefaultDocsVault_Request
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.UpdateDefaultDocsVault(ctx, &protoReq)
+	return msg, metadata, err
 }
 
 // RegisterAdminSystemSettingsAPIHandlerServer registers the http handlers for service AdminSystemSettingsAPI to "mux".
 // UnaryRPC     :call AdminSystemSettingsAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAdminSystemSettingsAPIHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterAdminSystemSettingsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AdminSystemSettingsAPIServer) error {
-
-	mux.Handle("POST", pattern_AdminSystemSettingsAPI_GetSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_GetSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/GetSettings", runtime.WithHTTPPathPattern("/api/admin_system_settings/get"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/GetSettings", runtime.WithHTTPPathPattern("/api/admin_system_settings/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -135,20 +167,15 @@ func RegisterAdminSystemSettingsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminSystemSettingsAPI_GetSettings_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminSystemSettingsAPI_UpdateAuthMethods_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_UpdateAuthMethods_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateAuthMethods", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_auth_methods"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateAuthMethods", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_auth_methods"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -160,20 +187,15 @@ func RegisterAdminSystemSettingsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminSystemSettingsAPI_UpdateAuthMethods_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminSystemSettingsAPI_UpdateRegistrationMode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_UpdateRegistrationMode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateRegistrationMode", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_registration_mode"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateRegistrationMode", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_registration_mode"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -185,9 +207,27 @@ func RegisterAdminSystemSettingsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminSystemSettingsAPI_UpdateRegistrationMode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
+	})
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateDefaultDocsVault", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_default_docs_vault"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -196,25 +236,24 @@ func RegisterAdminSystemSettingsAPIHandlerServer(ctx context.Context, mux *runti
 // RegisterAdminSystemSettingsAPIHandlerFromEndpoint is same as RegisterAdminSystemSettingsAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterAdminSystemSettingsAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
-
 	return RegisterAdminSystemSettingsAPIHandler(ctx, mux, conn)
 }
 
@@ -228,16 +267,13 @@ func RegisterAdminSystemSettingsAPIHandler(ctx context.Context, mux *runtime.Ser
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AdminSystemSettingsAPIClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AdminSystemSettingsAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "AdminSystemSettingsAPIClient" to call the correct interceptors.
+// "AdminSystemSettingsAPIClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterAdminSystemSettingsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AdminSystemSettingsAPIClient) error {
-
-	mux.Handle("POST", pattern_AdminSystemSettingsAPI_GetSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_GetSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/GetSettings", runtime.WithHTTPPathPattern("/api/admin_system_settings/get"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/GetSettings", runtime.WithHTTPPathPattern("/api/admin_system_settings/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -248,18 +284,13 @@ func RegisterAdminSystemSettingsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminSystemSettingsAPI_GetSettings_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminSystemSettingsAPI_UpdateAuthMethods_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_UpdateAuthMethods_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateAuthMethods", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_auth_methods"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateAuthMethods", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_auth_methods"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -270,18 +301,13 @@ func RegisterAdminSystemSettingsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminSystemSettingsAPI_UpdateAuthMethods_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_AdminSystemSettingsAPI_UpdateRegistrationMode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_UpdateRegistrationMode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateRegistrationMode", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_registration_mode"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateRegistrationMode", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_registration_mode"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -292,26 +318,38 @@ func RegisterAdminSystemSettingsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_AdminSystemSettingsAPI_UpdateRegistrationMode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
+	mux.Handle(http.MethodPost, pattern_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateDefaultDocsVault", runtime.WithHTTPPathPattern("/api/admin_system_settings/update_default_docs_vault"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_AdminSystemSettingsAPI_GetSettings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_system_settings", "get"}, ""))
-
-	pattern_AdminSystemSettingsAPI_UpdateAuthMethods_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_system_settings", "update_auth_methods"}, ""))
-
+	pattern_AdminSystemSettingsAPI_GetSettings_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_system_settings", "get"}, ""))
+	pattern_AdminSystemSettingsAPI_UpdateAuthMethods_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_system_settings", "update_auth_methods"}, ""))
 	pattern_AdminSystemSettingsAPI_UpdateRegistrationMode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_system_settings", "update_registration_mode"}, ""))
+	pattern_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "admin_system_settings", "update_default_docs_vault"}, ""))
 )
 
 var (
-	forward_AdminSystemSettingsAPI_GetSettings_0 = runtime.ForwardResponseMessage
-
-	forward_AdminSystemSettingsAPI_UpdateAuthMethods_0 = runtime.ForwardResponseMessage
-
+	forward_AdminSystemSettingsAPI_GetSettings_0            = runtime.ForwardResponseMessage
+	forward_AdminSystemSettingsAPI_UpdateAuthMethods_0      = runtime.ForwardResponseMessage
 	forward_AdminSystemSettingsAPI_UpdateRegistrationMode_0 = runtime.ForwardResponseMessage
+	forward_AdminSystemSettingsAPI_UpdateDefaultDocsVault_0 = runtime.ForwardResponseMessage
 )

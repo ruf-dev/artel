@@ -4,6 +4,19 @@
     height: var(--page-height-full);
     background: var(--color-bg-base);
 
+    & .HomeLinkContainer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.5rem 0.75rem;
+        flex-shrink: 0;
+
+        & .HomeLink {
+            font-family: var(--font-mono);
+            font-size: var(--font-size-md);
+            color: var(--color-fg-tertiary);
+        }
+    }
+
     & .Body {
         display: flex;
         flex: 1;

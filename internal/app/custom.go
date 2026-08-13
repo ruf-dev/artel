@@ -186,6 +186,7 @@ func (c *Custom) Init(a *App) error {
 				pb.PublicDocsAPI_ListNotes_FullMethodName,
 				pb.PublicDocsAPI_GetNote_FullMethodName,
 				pb.PublicDocsAPI_ListTags_FullMethodName,
+				pb.PublicDocsAPI_GetDefaultVault_FullMethodName,
 				// SetupWizardAPI gates on the bespoke wizardSessionToken carried inside each
 				// request, checked by SetupWizardService itself — not by this interceptor.
 				pb.SetupWizardAPI_GetStatus_FullMethodName,
@@ -245,6 +246,7 @@ func (c *Custom) Init(a *App) error {
 			pb.NotesAPI_ListNotes_FullMethodName,
 			pb.NotesAPI_ListTags_FullMethodName,
 			pb.PromptsAPI_ListPrompts_FullMethodName,
+			pb.PublicDocsAPI_GetDefaultVault_FullMethodName,
 			pb.PublicDocsAPI_GetNote_FullMethodName,
 			pb.PublicDocsAPI_GetVaultBySlug_FullMethodName,
 			pb.PublicDocsAPI_ListFolders_FullMethodName,
@@ -306,6 +308,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSystemSettingsAPI_GetSettings_FullMethodName,
 			pb.AdminSystemSettingsAPI_UpdateAuthMethods_FullMethodName,
 			pb.AdminSystemSettingsAPI_UpdateRegistrationMode_FullMethodName,
+			pb.AdminSystemSettingsAPI_UpdateDefaultDocsVault_FullMethodName,
 		),
 	)
 	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl)

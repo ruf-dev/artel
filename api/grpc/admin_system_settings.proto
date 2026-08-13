@@ -4,6 +4,7 @@ package artel_admin_system_settings;
 
 import "google/api/annotations.proto";
 import "npm.proto";
+import "public_docs.proto";
 import "setup_wizard.proto";
 
 option go_package = "/artel_api";
@@ -28,6 +29,12 @@ service AdminSystemSettingsAPI {
       body: "*"
     };
   };
+  rpc UpdateDefaultDocsVault(UpdateDefaultDocsVault.Request) returns (UpdateDefaultDocsVault.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_system_settings/update_default_docs_vault"
+      body: "*"
+    };
+  };
 }
 
 message GetSettings {
@@ -36,6 +43,12 @@ message GetSettings {
     bool password_auth_enabled = 1;
     bool telegram_auth_enabled = 2;
     artel_setup_wizard.RegistrationMode registration_mode = 3;
+    // default_docs_vault_id/_name/_slug are all empty strings when no default docs vault is
+    // configured.
+    string default_docs_vault_id = 4;
+    string default_docs_vault_name = 5;
+    string default_docs_vault_slug = 6;
+    artel_public_docs.DocsSource default_docs_source = 7;
   }
 }
 
@@ -50,6 +63,14 @@ message UpdateAuthMethods {
 message UpdateRegistrationMode {
   message Request {
     artel_setup_wizard.RegistrationMode mode = 1;
+  }
+  message Response {}
+}
+
+message UpdateDefaultDocsVault {
+  message Request {
+    string vault_id = 1;
+    artel_public_docs.DocsSource source = 2;
   }
   message Response {}
 }

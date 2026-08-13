@@ -56,10 +56,21 @@ type AdminUsersService interface {
 // see SetupWizardService for the wizard's own (pre-setup, unauthenticated) version of the same
 // underlying settings.
 type AdminSystemSettingsService interface {
-	GetSettings(ctx context.Context) (domain.SystemSettings, error)
+	// GetSettings also resolves the current default docs vault (domain.Vault{}, zero value, when
+	// SystemSettings.DefaultDocsVaultID is unset) so the transport layer can surface its
+	// name/slug alongside the raw id without a second round trip.
+	GetSettings(ctx context.Context) (domain.SystemSettings, domain.Vault, error)
 	// UpdateAuthMethods returns user_errors.AtLeastOneAuthMethodRequired if both are false.
 	UpdateAuthMethods(ctx context.Context, passwordEnabled, telegramEnabled bool) error
 	UpdateRegistrationMode(ctx context.Context, mode domain.RegistrationMode) error
+	// UpdateDefaultDocsVault sets the instance-wide default `/docs` source. When source is
+	// DocsSourceGithub, vaultUuid is ignored and the vault-existence check is skipped entirely —
+	// the default routes to the built-in GitHub quick-start guide instead. When source is
+	// DocsSourceVault (the zero-value/unset case too), a nil vaultUuid clears the default vault
+	// and a non-nil vaultUuid must resolve to an existing vault (user_errors.NotFound otherwise) —
+	// it is not required to already be published; see PublicDocsService.GetDefaultVault for the
+	// read-time IsPublic enforcement.
+	UpdateDefaultDocsVault(ctx context.Context, vaultUuid *uuid.UUID, source domain.DocsSource) error
 }
 
 // SetupWizardService drives the first-run setup wizard — a short-lived, unauthenticated flow
@@ -355,6 +366,10 @@ type PublicDocsService interface {
 	ListNotes(ctx context.Context, slug string) ([]couchdb.NoteEntry, error)
 	GetNote(ctx context.Context, slug, path string) (couchdb.NoteDoc, error)
 	ListTags(ctx context.Context, slug string) ([]string, error)
+	// GetDefaultVault resolves the admin-configured default `/docs` vault (SystemSettings.
+	// DefaultDocsVaultID), returning user_errors.NotFound both when unset and when the
+	// configured vault is no longer published.
+	GetDefaultVault(ctx context.Context) (domain.Vault, error)
 }
 
 type MomService interface {
