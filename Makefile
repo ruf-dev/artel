@@ -45,6 +45,11 @@ dev-serve:
 	go run ./cmd/service -dev; \
 	wait
 
+# Applies Postgres migrations as a standalone step, independent of app startup — for operators
+# who set skip_migrations=true and want to run migrations explicitly instead.
+migrate:
+	go run ./cmd/migrate -dev
+
 ### local dev environment
 setup-dev-env:
 	docker compose up -d

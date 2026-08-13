@@ -50,6 +50,9 @@ environment:
     - name: otel_endpoint
       type: string
       value: ""
+    - name: skip_migrations
+      type: bool
+      value: false
     - name: subscriptions_enabled
       type: bool
       value: false

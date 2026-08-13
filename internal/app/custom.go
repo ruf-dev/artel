@@ -68,9 +68,13 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error initializing creds encryption")
 	}
 
-	err = postgres.Migrate(a.Cfg.DataSources.Postgres)
-	if err != nil {
-		return rerrors.Wrap(err, "error migrating postgres")
+	if a.Cfg.Environment.SkipMigrations {
+		log.Warn().Msg("skipping postgres migrations (ENVIRONMENT_SKIP_MIGRATIONS=true) — ensure the schema is up to date via a separate migration run (cmd/migrate)")
+	} else {
+		err = postgres.Migrate(a.Cfg.DataSources.Postgres)
+		if err != nil {
+			return rerrors.Wrap(err, "error migrating postgres")
+		}
 	}
 
 	pgConn, err := postgres.Connect(a.Cfg.DataSources.Postgres)

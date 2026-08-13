@@ -13,6 +13,7 @@ type EnvironmentConfig struct {
 	LogLevel             string
 	NoAuthEnabled        bool
 	OtelEndpoint         string
+	SkipMigrations       bool
 	SubscriptionsEnabled bool
 	TelegramClientID     string
 }

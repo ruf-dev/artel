@@ -1,6 +1,6 @@
 app_info:
     name: github.com/ruf-dev/artel
-    version: v1.0.21
+    version: v1.0.22
     startup_duration: 10s
 data_sources:
     - resource_name: postgres
@@ -50,6 +50,9 @@ environment:
     - name: otel_endpoint
       type: string
       value: ""
+    - name: skip_migrations
+      type: bool
+      value: false
     - name: subscriptions_enabled
       type: bool
       value: false
