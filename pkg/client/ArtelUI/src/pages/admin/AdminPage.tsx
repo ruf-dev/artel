@@ -53,17 +53,19 @@ export default function AdminPage() {
     return (
         <div className={cls.AdminPageContainer}>
             <AdminHero tab={tab}/>
-            <TabBar tab={tab} onTabChange={handleTabChange}/>
-            {tab === "instances" && <InstancesTab/>}
-            {tab === "couch_users" && <UsersTab/>}
-            {tab === "users" && <ArtelUsersTab/>}
-            {tab === "s3_instances" && (
-                <div className={cls.ContentContainer}>
-                    <S3InstancesTab/>
-                </div>
-            )}
-            {tab === "docker_api" && <DockerApiTab autoOpenAddDialog={autoOpenDockerDialog}/>}
-            {tab === "settings" && <SettingsTab/>}
+            <div className={cls.StickyTabsWrapper}>
+                {tab === "instances" && <InstancesTab/>}
+                {tab === "couch_users" && <UsersTab/>}
+                {tab === "users" && <ArtelUsersTab/>}
+                {tab === "s3_instances" && (
+                    <div className={cls.ContentContainer}>
+                        <S3InstancesTab/>
+                    </div>
+                )}
+                {tab === "docker_api" && <DockerApiTab autoOpenAddDialog={autoOpenDockerDialog}/>}
+                {tab === "settings" && <SettingsTab/>}
+                <TabBar tab={tab} onTabChange={handleTabChange}/>
+            </div>
         </div>
     )
 }

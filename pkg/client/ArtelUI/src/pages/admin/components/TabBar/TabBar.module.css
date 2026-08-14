@@ -1,4 +1,7 @@
 .TabBarContainer {
+    position: sticky;
+    top: 0;
+    background: var(--main-bg-color);
     display: flex;
     max-width: 75rem;
     margin: 1.5rem auto 0;

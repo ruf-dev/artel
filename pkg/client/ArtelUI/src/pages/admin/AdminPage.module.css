@@ -1,17 +1,26 @@
 .AdminPageContainer {
-    display: flex;
-    flex-direction: column;
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+}
+
+.StickyTabsWrapper {
+    display: flex;
+    flex-direction: column-reverse;
+
+    /* TabBar is the last JSX child (see AdminPage.tsx) so it always wins paint order
+       against positioned descendants inside the tab content — e.g. chures Toggle's
+       internally position:relative track — which would otherwise paint on top of the
+       sticky TabBar regardless of nesting depth. column-reverse restores the visual
+       order (TabBar on top, tab content below) without touching z-index. See "Never
+       use z-index" / the flex-atomic-painting gotcha in ../../CLAUDE.md. */
 }
 
 .ContentContainer {
-    flex: 1;
     padding: 2rem 2rem 5rem;
     max-width: 75rem;
     margin: 0 auto;
     width: 100%;
-    overflow-y: auto;
 }
 
 @media (width <= 45rem) {

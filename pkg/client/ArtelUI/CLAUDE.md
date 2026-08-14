@@ -213,6 +213,21 @@ splitting an existing fat page.
   vault-picker dropdown DOM-sits after the search bar, `column-reverse` displays it
   above); (2) if reordering isn't feasible, portal the overlay per the rule above. Do
   not reach for `z-index` on the flex item either — same rule applies.
+- **Trap: don't reach for `isolation: isolate` to "contain" a nested positioned element
+  (e.g. a chures `Toggle`'s internal `position:relative` track) so it stops leaking into
+  an ancestor's paint order.** `isolation: isolate` forces the element it's on into the
+  *stacking-context-forming* paint bucket — the same DOM-order-ranked bucket as
+  positioned `z-index:auto` siblings — even though the element stays `position:static`.
+  If that element sits **after** a sticky/positioned header in the DOM (the common case:
+  a page's scrollable content container, rendered after a sticky top bar), isolating it
+  makes the *entire* container paint on top of the header, which is strictly worse than
+  the original narrow leak (only the nested positioned descendant overlapping). There is
+  no plain-CSS way to keep a non-positioned container in the earlier "in-flow" paint
+  bucket while also stopping a positioned descendant from leaking out of it — the fix is
+  always the DOM-reorder + `column-reverse` remedy above, applied to the header/overlay
+  itself, not an `isolation` wrapper around the content. See the admin `TabBar` /
+  `AdminPage.tsx` `StickyTabsWrapper` for the reference fix (TabBar moved to be the last
+  JSX child of a `column-reverse` flex wrapper, instead of the first).
 - Global overlays (dialogs, toasts) already work without `z-index` because they're mounted
   last, as a sibling after `<Routes>`, in `pages/segments/Dialog.tsx` — follow that precedent
   for any new global overlay instead of reaching for `z-index`.
