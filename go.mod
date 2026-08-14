@@ -34,7 +34,7 @@ require (
 	go.redsock.ru/protoc-gen-npm v0.0.12
 	go.redsock.ru/rerrors v0.0.15
 	go.redsock.ru/toolbox v0.0.13
-	go.vervstack.ru/matreshka v1.0.99
+	go.vervstack.ru/matreshka v1.0.100
 	golang.org/x/crypto v0.51.0
 	golang.org/x/oauth2 v0.36.0
 	golang.org/x/sync v0.20.0

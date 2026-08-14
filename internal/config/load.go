@@ -38,6 +38,7 @@ var (
 const (
 	devConfigPath  = "./config/dev.yaml"
 	prodConfigPath = "./config/config.yaml"
+	envFilePath    = "./.env"
 )
 
 // Init loads the process-wide default config exactly once; every call after
@@ -102,10 +103,16 @@ func Load(configsPaths ...string) (Config, error) {
 		err error
 	)
 
-	cfg.MatreshkaConfig, err = matreshka.ReadConfig(
+	readOpts := []matreshka.ReadOption{
 		matreshka.WithConfigPaths(configsPaths...),
 		matreshka.WithConfigBytes(skeletonYAML),
-	)
+	}
+
+	if _, statErr := os.Stat(envFilePath); statErr == nil {
+		readOpts = append(readOpts, matreshka.WithEnvFile(envFilePath))
+	}
+
+	cfg.MatreshkaConfig, err = matreshka.ReadConfig(readOpts...)
 	if err != nil {
 		return cfg, rerrors.Wrap(err, "error reading matreshka config")
 	}
