@@ -1,9 +1,21 @@
 .DocsEmptyStateContainer {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: var(--page-height-full);
+    gap: 1rem;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     color: var(--color-fg-disabled);
+
+    & .Message {
+        color: var(--color-fg-disabled);
+    }
+
+    & .AdminLink {
+        font-family: var(--font-mono);
+        font-size: var(--font-size-md);
+        color: var(--color-fg-tertiary);
+    }
 }

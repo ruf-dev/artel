@@ -68,6 +68,11 @@ export default function TopbarUserMenu() {
         navigate(Path.McpKeysPage)
     }
 
+    function handleDocs() {
+        setMenuOpen(false)
+        navigate(Path.DocsPageDefault)
+    }
+
     return (
         <div className={cls.UserWrap} ref={wrapRef}>
             <TopbarUserMenuPill menuOpen={menuOpen} photoUrl={photoUrl} onClick={e => {
@@ -79,7 +84,11 @@ export default function TopbarUserMenu() {
                     <div className={cls.Backdrop} onClick={() => setMenuOpen(false)}/>
                     <TopbarUserMenuList
                         rect={menuRect}
-                        isAdmin={isAdmin} onAdmin={handleAdmin} onApiKeys={handleApiKeys} onLogout={handleLogout}
+                        isAdmin={isAdmin}
+                        onAdmin={handleAdmin}
+                        onApiKeys={handleApiKeys}
+                        onDocs={handleDocs}
+                        onLogout={handleLogout}
                     />
                 </>,
                 document.body,
