@@ -9,3 +9,4 @@ go test ./...
 
 echo 'Building ui...'
 make build-ui
+git add internal/transport/ui/dist
