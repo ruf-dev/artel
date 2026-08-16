@@ -1,8 +1,11 @@
-import {Button} from "@vervstack/chures"
-
+import Tabs from "@/components/atoms/Tabs/Tabs.tsx"
 import cls from "@/pages/admin/components/TabBar/TabBar.module.css"
 import {Tab} from "@/pages/admin/adminTypes.ts"
-import {cn} from "@/app/utils/cn.ts"
+import CouchDbTabIcon from "@/pages/admin/components/icons/CouchDbTabIcon.tsx"
+import ArtelUsersTabIcon from "@/pages/admin/components/icons/ArtelUsersTabIcon.tsx"
+import S3TabIcon from "@/pages/admin/components/icons/S3TabIcon.tsx"
+import DockerApiTabIcon from "@/pages/admin/components/icons/DockerApiTabIcon.tsx"
+import SettingsTabIcon from "@/pages/admin/components/icons/SettingsTabIcon.tsx"
 
 interface TabBarProps {
     tab: Tab
@@ -12,48 +15,17 @@ interface TabBarProps {
 export default function TabBar({tab, onTabChange}: TabBarProps) {
     return (
         <div className={cls.TabBarContainer}>
-            <Button
-                variant="unstyled"
-                className={cn(cls.Tab, tab === "instances" && cls.TabActive)}
-                onClick={() => onTabChange("instances")}
-            >
-                Instances
-            </Button>
-            <Button
-                variant="unstyled"
-                className={cn(cls.Tab, tab === "couch_users" && cls.TabActive)}
-                onClick={() => onTabChange("couch_users")}
-            >
-                CouchUsers
-            </Button>
-            <Button
-                variant="unstyled"
-                className={cn(cls.Tab, tab === "users" && cls.TabActive)}
-                onClick={() => onTabChange("users")}
-            >
-                Users
-            </Button>
-            <Button
-                variant="unstyled"
-                className={cn(cls.Tab, tab === "s3_instances" && cls.TabActive)}
-                onClick={() => onTabChange("s3_instances")}
-            >
-                S3 storage
-            </Button>
-            <Button
-                variant="unstyled"
-                className={cn(cls.Tab, tab === "docker_api" && cls.TabActive)}
-                onClick={() => onTabChange("docker_api")}
-            >
-                Docker API
-            </Button>
-            <Button
-                variant="unstyled"
-                className={cn(cls.Tab, tab === "settings" && cls.TabActive)}
-                onClick={() => onTabChange("settings")}
-            >
-                Settings
-            </Button>
+            <Tabs
+                tabs={[
+                    {key: "couchdb", label: "CouchDB", icon: <CouchDbTabIcon/>},
+                    {key: "users", label: "Users", icon: <ArtelUsersTabIcon/>},
+                    {key: "s3_instances", label: "S3 storage", icon: <S3TabIcon/>},
+                    {key: "docker_api", label: "Docker API", icon: <DockerApiTabIcon/>},
+                    {key: "settings", label: "Settings", icon: <SettingsTabIcon/>},
+                ]}
+                active={tab}
+                onChange={(key) => onTabChange(key as Tab)}
+            />
         </div>
     )
 }
