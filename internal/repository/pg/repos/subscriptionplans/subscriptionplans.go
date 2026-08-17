@@ -46,7 +46,7 @@ func (r *Repo) List(ctx context.Context) ([]domain.SubscriptionPlan, error) {
 	plans := make([]domain.SubscriptionPlan, len(rows))
 
 	for i, row := range rows {
-		plan, planErr := planFromRow(row)
+		plan, planErr := planFromListRow(row)
 		if planErr != nil {
 			return nil, rerrors.Wrap(planErr, "error decoding plan features")
 		}
@@ -57,19 +57,41 @@ func (r *Repo) List(ctx context.Context) ([]domain.SubscriptionPlan, error) {
 	return plans, nil
 }
 
-func planFromRow(row artel_q.SubscriptionPlan) (domain.SubscriptionPlan, error) {
+func planFromRow(row artel_q.GetSubscriptionPlanRow) (domain.SubscriptionPlan, error) {
 	featureSet, err := unmarshalFeatureSet(row.Features)
 	if err != nil {
 		return domain.SubscriptionPlan{}, err
 	}
 
 	plan := domain.SubscriptionPlan{
-		PlanKey:         row.PlanKey,
-		CouchQuotaBytes: row.CouchQuotaBytes,
-		S3QuotaBytes:    row.S3QuotaBytes,
-		Features:        featureSet,
-		CreatedAt:       row.CreatedAt,
-		UpdatedAt:       row.UpdatedAt,
+		PlanKey:          row.PlanKey,
+		CouchQuotaBytes:  row.CouchQuotaBytes,
+		S3QuotaBytes:     row.S3QuotaBytes,
+		MaxHotPlugSkills: int(row.MaxHotPlugSkills),
+		MaxTotalSkills:   int(row.MaxTotalSkills),
+		Features:         featureSet,
+		CreatedAt:        row.CreatedAt,
+		UpdatedAt:        row.UpdatedAt,
+	}
+
+	return plan, nil
+}
+
+func planFromListRow(row artel_q.ListSubscriptionPlansRow) (domain.SubscriptionPlan, error) {
+	featureSet, err := unmarshalFeatureSet(row.Features)
+	if err != nil {
+		return domain.SubscriptionPlan{}, err
+	}
+
+	plan := domain.SubscriptionPlan{
+		PlanKey:          row.PlanKey,
+		CouchQuotaBytes:  row.CouchQuotaBytes,
+		S3QuotaBytes:     row.S3QuotaBytes,
+		MaxHotPlugSkills: int(row.MaxHotPlugSkills),
+		MaxTotalSkills:   int(row.MaxTotalSkills),
+		Features:         featureSet,
+		CreatedAt:        row.CreatedAt,
+		UpdatedAt:        row.UpdatedAt,
 	}
 
 	return plan, nil

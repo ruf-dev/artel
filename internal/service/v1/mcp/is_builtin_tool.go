@@ -7,7 +7,8 @@ func (s *ServiceImpl) IsBuiltinTool(name string) bool {
 	case executors.ToolListFiles, executors.ToolReadFile, executors.ToolWriteFile, executors.ToolDeleteFile,
 		executors.ToolMoveFile, executors.ToolListFolders, executors.ToolListTags, executors.ToolGetFileMetadata,
 		executors.ToolPgListTables, executors.ToolPgDescribeTable, executors.ToolPgQuery, executors.ToolPgExecute,
-		toolConnections, toolConnectionsForTracts, toolCreateCommunityConnector:
+		toolConnections, toolConnectionsForTracts, toolCreateCommunityConnector,
+		toolListSkills, toolGetSkillBody, toolCreateSkill, toolUpdateSkill, toolDeleteSkill, toolSetSkillHotPlug:
 		return true
 	}
 

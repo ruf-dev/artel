@@ -163,6 +163,10 @@ func (f *fakeSubscriptionService) CheckStorageQuota(ctx context.Context, userUui
 	panic("not implemented")
 }
 
+func (f *fakeSubscriptionService) CheckSkillLimit(ctx context.Context, vaultUuid uuid.UUID, wantHotPlug bool) error {
+	panic("not implemented")
+}
+
 // fakeAdminClient is a hand-rolled fake of the local adminClient interface.
 type fakeAdminClient struct {
 	ensureRoleFunc     func(ctx context.Context, roleName, password string) error

@@ -36,6 +36,7 @@ type Service interface {
 	SetupWizardService() SetupWizardService
 	AdminSystemSettingsService() AdminSystemSettingsService
 	PostgresInstanceService() PostgresInstanceService
+	SkillsService() SkillsService
 }
 
 type AdminUsersService interface {
@@ -300,6 +301,34 @@ type McpService interface {
 	// against it rather than the per-request ctx, which net/http cancels once the MCP handler's
 	// response is written (mirrors tracts_api.TractsImpl.baseCtx).
 	SetTractService(baseCtx context.Context, ts TractService)
+	// ListHotPlugSkillTools returns one dynamic skill_<slug> tool per hot-plug skill visible in
+	// keyCtx's vault (the always-hot-plug system skill-creator skill included). Deliberately kept
+	// out of ListTools/IsBuiltinTool — that pair is also relied on by Tract's toolExecutorAdapter
+	// for step-name validation via a vault-agnostic, cacheable catalog, which a per-vault dynamic
+	// tool set must not leak into. internal/transport/mcp_api's handleToolsList merges this in
+	// separately.
+	ListHotPlugSkillTools(ctx context.Context, keyCtx domain.McpKeyContext) ([]domain.McpToolDef, error)
+	// ExecuteSkillTool runs a dynamic skill_<slug> tool (slug has already had the "skill_" prefix
+	// stripped by the caller), returning the skill's body text verbatim.
+	ExecuteSkillTool(ctx context.Context, keyCtx domain.McpKeyContext, slug string) (string, error)
+}
+
+// SkillsService manages skills stored as CouchDB notes inside a vault's reserved .skills/
+// folder, plus the always-present, non-vault-backed system "skill-creator" skill. See
+// internal/service/v1/skills.Service for the implementation.
+type SkillsService interface {
+	ListSkills(ctx context.Context, vaultUuid uuid.UUID) ([]domain.Skill, error)
+	GetSkillBody(ctx context.Context, vaultUuid uuid.UUID, slug string) (domain.Skill, error)
+	CreateSkill(
+		ctx context.Context, vaultUuid uuid.UUID, name string, description string,
+		storageMode domain.SkillStorageMode, body string, hotPlug bool,
+	) (domain.Skill, error)
+	UpdateSkill(
+		ctx context.Context, vaultUuid uuid.UUID, slug string, name string, description string,
+		storageMode domain.SkillStorageMode, body string,
+	) (domain.Skill, error)
+	SetSkillHotPlug(ctx context.Context, vaultUuid uuid.UUID, slug string, hotPlug bool) (domain.Skill, error)
+	DeleteSkill(ctx context.Context, vaultUuid uuid.UUID, slug string) error
 }
 
 // SubscriptionService regulates access to gated functionality (feature flags previously handled
@@ -322,6 +351,13 @@ type SubscriptionService interface {
 	// CheckStorageQuota compares GetUsage against GetEffective's quotas, returning
 	// user_errors.CouchStorageQuotaExceeded / S3StorageQuotaExceeded if either is already over.
 	CheckStorageQuota(ctx context.Context, userUuid uuid.UUID) error
+	// CheckSkillLimit compares the given vault's current skill counts (measured live from its
+	// CouchDB .skills/ folders, same on-demand-measurement approach as CheckStorageQuota)
+	// against the vault owner's effective plan caps, returning
+	// user_errors.SkillLimitExceeded / HotPlugSkillLimitExceeded if already at or over. When
+	// wantHotPlug is true both the total and hot-plug caps are checked; otherwise only the
+	// total cap is checked.
+	CheckSkillLimit(ctx context.Context, vaultUuid uuid.UUID, wantHotPlug bool) error
 }
 
 type ListPromptsParams struct {

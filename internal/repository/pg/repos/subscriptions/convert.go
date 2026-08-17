@@ -75,6 +75,26 @@ func nullInt64ToPtr(v sql.NullInt64) *int64 {
 	return &value
 }
 
+func intPtrToNullInt32(v *int) sql.NullInt32 {
+	if v == nil {
+		return sql.NullInt32{}
+	}
+
+	nullable := sql.NullInt32{Int32: int32(*v), Valid: true}
+
+	return nullable
+}
+
+func nullInt32ToIntPtr(v sql.NullInt32) *int {
+	if !v.Valid {
+		return nil
+	}
+
+	value := int(v.Int32)
+
+	return &value
+}
+
 // subscriptionFromRow converts a raw generated Subscription row into the domain type, decoding
 // its JSONB feature_overrides column.
 func subscriptionFromRow(row artel_q.Subscription) (domain.Subscription, error) {
@@ -84,12 +104,14 @@ func subscriptionFromRow(row artel_q.Subscription) (domain.Subscription, error) 
 	}
 
 	sub := domain.Subscription{
-		UserUuid:                row.UserID,
-		Active:                  row.Active,
-		PlanKey:                 row.PlanKey,
-		FeatureOverrides:        overrides,
-		CouchQuotaOverrideBytes: nullInt64ToPtr(row.CouchQuotaOverrideBytes),
-		S3QuotaOverrideBytes:    nullInt64ToPtr(row.S3QuotaOverrideBytes),
+		UserUuid:                 row.UserID,
+		Active:                   row.Active,
+		PlanKey:                  row.PlanKey,
+		FeatureOverrides:         overrides,
+		CouchQuotaOverrideBytes:  nullInt64ToPtr(row.CouchQuotaOverrideBytes),
+		S3QuotaOverrideBytes:     nullInt64ToPtr(row.S3QuotaOverrideBytes),
+		MaxHotPlugSkillsOverride: nullInt32ToIntPtr(row.MaxHotPlugSkillsOverride),
+		MaxTotalSkillsOverride:   nullInt32ToIntPtr(row.MaxTotalSkillsOverride),
 	}
 
 	return sub, nil

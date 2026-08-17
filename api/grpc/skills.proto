@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package artel_skills;
+
+import "google/api/annotations.proto";
+import "npm.proto";
+
+option go_package = "/artel_api";
+option (npm_package) = "@artel/api";
+
+service SkillsAPI {
+  rpc ListSkills(ListSkills.Request) returns (ListSkills.Response) {
+    option (google.api.http) = {
+      post: "/api/skills/list"
+      body: "*"
+    };
+  };
+  rpc GetSkill(GetSkill.Request) returns (GetSkill.Response) {
+    option (google.api.http) = {
+      post: "/api/skills/get"
+      body: "*"
+    };
+  };
+  rpc CreateSkill(CreateSkill.Request) returns (CreateSkill.Response) {
+    option (google.api.http) = {
+      post: "/api/skills/create"
+      body: "*"
+    };
+  };
+  rpc UpdateSkill(UpdateSkill.Request) returns (UpdateSkill.Response) {
+    option (google.api.http) = {
+      post: "/api/skills/update"
+      body: "*"
+    };
+  };
+  rpc DeleteSkill(DeleteSkill.Request) returns (DeleteSkill.Response) {
+    option (google.api.http) = {
+      post: "/api/skills/delete"
+      body: "*"
+    };
+  };
+  rpc SetSkillHotPlug(SetSkillHotPlug.Request) returns (SetSkillHotPlug.Response) {
+    option (google.api.http) = {
+      post: "/api/skills/hot-plug"
+      body: "*"
+    };
+  };
+}
+
+message SkillInfo {
+  string slug = 1;
+  string name = 2;
+  string description = 3;
+  string storage_mode = 4;
+  bool is_hot_plug = 5;
+  bool is_system = 6;
+}
+
+message ListSkills {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated SkillInfo skills = 1;
+  }
+}
+
+message GetSkill {
+  message Request {
+    string vault_id = 1;
+    string slug = 2;
+  }
+  message Response {
+    SkillInfo skill = 1;
+    string body = 2;
+  }
+}
+
+message CreateSkill {
+  message Request {
+    string vault_id = 1;
+    string name = 2;
+    string description = 3;
+    string storage_mode = 4;
+    string body = 5;
+    bool hot_plug = 6;
+  }
+  message Response {
+    SkillInfo skill = 1;
+  }
+}
+
+message UpdateSkill {
+  message Request {
+    string vault_id = 1;
+    string slug = 2;
+    string name = 3;
+    string description = 4;
+    string storage_mode = 5;
+    string body = 6;
+  }
+  message Response {
+    SkillInfo skill = 1;
+  }
+}
+
+message DeleteSkill {
+  message Request {
+    string vault_id = 1;
+    string slug = 2;
+  }
+  message Response {}
+}
+
+message SetSkillHotPlug {
+  message Request {
+    string vault_id = 1;
+    string slug = 2;
+    bool hot_plug = 3;
+  }
+  message Response {
+    SkillInfo skill = 1;
+  }
+}

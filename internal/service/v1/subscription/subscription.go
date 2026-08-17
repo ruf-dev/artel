@@ -2,6 +2,7 @@ package subscription
 
 import (
 	"context"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
@@ -189,6 +190,67 @@ func (s *PaidService) CheckStorageQuota(ctx context.Context, userUuid uuid.UUID)
 
 	if usage.S3Bytes >= effective.S3QuotaBytes {
 		return user_errors.S3StorageQuotaExceeded
+	}
+
+	return nil
+}
+
+// skillCounts measures a single vault's current skill population live against CouchDB: total
+// is every note under either .skills/ subfolder, hotPlug is the subset under
+// domain.SkillsActiveFolder. Uses instance-level admin credentials to build the LiveSyncClient
+// (this check isn't scoped to a particular caller's couch account, unlike notes.Service), the
+// same credential source couchUsage already reads from instance.
+func (s *PaidService) skillCounts(ctx context.Context, vault domain.Vault) (total int, hotPlug int, err error) {
+	instance, err := s.couchInstances.Get(ctx, vault.CouchInstanceUuid)
+	if err != nil {
+		return 0, 0, rerrors.Wrap(err, "error getting couch instance for skill limit check")
+	}
+
+	client := couchdb.NewLiveSyncClient(instance.Url, vault.CouchDBName, instance.Username, instance.Password)
+
+	notes, err := client.ListSkillNotes(ctx)
+	if err != nil {
+		return 0, 0, rerrors.Wrap(err, "error listing skill notes")
+	}
+
+	for _, n := range notes {
+		switch {
+		case strings.HasPrefix(n.Path, domain.SkillsActiveFolder):
+			total++
+			hotPlug++
+		case strings.HasPrefix(n.Path, domain.SkillsLibraryFolder):
+			total++
+		}
+	}
+
+	return total, hotPlug, nil
+}
+
+// CheckSkillLimit compares vaultUuid's current skill counts against its owner's effective plan
+// caps. wantHotPlug scopes which caps are checked: a library-only create/update only needs the
+// total cap checked, while creating or hot-plugging a skill needs both.
+func (s *PaidService) CheckSkillLimit(ctx context.Context, vaultUuid uuid.UUID, wantHotPlug bool) error {
+	vault, err := s.vaults.GetByID(ctx, vaultUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting vault for skill limit check")
+	}
+
+	effective, err := s.GetEffective(ctx, vault.UserUuid)
+	if err != nil {
+		return err
+	}
+
+	total, hotPlug, err := s.skillCounts(ctx, vault)
+	if err != nil {
+		return err
+	}
+
+	if total >= effective.MaxTotalSkills {
+		return user_errors.SkillLimitExceeded
+	}
+
+	if wantHotPlug && hotPlug >= effective.MaxHotPlugSkills {
+		return user_errors.HotPlugSkillLimitExceeded
 	}
 
 	return nil

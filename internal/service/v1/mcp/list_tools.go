@@ -66,6 +66,8 @@ func (s *ServiceImpl) ListTools(_ context.Context) ([]domain.McpToolDef, error) 
 
 	tools = append(tools, createCommunityConnectorTool())
 
+	tools = append(tools, skillsToolDefinitions()...)
+
 	return tools, nil
 }
 

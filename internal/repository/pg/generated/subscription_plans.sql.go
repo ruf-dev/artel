@@ -7,21 +7,36 @@ package artel_q
 
 import (
 	"context"
+	"encoding/json"
+	"time"
 )
 
 const getSubscriptionPlan = `-- name: GetSubscriptionPlan :one
-SELECT plan_key, couch_quota_bytes, s3_quota_bytes, features, created_at, updated_at
+SELECT plan_key, couch_quota_bytes, s3_quota_bytes, max_hot_plug_skills, max_total_skills, features, created_at, updated_at
 FROM subscription_plans
 WHERE plan_key = $1
 `
 
-func (q *Queries) GetSubscriptionPlan(ctx context.Context, planKey string) (SubscriptionPlan, error) {
+type GetSubscriptionPlanRow struct {
+	PlanKey          string
+	CouchQuotaBytes  int64
+	S3QuotaBytes     int64
+	MaxHotPlugSkills int32
+	MaxTotalSkills   int32
+	Features         json.RawMessage
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+}
+
+func (q *Queries) GetSubscriptionPlan(ctx context.Context, planKey string) (GetSubscriptionPlanRow, error) {
 	row := q.db.QueryRowContext(ctx, getSubscriptionPlan, planKey)
-	var i SubscriptionPlan
+	var i GetSubscriptionPlanRow
 	err := row.Scan(
 		&i.PlanKey,
 		&i.CouchQuotaBytes,
 		&i.S3QuotaBytes,
+		&i.MaxHotPlugSkills,
+		&i.MaxTotalSkills,
 		&i.Features,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -30,24 +45,37 @@ func (q *Queries) GetSubscriptionPlan(ctx context.Context, planKey string) (Subs
 }
 
 const listSubscriptionPlans = `-- name: ListSubscriptionPlans :many
-SELECT plan_key, couch_quota_bytes, s3_quota_bytes, features, created_at, updated_at
+SELECT plan_key, couch_quota_bytes, s3_quota_bytes, max_hot_plug_skills, max_total_skills, features, created_at, updated_at
 FROM subscription_plans
 ORDER BY plan_key
 `
 
-func (q *Queries) ListSubscriptionPlans(ctx context.Context) ([]SubscriptionPlan, error) {
+type ListSubscriptionPlansRow struct {
+	PlanKey          string
+	CouchQuotaBytes  int64
+	S3QuotaBytes     int64
+	MaxHotPlugSkills int32
+	MaxTotalSkills   int32
+	Features         json.RawMessage
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+}
+
+func (q *Queries) ListSubscriptionPlans(ctx context.Context) ([]ListSubscriptionPlansRow, error) {
 	rows, err := q.db.QueryContext(ctx, listSubscriptionPlans)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []SubscriptionPlan{}
+	items := []ListSubscriptionPlansRow{}
 	for rows.Next() {
-		var i SubscriptionPlan
+		var i ListSubscriptionPlansRow
 		if err := rows.Scan(
 			&i.PlanKey,
 			&i.CouchQuotaBytes,
 			&i.S3QuotaBytes,
+			&i.MaxHotPlugSkills,
+			&i.MaxTotalSkills,
 			&i.Features,
 			&i.CreatedAt,
 			&i.UpdatedAt,

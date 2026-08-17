@@ -468,21 +468,25 @@ type Session struct {
 }
 
 type Subscription struct {
-	UserID                  uuid.UUID
-	Active                  bool
-	PlanKey                 string
-	FeatureOverrides        json.RawMessage
-	CouchQuotaOverrideBytes sql.NullInt64
-	S3QuotaOverrideBytes    sql.NullInt64
+	UserID                   uuid.UUID
+	Active                   bool
+	PlanKey                  string
+	FeatureOverrides         json.RawMessage
+	CouchQuotaOverrideBytes  sql.NullInt64
+	S3QuotaOverrideBytes     sql.NullInt64
+	MaxHotPlugSkillsOverride sql.NullInt32
+	MaxTotalSkillsOverride   sql.NullInt32
 }
 
 type SubscriptionPlan struct {
-	PlanKey         string
-	CouchQuotaBytes int64
-	S3QuotaBytes    int64
-	Features        json.RawMessage
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	PlanKey          string
+	CouchQuotaBytes  int64
+	S3QuotaBytes     int64
+	Features         json.RawMessage
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	MaxHotPlugSkills int32
+	MaxTotalSkills   int32
 }
 
 type SystemSetting struct {

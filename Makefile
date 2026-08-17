@@ -45,6 +45,13 @@ dev-serve:
 	go run ./cmd/service -dev; \
 	wait
 
+# Run Go dev server and React dev server together
+serve:
+	@trap 'kill 0' EXIT; \
+	go run ./cmd/service -dev & \
+	cd pkg/client/ArtelUI && bun dev & \
+	wait
+
 # Applies Postgres migrations as a standalone step, independent of app startup — for operators
 # who set skip_migrations=true and want to run migrations explicitly instead.
 migrate:

@@ -37,7 +37,25 @@ func NewLiveSyncClient(baseURL, dbName, username, password string) *LiveSyncClie
 	return &LiveSyncClient{db: client.DB(dbName)}
 }
 
+// skillsFolderPrefix mirrors domain.SkillsFolderPrefix — kept as a local literal (rather than
+// importing internal/domain here) since this package only needs the raw prefix string, in the
+// same style as the existing "_design/" skip below.
+const skillsFolderPrefix = ".skills/"
+
 func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
+	return c.listNoteEntries(ctx, false)
+}
+
+// ListSkillNotes lists notes under the reserved .skills/ folder — the mirror image of
+// ListNotes's skip. The skills service uses this to enumerate skill definitions that ListNotes
+// intentionally hides from the regular notes listing.
+func (c *LiveSyncClient) ListSkillNotes(ctx context.Context) ([]NoteEntry, error) {
+	return c.listNoteEntries(ctx, true)
+}
+
+// listNoteEntries is the shared AllDocs scan behind ListNotes and ListSkillNotes; skillsOnly
+// picks which side of the .skills/ boundary to keep.
+func (c *LiveSyncClient) listNoteEntries(ctx context.Context, skillsOnly bool) ([]NoteEntry, error) {
 	rows := c.db.AllDocs(ctx, kivik.Params(map[string]any{"include_docs": true}))
 	defer utils.CloseWithLog(rows, "error closing list notes request")
 
@@ -50,6 +68,10 @@ func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
 		}
 
 		if strings.HasPrefix(id, "_design/") {
+			continue
+		}
+
+		if strings.HasPrefix(id, skillsFolderPrefix) != skillsOnly {
 			continue
 		}
 
@@ -273,6 +295,10 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 		}
 
 		if strings.HasPrefix(id, "_design/") {
+			continue
+		}
+
+		if strings.HasPrefix(id, skillsFolderPrefix) {
 			continue
 		}
 
@@ -568,6 +594,71 @@ func extractTags(content string) []string {
 	}
 
 	return tags
+}
+
+// ParseFrontmatter parses a "---"-delimited frontmatter block at the top of content into a
+// flat map of simple "key: value" scalar fields, plus the remaining body text after the
+// closing "---". Line-scan based (no nested lists — see extractTags above for that shape),
+// deliberately general-purpose rather than skill-specific: it's a low-level parsing helper —
+// callers (e.g. the skills service) interpret whichever keys they care about themselves.
+// Content with no frontmatter block (missing/unterminated "---" header) returns a nil map and
+// content unchanged as body.
+func ParseFrontmatter(content string) (fields map[string]string, body string) {
+	lines := strings.Split(content, "\n")
+
+	if len(lines) == 0 || lines[0] != "---" {
+		return nil, content
+	}
+
+	closeIdx := -1
+
+	for i := 1; i < len(lines); i++ {
+		if lines[i] == "---" {
+			closeIdx = i
+
+			break
+		}
+	}
+
+	if closeIdx == -1 {
+		return nil, content
+	}
+
+	fields = make(map[string]string)
+
+	for _, line := range lines[1:closeIdx] {
+		key, value, ok := splitFrontmatterLine(line)
+		if !ok {
+			continue
+		}
+
+		fields[key] = value
+	}
+
+	body = strings.Join(lines[closeIdx+1:], "\n")
+
+	return fields, body
+}
+
+// splitFrontmatterLine parses a single "key: value" frontmatter line, trimming surrounding
+// whitespace and any quoting around the value. Lines with no ":" (e.g. blank lines, or nested
+// list items belonging to a field like "tags:") are reported via ok=false and skipped by the
+// caller.
+func splitFrontmatterLine(line string) (key string, value string, ok bool) {
+	idx := strings.Index(line, ":")
+	if idx < 0 {
+		return "", "", false
+	}
+
+	key = strings.TrimSpace(line[:idx])
+	if key == "" {
+		return "", "", false
+	}
+
+	value = strings.TrimSpace(line[idx+1:])
+	value = strings.Trim(value, "\"'")
+
+	return key, value, true
 }
 
 func MimeTypeForPath(path string) string {

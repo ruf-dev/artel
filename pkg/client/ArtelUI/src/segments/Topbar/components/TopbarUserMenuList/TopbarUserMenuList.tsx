@@ -12,20 +12,24 @@ interface TopbarUserMenuListProps {
     isAdmin: boolean
     onAdmin: () => void
     onApiKeys: () => void
+    onSkills: () => void
     onDocs: () => void
     onLogout: () => void
     rect: MenuRect
 }
 
-export default function TopbarUserMenuList(
-    {isAdmin, onAdmin, onApiKeys, onDocs, onLogout, rect}: TopbarUserMenuListProps,
-) {
+// >6 props — kept as one object instead of exploding into separate destructured
+// bindings, per the ObjectPattern[properties.length>6] lint rule.
+export default function TopbarUserMenuList(props: TopbarUserMenuListProps) {
     return (
-        <div className={cn(cls.Menu, rect.bottom !== undefined && cls.MenuUpward)} role="menu" style={rect}>
-            {isAdmin && (
+        <div
+            className={cn(cls.Menu, props.rect.bottom !== undefined && cls.MenuUpward)}
+            role="menu" style={props.rect}
+        >
+            {props.isAdmin && (
                 <TopbarUserMenuItem
                     label="Admin Panel"
-                    onClick={onAdmin}
+                    onClick={props.onAdmin}
                     icon={
                         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
                              strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +41,7 @@ export default function TopbarUserMenuList(
             )}
             <TopbarUserMenuItem
                 label="API Keys"
-                onClick={onApiKeys}
+                onClick={props.onApiKeys}
                 icon={
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
                          strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -47,8 +51,20 @@ export default function TopbarUserMenuList(
                 }
             />
             <TopbarUserMenuItem
+                label="Skills"
+                onClick={props.onSkills}
+                icon={
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                         strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2 2 7l10 5 10-5-10-5Z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                }
+            />
+            <TopbarUserMenuItem
                 label="Docs"
-                onClick={onDocs}
+                onClick={props.onDocs}
                 icon={
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
                          strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -61,7 +77,7 @@ export default function TopbarUserMenuList(
             />
             <TopbarUserMenuItem
                 label="Log out"
-                onClick={onLogout}
+                onClick={props.onLogout}
                 danger
                 icon={
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"

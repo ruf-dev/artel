@@ -11,6 +11,7 @@ export * from './docker_hosts.pb';
 export * from './notes.pb';
 export * from './prompts.pb';
 export * from './s3_instances.pb';
+export * from './skills.pb';
 export * from './user_errors.pb';
 export * from './vaults.pb';
 
@@ -27,6 +28,7 @@ export { DockerHostsAPI } from './docker_hosts.pb';
 export { NotesAPI } from './notes.pb';
 export { PromptsAPI } from './prompts.pb';
 export { S3InstancesAPI } from './s3_instances.pb';
+export { SkillsAPI } from './skills.pb';
 export { VaultsAPI } from './vaults.pb';
 
 export * from './fetch.pb';

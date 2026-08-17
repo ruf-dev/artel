@@ -33,6 +33,10 @@ func (s *ServiceImpl) ExecuteTool(
 		return s.createCommunityConnector(ctx, keyCtx.UserUuid, params)
 	}
 
+	if isSkillManagementTool(toolName) {
+		return s.executeSkillManagementTool(ctx, keyCtx, toolName, params)
+	}
+
 	if executors.IsTractTool(toolName) {
 		return s.executeTractTool(ctx, keyCtx.UserUuid, toolName, params)
 	}

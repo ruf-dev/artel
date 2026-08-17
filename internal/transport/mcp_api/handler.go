@@ -233,6 +233,18 @@ func (h *McpHandler) handleToolsList(ctx context.Context, writer http.ResponseWr
 		}
 	}
 
+	// Dynamic per-hot-plug-skill tools (skill_<slug>) are synthesized per-vault, so they're
+	// merged in here rather than living in the vault-agnostic ListTools catalog above — see the
+	// doc comment on service.McpService.ListHotPlugSkillTools.
+	hotPlugSkillTools, err := h.mcpSvc.ListHotPlugSkillTools(ctx, keyCtx)
+	if err != nil {
+		log.Error().Err(err).Msg("mcp: failed to list hot-plug skill tools")
+	} else {
+		for _, t := range hotPlugSkillTools {
+			tools = append(tools, momToolToToolDef(t))
+		}
+	}
+
 	result := map[string]any{
 		"tools": tools,
 	}
@@ -285,6 +297,19 @@ func (h *McpHandler) handleToolsCall(ctx context.Context, writer http.ResponseWr
 		}
 
 		result = toolResultFromExec(execRes)
+	} else if strings.HasPrefix(callReq.Name, domain.SkillToolPrefix) {
+		slug := strings.TrimPrefix(callReq.Name, domain.SkillToolPrefix)
+
+		var text string
+		text, err = h.mcpSvc.ExecuteSkillTool(ctx, keyCtx, slug)
+		if err != nil {
+			log.Error().Err(err).Str("tool", callReq.Name).Msg("mcp: skill tool execution failed")
+			writeErrorResponse(ctx, writer, req.Id, -32603, "tool execution failed", err)
+
+			return
+		}
+
+		result = textResult(text)
 	} else {
 		var text string
 		text, err = h.momSvc.ExecuteToolForKey(ctx, keyCtx.KeyUuid, callReq.Name, callReq.Arguments)

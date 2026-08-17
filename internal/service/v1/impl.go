@@ -20,6 +20,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/public_docs"
 	"github.com/ruf-dev/artel/internal/service/v1/s3instances"
 	"github.com/ruf-dev/artel/internal/service/v1/setupwizard"
+	"github.com/ruf-dev/artel/internal/service/v1/skills"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
 	"github.com/ruf-dev/artel/internal/service/v1/vault"
@@ -47,6 +48,7 @@ type Services struct {
 	SetupWizard         service.SetupWizardService
 	AdminSettings       service.AdminSystemSettingsService
 	PostgresInstance    service.PostgresInstanceService
+	Skills              service.SkillsService
 	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
@@ -94,6 +96,11 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	// struct literal either.
 	authSvc := auth.New(repo, cfg.TelegramClientID, subscriptionSvc)
 
+	// Also hoisted ahead of the literal: mcp.New needs service.SkillsService (to dispatch the
+	// list_skills/get_skill_body/create_skill/... builtin tools and to synthesize the dynamic
+	// skill_<slug> tools), which doesn't exist yet mid-construction of the same struct literal.
+	skillsSvc := skills.New(repo, subscriptionSvc)
+
 	services := &Services{
 		Auth:          authSvc,
 		Vault:         vault.New(repo, subscriptionSvc),
@@ -114,6 +121,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 			authSvc,
 			repo.PostgresInstances(),
 			repo.VaultPostgresDatabases(),
+			skillsSvc,
 		),
 		Subscription:        subscriptionSvc,
 		Prompt:              prompt.New(repo.Prompts()),
@@ -127,6 +135,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 		SetupWizard:         setupwizard.New(repo.SystemSettings(), authSvc),
 		AdminSettings:       adminsettings.New(repo.SystemSettings(), repo.Vaults()),
 		PostgresInstance:    postgresinstances.New(repo),
+		Skills:              skillsSvc,
 	}
 
 	return services, nil
@@ -221,4 +230,8 @@ func (s *Services) AdminSystemSettingsService() service.AdminSystemSettingsServi
 
 func (s *Services) PostgresInstanceService() service.PostgresInstanceService {
 	return s.PostgresInstance
+}
+
+func (s *Services) SkillsService() service.SkillsService {
+	return s.Skills
 }

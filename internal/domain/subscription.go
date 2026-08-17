@@ -73,35 +73,41 @@ func (f FeatureSet) With(feature SubscriptionFeature, value bool) FeatureSet {
 }
 
 type SubscriptionPlan struct {
-	PlanKey         string
-	CouchQuotaBytes int64
-	S3QuotaBytes    int64
-	Features        FeatureSet
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	PlanKey          string
+	CouchQuotaBytes  int64
+	S3QuotaBytes     int64
+	MaxHotPlugSkills int
+	MaxTotalSkills   int
+	Features         FeatureSet
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 // Subscription is the per-user row: which plan the user is on, plus admin-granted overrides on
 // top of that plan — sparse (only keys present in FeatureOverrides override the plan's
 // FeatureSet) so most users have an empty override map and simply inherit their plan.
 type Subscription struct {
-	UserUuid                uuid.UUID
-	Active                  bool
-	PlanKey                 string
-	FeatureOverrides        map[SubscriptionFeature]bool
-	CouchQuotaOverrideBytes *int64
-	S3QuotaOverrideBytes    *int64
+	UserUuid                 uuid.UUID
+	Active                   bool
+	PlanKey                  string
+	FeatureOverrides         map[SubscriptionFeature]bool
+	CouchQuotaOverrideBytes  *int64
+	S3QuotaOverrideBytes     *int64
+	MaxHotPlugSkillsOverride *int
+	MaxTotalSkillsOverride   *int
 }
 
 // EffectiveSubscription is the merged plan+override view services actually consult — the
 // plan's defaults with the user's overrides applied on top.
 type EffectiveSubscription struct {
-	UserUuid        uuid.UUID
-	Active          bool
-	PlanKey         string
-	Features        FeatureSet
-	CouchQuotaBytes int64
-	S3QuotaBytes    int64
+	UserUuid         uuid.UUID
+	Active           bool
+	PlanKey          string
+	Features         FeatureSet
+	CouchQuotaBytes  int64
+	S3QuotaBytes     int64
+	MaxHotPlugSkills int
+	MaxTotalSkills   int
 }
 
 // StorageUsage is a point-in-time measurement of a user's storage footprint across all of

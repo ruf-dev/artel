@@ -42,6 +42,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/public_docs_api"
 	"github.com/ruf-dev/artel/internal/transport/s3_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/setup_wizard_api"
+	"github.com/ruf-dev/artel/internal/transport/skills_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
 	"github.com/ruf-dev/artel/internal/transport/tracts_api"
@@ -143,6 +144,7 @@ func (c *Custom) Init(a *App) error {
 
 	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
+	skillsImpl := skills_api.NewSkillsImpl(services.SkillsService())
 	publicDocsImpl := public_docs_api.New(services.PublicDocsService())
 	authImpl := auth_api.NewAuthImpl(
 		services.Auth, a.Cfg.Environment.TelegramClientID, services.S3InstanceService(), services.CouchInstance,
@@ -311,7 +313,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSystemSettingsAPI_UpdateDefaultDocsVault_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl)
+	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, skillsImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)

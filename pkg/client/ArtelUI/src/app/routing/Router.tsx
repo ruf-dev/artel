@@ -15,6 +15,7 @@ import TaskTrackersPage from "@/pages/task-trackers/TaskTrackersPage.tsx"
 import RoadmapPage from "@/pages/roadmap/RoadmapPage.tsx"
 import JoinVaultPage from "@/pages/join/JoinVaultPage.tsx"
 import NotesPage from "@/pages/notes/NotesPage.tsx"
+import SkillsPage from "@/pages/skills/SkillsPage.tsx"
 import DocsPage from "@/pages/docs/DocsPage.tsx"
 import DocsDefaultRedirect from "@/pages/docs/DocsDefaultRedirect.tsx"
 import ConnectionsPage from "@/pages/connections/ConnectionsPage.tsx"
@@ -40,6 +41,8 @@ export enum Path {
     SetupWizard = "/setup",
     HomePage = "/",
     McpKeysPage = "/mcp_keys",
+    SkillsPage = "/skills",
+    SkillsPageVault = "/skills/:vaultId",
     TaskTrackersPage = "/task-trackers",
     RoadmapPage = "/task-trackers/:trackerId/roadmap/:cardId",
     NotesPage = "/notes",
@@ -68,6 +71,8 @@ const routes: RouteObject[] = [
         children: [
             {path: Path.HomePage, element: <HomePage/>, errorElement: <ErrorPage/>},
             {path: Path.McpKeysPage, element: <McpKeysPage/>, errorElement: <ErrorPage/>},
+            {path: Path.SkillsPage, element: <SkillsPage/>, errorElement: <ErrorPage/>},
+            {path: Path.SkillsPageVault, element: <SkillsPage/>, errorElement: <ErrorPage/>},
             {path: Path.Admin, element: <AdminPage/>, errorElement: <ErrorPage/>},
             {path: Path.TaskTrackersPage, element: <TaskTrackersPage/>, errorElement: <ErrorPage/>},
             {path: Path.RoadmapPage, element: <RoadmapPage/>, errorElement: <ErrorPage/>},

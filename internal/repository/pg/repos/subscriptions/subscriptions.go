@@ -98,13 +98,25 @@ func (r *SubscriptionsRepo) GetWithPlan(ctx context.Context, userID uuid.UUID) (
 		s3Quota = row.S3QuotaOverrideBytes.Int64
 	}
 
+	maxHotPlugSkills := int(row.PlanMaxHotPlugSkills)
+	if row.MaxHotPlugSkillsOverride.Valid {
+		maxHotPlugSkills = int(row.MaxHotPlugSkillsOverride.Int32)
+	}
+
+	maxTotalSkills := int(row.PlanMaxTotalSkills)
+	if row.MaxTotalSkillsOverride.Valid {
+		maxTotalSkills = int(row.MaxTotalSkillsOverride.Int32)
+	}
+
 	effective := domain.EffectiveSubscription{
-		UserUuid:        row.UserID,
-		Active:          row.Active,
-		PlanKey:         row.PlanKey,
-		Features:        features,
-		CouchQuotaBytes: couchQuota,
-		S3QuotaBytes:    s3Quota,
+		UserUuid:         row.UserID,
+		Active:           row.Active,
+		PlanKey:          row.PlanKey,
+		Features:         features,
+		CouchQuotaBytes:  couchQuota,
+		S3QuotaBytes:     s3Quota,
+		MaxHotPlugSkills: maxHotPlugSkills,
+		MaxTotalSkills:   maxTotalSkills,
 	}
 
 	return effective, nil
@@ -120,13 +132,17 @@ func (r *SubscriptionsRepo) UpsertOverrides(ctx context.Context, sub domain.Subs
 
 	couchOverride := int64PtrToNull(sub.CouchQuotaOverrideBytes)
 	s3Override := int64PtrToNull(sub.S3QuotaOverrideBytes)
+	maxHotPlugSkillsOverride := intPtrToNullInt32(sub.MaxHotPlugSkillsOverride)
+	maxTotalSkillsOverride := intPtrToNullInt32(sub.MaxTotalSkillsOverride)
 
 	params := artel_q.UpsertSubscriptionOverridesParams{
-		UserID:                  sub.UserUuid,
-		PlanKey:                 sub.PlanKey,
-		FeatureOverrides:        overridesJSON,
-		CouchQuotaOverrideBytes: couchOverride,
-		S3QuotaOverrideBytes:    s3Override,
+		UserID:                   sub.UserUuid,
+		PlanKey:                  sub.PlanKey,
+		FeatureOverrides:         overridesJSON,
+		CouchQuotaOverrideBytes:  couchOverride,
+		S3QuotaOverrideBytes:     s3Override,
+		MaxHotPlugSkillsOverride: maxHotPlugSkillsOverride,
+		MaxTotalSkillsOverride:   maxTotalSkillsOverride,
 	}
 
 	row, err := r.q.UpsertSubscriptionOverrides(ctx, params)

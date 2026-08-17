@@ -1,0 +1,405 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "skills.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SkillsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/skills/create": {
+      "post": {
+        "operationId": "SkillsAPI_CreateSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_skillsCreateSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_skillsCreateSkillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SkillsAPI"
+        ]
+      }
+    },
+    "/api/skills/delete": {
+      "post": {
+        "operationId": "SkillsAPI_DeleteSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_skillsDeleteSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_skillsDeleteSkillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SkillsAPI"
+        ]
+      }
+    },
+    "/api/skills/get": {
+      "post": {
+        "operationId": "SkillsAPI_GetSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_skillsGetSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_skillsGetSkillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SkillsAPI"
+        ]
+      }
+    },
+    "/api/skills/hot-plug": {
+      "post": {
+        "operationId": "SkillsAPI_SetSkillHotPlug",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_skillsSetSkillHotPlugResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_skillsSetSkillHotPlugRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SkillsAPI"
+        ]
+      }
+    },
+    "/api/skills/list": {
+      "post": {
+        "operationId": "SkillsAPI_ListSkills",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_skillsListSkillsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_skillsListSkillsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SkillsAPI"
+        ]
+      }
+    },
+    "/api/skills/update": {
+      "post": {
+        "operationId": "SkillsAPI_UpdateSkill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_skillsUpdateSkillResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_skillsUpdateSkillRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SkillsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_skillsCreateSkillRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "storageMode": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "hotPlug": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_skillsCreateSkillResponse": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/artel_skillsSkillInfo"
+        }
+      }
+    },
+    "artel_skillsDeleteSkillRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_skillsDeleteSkillResponse": {
+      "type": "object"
+    },
+    "artel_skillsGetSkillRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_skillsGetSkillResponse": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/artel_skillsSkillInfo"
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_skillsListSkillsRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_skillsListSkillsResponse": {
+      "type": "object",
+      "properties": {
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_skillsSkillInfo"
+          }
+        }
+      }
+    },
+    "artel_skillsSetSkillHotPlugRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "hotPlug": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_skillsSetSkillHotPlugResponse": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/artel_skillsSkillInfo"
+        }
+      }
+    },
+    "artel_skillsSkillInfo": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "storageMode": {
+          "type": "string"
+        },
+        "isHotPlug": {
+          "type": "boolean"
+        },
+        "isSystem": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_skillsUpdateSkillRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "storageMode": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_skillsUpdateSkillResponse": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/artel_skillsSkillInfo"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

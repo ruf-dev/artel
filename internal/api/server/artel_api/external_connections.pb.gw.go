@@ -10,7 +10,6 @@ package artel_api
 
 import (
 	"context"
-	"errors"
 	"io"
 	"net/http"
 
@@ -25,812 +24,782 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = errors.New
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = metadata.Join
 
 func request_ExternalConnectionsAPI_InitiateGoogleOAuth_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq InitiateGoogleOAuth_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq InitiateGoogleOAuth_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.InitiateGoogleOAuth(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_InitiateGoogleOAuth_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq InitiateGoogleOAuth_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq InitiateGoogleOAuth_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.InitiateGoogleOAuth(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_ListConnections_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListConnections_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq ListConnections_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.ListConnections(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_ListConnections_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListConnections_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq ListConnections_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.ListConnections(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_DisconnectProvider_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq DisconnectProvider_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq DisconnectProvider_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.DisconnectProvider(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_DisconnectProvider_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq DisconnectProvider_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq DisconnectProvider_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.DisconnectProvider(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_DisconnectConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq DisconnectConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq DisconnectConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.DisconnectConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_DisconnectConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq DisconnectConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq DisconnectConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.DisconnectConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_GetGooglePickerToken_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GooglePickerToken_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq GooglePickerToken_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.GetGooglePickerToken(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_GetGooglePickerToken_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GooglePickerToken_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq GooglePickerToken_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.GetGooglePickerToken(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddSpreadsheet_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddSpreadsheet_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddSpreadsheet_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddSpreadsheet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddSpreadsheet_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddSpreadsheet_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddSpreadsheet_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddSpreadsheet(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_ListSpreadsheets_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListSpreadsheets_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq ListSpreadsheets_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.ListSpreadsheets(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_ListSpreadsheets_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListSpreadsheets_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq ListSpreadsheets_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.ListSpreadsheets(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_RemoveSpreadsheet_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq RemoveSpreadsheet_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq RemoveSpreadsheet_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.RemoveSpreadsheet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_RemoveSpreadsheet_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq RemoveSpreadsheet_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq RemoveSpreadsheet_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.RemoveSpreadsheet(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddEmailConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddEmailConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddEmailConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddEmailConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddEmailConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddEmailConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddEmailConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddEmailConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckEmailConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckEmailConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckEmailConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckEmailConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckEmailConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckEmailConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckEmailConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckEmailConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_ListMailServerSuggestions_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListMailServerSuggestions_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq ListMailServerSuggestions_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.ListMailServerSuggestions(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_ListMailServerSuggestions_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ListMailServerSuggestions_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq ListMailServerSuggestions_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.ListMailServerSuggestions(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddGitlabConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddGitlabConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddGitlabConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddGitlabConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddGitlabConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddGitlabConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddGitlabConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddGitlabConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckGitlabConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckGitlabConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckGitlabConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckGitlabConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckGitlabConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckGitlabConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckGitlabConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckGitlabConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GenerateGitlabWebhookSecret_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq GenerateGitlabWebhookSecret_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.GenerateGitlabWebhookSecret(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GenerateGitlabWebhookSecret_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq GenerateGitlabWebhookSecret_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.GenerateGitlabWebhookSecret(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddTrelloConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddTrelloConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddTrelloConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddTrelloConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddTrelloConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddTrelloConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddTrelloConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddTrelloConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckTrelloConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckTrelloConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckTrelloConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckTrelloConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckTrelloConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckTrelloConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckTrelloConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckTrelloConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddTelegramConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddTelegramConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddTelegramConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddTelegramConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddTelegramConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddTelegramConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddTelegramConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddTelegramConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckTelegramConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckTelegramConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckTelegramConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckTelegramConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckTelegramConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckTelegramConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckTelegramConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckTelegramConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddAnthropicConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddAnthropicConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddAnthropicConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddAnthropicConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddAnthropicConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddAnthropicConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddAnthropicConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddAnthropicConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckAnthropicConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckAnthropicConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckAnthropicConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckAnthropicConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckAnthropicConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckAnthropicConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckAnthropicConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckAnthropicConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddOpenAIConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddOpenAIConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddOpenAIConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddOpenAIConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddOpenAIConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddOpenAIConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddOpenAIConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddOpenAIConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckOpenAIConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckOpenAIConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckOpenAIConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckOpenAIConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckOpenAIConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckOpenAIConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckOpenAIConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckOpenAIConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddGenericConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddGenericConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddGenericConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddGenericConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddGenericConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddGenericConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddGenericConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddGenericConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddS3Connection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddS3Connection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddS3Connection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddS3Connection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddS3Connection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddS3Connection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddS3Connection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddS3Connection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckS3Connection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckS3Connection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckS3Connection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckS3Connection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckS3Connection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckS3Connection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckS3Connection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckS3Connection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddCouchDBConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddCouchDBConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddCouchDBConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddCouchDBConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddCouchDBConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddCouchDBConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddCouchDBConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddCouchDBConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckCouchDBConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckCouchDBConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckCouchDBConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckCouchDBConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckCouchDBConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckCouchDBConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckCouchDBConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckCouchDBConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_AddPostgresConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddPostgresConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddPostgresConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.AddPostgresConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_AddPostgresConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq AddPostgresConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq AddPostgresConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.AddPostgresConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ExternalConnectionsAPI_CheckPostgresConnection_0(ctx context.Context, marshaler runtime.Marshaler, client ExternalConnectionsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckPostgresConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckPostgresConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if req.Body != nil {
-		_, _ = io.Copy(io.Discard, req.Body)
-	}
+
 	msg, err := client.CheckPostgresConnection(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ExternalConnectionsAPI_CheckPostgresConnection_0(ctx context.Context, marshaler runtime.Marshaler, server ExternalConnectionsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq CheckPostgresConnection_Request
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	var protoReq CheckPostgresConnection_Request
+	var metadata runtime.ServerMetadata
+
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+
 	msg, err := server.CheckPostgresConnection(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterExternalConnectionsAPIHandlerServer registers the http handlers for service ExternalConnectionsAPI to "mux".
 // UnaryRPC     :call ExternalConnectionsAPIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterExternalConnectionsAPIHandlerFromEndpoint instead.
-// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExternalConnectionsAPIServer) error {
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_InitiateGoogleOAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_InitiateGoogleOAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth", runtime.WithHTTPPathPattern("/api/external-connections/google/initiate"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth", runtime.WithHTTPPathPattern("/api/external-connections/google/initiate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -842,15 +811,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_InitiateGoogleOAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_ListConnections_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_ListConnections_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListConnections", runtime.WithHTTPPathPattern("/api/external-connections/list"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListConnections", runtime.WithHTTPPathPattern("/api/external-connections/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -862,15 +836,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_ListConnections_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_DisconnectProvider_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_DisconnectProvider_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectProvider", runtime.WithHTTPPathPattern("/api/external-connections/disconnect"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectProvider", runtime.WithHTTPPathPattern("/api/external-connections/disconnect"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -882,15 +861,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_DisconnectProvider_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_DisconnectConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_DisconnectConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectConnection", runtime.WithHTTPPathPattern("/api/external-connections/disconnect-connection"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectConnection", runtime.WithHTTPPathPattern("/api/external-connections/disconnect-connection"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -902,15 +886,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_DisconnectConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_GetGooglePickerToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_GetGooglePickerToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken", runtime.WithHTTPPathPattern("/api/external-connections/google/picker-token"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken", runtime.WithHTTPPathPattern("/api/external-connections/google/picker-token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -922,15 +911,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_GetGooglePickerToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -942,15 +936,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddSpreadsheet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_ListSpreadsheets_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_ListSpreadsheets_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListSpreadsheets", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/list"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListSpreadsheets", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -962,15 +961,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_ListSpreadsheets_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_RemoveSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_RemoveSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/remove"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -982,15 +986,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_RemoveSpreadsheet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1002,15 +1011,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddEmailConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1022,15 +1036,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckEmailConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_ListMailServerSuggestions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_ListMailServerSuggestions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions", runtime.WithHTTPPathPattern("/api/external-connections/email/suggestions"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions", runtime.WithHTTPPathPattern("/api/external-connections/email/suggestions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1042,15 +1061,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_ListMailServerSuggestions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1062,15 +1086,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddGitlabConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1082,15 +1111,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckGitlabConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/webhook-secret"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/webhook-secret"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1102,15 +1136,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1122,15 +1161,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddTrelloConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1142,15 +1186,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckTrelloConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1162,15 +1211,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddTelegramConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1182,15 +1236,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckTelegramConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1202,15 +1261,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddAnthropicConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1222,15 +1286,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckAnthropicConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1242,15 +1311,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddOpenAIConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1262,15 +1336,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckOpenAIConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddGenericConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddGenericConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGenericConnection", runtime.WithHTTPPathPattern("/api/external-connections/generic"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGenericConnection", runtime.WithHTTPPathPattern("/api/external-connections/generic"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1282,15 +1361,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddGenericConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1302,15 +1386,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddS3Connection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1322,15 +1411,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckS3Connection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1342,15 +1436,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddCouchDBConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1362,15 +1461,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckCouchDBConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1382,15 +1486,20 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddPostgresConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1402,7 +1511,9 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckPostgresConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -1411,24 +1522,25 @@ func RegisterExternalConnectionsAPIHandlerServer(ctx context.Context, mux *runti
 // RegisterExternalConnectionsAPIHandlerFromEndpoint is same as RegisterExternalConnectionsAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterExternalConnectionsAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.NewClient(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
+
 	return RegisterExternalConnectionsAPIHandler(ctx, mux, conn)
 }
 
@@ -1442,13 +1554,16 @@ func RegisterExternalConnectionsAPIHandler(ctx context.Context, mux *runtime.Ser
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ExternalConnectionsAPIClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ExternalConnectionsAPIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ExternalConnectionsAPIClient" to call the correct interceptors. This client ignores the HTTP middlewares.
+// "ExternalConnectionsAPIClient" to call the correct interceptors.
 func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ExternalConnectionsAPIClient) error {
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_InitiateGoogleOAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_InitiateGoogleOAuth_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth", runtime.WithHTTPPathPattern("/api/external-connections/google/initiate"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth", runtime.WithHTTPPathPattern("/api/external-connections/google/initiate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1459,13 +1574,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_InitiateGoogleOAuth_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_ListConnections_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_ListConnections_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListConnections", runtime.WithHTTPPathPattern("/api/external-connections/list"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListConnections", runtime.WithHTTPPathPattern("/api/external-connections/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1476,13 +1596,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_ListConnections_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_DisconnectProvider_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_DisconnectProvider_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectProvider", runtime.WithHTTPPathPattern("/api/external-connections/disconnect"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectProvider", runtime.WithHTTPPathPattern("/api/external-connections/disconnect"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1493,13 +1618,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_DisconnectProvider_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_DisconnectConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_DisconnectConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectConnection", runtime.WithHTTPPathPattern("/api/external-connections/disconnect-connection"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/DisconnectConnection", runtime.WithHTTPPathPattern("/api/external-connections/disconnect-connection"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1510,13 +1640,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_DisconnectConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_GetGooglePickerToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_GetGooglePickerToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken", runtime.WithHTTPPathPattern("/api/external-connections/google/picker-token"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken", runtime.WithHTTPPathPattern("/api/external-connections/google/picker-token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1527,13 +1662,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_GetGooglePickerToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1544,13 +1684,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddSpreadsheet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_ListSpreadsheets_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_ListSpreadsheets_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListSpreadsheets", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/list"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListSpreadsheets", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/list"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1561,13 +1706,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_ListSpreadsheets_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_RemoveSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_RemoveSpreadsheet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/remove"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet", runtime.WithHTTPPathPattern("/api/external-connections/google/spreadsheets/remove"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1578,13 +1728,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_RemoveSpreadsheet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1595,13 +1750,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddEmailConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckEmailConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckEmailConnection", runtime.WithHTTPPathPattern("/api/external-connections/email/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1612,13 +1772,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckEmailConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_ListMailServerSuggestions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_ListMailServerSuggestions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions", runtime.WithHTTPPathPattern("/api/external-connections/email/suggestions"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions", runtime.WithHTTPPathPattern("/api/external-connections/email/suggestions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1629,13 +1794,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_ListMailServerSuggestions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1646,13 +1816,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddGitlabConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckGitlabConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1663,13 +1838,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckGitlabConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/webhook-secret"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret", runtime.WithHTTPPathPattern("/api/external-connections/gitlab/webhook-secret"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1680,13 +1860,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1697,13 +1882,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddTrelloConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckTrelloConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection", runtime.WithHTTPPathPattern("/api/external-connections/trello/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1714,13 +1904,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckTrelloConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1731,13 +1926,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddTelegramConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckTelegramConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection", runtime.WithHTTPPathPattern("/api/external-connections/telegram/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1748,13 +1948,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckTelegramConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1765,13 +1970,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddAnthropicConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckAnthropicConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection", runtime.WithHTTPPathPattern("/api/external-connections/anthropic/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1782,13 +1992,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckAnthropicConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1799,13 +2014,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddOpenAIConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckOpenAIConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection", runtime.WithHTTPPathPattern("/api/external-connections/openai/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1816,13 +2036,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckOpenAIConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddGenericConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddGenericConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGenericConnection", runtime.WithHTTPPathPattern("/api/external-connections/generic"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddGenericConnection", runtime.WithHTTPPathPattern("/api/external-connections/generic"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1833,13 +2058,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddGenericConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1850,13 +2080,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddS3Connection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckS3Connection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckS3Connection", runtime.WithHTTPPathPattern("/api/external-connections/s3/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1867,13 +2102,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckS3Connection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1884,13 +2124,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddCouchDBConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckCouchDBConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection", runtime.WithHTTPPathPattern("/api/external-connections/couchdb/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1901,13 +2146,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckCouchDBConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_AddPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_AddPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/add"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/AddPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/add"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1918,13 +2168,18 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_AddPostgresConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
-	mux.Handle(http.MethodPost, pattern_ExternalConnectionsAPI_CheckPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+
+	mux.Handle("POST", pattern_ExternalConnectionsAPI_CheckPostgresConnection_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/check"))
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection", runtime.WithHTTPPathPattern("/api/external-connections/postgres/check"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1935,71 +2190,130 @@ func RegisterExternalConnectionsAPIHandlerClient(ctx context.Context, mux *runti
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+
 		forward_ExternalConnectionsAPI_CheckPostgresConnection_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
+
 	return nil
 }
 
 var (
-	pattern_ExternalConnectionsAPI_InitiateGoogleOAuth_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "google", "initiate"}, ""))
-	pattern_ExternalConnectionsAPI_ListConnections_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "list"}, ""))
-	pattern_ExternalConnectionsAPI_DisconnectProvider_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "disconnect"}, ""))
-	pattern_ExternalConnectionsAPI_DisconnectConnection_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "disconnect-connection"}, ""))
-	pattern_ExternalConnectionsAPI_GetGooglePickerToken_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "google", "picker-token"}, ""))
-	pattern_ExternalConnectionsAPI_AddSpreadsheet_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "external-connections", "google", "spreadsheets", "add"}, ""))
-	pattern_ExternalConnectionsAPI_ListSpreadsheets_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "external-connections", "google", "spreadsheets", "list"}, ""))
-	pattern_ExternalConnectionsAPI_RemoveSpreadsheet_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "external-connections", "google", "spreadsheets", "remove"}, ""))
-	pattern_ExternalConnectionsAPI_AddEmailConnection_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "email", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckEmailConnection_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "email", "check"}, ""))
-	pattern_ExternalConnectionsAPI_ListMailServerSuggestions_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "email", "suggestions"}, ""))
-	pattern_ExternalConnectionsAPI_AddGitlabConnection_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "gitlab", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckGitlabConnection_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "gitlab", "check"}, ""))
+	pattern_ExternalConnectionsAPI_InitiateGoogleOAuth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "google", "initiate"}, ""))
+
+	pattern_ExternalConnectionsAPI_ListConnections_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "list"}, ""))
+
+	pattern_ExternalConnectionsAPI_DisconnectProvider_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "disconnect"}, ""))
+
+	pattern_ExternalConnectionsAPI_DisconnectConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "disconnect-connection"}, ""))
+
+	pattern_ExternalConnectionsAPI_GetGooglePickerToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "google", "picker-token"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddSpreadsheet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "external-connections", "google", "spreadsheets", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_ListSpreadsheets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "external-connections", "google", "spreadsheets", "list"}, ""))
+
+	pattern_ExternalConnectionsAPI_RemoveSpreadsheet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "external-connections", "google", "spreadsheets", "remove"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddEmailConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "email", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckEmailConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "email", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_ListMailServerSuggestions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "email", "suggestions"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddGitlabConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "gitlab", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckGitlabConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "gitlab", "check"}, ""))
+
 	pattern_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "gitlab", "webhook-secret"}, ""))
-	pattern_ExternalConnectionsAPI_AddTrelloConnection_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "trello", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckTrelloConnection_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "trello", "check"}, ""))
-	pattern_ExternalConnectionsAPI_AddTelegramConnection_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "telegram", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckTelegramConnection_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "telegram", "check"}, ""))
-	pattern_ExternalConnectionsAPI_AddAnthropicConnection_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "anthropic", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckAnthropicConnection_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "anthropic", "check"}, ""))
-	pattern_ExternalConnectionsAPI_AddOpenAIConnection_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "openai", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckOpenAIConnection_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "openai", "check"}, ""))
-	pattern_ExternalConnectionsAPI_AddGenericConnection_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "generic"}, ""))
-	pattern_ExternalConnectionsAPI_AddS3Connection_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "s3", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckS3Connection_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "s3", "check"}, ""))
-	pattern_ExternalConnectionsAPI_AddCouchDBConnection_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "couchdb", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckCouchDBConnection_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "couchdb", "check"}, ""))
-	pattern_ExternalConnectionsAPI_AddPostgresConnection_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "postgres", "add"}, ""))
-	pattern_ExternalConnectionsAPI_CheckPostgresConnection_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "postgres", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddTrelloConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "trello", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckTrelloConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "trello", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddTelegramConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "telegram", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckTelegramConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "telegram", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddAnthropicConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "anthropic", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckAnthropicConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "anthropic", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddOpenAIConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "openai", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckOpenAIConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "openai", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddGenericConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "external-connections", "generic"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddS3Connection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "s3", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckS3Connection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "s3", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddCouchDBConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "couchdb", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckCouchDBConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "couchdb", "check"}, ""))
+
+	pattern_ExternalConnectionsAPI_AddPostgresConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "postgres", "add"}, ""))
+
+	pattern_ExternalConnectionsAPI_CheckPostgresConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "external-connections", "postgres", "check"}, ""))
 )
 
 var (
-	forward_ExternalConnectionsAPI_InitiateGoogleOAuth_0         = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_ListConnections_0             = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_DisconnectProvider_0          = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_DisconnectConnection_0        = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_GetGooglePickerToken_0        = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddSpreadsheet_0              = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_ListSpreadsheets_0            = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_RemoveSpreadsheet_0           = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddEmailConnection_0          = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckEmailConnection_0        = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_ListMailServerSuggestions_0   = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddGitlabConnection_0         = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckGitlabConnection_0       = runtime.ForwardResponseMessage
+	forward_ExternalConnectionsAPI_InitiateGoogleOAuth_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_ListConnections_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_DisconnectProvider_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_DisconnectConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_GetGooglePickerToken_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddSpreadsheet_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_ListSpreadsheets_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_RemoveSpreadsheet_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddEmailConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckEmailConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_ListMailServerSuggestions_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddGitlabConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckGitlabConnection_0 = runtime.ForwardResponseMessage
+
 	forward_ExternalConnectionsAPI_GenerateGitlabWebhookSecret_0 = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddTrelloConnection_0         = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckTrelloConnection_0       = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddTelegramConnection_0       = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckTelegramConnection_0     = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddAnthropicConnection_0      = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckAnthropicConnection_0    = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddOpenAIConnection_0         = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckOpenAIConnection_0       = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddGenericConnection_0        = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddS3Connection_0             = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckS3Connection_0           = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddCouchDBConnection_0        = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckCouchDBConnection_0      = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_AddPostgresConnection_0       = runtime.ForwardResponseMessage
-	forward_ExternalConnectionsAPI_CheckPostgresConnection_0     = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddTrelloConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckTrelloConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddTelegramConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckTelegramConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddAnthropicConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckAnthropicConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddOpenAIConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckOpenAIConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddGenericConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddS3Connection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckS3Connection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddCouchDBConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckCouchDBConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_AddPostgresConnection_0 = runtime.ForwardResponseMessage
+
+	forward_ExternalConnectionsAPI_CheckPostgresConnection_0 = runtime.ForwardResponseMessage
 )

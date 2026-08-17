@@ -68,6 +68,11 @@ export default function TopbarUserMenu() {
         navigate(Path.McpKeysPage)
     }
 
+    function handleSkills() {
+        setMenuOpen(false)
+        navigate(Path.SkillsPage)
+    }
+
     function handleDocs() {
         setMenuOpen(false)
         navigate(Path.DocsPageDefault)
@@ -87,6 +92,7 @@ export default function TopbarUserMenu() {
                         isAdmin={isAdmin}
                         onAdmin={handleAdmin}
                         onApiKeys={handleApiKeys}
+                        onSkills={handleSkills}
                         onDocs={handleDocs}
                         onLogout={handleLogout}
                     />

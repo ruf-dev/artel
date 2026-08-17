@@ -42,11 +42,13 @@ func (s *FreeService) CheckFeature(_ context.Context, _ uuid.UUID, _ domain.Subs
 
 func (s *FreeService) GetEffective(_ context.Context, userUuid uuid.UUID) (domain.EffectiveSubscription, error) {
 	effective := domain.EffectiveSubscription{
-		UserUuid:        userUuid,
-		Active:          true,
-		Features:        unlimitedFeatures,
-		CouchQuotaBytes: math.MaxInt64,
-		S3QuotaBytes:    math.MaxInt64,
+		UserUuid:         userUuid,
+		Active:           true,
+		Features:         unlimitedFeatures,
+		CouchQuotaBytes:  math.MaxInt64,
+		S3QuotaBytes:     math.MaxInt64,
+		MaxHotPlugSkills: math.MaxInt32,
+		MaxTotalSkills:   math.MaxInt32,
 	}
 
 	return effective, nil
@@ -57,5 +59,11 @@ func (s *FreeService) GetUsage(_ context.Context, _ uuid.UUID) (domain.StorageUs
 }
 
 func (s *FreeService) CheckStorageQuota(_ context.Context, _ uuid.UUID) error {
+	return nil
+}
+
+// CheckSkillLimit always passes — skill caps are unlimited when subscriptions are disabled,
+// matching every other check in this no-op implementation.
+func (s *FreeService) CheckSkillLimit(_ context.Context, _ uuid.UUID, _ bool) error {
 	return nil
 }

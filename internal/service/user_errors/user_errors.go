@@ -111,6 +111,46 @@ var (
 		rerrors.WithHttpStatus(http.StatusRequestEntityTooLarge),
 	)
 
+	// subscription: skill quotas.
+	SkillLimitExceeded = rerrors.New(
+		"skill limit exceeded for your subscription",
+		codes.ResourceExhausted,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+	HotPlugSkillLimitExceeded = rerrors.New(
+		"hot-plug skill limit exceeded for your subscription",
+		codes.ResourceExhausted,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+
+	// skills: system skill immutability.
+	SystemSkillNotEditable = rerrors.New(
+		"the built-in skill-creator skill cannot be modified, hot-plug-toggled, or deleted",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+
+	// mcp: skill tool params.
+	SkillSlugRequired        = rerrors.New("slug is required and must be a string", codes.InvalidArgument)
+	SkillNameRequired        = rerrors.New("name is required and must be a string", codes.InvalidArgument)
+	SkillDescriptionRequired = rerrors.New("description is required and must be a string", codes.InvalidArgument)
+	SkillStorageModeRequired = rerrors.New("storage_mode is required and must be a string", codes.InvalidArgument)
+	SkillStorageModeInvalid  = rerrors.New(
+		"storage_mode must be one of: none, freeform_notes, structured",
+		codes.InvalidArgument,
+	)
+	SkillBodyRequired    = rerrors.New("body is required and must be a string", codes.InvalidArgument)
+	SkillHotPlugRequired = rerrors.New("hot_plug is required and must be a boolean", codes.InvalidArgument)
+	// SkillNameCollidesWithBuiltinTool is returned when a newly created or newly hot-plugged
+	// skill's slug would synthesize a skill_<slug> tool name that collides with an existing
+	// builtin (or tract/postgres) tool name. The triggering skill create/hot-plug-enable is
+	// rolled back before this is returned.
+	SkillNameCollidesWithBuiltinTool = rerrors.New(
+		"this skill's name produces a tool name that collides with an existing builtin tool; choose a different name",
+		codes.AlreadyExists,
+		rerrors.WithHttpStatus(http.StatusConflict),
+	)
+
 	// vault.
 	NotVaultOwner      = rerrors.New("only vault owner can perform this action", codes.PermissionDenied)
 	InviteLinkRevoked  = rerrors.New("invite link has been revoked", codes.FailedPrecondition)

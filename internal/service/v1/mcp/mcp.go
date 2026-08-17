@@ -26,6 +26,7 @@ type ServiceImpl struct {
 	externalConnections    repository.ExternalConnectionRepo
 	subscriptions          service.SubscriptionService
 	authSvc                service.AuthService
+	skillsSvc              service.SkillsService
 	vaultExecutor          *executors.VaultExecutor
 	tractExecutor          *executors.TractExecutor
 	postgresExecutor       *executors.PostgresExecutor
@@ -60,6 +61,7 @@ func New(
 	authSvc service.AuthService,
 	postgresInstances repository.PostgresInstances,
 	vaultPostgresDatabases repository.VaultPostgresDatabases,
+	skillsSvc service.SkillsService,
 ) *ServiceImpl {
 	impl := &ServiceImpl{
 		mcpKeys:                mcpKeys,
@@ -74,6 +76,7 @@ func New(
 		externalConnections:    externalConnections,
 		subscriptions:          subscriptions,
 		authSvc:                authSvc,
+		skillsSvc:              skillsSvc,
 		vaultExecutor:          executors.NewVaultExecutor(),
 		tractExecutor:          executors.NewTractExecutor(),
 		postgresExecutor:       executors.NewPostgresExecutor(),
