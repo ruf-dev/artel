@@ -9,7 +9,7 @@ FROM postgres_instances WHERE id = $1;
 
 -- name: RandomPickPostgresInstance :one
 SELECT id, host, port, admin_database, username, password_enc, ssl_mode, owner_user_id, created_at
-FROM postgres_instances ORDER BY RANDOM() LIMIT 1;
+FROM postgres_instances WHERE owner_user_id IS NULL ORDER BY RANDOM() LIMIT 1;
 
 -- name: PickOwnedPostgresInstance :one
 SELECT id, host, port, admin_database, username, password_enc, ssl_mode, owner_user_id, created_at

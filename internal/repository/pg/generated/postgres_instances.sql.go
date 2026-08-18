@@ -129,7 +129,7 @@ func (q *Queries) PostgresInstanceExists(ctx context.Context) (bool, error) {
 
 const randomPickPostgresInstance = `-- name: RandomPickPostgresInstance :one
 SELECT id, host, port, admin_database, username, password_enc, ssl_mode, owner_user_id, created_at
-FROM postgres_instances ORDER BY RANDOM() LIMIT 1
+FROM postgres_instances WHERE owner_user_id IS NULL ORDER BY RANDOM() LIMIT 1
 `
 
 func (q *Queries) RandomPickPostgresInstance(ctx context.Context) (PostgresInstance, error) {

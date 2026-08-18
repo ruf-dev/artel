@@ -381,6 +381,46 @@ func (s *PostgresSuite) TestAddPostgresConnection_SyncsOwnedInstance_VaultResolv
 	s.NotEqual(s.postgresInstanceID, vaultInstanceID.String(), "vault must not fall back to the shared admin pool instance")
 }
 
+// TestRandomPickPostgresInstance_NeverReturnsOwnedInstance is a regression test for the
+// RandomPickPostgresInstance query missing a `WHERE owner_user_id IS NULL` clause (see
+// docs/tasks/e2e-pool-instance-flake.md) — before the fix, the shared-pool fallback could return
+// ANY postgres_instances row, including one owned by a different user's BYOK connection. Post-fix,
+// owned rows are structurally excluded by the query, so this is deterministic across iterations
+// rather than relying on chance to surface a flake.
+func (s *PostgresSuite) TestRandomPickPostgresInstance_NeverReturnsOwnedInstance() {
+	user := s.registerLoginVault("randompick")
+
+	pgHost := harness.PostgresHost(s.T())
+	pgPort := harness.PostgresPort(s.T())
+	adminDatabase := harness.PostgresAdminDatabase(s.T())
+	adminUser, adminPass := harness.PostgresAdminCreds(s.T())
+
+	// postgres_instances carries no UNIQUE constraint on host/port, so this can reuse the same
+	// physical test-postgres server coordinates the admin pool instance already targets.
+	addReq := &pb.AddPostgresConnection_Request{
+		Host:     pgHost,
+		Port:     int32(pgPort),
+		Database: adminDatabase,
+		Username: adminUser,
+		Password: adminPass,
+		SslMode:  "disable",
+	}
+
+	_, err := s.ecClient.AddPostgresConnection(user.authedCtx, addReq)
+	s.Require().NoError(err, "AddPostgresConnection rpc should succeed against the shared test postgres server")
+
+	var ownedInstanceID uuid.UUID
+
+	err = s.db.QueryRow(`SELECT id FROM postgres_instances WHERE owner_user_id = $1`, user.userUuid).Scan(&ownedInstanceID)
+	s.Require().NoError(err, "owned postgres_instances row should have been created")
+
+	for i := 0; i < 30; i++ {
+		picked, err := s.repos.PostgresInstances().RandomPick(context.Background())
+		s.Require().NoError(err, "RandomPick should succeed")
+		s.NotEqual(ownedInstanceID, picked.Uuid, "shared-pool fallback must never return another user's owned instance")
+	}
+}
+
 // TestMcpPostgresRoundTrip_QueryExecuteListTables drives pg_execute/pg_query/pg_list_tables
 // through the real MCP JSON-RPC-over-HTTP handler (mirrors e2e_test.go's write_file round trip)
 // against a vault with Postgres enabled, confirming the tools actually reach the vault's

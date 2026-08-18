@@ -13,7 +13,7 @@ SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, cr
 SELECT id, endpoint, region, access_key, use_ssl, path_style, created_at FROM s3_instances ORDER BY created_at DESC;
 
 -- name: RandomPickS3Instance :one
-SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances ORDER BY RANDOM() LIMIT 1;
+SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances WHERE owner_user_id IS NULL ORDER BY RANDOM() LIMIT 1;
 
 -- name: PickOwnedS3Instance :one
 SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances WHERE owner_user_id = $1 LIMIT 1;

@@ -169,7 +169,7 @@ func (q *Queries) PickOwnedS3Instance(ctx context.Context, ownerUserID uuid.Null
 }
 
 const randomPickS3Instance = `-- name: RandomPickS3Instance :one
-SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances ORDER BY RANDOM() LIMIT 1
+SELECT id, endpoint, region, access_key, secret_key_enc, use_ssl, path_style, created_at FROM s3_instances WHERE owner_user_id IS NULL ORDER BY RANDOM() LIMIT 1
 `
 
 type RandomPickS3InstanceRow struct {

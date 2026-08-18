@@ -10,7 +10,7 @@ SELECT id, url, username, created_at FROM couch_instances WHERE id = $1;
 SELECT id, url, username, password_enc, created_at FROM couch_instances WHERE id = $1;
 
 -- name: RandomPickCouchInstance :one
-SELECT id, url, username, password_enc, created_at FROM couch_instances ORDER BY RANDOM() LIMIT 1;
+SELECT id, url, username, password_enc, created_at FROM couch_instances WHERE owner_user_id IS NULL ORDER BY RANDOM() LIMIT 1;
 
 -- name: PickOwnedCouchInstance :one
 SELECT id, url, username, password_enc, created_at FROM couch_instances WHERE owner_user_id = $1 LIMIT 1;

@@ -100,11 +100,14 @@ func (s *ByokStorageSuite) TearDownSuite() {
 // e2e_test.go's TestUserSessionVaultMCPWriteNotesRead), then returns a context carrying the
 // session token as outgoing gRPC metadata the same way the production auth interceptor expects to
 // read it back (see middleware/cookie_annotator.go's authHeader const and
-// auth_interceptor.go's authWithSession).
-func (s *ByokStorageSuite) registerAndAuthenticate() (context.Context, uuid.UUID) {
+// auth_interceptor.go's authWithSession). harness.Slug(t) is purely a function of t.Name(), so a
+// test calling this more than once (e.g. to register two separate users) must pass a distinct
+// suffix each time or the second Register call fails with "already exists" — see
+// tests/e2e/postgres_test.go's registerLoginVault for the same pattern.
+func (s *ByokStorageSuite) registerAndAuthenticate(suffix string) (context.Context, uuid.UUID) {
 	ctx := context.Background()
 
-	slug := harness.Slug(s.T())
+	slug := harness.Slug(s.T()) + "_" + suffix
 	email := slug + "@test.local"
 	// A fixed password, not slug-derived: bcrypt rejects passwords over 72 bytes, and slug embeds
 	// the full (possibly long, subtest-qualified) t.Name() — uniqueness only matters for email.
@@ -145,7 +148,7 @@ func (s *ByokStorageSuite) registerAndAuthenticate() (context.Context, uuid.UUID
 }
 
 func (s *ByokStorageSuite) TestAddCouchDBConnection_PersistsAndVaultUsesOwnedInstance() {
-	ctx, userUuid := s.registerAndAuthenticate()
+	ctx, userUuid := s.registerAndAuthenticate("owner")
 
 	// couch_instances.url carries a UNIQUE constraint (migrations/002_couch_instances.sql), so
 	// this can't reuse the exact URL string SetupSuite already registered for the admin pool
@@ -204,7 +207,7 @@ func (s *ByokStorageSuite) TestAddCouchDBConnection_PersistsAndVaultUsesOwnedIns
 }
 
 func (s *ByokStorageSuite) TestAddS3Connection_PersistsAndLinkS3BucketAutoResolves() {
-	ctx, userUuid := s.registerAndAuthenticate()
+	ctx, userUuid := s.registerAndAuthenticate("owner")
 
 	addReq := &pb.AddS3Connection_Request{
 		Endpoint:  envOrDefault("S3_ENDPOINT", "localhost:19000"),
@@ -274,7 +277,7 @@ func (s *ByokStorageSuite) TestAddS3Connection_PersistsAndLinkS3BucketAutoResolv
 }
 
 func (s *ByokStorageSuite) TestCreateVault_NoOwnedConnection_FallsBackToPool() {
-	ctx, _ := s.registerAndAuthenticate()
+	ctx, _ := s.registerAndAuthenticate("user")
 
 	createResp, err := s.vaultsClient.CreateVault(ctx, &pb.CreateVault_Request{Name: "pool_fallback_vault"})
 	s.Require().NoError(err, "CreateVault rpc should succeed for a user with no BYOK connections")
@@ -298,8 +301,80 @@ func (s *ByokStorageSuite) TestCreateVault_NoOwnedConnection_FallsBackToPool() {
 	s.False(ownerUserID.Valid, "the shared admin pool instance must have no owner")
 }
 
+// TestRandomPickCouchInstance_NeverReturnsOwnedInstance is a regression test for the
+// RandomPickCouchInstance query missing a `WHERE owner_user_id IS NULL` clause (see
+// docs/tasks/e2e-pool-instance-flake.md) — before the fix, the shared-pool fallback could return
+// ANY couch_instances row, including one owned by a different user's BYOK connection. Post-fix,
+// owned rows are structurally excluded by the query, so this is deterministic across iterations
+// rather than relying on chance to surface a flake.
+func (s *ByokStorageSuite) TestRandomPickCouchInstance_NeverReturnsOwnedInstance() {
+	ctx, userUuid := s.registerAndAuthenticate("owner")
+
+	// couch_instances.url carries a UNIQUE constraint, so this needs a url distinct from both the
+	// admin pool instance (SetupSuite) and TestAddCouchDBConnection_PersistsAndVaultUsesOwnedInstance's
+	// "127.0.0.1" row. "[::1]" (IPv6 loopback) reaches the same docker-compose-published CouchDB
+	// container while keeping the row's url distinct — unlike other loopback aliases (e.g.
+	// 127.0.0.2), it's actually reachable through Docker Desktop's published port on macOS.
+	byokCouchURL := strings.Replace(envOrDefault("COUCH_URL", "http://localhost:15985"), "localhost", "[::1]", 1)
+
+	addReq := &pb.AddCouchDBConnection_Request{
+		Url:      byokCouchURL,
+		Username: envOrDefault("COUCH_USER", "admin"),
+		Password: envOrDefault("COUCH_PASS", "admin"),
+	}
+
+	_, err := s.ecClient.AddCouchDBConnection(ctx, addReq)
+	s.Require().NoError(err, "AddCouchDBConnection rpc should succeed")
+
+	var ownedInstanceID uuid.UUID
+
+	err = s.db.QueryRow(`SELECT id FROM couch_instances WHERE owner_user_id = $1`, userUuid).Scan(&ownedInstanceID)
+	s.Require().NoError(err, "owned couch_instances row should have been created")
+
+	for i := 0; i < 30; i++ {
+		picked, err := s.repos.CouchInstances().RandomPick(context.Background())
+		s.Require().NoError(err, "RandomPick should succeed")
+		s.NotEqual(ownedInstanceID, picked.Instance.Uuid, "shared-pool fallback must never return another user's owned instance")
+	}
+}
+
+// TestRandomPickS3Instance_NeverReturnsOwnedInstance is the s3_instances equivalent of
+// TestRandomPickCouchInstance_NeverReturnsOwnedInstance above. Unlike CouchInstances/
+// PostgresInstances, repository.S3Instances does not expose RandomPick directly (only
+// PickForUser), so this drives PickForUser with a second, connection-less user — GetOwned finds
+// nothing for them, forcing the exact same RandomPickS3Instance fallback query the direct-RandomPick
+// tests exercise.
+func (s *ByokStorageSuite) TestRandomPickS3Instance_NeverReturnsOwnedInstance() {
+	ownerCtx, ownerUuid := s.registerAndAuthenticate("owner")
+
+	addReq := &pb.AddS3Connection_Request{
+		Endpoint:  envOrDefault("S3_ENDPOINT", "localhost:19000"),
+		Region:    "us-east-1",
+		AccessKey: "minioadmin",
+		SecretKey: "minioadmin",
+		UseSsl:    false,
+		PathStyle: true,
+	}
+
+	_, err := s.ecClient.AddS3Connection(ownerCtx, addReq)
+	s.Require().NoError(err, "AddS3Connection rpc should succeed")
+
+	var ownedInstanceID uuid.UUID
+
+	err = s.db.QueryRow(`SELECT id FROM s3_instances WHERE owner_user_id = $1`, ownerUuid).Scan(&ownedInstanceID)
+	s.Require().NoError(err, "owned s3_instances row should have been created")
+
+	_, otherUuid := s.registerAndAuthenticate("other")
+
+	for i := 0; i < 30; i++ {
+		picked, err := s.repos.S3Instances().PickForUser(context.Background(), otherUuid)
+		s.Require().NoError(err, "PickForUser should succeed")
+		s.NotEqual(ownedInstanceID, picked.Uuid, "shared-pool fallback must never return another user's owned instance")
+	}
+}
+
 func (s *ByokStorageSuite) TestAddCouchDBConnection_BadCredentials_RejectsAndPersistsNothing() {
-	ctx, userUuid := s.registerAndAuthenticate()
+	ctx, userUuid := s.registerAndAuthenticate("user")
 
 	addReq := &pb.AddCouchDBConnection_Request{
 		Url:      "http://localhost:1",
