@@ -1,22 +1,22 @@
-/* Browser-tab strip: top+side border matches Terminal's own border so the two read as
-   one continuous panel (see .TerminalPanel in WorkbenchPage.module.css, which removes
-   any gap between this and Terminal, and Terminal.module.css, which drops its own top
-   border/radius in favor of this one). The bottom border is the tab baseline — each
-   active TerminalTabChip overlaps and erases it locally (see that module's .Active). */
+/* Flat underline tab strip (VS Code style): background stays --color-bg-accent, and the
+   active tab reads as "attached" to the terminal panel below purely via matching
+   background color (--color-bg-base) — see TerminalTabChip.module.css for the tab itself.
+   No bottom border here: the color contrast between this bar and the terminal panel is
+   the only separator needed. */
 .TerminalTabBarContainer {
     display: flex;
-    align-items: flex-end;
-    gap: 0.25rem;
-    padding: 0.5rem 0.5rem 0;
+    align-items: stretch;
+    gap: 0.125rem;
+    padding: 0.25rem 0.375rem 0;
     background-color: var(--color-bg-accent);
     border: var(--border-thickness) solid var(--color-border-light);
-    border-bottom: var(--border-thickness) solid var(--color-border);
+    border-bottom: none;
     border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
 
     & .TabsWrapper {
         display: flex;
-        align-items: flex-end;
-        gap: 0.25rem;
+        align-items: stretch;
+        gap: 0.125rem;
         min-width: 0;
         overflow-x: auto;
         overflow-y: hidden;
@@ -24,14 +24,12 @@
 
     /* Nested under .TerminalTabBarContainer (native `&`), so this compound selector
        is two classes deep and beats chures' own single-class Button rules regardless
-       of injection order — see "Never use !important" in ArtelUI CLAUDE.md. No extra
-       wrapper element needed since Button is already a descendant, not the same
-       element as .TerminalTabBarContainer. */
+       of injection order — see "Never use !important" in ArtelUI CLAUDE.md. */
     & .NewTabButton {
-        width: var(--icon-button-size);
-        height: var(--icon-button-size);
+        width: 1.75rem;
+        height: 1.75rem;
         padding: 0;
-        margin-bottom: 0.375rem;
+        align-self: center;
         flex-shrink: 0;
         border: none;
         background: transparent;
