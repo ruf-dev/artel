@@ -186,18 +186,32 @@ type VaultService interface {
 	DisablePostgresDatabase(ctx context.Context, vaultID uuid.UUID) error
 }
 
-// WorkbenchService manages the per-vault Docker workbench container — see
-// docs/workbench/01_data_model_and_lifecycle.md for the state machine it drives, and
-// docs/workbench/03_auth_and_login_flow.md for both auth modes StartWorkbench implements.
-// GetLoginPrompt/SubmitLoginCode drive the subscription_login mode's URL-out/code-in relay.
+// WorkbenchService manages the per-(vault, user) Docker workbench container — every vault
+// member gets their own workbench — see docs/workbench/01_data_model_and_lifecycle.md for the
+// state machine it drives, and docs/workbench/03_auth_and_login_flow.md for both auth modes
+// StartWorkbench implements.
+//
+// CreateWorkbench/GetWorkbench/StartWorkbench/StopWorkbench/DeleteWorkbench all resolve the
+// calling user from ctx internally (via user_context.GetUserContext, same idiom as
+// vault.Service.requireVaultMember) rather than taking an explicit userID parameter — they're
+// only ever called from gRPC handlers behind the auth interceptor, which injects it. Never trust
+// a client-supplied user id for these. ResolveTerminalTarget is the one exception: its only
+// caller (the terminal reverse-proxy handler) sits outside that interceptor chain and
+// authenticates the request itself, so it passes userID explicitly.
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	StartWorkbench(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) (domain.Workbench, error)
 	StopWorkbench(ctx context.Context, vaultID uuid.UUID) error
 	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
-	GetLoginPrompt(ctx context.Context, vaultID uuid.UUID) (domain.WorkbenchLoginPrompt, error)
-	SubmitLoginCode(ctx context.Context, vaultID uuid.UUID, code string) error
+	// DeleteWorkbenchesForVault tears down every member's workbench for vaultID — used by full
+	// vault deletion, which must clean up every user's Docker resources, not just the caller's.
+	DeleteWorkbenchesForVault(ctx context.Context, vaultID uuid.UUID) error
+	// ResolveTerminalTarget returns the "http://<ip>:<port>" base URL of userID's running
+	// workbench's in-container ttyd server, for the terminal reverse-proxy handler
+	// (internal/transport/vaults_api/workbench_terminal.go) to forward to. Returns
+	// user_errors.WorkbenchNotRunning when the workbench isn't running.
+	ResolveTerminalTarget(ctx context.Context, vaultID, userID uuid.UUID) (string, error)
 }
 
 type CouchInstanceService interface {

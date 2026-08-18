@@ -404,6 +404,14 @@ var (
 		"this workbench auth mode is not implemented yet",
 		codes.Unimplemented,
 	)
+	// WorkbenchRequiresVaultMembership surfaces from workbench.Service.CreateWorkbench when the
+	// caller isn't a member of the target vault — every vault member gets their own workbench,
+	// but only a member can create one.
+	WorkbenchRequiresVaultMembership = rerrors.New(
+		"must be a vault member to create a workbench",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
 	WorkbenchNotConfigured = rerrors.New(
 		"workbenches are not enabled for this deployment",
 		codes.Unimplemented,
@@ -419,6 +427,15 @@ var (
 	WorkbenchMissingDockerHost = rerrors.New(
 		"this workbench predates docker host assignment; delete and recreate it",
 		codes.FailedPrecondition,
+	)
+	// WorkbenchNotRunning surfaces from workbench.Service.ResolveTerminalTarget when a vault's
+	// workbench exists but isn't in the 'running' state — there's no ttyd server inside a
+	// stopped/never-started container to proxy a terminal session to, so the only recovery is
+	// starting the workbench first.
+	WorkbenchNotRunning = rerrors.New(
+		"workbench is not running; start it before opening a terminal",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusConflict),
 	)
 
 	// tract: builtin execution

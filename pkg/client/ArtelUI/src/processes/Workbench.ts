@@ -6,12 +6,7 @@ export interface IWorkbenchService {
     create: (vaultId: string) => Promise<{ status: string }>
     start: (vaultId: string, authMode: string) => Promise<{ status: string; authMode: string }>
     stop: (vaultId: string) => Promise<{ status: string }>
-    watchLogin: (
-        vaultId: string,
-        onUpdate: (state: string, url: string, errorMessage: string) => void,
-        signal: AbortSignal,
-    ) => Promise<void>
-    submitLoginCode: (vaultId: string, code: string) => Promise<void>
+    remove: (vaultId: string) => Promise<{ status: string }>
 }
 
 export class WorkbenchService implements IWorkbenchService {
@@ -35,20 +30,9 @@ export class WorkbenchService implements IWorkbenchService {
         return {status: res.status ?? ""}
     }
 
-    async watchLogin(
-        vaultId: string,
-        onUpdate: (state: string, url: string, errorMessage: string) => void,
-        signal: AbortSignal,
-    ): Promise<void> {
-        await VaultsAPI.WatchWorkbenchLogin(
-            {vaultId},
-            (res) => onUpdate(res.state ?? "", res.url ?? "", res.errorMessage ?? ""),
-            {...useUser.getState().auth.getInitReq(), signal},
-        )
-    }
-
-    async submitLoginCode(vaultId: string, code: string): Promise<void> {
-        await VaultsAPI.SubmitWorkbenchLoginCode({vaultId, code}, useUser.getState().auth.getInitReq())
+    async remove(vaultId: string): Promise<{ status: string }> {
+        const res = await VaultsAPI.DeleteWorkbench({vaultId}, useUser.getState().auth.getInitReq())
+        return {status: res.status ?? ""}
     }
 }
 

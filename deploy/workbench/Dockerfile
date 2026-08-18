@@ -10,8 +10,24 @@
 FROM node:20-slim
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends tmux \
+    && apt-get install -y --no-install-recommends tmux ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
+
+# ttyd exposes the tmux session above as a real interactive terminal over HTTP/WebSocket (see
+# entrypoint.sh), which the backend reverse-proxies to. A pinned upstream static release binary,
+# so no C build toolchain has to land in this image; only the two architectures artel is actually
+# built for are mapped, and anything else fails the build loudly rather than silently shipping
+# an image with no terminal in it.
+ARG TTYD_VERSION=1.7.7
+RUN set -eu; \
+    case "$(uname -m)" in \
+      x86_64) ttyd_asset="ttyd.x86_64" ;; \
+      aarch64 | arm64) ttyd_asset="ttyd.aarch64" ;; \
+      *) echo "unsupported architecture for ttyd: $(uname -m)" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL -o /usr/local/bin/ttyd \
+      "https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION}/${ttyd_asset}"; \
+    chmod +x /usr/local/bin/ttyd
 
 RUN npm install -g @anthropic-ai/claude-code
 

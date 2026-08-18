@@ -100,17 +100,21 @@ type Vaults interface {
 	WithTx(tx postgres.DB) Vaults
 }
 
-// Workbenches is the pure-DB layer for the per-vault Docker workbench container — see
+// Workbenches is the pure-DB layer for the per-(vault, user) Docker workbench container — see
 // docs/workbench/01_data_model_and_lifecycle.md for the state machine it reflects.
 type Workbenches interface {
 	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName string, dockerHostID uuid.UUID) (domain.Workbench, error)
-	GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
-	MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, containerID string) error
-	MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error
-	MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error
-	MarkStopped(ctx context.Context, vaultID uuid.UUID) error
-	MarkRemoved(ctx context.Context, vaultID uuid.UUID) error
-	Delete(ctx context.Context, vaultID uuid.UUID) error
+	GetByVaultAndUser(ctx context.Context, vaultID, userID uuid.UUID) (domain.Workbench, error)
+	MarkContainerCreated(ctx context.Context, vaultID, userID uuid.UUID, containerID string) error
+	MarkConfiguring(ctx context.Context, vaultID, userID uuid.UUID) error
+	MarkRunning(ctx context.Context, vaultID, userID uuid.UUID, authMode domain.WorkbenchAuthMode) error
+	MarkStopped(ctx context.Context, vaultID, userID uuid.UUID) error
+	MarkRemoved(ctx context.Context, vaultID, userID uuid.UUID) error
+	Delete(ctx context.Context, vaultID, userID uuid.UUID) error
+
+	// ListByVaultID returns every workbench row for vaultID across all members — used only by
+	// vault deletion, which must tear down every member's Docker resources, not just one.
+	ListByVaultID(ctx context.Context, vaultID uuid.UUID) ([]domain.Workbench, error)
 
 	WithTx(tx postgres.DB) Workbenches
 }

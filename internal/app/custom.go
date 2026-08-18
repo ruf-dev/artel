@@ -102,9 +102,10 @@ func (c *Custom) Init(a *App) error {
 	// docs/workbench/02_docker_topology.md) rather than from a single startup-time config value,
 	// so there's no "absent config" case that leaves the whole subsystem unconstructed anymore.
 	// nil newDockerClient defaults to real workbenchdocker.New construction inside workbench.New.
-	services.Workbench = workbench.New(
-		repo.Workbenches(), repo.Vaults(), repo.DockerHosts(), services.ExternalConnections, nil,
+	workbenchSvc := workbench.New(
+		repo.Workbenches(), repo.Vaults(), repo.VaultMembers(), repo.DockerHosts(), services.ExternalConnections, nil,
 	)
+	services.Workbench = workbenchSvc
 
 	if a.Cfg.Environment.NoAuthEnabled {
 		_, err = services.Auth.EnsureNoAuthUser(a.Ctx)
@@ -169,6 +170,14 @@ func (c *Custom) Init(a *App) error {
 	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
 	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
+	// Registered as a raw http handler rather than an RPC: it reverse-proxies a browser straight
+	// through to the ttyd server inside a vault's workbench container (HTML/JS/CSS plus a
+	// WebSocket), which the grpc-gateway can't carry. Running outside the gRPC interceptor chain,
+	// it authenticates/authorizes each request itself — hence the auth service and vault-members
+	// repo passed in alongside the workbench service.
+	workbenchTerminalHandler := vaults_api.NewWorkbenchTerminalHandler(
+		services.Auth, repo.VaultMembers(), services.Workbench,
+	)
 
 	otelServerHandler := otelgrpc.NewServerHandler()
 	c.Transport.AddServerOption(
@@ -272,7 +281,6 @@ func (c *Custom) Init(a *App) error {
 			pb.VaultsAPI_ListInviteLinks_FullMethodName,
 			pb.VaultsAPI_ListMembers_FullMethodName,
 			pb.VaultsAPI_ListVaults_FullMethodName,
-			pb.VaultsAPI_WatchWorkbenchLogin_FullMethodName,
 		),
 		middleware.GrpcAdminInterceptor(services.Auth,
 			pb.CouchInstancesAPI_RegisterCouchInstance_FullMethodName,
@@ -316,6 +324,7 @@ func (c *Custom) Init(a *App) error {
 	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, skillsImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
+	c.Transport.AddHttpHandler(vaults_api.TerminalRoutePattern, workbenchTerminalHandler)
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/webhooks/gitlab/", gitlabWebhookHandler)
 	c.Transport.AddHttpHandler("/tract/hook/", tractWebhookHandler)

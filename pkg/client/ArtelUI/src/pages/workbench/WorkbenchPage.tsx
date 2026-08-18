@@ -3,6 +3,7 @@ import {Link, useParams} from "react-router-dom"
 import {Button, Loader} from "@vervstack/chures"
 
 import cls from "@/pages/workbench/WorkbenchPage.module.css"
+import {cn} from "@/app/utils/cn.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import {useWorkbench, useWorkbenchMutations} from "@/app/hooks/Workbench.ts"
@@ -10,18 +11,16 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import HeroSegment from "@/components/HeroSegment/HeroSegment.tsx"
 import WorkbenchStatusBadge from "@/pages/workbench/components/WorkbenchStatusBadge/WorkbenchStatusBadge.tsx"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
-import LoginRelayScreen from "@/pages/workbench/components/LoginRelayScreen/LoginRelayScreen.tsx"
-
-type Stage = "pick" | "login"
+import Terminal from "@/pages/workbench/components/Terminal/Terminal.tsx"
+import WorkbenchDangerZone from "@/pages/workbench/components/WorkbenchDangerZone/WorkbenchDangerZone.tsx"
 
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
     const {vaults} = useVaults()
-    const {exists, status, isLoading, refetch} = useWorkbench(vaultId)
+    const {exists, status, isLoading} = useWorkbench(vaultId)
     const {create, stop} = useWorkbenchMutations(vaultId)
     const bakeError = useBakeError()
 
-    const [stage, setStage] = useState<Stage>("pick")
     const [showSetup, setShowSetup] = useState(false)
     const [stopping, setStopping] = useState(false)
     const [creating, setCreating] = useState(false)
@@ -37,10 +36,6 @@ export default function WorkbenchPage() {
             .finally(() => setCreating(false))
     }
 
-    function handleStarted() {
-        setStage("login")
-    }
-
     function handleStop() {
         setStopping(true)
         stop()
@@ -49,6 +44,7 @@ export default function WorkbenchPage() {
     }
 
     const displayStatus = exists ? status : "not_configured"
+    const bodyCentered = isLoading || !exists || (status !== "running" && !showSetup)
 
     return (
         <div className={cls.WorkbenchPageContainer}>
@@ -68,7 +64,7 @@ export default function WorkbenchPage() {
                     </Button>
                 ) : undefined}
             />
-            <div className={cls.Body}>
+            <div className={cn(cls.Body, bodyCentered && cls.BodyCentered)}>
                 {isLoading && (
                     <Loader variant="arcs" size="sm" color="var(--coral)"/>
                 )}
@@ -83,10 +79,8 @@ export default function WorkbenchPage() {
                         </Button>
                     </>
                 )}
-                {!isLoading && exists && status === "running" && (
-                    <p className={cls.RunningState}>
-                        Claude Code is running in an isolated container for this vault.
-                    </p>
+                {!isLoading && exists && status === "running" && vaultId && (
+                    <Terminal vaultId={vaultId}/>
                 )}
                 {!isLoading && exists && status !== "running" && !showSetup && (
                     <Button variant="primary" onClick={() => setShowSetup(true)}>
@@ -94,11 +88,12 @@ export default function WorkbenchPage() {
                     </Button>
                 )}
                 {!isLoading && exists && status !== "running" && showSetup && vaultId && (
-                    stage === "pick"
-                        ? <PickAuthModeScreen vaultId={vaultId} onStarted={handleStarted}/>
-                        : <LoginRelayScreen vaultId={vaultId} onDone={refetch}/>
+                    <PickAuthModeScreen vaultId={vaultId}/>
                 )}
             </div>
+            {!isLoading && exists && vaultId && (
+                <WorkbenchDangerZone vaultId={vaultId}/>
+            )}
         </div>
     )
 }

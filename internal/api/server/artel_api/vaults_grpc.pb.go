@@ -19,30 +19,29 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	VaultsAPI_CreateVault_FullMethodName              = "/artel_vaults.VaultsAPI/CreateVault"
-	VaultsAPI_GetVault_FullMethodName                 = "/artel_vaults.VaultsAPI/GetVault"
-	VaultsAPI_ListVaults_FullMethodName               = "/artel_vaults.VaultsAPI/ListVaults"
-	VaultsAPI_DeleteVault_FullMethodName              = "/artel_vaults.VaultsAPI/DeleteVault"
-	VaultsAPI_AddMember_FullMethodName                = "/artel_vaults.VaultsAPI/AddMember"
-	VaultsAPI_RemoveMember_FullMethodName             = "/artel_vaults.VaultsAPI/RemoveMember"
-	VaultsAPI_ListMembers_FullMethodName              = "/artel_vaults.VaultsAPI/ListMembers"
-	VaultsAPI_CreateInviteLink_FullMethodName         = "/artel_vaults.VaultsAPI/CreateInviteLink"
-	VaultsAPI_ListInviteLinks_FullMethodName          = "/artel_vaults.VaultsAPI/ListInviteLinks"
-	VaultsAPI_RevokeInviteLink_FullMethodName         = "/artel_vaults.VaultsAPI/RevokeInviteLink"
-	VaultsAPI_AcceptInvite_FullMethodName             = "/artel_vaults.VaultsAPI/AcceptInvite"
-	VaultsAPI_LinkS3Bucket_FullMethodName             = "/artel_vaults.VaultsAPI/LinkS3Bucket"
-	VaultsAPI_UnlinkS3Bucket_FullMethodName           = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
-	VaultsAPI_SetVaultBinaryStorage_FullMethodName    = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
-	VaultsAPI_PublishVault_FullMethodName             = "/artel_vaults.VaultsAPI/PublishVault"
-	VaultsAPI_UnpublishVault_FullMethodName           = "/artel_vaults.VaultsAPI/UnpublishVault"
-	VaultsAPI_CreateWorkbench_FullMethodName          = "/artel_vaults.VaultsAPI/CreateWorkbench"
-	VaultsAPI_StartWorkbench_FullMethodName           = "/artel_vaults.VaultsAPI/StartWorkbench"
-	VaultsAPI_StopWorkbench_FullMethodName            = "/artel_vaults.VaultsAPI/StopWorkbench"
-	VaultsAPI_WatchWorkbenchLogin_FullMethodName      = "/artel_vaults.VaultsAPI/WatchWorkbenchLogin"
-	VaultsAPI_SubmitWorkbenchLoginCode_FullMethodName = "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode"
-	VaultsAPI_EnablePostgresDatabase_FullMethodName   = "/artel_vaults.VaultsAPI/EnablePostgresDatabase"
-	VaultsAPI_GetPostgresDatabase_FullMethodName      = "/artel_vaults.VaultsAPI/GetPostgresDatabase"
-	VaultsAPI_DisablePostgresDatabase_FullMethodName  = "/artel_vaults.VaultsAPI/DisablePostgresDatabase"
+	VaultsAPI_CreateVault_FullMethodName             = "/artel_vaults.VaultsAPI/CreateVault"
+	VaultsAPI_GetVault_FullMethodName                = "/artel_vaults.VaultsAPI/GetVault"
+	VaultsAPI_ListVaults_FullMethodName              = "/artel_vaults.VaultsAPI/ListVaults"
+	VaultsAPI_DeleteVault_FullMethodName             = "/artel_vaults.VaultsAPI/DeleteVault"
+	VaultsAPI_AddMember_FullMethodName               = "/artel_vaults.VaultsAPI/AddMember"
+	VaultsAPI_RemoveMember_FullMethodName            = "/artel_vaults.VaultsAPI/RemoveMember"
+	VaultsAPI_ListMembers_FullMethodName             = "/artel_vaults.VaultsAPI/ListMembers"
+	VaultsAPI_CreateInviteLink_FullMethodName        = "/artel_vaults.VaultsAPI/CreateInviteLink"
+	VaultsAPI_ListInviteLinks_FullMethodName         = "/artel_vaults.VaultsAPI/ListInviteLinks"
+	VaultsAPI_RevokeInviteLink_FullMethodName        = "/artel_vaults.VaultsAPI/RevokeInviteLink"
+	VaultsAPI_AcceptInvite_FullMethodName            = "/artel_vaults.VaultsAPI/AcceptInvite"
+	VaultsAPI_LinkS3Bucket_FullMethodName            = "/artel_vaults.VaultsAPI/LinkS3Bucket"
+	VaultsAPI_UnlinkS3Bucket_FullMethodName          = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
+	VaultsAPI_SetVaultBinaryStorage_FullMethodName   = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
+	VaultsAPI_PublishVault_FullMethodName            = "/artel_vaults.VaultsAPI/PublishVault"
+	VaultsAPI_UnpublishVault_FullMethodName          = "/artel_vaults.VaultsAPI/UnpublishVault"
+	VaultsAPI_CreateWorkbench_FullMethodName         = "/artel_vaults.VaultsAPI/CreateWorkbench"
+	VaultsAPI_StartWorkbench_FullMethodName          = "/artel_vaults.VaultsAPI/StartWorkbench"
+	VaultsAPI_StopWorkbench_FullMethodName           = "/artel_vaults.VaultsAPI/StopWorkbench"
+	VaultsAPI_DeleteWorkbench_FullMethodName         = "/artel_vaults.VaultsAPI/DeleteWorkbench"
+	VaultsAPI_EnablePostgresDatabase_FullMethodName  = "/artel_vaults.VaultsAPI/EnablePostgresDatabase"
+	VaultsAPI_GetPostgresDatabase_FullMethodName     = "/artel_vaults.VaultsAPI/GetPostgresDatabase"
+	VaultsAPI_DisablePostgresDatabase_FullMethodName = "/artel_vaults.VaultsAPI/DisablePostgresDatabase"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -68,11 +67,7 @@ type VaultsAPIClient interface {
 	CreateWorkbench(ctx context.Context, in *CreateWorkbench_Request, opts ...grpc.CallOption) (*CreateWorkbench_Response, error)
 	StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error)
 	StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error)
-	// WatchWorkbenchLogin streams periodic snapshots of the subscription_login TUI flow's state
-	// (docs/workbench/03_auth_and_login_flow.md) until it reaches "authorized" or the client
-	// disconnects. Modeled on TractsAPI.WatchRun.
-	WatchWorkbenchLogin(ctx context.Context, in *WatchWorkbenchLogin_Request, opts ...grpc.CallOption) (VaultsAPI_WatchWorkbenchLoginClient, error)
-	SubmitWorkbenchLoginCode(ctx context.Context, in *SubmitWorkbenchLoginCode_Request, opts ...grpc.CallOption) (*SubmitWorkbenchLoginCode_Response, error)
+	DeleteWorkbench(ctx context.Context, in *DeleteWorkbench_Request, opts ...grpc.CallOption) (*DeleteWorkbench_Response, error)
 	EnablePostgresDatabase(ctx context.Context, in *EnablePostgresDatabase_Request, opts ...grpc.CallOption) (*EnablePostgresDatabase_Response, error)
 	GetPostgresDatabase(ctx context.Context, in *GetPostgresDatabase_Request, opts ...grpc.CallOption) (*GetPostgresDatabase_Response, error)
 	DisablePostgresDatabase(ctx context.Context, in *DisablePostgresDatabase_Request, opts ...grpc.CallOption) (*DisablePostgresDatabase_Response, error)
@@ -257,41 +252,9 @@ func (c *vaultsAPIClient) StopWorkbench(ctx context.Context, in *StopWorkbench_R
 	return out, nil
 }
 
-func (c *vaultsAPIClient) WatchWorkbenchLogin(ctx context.Context, in *WatchWorkbenchLogin_Request, opts ...grpc.CallOption) (VaultsAPI_WatchWorkbenchLoginClient, error) {
-	stream, err := c.cc.NewStream(ctx, &VaultsAPI_ServiceDesc.Streams[0], VaultsAPI_WatchWorkbenchLogin_FullMethodName, opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &vaultsAPIWatchWorkbenchLoginClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type VaultsAPI_WatchWorkbenchLoginClient interface {
-	Recv() (*WatchWorkbenchLogin_Response, error)
-	grpc.ClientStream
-}
-
-type vaultsAPIWatchWorkbenchLoginClient struct {
-	grpc.ClientStream
-}
-
-func (x *vaultsAPIWatchWorkbenchLoginClient) Recv() (*WatchWorkbenchLogin_Response, error) {
-	m := new(WatchWorkbenchLogin_Response)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *vaultsAPIClient) SubmitWorkbenchLoginCode(ctx context.Context, in *SubmitWorkbenchLoginCode_Request, opts ...grpc.CallOption) (*SubmitWorkbenchLoginCode_Response, error) {
-	out := new(SubmitWorkbenchLoginCode_Response)
-	err := c.cc.Invoke(ctx, VaultsAPI_SubmitWorkbenchLoginCode_FullMethodName, in, out, opts...)
+func (c *vaultsAPIClient) DeleteWorkbench(ctx context.Context, in *DeleteWorkbench_Request, opts ...grpc.CallOption) (*DeleteWorkbench_Response, error) {
+	out := new(DeleteWorkbench_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_DeleteWorkbench_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -348,11 +311,7 @@ type VaultsAPIServer interface {
 	CreateWorkbench(context.Context, *CreateWorkbench_Request) (*CreateWorkbench_Response, error)
 	StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error)
 	StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error)
-	// WatchWorkbenchLogin streams periodic snapshots of the subscription_login TUI flow's state
-	// (docs/workbench/03_auth_and_login_flow.md) until it reaches "authorized" or the client
-	// disconnects. Modeled on TractsAPI.WatchRun.
-	WatchWorkbenchLogin(*WatchWorkbenchLogin_Request, VaultsAPI_WatchWorkbenchLoginServer) error
-	SubmitWorkbenchLoginCode(context.Context, *SubmitWorkbenchLoginCode_Request) (*SubmitWorkbenchLoginCode_Response, error)
+	DeleteWorkbench(context.Context, *DeleteWorkbench_Request) (*DeleteWorkbench_Response, error)
 	EnablePostgresDatabase(context.Context, *EnablePostgresDatabase_Request) (*EnablePostgresDatabase_Response, error)
 	GetPostgresDatabase(context.Context, *GetPostgresDatabase_Request) (*GetPostgresDatabase_Response, error)
 	DisablePostgresDatabase(context.Context, *DisablePostgresDatabase_Request) (*DisablePostgresDatabase_Response, error)
@@ -420,11 +379,8 @@ func (UnimplementedVaultsAPIServer) StartWorkbench(context.Context, *StartWorkbe
 func (UnimplementedVaultsAPIServer) StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopWorkbench not implemented")
 }
-func (UnimplementedVaultsAPIServer) WatchWorkbenchLogin(*WatchWorkbenchLogin_Request, VaultsAPI_WatchWorkbenchLoginServer) error {
-	return status.Errorf(codes.Unimplemented, "method WatchWorkbenchLogin not implemented")
-}
-func (UnimplementedVaultsAPIServer) SubmitWorkbenchLoginCode(context.Context, *SubmitWorkbenchLoginCode_Request) (*SubmitWorkbenchLoginCode_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SubmitWorkbenchLoginCode not implemented")
+func (UnimplementedVaultsAPIServer) DeleteWorkbench(context.Context, *DeleteWorkbench_Request) (*DeleteWorkbench_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkbench not implemented")
 }
 func (UnimplementedVaultsAPIServer) EnablePostgresDatabase(context.Context, *EnablePostgresDatabase_Request) (*EnablePostgresDatabase_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnablePostgresDatabase not implemented")
@@ -790,41 +746,20 @@ func _VaultsAPI_StopWorkbench_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VaultsAPI_WatchWorkbenchLogin_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(WatchWorkbenchLogin_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(VaultsAPIServer).WatchWorkbenchLogin(m, &vaultsAPIWatchWorkbenchLoginServer{stream})
-}
-
-type VaultsAPI_WatchWorkbenchLoginServer interface {
-	Send(*WatchWorkbenchLogin_Response) error
-	grpc.ServerStream
-}
-
-type vaultsAPIWatchWorkbenchLoginServer struct {
-	grpc.ServerStream
-}
-
-func (x *vaultsAPIWatchWorkbenchLoginServer) Send(m *WatchWorkbenchLogin_Response) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _VaultsAPI_SubmitWorkbenchLoginCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SubmitWorkbenchLoginCode_Request)
+func _VaultsAPI_DeleteWorkbench_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteWorkbench_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VaultsAPIServer).SubmitWorkbenchLoginCode(ctx, in)
+		return srv.(VaultsAPIServer).DeleteWorkbench(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VaultsAPI_SubmitWorkbenchLoginCode_FullMethodName,
+		FullMethod: VaultsAPI_DeleteWorkbench_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VaultsAPIServer).SubmitWorkbenchLoginCode(ctx, req.(*SubmitWorkbenchLoginCode_Request))
+		return srv.(VaultsAPIServer).DeleteWorkbench(ctx, req.(*DeleteWorkbench_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -967,8 +902,8 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VaultsAPI_StopWorkbench_Handler,
 		},
 		{
-			MethodName: "SubmitWorkbenchLoginCode",
-			Handler:    _VaultsAPI_SubmitWorkbenchLoginCode_Handler,
+			MethodName: "DeleteWorkbench",
+			Handler:    _VaultsAPI_DeleteWorkbench_Handler,
 		},
 		{
 			MethodName: "EnablePostgresDatabase",
@@ -983,12 +918,6 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VaultsAPI_DisablePostgresDatabase_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "WatchWorkbenchLogin",
-			Handler:       _VaultsAPI_WatchWorkbenchLogin_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "vaults.proto",
 }

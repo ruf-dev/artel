@@ -53,21 +53,33 @@ const deleteWorkbench = `-- name: DeleteWorkbench :exec
 DELETE
 FROM workbenches
 WHERE vault_id = $1
+  AND user_id = $2
 `
 
-func (q *Queries) DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteWorkbench, vaultID)
+type DeleteWorkbenchParams struct {
+	VaultID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) DeleteWorkbench(ctx context.Context, arg DeleteWorkbenchParams) error {
+	_, err := q.db.ExecContext(ctx, deleteWorkbench, arg.VaultID, arg.UserID)
 	return err
 }
 
-const getWorkbenchByVaultID = `-- name: GetWorkbenchByVaultID :one
+const getWorkbenchByVaultAndUser = `-- name: GetWorkbenchByVaultAndUser :one
 SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 FROM workbenches
 WHERE vault_id = $1
+  AND user_id = $2
 `
 
-func (q *Queries) GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) (Workbench, error) {
-	row := q.db.QueryRowContext(ctx, getWorkbenchByVaultID, vaultID)
+type GetWorkbenchByVaultAndUserParams struct {
+	VaultID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkbenchByVaultAndUserParams) (Workbench, error) {
+	row := q.db.QueryRowContext(ctx, getWorkbenchByVaultAndUser, arg.VaultID, arg.UserID)
 	var i Workbench
 	err := row.Scan(
 		&i.ID,
@@ -85,14 +97,61 @@ func (q *Queries) GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) 
 	return i, err
 }
 
+const listWorkbenchesByVaultID = `-- name: ListWorkbenchesByVaultID :many
+SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
+FROM workbenches
+WHERE vault_id = $1
+`
+
+func (q *Queries) ListWorkbenchesByVaultID(ctx context.Context, vaultID uuid.UUID) ([]Workbench, error) {
+	rows, err := q.db.QueryContext(ctx, listWorkbenchesByVaultID, vaultID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Workbench{}
+	for rows.Next() {
+		var i Workbench
+		if err := rows.Scan(
+			&i.ID,
+			&i.VaultID,
+			&i.UserID,
+			&i.Status,
+			&i.AuthMode,
+			&i.ContainerID,
+			&i.VolumeName,
+			&i.CreatedAt,
+			&i.StartedAt,
+			&i.StoppedAt,
+			&i.DockerHostID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const markWorkbenchConfiguring = `-- name: MarkWorkbenchConfiguring :exec
 UPDATE workbenches
 SET status = 'configuring'
 WHERE vault_id = $1
+  AND user_id = $2
 `
 
-func (q *Queries) MarkWorkbenchConfiguring(ctx context.Context, vaultID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, markWorkbenchConfiguring, vaultID)
+type MarkWorkbenchConfiguringParams struct {
+	VaultID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) MarkWorkbenchConfiguring(ctx context.Context, arg MarkWorkbenchConfiguringParams) error {
+	_, err := q.db.ExecContext(ctx, markWorkbenchConfiguring, arg.VaultID, arg.UserID)
 	return err
 }
 
@@ -100,15 +159,17 @@ const markWorkbenchContainerCreated = `-- name: MarkWorkbenchContainerCreated :e
 UPDATE workbenches
 SET status = 'created', container_id = $2
 WHERE vault_id = $1
+  AND user_id = $3
 `
 
 type MarkWorkbenchContainerCreatedParams struct {
 	VaultID     uuid.UUID
 	ContainerID sql.NullString
+	UserID      uuid.UUID
 }
 
 func (q *Queries) MarkWorkbenchContainerCreated(ctx context.Context, arg MarkWorkbenchContainerCreatedParams) error {
-	_, err := q.db.ExecContext(ctx, markWorkbenchContainerCreated, arg.VaultID, arg.ContainerID)
+	_, err := q.db.ExecContext(ctx, markWorkbenchContainerCreated, arg.VaultID, arg.ContainerID, arg.UserID)
 	return err
 }
 
@@ -116,10 +177,16 @@ const markWorkbenchRemoved = `-- name: MarkWorkbenchRemoved :exec
 UPDATE workbenches
 SET status = 'removed'
 WHERE vault_id = $1
+  AND user_id = $2
 `
 
-func (q *Queries) MarkWorkbenchRemoved(ctx context.Context, vaultID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, markWorkbenchRemoved, vaultID)
+type MarkWorkbenchRemovedParams struct {
+	VaultID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) MarkWorkbenchRemoved(ctx context.Context, arg MarkWorkbenchRemovedParams) error {
+	_, err := q.db.ExecContext(ctx, markWorkbenchRemoved, arg.VaultID, arg.UserID)
 	return err
 }
 
@@ -127,15 +194,17 @@ const markWorkbenchRunning = `-- name: MarkWorkbenchRunning :exec
 UPDATE workbenches
 SET status = 'running', auth_mode = $2, started_at = NOW()
 WHERE vault_id = $1
+  AND user_id = $3
 `
 
 type MarkWorkbenchRunningParams struct {
 	VaultID  uuid.UUID
 	AuthMode NullWorkbenchAuthMode
+	UserID   uuid.UUID
 }
 
 func (q *Queries) MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error {
-	_, err := q.db.ExecContext(ctx, markWorkbenchRunning, arg.VaultID, arg.AuthMode)
+	_, err := q.db.ExecContext(ctx, markWorkbenchRunning, arg.VaultID, arg.AuthMode, arg.UserID)
 	return err
 }
 
@@ -143,9 +212,15 @@ const markWorkbenchStopped = `-- name: MarkWorkbenchStopped :exec
 UPDATE workbenches
 SET status = 'stopped', stopped_at = NOW()
 WHERE vault_id = $1
+  AND user_id = $2
 `
 
-func (q *Queries) MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, markWorkbenchStopped, vaultID)
+type MarkWorkbenchStoppedParams struct {
+	VaultID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) MarkWorkbenchStopped(ctx context.Context, arg MarkWorkbenchStoppedParams) error {
+	_, err := q.db.ExecContext(ctx, markWorkbenchStopped, arg.VaultID, arg.UserID)
 	return err
 }

@@ -231,6 +231,7 @@ go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=
 go.uber.org/multierr v1.11.0/go.mod h1:20+QtiLqy0Nd6FdQB9TLXag12DsQkrbs3htMFfDN80Y=
 go.vervstack.ru/matreshka v1.0.99 h1:e8q/z+vZcs6veytkqicGSUmGJm4S2ehAMxNpb/Urdqc=
 go.vervstack.ru/matreshka v1.0.99/go.mod h1:vC9A1/vyLxBs/1dGqP34XMK2gO3DCdAUSGzpb7gT0+o=
+go.vervstack.ru/matreshka v1.0.100/go.mod h1:vC9A1/vyLxBs/1dGqP34XMK2gO3DCdAUSGzpb7gT0+o=
 go.yaml.in/yaml/v3 v3.0.4 h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
 go.yaml.in/yaml/v4 v4.0.0-rc.2 h1:/FrI8D64VSr4HtGIlUtlFMGsm7H7pWTbj6vOLVZcA6s=

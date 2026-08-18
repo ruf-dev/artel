@@ -58,10 +58,15 @@ func (r *Repo) Create(
 	return w, nil
 }
 
-func (r *Repo) GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
-	row, err := r.q.GetWorkbenchByVaultID(ctx, vaultID)
+func (r *Repo) GetByVaultAndUser(ctx context.Context, vaultID, userID uuid.UUID) (domain.Workbench, error) {
+	params := artel_q.GetWorkbenchByVaultAndUserParams{
+		VaultID: vaultID,
+		UserID:  userID,
+	}
+
+	row, err := r.q.GetWorkbenchByVaultAndUser(ctx, params)
 	if err != nil {
-		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault id")
+		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault and user")
 	}
 
 	w := rowToWorkbench(
@@ -81,13 +86,42 @@ func (r *Repo) GetByVaultID(ctx context.Context, vaultID uuid.UUID) (domain.Work
 	return w, nil
 }
 
-func (r *Repo) MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) error {
+func (r *Repo) ListByVaultID(ctx context.Context, vaultID uuid.UUID) ([]domain.Workbench, error) {
+	rows, err := r.q.ListWorkbenchesByVaultID(ctx, vaultID)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error listing workbenches by vault id")
+	}
+
+	workbenches := make([]domain.Workbench, 0, len(rows))
+	for _, row := range rows {
+		w := rowToWorkbench(
+			row.ID,
+			row.VaultID,
+			row.UserID,
+			row.Status,
+			row.AuthMode,
+			row.ContainerID,
+			row.VolumeName,
+			row.CreatedAt,
+			row.StartedAt,
+			row.StoppedAt,
+			row.DockerHostID,
+		)
+
+		workbenches = append(workbenches, w)
+	}
+
+	return workbenches, nil
+}
+
+func (r *Repo) MarkRunning(ctx context.Context, vaultID, userID uuid.UUID, authMode domain.WorkbenchAuthMode) error {
 	params := artel_q.MarkWorkbenchRunningParams{
 		VaultID: vaultID,
 		AuthMode: artel_q.NullWorkbenchAuthMode{
 			WorkbenchAuthMode: artel_q.WorkbenchAuthMode(authMode),
 			Valid:             authMode != "",
 		},
+		UserID: userID,
 	}
 
 	err := r.q.MarkWorkbenchRunning(ctx, params)
@@ -98,10 +132,11 @@ func (r *Repo) MarkRunning(ctx context.Context, vaultID uuid.UUID, authMode doma
 	return nil
 }
 
-func (r *Repo) MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, containerID string) error {
+func (r *Repo) MarkContainerCreated(ctx context.Context, vaultID, userID uuid.UUID, containerID string) error {
 	params := artel_q.MarkWorkbenchContainerCreatedParams{
 		VaultID:     vaultID,
 		ContainerID: sql.NullString{String: containerID, Valid: containerID != ""},
+		UserID:      userID,
 	}
 
 	err := r.q.MarkWorkbenchContainerCreated(ctx, params)
@@ -112,8 +147,13 @@ func (r *Repo) MarkContainerCreated(ctx context.Context, vaultID uuid.UUID, cont
 	return nil
 }
 
-func (r *Repo) MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error {
-	err := r.q.MarkWorkbenchConfiguring(ctx, vaultID)
+func (r *Repo) MarkConfiguring(ctx context.Context, vaultID, userID uuid.UUID) error {
+	params := artel_q.MarkWorkbenchConfiguringParams{
+		VaultID: vaultID,
+		UserID:  userID,
+	}
+
+	err := r.q.MarkWorkbenchConfiguring(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error marking workbench configuring")
 	}
@@ -121,8 +161,13 @@ func (r *Repo) MarkConfiguring(ctx context.Context, vaultID uuid.UUID) error {
 	return nil
 }
 
-func (r *Repo) MarkStopped(ctx context.Context, vaultID uuid.UUID) error {
-	err := r.q.MarkWorkbenchStopped(ctx, vaultID)
+func (r *Repo) MarkStopped(ctx context.Context, vaultID, userID uuid.UUID) error {
+	params := artel_q.MarkWorkbenchStoppedParams{
+		VaultID: vaultID,
+		UserID:  userID,
+	}
+
+	err := r.q.MarkWorkbenchStopped(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error marking workbench stopped")
 	}
@@ -130,8 +175,13 @@ func (r *Repo) MarkStopped(ctx context.Context, vaultID uuid.UUID) error {
 	return nil
 }
 
-func (r *Repo) MarkRemoved(ctx context.Context, vaultID uuid.UUID) error {
-	err := r.q.MarkWorkbenchRemoved(ctx, vaultID)
+func (r *Repo) MarkRemoved(ctx context.Context, vaultID, userID uuid.UUID) error {
+	params := artel_q.MarkWorkbenchRemovedParams{
+		VaultID: vaultID,
+		UserID:  userID,
+	}
+
+	err := r.q.MarkWorkbenchRemoved(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error marking workbench removed")
 	}
@@ -139,8 +189,13 @@ func (r *Repo) MarkRemoved(ctx context.Context, vaultID uuid.UUID) error {
 	return nil
 }
 
-func (r *Repo) Delete(ctx context.Context, vaultID uuid.UUID) error {
-	err := r.q.DeleteWorkbench(ctx, vaultID)
+func (r *Repo) Delete(ctx context.Context, vaultID, userID uuid.UUID) error {
+	params := artel_q.DeleteWorkbenchParams{
+		VaultID: vaultID,
+		UserID:  userID,
+	}
+
+	err := r.q.DeleteWorkbench(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting workbench")
 	}

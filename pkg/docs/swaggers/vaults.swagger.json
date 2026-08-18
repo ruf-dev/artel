@@ -592,14 +592,14 @@
         ]
       }
     },
-    "/api/vaults/workbench/login/submit": {
+    "/api/vaults/workbench/delete": {
       "post": {
-        "operationId": "VaultsAPI_SubmitWorkbenchLoginCode",
+        "operationId": "VaultsAPI_DeleteWorkbench",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/artel_vaultsSubmitWorkbenchLoginCodeResponse"
+              "$ref": "#/definitions/artel_vaultsDeleteWorkbenchResponse"
             }
           },
           "default": {
@@ -615,49 +615,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/artel_vaultsSubmitWorkbenchLoginCodeRequest"
-            }
-          }
-        ],
-        "tags": [
-          "VaultsAPI"
-        ]
-      }
-    },
-    "/api/vaults/workbench/login/watch": {
-      "post": {
-        "summary": "WatchWorkbenchLogin streams periodic snapshots of the subscription_login TUI flow's state\n(docs/workbench/03_auth_and_login_flow.md) until it reaches \"authorized\" or the client\ndisconnects. Modeled on TractsAPI.WatchRun.",
-        "operationId": "VaultsAPI_WatchWorkbenchLogin",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/artel_vaultsWatchWorkbenchLoginResponse"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of artel_vaultsWatchWorkbenchLoginResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/artel_vaultsWatchWorkbenchLoginRequest"
+              "$ref": "#/definitions/artel_vaultsDeleteWorkbenchRequest"
             }
           }
         ],
@@ -909,6 +867,22 @@
     },
     "artel_vaultsDeleteVaultResponse": {
       "type": "object"
+    },
+    "artel_vaultsDeleteWorkbenchRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsDeleteWorkbenchResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
     },
     "artel_vaultsDisablePostgresDatabaseRequest": {
       "type": "object",
@@ -1172,21 +1146,6 @@
         }
       }
     },
-    "artel_vaultsSubmitWorkbenchLoginCodeRequest": {
-      "type": "object",
-      "properties": {
-        "vaultId": {
-          "type": "string"
-        },
-        "code": {
-          "type": "string",
-          "description": "code is relayed verbatim into the workbench's tmux session — an OAuth code pasted from\nAnthropic's hosted callback page, or (on a brand-new container) the user's first\ntheme/login-menu keystroke. See docs/workbench/03_auth_and_login_flow.md."
-        }
-      }
-    },
-    "artel_vaultsSubmitWorkbenchLoginCodeResponse": {
-      "type": "object"
-    },
     "artel_vaultsUnlinkS3BucketRequest": {
       "type": "object",
       "properties": {
@@ -1303,31 +1262,6 @@
     },
     "artel_vaultsVaultsAPIUnpublishVaultBody": {
       "type": "object"
-    },
-    "artel_vaultsWatchWorkbenchLoginRequest": {
-      "type": "object",
-      "properties": {
-        "vaultId": {
-          "type": "string"
-        }
-      }
-    },
-    "artel_vaultsWatchWorkbenchLoginResponse": {
-      "type": "object",
-      "properties": {
-        "state": {
-          "type": "string",
-          "description": "state: \"pending\"/\"url_present\"/\"error\"/\"authorized\" (see domain.WorkbenchLoginState)."
-        },
-        "url": {
-          "type": "string",
-          "description": "url is only set when state == \"url_present\"."
-        },
-        "errorMessage": {
-          "type": "string",
-          "description": "error_message is only set when state == \"error\"."
-        }
-      }
     },
     "protobufAny": {
       "type": "object",

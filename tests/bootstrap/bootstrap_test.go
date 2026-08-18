@@ -39,6 +39,7 @@ func TestEnvSetup(t *testing.T) {
 	pgPort := harness.PostgresPort(t)
 	pgAdminDatabase := harness.PostgresAdminDatabase(t)
 	pgAdminUser, pgAdminPass := harness.PostgresAdminCreds(t)
+	dockerHostURL := harness.DockerHostURL(t)
 
 	// Reset first, in case a previous run crashed and left garbage behind.
 	harness.ResetPostgres(t, ctx, db)
@@ -56,6 +57,15 @@ func TestEnvSetup(t *testing.T) {
 	// POSTGRES_HOST_AUTH_METHOD=trust in tests/docker-compose.yaml already makes "artel" an
 	// unauthenticated superuser, able to CREATE ROLE/DATABASE for tenant provisioning.
 	harness.ProvisionPostgresInstance(t, ctx, svcs, pgHost, pgPort, pgAdminDatabase, pgAdminUser, pgAdminPass, "disable")
+
+	// The workbench pool needs its network to exist inside test-dockerd's own inner daemon before
+	// any CreateWorkbench call can succeed there (see harness.EnsureWorkbenchNetwork's doc
+	// comment) — idempotent, so this is cheap on every run. The image itself is no longer built
+	// here: workbenchdocker.Client.CreateContainer now builds it lazily (via EnsureImage) on
+	// first real use, the same path production uses, so whichever e2e test creates a workbench
+	// first pays the one-time build cost.
+	harness.EnsureWorkbenchNetwork(t, ctx, dockerHostURL)
+	harness.ProvisionDockerHost(t, ctx, svcs, dockerHostURL)
 }
 
 // TestEnvCleanup wipes all test-created state after the suite run finishes, leaving the shared

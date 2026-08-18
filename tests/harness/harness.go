@@ -24,6 +24,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/containerd/errdefs"
+	"github.com/docker/docker/api/types/network"
+	dockerclient "github.com/docker/docker/client"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -95,6 +98,15 @@ func S3Creds(t *testing.T) (accessKey, secretKey string) {
 	t.Helper()
 
 	return envOrDefault("S3_ACCESS_KEY", "minioadmin"), envOrDefault("S3_SECRET_KEY", "minioadmin")
+}
+
+// DockerHostURL returns the shared e2e test-dockerd Docker API URL (DOCKER_HOST_URL, defaulting
+// to tests/docker-compose.yaml's test-dockerd service, exposed on host port 12375 — the same URL
+// scripts/setup_dev_docker_host.sh registers for local dev).
+func DockerHostURL(t *testing.T) string {
+	t.Helper()
+
+	return envOrDefault("DOCKER_HOST_URL", "tcp://localhost:12375")
 }
 
 // PostgresHost/PostgresPort return the coordinates of the shared e2e Postgres server (PG_HOST/
@@ -178,13 +190,16 @@ func ApplyMigrations(t *testing.T, db *sql.DB) {
 // tracts, triggers, external_connections, workbenches, sessions, vault_members, subscriptions,
 // couch_accounts, vault_invites, task_trackers, email_accounts, telegram_auth, tract_templates,
 // tract_runs/tract_run_steps, trigger_links, mcp_spreadsheets, mcp_connectors, user_permissions —
-// see migrations/*.sql for the individual FKs). Two things don't cascade off users and need an
+// see migrations/*.sql for the individual FKs). Three things don't cascade off users and need an
 // explicit sweep:
-//   - couch_instances / s3_instances / postgres_instances pool rows (owner_user_id IS NULL — never
-//     owned by a user). vault_postgres_databases rows referencing a pool instance have already
-//     cascaded away by this point (vault_postgres_databases.vault_id -> vaults ON DELETE CASCADE,
-//     and vaults itself cascades off users), so deleting the pool postgres_instances row here never
-//     trips its NOT NULL/NO ACTION FK from vault_postgres_databases.
+//   - couch_instances / s3_instances / postgres_instances / docker_hosts pool rows (owner_user_id
+//     IS NULL — never owned by a user, and docker_hosts carries no owner_user_id column at all).
+//     vault_postgres_databases rows referencing a pool instance have already cascaded away by this
+//     point (vault_postgres_databases.vault_id -> vaults ON DELETE CASCADE, and vaults itself
+//     cascades off users), so deleting the pool postgres_instances row here never trips its NOT
+//     NULL/NO ACTION FK from vault_postgres_databases. workbenches.docker_host_id is likewise
+//     already gone by this point (workbenches cascades off users via vaults), so deleting the
+//     docker_hosts row here is never blocked by a live reference either.
 //   - mcps rows seeded by e2e tests: mcps.owner_user_id is ON DELETE SET NULL, not CASCADE (see
 //     migrations/060_mcp_ownership.sql), so community MoMs created by
 //     tests/e2e/mcp_ownership_test.go (named "e2e_ownership_mom_<hex>" via its randomMcpName
@@ -204,6 +219,9 @@ func ResetPostgres(t *testing.T, ctx context.Context, db *sql.DB) {
 
 	_, err = db.ExecContext(ctx, `DELETE FROM postgres_instances WHERE owner_user_id IS NULL`)
 	require.NoError(t, err, "delete pool postgres instances")
+
+	_, err = db.ExecContext(ctx, `DELETE FROM docker_hosts`)
+	require.NoError(t, err, "delete pool docker hosts")
 
 	_, err = db.ExecContext(ctx, `DELETE FROM mcps WHERE name LIKE 'e2e_%'`)
 	require.NoError(t, err, "delete e2e-seeded mcps")
@@ -419,6 +437,92 @@ func GetPostgresInstance(t *testing.T, ctx context.Context, svcs *svcv1.Services
 	)
 
 	return ""
+}
+
+// ProvisionDockerHost registers url as the e2e admin-pool docker host — no TLS material, since
+// test-dockerd is a plain-TCP daemon (tests/docker-compose.yaml, DOCKER_TLS_CERTDIR: "") — see
+// docs/workbench/02_docker_topology.md. Same one-shot guarantee as ProvisionCouchInstance/
+// ProvisionS3Instance/ProvisionPostgresInstance: called once from tests/bootstrap.
+func ProvisionDockerHost(t *testing.T, ctx context.Context, svcs *svcv1.Services, url string) string {
+	t.Helper()
+
+	id, err := svcs.DockerHost.RegisterDockerHost(ctx, url, "", "", "")
+	require.NoError(t, err, "register docker host")
+
+	return id
+}
+
+// GetDockerHost looks up the id of the already-provisioned pool docker host at url. Mirrors
+// GetCouchInstance — suites look up what bootstrap already provisioned instead of registering
+// their own.
+func GetDockerHost(t *testing.T, ctx context.Context, svcs *svcv1.Services, url string) string {
+	t.Helper()
+
+	hosts, err := svcs.DockerHost.ListDockerHosts(ctx)
+	require.NoError(t, err, "list docker hosts")
+
+	for _, host := range hosts {
+		if host.Url == url {
+			return host.Uuid.String()
+		}
+	}
+
+	t.Fatalf(
+		"no docker host registered for url %q — run the bootstrap setup step first "+
+			`(make test-e2e, or go test -tags "e2e e2e_bootstrap" ./tests/bootstrap/... -run TestEnvSetup)`,
+		url,
+	)
+
+	return ""
+}
+
+// workbenchNetworkName duplicates the unexported constant of the same name in
+// internal/clients/workbenchdocker/client.go — that package doesn't export it, so this is kept
+// in sync by hand rather than shared. It's the dedicated network every workbench container is
+// attached to, assumed by that package to pre-exist on whichever daemon it's pointed at.
+const workbenchNetworkName = "workbench-net"
+
+// newDockerSDKClient builds a raw Docker SDK client against dockerHostURL (test-dockerd — plain
+// TCP, no TLS), used by EnsureWorkbenchNetwork to inspect state directly rather than going
+// through workbenchdocker.Client's narrower, workbench-specific surface.
+func newDockerSDKClient(t *testing.T, dockerHostURL string) *dockerclient.Client {
+	t.Helper()
+
+	cli, err := dockerclient.NewClientWithOpts(
+		dockerclient.WithHost(dockerHostURL),
+		dockerclient.WithAPIVersionNegotiation(),
+	)
+	require.NoError(t, err, "create docker sdk client")
+
+	t.Cleanup(func() { _ = cli.Close() })
+
+	return cli
+}
+
+// EnsureWorkbenchNetwork idempotently creates the workbench-net network inside the daemon at
+// dockerHostURL. Mirrors scripts/setup_dev_docker_host.sh's network-create step: a compose-level
+// `networks:` block only creates workbench-net in the host running compose, not inside dind's own
+// inner dockerd (a separate daemon/network namespace) — see the long comment above that block in
+// tests/docker-compose.yaml — so it has to be created explicitly against test-dockerd's own
+// Docker API, same as local dev does.
+func EnsureWorkbenchNetwork(t *testing.T, ctx context.Context, dockerHostURL string) {
+	t.Helper()
+
+	cli := newDockerSDKClient(t, dockerHostURL)
+
+	_, err := cli.NetworkInspect(ctx, workbenchNetworkName, network.InspectOptions{})
+	if err == nil {
+		return
+	}
+
+	if !errdefs.IsNotFound(err) {
+		require.NoError(t, err, "inspect workbench network")
+	}
+
+	createOptions := network.CreateOptions{}
+
+	_, err = cli.NetworkCreate(ctx, workbenchNetworkName, createOptions)
+	require.NoError(t, err, "create workbench network")
 }
 
 // BuildServices wires a repopg.Repos + svcv1.Services pair on top of db, using the same

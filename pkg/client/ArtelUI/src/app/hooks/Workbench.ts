@@ -44,9 +44,16 @@ export function useWorkbenchMutations(vaultId?: string) {
         onSuccess: () => queryClient.invalidateQueries({queryKey: workbenchQueryKey(vaultId)}),
     })
 
+    const removeMutation = useMutation({
+        mutationFn: () => workbenchService.remove(vaultId!),
+        onSuccess: () => queryClient.invalidateQueries({queryKey: workbenchQueryKey(vaultId)}),
+    })
+
     return {
         create: createMutation.mutateAsync,
         start: startMutation.mutateAsync,
         stop: stopMutation.mutateAsync,
+        remove: removeMutation.mutateAsync,
+        removing: removeMutation.isPending,
     }
 }

@@ -17,6 +17,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"net/http"
+	"net/url"
 
 	"github.com/docker/docker/client"
 
@@ -24,10 +25,6 @@ import (
 )
 
 const (
-	// workbenchImage is the image every workbench container is created from. Hardcoded for
-	// the prototype — see docs/workbench/02_docker_topology.md.
-	workbenchImage = "artel-workbench:latest"
-
 	// workbenchNetworkName is the dedicated, isolated Docker network workbench containers are
 	// attached to. Not created by this client — assumed to pre-exist on the configured daemon.
 	workbenchNetworkName = "workbench-net"
@@ -107,6 +104,30 @@ func New(host string, tlsCfg TLSConfig) (*Client, error) {
 	}
 
 	return c, nil
+}
+
+// daemonHost returns the hostname portion of c.host — the address other Docker API calls on this
+// Client already reach the daemon at, and (per ContainerAddress's doc comment) the address a
+// published container port is reachable on too. A "unix://" (or Windows "npipe://") socket means
+// the daemon is a local process on this same host, so the loopback address is used instead of a
+// meaningless socket path.
+func (c *Client) daemonHost() (string, error) {
+	parsed, err := url.Parse(c.host)
+	if err != nil {
+		return "", rerrors.Wrap(err, "parsing docker host")
+	}
+
+	switch parsed.Scheme {
+	case "unix", "npipe":
+		return "127.0.0.1", nil
+	}
+
+	hostname := parsed.Hostname()
+	if hostname == "" {
+		return "", rerrors.New("docker host has no hostname: " + c.host)
+	}
+
+	return hostname, nil
 }
 
 // newTLSHTTPClient builds an *http.Client whose transport presents cfg's client certificate and

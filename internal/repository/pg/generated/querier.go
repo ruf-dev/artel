@@ -49,7 +49,7 @@ type Querier interface {
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteVault(ctx context.Context, id uuid.UUID) error
 	DeleteVaultPostgresDatabase(ctx context.Context, vaultID uuid.UUID) error
-	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
+	DeleteWorkbench(ctx context.Context, arg DeleteWorkbenchParams) error
 	DockerHostExists(ctx context.Context) (bool, error)
 	GetCouchAccountByUserAndInstance(ctx context.Context, arg GetCouchAccountByUserAndInstanceParams) (CouchAccount, error)
 	GetCouchInstance(ctx context.Context, id uuid.UUID) (GetCouchInstanceRow, error)
@@ -96,7 +96,7 @@ type Querier interface {
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	GetVaultPostgresDatabaseByVaultID(ctx context.Context, vaultID uuid.UUID) (VaultPostgresDatabase, error)
-	GetWorkbenchByVaultID(ctx context.Context, vaultID uuid.UUID) (Workbench, error)
+	GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkbenchByVaultAndUserParams) (Workbench, error)
 	IncrementTractTemplateInstallCount(ctx context.Context, id uuid.UUID) error
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
@@ -142,13 +142,14 @@ type Querier interface {
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
+	ListWorkbenchesByVaultID(ctx context.Context, vaultID uuid.UUID) ([]Workbench, error)
 	MarkVaultPostgresDatabaseError(ctx context.Context, arg MarkVaultPostgresDatabaseErrorParams) error
 	MarkVaultPostgresDatabaseReady(ctx context.Context, vaultID uuid.UUID) error
-	MarkWorkbenchConfiguring(ctx context.Context, vaultID uuid.UUID) error
+	MarkWorkbenchConfiguring(ctx context.Context, arg MarkWorkbenchConfiguringParams) error
 	MarkWorkbenchContainerCreated(ctx context.Context, arg MarkWorkbenchContainerCreatedParams) error
-	MarkWorkbenchRemoved(ctx context.Context, vaultID uuid.UUID) error
+	MarkWorkbenchRemoved(ctx context.Context, arg MarkWorkbenchRemovedParams) error
 	MarkWorkbenchRunning(ctx context.Context, arg MarkWorkbenchRunningParams) error
-	MarkWorkbenchStopped(ctx context.Context, vaultID uuid.UUID) error
+	MarkWorkbenchStopped(ctx context.Context, arg MarkWorkbenchStoppedParams) error
 	PickLeastLoadedDockerHost(ctx context.Context) (PickLeastLoadedDockerHostRow, error)
 	PickOwnedCouchInstance(ctx context.Context, ownerUserID uuid.NullUUID) (PickOwnedCouchInstanceRow, error)
 	PickOwnedPostgresInstance(ctx context.Context, ownerUserID uuid.NullUUID) (PostgresInstance, error)

@@ -1,13 +1,15 @@
 package workbenchdocker
 
 import (
-	"bytes"
 	"context"
+	"net"
+	"strconv"
 
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/docker/go-connections/nat"
 
 	"go.redsock.ru/rerrors"
 )
@@ -17,12 +19,46 @@ import (
 // injection targets. Shared as a constant rather than duplicated so the two stay in sync.
 const tmuxSessionName = "workbench"
 
+// ttydPort is the port ttyd binds to inside every workbench container — must match the port
+// passed to `ttyd -p` in deploy/workbench/entrypoint.sh.
+//
+// Published to a host port in [ttydHostPortRangeStart, ttydHostPortRangeEnd] (see CreateContainer)
+// rather than left unpublished: the configured daemon (docker_hosts.url) is frequently itself a
+// docker:dind *container* (nested Docker), whose inner bridge network (workbenchNetworkName
+// included) lives in a network namespace private to that container — a workbench container's IP
+// on it is only ever reachable from processes inside the dind container's own netns, never from
+// Artel's process, regardless of which host or execution mode (bare binary, containerized) Artel
+// runs as. Publishing the port routes through the dind container's own (reachable) address
+// instead — see ContainerAddress.
+const ttydPort = 7681
+
+// ttydNatPort is ttydPort in github.com/docker/go-connections/nat's "<port>/<proto>" key format,
+// used to declare/read back the port binding in CreateContainer/ContainerAddress.
+var ttydNatPort = nat.Port(strconv.Itoa(ttydPort) + "/tcp")
+
+// ttydHostPortRangeStart/End bound the host ports CreateContainer publishes ttydPort to — a
+// *fixed, pre-known* range rather than a Docker-assigned random one (HostPort ""), because a
+// random port is only reachable from wherever already has direct network-level access to
+// whichever container/process actually bound it (a docker:dind daemon's own netns). A fixed range
+// can additionally be published, once, on the outer dind container itself (e.g. `-p
+// 20000-20099:20000-20099` — see tests/docker-compose.yaml's test-dockerd and
+// docs/tasks/workbench/02_docker_topology.md), which is what makes it reachable uniformly: from a
+// bare Artel process on the same host (Docker's own host-port-forwarding, the same mechanism that
+// already makes docker_hosts.url's own daemon port reachable), from Artel running as a sibling
+// container on the daemon's network, and from a real (non-dind) remote daemon alike. 100 slots is
+// a hardcoded prototype limit, same spirit as workbenchCpuLimitNanoCpus/workbenchMemLimitBytes —
+// revisit if concurrent workbench count ever approaches it.
+const (
+	ttydHostPortRangeStart = 20000
+	ttydHostPortRangeEnd   = 20099
+)
+
 // CreateOpts configures a new workbench container. Deliberately excludes any secret/env
 // value — per docs/workbench/01_data_model_and_lifecycle.md, a workbench container is created
 // with no auth env vars at all; those are only decided and supplied later, at StartContainer
 // time.
 type CreateOpts struct {
-	// Name is the container name (e.g. "workbench-<vault_id>").
+	// Name is the container name (e.g. "workbench-<vault_id>-<user_id>").
 	Name string
 	// VolumeName is the pre-created named volume to mount at workspaceMountPath.
 	VolumeName string
@@ -31,16 +67,37 @@ type CreateOpts struct {
 // CreateContainer creates (but does not start) a workbench container: the hardcoded workbench
 // image, attached to the dedicated workbench-net network (assumed to pre-exist on the
 // configured daemon — see docs/workbench/02_docker_topology.md), with opts.VolumeName mounted
-// at workspaceMountPath, hardcoded CPU/memory limits, no exposed ports, and labeled for
-// operational visibility.
+// at workspaceMountPath, hardcoded CPU/memory limits, and labeled for operational visibility.
+//
+// ttydPort is published to a host port allocated from [ttydHostPortRangeStart,
+// ttydHostPortRangeEnd] (see allocateTtydHostPort) rather than left unpublished. It is not
+// exposed to the wider internet by this alone: the configured daemon is expected to sit on a
+// network only Artel's own process can reach (see docs/workbench/02_docker_topology.md's "Network
+// isolation"), and ttyd itself is only ever dialed through internal/transport/vaults_api's
+// authenticated reverse proxy, never linked directly to a client.
 func (c *Client) CreateContainer(ctx context.Context, opts CreateOpts) (string, error) {
+	tag, err := c.EnsureImage(ctx)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error ensuring workbench image")
+	}
+
+	hostPort, err := c.allocateTtydHostPort(ctx)
+	if err != nil {
+		return "", rerrors.Wrap(err, "allocating ttyd host port")
+	}
+
 	labels := map[string]string{
 		workbenchLabelKey: workbenchLabelValue,
 	}
 
+	exposedPorts := nat.PortSet{
+		ttydNatPort: struct{}{},
+	}
+
 	containerConfig := &container.Config{
-		Image:  workbenchImage,
-		Labels: labels,
+		Image:        tag,
+		Labels:       labels,
+		ExposedPorts: exposedPorts,
 	}
 
 	workspaceMount := mount.Mount{
@@ -54,9 +111,18 @@ func (c *Client) CreateContainer(ctx context.Context, opts CreateOpts) (string, 
 		Memory:   workbenchMemLimitBytes,
 	}
 
+	ttydPortBinding := nat.PortBinding{
+		HostIP:   "0.0.0.0",
+		HostPort: hostPort,
+	}
+	portBindings := nat.PortMap{
+		ttydNatPort: []nat.PortBinding{ttydPortBinding},
+	}
+
 	hostConfig := &container.HostConfig{
-		Mounts:    []mount.Mount{workspaceMount},
-		Resources: resources,
+		Mounts:       []mount.Mount{workspaceMount},
+		Resources:    resources,
+		PortBindings: portBindings,
 	}
 
 	workbenchEndpoint := &network.EndpointSettings{}
@@ -73,6 +139,58 @@ func (c *Client) CreateContainer(ctx context.Context, opts CreateOpts) (string, 
 	}
 
 	return resp.ID, nil
+}
+
+// allocateTtydHostPort picks a free host port in [ttydHostPortRangeStart, ttydHostPortRangeEnd]
+// for a new workbench container's ttyd binding, by inspecting every existing artel.workbench
+// container (running or not — HostConfig.PortBindings reflects a container's declared binding
+// regardless of its current state) and returning the first port in range none of them already
+// claim.
+//
+// This is a best-effort reservation, not a lock: two concurrent CreateContainer calls could both
+// observe the same free port and both pick it, in which case the daemon rejects whichever one
+// starts second with a "port is already allocated" error — an acceptable failure mode for the
+// prototype's expected (low, per-admin) concurrency, same tradeoff as the hardcoded resource
+// limits elsewhere in this package.
+func (c *Client) allocateTtydHostPort(ctx context.Context) (string, error) {
+	labelFilter := filters.NewArgs(filters.Arg("label", workbenchLabelKey+"="+workbenchLabelValue))
+	listOptions := container.ListOptions{
+		All:     true,
+		Filters: labelFilter,
+	}
+
+	existing, err := c.cli.ContainerList(ctx, listOptions)
+	if err != nil {
+		return "", rerrors.Wrap(err, "listing existing workbench containers")
+	}
+
+	usedPorts := make(map[string]struct{}, len(existing))
+
+	for _, summary := range existing {
+		inspect, err := c.cli.ContainerInspect(ctx, summary.ID)
+		if err != nil {
+			return "", rerrors.Wrap(err, "inspecting existing workbench container")
+		}
+
+		if inspect.HostConfig == nil {
+			continue
+		}
+
+		for _, binding := range inspect.HostConfig.PortBindings[ttydNatPort] {
+			usedPorts[binding.HostPort] = struct{}{}
+		}
+	}
+
+	for port := ttydHostPortRangeStart; port <= ttydHostPortRangeEnd; port++ {
+		portStr := strconv.Itoa(port)
+
+		_, taken := usedPorts[portStr]
+		if !taken {
+			return portStr, nil
+		}
+	}
+
+	return "", rerrors.New("no free ttyd host port in range")
 }
 
 // StartContainer starts an already-created workbench container and injects env into it.
@@ -128,66 +246,48 @@ func (c *Client) injectEnv(ctx context.Context, containerID string, env map[stri
 	return nil
 }
 
-// CapturePane returns the current visible contents of the workbench's tmux pane
-// (tmuxSessionName), via `tmux capture-pane -p`. Used to observe the subscription_login TUI
-// flow (login URL, OAuth errors, ...) without disturbing it — see
-// docs/workbench/03_auth_and_login_flow.md, "Mechanism (confirmed)".
-func (c *Client) CapturePane(ctx context.Context, containerID string) (string, error) {
-	execOptions := container.ExecOptions{
-		Cmd:          []string{"tmux", "capture-pane", "-t", tmuxSessionName, "-p"},
-		AttachStdout: true,
-		AttachStderr: true,
-	}
-
-	created, err := c.cli.ContainerExecCreate(ctx, containerID, execOptions)
+// ContainerAddress returns containerID's "<daemon-host>:<published-port>" address for the ttyd
+// server running inside it, as reachable from Artel's own process. Used by the terminal
+// reverse-proxy handler in internal/transport/vaults_api.
+//
+// This deliberately does not resolve the container's IP on workbenchNetworkName: the configured
+// daemon (c.host) is commonly itself a docker:dind *container*, whose inner networks — including
+// workbenchNetworkName — live in a network namespace private to that container, so a workbench
+// container's IP on it is never routable from outside the dind container regardless of where
+// Artel's own process runs. Reading back the Docker-assigned host port CreateContainer published
+// ttydPort to and pairing it with c.host's own hostname instead routes through the dind
+// container's (or, for a bare/second-dockerd host, the host's) already-reachable address — the
+// same address Artel used to create/start the container in the first place.
+//
+// Fails rather than guessing when the daemon hasn't assigned a host port yet (i.e. the container
+// isn't running) — an empty/absent address would otherwise surface much later as an opaque proxy
+// dial failure.
+func (c *Client) ContainerAddress(ctx context.Context, containerID string) (string, error) {
+	inspect, err := c.cli.ContainerInspect(ctx, containerID)
 	if err != nil {
-		return "", rerrors.Wrap(err, "creating exec for capture-pane")
+		return "", rerrors.Wrap(err, "inspecting workbench container")
 	}
 
-	attachOptions := container.ExecAttachOptions{}
+	if inspect.NetworkSettings == nil {
+		return "", rerrors.New("workbench container has no network settings: " + containerID)
+	}
 
-	hijacked, err := c.cli.ContainerExecAttach(ctx, created.ID, attachOptions)
+	bindings, ok := inspect.NetworkSettings.Ports[ttydNatPort]
+	if !ok || len(bindings) == 0 {
+		return "", rerrors.New("workbench container has no published ttyd port: " + containerID)
+	}
+
+	hostPort := bindings[0].HostPort
+	if hostPort == "" {
+		return "", rerrors.New("workbench container's ttyd port has no assigned host port: " + containerID)
+	}
+
+	daemonHost, err := c.daemonHost()
 	if err != nil {
-		return "", rerrors.Wrap(err, "attaching exec for capture-pane")
-	}
-	defer hijacked.Close()
-
-	var stdout, stderr bytes.Buffer
-
-	_, err = stdcopy.StdCopy(&stdout, &stderr, hijacked.Reader)
-	if err != nil {
-		return "", rerrors.Wrap(err, "reading capture-pane output")
+		return "", rerrors.Wrap(err, "resolving docker daemon host")
 	}
 
-	return stdout.String(), nil
-}
-
-// SendKeys relays keys into the workbench's tmux pane (tmuxSessionName) via
-// `tmux send-keys ... <keys> Enter`, followed by Enter as a separate key. keys is arbitrary,
-// user-controlled input (an OAuth code or first-run keystrokes the user types/pastes) — it is
-// passed as a single, literal argv element of ExecOptions.Cmd, never through a shell
-// (`/bin/sh -c ...`), so there is no shell-metacharacter injection surface: the exec'd process is
-// `tmux` itself, invoked directly, and keys is one opaque argument to it, not text that gets
-// re-parsed as shell syntax. See docs/workbench/03_auth_and_login_flow.md, "Mechanism
-// (confirmed)", step 4.
-func (c *Client) SendKeys(ctx context.Context, containerID string, keys string) error {
-	execOptions := container.ExecOptions{
-		Cmd: []string{"tmux", "send-keys", "-t", tmuxSessionName, keys, "Enter"},
-	}
-
-	created, err := c.cli.ContainerExecCreate(ctx, containerID, execOptions)
-	if err != nil {
-		return rerrors.Wrap(err, "creating exec for send-keys")
-	}
-
-	execStartOptions := container.ExecStartOptions{}
-
-	err = c.cli.ContainerExecStart(ctx, created.ID, execStartOptions)
-	if err != nil {
-		return rerrors.Wrap(err, "starting exec for send-keys")
-	}
-
-	return nil
+	return net.JoinHostPort(daemonHost, hostPort), nil
 }
 
 // StopContainer gracefully stops a running workbench container, leaving it (and its volume)

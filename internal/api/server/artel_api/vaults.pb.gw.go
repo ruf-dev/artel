@@ -593,49 +593,28 @@ func local_request_VaultsAPI_StopWorkbench_0(ctx context.Context, marshaler runt
 
 }
 
-func request_VaultsAPI_WatchWorkbenchLogin_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (VaultsAPI_WatchWorkbenchLoginClient, runtime.ServerMetadata, error) {
-	var protoReq WatchWorkbenchLogin_Request
+func request_VaultsAPI_DeleteWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DeleteWorkbench_Request
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	stream, err := client.WatchWorkbenchLogin(ctx, &protoReq)
-	if err != nil {
-		return nil, metadata, err
-	}
-	header, err := stream.Header()
-	if err != nil {
-		return nil, metadata, err
-	}
-	metadata.HeaderMD = header
-	return stream, metadata, nil
-
-}
-
-func request_VaultsAPI_SubmitWorkbenchLoginCode_0(ctx context.Context, marshaler runtime.Marshaler, client VaultsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SubmitWorkbenchLoginCode_Request
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.SubmitWorkbenchLoginCode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteWorkbench(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_VaultsAPI_SubmitWorkbenchLoginCode_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SubmitWorkbenchLoginCode_Request
+func local_request_VaultsAPI_DeleteWorkbench_0(ctx context.Context, marshaler runtime.Marshaler, server VaultsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DeleteWorkbench_Request
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.SubmitWorkbenchLoginCode(ctx, &protoReq)
+	msg, err := server.DeleteWorkbench(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -1199,14 +1178,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 
 	})
 
-	mux.Handle("POST", pattern_VaultsAPI_WatchWorkbenchLogin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
-		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-		return
-	})
-
-	mux.Handle("POST", pattern_VaultsAPI_SubmitWorkbenchLoginCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_VaultsAPI_DeleteWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -1214,12 +1186,12 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/submit"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_VaultsAPI_SubmitWorkbenchLoginCode_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_VaultsAPI_DeleteWorkbench_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -1227,7 +1199,7 @@ func RegisterVaultsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_VaultsAPI_SubmitWorkbenchLoginCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_VaultsAPI_DeleteWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1765,47 +1737,25 @@ func RegisterVaultsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 
 	})
 
-	mux.Handle("POST", pattern_VaultsAPI_WatchWorkbenchLogin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_VaultsAPI_DeleteWorkbench_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/WatchWorkbenchLogin", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/watch"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/DeleteWorkbench", runtime.WithHTTPPathPattern("/api/vaults/workbench/delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_VaultsAPI_WatchWorkbenchLogin_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_VaultsAPI_DeleteWorkbench_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_VaultsAPI_WatchWorkbenchLogin_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("POST", pattern_VaultsAPI_SubmitWorkbenchLoginCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/artel_vaults.VaultsAPI/SubmitWorkbenchLoginCode", runtime.WithHTTPPathPattern("/api/vaults/workbench/login/submit"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_VaultsAPI_SubmitWorkbenchLoginCode_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_VaultsAPI_SubmitWorkbenchLoginCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_VaultsAPI_DeleteWorkbench_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1917,9 +1867,7 @@ var (
 
 	pattern_VaultsAPI_StopWorkbench_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "stop"}, ""))
 
-	pattern_VaultsAPI_WatchWorkbenchLogin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "vaults", "workbench", "login", "watch"}, ""))
-
-	pattern_VaultsAPI_SubmitWorkbenchLoginCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "vaults", "workbench", "login", "submit"}, ""))
+	pattern_VaultsAPI_DeleteWorkbench_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "workbench", "delete"}, ""))
 
 	pattern_VaultsAPI_EnablePostgresDatabase_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "vaults", "postgres", "enable"}, ""))
 
@@ -1967,9 +1915,7 @@ var (
 
 	forward_VaultsAPI_StopWorkbench_0 = runtime.ForwardResponseMessage
 
-	forward_VaultsAPI_WatchWorkbenchLogin_0 = runtime.ForwardResponseStream
-
-	forward_VaultsAPI_SubmitWorkbenchLoginCode_0 = runtime.ForwardResponseMessage
+	forward_VaultsAPI_DeleteWorkbench_0 = runtime.ForwardResponseMessage
 
 	forward_VaultsAPI_EnablePostgresDatabase_0 = runtime.ForwardResponseMessage
 

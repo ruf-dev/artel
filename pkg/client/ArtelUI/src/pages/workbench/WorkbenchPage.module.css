@@ -26,8 +26,12 @@
         align-items: center;
         text-align: center;
         gap: 1rem;
-        padding-top: var(--workbench-body-padding-top);
         flex: 1;
+        min-height: 0;
+
+        &.BodyCentered {
+            padding-top: var(--workbench-body-padding-top);
+        }
     }
 
     .EmptyState {
@@ -36,12 +40,5 @@
         line-height: 1.5;
         max-width: 32rem;
         margin-top: 0;
-    }
-
-    .RunningState {
-        font-size: 0.875rem;
-        color: var(--color-fg-secondary);
-        line-height: 1.5;
-        max-width: 32rem;
     }
 }

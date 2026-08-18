@@ -43,8 +43,7 @@ services:
       retries: 30
       start_period: 5s
 
-  # test-dockerd is a local docker:dind daemon standing in for docs/workbench/02_docker_topology.md's
-  # "Option B" (a second dockerd process) for local dev/testing — plain, unauthenticated TCP,
+  # test-dockerd is a local docker:dind daemon for local dev/testing — plain, unauthenticated TCP,
   # since it's only ever reachable at localhost. TLS/mTLS (this migration's ca_cert_enc/
   # client_cert_enc/client_key_enc columns) is for Option C, a genuinely remote host, and is
   # deliberately not exercised by this local daemon.
@@ -59,6 +58,16 @@ services:
       DOCKER_TLS_CERTDIR: ""
     ports:
       - "12375:2375"
+      # Must match internal/clients/workbenchdocker/container.go's
+      # ttydHostPortRangeStart/ttydHostPortRangeEnd. This is what makes the *inner* dockerd's own
+      # (dynamic, per-workbench) ttyd port publish actually reach outside this container at all:
+      # the inner daemon binds a port in this range within test-dockerd's own netns, and this
+      # explicit range publish is what gets it forwarded on out from there — same double-publish
+      # requirement docs/tasks/workbench/02_docker_topology.md's "Network isolation" section
+      # explains. A single dynamic "-p 0:X"-style mapping here wouldn't work: Docker only forwards
+      # ports it knows about *when the outer container starts*, not ones a nested daemon assigns
+      # later at runtime.
+      - "20000-20099:20000-20099"
     healthcheck:
       test: ["CMD", "docker", "info"]
       interval: 2s

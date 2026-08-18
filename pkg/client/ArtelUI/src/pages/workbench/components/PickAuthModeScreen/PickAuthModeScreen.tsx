@@ -14,10 +14,9 @@ type AuthMode = "api_key" | "subscription_login"
 
 interface Props {
     vaultId: string
-    onStarted: (authMode: string) => void
 }
 
-export default function PickAuthModeScreen({vaultId, onStarted}: Props) {
+export default function PickAuthModeScreen({vaultId}: Props) {
     const {connections, fetch: fetchConnections} = useExternalConnections()
     const {start} = useWorkbenchMutations(vaultId)
     const navigate = useNavigate()
@@ -50,11 +49,6 @@ export default function PickAuthModeScreen({vaultId, onStarted}: Props) {
     function handleStart() {
         setStarting(true)
         start(authMode)
-            .then(() => {
-                if (authMode === "subscription_login") {
-                    onStarted(authMode)
-                }
-            })
             .catch(e => bakeError("Failed to start workbench", e))
             .finally(() => setStarting(false))
     }

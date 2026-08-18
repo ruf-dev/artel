@@ -20,9 +20,10 @@ so your assistant keeps running whether or not your own device is on.
 
 - **No always-on machine required.** You don't need to leave a laptop running, rent your own
   server, or babysit a process. Artel keeps it available for you.
-- **One per vault.** When you have a vault (your Obsidian cloud notebook) set up with Artel,
-  a matching Workbench environment is created alongside it — a dedicated space tied to that
-  vault, not shared with other users.
+- **One per vault member.** When you have a vault (your Obsidian cloud notebook) set up with
+  Artel, you can create your own matching Workbench environment for it — a dedicated space tied
+  to you and that vault. Every vault member gets their own separate Workbench, not one shared
+  between everyone with access.
 - **Persistent.** A Workbench can be paused and resumed. Pausing it doesn't erase your work —
   it's more like putting a computer to sleep than shutting it down and wiping it, so your
   assistant's state picks back up where it left off.
