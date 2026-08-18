@@ -4,9 +4,9 @@
     position: relative;
 
     & .TriggerButton {
-        padding: 0.375rem;
-        width: auto;
-        min-width: auto;
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
     }
 }
 
