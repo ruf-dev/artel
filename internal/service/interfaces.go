@@ -197,7 +197,10 @@ type VaultService interface {
 // only ever called from gRPC handlers behind the auth interceptor, which injects it. Never trust
 // a client-supplied user id for these. ResolveTerminalTarget is the one exception: its only
 // caller (the terminal reverse-proxy handler) sits outside that interceptor chain and
-// authenticates the request itself, so it passes userID explicitly.
+// authenticates the request itself, so it passes userID explicitly. The four terminal-tab methods
+// below (ListTerminalTabs/CreateTerminalTab/SelectTerminalTab/CloseTerminalTab) resolve the
+// caller from ctx too, same as Create/Get/Start/Stop/Delete — they are not part of the
+// ResolveTerminalTarget exception.
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
@@ -212,6 +215,20 @@ type WorkbenchService interface {
 	// (internal/transport/vaults_api/workbench_terminal.go) to forward to. Returns
 	// user_errors.WorkbenchNotRunning when the workbench isn't running.
 	ResolveTerminalTarget(ctx context.Context, vaultID, userID uuid.UUID) (string, error)
+	// ListTerminalTabs lists the calling user's own running workbench's terminal tabs (tmux
+	// windows) for vaultID, in tmux's own window order.
+	ListTerminalTabs(ctx context.Context, vaultID uuid.UUID) ([]domain.TerminalTab, error)
+	// CreateTerminalTab opens a new terminal tab (tmux window, running `claude`) in the calling
+	// user's own running workbench for vaultID. There is no name parameter — tabs are always
+	// auto-named by tmux, never user-supplied.
+	CreateTerminalTab(ctx context.Context, vaultID uuid.UUID) (domain.TerminalTab, error)
+	// SelectTerminalTab makes tabID the calling user's own running workbench's current tmux
+	// window for vaultID.
+	SelectTerminalTab(ctx context.Context, vaultID uuid.UUID, tabID string) error
+	// CloseTerminalTab closes tabID in the calling user's own running workbench for vaultID.
+	// Returns user_errors.WorkbenchCannotCloseLastTab if tabID is the workbench's only remaining
+	// tab.
+	CloseTerminalTab(ctx context.Context, vaultID uuid.UUID, tabID string) error
 }
 
 type CouchInstanceService interface {

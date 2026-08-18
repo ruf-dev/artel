@@ -19,29 +19,33 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	VaultsAPI_CreateVault_FullMethodName             = "/artel_vaults.VaultsAPI/CreateVault"
-	VaultsAPI_GetVault_FullMethodName                = "/artel_vaults.VaultsAPI/GetVault"
-	VaultsAPI_ListVaults_FullMethodName              = "/artel_vaults.VaultsAPI/ListVaults"
-	VaultsAPI_DeleteVault_FullMethodName             = "/artel_vaults.VaultsAPI/DeleteVault"
-	VaultsAPI_AddMember_FullMethodName               = "/artel_vaults.VaultsAPI/AddMember"
-	VaultsAPI_RemoveMember_FullMethodName            = "/artel_vaults.VaultsAPI/RemoveMember"
-	VaultsAPI_ListMembers_FullMethodName             = "/artel_vaults.VaultsAPI/ListMembers"
-	VaultsAPI_CreateInviteLink_FullMethodName        = "/artel_vaults.VaultsAPI/CreateInviteLink"
-	VaultsAPI_ListInviteLinks_FullMethodName         = "/artel_vaults.VaultsAPI/ListInviteLinks"
-	VaultsAPI_RevokeInviteLink_FullMethodName        = "/artel_vaults.VaultsAPI/RevokeInviteLink"
-	VaultsAPI_AcceptInvite_FullMethodName            = "/artel_vaults.VaultsAPI/AcceptInvite"
-	VaultsAPI_LinkS3Bucket_FullMethodName            = "/artel_vaults.VaultsAPI/LinkS3Bucket"
-	VaultsAPI_UnlinkS3Bucket_FullMethodName          = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
-	VaultsAPI_SetVaultBinaryStorage_FullMethodName   = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
-	VaultsAPI_PublishVault_FullMethodName            = "/artel_vaults.VaultsAPI/PublishVault"
-	VaultsAPI_UnpublishVault_FullMethodName          = "/artel_vaults.VaultsAPI/UnpublishVault"
-	VaultsAPI_CreateWorkbench_FullMethodName         = "/artel_vaults.VaultsAPI/CreateWorkbench"
-	VaultsAPI_StartWorkbench_FullMethodName          = "/artel_vaults.VaultsAPI/StartWorkbench"
-	VaultsAPI_StopWorkbench_FullMethodName           = "/artel_vaults.VaultsAPI/StopWorkbench"
-	VaultsAPI_DeleteWorkbench_FullMethodName         = "/artel_vaults.VaultsAPI/DeleteWorkbench"
-	VaultsAPI_EnablePostgresDatabase_FullMethodName  = "/artel_vaults.VaultsAPI/EnablePostgresDatabase"
-	VaultsAPI_GetPostgresDatabase_FullMethodName     = "/artel_vaults.VaultsAPI/GetPostgresDatabase"
-	VaultsAPI_DisablePostgresDatabase_FullMethodName = "/artel_vaults.VaultsAPI/DisablePostgresDatabase"
+	VaultsAPI_CreateVault_FullMethodName                = "/artel_vaults.VaultsAPI/CreateVault"
+	VaultsAPI_GetVault_FullMethodName                   = "/artel_vaults.VaultsAPI/GetVault"
+	VaultsAPI_ListVaults_FullMethodName                 = "/artel_vaults.VaultsAPI/ListVaults"
+	VaultsAPI_DeleteVault_FullMethodName                = "/artel_vaults.VaultsAPI/DeleteVault"
+	VaultsAPI_AddMember_FullMethodName                  = "/artel_vaults.VaultsAPI/AddMember"
+	VaultsAPI_RemoveMember_FullMethodName               = "/artel_vaults.VaultsAPI/RemoveMember"
+	VaultsAPI_ListMembers_FullMethodName                = "/artel_vaults.VaultsAPI/ListMembers"
+	VaultsAPI_CreateInviteLink_FullMethodName           = "/artel_vaults.VaultsAPI/CreateInviteLink"
+	VaultsAPI_ListInviteLinks_FullMethodName            = "/artel_vaults.VaultsAPI/ListInviteLinks"
+	VaultsAPI_RevokeInviteLink_FullMethodName           = "/artel_vaults.VaultsAPI/RevokeInviteLink"
+	VaultsAPI_AcceptInvite_FullMethodName               = "/artel_vaults.VaultsAPI/AcceptInvite"
+	VaultsAPI_LinkS3Bucket_FullMethodName               = "/artel_vaults.VaultsAPI/LinkS3Bucket"
+	VaultsAPI_UnlinkS3Bucket_FullMethodName             = "/artel_vaults.VaultsAPI/UnlinkS3Bucket"
+	VaultsAPI_SetVaultBinaryStorage_FullMethodName      = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
+	VaultsAPI_PublishVault_FullMethodName               = "/artel_vaults.VaultsAPI/PublishVault"
+	VaultsAPI_UnpublishVault_FullMethodName             = "/artel_vaults.VaultsAPI/UnpublishVault"
+	VaultsAPI_CreateWorkbench_FullMethodName            = "/artel_vaults.VaultsAPI/CreateWorkbench"
+	VaultsAPI_StartWorkbench_FullMethodName             = "/artel_vaults.VaultsAPI/StartWorkbench"
+	VaultsAPI_StopWorkbench_FullMethodName              = "/artel_vaults.VaultsAPI/StopWorkbench"
+	VaultsAPI_DeleteWorkbench_FullMethodName            = "/artel_vaults.VaultsAPI/DeleteWorkbench"
+	VaultsAPI_ListWorkbenchTerminalTabs_FullMethodName  = "/artel_vaults.VaultsAPI/ListWorkbenchTerminalTabs"
+	VaultsAPI_CreateWorkbenchTerminalTab_FullMethodName = "/artel_vaults.VaultsAPI/CreateWorkbenchTerminalTab"
+	VaultsAPI_SelectWorkbenchTerminalTab_FullMethodName = "/artel_vaults.VaultsAPI/SelectWorkbenchTerminalTab"
+	VaultsAPI_CloseWorkbenchTerminalTab_FullMethodName  = "/artel_vaults.VaultsAPI/CloseWorkbenchTerminalTab"
+	VaultsAPI_EnablePostgresDatabase_FullMethodName     = "/artel_vaults.VaultsAPI/EnablePostgresDatabase"
+	VaultsAPI_GetPostgresDatabase_FullMethodName        = "/artel_vaults.VaultsAPI/GetPostgresDatabase"
+	VaultsAPI_DisablePostgresDatabase_FullMethodName    = "/artel_vaults.VaultsAPI/DisablePostgresDatabase"
 )
 
 // VaultsAPIClient is the client API for VaultsAPI service.
@@ -68,6 +72,10 @@ type VaultsAPIClient interface {
 	StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error)
 	StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error)
 	DeleteWorkbench(ctx context.Context, in *DeleteWorkbench_Request, opts ...grpc.CallOption) (*DeleteWorkbench_Response, error)
+	ListWorkbenchTerminalTabs(ctx context.Context, in *ListWorkbenchTerminalTabs_Request, opts ...grpc.CallOption) (*ListWorkbenchTerminalTabs_Response, error)
+	CreateWorkbenchTerminalTab(ctx context.Context, in *CreateWorkbenchTerminalTab_Request, opts ...grpc.CallOption) (*CreateWorkbenchTerminalTab_Response, error)
+	SelectWorkbenchTerminalTab(ctx context.Context, in *SelectWorkbenchTerminalTab_Request, opts ...grpc.CallOption) (*SelectWorkbenchTerminalTab_Response, error)
+	CloseWorkbenchTerminalTab(ctx context.Context, in *CloseWorkbenchTerminalTab_Request, opts ...grpc.CallOption) (*CloseWorkbenchTerminalTab_Response, error)
 	EnablePostgresDatabase(ctx context.Context, in *EnablePostgresDatabase_Request, opts ...grpc.CallOption) (*EnablePostgresDatabase_Response, error)
 	GetPostgresDatabase(ctx context.Context, in *GetPostgresDatabase_Request, opts ...grpc.CallOption) (*GetPostgresDatabase_Response, error)
 	DisablePostgresDatabase(ctx context.Context, in *DisablePostgresDatabase_Request, opts ...grpc.CallOption) (*DisablePostgresDatabase_Response, error)
@@ -261,6 +269,42 @@ func (c *vaultsAPIClient) DeleteWorkbench(ctx context.Context, in *DeleteWorkben
 	return out, nil
 }
 
+func (c *vaultsAPIClient) ListWorkbenchTerminalTabs(ctx context.Context, in *ListWorkbenchTerminalTabs_Request, opts ...grpc.CallOption) (*ListWorkbenchTerminalTabs_Response, error) {
+	out := new(ListWorkbenchTerminalTabs_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_ListWorkbenchTerminalTabs_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) CreateWorkbenchTerminalTab(ctx context.Context, in *CreateWorkbenchTerminalTab_Request, opts ...grpc.CallOption) (*CreateWorkbenchTerminalTab_Response, error) {
+	out := new(CreateWorkbenchTerminalTab_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_CreateWorkbenchTerminalTab_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) SelectWorkbenchTerminalTab(ctx context.Context, in *SelectWorkbenchTerminalTab_Request, opts ...grpc.CallOption) (*SelectWorkbenchTerminalTab_Response, error) {
+	out := new(SelectWorkbenchTerminalTab_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_SelectWorkbenchTerminalTab_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultsAPIClient) CloseWorkbenchTerminalTab(ctx context.Context, in *CloseWorkbenchTerminalTab_Request, opts ...grpc.CallOption) (*CloseWorkbenchTerminalTab_Response, error) {
+	out := new(CloseWorkbenchTerminalTab_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_CloseWorkbenchTerminalTab_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *vaultsAPIClient) EnablePostgresDatabase(ctx context.Context, in *EnablePostgresDatabase_Request, opts ...grpc.CallOption) (*EnablePostgresDatabase_Response, error) {
 	out := new(EnablePostgresDatabase_Response)
 	err := c.cc.Invoke(ctx, VaultsAPI_EnablePostgresDatabase_FullMethodName, in, out, opts...)
@@ -312,6 +356,10 @@ type VaultsAPIServer interface {
 	StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error)
 	StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error)
 	DeleteWorkbench(context.Context, *DeleteWorkbench_Request) (*DeleteWorkbench_Response, error)
+	ListWorkbenchTerminalTabs(context.Context, *ListWorkbenchTerminalTabs_Request) (*ListWorkbenchTerminalTabs_Response, error)
+	CreateWorkbenchTerminalTab(context.Context, *CreateWorkbenchTerminalTab_Request) (*CreateWorkbenchTerminalTab_Response, error)
+	SelectWorkbenchTerminalTab(context.Context, *SelectWorkbenchTerminalTab_Request) (*SelectWorkbenchTerminalTab_Response, error)
+	CloseWorkbenchTerminalTab(context.Context, *CloseWorkbenchTerminalTab_Request) (*CloseWorkbenchTerminalTab_Response, error)
 	EnablePostgresDatabase(context.Context, *EnablePostgresDatabase_Request) (*EnablePostgresDatabase_Response, error)
 	GetPostgresDatabase(context.Context, *GetPostgresDatabase_Request) (*GetPostgresDatabase_Response, error)
 	DisablePostgresDatabase(context.Context, *DisablePostgresDatabase_Request) (*DisablePostgresDatabase_Response, error)
@@ -381,6 +429,18 @@ func (UnimplementedVaultsAPIServer) StopWorkbench(context.Context, *StopWorkbenc
 }
 func (UnimplementedVaultsAPIServer) DeleteWorkbench(context.Context, *DeleteWorkbench_Request) (*DeleteWorkbench_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkbench not implemented")
+}
+func (UnimplementedVaultsAPIServer) ListWorkbenchTerminalTabs(context.Context, *ListWorkbenchTerminalTabs_Request) (*ListWorkbenchTerminalTabs_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListWorkbenchTerminalTabs not implemented")
+}
+func (UnimplementedVaultsAPIServer) CreateWorkbenchTerminalTab(context.Context, *CreateWorkbenchTerminalTab_Request) (*CreateWorkbenchTerminalTab_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateWorkbenchTerminalTab not implemented")
+}
+func (UnimplementedVaultsAPIServer) SelectWorkbenchTerminalTab(context.Context, *SelectWorkbenchTerminalTab_Request) (*SelectWorkbenchTerminalTab_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SelectWorkbenchTerminalTab not implemented")
+}
+func (UnimplementedVaultsAPIServer) CloseWorkbenchTerminalTab(context.Context, *CloseWorkbenchTerminalTab_Request) (*CloseWorkbenchTerminalTab_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CloseWorkbenchTerminalTab not implemented")
 }
 func (UnimplementedVaultsAPIServer) EnablePostgresDatabase(context.Context, *EnablePostgresDatabase_Request) (*EnablePostgresDatabase_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnablePostgresDatabase not implemented")
@@ -764,6 +824,78 @@ func _VaultsAPI_DeleteWorkbench_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_ListWorkbenchTerminalTabs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListWorkbenchTerminalTabs_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).ListWorkbenchTerminalTabs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_ListWorkbenchTerminalTabs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).ListWorkbenchTerminalTabs(ctx, req.(*ListWorkbenchTerminalTabs_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_CreateWorkbenchTerminalTab_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateWorkbenchTerminalTab_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).CreateWorkbenchTerminalTab(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_CreateWorkbenchTerminalTab_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).CreateWorkbenchTerminalTab(ctx, req.(*CreateWorkbenchTerminalTab_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_SelectWorkbenchTerminalTab_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SelectWorkbenchTerminalTab_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).SelectWorkbenchTerminalTab(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_SelectWorkbenchTerminalTab_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).SelectWorkbenchTerminalTab(ctx, req.(*SelectWorkbenchTerminalTab_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VaultsAPI_CloseWorkbenchTerminalTab_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CloseWorkbenchTerminalTab_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).CloseWorkbenchTerminalTab(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_CloseWorkbenchTerminalTab_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).CloseWorkbenchTerminalTab(ctx, req.(*CloseWorkbenchTerminalTab_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VaultsAPI_EnablePostgresDatabase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EnablePostgresDatabase_Request)
 	if err := dec(in); err != nil {
@@ -904,6 +1036,22 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteWorkbench",
 			Handler:    _VaultsAPI_DeleteWorkbench_Handler,
+		},
+		{
+			MethodName: "ListWorkbenchTerminalTabs",
+			Handler:    _VaultsAPI_ListWorkbenchTerminalTabs_Handler,
+		},
+		{
+			MethodName: "CreateWorkbenchTerminalTab",
+			Handler:    _VaultsAPI_CreateWorkbenchTerminalTab_Handler,
+		},
+		{
+			MethodName: "SelectWorkbenchTerminalTab",
+			Handler:    _VaultsAPI_SelectWorkbenchTerminalTab_Handler,
+		},
+		{
+			MethodName: "CloseWorkbenchTerminalTab",
+			Handler:    _VaultsAPI_CloseWorkbenchTerminalTab_Handler,
 		},
 		{
 			MethodName: "EnablePostgresDatabase",

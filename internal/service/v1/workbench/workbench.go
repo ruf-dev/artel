@@ -36,6 +36,10 @@ type dockerClient interface {
 	StopContainer(ctx context.Context, containerID string) error
 	RemoveContainer(ctx context.Context, containerID string) error
 	ContainerAddress(ctx context.Context, containerID string) (string, error)
+	ListTmuxWindows(ctx context.Context, containerID string) ([]domain.TerminalTab, error)
+	NewTmuxWindow(ctx context.Context, containerID string) (domain.TerminalTab, error)
+	SelectTmuxWindow(ctx context.Context, containerID, windowID string) error
+	KillTmuxWindow(ctx context.Context, containerID, windowID string) error
 }
 
 // externalConnectionService is the narrow subset of service.ExternalConnectionService this
@@ -430,6 +434,141 @@ func (s *Service) StopWorkbench(ctx context.Context, vaultID uuid.UUID) error {
 	err = s.workbenchesRepo.MarkStopped(ctx, vaultID, uc.UserUuid)
 	if err != nil {
 		return rerrors.Wrap(err, "error marking workbench stopped")
+	}
+
+	return nil
+}
+
+// ListTerminalTabs lists the calling user's own running workbench's terminal tabs (tmux windows)
+// for vaultID, in tmux's own window order.
+func (s *Service) ListTerminalTabs(ctx context.Context, vaultID uuid.UUID) ([]domain.TerminalTab, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return nil, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.Status != domain.WorkbenchStatusRunning {
+		return nil, user_errors.WorkbenchNotRunning
+	}
+
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	tabs, err := docker.ListTmuxWindows(ctx, wb.ContainerId)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error listing terminal tabs")
+	}
+
+	return tabs, nil
+}
+
+// CreateTerminalTab opens a new terminal tab (tmux window, running `claude`) in the calling
+// user's own running workbench for vaultID. There is no caller-supplied name: tabs are always
+// auto-named by tmux's automatic-rename as `claude` starts and sets its title.
+func (s *Service) CreateTerminalTab(ctx context.Context, vaultID uuid.UUID) (domain.TerminalTab, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return domain.TerminalTab{}, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return domain.TerminalTab{}, rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.Status != domain.WorkbenchStatusRunning {
+		return domain.TerminalTab{}, user_errors.WorkbenchNotRunning
+	}
+
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return domain.TerminalTab{}, rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	tab, err := docker.NewTmuxWindow(ctx, wb.ContainerId)
+	if err != nil {
+		return domain.TerminalTab{}, rerrors.Wrap(err, "error creating terminal tab")
+	}
+
+	return tab, nil
+}
+
+// SelectTerminalTab makes tabID the calling user's own running workbench's current tmux window
+// for vaultID — since ttyd just attaches to the session and mirrors whatever window is currently
+// current, this alone is what makes the switch reach the browser.
+func (s *Service) SelectTerminalTab(ctx context.Context, vaultID uuid.UUID, tabID string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.Status != domain.WorkbenchStatusRunning {
+		return user_errors.WorkbenchNotRunning
+	}
+
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	err = docker.SelectTmuxWindow(ctx, wb.ContainerId, tabID)
+	if err != nil {
+		return rerrors.Wrap(err, "error selecting terminal tab")
+	}
+
+	return nil
+}
+
+// CloseTerminalTab closes tabID in the calling user's own running workbench for vaultID.
+//
+// Before killing the window, it lists the workbench's current tmux windows and refuses
+// (user_errors.WorkbenchCannotCloseLastTab) if tabID would be the only one left — tmux has no
+// notion of a windowless session, so at least one window must always survive a workbench's
+// lifetime.
+func (s *Service) CloseTerminalTab(ctx context.Context, vaultID uuid.UUID, tabID string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.Status != domain.WorkbenchStatusRunning {
+		return user_errors.WorkbenchNotRunning
+	}
+
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	windows, err := docker.ListTmuxWindows(ctx, wb.ContainerId)
+	if err != nil {
+		return rerrors.Wrap(err, "error listing terminal tabs")
+	}
+
+	if len(windows) <= 1 {
+		return user_errors.WorkbenchCannotCloseLastTab
+	}
+
+	err = docker.KillTmuxWindow(ctx, wb.ContainerId, tabID)
+	if err != nil {
+		return rerrors.Wrap(err, "error closing terminal tab")
 	}
 
 	return nil

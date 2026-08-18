@@ -7,6 +7,10 @@ export interface IWorkbenchService {
     start: (vaultId: string, authMode: string) => Promise<{ status: string; authMode: string }>
     stop: (vaultId: string) => Promise<{ status: string }>
     remove: (vaultId: string) => Promise<{ status: string }>
+    listTerminalTabs: (vaultId: string) => Promise<{id: string; name: string; active: boolean}[]>
+    createTerminalTab: (vaultId: string) => Promise<{id: string; name: string; active: boolean}>
+    selectTerminalTab: (vaultId: string, tabId: string) => Promise<void>
+    closeTerminalTab: (vaultId: string, tabId: string) => Promise<void>
 }
 
 export class WorkbenchService implements IWorkbenchService {
@@ -33,6 +37,25 @@ export class WorkbenchService implements IWorkbenchService {
     async remove(vaultId: string): Promise<{ status: string }> {
         const res = await VaultsAPI.DeleteWorkbench({vaultId}, useUser.getState().auth.getInitReq())
         return {status: res.status ?? ""}
+    }
+
+    async listTerminalTabs(vaultId: string): Promise<{id: string; name: string; active: boolean}[]> {
+        const res = await VaultsAPI.ListWorkbenchTerminalTabs({vaultId}, useUser.getState().auth.getInitReq())
+        return (res.tabs ?? []).map(t => ({id: t.id ?? "", name: t.name ?? "", active: t.active ?? false}))
+    }
+
+    async createTerminalTab(vaultId: string): Promise<{id: string; name: string; active: boolean}> {
+        const res = await VaultsAPI.CreateWorkbenchTerminalTab({vaultId}, useUser.getState().auth.getInitReq())
+        const tab = res.tab
+        return {id: tab?.id ?? "", name: tab?.name ?? "", active: tab?.active ?? false}
+    }
+
+    async selectTerminalTab(vaultId: string, tabId: string): Promise<void> {
+        await VaultsAPI.SelectWorkbenchTerminalTab({vaultId, tabId}, useUser.getState().auth.getInitReq())
+    }
+
+    async closeTerminalTab(vaultId: string, tabId: string): Promise<void> {
+        await VaultsAPI.CloseWorkbenchTerminalTab({vaultId, tabId}, useUser.getState().auth.getInitReq())
     }
 }
 

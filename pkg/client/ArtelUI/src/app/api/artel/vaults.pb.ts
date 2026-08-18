@@ -213,6 +213,50 @@ export type DeleteWorkbenchResponse = {
 
 export type DeleteWorkbench = Record<string, never>;
 
+export type TerminalTab = {
+  id?: string;
+  name?: string;
+  active?: boolean;
+};
+
+export type ListWorkbenchTerminalTabsRequest = {
+  vaultId?: string;
+};
+
+export type ListWorkbenchTerminalTabsResponse = {
+  tabs?: TerminalTab[];
+};
+
+export type ListWorkbenchTerminalTabs = Record<string, never>;
+
+export type CreateWorkbenchTerminalTabRequest = {
+  vaultId?: string;
+};
+
+export type CreateWorkbenchTerminalTabResponse = {
+  tab?: TerminalTab;
+};
+
+export type CreateWorkbenchTerminalTab = Record<string, never>;
+
+export type SelectWorkbenchTerminalTabRequest = {
+  vaultId?: string;
+  tabId?: string;
+};
+
+export type SelectWorkbenchTerminalTabResponse = Record<string, never>;
+
+export type SelectWorkbenchTerminalTab = Record<string, never>;
+
+export type CloseWorkbenchTerminalTabRequest = {
+  vaultId?: string;
+  tabId?: string;
+};
+
+export type CloseWorkbenchTerminalTabResponse = Record<string, never>;
+
+export type CloseWorkbenchTerminalTab = Record<string, never>;
+
 export type EnablePostgresDatabaseRequest = {
   vaultId?: string;
 };
@@ -337,6 +381,18 @@ export class VaultsAPI {
   }
   static DeleteWorkbench(this:void, req: DeleteWorkbenchRequest, initReq?: fm.InitReq): Promise<DeleteWorkbenchResponse> {
     return fm.fetchRequest<DeleteWorkbenchResponse>(`/api/vaults/workbench/delete`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static ListWorkbenchTerminalTabs(this:void, req: ListWorkbenchTerminalTabsRequest, initReq?: fm.InitReq): Promise<ListWorkbenchTerminalTabsResponse> {
+    return fm.fetchRequest<ListWorkbenchTerminalTabsResponse>(`/api/vaults/workbench/terminal-tabs/list`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CreateWorkbenchTerminalTab(this:void, req: CreateWorkbenchTerminalTabRequest, initReq?: fm.InitReq): Promise<CreateWorkbenchTerminalTabResponse> {
+    return fm.fetchRequest<CreateWorkbenchTerminalTabResponse>(`/api/vaults/workbench/terminal-tabs/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static SelectWorkbenchTerminalTab(this:void, req: SelectWorkbenchTerminalTabRequest, initReq?: fm.InitReq): Promise<SelectWorkbenchTerminalTabResponse> {
+    return fm.fetchRequest<SelectWorkbenchTerminalTabResponse>(`/api/vaults/workbench/terminal-tabs/select`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static CloseWorkbenchTerminalTab(this:void, req: CloseWorkbenchTerminalTabRequest, initReq?: fm.InitReq): Promise<CloseWorkbenchTerminalTabResponse> {
+    return fm.fetchRequest<CloseWorkbenchTerminalTabResponse>(`/api/vaults/workbench/terminal-tabs/close`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static EnablePostgresDatabase(this:void, req: EnablePostgresDatabaseRequest, initReq?: fm.InitReq): Promise<EnablePostgresDatabaseResponse> {
     return fm.fetchRequest<EnablePostgresDatabaseResponse>(`/api/vaults/postgres/enable`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

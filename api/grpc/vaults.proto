@@ -129,6 +129,30 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc ListWorkbenchTerminalTabs(ListWorkbenchTerminalTabs.Request) returns (ListWorkbenchTerminalTabs.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/terminal-tabs/list"
+      body: "*"
+    };
+  };
+  rpc CreateWorkbenchTerminalTab(CreateWorkbenchTerminalTab.Request) returns (CreateWorkbenchTerminalTab.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/terminal-tabs/create"
+      body: "*"
+    };
+  };
+  rpc SelectWorkbenchTerminalTab(SelectWorkbenchTerminalTab.Request) returns (SelectWorkbenchTerminalTab.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/terminal-tabs/select"
+      body: "*"
+    };
+  };
+  rpc CloseWorkbenchTerminalTab(CloseWorkbenchTerminalTab.Request) returns (CloseWorkbenchTerminalTab.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/workbench/terminal-tabs/close"
+      body: "*"
+    };
+  };
   rpc EnablePostgresDatabase(EnablePostgresDatabase.Request) returns (EnablePostgresDatabase.Response) {
     option (google.api.http) = {
       post: "/api/vaults/postgres/enable"
@@ -347,6 +371,50 @@ message DeleteWorkbench {
   message Response {
     string status = 1;
   }
+}
+
+// TerminalTab is one tmux window inside a workbench's tmux session, surfaced to the browser as a
+// terminal tab (see domain.TerminalTab). id is tmux's own #{window_id} (e.g. "@1") — stable
+// across window renumbering, unlike #{window_index}. There is no user-supplied name anywhere in
+// this design: tabs are always auto-named by tmux's automatic-rename.
+message TerminalTab {
+  string id = 1;
+  string name = 2;
+  bool active = 3;
+}
+
+message ListWorkbenchTerminalTabs {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    repeated TerminalTab tabs = 1;
+  }
+}
+
+message CreateWorkbenchTerminalTab {
+  message Request {
+    string vault_id = 1;
+  }
+  message Response {
+    TerminalTab tab = 1;
+  }
+}
+
+message SelectWorkbenchTerminalTab {
+  message Request {
+    string vault_id = 1;
+    string tab_id = 2;
+  }
+  message Response {}
+}
+
+message CloseWorkbenchTerminalTab {
+  message Request {
+    string vault_id = 1;
+    string tab_id = 2;
+  }
+  message Response {}
 }
 
 message EnablePostgresDatabase {

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/google/uuid"
@@ -274,7 +275,21 @@ type fakeDockerClient struct {
 	removeContainerFunc  func(ctx context.Context, containerID string) error
 	removeVolumeFunc     func(ctx context.Context, name string) error
 
+	listTmuxWindowsFunc  func(ctx context.Context, containerID string) ([]domain.TerminalTab, error)
+	newTmuxWindowFunc    func(ctx context.Context, containerID string) (domain.TerminalTab, error)
+	selectTmuxWindowFunc func(ctx context.Context, containerID, windowID string) error
+	killTmuxWindowFunc   func(ctx context.Context, containerID, windowID string) error
+
 	containerAddressCalls []string
+
+	// listTmuxWindowsCalls/newTmuxWindowCalls/selectTmuxWindowCalls/killTmuxWindowCalls count
+	// invocations of the corresponding method — used by tests to assert a docker call was (or was
+	// deliberately not) made, e.g. WorkbenchNotRunning short-circuiting before ever reaching the
+	// docker client, or CloseTerminalTab refusing to kill a workbench's last remaining window.
+	listTmuxWindowsCalls  int
+	newTmuxWindowCalls    int
+	selectTmuxWindowCalls int
+	killTmuxWindowCalls   int
 }
 
 func (f *fakeDockerClient) CreateVolume(ctx context.Context, name string) error {
@@ -329,6 +344,46 @@ func (f *fakeDockerClient) ContainerAddress(ctx context.Context, containerID str
 	f.containerAddressCalls = append(f.containerAddressCalls, containerID)
 
 	return f.containerAddressFunc(ctx, containerID)
+}
+
+func (f *fakeDockerClient) ListTmuxWindows(ctx context.Context, containerID string) ([]domain.TerminalTab, error) {
+	f.listTmuxWindowsCalls++
+
+	if f.listTmuxWindowsFunc != nil {
+		return f.listTmuxWindowsFunc(ctx, containerID)
+	}
+
+	return nil, nil
+}
+
+func (f *fakeDockerClient) NewTmuxWindow(ctx context.Context, containerID string) (domain.TerminalTab, error) {
+	f.newTmuxWindowCalls++
+
+	if f.newTmuxWindowFunc != nil {
+		return f.newTmuxWindowFunc(ctx, containerID)
+	}
+
+	return domain.TerminalTab{}, nil
+}
+
+func (f *fakeDockerClient) SelectTmuxWindow(ctx context.Context, containerID, windowID string) error {
+	f.selectTmuxWindowCalls++
+
+	if f.selectTmuxWindowFunc != nil {
+		return f.selectTmuxWindowFunc(ctx, containerID, windowID)
+	}
+
+	return nil
+}
+
+func (f *fakeDockerClient) KillTmuxWindow(ctx context.Context, containerID, windowID string) error {
+	f.killTmuxWindowCalls++
+
+	if f.killTmuxWindowFunc != nil {
+		return f.killTmuxWindowFunc(ctx, containerID, windowID)
+	}
+
+	return nil
 }
 
 // testContainerId is the container id newTestService's fake workbenches repo reports, asserted
@@ -721,5 +776,271 @@ func TestDeleteWorkbenchesForVault_PartialFailureContinues(t *testing.T) {
 
 	if _, stillThere := workbenchesRepo.rows[workbenchKey{vaultID, okUser}]; stillThere {
 		t.Fatal("the other row should still have been torn down despite the first row's failure")
+	}
+}
+
+// notRunningStatuses is every domain.WorkbenchStatus other than 'running' — the four terminal-tab
+// methods must reject all of them with user_errors.WorkbenchNotRunning before ever reaching the
+// docker client.
+var notRunningStatuses = []domain.WorkbenchStatus{
+	domain.WorkbenchStatusCreated,
+	domain.WorkbenchStatusConfiguring,
+	domain.WorkbenchStatusStopped,
+	domain.WorkbenchStatusRemoved,
+}
+
+// TestListTerminalTabs_NotRunning confirms ListTerminalTabs rejects every non-running workbench
+// status with user_errors.WorkbenchNotRunning and never reaches the docker client.
+func TestListTerminalTabs_NotRunning(t *testing.T) {
+	for _, status := range notRunningStatuses {
+		t.Run(string(status), func(t *testing.T) {
+			client := &fakeDockerClient{}
+
+			svc := newTestService(t, status, client)
+
+			_, err := svc.ListTerminalTabs(withUser(uuid.New()), uuid.New())
+			if !errors.Is(err, user_errors.WorkbenchNotRunning) {
+				t.Fatalf("expected user_errors.WorkbenchNotRunning, got %v", err)
+			}
+
+			if client.listTmuxWindowsCalls != 0 {
+				t.Fatalf("ListTmuxWindows called %d times for a non-running workbench, want 0", client.listTmuxWindowsCalls)
+			}
+		})
+	}
+}
+
+// TestListTerminalTabs_Running confirms the happy path passes the docker client's tabs straight
+// through unwrapped.
+func TestListTerminalTabs_Running(t *testing.T) {
+	wantTabs := []domain.TerminalTab{
+		{ID: "@1", Name: "claude", Active: true},
+		{ID: "@2", Name: "bash", Active: false},
+	}
+
+	client := &fakeDockerClient{
+		listTmuxWindowsFunc: func(ctx context.Context, containerID string) ([]domain.TerminalTab, error) {
+			if containerID != testContainerId {
+				t.Fatalf("containerID = %q, want %q", containerID, testContainerId)
+			}
+
+			return wantTabs, nil
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	tabs, err := svc.ListTerminalTabs(withUser(uuid.New()), uuid.New())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if !reflect.DeepEqual(tabs, wantTabs) {
+		t.Fatalf("tabs = %#v, want %#v", tabs, wantTabs)
+	}
+
+	if client.listTmuxWindowsCalls != 1 {
+		t.Fatalf("ListTmuxWindows called %d times, want 1", client.listTmuxWindowsCalls)
+	}
+}
+
+// TestCreateTerminalTab_NotRunning confirms CreateTerminalTab rejects every non-running workbench
+// status with user_errors.WorkbenchNotRunning and never reaches the docker client.
+func TestCreateTerminalTab_NotRunning(t *testing.T) {
+	for _, status := range notRunningStatuses {
+		t.Run(string(status), func(t *testing.T) {
+			client := &fakeDockerClient{}
+
+			svc := newTestService(t, status, client)
+
+			_, err := svc.CreateTerminalTab(withUser(uuid.New()), uuid.New())
+			if !errors.Is(err, user_errors.WorkbenchNotRunning) {
+				t.Fatalf("expected user_errors.WorkbenchNotRunning, got %v", err)
+			}
+
+			if client.newTmuxWindowCalls != 0 {
+				t.Fatalf("NewTmuxWindow called %d times for a non-running workbench, want 0", client.newTmuxWindowCalls)
+			}
+		})
+	}
+}
+
+// TestCreateTerminalTab_Running confirms the happy path passes the docker client's new tab
+// straight through unwrapped.
+func TestCreateTerminalTab_Running(t *testing.T) {
+	wantTab := domain.TerminalTab{ID: "@3", Active: true}
+
+	client := &fakeDockerClient{
+		newTmuxWindowFunc: func(ctx context.Context, containerID string) (domain.TerminalTab, error) {
+			if containerID != testContainerId {
+				t.Fatalf("containerID = %q, want %q", containerID, testContainerId)
+			}
+
+			return wantTab, nil
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	tab, err := svc.CreateTerminalTab(withUser(uuid.New()), uuid.New())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if tab != wantTab {
+		t.Fatalf("tab = %#v, want %#v", tab, wantTab)
+	}
+
+	if client.newTmuxWindowCalls != 1 {
+		t.Fatalf("NewTmuxWindow called %d times, want 1", client.newTmuxWindowCalls)
+	}
+}
+
+// TestSelectTerminalTab_NotRunning confirms SelectTerminalTab rejects every non-running workbench
+// status with user_errors.WorkbenchNotRunning and never reaches the docker client.
+func TestSelectTerminalTab_NotRunning(t *testing.T) {
+	for _, status := range notRunningStatuses {
+		t.Run(string(status), func(t *testing.T) {
+			client := &fakeDockerClient{}
+
+			svc := newTestService(t, status, client)
+
+			err := svc.SelectTerminalTab(withUser(uuid.New()), uuid.New(), "@1")
+			if !errors.Is(err, user_errors.WorkbenchNotRunning) {
+				t.Fatalf("expected user_errors.WorkbenchNotRunning, got %v", err)
+			}
+
+			if client.selectTmuxWindowCalls != 0 {
+				t.Fatalf("SelectTmuxWindow called %d times for a non-running workbench, want 0", client.selectTmuxWindowCalls)
+			}
+		})
+	}
+}
+
+// TestSelectTerminalTab_Running confirms the happy path delegates to the docker client with the
+// caller-supplied tab id, unwrapped.
+func TestSelectTerminalTab_Running(t *testing.T) {
+	const wantTabID = "@2"
+
+	var gotContainerID, gotWindowID string
+
+	client := &fakeDockerClient{
+		selectTmuxWindowFunc: func(ctx context.Context, containerID, windowID string) error {
+			gotContainerID = containerID
+			gotWindowID = windowID
+
+			return nil
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	err := svc.SelectTerminalTab(withUser(uuid.New()), uuid.New(), wantTabID)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if gotContainerID != testContainerId {
+		t.Fatalf("containerID = %q, want %q", gotContainerID, testContainerId)
+	}
+
+	if gotWindowID != wantTabID {
+		t.Fatalf("windowID = %q, want %q", gotWindowID, wantTabID)
+	}
+
+	if client.selectTmuxWindowCalls != 1 {
+		t.Fatalf("SelectTmuxWindow called %d times, want 1", client.selectTmuxWindowCalls)
+	}
+}
+
+// TestCloseTerminalTab_NotRunning confirms CloseTerminalTab rejects every non-running workbench
+// status with user_errors.WorkbenchNotRunning and never reaches the docker client at all — not
+// even ListTmuxWindows.
+func TestCloseTerminalTab_NotRunning(t *testing.T) {
+	for _, status := range notRunningStatuses {
+		t.Run(string(status), func(t *testing.T) {
+			client := &fakeDockerClient{}
+
+			svc := newTestService(t, status, client)
+
+			err := svc.CloseTerminalTab(withUser(uuid.New()), uuid.New(), "@1")
+			if !errors.Is(err, user_errors.WorkbenchNotRunning) {
+				t.Fatalf("expected user_errors.WorkbenchNotRunning, got %v", err)
+			}
+
+			if client.listTmuxWindowsCalls != 0 {
+				t.Fatalf("ListTmuxWindows called %d times for a non-running workbench, want 0", client.listTmuxWindowsCalls)
+			}
+
+			if client.killTmuxWindowCalls != 0 {
+				t.Fatalf("KillTmuxWindow called %d times for a non-running workbench, want 0", client.killTmuxWindowCalls)
+			}
+		})
+	}
+}
+
+// TestCloseTerminalTab_LastWindowRefused confirms CloseTerminalTab refuses to close a workbench's
+// only remaining tmux window with user_errors.WorkbenchCannotCloseLastTab, and never calls
+// KillTmuxWindow.
+func TestCloseTerminalTab_LastWindowRefused(t *testing.T) {
+	client := &fakeDockerClient{
+		listTmuxWindowsFunc: func(ctx context.Context, containerID string) ([]domain.TerminalTab, error) {
+			return []domain.TerminalTab{{ID: "@1", Name: "claude", Active: true}}, nil
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	err := svc.CloseTerminalTab(withUser(uuid.New()), uuid.New(), "@1")
+	if !errors.Is(err, user_errors.WorkbenchCannotCloseLastTab) {
+		t.Fatalf("expected user_errors.WorkbenchCannotCloseLastTab, got %v", err)
+	}
+
+	if client.killTmuxWindowCalls != 0 {
+		t.Fatalf("KillTmuxWindow called %d times when closing the last tab, want 0", client.killTmuxWindowCalls)
+	}
+}
+
+// TestCloseTerminalTab_MultipleWindowsCloses confirms CloseTerminalTab proceeds to KillTmuxWindow
+// (happy path, no error) once two or more tmux windows remain.
+func TestCloseTerminalTab_MultipleWindowsCloses(t *testing.T) {
+	const wantTabID = "@2"
+
+	var gotContainerID, gotWindowID string
+
+	client := &fakeDockerClient{
+		listTmuxWindowsFunc: func(ctx context.Context, containerID string) ([]domain.TerminalTab, error) {
+			tabs := []domain.TerminalTab{
+				{ID: "@1", Name: "claude", Active: true},
+				{ID: "@2", Name: "bash", Active: false},
+			}
+
+			return tabs, nil
+		},
+		killTmuxWindowFunc: func(ctx context.Context, containerID, windowID string) error {
+			gotContainerID = containerID
+			gotWindowID = windowID
+
+			return nil
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	err := svc.CloseTerminalTab(withUser(uuid.New()), uuid.New(), wantTabID)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if gotContainerID != testContainerId {
+		t.Fatalf("containerID = %q, want %q", gotContainerID, testContainerId)
+	}
+
+	if gotWindowID != wantTabID {
+		t.Fatalf("windowID = %q, want %q", gotWindowID, wantTabID)
+	}
+
+	if client.killTmuxWindowCalls != 1 {
+		t.Fatalf("KillTmuxWindow called %d times, want 1", client.killTmuxWindowCalls)
 	}
 }

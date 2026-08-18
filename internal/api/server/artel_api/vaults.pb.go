@@ -743,6 +743,214 @@ func (*DeleteWorkbench) Descriptor() ([]byte, []int) {
 	return file_vaults_proto_rawDescGZIP(), []int{19}
 }
 
+// TerminalTab is one tmux window inside a workbench's tmux session, surfaced to the browser as a
+// terminal tab (see domain.TerminalTab). id is tmux's own #{window_id} (e.g. "@1") — stable
+// across window renumbering, unlike #{window_index}. There is no user-supplied name anywhere in
+// this design: tabs are always auto-named by tmux's automatic-rename.
+type TerminalTab struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Active        bool                   `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TerminalTab) Reset() {
+	*x = TerminalTab{}
+	mi := &file_vaults_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TerminalTab) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TerminalTab) ProtoMessage() {}
+
+func (x *TerminalTab) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TerminalTab.ProtoReflect.Descriptor instead.
+func (*TerminalTab) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *TerminalTab) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TerminalTab) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *TerminalTab) GetActive() bool {
+	if x != nil {
+		return x.Active
+	}
+	return false
+}
+
+type ListWorkbenchTerminalTabs struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListWorkbenchTerminalTabs) Reset() {
+	*x = ListWorkbenchTerminalTabs{}
+	mi := &file_vaults_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListWorkbenchTerminalTabs) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWorkbenchTerminalTabs) ProtoMessage() {}
+
+func (x *ListWorkbenchTerminalTabs) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWorkbenchTerminalTabs.ProtoReflect.Descriptor instead.
+func (*ListWorkbenchTerminalTabs) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{21}
+}
+
+type CreateWorkbenchTerminalTab struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateWorkbenchTerminalTab) Reset() {
+	*x = CreateWorkbenchTerminalTab{}
+	mi := &file_vaults_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateWorkbenchTerminalTab) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateWorkbenchTerminalTab) ProtoMessage() {}
+
+func (x *CreateWorkbenchTerminalTab) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateWorkbenchTerminalTab.ProtoReflect.Descriptor instead.
+func (*CreateWorkbenchTerminalTab) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{22}
+}
+
+type SelectWorkbenchTerminalTab struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SelectWorkbenchTerminalTab) Reset() {
+	*x = SelectWorkbenchTerminalTab{}
+	mi := &file_vaults_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SelectWorkbenchTerminalTab) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelectWorkbenchTerminalTab) ProtoMessage() {}
+
+func (x *SelectWorkbenchTerminalTab) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelectWorkbenchTerminalTab.ProtoReflect.Descriptor instead.
+func (*SelectWorkbenchTerminalTab) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{23}
+}
+
+type CloseWorkbenchTerminalTab struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloseWorkbenchTerminalTab) Reset() {
+	*x = CloseWorkbenchTerminalTab{}
+	mi := &file_vaults_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloseWorkbenchTerminalTab) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloseWorkbenchTerminalTab) ProtoMessage() {}
+
+func (x *CloseWorkbenchTerminalTab) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloseWorkbenchTerminalTab.ProtoReflect.Descriptor instead.
+func (*CloseWorkbenchTerminalTab) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{24}
+}
+
 type EnablePostgresDatabase struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -751,7 +959,7 @@ type EnablePostgresDatabase struct {
 
 func (x *EnablePostgresDatabase) Reset() {
 	*x = EnablePostgresDatabase{}
-	mi := &file_vaults_proto_msgTypes[20]
+	mi := &file_vaults_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -763,7 +971,7 @@ func (x *EnablePostgresDatabase) String() string {
 func (*EnablePostgresDatabase) ProtoMessage() {}
 
 func (x *EnablePostgresDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[20]
+	mi := &file_vaults_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -776,7 +984,7 @@ func (x *EnablePostgresDatabase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnablePostgresDatabase.ProtoReflect.Descriptor instead.
 func (*EnablePostgresDatabase) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{20}
+	return file_vaults_proto_rawDescGZIP(), []int{25}
 }
 
 type GetPostgresDatabase struct {
@@ -787,7 +995,7 @@ type GetPostgresDatabase struct {
 
 func (x *GetPostgresDatabase) Reset() {
 	*x = GetPostgresDatabase{}
-	mi := &file_vaults_proto_msgTypes[21]
+	mi := &file_vaults_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -799,7 +1007,7 @@ func (x *GetPostgresDatabase) String() string {
 func (*GetPostgresDatabase) ProtoMessage() {}
 
 func (x *GetPostgresDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[21]
+	mi := &file_vaults_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -812,7 +1020,7 @@ func (x *GetPostgresDatabase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPostgresDatabase.ProtoReflect.Descriptor instead.
 func (*GetPostgresDatabase) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{21}
+	return file_vaults_proto_rawDescGZIP(), []int{26}
 }
 
 type DisablePostgresDatabase struct {
@@ -823,7 +1031,7 @@ type DisablePostgresDatabase struct {
 
 func (x *DisablePostgresDatabase) Reset() {
 	*x = DisablePostgresDatabase{}
-	mi := &file_vaults_proto_msgTypes[22]
+	mi := &file_vaults_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -835,7 +1043,7 @@ func (x *DisablePostgresDatabase) String() string {
 func (*DisablePostgresDatabase) ProtoMessage() {}
 
 func (x *DisablePostgresDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[22]
+	mi := &file_vaults_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -848,7 +1056,7 @@ func (x *DisablePostgresDatabase) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DisablePostgresDatabase.ProtoReflect.Descriptor instead.
 func (*DisablePostgresDatabase) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{22}
+	return file_vaults_proto_rawDescGZIP(), []int{27}
 }
 
 type VaultItem struct {
@@ -875,7 +1083,7 @@ type VaultItem struct {
 
 func (x *VaultItem) Reset() {
 	*x = VaultItem{}
-	mi := &file_vaults_proto_msgTypes[23]
+	mi := &file_vaults_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -887,7 +1095,7 @@ func (x *VaultItem) String() string {
 func (*VaultItem) ProtoMessage() {}
 
 func (x *VaultItem) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[23]
+	mi := &file_vaults_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -900,7 +1108,7 @@ func (x *VaultItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultItem.ProtoReflect.Descriptor instead.
 func (*VaultItem) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{23}
+	return file_vaults_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *VaultItem) GetId() string {
@@ -1000,7 +1208,7 @@ type VaultMemberInfo struct {
 
 func (x *VaultMemberInfo) Reset() {
 	*x = VaultMemberInfo{}
-	mi := &file_vaults_proto_msgTypes[24]
+	mi := &file_vaults_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1012,7 +1220,7 @@ func (x *VaultMemberInfo) String() string {
 func (*VaultMemberInfo) ProtoMessage() {}
 
 func (x *VaultMemberInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[24]
+	mi := &file_vaults_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1025,7 +1233,7 @@ func (x *VaultMemberInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultMemberInfo.ProtoReflect.Descriptor instead.
 func (*VaultMemberInfo) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{24}
+	return file_vaults_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *VaultMemberInfo) GetId() string {
@@ -1077,7 +1285,7 @@ type VaultInviteItem struct {
 
 func (x *VaultInviteItem) Reset() {
 	*x = VaultInviteItem{}
-	mi := &file_vaults_proto_msgTypes[25]
+	mi := &file_vaults_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1089,7 +1297,7 @@ func (x *VaultInviteItem) String() string {
 func (*VaultInviteItem) ProtoMessage() {}
 
 func (x *VaultInviteItem) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[25]
+	mi := &file_vaults_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1102,7 +1310,7 @@ func (x *VaultInviteItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VaultInviteItem.ProtoReflect.Descriptor instead.
 func (*VaultInviteItem) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{25}
+	return file_vaults_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *VaultInviteItem) GetId() string {
@@ -1156,7 +1364,7 @@ type CreateVault_Request struct {
 
 func (x *CreateVault_Request) Reset() {
 	*x = CreateVault_Request{}
-	mi := &file_vaults_proto_msgTypes[26]
+	mi := &file_vaults_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1168,7 +1376,7 @@ func (x *CreateVault_Request) String() string {
 func (*CreateVault_Request) ProtoMessage() {}
 
 func (x *CreateVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[26]
+	mi := &file_vaults_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1202,7 +1410,7 @@ type CreateVault_Response struct {
 
 func (x *CreateVault_Response) Reset() {
 	*x = CreateVault_Response{}
-	mi := &file_vaults_proto_msgTypes[27]
+	mi := &file_vaults_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1214,7 +1422,7 @@ func (x *CreateVault_Response) String() string {
 func (*CreateVault_Response) ProtoMessage() {}
 
 func (x *CreateVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[27]
+	mi := &file_vaults_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1260,7 +1468,7 @@ type GetVault_Request struct {
 
 func (x *GetVault_Request) Reset() {
 	*x = GetVault_Request{}
-	mi := &file_vaults_proto_msgTypes[28]
+	mi := &file_vaults_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1272,7 +1480,7 @@ func (x *GetVault_Request) String() string {
 func (*GetVault_Request) ProtoMessage() {}
 
 func (x *GetVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[28]
+	mi := &file_vaults_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1319,7 +1527,7 @@ type GetVault_Response struct {
 
 func (x *GetVault_Response) Reset() {
 	*x = GetVault_Response{}
-	mi := &file_vaults_proto_msgTypes[29]
+	mi := &file_vaults_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1331,7 +1539,7 @@ func (x *GetVault_Response) String() string {
 func (*GetVault_Response) ProtoMessage() {}
 
 func (x *GetVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[29]
+	mi := &file_vaults_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1418,7 +1626,7 @@ type ListVaults_Request struct {
 
 func (x *ListVaults_Request) Reset() {
 	*x = ListVaults_Request{}
-	mi := &file_vaults_proto_msgTypes[30]
+	mi := &file_vaults_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1430,7 +1638,7 @@ func (x *ListVaults_Request) String() string {
 func (*ListVaults_Request) ProtoMessage() {}
 
 func (x *ListVaults_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[30]
+	mi := &file_vaults_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1455,7 +1663,7 @@ type ListVaults_Response struct {
 
 func (x *ListVaults_Response) Reset() {
 	*x = ListVaults_Response{}
-	mi := &file_vaults_proto_msgTypes[31]
+	mi := &file_vaults_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1467,7 +1675,7 @@ func (x *ListVaults_Response) String() string {
 func (*ListVaults_Response) ProtoMessage() {}
 
 func (x *ListVaults_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[31]
+	mi := &file_vaults_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1499,7 +1707,7 @@ type DeleteVault_Request struct {
 
 func (x *DeleteVault_Request) Reset() {
 	*x = DeleteVault_Request{}
-	mi := &file_vaults_proto_msgTypes[32]
+	mi := &file_vaults_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1511,7 +1719,7 @@ func (x *DeleteVault_Request) String() string {
 func (*DeleteVault_Request) ProtoMessage() {}
 
 func (x *DeleteVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[32]
+	mi := &file_vaults_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1542,7 +1750,7 @@ type DeleteVault_Response struct {
 
 func (x *DeleteVault_Response) Reset() {
 	*x = DeleteVault_Response{}
-	mi := &file_vaults_proto_msgTypes[33]
+	mi := &file_vaults_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1554,7 +1762,7 @@ func (x *DeleteVault_Response) String() string {
 func (*DeleteVault_Response) ProtoMessage() {}
 
 func (x *DeleteVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[33]
+	mi := &file_vaults_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1581,7 +1789,7 @@ type AddMember_Request struct {
 
 func (x *AddMember_Request) Reset() {
 	*x = AddMember_Request{}
-	mi := &file_vaults_proto_msgTypes[34]
+	mi := &file_vaults_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1593,7 +1801,7 @@ func (x *AddMember_Request) String() string {
 func (*AddMember_Request) ProtoMessage() {}
 
 func (x *AddMember_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[34]
+	mi := &file_vaults_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1638,7 +1846,7 @@ type AddMember_Response struct {
 
 func (x *AddMember_Response) Reset() {
 	*x = AddMember_Response{}
-	mi := &file_vaults_proto_msgTypes[35]
+	mi := &file_vaults_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1650,7 +1858,7 @@ func (x *AddMember_Response) String() string {
 func (*AddMember_Response) ProtoMessage() {}
 
 func (x *AddMember_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[35]
+	mi := &file_vaults_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1676,7 +1884,7 @@ type RemoveMember_Request struct {
 
 func (x *RemoveMember_Request) Reset() {
 	*x = RemoveMember_Request{}
-	mi := &file_vaults_proto_msgTypes[36]
+	mi := &file_vaults_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1688,7 +1896,7 @@ func (x *RemoveMember_Request) String() string {
 func (*RemoveMember_Request) ProtoMessage() {}
 
 func (x *RemoveMember_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[36]
+	mi := &file_vaults_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1726,7 +1934,7 @@ type RemoveMember_Response struct {
 
 func (x *RemoveMember_Response) Reset() {
 	*x = RemoveMember_Response{}
-	mi := &file_vaults_proto_msgTypes[37]
+	mi := &file_vaults_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1738,7 +1946,7 @@ func (x *RemoveMember_Response) String() string {
 func (*RemoveMember_Response) ProtoMessage() {}
 
 func (x *RemoveMember_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[37]
+	mi := &file_vaults_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1763,7 +1971,7 @@ type ListMembers_Request struct {
 
 func (x *ListMembers_Request) Reset() {
 	*x = ListMembers_Request{}
-	mi := &file_vaults_proto_msgTypes[38]
+	mi := &file_vaults_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1775,7 +1983,7 @@ func (x *ListMembers_Request) String() string {
 func (*ListMembers_Request) ProtoMessage() {}
 
 func (x *ListMembers_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[38]
+	mi := &file_vaults_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1807,7 +2015,7 @@ type ListMembers_Response struct {
 
 func (x *ListMembers_Response) Reset() {
 	*x = ListMembers_Response{}
-	mi := &file_vaults_proto_msgTypes[39]
+	mi := &file_vaults_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1819,7 +2027,7 @@ func (x *ListMembers_Response) String() string {
 func (*ListMembers_Response) ProtoMessage() {}
 
 func (x *ListMembers_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[39]
+	mi := &file_vaults_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1852,7 +2060,7 @@ type CreateInviteLink_Request struct {
 
 func (x *CreateInviteLink_Request) Reset() {
 	*x = CreateInviteLink_Request{}
-	mi := &file_vaults_proto_msgTypes[40]
+	mi := &file_vaults_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1864,7 +2072,7 @@ func (x *CreateInviteLink_Request) String() string {
 func (*CreateInviteLink_Request) ProtoMessage() {}
 
 func (x *CreateInviteLink_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[40]
+	mi := &file_vaults_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1903,7 +2111,7 @@ type CreateInviteLink_Response struct {
 
 func (x *CreateInviteLink_Response) Reset() {
 	*x = CreateInviteLink_Response{}
-	mi := &file_vaults_proto_msgTypes[41]
+	mi := &file_vaults_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1915,7 +2123,7 @@ func (x *CreateInviteLink_Response) String() string {
 func (*CreateInviteLink_Response) ProtoMessage() {}
 
 func (x *CreateInviteLink_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[41]
+	mi := &file_vaults_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1947,7 +2155,7 @@ type ListInviteLinks_Request struct {
 
 func (x *ListInviteLinks_Request) Reset() {
 	*x = ListInviteLinks_Request{}
-	mi := &file_vaults_proto_msgTypes[42]
+	mi := &file_vaults_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1959,7 +2167,7 @@ func (x *ListInviteLinks_Request) String() string {
 func (*ListInviteLinks_Request) ProtoMessage() {}
 
 func (x *ListInviteLinks_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[42]
+	mi := &file_vaults_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1991,7 +2199,7 @@ type ListInviteLinks_Response struct {
 
 func (x *ListInviteLinks_Response) Reset() {
 	*x = ListInviteLinks_Response{}
-	mi := &file_vaults_proto_msgTypes[43]
+	mi := &file_vaults_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2003,7 +2211,7 @@ func (x *ListInviteLinks_Response) String() string {
 func (*ListInviteLinks_Response) ProtoMessage() {}
 
 func (x *ListInviteLinks_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[43]
+	mi := &file_vaults_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2036,7 +2244,7 @@ type RevokeInviteLink_Request struct {
 
 func (x *RevokeInviteLink_Request) Reset() {
 	*x = RevokeInviteLink_Request{}
-	mi := &file_vaults_proto_msgTypes[44]
+	mi := &file_vaults_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2048,7 +2256,7 @@ func (x *RevokeInviteLink_Request) String() string {
 func (*RevokeInviteLink_Request) ProtoMessage() {}
 
 func (x *RevokeInviteLink_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[44]
+	mi := &file_vaults_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2086,7 +2294,7 @@ type RevokeInviteLink_Response struct {
 
 func (x *RevokeInviteLink_Response) Reset() {
 	*x = RevokeInviteLink_Response{}
-	mi := &file_vaults_proto_msgTypes[45]
+	mi := &file_vaults_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2098,7 +2306,7 @@ func (x *RevokeInviteLink_Response) String() string {
 func (*RevokeInviteLink_Response) ProtoMessage() {}
 
 func (x *RevokeInviteLink_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[45]
+	mi := &file_vaults_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2123,7 +2331,7 @@ type AcceptInvite_Request struct {
 
 func (x *AcceptInvite_Request) Reset() {
 	*x = AcceptInvite_Request{}
-	mi := &file_vaults_proto_msgTypes[46]
+	mi := &file_vaults_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2135,7 +2343,7 @@ func (x *AcceptInvite_Request) String() string {
 func (*AcceptInvite_Request) ProtoMessage() {}
 
 func (x *AcceptInvite_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[46]
+	mi := &file_vaults_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2167,7 +2375,7 @@ type AcceptInvite_Response struct {
 
 func (x *AcceptInvite_Response) Reset() {
 	*x = AcceptInvite_Response{}
-	mi := &file_vaults_proto_msgTypes[47]
+	mi := &file_vaults_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2179,7 +2387,7 @@ func (x *AcceptInvite_Response) String() string {
 func (*AcceptInvite_Response) ProtoMessage() {}
 
 func (x *AcceptInvite_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[47]
+	mi := &file_vaults_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2213,7 +2421,7 @@ type LinkS3Bucket_Request struct {
 
 func (x *LinkS3Bucket_Request) Reset() {
 	*x = LinkS3Bucket_Request{}
-	mi := &file_vaults_proto_msgTypes[48]
+	mi := &file_vaults_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2225,7 +2433,7 @@ func (x *LinkS3Bucket_Request) String() string {
 func (*LinkS3Bucket_Request) ProtoMessage() {}
 
 func (x *LinkS3Bucket_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[48]
+	mi := &file_vaults_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2270,7 +2478,7 @@ type LinkS3Bucket_Response struct {
 
 func (x *LinkS3Bucket_Response) Reset() {
 	*x = LinkS3Bucket_Response{}
-	mi := &file_vaults_proto_msgTypes[49]
+	mi := &file_vaults_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2282,7 +2490,7 @@ func (x *LinkS3Bucket_Response) String() string {
 func (*LinkS3Bucket_Response) ProtoMessage() {}
 
 func (x *LinkS3Bucket_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[49]
+	mi := &file_vaults_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2307,7 +2515,7 @@ type UnlinkS3Bucket_Request struct {
 
 func (x *UnlinkS3Bucket_Request) Reset() {
 	*x = UnlinkS3Bucket_Request{}
-	mi := &file_vaults_proto_msgTypes[50]
+	mi := &file_vaults_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2319,7 +2527,7 @@ func (x *UnlinkS3Bucket_Request) String() string {
 func (*UnlinkS3Bucket_Request) ProtoMessage() {}
 
 func (x *UnlinkS3Bucket_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[50]
+	mi := &file_vaults_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2350,7 +2558,7 @@ type UnlinkS3Bucket_Response struct {
 
 func (x *UnlinkS3Bucket_Response) Reset() {
 	*x = UnlinkS3Bucket_Response{}
-	mi := &file_vaults_proto_msgTypes[51]
+	mi := &file_vaults_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2362,7 +2570,7 @@ func (x *UnlinkS3Bucket_Response) String() string {
 func (*UnlinkS3Bucket_Response) ProtoMessage() {}
 
 func (x *UnlinkS3Bucket_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[51]
+	mi := &file_vaults_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2388,7 +2596,7 @@ type SetVaultBinaryStorage_Request struct {
 
 func (x *SetVaultBinaryStorage_Request) Reset() {
 	*x = SetVaultBinaryStorage_Request{}
-	mi := &file_vaults_proto_msgTypes[52]
+	mi := &file_vaults_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2400,7 +2608,7 @@ func (x *SetVaultBinaryStorage_Request) String() string {
 func (*SetVaultBinaryStorage_Request) ProtoMessage() {}
 
 func (x *SetVaultBinaryStorage_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[52]
+	mi := &file_vaults_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2438,7 +2646,7 @@ type SetVaultBinaryStorage_Response struct {
 
 func (x *SetVaultBinaryStorage_Response) Reset() {
 	*x = SetVaultBinaryStorage_Response{}
-	mi := &file_vaults_proto_msgTypes[53]
+	mi := &file_vaults_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2450,7 +2658,7 @@ func (x *SetVaultBinaryStorage_Response) String() string {
 func (*SetVaultBinaryStorage_Response) ProtoMessage() {}
 
 func (x *SetVaultBinaryStorage_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[53]
+	mi := &file_vaults_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2478,7 +2686,7 @@ type PublishVault_Request struct {
 
 func (x *PublishVault_Request) Reset() {
 	*x = PublishVault_Request{}
-	mi := &file_vaults_proto_msgTypes[54]
+	mi := &file_vaults_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2490,7 +2698,7 @@ func (x *PublishVault_Request) String() string {
 func (*PublishVault_Request) ProtoMessage() {}
 
 func (x *PublishVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[54]
+	mi := &file_vaults_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2529,7 +2737,7 @@ type PublishVault_Response struct {
 
 func (x *PublishVault_Response) Reset() {
 	*x = PublishVault_Response{}
-	mi := &file_vaults_proto_msgTypes[55]
+	mi := &file_vaults_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2541,7 +2749,7 @@ func (x *PublishVault_Response) String() string {
 func (*PublishVault_Response) ProtoMessage() {}
 
 func (x *PublishVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[55]
+	mi := &file_vaults_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2573,7 +2781,7 @@ type UnpublishVault_Request struct {
 
 func (x *UnpublishVault_Request) Reset() {
 	*x = UnpublishVault_Request{}
-	mi := &file_vaults_proto_msgTypes[56]
+	mi := &file_vaults_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2585,7 +2793,7 @@ func (x *UnpublishVault_Request) String() string {
 func (*UnpublishVault_Request) ProtoMessage() {}
 
 func (x *UnpublishVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[56]
+	mi := &file_vaults_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2617,7 +2825,7 @@ type UnpublishVault_Response struct {
 
 func (x *UnpublishVault_Response) Reset() {
 	*x = UnpublishVault_Response{}
-	mi := &file_vaults_proto_msgTypes[57]
+	mi := &file_vaults_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2629,7 +2837,7 @@ func (x *UnpublishVault_Response) String() string {
 func (*UnpublishVault_Response) ProtoMessage() {}
 
 func (x *UnpublishVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[57]
+	mi := &file_vaults_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2661,7 +2869,7 @@ type CreateWorkbench_Request struct {
 
 func (x *CreateWorkbench_Request) Reset() {
 	*x = CreateWorkbench_Request{}
-	mi := &file_vaults_proto_msgTypes[58]
+	mi := &file_vaults_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2673,7 +2881,7 @@ func (x *CreateWorkbench_Request) String() string {
 func (*CreateWorkbench_Request) ProtoMessage() {}
 
 func (x *CreateWorkbench_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[58]
+	mi := &file_vaults_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2706,7 +2914,7 @@ type CreateWorkbench_Response struct {
 
 func (x *CreateWorkbench_Response) Reset() {
 	*x = CreateWorkbench_Response{}
-	mi := &file_vaults_proto_msgTypes[59]
+	mi := &file_vaults_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2718,7 +2926,7 @@ func (x *CreateWorkbench_Response) String() string {
 func (*CreateWorkbench_Response) ProtoMessage() {}
 
 func (x *CreateWorkbench_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[59]
+	mi := &file_vaults_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2754,7 +2962,7 @@ type StartWorkbench_Request struct {
 
 func (x *StartWorkbench_Request) Reset() {
 	*x = StartWorkbench_Request{}
-	mi := &file_vaults_proto_msgTypes[60]
+	mi := &file_vaults_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2766,7 +2974,7 @@ func (x *StartWorkbench_Request) String() string {
 func (*StartWorkbench_Request) ProtoMessage() {}
 
 func (x *StartWorkbench_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[60]
+	mi := &file_vaults_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2807,7 +3015,7 @@ type StartWorkbench_Response struct {
 
 func (x *StartWorkbench_Response) Reset() {
 	*x = StartWorkbench_Response{}
-	mi := &file_vaults_proto_msgTypes[61]
+	mi := &file_vaults_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2819,7 +3027,7 @@ func (x *StartWorkbench_Response) String() string {
 func (*StartWorkbench_Response) ProtoMessage() {}
 
 func (x *StartWorkbench_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[61]
+	mi := &file_vaults_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2858,7 +3066,7 @@ type StopWorkbench_Request struct {
 
 func (x *StopWorkbench_Request) Reset() {
 	*x = StopWorkbench_Request{}
-	mi := &file_vaults_proto_msgTypes[62]
+	mi := &file_vaults_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2870,7 +3078,7 @@ func (x *StopWorkbench_Request) String() string {
 func (*StopWorkbench_Request) ProtoMessage() {}
 
 func (x *StopWorkbench_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[62]
+	mi := &file_vaults_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2903,7 +3111,7 @@ type StopWorkbench_Response struct {
 
 func (x *StopWorkbench_Response) Reset() {
 	*x = StopWorkbench_Response{}
-	mi := &file_vaults_proto_msgTypes[63]
+	mi := &file_vaults_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2915,7 +3123,7 @@ func (x *StopWorkbench_Response) String() string {
 func (*StopWorkbench_Response) ProtoMessage() {}
 
 func (x *StopWorkbench_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[63]
+	mi := &file_vaults_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2947,7 +3155,7 @@ type DeleteWorkbench_Request struct {
 
 func (x *DeleteWorkbench_Request) Reset() {
 	*x = DeleteWorkbench_Request{}
-	mi := &file_vaults_proto_msgTypes[64]
+	mi := &file_vaults_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2959,7 +3167,7 @@ func (x *DeleteWorkbench_Request) String() string {
 func (*DeleteWorkbench_Request) ProtoMessage() {}
 
 func (x *DeleteWorkbench_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[64]
+	mi := &file_vaults_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2991,7 +3199,7 @@ type DeleteWorkbench_Response struct {
 
 func (x *DeleteWorkbench_Response) Reset() {
 	*x = DeleteWorkbench_Response{}
-	mi := &file_vaults_proto_msgTypes[65]
+	mi := &file_vaults_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3003,7 +3211,7 @@ func (x *DeleteWorkbench_Response) String() string {
 func (*DeleteWorkbench_Response) ProtoMessage() {}
 
 func (x *DeleteWorkbench_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[65]
+	mi := &file_vaults_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3026,6 +3234,358 @@ func (x *DeleteWorkbench_Response) GetStatus() string {
 	return ""
 }
 
+type ListWorkbenchTerminalTabs_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListWorkbenchTerminalTabs_Request) Reset() {
+	*x = ListWorkbenchTerminalTabs_Request{}
+	mi := &file_vaults_proto_msgTypes[71]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListWorkbenchTerminalTabs_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWorkbenchTerminalTabs_Request) ProtoMessage() {}
+
+func (x *ListWorkbenchTerminalTabs_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[71]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWorkbenchTerminalTabs_Request.ProtoReflect.Descriptor instead.
+func (*ListWorkbenchTerminalTabs_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{21, 0}
+}
+
+func (x *ListWorkbenchTerminalTabs_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+type ListWorkbenchTerminalTabs_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tabs          []*TerminalTab         `protobuf:"bytes,1,rep,name=tabs,proto3" json:"tabs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListWorkbenchTerminalTabs_Response) Reset() {
+	*x = ListWorkbenchTerminalTabs_Response{}
+	mi := &file_vaults_proto_msgTypes[72]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListWorkbenchTerminalTabs_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWorkbenchTerminalTabs_Response) ProtoMessage() {}
+
+func (x *ListWorkbenchTerminalTabs_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[72]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWorkbenchTerminalTabs_Response.ProtoReflect.Descriptor instead.
+func (*ListWorkbenchTerminalTabs_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{21, 1}
+}
+
+func (x *ListWorkbenchTerminalTabs_Response) GetTabs() []*TerminalTab {
+	if x != nil {
+		return x.Tabs
+	}
+	return nil
+}
+
+type CreateWorkbenchTerminalTab_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateWorkbenchTerminalTab_Request) Reset() {
+	*x = CreateWorkbenchTerminalTab_Request{}
+	mi := &file_vaults_proto_msgTypes[73]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateWorkbenchTerminalTab_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateWorkbenchTerminalTab_Request) ProtoMessage() {}
+
+func (x *CreateWorkbenchTerminalTab_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[73]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateWorkbenchTerminalTab_Request.ProtoReflect.Descriptor instead.
+func (*CreateWorkbenchTerminalTab_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{22, 0}
+}
+
+func (x *CreateWorkbenchTerminalTab_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+type CreateWorkbenchTerminalTab_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tab           *TerminalTab           `protobuf:"bytes,1,opt,name=tab,proto3" json:"tab,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateWorkbenchTerminalTab_Response) Reset() {
+	*x = CreateWorkbenchTerminalTab_Response{}
+	mi := &file_vaults_proto_msgTypes[74]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateWorkbenchTerminalTab_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateWorkbenchTerminalTab_Response) ProtoMessage() {}
+
+func (x *CreateWorkbenchTerminalTab_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[74]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateWorkbenchTerminalTab_Response.ProtoReflect.Descriptor instead.
+func (*CreateWorkbenchTerminalTab_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{22, 1}
+}
+
+func (x *CreateWorkbenchTerminalTab_Response) GetTab() *TerminalTab {
+	if x != nil {
+		return x.Tab
+	}
+	return nil
+}
+
+type SelectWorkbenchTerminalTab_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	TabId         string                 `protobuf:"bytes,2,opt,name=tab_id,json=tabId,proto3" json:"tab_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SelectWorkbenchTerminalTab_Request) Reset() {
+	*x = SelectWorkbenchTerminalTab_Request{}
+	mi := &file_vaults_proto_msgTypes[75]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SelectWorkbenchTerminalTab_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelectWorkbenchTerminalTab_Request) ProtoMessage() {}
+
+func (x *SelectWorkbenchTerminalTab_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[75]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelectWorkbenchTerminalTab_Request.ProtoReflect.Descriptor instead.
+func (*SelectWorkbenchTerminalTab_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{23, 0}
+}
+
+func (x *SelectWorkbenchTerminalTab_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *SelectWorkbenchTerminalTab_Request) GetTabId() string {
+	if x != nil {
+		return x.TabId
+	}
+	return ""
+}
+
+type SelectWorkbenchTerminalTab_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SelectWorkbenchTerminalTab_Response) Reset() {
+	*x = SelectWorkbenchTerminalTab_Response{}
+	mi := &file_vaults_proto_msgTypes[76]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SelectWorkbenchTerminalTab_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelectWorkbenchTerminalTab_Response) ProtoMessage() {}
+
+func (x *SelectWorkbenchTerminalTab_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[76]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelectWorkbenchTerminalTab_Response.ProtoReflect.Descriptor instead.
+func (*SelectWorkbenchTerminalTab_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{23, 1}
+}
+
+type CloseWorkbenchTerminalTab_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	TabId         string                 `protobuf:"bytes,2,opt,name=tab_id,json=tabId,proto3" json:"tab_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloseWorkbenchTerminalTab_Request) Reset() {
+	*x = CloseWorkbenchTerminalTab_Request{}
+	mi := &file_vaults_proto_msgTypes[77]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloseWorkbenchTerminalTab_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloseWorkbenchTerminalTab_Request) ProtoMessage() {}
+
+func (x *CloseWorkbenchTerminalTab_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[77]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloseWorkbenchTerminalTab_Request.ProtoReflect.Descriptor instead.
+func (*CloseWorkbenchTerminalTab_Request) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{24, 0}
+}
+
+func (x *CloseWorkbenchTerminalTab_Request) GetVaultId() string {
+	if x != nil {
+		return x.VaultId
+	}
+	return ""
+}
+
+func (x *CloseWorkbenchTerminalTab_Request) GetTabId() string {
+	if x != nil {
+		return x.TabId
+	}
+	return ""
+}
+
+type CloseWorkbenchTerminalTab_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CloseWorkbenchTerminalTab_Response) Reset() {
+	*x = CloseWorkbenchTerminalTab_Response{}
+	mi := &file_vaults_proto_msgTypes[78]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CloseWorkbenchTerminalTab_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CloseWorkbenchTerminalTab_Response) ProtoMessage() {}
+
+func (x *CloseWorkbenchTerminalTab_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_vaults_proto_msgTypes[78]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CloseWorkbenchTerminalTab_Response.ProtoReflect.Descriptor instead.
+func (*CloseWorkbenchTerminalTab_Response) Descriptor() ([]byte, []int) {
+	return file_vaults_proto_rawDescGZIP(), []int{24, 1}
+}
+
 type EnablePostgresDatabase_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	VaultId       string                 `protobuf:"bytes,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
@@ -3035,7 +3595,7 @@ type EnablePostgresDatabase_Request struct {
 
 func (x *EnablePostgresDatabase_Request) Reset() {
 	*x = EnablePostgresDatabase_Request{}
-	mi := &file_vaults_proto_msgTypes[66]
+	mi := &file_vaults_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3047,7 +3607,7 @@ func (x *EnablePostgresDatabase_Request) String() string {
 func (*EnablePostgresDatabase_Request) ProtoMessage() {}
 
 func (x *EnablePostgresDatabase_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[66]
+	mi := &file_vaults_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3060,7 +3620,7 @@ func (x *EnablePostgresDatabase_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnablePostgresDatabase_Request.ProtoReflect.Descriptor instead.
 func (*EnablePostgresDatabase_Request) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{20, 0}
+	return file_vaults_proto_rawDescGZIP(), []int{25, 0}
 }
 
 func (x *EnablePostgresDatabase_Request) GetVaultId() string {
@@ -3081,7 +3641,7 @@ type EnablePostgresDatabase_Response struct {
 
 func (x *EnablePostgresDatabase_Response) Reset() {
 	*x = EnablePostgresDatabase_Response{}
-	mi := &file_vaults_proto_msgTypes[67]
+	mi := &file_vaults_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3093,7 +3653,7 @@ func (x *EnablePostgresDatabase_Response) String() string {
 func (*EnablePostgresDatabase_Response) ProtoMessage() {}
 
 func (x *EnablePostgresDatabase_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[67]
+	mi := &file_vaults_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3106,7 +3666,7 @@ func (x *EnablePostgresDatabase_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnablePostgresDatabase_Response.ProtoReflect.Descriptor instead.
 func (*EnablePostgresDatabase_Response) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{20, 1}
+	return file_vaults_proto_rawDescGZIP(), []int{25, 1}
 }
 
 func (x *EnablePostgresDatabase_Response) GetStatus() string {
@@ -3132,7 +3692,7 @@ type GetPostgresDatabase_Request struct {
 
 func (x *GetPostgresDatabase_Request) Reset() {
 	*x = GetPostgresDatabase_Request{}
-	mi := &file_vaults_proto_msgTypes[68]
+	mi := &file_vaults_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3144,7 +3704,7 @@ func (x *GetPostgresDatabase_Request) String() string {
 func (*GetPostgresDatabase_Request) ProtoMessage() {}
 
 func (x *GetPostgresDatabase_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[68]
+	mi := &file_vaults_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3157,7 +3717,7 @@ func (x *GetPostgresDatabase_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPostgresDatabase_Request.ProtoReflect.Descriptor instead.
 func (*GetPostgresDatabase_Request) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{21, 0}
+	return file_vaults_proto_rawDescGZIP(), []int{26, 0}
 }
 
 func (x *GetPostgresDatabase_Request) GetVaultId() string {
@@ -3178,7 +3738,7 @@ type GetPostgresDatabase_Response struct {
 
 func (x *GetPostgresDatabase_Response) Reset() {
 	*x = GetPostgresDatabase_Response{}
-	mi := &file_vaults_proto_msgTypes[69]
+	mi := &file_vaults_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3190,7 +3750,7 @@ func (x *GetPostgresDatabase_Response) String() string {
 func (*GetPostgresDatabase_Response) ProtoMessage() {}
 
 func (x *GetPostgresDatabase_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[69]
+	mi := &file_vaults_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3203,7 +3763,7 @@ func (x *GetPostgresDatabase_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPostgresDatabase_Response.ProtoReflect.Descriptor instead.
 func (*GetPostgresDatabase_Response) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{21, 1}
+	return file_vaults_proto_rawDescGZIP(), []int{26, 1}
 }
 
 func (x *GetPostgresDatabase_Response) GetStatus() string {
@@ -3229,7 +3789,7 @@ type DisablePostgresDatabase_Request struct {
 
 func (x *DisablePostgresDatabase_Request) Reset() {
 	*x = DisablePostgresDatabase_Request{}
-	mi := &file_vaults_proto_msgTypes[70]
+	mi := &file_vaults_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3241,7 +3801,7 @@ func (x *DisablePostgresDatabase_Request) String() string {
 func (*DisablePostgresDatabase_Request) ProtoMessage() {}
 
 func (x *DisablePostgresDatabase_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[70]
+	mi := &file_vaults_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3254,7 +3814,7 @@ func (x *DisablePostgresDatabase_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DisablePostgresDatabase_Request.ProtoReflect.Descriptor instead.
 func (*DisablePostgresDatabase_Request) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{22, 0}
+	return file_vaults_proto_rawDescGZIP(), []int{27, 0}
 }
 
 func (x *DisablePostgresDatabase_Request) GetVaultId() string {
@@ -3274,7 +3834,7 @@ type DisablePostgresDatabase_Response struct {
 
 func (x *DisablePostgresDatabase_Response) Reset() {
 	*x = DisablePostgresDatabase_Response{}
-	mi := &file_vaults_proto_msgTypes[71]
+	mi := &file_vaults_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3286,7 +3846,7 @@ func (x *DisablePostgresDatabase_Response) String() string {
 func (*DisablePostgresDatabase_Response) ProtoMessage() {}
 
 func (x *DisablePostgresDatabase_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_vaults_proto_msgTypes[71]
+	mi := &file_vaults_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3299,7 +3859,7 @@ func (x *DisablePostgresDatabase_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DisablePostgresDatabase_Response.ProtoReflect.Descriptor instead.
 func (*DisablePostgresDatabase_Response) Descriptor() ([]byte, []int) {
-	return file_vaults_proto_rawDescGZIP(), []int{22, 1}
+	return file_vaults_proto_rawDescGZIP(), []int{27, 1}
 }
 
 func (x *DisablePostgresDatabase_Response) GetStatus() string {
@@ -3436,7 +3996,33 @@ const file_vaults_proto_rawDesc = "" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a\"\n" +
 	"\bResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status\"\x87\x01\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"I\n" +
+	"\vTerminalTab\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
+	"\x06active\x18\x03 \x01(\bR\x06active\"|\n" +
+	"\x19ListWorkbenchTerminalTabs\x1a$\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a9\n" +
+	"\bResponse\x12-\n" +
+	"\x04tabs\x18\x01 \x03(\v2\x19.artel_vaults.TerminalTabR\x04tabs\"{\n" +
+	"\x1aCreateWorkbenchTerminalTab\x1a$\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a7\n" +
+	"\bResponse\x12+\n" +
+	"\x03tab\x18\x01 \x01(\v2\x19.artel_vaults.TerminalTabR\x03tab\"e\n" +
+	"\x1aSelectWorkbenchTerminalTab\x1a;\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x15\n" +
+	"\x06tab_id\x18\x02 \x01(\tR\x05tabId\x1a\n" +
+	"\n" +
+	"\bResponse\"d\n" +
+	"\x19CloseWorkbenchTerminalTab\x1a;\n" +
+	"\aRequest\x12\x19\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12\x15\n" +
+	"\x06tab_id\x18\x02 \x01(\tR\x05tabId\x1a\n" +
+	"\n" +
+	"\bResponse\"\x87\x01\n" +
 	"\x16EnablePostgresDatabase\x1a$\n" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1aG\n" +
@@ -3481,7 +4067,7 @@ const file_vaults_proto_rawDesc = "" +
 	"\x05token\x18\x04 \x01(\tR\x05token\x12\x18\n" +
 	"\arevoked\x18\x05 \x01(\bR\arevoked\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\tR\tcreatedAt2\xf9\x17\n" +
+	"created_at\x18\x06 \x01(\tR\tcreatedAt2\xdc\x1d\n" +
 	"\tVaultsAPI\x12s\n" +
 	"\vCreateVault\x12!.artel_vaults.CreateVault.Request\x1a\".artel_vaults.CreateVault.Response\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/vaults/create\x12g\n" +
 	"\bGetVault\x12\x1e.artel_vaults.GetVault.Request\x1a\x1f.artel_vaults.GetVault.Response\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/vaults/get\x12n\n" +
@@ -3503,7 +4089,11 @@ const file_vaults_proto_rawDesc = "" +
 	"\x0fCreateWorkbench\x12%.artel_vaults.CreateWorkbench.Request\x1a&.artel_vaults.CreateWorkbench.Response\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/vaults/workbench/create\x12\x85\x01\n" +
 	"\x0eStartWorkbench\x12$.artel_vaults.StartWorkbench.Request\x1a%.artel_vaults.StartWorkbench.Response\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/api/vaults/workbench/start\x12\x81\x01\n" +
 	"\rStopWorkbench\x12#.artel_vaults.StopWorkbench.Request\x1a$.artel_vaults.StopWorkbench.Response\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/vaults/workbench/stop\x12\x89\x01\n" +
-	"\x0fDeleteWorkbench\x12%.artel_vaults.DeleteWorkbench.Request\x1a&.artel_vaults.DeleteWorkbench.Response\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/vaults/workbench/delete\x12\x9d\x01\n" +
+	"\x0fDeleteWorkbench\x12%.artel_vaults.DeleteWorkbench.Request\x1a&.artel_vaults.DeleteWorkbench.Response\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/vaults/workbench/delete\x12\xb3\x01\n" +
+	"\x19ListWorkbenchTerminalTabs\x12/.artel_vaults.ListWorkbenchTerminalTabs.Request\x1a0.artel_vaults.ListWorkbenchTerminalTabs.Response\"3\x82\xd3\xe4\x93\x02-:\x01*\"(/api/vaults/workbench/terminal-tabs/list\x12\xb8\x01\n" +
+	"\x1aCreateWorkbenchTerminalTab\x120.artel_vaults.CreateWorkbenchTerminalTab.Request\x1a1.artel_vaults.CreateWorkbenchTerminalTab.Response\"5\x82\xd3\xe4\x93\x02/:\x01*\"*/api/vaults/workbench/terminal-tabs/create\x12\xb8\x01\n" +
+	"\x1aSelectWorkbenchTerminalTab\x120.artel_vaults.SelectWorkbenchTerminalTab.Request\x1a1.artel_vaults.SelectWorkbenchTerminalTab.Response\"5\x82\xd3\xe4\x93\x02/:\x01*\"*/api/vaults/workbench/terminal-tabs/select\x12\xb4\x01\n" +
+	"\x19CloseWorkbenchTerminalTab\x12/.artel_vaults.CloseWorkbenchTerminalTab.Request\x1a0.artel_vaults.CloseWorkbenchTerminalTab.Response\"4\x82\xd3\xe4\x93\x02.:\x01*\")/api/vaults/workbench/terminal-tabs/close\x12\x9d\x01\n" +
 	"\x16EnablePostgresDatabase\x12,.artel_vaults.EnablePostgresDatabase.Request\x1a-.artel_vaults.EnablePostgresDatabase.Response\"&\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/api/vaults/postgres/enable\x12\x91\x01\n" +
 	"\x13GetPostgresDatabase\x12).artel_vaults.GetPostgresDatabase.Request\x1a*.artel_vaults.GetPostgresDatabase.Response\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/vaults/postgres/get\x12\xa1\x01\n" +
 	"\x17DisablePostgresDatabase\x12-.artel_vaults.DisablePostgresDatabase.Request\x1a..artel_vaults.DisablePostgresDatabase.Response\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/vaults/postgres/disableB\x1a\x92\x82\x19\n" +
@@ -3522,139 +4112,162 @@ func file_vaults_proto_rawDescGZIP() []byte {
 	return file_vaults_proto_rawDescData
 }
 
-var file_vaults_proto_msgTypes = make([]protoimpl.MessageInfo, 72)
+var file_vaults_proto_msgTypes = make([]protoimpl.MessageInfo, 85)
 var file_vaults_proto_goTypes = []any{
-	(*CreateVault)(nil),                      // 0: artel_vaults.CreateVault
-	(*GetVault)(nil),                         // 1: artel_vaults.GetVault
-	(*ListVaults)(nil),                       // 2: artel_vaults.ListVaults
-	(*DeleteVault)(nil),                      // 3: artel_vaults.DeleteVault
-	(*AddMember)(nil),                        // 4: artel_vaults.AddMember
-	(*RemoveMember)(nil),                     // 5: artel_vaults.RemoveMember
-	(*ListMembers)(nil),                      // 6: artel_vaults.ListMembers
-	(*CreateInviteLink)(nil),                 // 7: artel_vaults.CreateInviteLink
-	(*ListInviteLinks)(nil),                  // 8: artel_vaults.ListInviteLinks
-	(*RevokeInviteLink)(nil),                 // 9: artel_vaults.RevokeInviteLink
-	(*AcceptInvite)(nil),                     // 10: artel_vaults.AcceptInvite
-	(*LinkS3Bucket)(nil),                     // 11: artel_vaults.LinkS3Bucket
-	(*UnlinkS3Bucket)(nil),                   // 12: artel_vaults.UnlinkS3Bucket
-	(*SetVaultBinaryStorage)(nil),            // 13: artel_vaults.SetVaultBinaryStorage
-	(*PublishVault)(nil),                     // 14: artel_vaults.PublishVault
-	(*UnpublishVault)(nil),                   // 15: artel_vaults.UnpublishVault
-	(*CreateWorkbench)(nil),                  // 16: artel_vaults.CreateWorkbench
-	(*StartWorkbench)(nil),                   // 17: artel_vaults.StartWorkbench
-	(*StopWorkbench)(nil),                    // 18: artel_vaults.StopWorkbench
-	(*DeleteWorkbench)(nil),                  // 19: artel_vaults.DeleteWorkbench
-	(*EnablePostgresDatabase)(nil),           // 20: artel_vaults.EnablePostgresDatabase
-	(*GetPostgresDatabase)(nil),              // 21: artel_vaults.GetPostgresDatabase
-	(*DisablePostgresDatabase)(nil),          // 22: artel_vaults.DisablePostgresDatabase
-	(*VaultItem)(nil),                        // 23: artel_vaults.VaultItem
-	(*VaultMemberInfo)(nil),                  // 24: artel_vaults.VaultMemberInfo
-	(*VaultInviteItem)(nil),                  // 25: artel_vaults.VaultInviteItem
-	(*CreateVault_Request)(nil),              // 26: artel_vaults.CreateVault.Request
-	(*CreateVault_Response)(nil),             // 27: artel_vaults.CreateVault.Response
-	(*GetVault_Request)(nil),                 // 28: artel_vaults.GetVault.Request
-	(*GetVault_Response)(nil),                // 29: artel_vaults.GetVault.Response
-	(*ListVaults_Request)(nil),               // 30: artel_vaults.ListVaults.Request
-	(*ListVaults_Response)(nil),              // 31: artel_vaults.ListVaults.Response
-	(*DeleteVault_Request)(nil),              // 32: artel_vaults.DeleteVault.Request
-	(*DeleteVault_Response)(nil),             // 33: artel_vaults.DeleteVault.Response
-	(*AddMember_Request)(nil),                // 34: artel_vaults.AddMember.Request
-	(*AddMember_Response)(nil),               // 35: artel_vaults.AddMember.Response
-	(*RemoveMember_Request)(nil),             // 36: artel_vaults.RemoveMember.Request
-	(*RemoveMember_Response)(nil),            // 37: artel_vaults.RemoveMember.Response
-	(*ListMembers_Request)(nil),              // 38: artel_vaults.ListMembers.Request
-	(*ListMembers_Response)(nil),             // 39: artel_vaults.ListMembers.Response
-	(*CreateInviteLink_Request)(nil),         // 40: artel_vaults.CreateInviteLink.Request
-	(*CreateInviteLink_Response)(nil),        // 41: artel_vaults.CreateInviteLink.Response
-	(*ListInviteLinks_Request)(nil),          // 42: artel_vaults.ListInviteLinks.Request
-	(*ListInviteLinks_Response)(nil),         // 43: artel_vaults.ListInviteLinks.Response
-	(*RevokeInviteLink_Request)(nil),         // 44: artel_vaults.RevokeInviteLink.Request
-	(*RevokeInviteLink_Response)(nil),        // 45: artel_vaults.RevokeInviteLink.Response
-	(*AcceptInvite_Request)(nil),             // 46: artel_vaults.AcceptInvite.Request
-	(*AcceptInvite_Response)(nil),            // 47: artel_vaults.AcceptInvite.Response
-	(*LinkS3Bucket_Request)(nil),             // 48: artel_vaults.LinkS3Bucket.Request
-	(*LinkS3Bucket_Response)(nil),            // 49: artel_vaults.LinkS3Bucket.Response
-	(*UnlinkS3Bucket_Request)(nil),           // 50: artel_vaults.UnlinkS3Bucket.Request
-	(*UnlinkS3Bucket_Response)(nil),          // 51: artel_vaults.UnlinkS3Bucket.Response
-	(*SetVaultBinaryStorage_Request)(nil),    // 52: artel_vaults.SetVaultBinaryStorage.Request
-	(*SetVaultBinaryStorage_Response)(nil),   // 53: artel_vaults.SetVaultBinaryStorage.Response
-	(*PublishVault_Request)(nil),             // 54: artel_vaults.PublishVault.Request
-	(*PublishVault_Response)(nil),            // 55: artel_vaults.PublishVault.Response
-	(*UnpublishVault_Request)(nil),           // 56: artel_vaults.UnpublishVault.Request
-	(*UnpublishVault_Response)(nil),          // 57: artel_vaults.UnpublishVault.Response
-	(*CreateWorkbench_Request)(nil),          // 58: artel_vaults.CreateWorkbench.Request
-	(*CreateWorkbench_Response)(nil),         // 59: artel_vaults.CreateWorkbench.Response
-	(*StartWorkbench_Request)(nil),           // 60: artel_vaults.StartWorkbench.Request
-	(*StartWorkbench_Response)(nil),          // 61: artel_vaults.StartWorkbench.Response
-	(*StopWorkbench_Request)(nil),            // 62: artel_vaults.StopWorkbench.Request
-	(*StopWorkbench_Response)(nil),           // 63: artel_vaults.StopWorkbench.Response
-	(*DeleteWorkbench_Request)(nil),          // 64: artel_vaults.DeleteWorkbench.Request
-	(*DeleteWorkbench_Response)(nil),         // 65: artel_vaults.DeleteWorkbench.Response
-	(*EnablePostgresDatabase_Request)(nil),   // 66: artel_vaults.EnablePostgresDatabase.Request
-	(*EnablePostgresDatabase_Response)(nil),  // 67: artel_vaults.EnablePostgresDatabase.Response
-	(*GetPostgresDatabase_Request)(nil),      // 68: artel_vaults.GetPostgresDatabase.Request
-	(*GetPostgresDatabase_Response)(nil),     // 69: artel_vaults.GetPostgresDatabase.Response
-	(*DisablePostgresDatabase_Request)(nil),  // 70: artel_vaults.DisablePostgresDatabase.Request
-	(*DisablePostgresDatabase_Response)(nil), // 71: artel_vaults.DisablePostgresDatabase.Response
+	(*CreateVault)(nil),                         // 0: artel_vaults.CreateVault
+	(*GetVault)(nil),                            // 1: artel_vaults.GetVault
+	(*ListVaults)(nil),                          // 2: artel_vaults.ListVaults
+	(*DeleteVault)(nil),                         // 3: artel_vaults.DeleteVault
+	(*AddMember)(nil),                           // 4: artel_vaults.AddMember
+	(*RemoveMember)(nil),                        // 5: artel_vaults.RemoveMember
+	(*ListMembers)(nil),                         // 6: artel_vaults.ListMembers
+	(*CreateInviteLink)(nil),                    // 7: artel_vaults.CreateInviteLink
+	(*ListInviteLinks)(nil),                     // 8: artel_vaults.ListInviteLinks
+	(*RevokeInviteLink)(nil),                    // 9: artel_vaults.RevokeInviteLink
+	(*AcceptInvite)(nil),                        // 10: artel_vaults.AcceptInvite
+	(*LinkS3Bucket)(nil),                        // 11: artel_vaults.LinkS3Bucket
+	(*UnlinkS3Bucket)(nil),                      // 12: artel_vaults.UnlinkS3Bucket
+	(*SetVaultBinaryStorage)(nil),               // 13: artel_vaults.SetVaultBinaryStorage
+	(*PublishVault)(nil),                        // 14: artel_vaults.PublishVault
+	(*UnpublishVault)(nil),                      // 15: artel_vaults.UnpublishVault
+	(*CreateWorkbench)(nil),                     // 16: artel_vaults.CreateWorkbench
+	(*StartWorkbench)(nil),                      // 17: artel_vaults.StartWorkbench
+	(*StopWorkbench)(nil),                       // 18: artel_vaults.StopWorkbench
+	(*DeleteWorkbench)(nil),                     // 19: artel_vaults.DeleteWorkbench
+	(*TerminalTab)(nil),                         // 20: artel_vaults.TerminalTab
+	(*ListWorkbenchTerminalTabs)(nil),           // 21: artel_vaults.ListWorkbenchTerminalTabs
+	(*CreateWorkbenchTerminalTab)(nil),          // 22: artel_vaults.CreateWorkbenchTerminalTab
+	(*SelectWorkbenchTerminalTab)(nil),          // 23: artel_vaults.SelectWorkbenchTerminalTab
+	(*CloseWorkbenchTerminalTab)(nil),           // 24: artel_vaults.CloseWorkbenchTerminalTab
+	(*EnablePostgresDatabase)(nil),              // 25: artel_vaults.EnablePostgresDatabase
+	(*GetPostgresDatabase)(nil),                 // 26: artel_vaults.GetPostgresDatabase
+	(*DisablePostgresDatabase)(nil),             // 27: artel_vaults.DisablePostgresDatabase
+	(*VaultItem)(nil),                           // 28: artel_vaults.VaultItem
+	(*VaultMemberInfo)(nil),                     // 29: artel_vaults.VaultMemberInfo
+	(*VaultInviteItem)(nil),                     // 30: artel_vaults.VaultInviteItem
+	(*CreateVault_Request)(nil),                 // 31: artel_vaults.CreateVault.Request
+	(*CreateVault_Response)(nil),                // 32: artel_vaults.CreateVault.Response
+	(*GetVault_Request)(nil),                    // 33: artel_vaults.GetVault.Request
+	(*GetVault_Response)(nil),                   // 34: artel_vaults.GetVault.Response
+	(*ListVaults_Request)(nil),                  // 35: artel_vaults.ListVaults.Request
+	(*ListVaults_Response)(nil),                 // 36: artel_vaults.ListVaults.Response
+	(*DeleteVault_Request)(nil),                 // 37: artel_vaults.DeleteVault.Request
+	(*DeleteVault_Response)(nil),                // 38: artel_vaults.DeleteVault.Response
+	(*AddMember_Request)(nil),                   // 39: artel_vaults.AddMember.Request
+	(*AddMember_Response)(nil),                  // 40: artel_vaults.AddMember.Response
+	(*RemoveMember_Request)(nil),                // 41: artel_vaults.RemoveMember.Request
+	(*RemoveMember_Response)(nil),               // 42: artel_vaults.RemoveMember.Response
+	(*ListMembers_Request)(nil),                 // 43: artel_vaults.ListMembers.Request
+	(*ListMembers_Response)(nil),                // 44: artel_vaults.ListMembers.Response
+	(*CreateInviteLink_Request)(nil),            // 45: artel_vaults.CreateInviteLink.Request
+	(*CreateInviteLink_Response)(nil),           // 46: artel_vaults.CreateInviteLink.Response
+	(*ListInviteLinks_Request)(nil),             // 47: artel_vaults.ListInviteLinks.Request
+	(*ListInviteLinks_Response)(nil),            // 48: artel_vaults.ListInviteLinks.Response
+	(*RevokeInviteLink_Request)(nil),            // 49: artel_vaults.RevokeInviteLink.Request
+	(*RevokeInviteLink_Response)(nil),           // 50: artel_vaults.RevokeInviteLink.Response
+	(*AcceptInvite_Request)(nil),                // 51: artel_vaults.AcceptInvite.Request
+	(*AcceptInvite_Response)(nil),               // 52: artel_vaults.AcceptInvite.Response
+	(*LinkS3Bucket_Request)(nil),                // 53: artel_vaults.LinkS3Bucket.Request
+	(*LinkS3Bucket_Response)(nil),               // 54: artel_vaults.LinkS3Bucket.Response
+	(*UnlinkS3Bucket_Request)(nil),              // 55: artel_vaults.UnlinkS3Bucket.Request
+	(*UnlinkS3Bucket_Response)(nil),             // 56: artel_vaults.UnlinkS3Bucket.Response
+	(*SetVaultBinaryStorage_Request)(nil),       // 57: artel_vaults.SetVaultBinaryStorage.Request
+	(*SetVaultBinaryStorage_Response)(nil),      // 58: artel_vaults.SetVaultBinaryStorage.Response
+	(*PublishVault_Request)(nil),                // 59: artel_vaults.PublishVault.Request
+	(*PublishVault_Response)(nil),               // 60: artel_vaults.PublishVault.Response
+	(*UnpublishVault_Request)(nil),              // 61: artel_vaults.UnpublishVault.Request
+	(*UnpublishVault_Response)(nil),             // 62: artel_vaults.UnpublishVault.Response
+	(*CreateWorkbench_Request)(nil),             // 63: artel_vaults.CreateWorkbench.Request
+	(*CreateWorkbench_Response)(nil),            // 64: artel_vaults.CreateWorkbench.Response
+	(*StartWorkbench_Request)(nil),              // 65: artel_vaults.StartWorkbench.Request
+	(*StartWorkbench_Response)(nil),             // 66: artel_vaults.StartWorkbench.Response
+	(*StopWorkbench_Request)(nil),               // 67: artel_vaults.StopWorkbench.Request
+	(*StopWorkbench_Response)(nil),              // 68: artel_vaults.StopWorkbench.Response
+	(*DeleteWorkbench_Request)(nil),             // 69: artel_vaults.DeleteWorkbench.Request
+	(*DeleteWorkbench_Response)(nil),            // 70: artel_vaults.DeleteWorkbench.Response
+	(*ListWorkbenchTerminalTabs_Request)(nil),   // 71: artel_vaults.ListWorkbenchTerminalTabs.Request
+	(*ListWorkbenchTerminalTabs_Response)(nil),  // 72: artel_vaults.ListWorkbenchTerminalTabs.Response
+	(*CreateWorkbenchTerminalTab_Request)(nil),  // 73: artel_vaults.CreateWorkbenchTerminalTab.Request
+	(*CreateWorkbenchTerminalTab_Response)(nil), // 74: artel_vaults.CreateWorkbenchTerminalTab.Response
+	(*SelectWorkbenchTerminalTab_Request)(nil),  // 75: artel_vaults.SelectWorkbenchTerminalTab.Request
+	(*SelectWorkbenchTerminalTab_Response)(nil), // 76: artel_vaults.SelectWorkbenchTerminalTab.Response
+	(*CloseWorkbenchTerminalTab_Request)(nil),   // 77: artel_vaults.CloseWorkbenchTerminalTab.Request
+	(*CloseWorkbenchTerminalTab_Response)(nil),  // 78: artel_vaults.CloseWorkbenchTerminalTab.Response
+	(*EnablePostgresDatabase_Request)(nil),      // 79: artel_vaults.EnablePostgresDatabase.Request
+	(*EnablePostgresDatabase_Response)(nil),     // 80: artel_vaults.EnablePostgresDatabase.Response
+	(*GetPostgresDatabase_Request)(nil),         // 81: artel_vaults.GetPostgresDatabase.Request
+	(*GetPostgresDatabase_Response)(nil),        // 82: artel_vaults.GetPostgresDatabase.Response
+	(*DisablePostgresDatabase_Request)(nil),     // 83: artel_vaults.DisablePostgresDatabase.Request
+	(*DisablePostgresDatabase_Response)(nil),    // 84: artel_vaults.DisablePostgresDatabase.Response
 }
 var file_vaults_proto_depIdxs = []int32{
-	23, // 0: artel_vaults.ListVaults.Response.vaults:type_name -> artel_vaults.VaultItem
-	24, // 1: artel_vaults.ListMembers.Response.members:type_name -> artel_vaults.VaultMemberInfo
-	25, // 2: artel_vaults.CreateInviteLink.Response.invite:type_name -> artel_vaults.VaultInviteItem
-	25, // 3: artel_vaults.ListInviteLinks.Response.invites:type_name -> artel_vaults.VaultInviteItem
-	23, // 4: artel_vaults.PublishVault.Response.vault:type_name -> artel_vaults.VaultItem
-	23, // 5: artel_vaults.UnpublishVault.Response.vault:type_name -> artel_vaults.VaultItem
-	26, // 6: artel_vaults.VaultsAPI.CreateVault:input_type -> artel_vaults.CreateVault.Request
-	28, // 7: artel_vaults.VaultsAPI.GetVault:input_type -> artel_vaults.GetVault.Request
-	30, // 8: artel_vaults.VaultsAPI.ListVaults:input_type -> artel_vaults.ListVaults.Request
-	32, // 9: artel_vaults.VaultsAPI.DeleteVault:input_type -> artel_vaults.DeleteVault.Request
-	34, // 10: artel_vaults.VaultsAPI.AddMember:input_type -> artel_vaults.AddMember.Request
-	36, // 11: artel_vaults.VaultsAPI.RemoveMember:input_type -> artel_vaults.RemoveMember.Request
-	38, // 12: artel_vaults.VaultsAPI.ListMembers:input_type -> artel_vaults.ListMembers.Request
-	40, // 13: artel_vaults.VaultsAPI.CreateInviteLink:input_type -> artel_vaults.CreateInviteLink.Request
-	42, // 14: artel_vaults.VaultsAPI.ListInviteLinks:input_type -> artel_vaults.ListInviteLinks.Request
-	44, // 15: artel_vaults.VaultsAPI.RevokeInviteLink:input_type -> artel_vaults.RevokeInviteLink.Request
-	46, // 16: artel_vaults.VaultsAPI.AcceptInvite:input_type -> artel_vaults.AcceptInvite.Request
-	48, // 17: artel_vaults.VaultsAPI.LinkS3Bucket:input_type -> artel_vaults.LinkS3Bucket.Request
-	50, // 18: artel_vaults.VaultsAPI.UnlinkS3Bucket:input_type -> artel_vaults.UnlinkS3Bucket.Request
-	52, // 19: artel_vaults.VaultsAPI.SetVaultBinaryStorage:input_type -> artel_vaults.SetVaultBinaryStorage.Request
-	54, // 20: artel_vaults.VaultsAPI.PublishVault:input_type -> artel_vaults.PublishVault.Request
-	56, // 21: artel_vaults.VaultsAPI.UnpublishVault:input_type -> artel_vaults.UnpublishVault.Request
-	58, // 22: artel_vaults.VaultsAPI.CreateWorkbench:input_type -> artel_vaults.CreateWorkbench.Request
-	60, // 23: artel_vaults.VaultsAPI.StartWorkbench:input_type -> artel_vaults.StartWorkbench.Request
-	62, // 24: artel_vaults.VaultsAPI.StopWorkbench:input_type -> artel_vaults.StopWorkbench.Request
-	64, // 25: artel_vaults.VaultsAPI.DeleteWorkbench:input_type -> artel_vaults.DeleteWorkbench.Request
-	66, // 26: artel_vaults.VaultsAPI.EnablePostgresDatabase:input_type -> artel_vaults.EnablePostgresDatabase.Request
-	68, // 27: artel_vaults.VaultsAPI.GetPostgresDatabase:input_type -> artel_vaults.GetPostgresDatabase.Request
-	70, // 28: artel_vaults.VaultsAPI.DisablePostgresDatabase:input_type -> artel_vaults.DisablePostgresDatabase.Request
-	27, // 29: artel_vaults.VaultsAPI.CreateVault:output_type -> artel_vaults.CreateVault.Response
-	29, // 30: artel_vaults.VaultsAPI.GetVault:output_type -> artel_vaults.GetVault.Response
-	31, // 31: artel_vaults.VaultsAPI.ListVaults:output_type -> artel_vaults.ListVaults.Response
-	33, // 32: artel_vaults.VaultsAPI.DeleteVault:output_type -> artel_vaults.DeleteVault.Response
-	35, // 33: artel_vaults.VaultsAPI.AddMember:output_type -> artel_vaults.AddMember.Response
-	37, // 34: artel_vaults.VaultsAPI.RemoveMember:output_type -> artel_vaults.RemoveMember.Response
-	39, // 35: artel_vaults.VaultsAPI.ListMembers:output_type -> artel_vaults.ListMembers.Response
-	41, // 36: artel_vaults.VaultsAPI.CreateInviteLink:output_type -> artel_vaults.CreateInviteLink.Response
-	43, // 37: artel_vaults.VaultsAPI.ListInviteLinks:output_type -> artel_vaults.ListInviteLinks.Response
-	45, // 38: artel_vaults.VaultsAPI.RevokeInviteLink:output_type -> artel_vaults.RevokeInviteLink.Response
-	47, // 39: artel_vaults.VaultsAPI.AcceptInvite:output_type -> artel_vaults.AcceptInvite.Response
-	49, // 40: artel_vaults.VaultsAPI.LinkS3Bucket:output_type -> artel_vaults.LinkS3Bucket.Response
-	51, // 41: artel_vaults.VaultsAPI.UnlinkS3Bucket:output_type -> artel_vaults.UnlinkS3Bucket.Response
-	53, // 42: artel_vaults.VaultsAPI.SetVaultBinaryStorage:output_type -> artel_vaults.SetVaultBinaryStorage.Response
-	55, // 43: artel_vaults.VaultsAPI.PublishVault:output_type -> artel_vaults.PublishVault.Response
-	57, // 44: artel_vaults.VaultsAPI.UnpublishVault:output_type -> artel_vaults.UnpublishVault.Response
-	59, // 45: artel_vaults.VaultsAPI.CreateWorkbench:output_type -> artel_vaults.CreateWorkbench.Response
-	61, // 46: artel_vaults.VaultsAPI.StartWorkbench:output_type -> artel_vaults.StartWorkbench.Response
-	63, // 47: artel_vaults.VaultsAPI.StopWorkbench:output_type -> artel_vaults.StopWorkbench.Response
-	65, // 48: artel_vaults.VaultsAPI.DeleteWorkbench:output_type -> artel_vaults.DeleteWorkbench.Response
-	67, // 49: artel_vaults.VaultsAPI.EnablePostgresDatabase:output_type -> artel_vaults.EnablePostgresDatabase.Response
-	69, // 50: artel_vaults.VaultsAPI.GetPostgresDatabase:output_type -> artel_vaults.GetPostgresDatabase.Response
-	71, // 51: artel_vaults.VaultsAPI.DisablePostgresDatabase:output_type -> artel_vaults.DisablePostgresDatabase.Response
-	29, // [29:52] is the sub-list for method output_type
-	6,  // [6:29] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	28, // 0: artel_vaults.ListVaults.Response.vaults:type_name -> artel_vaults.VaultItem
+	29, // 1: artel_vaults.ListMembers.Response.members:type_name -> artel_vaults.VaultMemberInfo
+	30, // 2: artel_vaults.CreateInviteLink.Response.invite:type_name -> artel_vaults.VaultInviteItem
+	30, // 3: artel_vaults.ListInviteLinks.Response.invites:type_name -> artel_vaults.VaultInviteItem
+	28, // 4: artel_vaults.PublishVault.Response.vault:type_name -> artel_vaults.VaultItem
+	28, // 5: artel_vaults.UnpublishVault.Response.vault:type_name -> artel_vaults.VaultItem
+	20, // 6: artel_vaults.ListWorkbenchTerminalTabs.Response.tabs:type_name -> artel_vaults.TerminalTab
+	20, // 7: artel_vaults.CreateWorkbenchTerminalTab.Response.tab:type_name -> artel_vaults.TerminalTab
+	31, // 8: artel_vaults.VaultsAPI.CreateVault:input_type -> artel_vaults.CreateVault.Request
+	33, // 9: artel_vaults.VaultsAPI.GetVault:input_type -> artel_vaults.GetVault.Request
+	35, // 10: artel_vaults.VaultsAPI.ListVaults:input_type -> artel_vaults.ListVaults.Request
+	37, // 11: artel_vaults.VaultsAPI.DeleteVault:input_type -> artel_vaults.DeleteVault.Request
+	39, // 12: artel_vaults.VaultsAPI.AddMember:input_type -> artel_vaults.AddMember.Request
+	41, // 13: artel_vaults.VaultsAPI.RemoveMember:input_type -> artel_vaults.RemoveMember.Request
+	43, // 14: artel_vaults.VaultsAPI.ListMembers:input_type -> artel_vaults.ListMembers.Request
+	45, // 15: artel_vaults.VaultsAPI.CreateInviteLink:input_type -> artel_vaults.CreateInviteLink.Request
+	47, // 16: artel_vaults.VaultsAPI.ListInviteLinks:input_type -> artel_vaults.ListInviteLinks.Request
+	49, // 17: artel_vaults.VaultsAPI.RevokeInviteLink:input_type -> artel_vaults.RevokeInviteLink.Request
+	51, // 18: artel_vaults.VaultsAPI.AcceptInvite:input_type -> artel_vaults.AcceptInvite.Request
+	53, // 19: artel_vaults.VaultsAPI.LinkS3Bucket:input_type -> artel_vaults.LinkS3Bucket.Request
+	55, // 20: artel_vaults.VaultsAPI.UnlinkS3Bucket:input_type -> artel_vaults.UnlinkS3Bucket.Request
+	57, // 21: artel_vaults.VaultsAPI.SetVaultBinaryStorage:input_type -> artel_vaults.SetVaultBinaryStorage.Request
+	59, // 22: artel_vaults.VaultsAPI.PublishVault:input_type -> artel_vaults.PublishVault.Request
+	61, // 23: artel_vaults.VaultsAPI.UnpublishVault:input_type -> artel_vaults.UnpublishVault.Request
+	63, // 24: artel_vaults.VaultsAPI.CreateWorkbench:input_type -> artel_vaults.CreateWorkbench.Request
+	65, // 25: artel_vaults.VaultsAPI.StartWorkbench:input_type -> artel_vaults.StartWorkbench.Request
+	67, // 26: artel_vaults.VaultsAPI.StopWorkbench:input_type -> artel_vaults.StopWorkbench.Request
+	69, // 27: artel_vaults.VaultsAPI.DeleteWorkbench:input_type -> artel_vaults.DeleteWorkbench.Request
+	71, // 28: artel_vaults.VaultsAPI.ListWorkbenchTerminalTabs:input_type -> artel_vaults.ListWorkbenchTerminalTabs.Request
+	73, // 29: artel_vaults.VaultsAPI.CreateWorkbenchTerminalTab:input_type -> artel_vaults.CreateWorkbenchTerminalTab.Request
+	75, // 30: artel_vaults.VaultsAPI.SelectWorkbenchTerminalTab:input_type -> artel_vaults.SelectWorkbenchTerminalTab.Request
+	77, // 31: artel_vaults.VaultsAPI.CloseWorkbenchTerminalTab:input_type -> artel_vaults.CloseWorkbenchTerminalTab.Request
+	79, // 32: artel_vaults.VaultsAPI.EnablePostgresDatabase:input_type -> artel_vaults.EnablePostgresDatabase.Request
+	81, // 33: artel_vaults.VaultsAPI.GetPostgresDatabase:input_type -> artel_vaults.GetPostgresDatabase.Request
+	83, // 34: artel_vaults.VaultsAPI.DisablePostgresDatabase:input_type -> artel_vaults.DisablePostgresDatabase.Request
+	32, // 35: artel_vaults.VaultsAPI.CreateVault:output_type -> artel_vaults.CreateVault.Response
+	34, // 36: artel_vaults.VaultsAPI.GetVault:output_type -> artel_vaults.GetVault.Response
+	36, // 37: artel_vaults.VaultsAPI.ListVaults:output_type -> artel_vaults.ListVaults.Response
+	38, // 38: artel_vaults.VaultsAPI.DeleteVault:output_type -> artel_vaults.DeleteVault.Response
+	40, // 39: artel_vaults.VaultsAPI.AddMember:output_type -> artel_vaults.AddMember.Response
+	42, // 40: artel_vaults.VaultsAPI.RemoveMember:output_type -> artel_vaults.RemoveMember.Response
+	44, // 41: artel_vaults.VaultsAPI.ListMembers:output_type -> artel_vaults.ListMembers.Response
+	46, // 42: artel_vaults.VaultsAPI.CreateInviteLink:output_type -> artel_vaults.CreateInviteLink.Response
+	48, // 43: artel_vaults.VaultsAPI.ListInviteLinks:output_type -> artel_vaults.ListInviteLinks.Response
+	50, // 44: artel_vaults.VaultsAPI.RevokeInviteLink:output_type -> artel_vaults.RevokeInviteLink.Response
+	52, // 45: artel_vaults.VaultsAPI.AcceptInvite:output_type -> artel_vaults.AcceptInvite.Response
+	54, // 46: artel_vaults.VaultsAPI.LinkS3Bucket:output_type -> artel_vaults.LinkS3Bucket.Response
+	56, // 47: artel_vaults.VaultsAPI.UnlinkS3Bucket:output_type -> artel_vaults.UnlinkS3Bucket.Response
+	58, // 48: artel_vaults.VaultsAPI.SetVaultBinaryStorage:output_type -> artel_vaults.SetVaultBinaryStorage.Response
+	60, // 49: artel_vaults.VaultsAPI.PublishVault:output_type -> artel_vaults.PublishVault.Response
+	62, // 50: artel_vaults.VaultsAPI.UnpublishVault:output_type -> artel_vaults.UnpublishVault.Response
+	64, // 51: artel_vaults.VaultsAPI.CreateWorkbench:output_type -> artel_vaults.CreateWorkbench.Response
+	66, // 52: artel_vaults.VaultsAPI.StartWorkbench:output_type -> artel_vaults.StartWorkbench.Response
+	68, // 53: artel_vaults.VaultsAPI.StopWorkbench:output_type -> artel_vaults.StopWorkbench.Response
+	70, // 54: artel_vaults.VaultsAPI.DeleteWorkbench:output_type -> artel_vaults.DeleteWorkbench.Response
+	72, // 55: artel_vaults.VaultsAPI.ListWorkbenchTerminalTabs:output_type -> artel_vaults.ListWorkbenchTerminalTabs.Response
+	74, // 56: artel_vaults.VaultsAPI.CreateWorkbenchTerminalTab:output_type -> artel_vaults.CreateWorkbenchTerminalTab.Response
+	76, // 57: artel_vaults.VaultsAPI.SelectWorkbenchTerminalTab:output_type -> artel_vaults.SelectWorkbenchTerminalTab.Response
+	78, // 58: artel_vaults.VaultsAPI.CloseWorkbenchTerminalTab:output_type -> artel_vaults.CloseWorkbenchTerminalTab.Response
+	80, // 59: artel_vaults.VaultsAPI.EnablePostgresDatabase:output_type -> artel_vaults.EnablePostgresDatabase.Response
+	82, // 60: artel_vaults.VaultsAPI.GetPostgresDatabase:output_type -> artel_vaults.GetPostgresDatabase.Response
+	84, // 61: artel_vaults.VaultsAPI.DisablePostgresDatabase:output_type -> artel_vaults.DisablePostgresDatabase.Response
+	35, // [35:62] is the sub-list for method output_type
+	8,  // [8:35] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_vaults_proto_init() }
@@ -3668,7 +4281,7 @@ func file_vaults_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_vaults_proto_rawDesc), len(file_vaults_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   72,
+			NumMessages:   85,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

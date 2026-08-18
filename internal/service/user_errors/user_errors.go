@@ -437,6 +437,14 @@ var (
 		codes.FailedPrecondition,
 		rerrors.WithHttpStatus(http.StatusConflict),
 	)
+	// WorkbenchCannotCloseLastTab surfaces from workbench.Service.CloseTerminalTab when the
+	// requested tab is the workbench's only remaining tmux window — tmux has no notion of a
+	// windowless session, so at least one window must always survive.
+	WorkbenchCannotCloseLastTab = rerrors.New(
+		"cannot close the last remaining terminal tab",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusConflict),
+	)
 
 	// tract: builtin execution
 	NoVaultForBuiltinTool = rerrors.New(

@@ -8,6 +8,10 @@ export function workbenchQueryKey(vaultId?: string) {
     return ['workbench', vaultId] as const
 }
 
+export function workbenchTerminalTabsQueryKey(vaultId?: string) {
+    return ['workbench-terminal-tabs', vaultId] as const
+}
+
 export function useWorkbench(vaultId?: string) {
     const {auth} = useUser()
 
@@ -55,5 +59,72 @@ export function useWorkbenchMutations(vaultId?: string) {
         stop: stopMutation.mutateAsync,
         remove: removeMutation.mutateAsync,
         removing: removeMutation.isPending,
+    }
+}
+
+export function useWorkbenchTerminalTabs(vaultId: string | undefined, enabled: boolean) {
+    const q = useQuery({
+        queryKey: workbenchTerminalTabsQueryKey(vaultId),
+        queryFn: () => workbenchService.listTerminalTabs(vaultId!),
+        enabled: !!vaultId && enabled,
+        refetchInterval: 4000,
+        refetchOnWindowFocus: true,
+    })
+
+    return {
+        tabs: q.data ?? [],
+        isLoading: q.isLoading,
+    }
+}
+
+type TerminalTabData = {id: string; name: string; active: boolean}[]
+
+export function useWorkbenchTerminalTabMutations(vaultId?: string) {
+    const queryClient = useQueryClient()
+    const queryKey = workbenchTerminalTabsQueryKey(vaultId)
+
+    const createMutation = useMutation({
+        mutationFn: () => workbenchService.createTerminalTab(vaultId!),
+        onSuccess: () => queryClient.invalidateQueries({queryKey}),
+    })
+
+    // Optimistic: flips the clicked tab active in the cache immediately, before the
+    // network round trip resolves, so the tab strip highlights instantly instead of
+    // waiting on the select call *and* a follow-up list refetch. The actual terminal
+    // content still catches up once the backend's tmux select-window call lands —
+    // this just removes the avoidable extra latency from the tab UI itself.
+    const selectMutation = useMutation({
+        mutationFn: (tabId: string) => workbenchService.selectTerminalTab(vaultId!, tabId),
+        onMutate: async (tabId: string) => {
+            await queryClient.cancelQueries({queryKey})
+            const previous = queryClient.getQueryData<TerminalTabData>(queryKey)
+            queryClient.setQueryData<TerminalTabData>(queryKey, old =>
+                old?.map(tab => ({...tab, active: tab.id === tabId})))
+            return {previous}
+        },
+        onError: (_err, _tabId, context) => {
+            if (context?.previous) queryClient.setQueryData(queryKey, context.previous)
+        },
+        onSettled: () => queryClient.invalidateQueries({queryKey}),
+    })
+
+    const closeMutation = useMutation({
+        mutationFn: (tabId: string) => workbenchService.closeTerminalTab(vaultId!, tabId),
+        onMutate: async (tabId: string) => {
+            await queryClient.cancelQueries({queryKey})
+            const previous = queryClient.getQueryData<TerminalTabData>(queryKey)
+            queryClient.setQueryData<TerminalTabData>(queryKey, old => old?.filter(tab => tab.id !== tabId))
+            return {previous}
+        },
+        onError: (_err, _tabId, context) => {
+            if (context?.previous) queryClient.setQueryData(queryKey, context.previous)
+        },
+        onSettled: () => queryClient.invalidateQueries({queryKey}),
+    })
+
+    return {
+        create: createMutation.mutateAsync,
+        select: selectMutation.mutateAsync,
+        close: closeMutation.mutateAsync,
     }
 }

@@ -42,3 +42,12 @@ type Workbench struct {
 	// before the docker_hosts pool existed.
 	DockerHostUuid *uuid.UUID
 }
+
+// TerminalTab is one tmux window inside a workbench's tmux session, surfaced to the browser
+// as a terminal tab. ID is tmux's own #{window_id} (e.g. "@1") — stable across window
+// renumbering, unlike #{window_index}.
+type TerminalTab struct {
+	ID     string
+	Name   string
+	Active bool
+}

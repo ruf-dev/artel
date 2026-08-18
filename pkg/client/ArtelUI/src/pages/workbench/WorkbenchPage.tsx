@@ -6,10 +6,16 @@ import cls from "@/pages/workbench/WorkbenchPage.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import {useVaults} from "@/app/hooks/Vaults.ts"
-import {useWorkbench, useWorkbenchMutations} from "@/app/hooks/Workbench.ts"
+import {
+    useWorkbench,
+    useWorkbenchMutations,
+    useWorkbenchTerminalTabs,
+    useWorkbenchTerminalTabMutations,
+} from "@/app/hooks/Workbench.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
 import Terminal from "@/pages/workbench/components/Terminal/Terminal.tsx"
+import TerminalTabBar from "@/pages/workbench/components/Terminal/components/TerminalTabBar/TerminalTabBar.tsx"
 import WorkbenchToolbar from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
 
 export default function WorkbenchPage() {
@@ -17,6 +23,8 @@ export default function WorkbenchPage() {
     const {vaults} = useVaults()
     const {exists, status, isLoading} = useWorkbench(vaultId)
     const {create, stop} = useWorkbenchMutations(vaultId)
+    const {tabs} = useWorkbenchTerminalTabs(vaultId, status === "running")
+    const {create: createTab, select: selectTab, close: closeTab} = useWorkbenchTerminalTabMutations(vaultId)
     const bakeError = useBakeError()
 
     const [showSetup, setShowSetup] = useState(false)
@@ -74,7 +82,24 @@ export default function WorkbenchPage() {
                 )}
                 {!isLoading && exists && status === "running" && vaultId && (
                     <>
-                        <Terminal vaultId={vaultId}/>
+                        <div className={cls.TerminalPanel}>
+                            <TerminalTabBar
+                                tabs={tabs}
+                                onSelect={(tabId) => {
+                                    selectTab(tabId)
+                                        .catch(e => bakeError("Failed to select tab", e))
+                                }}
+                                onCreate={() => {
+                                    createTab()
+                                        .catch(e => bakeError("Failed to create tab", e))
+                                }}
+                                onClose={(tabId) => {
+                                    closeTab(tabId)
+                                        .catch(e => bakeError("Failed to close tab", e))
+                                }}
+                            />
+                            <Terminal vaultId={vaultId}/>
+                        </div>
                         <div className={cls.TerminalSpacer}/>
                     </>
                 )}

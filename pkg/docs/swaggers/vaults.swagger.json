@@ -688,6 +688,134 @@
         ]
       }
     },
+    "/api/vaults/workbench/terminal-tabs/close": {
+      "post": {
+        "operationId": "VaultsAPI_CloseWorkbenchTerminalTab",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCloseWorkbenchTerminalTabResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCloseWorkbenchTerminalTabRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/workbench/terminal-tabs/create": {
+      "post": {
+        "operationId": "VaultsAPI_CreateWorkbenchTerminalTab",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateWorkbenchTerminalTabResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsCreateWorkbenchTerminalTabRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/workbench/terminal-tabs/list": {
+      "post": {
+        "operationId": "VaultsAPI_ListWorkbenchTerminalTabs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListWorkbenchTerminalTabsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsListWorkbenchTerminalTabsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
+    "/api/vaults/workbench/terminal-tabs/select": {
+      "post": {
+        "operationId": "VaultsAPI_SelectWorkbenchTerminalTab",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsSelectWorkbenchTerminalTabResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsSelectWorkbenchTerminalTabRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
     "/api/vaults/{vaultId}/publish": {
       "post": {
         "operationId": "VaultsAPI_PublishVault",
@@ -799,6 +927,20 @@
     "artel_vaultsAddMemberResponse": {
       "type": "object"
     },
+    "artel_vaultsCloseWorkbenchTerminalTabRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "tabId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsCloseWorkbenchTerminalTabResponse": {
+      "type": "object"
+    },
     "artel_vaultsCreateInviteLinkRequest": {
       "type": "object",
       "properties": {
@@ -854,6 +996,22 @@
         "status": {
           "type": "string",
           "description": "status: \"created\"/\"running\"/\"configuring\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+        }
+      }
+    },
+    "artel_vaultsCreateWorkbenchTerminalTabRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsCreateWorkbenchTerminalTabResponse": {
+      "type": "object",
+      "properties": {
+        "tab": {
+          "$ref": "#/definitions/artel_vaultsTerminalTab"
         }
       }
     },
@@ -1055,6 +1213,26 @@
         }
       }
     },
+    "artel_vaultsListWorkbenchTerminalTabsRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsListWorkbenchTerminalTabsResponse": {
+      "type": "object",
+      "properties": {
+        "tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_vaultsTerminalTab"
+          }
+        }
+      }
+    },
     "artel_vaultsPublishVaultResponse": {
       "type": "object",
       "properties": {
@@ -1089,6 +1267,20 @@
       }
     },
     "artel_vaultsRevokeInviteLinkResponse": {
+      "type": "object"
+    },
+    "artel_vaultsSelectWorkbenchTerminalTabRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "tabId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_vaultsSelectWorkbenchTerminalTabResponse": {
       "type": "object"
     },
     "artel_vaultsSetVaultBinaryStorageRequest": {
@@ -1145,6 +1337,21 @@
           "description": "status: \"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
         }
       }
+    },
+    "artel_vaultsTerminalTab": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "description": "TerminalTab is one tmux window inside a workbench's tmux session, surfaced to the browser as a\nterminal tab (see domain.TerminalTab). id is tmux's own #{window_id} (e.g. \"@1\") — stable\nacross window renumbering, unlike #{window_index}. There is no user-supplied name anywhere in\nthis design: tabs are always auto-named by tmux's automatic-rename."
     },
     "artel_vaultsUnlinkS3BucketRequest": {
       "type": "object",

@@ -48,6 +48,17 @@
         }
     }
 
+    /* Groups TerminalTabBar + Terminal with zero gap so the tab strip sits flush
+       against the terminal panel's top edge (browser-tab look) — .Body's own gap
+       (1rem) still applies before/after this as one flex item. */
+    .TerminalPanel {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+    }
+
     /* Height + the .Body gap above it (1rem) must sum to WorkbenchPageContainer's
        extra +3rem so the terminal itself nets back to its original size — see the
        comment on .WorkbenchPageContainer's height. */
