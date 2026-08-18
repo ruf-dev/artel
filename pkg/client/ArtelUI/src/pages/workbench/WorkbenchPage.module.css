@@ -2,7 +2,15 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+
+    /* 3rem taller than the viewport so a bit of scrollable room appears below the
+       terminal (see .TerminalSpacer) without shrinking the terminal itself — .Body
+       is flex:1 and always fills exactly what's left, so the same 3rem is added
+       here and then reserved by the spacer, netting the terminal back to its
+       original size. Requires HomeLayout.module.css's .Content to allow the
+       resulting overflow to scroll (overflow-y: auto). */
+    height: calc(100% + 3rem);
+    flex-shrink: 0;
 
     .BackLink {
         display: inline-block;
@@ -38,6 +46,14 @@
         @media (width <= 45rem) {
             padding: 0 1.125rem;
         }
+    }
+
+    /* Height + the .Body gap above it (1rem) must sum to WorkbenchPageContainer's
+       extra +3rem so the terminal itself nets back to its original size — see the
+       comment on .WorkbenchPageContainer's height. */
+    .TerminalSpacer {
+        flex-shrink: 0;
+        height: 2rem;
     }
 
     .EmptyState {

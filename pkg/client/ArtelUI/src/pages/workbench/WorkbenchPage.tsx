@@ -73,7 +73,10 @@ export default function WorkbenchPage() {
                     </>
                 )}
                 {!isLoading && exists && status === "running" && vaultId && (
-                    <Terminal vaultId={vaultId}/>
+                    <>
+                        <Terminal vaultId={vaultId}/>
+                        <div className={cls.TerminalSpacer}/>
+                    </>
                 )}
                 {!isLoading && exists && status !== "running" && showSetup && vaultId && (
                     <PickAuthModeScreen vaultId={vaultId}/>
