@@ -1,0 +1,32 @@
+/* Doubled selector beats chures' injected .Btn/.Ghost base styles, which tie
+   with a single-class selector and win on DOM insertion order otherwise. */
+.MenuItem.MenuItem {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.625rem;
+    width: 100%;
+    padding: 0.5625rem 0.75rem;
+    border: 0;
+    background: transparent;
+    color: var(--color-fg-primary);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.MenuItem:hover {
+    background: var(--color-bg-hover);
+}
+
+.MenuItemDanger {
+    color: var(--color-fg-secondary);
+}
+
+.MenuItemDanger:hover {
+    background: rgb(193 37 61 / 10%);
+    color: var(--color-error);
+}

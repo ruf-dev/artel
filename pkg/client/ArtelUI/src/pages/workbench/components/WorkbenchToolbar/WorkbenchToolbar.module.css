@@ -1,0 +1,29 @@
+.WorkbenchToolbarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 2rem;
+
+    @media (width <= 45rem) {
+        padding: 0 1.125rem;
+    }
+
+    & .LeftSection {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    & .VaultName {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+    }
+
+    & .RightSection {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+}
