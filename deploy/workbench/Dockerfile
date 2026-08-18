@@ -31,6 +31,15 @@ RUN set -eu; \
 
 RUN npm install -g @anthropic-ai/claude-code
 
+# Without a UTF-8 locale, Claude Code's own terminal-capability detection assumes the
+# terminal can't render Unicode and falls back to ASCII-safe glyphs (e.g. "_"/"*"/"."
+# instead of box-drawing lines, "❯", "✔"). node:20-slim has no locale configured by
+# default (LANG is unset, glibc falls back to POSIX/C) even though the C.utf8 locale
+# ships built in and needs no locale-gen step. Applies to entrypoint.sh's tmux/claude
+# process and to later `docker exec` calls, which inherit the image's ENV.
+ENV LANG=C.utf8
+ENV LC_ALL=C.utf8
+
 WORKDIR /workspace
 
 COPY entrypoint.sh /entrypoint.sh
