@@ -560,6 +560,13 @@ func CompleteSetup(t *testing.T, ctx context.Context, repos *repopg.Repos) {
 // Slug sanitizes t.Name() into a lowercase alnum+underscore string, for deterministic per-test
 // identifiers (usernames, vault names, ...) that stay stable across repeated runs against the one
 // shared DB.
+//
+// Purely a function of t.Name() — no randomness, no counter. Calling it more than once within the
+// same test (e.g. a setupUser-style helper invoked for two different users in one test) returns
+// the same string every time, which collides on any uniqueness constraint (most often an email:
+// Register fails with "already exists" on the second call). Append a caller-chosen suffix
+// (Slug(t) + "_" + suffix) to disambiguate — see tests/e2e/postgres_test.go's setupUser or
+// tests/workbench_e2e/workbench_test.go's setupUser for the pattern.
 func Slug(t *testing.T) string {
 	t.Helper()
 

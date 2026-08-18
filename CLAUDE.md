@@ -85,6 +85,12 @@ interceptor) and then calls `Vault.CreateVault` — the CouchDB database name is
 an empty value produces a name starting with `-`, which CouchDB rejects. Email/password registration
 never populates `domain.User.Username`, so tests stand in with the email's local part.
 
+`harness.Slug(t)` is purely a function of `t.Name()` — no randomness, no counter. A `setupUser`-style
+helper built on it that's called more than once within the same test (e.g. to register two separate
+users) returns the same slug/email both times, so the second call fails with "already exists". Give
+the helper a `suffix string` param and use `Slug(t) + "_" + suffix` — see `tests/e2e/postgres_test.go`
+or `tests/workbench_e2e/workbench_test.go`'s `setupUser`.
+
 ## MoM (MCP of MCP) — third-party integrations
 
 Artel has a declarative integration framework internally called "MoM" (MCP of MCP — unrelated to
