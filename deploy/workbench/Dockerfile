@@ -34,6 +34,7 @@ RUN npm install -g @anthropic-ai/claude-code
 WORKDIR /workspace
 
 COPY entrypoint.sh /entrypoint.sh
+COPY tmux.conf /etc/tmux.conf
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
