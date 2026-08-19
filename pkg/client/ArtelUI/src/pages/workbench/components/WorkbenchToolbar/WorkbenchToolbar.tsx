@@ -19,7 +19,6 @@ interface WorkbenchToolbarProps {
     starting: boolean
     view: WorkbenchView
     onViewChange: (view: WorkbenchView) => void
-    awaitingAuth: boolean
 }
 
 // >6 props — kept as one object instead of exploding into separate destructured
@@ -35,7 +34,7 @@ export default function WorkbenchToolbar(props: WorkbenchToolbarProps) {
             </div>
             {props.exists && (
                 <div className={cls.RightSection}>
-                    {isRunning && !props.awaitingAuth && (
+                    {isRunning && (
                         <div className={cls.ViewToggle}>
                             <Button
                                 variant="secondary"

@@ -46,7 +46,8 @@ export default function WorkbenchPage() {
 
     const awaitingAuth = items.some(i => i.kind === "auth_link" || i.kind === "auth_code_needed") && !authComplete
 
-    const bodyCentered = isLoading || !exists || (status !== "running" && !lifecycle.showSetup) || awaitingAuth
+    const bodyCentered = isLoading || !exists || (status !== "running" && !lifecycle.showSetup) ||
+        (view === "chat" && awaitingAuth)
     const terminalViewActive = status === "running" && view === "terminal"
 
     return (
@@ -64,7 +65,6 @@ export default function WorkbenchPage() {
                     starting={lifecycle.resuming}
                     view={view}
                     onViewChange={setView}
-                    awaitingAuth={awaitingAuth}
                 />
             )}
             <div className={cn(cls.Body, bodyCentered && cls.BodyCentered)}>
@@ -82,14 +82,14 @@ export default function WorkbenchPage() {
                         </Button>
                     </>
                 )}
-                {!isLoading && exists && status === "running" && vaultId && awaitingAuth && (
+                {!isLoading && exists && status === "running" && vaultId && view === "chat" && awaitingAuth && (
                     <WorkbenchAuthScreen items={items} status={chatStatus} onSubmitCode={sendAuthCode}/>
                 )}
                 {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
                     <Chat items={items} status={chatStatus} sendMessage={sendMessage}
                           sendPermissionDecision={sendPermissionDecision} sendAuthCode={sendAuthCode}/>
                 )}
-                {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "terminal" && (
+                {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
                     <TerminalView
                         vaultId={vaultId}
                         tabs={tabs}
