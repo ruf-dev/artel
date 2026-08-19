@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Registers the local dind daemon (tests/docker-compose.yaml: test-dockerd) as a docker_hosts
-# row so workbench.Service.CreateWorkbench has somewhere to schedule containers in local dev —
-# see docs/workbench/02_docker_topology.md. Safe to re-run: RegisterDockerHost is called only if
+# row so workbench.Service.CreateWorkbench has somewhere to schedule containers in local dev.
+# Safe to re-run: RegisterDockerHost is called only if
 # no docker_hosts row for DOCKER_HOST_URL already exists (docker_hosts.url is UNIQUE per
 # migrations/061_docker_hosts.sql, so a duplicate call is harmless either way, but this avoids
 # noise from a failed duplicate-key POST on every re-run).

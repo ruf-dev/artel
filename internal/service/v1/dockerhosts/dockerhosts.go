@@ -1,7 +1,6 @@
 // Package dockerhosts implements service.DockerHostService: admin CRUD over the pool of Docker
-// daemons that back per-vault workbench containers — see docs/workbench/02_docker_topology.md.
-// Unlike couchinstances/s3instances, docker hosts carry no credentials, so there's no
-// setup/status concept here.
+// daemons that back per-vault workbench containers. Unlike couchinstances/s3instances, docker
+// hosts carry no credentials, so there's no setup/status concept here.
 package dockerhosts
 
 import (

@@ -1,8 +1,7 @@
 // Package dockerhosts is the pure-DB layer for the admin-managed pool of Docker daemons backing
-// per-vault workbench containers — see docs/workbench/02_docker_topology.md. Unlike
-// couchinstances/s3instances there's no single credential blob; instead there are three optional
-// TLS/mTLS fields (migrations/062_docker_hosts_tls.sql) for the remote-daemon case, so this repo
-// carries an encryptor just like s3instances does.
+// per-vault workbench containers. Unlike couchinstances/s3instances there's no single credential
+// blob; instead there are three optional TLS/mTLS fields (migrations/062_docker_hosts_tls.sql)
+// for the remote-daemon case, so this repo carries an encryptor just like s3instances does.
 package dockerhosts
 
 import (

@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
-// DockerHost is one admin-registered Docker daemon endpoint in the workbench pool — see
-// docs/workbench/02_docker_topology.md. Unlike CouchInstance/S3Instance it has no single
-// credential blob; instead it carries three optional TLS/mTLS fields (see
+// DockerHost is one admin-registered Docker daemon endpoint in the workbench pool. Unlike
+// CouchInstance/S3Instance it has no single credential blob; instead it carries three optional
+// TLS/mTLS fields (see
 // migrations/062_docker_hosts_tls.sql) for the remote-daemon case, empty for a local
 // unix-socket/unauthenticated-tcp daemon.
 type DockerHost struct {

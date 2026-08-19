@@ -1,16 +1,17 @@
 // Package workbenchdocker is a thin typed wrapper around the Docker Engine SDK
 // (github.com/docker/docker/client), used to create/start/stop/remove the containers and
-// volumes that back a single workbench (a per-user sandbox running the `claude` CLI inside
-// a persistent tmux session).
+// volumes that back a single workbench (a per-user sandbox running two independent ways to drive
+// the `claude` CLI: the in-container chat bridge, deploy/workbench/bridge, which drives it one
+// turn at a time, and a tmux session (see tmux_tabs.go) exposing a real interactive `claude` TUI
+// per tab through ttyd).
 //
 // This package talks to whichever daemon URL it's constructed with — one client per call,
 // pointed at whichever docker_hosts row a given workbench is assigned to (resolved by
-// internal/service/v1/workbench/workbench.go's resolveClient), not a single startup-time
-// config value. See docs/workbench/02_docker_topology.md for why a docker host is expected to
-// be a dedicated second dockerd process, not the daemon Artel's own containers run on. It
-// intentionally does
-// not create the `workbench-net` network itself (assumed to pre-exist on the configured
-// daemon) and does not expose any inbound port on the containers it creates.
+// internal/service/v1/workbench/workbench.go's resolveClient), not a single startup-time config
+// value: a docker host is expected to be a dedicated second dockerd process, not the daemon
+// Artel's own containers run on. It intentionally does not create the `workbench-net` network
+// itself (assumed to pre-exist on the configured daemon) and does not expose any inbound port on
+// the containers it creates.
 package workbenchdocker
 
 import (
@@ -38,8 +39,7 @@ const (
 	workbenchLabelKey   = "artel.workbench"
 	workbenchLabelValue = "true"
 
-	// Resource limits, hardcoded at create time for the prototype (see
-	// docs/workbench/02_docker_topology.md, "Resource limits").
+	// Resource limits, hardcoded at create time for the prototype.
 	workbenchCpuLimitNanoCpus = 1_000_000_000          // 1 CPU
 	workbenchMemLimitBytes    = 2 * 1024 * 1024 * 1024 // 2GB
 )
@@ -70,9 +70,9 @@ func (t TLSConfig) enabled() bool {
 
 // New constructs a Client talking to the Docker daemon at host (e.g.
 // "unix:///var/run/docker-workbenches.sock", "tcp://host:2376" for a local/insecure daemon, or
-// "tcp://host:2376" with a populated tlsCfg for a remote mTLS-secured daemon — see
-// docs/workbench/02_docker_topology.md, "Option C"). API version negotiation is enabled so the
-// client stays compatible with the daemon regardless of exactly which API version it speaks.
+// "tcp://host:2376" with a populated tlsCfg for a remote mTLS-secured daemon). API version
+// negotiation is enabled so the client stays compatible with the daemon regardless of exactly
+// which API version it speaks.
 //
 // An empty tlsCfg reproduces exactly the pre-TLS behavior (plain client.WithHost, no custom HTTP
 // client) — this must not regress the local unix-socket/dind path.
