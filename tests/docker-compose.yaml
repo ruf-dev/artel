@@ -59,15 +59,17 @@ services:
     ports:
       - "12375:2375"
       # Must match internal/clients/workbenchdocker/container.go's
-      # ttydHostPortRangeStart/ttydHostPortRangeEnd. This is what makes the *inner* dockerd's own
-      # (dynamic, per-workbench) ttyd port publish actually reach outside this container at all:
-      # the inner daemon binds a port in this range within test-dockerd's own netns, and this
-      # explicit range publish is what gets it forwarded on out from there — same double-publish
-      # requirement docs/tasks/workbench/02_docker_topology.md's "Network isolation" section
-      # explains. A single dynamic "-p 0:X"-style mapping here wouldn't work: Docker only forwards
-      # ports it knows about *when the outer container starts*, not ones a nested daemon assigns
-      # later at runtime.
+      # bridgeHostPortRangeStart/bridgeHostPortRangeEnd and ttydHostPortRangeStart/
+      # ttydHostPortRangeEnd respectively. This is what makes the *inner* dockerd's own
+      # (dynamic, per-workbench) bridge/ttyd port publishes actually reach outside this container
+      # at all: the inner daemon binds a port in these ranges within test-dockerd's own netns, and
+      # this explicit range publish is what gets it forwarded on out from there — same
+      # double-publish requirement docs/tasks/workbench/02_docker_topology.md's "Network
+      # isolation" section explains. A single dynamic "-p 0:X"-style mapping here wouldn't work:
+      # Docker only forwards ports it knows about *when the outer container starts*, not ones a
+      # nested daemon assigns later at runtime.
       - "20000-20099:20000-20099"
+      - "20100-20199:20100-20199"
     healthcheck:
       test: ["CMD", "docker", "info"]
       interval: 2s

@@ -1,0 +1,24 @@
+.ErrorCardContainer {
+    align-self: flex-start;
+    max-width: 90%;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4375rem;
+    padding: 0.5rem 0.75rem;
+    background: rgb(193 37 61 / 8%);
+    border: var(--border-thickness) solid rgb(193 37 61 / 25%);
+    border-radius: var(--border-radius-sm);
+
+    & .Icon {
+        flex-shrink: 0;
+        color: var(--color-error);
+    }
+
+    & .Text {
+        margin: 0;
+        font-size: var(--font-size-base);
+        color: var(--color-error);
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+}

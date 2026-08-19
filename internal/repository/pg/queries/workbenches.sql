@@ -49,3 +49,13 @@ WHERE vault_id = $1
 SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 FROM workbenches
 WHERE vault_id = $1;
+
+-- name: GetMostRecentWorkbenchByUser :one
+-- Used by the telegram webhook relay (internal/transport/telegram_webhook) to pick which of a
+-- user's (possibly several) vault workbenches to relay chat into, v1 scope: just the one most
+-- recently started (falling back to most recently created for a workbench never started).
+SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
+FROM workbenches
+WHERE user_id = $1
+ORDER BY started_at DESC NULLS LAST, created_at DESC
+LIMIT 1;

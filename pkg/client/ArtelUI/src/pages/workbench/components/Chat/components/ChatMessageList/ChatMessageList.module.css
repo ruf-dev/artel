@@ -1,0 +1,15 @@
+.ChatMessageListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0.875rem;
+
+    & .EmptyState {
+        margin: auto;
+        font-size: var(--font-size-base);
+        color: var(--color-fg-secondary);
+    }
+}

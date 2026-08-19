@@ -100,8 +100,9 @@ type Vaults interface {
 	WithTx(tx postgres.DB) Vaults
 }
 
-// Workbenches is the pure-DB layer for the per-(vault, user) Docker workbench container — see
-// docs/workbench/01_data_model_and_lifecycle.md for the state machine it reflects.
+// Workbenches is the pure-DB layer for the per-(vault, user) Docker workbench container: its
+// Mark* methods below correspond to the domain.WorkbenchStatus transitions (created →
+// configuring → running → stopped → removed).
 type Workbenches interface {
 	Create(ctx context.Context, vaultID, userID uuid.UUID, volumeName string, dockerHostID uuid.UUID) (domain.Workbench, error)
 	GetByVaultAndUser(ctx context.Context, vaultID, userID uuid.UUID) (domain.Workbench, error)
@@ -115,6 +116,13 @@ type Workbenches interface {
 	// ListByVaultID returns every workbench row for vaultID across all members — used only by
 	// vault deletion, which must tear down every member's Docker resources, not just one.
 	ListByVaultID(ctx context.Context, vaultID uuid.UUID) ([]domain.Workbench, error)
+
+	// GetMostRecentByUser returns the most recently started (falling back to most recently
+	// created) of userID's workbenches across every vault they're a member of — used by
+	// internal/transport/telegram_webhook to pick a single workbench to relay chat into (v1
+	// scope: no vault picker). sql.Null[domain.Workbench]{Valid: false} means the user has no
+	// workbench at all yet.
+	GetMostRecentByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Workbench], error)
 
 	WithTx(tx postgres.DB) Workbenches
 }
@@ -306,9 +314,9 @@ type VaultPostgresDatabases interface {
 }
 
 // DockerHosts is the pure-DB layer for the admin-managed pool of Docker daemons that back
-// per-vault workbench containers — see docs/workbench/02_docker_topology.md. Unlike
-// CouchInstances/S3Instances there's no single credential blob; instead there are three optional
-// TLS/mTLS fields (migrations/062_docker_hosts_tls.sql) for the remote-daemon case.
+// per-vault workbench containers. Unlike CouchInstances/S3Instances there's no single credential
+// blob; instead there are three optional TLS/mTLS fields (migrations/062_docker_hosts_tls.sql)
+// for the remote-daemon case.
 type DockerHosts interface {
 	Register(ctx context.Context, url, caCert, clientCert, clientKey string) (uuid.UUID, error)
 	Get(ctx context.Context, id uuid.UUID) (domain.DockerHost, error)

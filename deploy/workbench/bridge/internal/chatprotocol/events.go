@@ -1,0 +1,79 @@
+// Package chatprotocol defines the ChatEvent wire protocol exchanged over the workbench
+// chat WebSocket between the in-container bridge process and any consumer (web frontend,
+// Telegram bot relay). Canonical source — deploy/workbench/bridge/internal/chatprotocol/events.go
+// is a hand-mirrored copy for the bridge's standalone Go module (it can't import this module
+// directly; keep the two files byte-identical on any change).
+package chatprotocol
+
+import "encoding/json"
+
+type EventType string
+
+const (
+	// EventSystemInit: bridge → consumer, carries no payload fields.
+	EventSystemInit EventType = "system_init"
+	// EventUserMessage: consumer → bridge, carries Text.
+	EventUserMessage EventType = "user_message"
+	// EventAssistantTextDelta: bridge → consumer, carries Text and ID.
+	EventAssistantTextDelta EventType = "assistant_text_delta"
+	// EventAssistantTextDone: bridge → consumer, carries Text and ID.
+	EventAssistantTextDone EventType = "assistant_text_done"
+	// EventToolCallStarted: bridge → consumer, carries ID/ToolName/InputSummary.
+	EventToolCallStarted EventType = "tool_call_started"
+	// EventToolCallResult: bridge → consumer, carries ID/ToolName/Output/IsError.
+	EventToolCallResult EventType = "tool_call_result"
+	// EventPermissionRequest: bridge → consumer, carries ID/ToolName/InputSummary/Options.
+	EventPermissionRequest EventType = "permission_request"
+	// EventPermissionDecision: consumer → bridge, carries ID/Decision.
+	EventPermissionDecision EventType = "permission_decision"
+	// EventTurnDone: bridge → consumer, carries SessionID/CostUSD.
+	EventTurnDone EventType = "turn_done"
+	// EventError: bridge → consumer, carries Text.
+	EventError EventType = "error"
+	// EventAuthLink: bridge → consumer, carries URL.
+	EventAuthLink EventType = "auth_link"
+	// EventAuthCodeNeeded: bridge → consumer, carries no payload fields.
+	EventAuthCodeNeeded EventType = "auth_code_needed"
+	// EventAuthCodeSubmit: consumer → bridge, carries Code.
+	EventAuthCodeSubmit EventType = "auth_code_submit"
+)
+
+type PermissionDecision string
+
+const (
+	DecisionAllowOnce   PermissionDecision = "allow_once"
+	DecisionAllowAlways PermissionDecision = "allow_always"
+	DecisionDeny        PermissionDecision = "deny"
+)
+
+// Event is the single envelope type for every message on the chat WebSocket, in both
+// directions. Only the fields relevant to Type are populated; the rest are zero/omitted.
+type Event struct {
+	Type EventType `json:"type"`
+
+	// Correlation id: ties tool_call_started -> tool_call_result, and
+	// permission_request -> permission_decision.
+	ID string `json:"id,omitempty"`
+
+	// assistant_text_delta / assistant_text_done / user_message / error
+	Text string `json:"text,omitempty"`
+
+	// tool_call_started / tool_call_result / permission_request
+	ToolName     string          `json:"tool_name,omitempty"`
+	Input        json.RawMessage `json:"input,omitempty"`
+	InputSummary string          `json:"input_summary,omitempty"`
+	Output       string          `json:"output,omitempty"`
+	IsError      bool            `json:"is_error,omitempty"`
+
+	// permission_request / permission_decision
+	Options  []PermissionDecision `json:"options,omitempty"`
+	Decision PermissionDecision   `json:"decision,omitempty"`
+
+	// turn_done
+	SessionID string  `json:"session_id,omitempty"`
+	CostUSD   float64 `json:"cost_usd,omitempty"`
+
+	// auth_link / auth_code_submit
+	URL  string `json:"url,omitempty"`
+	Code string `json:"code,omitempty"`
+}

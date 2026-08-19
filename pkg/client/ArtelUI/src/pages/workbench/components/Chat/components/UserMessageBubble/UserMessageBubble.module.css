@@ -1,0 +1,17 @@
+.UserMessageBubbleContainer {
+    align-self: flex-end;
+    max-width: 75%;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-accent-dim);
+    border: var(--border-thickness) solid var(--color-accent-border);
+    border-radius: var(--border-radius-sm);
+
+    & .Text {
+        margin: 0;
+        font-size: var(--font-size-base);
+        color: var(--color-fg-primary);
+        line-height: 1.5;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+}

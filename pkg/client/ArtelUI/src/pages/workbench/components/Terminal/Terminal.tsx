@@ -15,7 +15,7 @@ export default function Terminal({vaultId}: Props) {
     const [retryToken, setRetryToken] = useState(0)
     const bakeError = useBakeError()
 
-    const url = `/api/vaults/workbench/${vaultId}/terminal/`
+    const url = `/api/vaults/workbench/${vaultId}/terminal-shell/`
 
     useEffect(() => {
         let ignore = false

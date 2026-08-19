@@ -1,0 +1,11 @@
+.ChatStatusBannerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    padding: 0.375rem;
+    font-size: var(--font-size-md);
+    color: var(--color-fg-secondary);
+    border-bottom: var(--border-thickness) solid var(--color-border-light);
+}

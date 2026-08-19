@@ -3,6 +3,7 @@ package workbenches
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -112,6 +113,35 @@ func (r *Repo) ListByVaultID(ctx context.Context, vaultID uuid.UUID) ([]domain.W
 	}
 
 	return workbenches, nil
+}
+
+func (r *Repo) GetMostRecentByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Workbench], error) {
+	row, err := r.q.GetMostRecentWorkbenchByUser(ctx, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.Null[domain.Workbench]{}, nil
+		}
+
+		return sql.Null[domain.Workbench]{}, rerrors.Wrap(err, "error getting most recent workbench by user")
+	}
+
+	w := rowToWorkbench(
+		row.ID,
+		row.VaultID,
+		row.UserID,
+		row.Status,
+		row.AuthMode,
+		row.ContainerID,
+		row.VolumeName,
+		row.CreatedAt,
+		row.StartedAt,
+		row.StoppedAt,
+		row.DockerHostID,
+	)
+
+	result := sql.Null[domain.Workbench]{V: w, Valid: true}
+
+	return result, nil
 }
 
 func (r *Repo) MarkRunning(ctx context.Context, vaultID, userID uuid.UUID, authMode domain.WorkbenchAuthMode) error {

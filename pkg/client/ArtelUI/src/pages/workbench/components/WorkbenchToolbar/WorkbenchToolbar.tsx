@@ -1,9 +1,12 @@
 import {Button} from "@vervstack/chures"
 
+import {cn} from "@/app/utils/cn.ts"
 import WorkbenchStatusBadge from "@/pages/workbench/components/WorkbenchStatusBadge/WorkbenchStatusBadge.tsx"
 import WorkbenchSettingsMenu
     from "@/pages/workbench/components/WorkbenchToolbar/components/WorkbenchSettingsMenu/WorkbenchSettingsMenu.tsx"
 import cls from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.module.css"
+
+export type WorkbenchView = "chat" | "terminal"
 
 interface WorkbenchToolbarProps {
     vaultName: string
@@ -13,6 +16,9 @@ interface WorkbenchToolbarProps {
     onStart: () => void
     onStop: () => void
     stopping: boolean
+    starting: boolean
+    view: WorkbenchView
+    onViewChange: (view: WorkbenchView) => void
 }
 
 // >6 props — kept as one object instead of exploding into separate destructured
@@ -28,11 +34,37 @@ export default function WorkbenchToolbar(props: WorkbenchToolbarProps) {
             </div>
             {props.exists && (
                 <div className={cls.RightSection}>
+                    {isRunning && (
+                        <div className={cls.ViewToggle}>
+                            <Button
+                                variant="secondary"
+                                className={cn(
+                                    cls.ViewToggleButton,
+                                    props.view === "chat" && cls.ViewToggleButtonActive,
+                                )}
+                                onClick={() => props.onViewChange("chat")}
+                                aria-pressed={props.view === "chat"}
+                            >
+                                Chat
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                className={cn(
+                                    cls.ViewToggleButton,
+                                    props.view === "terminal" && cls.ViewToggleButtonActive,
+                                )}
+                                onClick={() => props.onViewChange("terminal")}
+                                aria-pressed={props.view === "terminal"}
+                            >
+                                Terminal
+                            </Button>
+                        </div>
+                    )}
                     <Button
                         variant="secondary"
                         className={cls.StartStopButton}
                         onClick={isRunning ? props.onStop : props.onStart}
-                        disabled={props.stopping}
+                        disabled={props.stopping || props.starting}
                         aria-label={props.stopping ? "Stopping" : isRunning ? "Stop" : "Start"}
                     >
                         {isRunning ? (

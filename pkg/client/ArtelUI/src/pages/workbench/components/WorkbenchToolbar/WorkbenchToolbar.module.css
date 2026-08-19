@@ -32,4 +32,39 @@
         height: var(--icon-button-size);
         padding: 0;
     }
+
+    & .ViewToggle {
+        display: flex;
+        align-items: stretch;
+        gap: 0.125rem;
+        padding: 0.1875rem;
+        background-color: var(--color-bg-accent);
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-md);
+
+        /* Nested two classes deep under .WorkbenchToolbarContainer, so this beats
+           chures' single-class Button rules regardless of injection order — see
+           "Never use !important" in ArtelUI CLAUDE.md. */
+        & .ViewToggleButton {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            color: var(--color-fg-secondary);
+
+            &:hover {
+                background: var(--color-bg-hover);
+            }
+        }
+
+        & .ViewToggleButtonActive {
+            background: var(--color-bg-base);
+            color: var(--color-fg-primary);
+
+            &:hover {
+                background: var(--color-bg-base);
+            }
+        }
+    }
 }

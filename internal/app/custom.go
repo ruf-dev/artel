@@ -44,6 +44,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/setup_wizard_api"
 	"github.com/ruf-dev/artel/internal/transport/skills_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
+	"github.com/ruf-dev/artel/internal/transport/telegram_webhook"
 	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
 	"github.com/ruf-dev/artel/internal/transport/tracts_api"
 	"github.com/ruf-dev/artel/internal/transport/ui"
@@ -98,9 +99,9 @@ func (c *Custom) Init(a *App) error {
 	// Workbench is constructed here (not in svcv1.New) because it composes
 	// services.ExternalConnections, which doesn't exist yet mid-construction of the Services
 	// struct literal. It's always constructed now — the docker host backing each workbench is
-	// resolved per-workbench from the docker_hosts table (see
-	// docs/workbench/02_docker_topology.md) rather than from a single startup-time config value,
-	// so there's no "absent config" case that leaves the whole subsystem unconstructed anymore.
+	// resolved per-workbench from the docker_hosts table rather than from a single startup-time
+	// config value, so there's no "absent config" case that leaves the whole subsystem
+	// unconstructed anymore.
 	// nil newDockerClient defaults to real workbenchdocker.New construction inside workbench.New.
 	workbenchSvc := workbench.New(
 		repo.Workbenches(), repo.Vaults(), repo.VaultMembers(), repo.DockerHosts(), services.ExternalConnections, nil,
@@ -177,6 +178,19 @@ func (c *Custom) Init(a *App) error {
 	// repo passed in alongside the workbench service.
 	workbenchTerminalHandler := vaults_api.NewWorkbenchTerminalHandler(
 		services.Auth, repo.VaultMembers(), services.Workbench,
+	)
+	// Registered as a raw http handler for the same reason as workbenchTerminalHandler above, but
+	// proxying to the workbench's ttyd server instead of its chat bridge: this is the restored
+	// interactive terminal (tmux tabs, each a live `claude` TUI), a separate view from the chat
+	// bridge with zero shared history.
+	workbenchTerminalShellHandler := vaults_api.NewWorkbenchTerminalShellHandler(
+		services.Auth, repo.VaultMembers(), services.Workbench,
+	)
+	// Registered as a raw http handler for the same reason as workbenchTerminalHandler above: it
+	// relays a user's linked Telegram bot into their workbench chat bridge, which needs its own
+	// outbound WebSocket dial per inbound Telegram update rather than an RPC request/response.
+	telegramWebhookHandler := telegram_webhook.New(
+		a.Ctx, repo.ExternalConnections(), repo.Workbenches(), services.Workbench, services.MomService(),
 	)
 
 	otelServerHandler := otelgrpc.NewServerHandler()
@@ -325,8 +339,10 @@ func (c *Custom) Init(a *App) error {
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler(vaults_api.TerminalRoutePattern, workbenchTerminalHandler)
+	c.Transport.AddHttpHandler(vaults_api.TerminalShellRoutePattern, workbenchTerminalShellHandler)
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/webhooks/gitlab/", gitlabWebhookHandler)
+	c.Transport.AddHttpHandler("/webhooks/telegram/", telegramWebhookHandler)
 	c.Transport.AddHttpHandler("/tract/hook/", tractWebhookHandler)
 	c.Transport.AddHttpHandler("/.well-known/oauth-authorization-server", http.HandlerFunc(oauthHandler.WellKnown))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))

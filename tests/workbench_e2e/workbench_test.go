@@ -340,9 +340,8 @@ func (s *WorkbenchSuite) TestFullLifecycle() {
 	// so this is the regression check for workbenchdocker.ContainerAddress returning the
 	// container's IP on its inner, dind-private workbench-net (unreachable from here, this test
 	// process being the same vantage point as Artel's own) instead of the published-port address
-	// it actually resolves to. See docs/tasks/workbench/02_docker_topology.md's "Network
-	// isolation" section for the full reachability chain this depends on, including why
-	// test-dockerd's compose service publishes a matching fixed port range.
+	// it actually resolves to — which only works because test-dockerd's compose service publishes
+	// a matching fixed host port range for the reverse proxy to dial.
 	target, err := s.svcs.Workbench.ResolveTerminalTarget(ctx, user.vaultUuid, user.userUuid)
 	s.Require().NoError(err)
 

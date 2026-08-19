@@ -1,0 +1,67 @@
+.PermissionRequestCardContainer {
+    align-self: flex-start;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    background: rgb(255 165 0 / 6%);
+    border: var(--border-thickness) solid rgb(255 165 0 / 25%);
+    border-radius: var(--border-radius-sm);
+
+    & .Header {
+        display: flex;
+        align-items: center;
+        gap: 0.4375rem;
+    }
+
+    & .HeaderClickable {
+        cursor: pointer;
+    }
+
+    & .Icon {
+        flex-shrink: 0;
+        color: var(--color-warning);
+    }
+
+    & .Title {
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        color: var(--color-fg-primary);
+    }
+
+    & .Caret {
+        flex-shrink: 0;
+        margin-left: auto;
+        color: var(--color-fg-disabled);
+        transition: transform 140ms ease;
+    }
+
+    & .CaretOpen {
+        transform: rotate(90deg);
+    }
+
+    & .Summary {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: var(--font-size-md);
+        color: var(--color-fg-secondary);
+        overflow-wrap: anywhere;
+    }
+
+    & .Detail {
+        margin-top: 0.125rem;
+    }
+
+    & .Actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    & .Resolved {
+        margin: 0;
+        font-size: var(--font-size-md);
+        color: var(--color-fg-secondary);
+    }
+}

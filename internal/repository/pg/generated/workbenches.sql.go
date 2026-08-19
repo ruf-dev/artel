@@ -66,6 +66,36 @@ func (q *Queries) DeleteWorkbench(ctx context.Context, arg DeleteWorkbenchParams
 	return err
 }
 
+const getMostRecentWorkbenchByUser = `-- name: GetMostRecentWorkbenchByUser :one
+SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
+FROM workbenches
+WHERE user_id = $1
+ORDER BY started_at DESC NULLS LAST, created_at DESC
+LIMIT 1
+`
+
+// Used by the telegram webhook relay (internal/transport/telegram_webhook) to pick which of a
+// user's (possibly several) vault workbenches to relay chat into, v1 scope: just the one most
+// recently started (falling back to most recently created for a workbench never started).
+func (q *Queries) GetMostRecentWorkbenchByUser(ctx context.Context, userID uuid.UUID) (Workbench, error) {
+	row := q.db.QueryRowContext(ctx, getMostRecentWorkbenchByUser, userID)
+	var i Workbench
+	err := row.Scan(
+		&i.ID,
+		&i.VaultID,
+		&i.UserID,
+		&i.Status,
+		&i.AuthMode,
+		&i.ContainerID,
+		&i.VolumeName,
+		&i.CreatedAt,
+		&i.StartedAt,
+		&i.StoppedAt,
+		&i.DockerHostID,
+	)
+	return i, err
+}
+
 const getWorkbenchByVaultAndUser = `-- name: GetWorkbenchByVaultAndUser :one
 SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 FROM workbenches

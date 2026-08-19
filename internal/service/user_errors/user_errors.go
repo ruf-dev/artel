@@ -334,6 +334,31 @@ var (
 		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
 
+	// telegram webhook.
+	TelegramWebhookSecretMismatch = rerrors.New(
+		"telegram webhook: token does not match configured secret",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusUnauthorized),
+	)
+	TelegramWebhookConnectionNotFound = rerrors.New(
+		"telegram webhook: no external connection found for this webhook id",
+		codes.NotFound,
+		rerrors.WithHttpStatus(http.StatusNotFound),
+	)
+	// TelegramNoWorkbench is returned by the telegram webhook relay (rather than surfaced over
+	// gRPC) when the connection's owner has no workbench at all yet — the relay catches this and
+	// replies in-chat pointing the user at the web UI instead of erroring silently.
+	TelegramNoWorkbench = rerrors.New(
+		"telegram webhook: user has no workbench yet",
+		codes.FailedPrecondition,
+	)
+	// TelegramApiCallFailed wraps a Telegram Bot API response with ok=false — the HTTP transport
+	// itself succeeded (2xx), but Telegram rejected the call's parameters.
+	TelegramApiCallFailed = rerrors.New(
+		"telegram api call failed",
+		codes.FailedPrecondition,
+	)
+
 	// anthropic / llm key connection.
 	LlmKeyValidationFailed = rerrors.New(
 		"could not verify the api key against the provider",
@@ -428,9 +453,16 @@ var (
 		"this workbench predates docker host assignment; delete and recreate it",
 		codes.FailedPrecondition,
 	)
+	// WorkbenchNotProvisioned surfaces from workbench.Service.StartWorkbench when a workbenches row
+	// exists but its container was never created (a prior CreateWorkbench provisioning attempt
+	// failed and hasn't been retried) — there's no container to start.
+	WorkbenchNotProvisioned = rerrors.New(
+		"this workbench's container was never created; retry Set up Workbench",
+		codes.FailedPrecondition,
+	)
 	// WorkbenchNotRunning surfaces from workbench.Service.ResolveTerminalTarget when a vault's
-	// workbench exists but isn't in the 'running' state — there's no ttyd server inside a
-	// stopped/never-started container to proxy a terminal session to, so the only recovery is
+	// workbench exists but isn't in the 'running' state — there's no chat bridge inside a
+	// stopped/never-started container to proxy a chat session to, so the only recovery is
 	// starting the workbench first.
 	WorkbenchNotRunning = rerrors.New(
 		"workbench is not running; start it before opening a terminal",

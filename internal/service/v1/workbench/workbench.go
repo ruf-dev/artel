@@ -1,7 +1,7 @@
 // Package workbench implements service.WorkbenchService: it manages the per-(vault, user)
 // Docker container backing a vault member's cloud workbench — every vault member gets their own
-// workbench. See docs/workbench/01_data_model_and_lifecycle.md for the full state machine and
-// docs/workbench/02_docker_topology.md for the Docker client this composes.
+// workbench, tracked through domain.WorkbenchStatus's state machine, provisioned via
+// internal/clients/workbenchdocker's Docker client.
 package workbench
 
 import (
@@ -21,9 +21,16 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-// anthropicApiKeyEnvVar is the env var name StartContainer injects the BYOK key under —
-// docs/workbench/03_auth_and_login_flow.md, "api_key mode".
+// anthropicApiKeyEnvVar is the env var name StartContainer injects the BYOK key under, for the
+// api_key auth mode (domain.WorkbenchAuthModeAPIKey).
 const anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY"
+
+// workbenchAuthModeEnvVar is the env var name StartContainer injects the chosen auth mode under,
+// so the in-container chat bridge (deploy/workbench/bridge) knows whether it must proactively
+// drive the `claude setup-token` device-login flow (subscription_login) or can go straight to
+// serving chat turns off an already-injected key (api_key). Its two values are exactly the wire
+// values of the domain.WorkbenchAuthMode constants.
+const workbenchAuthModeEnvVar = "WORKBENCH_AUTH_MODE"
 
 // dockerClient is the narrow subset of workbenchdocker.Client's methods this service depends
 // on. workbenchdocker.Client is a concrete struct — this interface exists so tests can exercise
@@ -36,6 +43,7 @@ type dockerClient interface {
 	StopContainer(ctx context.Context, containerID string) error
 	RemoveContainer(ctx context.Context, containerID string) error
 	ContainerAddress(ctx context.Context, containerID string) (string, error)
+	TtydAddress(ctx context.Context, containerID string) (string, error)
 	ListTmuxWindows(ctx context.Context, containerID string) ([]domain.TerminalTab, error)
 	NewTmuxWindow(ctx context.Context, containerID string) (domain.TerminalTab, error)
 	SelectTmuxWindow(ctx context.Context, containerID, windowID string) error
@@ -134,10 +142,11 @@ func (s *Service) resolveClient(ctx context.Context, wb domain.Workbench) (docke
 // CreateWorkbench records a 'configuring' workbenches row for the caller's (vaultID, userID)
 // pair, then provisions the Docker volume and (unstarted) container backing it, and finally
 // records the container id with status='created'. Safely re-invocable: if a workbenches row for
-// (vaultID, userID) already exists (e.g. a retry after a partial failure), it's returned as-is
-// rather than duplicated — see docs/workbench/01_data_model_and_lifecycle.md, "Hook points".
-// Every vault member gets their own workbench row, so two different members of the same vault
-// never share one.
+// (vaultID, userID) already exists and is already provisioned (non-empty ContainerId), it's
+// returned as-is rather than duplicated. If it exists but was never provisioned (e.g. a prior
+// call's CreateVolume/CreateContainer failed after the row was inserted), provisioning is
+// retried against that same row rather than duplicating it. Every vault member gets their own
+// workbench row, so two different members of the same vault never share one.
 //
 // The caller must already be a member of vaultID — returns
 // user_errors.WorkbenchRequiresVaultMembership otherwise.
@@ -148,8 +157,9 @@ func (s *Service) resolveClient(ctx context.Context, wb domain.Workbench) (docke
 // 'configuring' state while Docker provisioning is in flight. If CreateVolume or
 // CreateContainer fails after the row is inserted, the row is intentionally left in
 // 'configuring' rather than rolled back or cleaned up here — DeleteWorkbench already tolerates
-// partial Docker state (missing container/volume) when tearing down, so a stuck 'configuring'
-// row is recoverable by deleting and retrying rather than needing bespoke rollback logic here.
+// partial Docker state (missing container/volume) when tearing down, and a subsequent
+// CreateWorkbench call retries provisionContainer against the same row, so a stuck 'configuring'
+// row recovers either by deleting and recreating it or by simply retrying.
 //
 // The docker host backing the new workbench is picked once, up front, by
 // DockerHosts.PickLeastLoaded — spreading new workbenches across the registered pool. Returns
@@ -168,7 +178,16 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 
 	existing, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, userID)
 	if err == nil {
-		return existing, nil
+		if existing.ContainerId != "" {
+			return existing, nil
+		}
+
+		docker, resolveErr := s.resolveClient(ctx, existing)
+		if resolveErr != nil {
+			return domain.Workbench{}, rerrors.Wrap(resolveErr, "error resolving docker client")
+		}
+
+		return s.provisionContainer(ctx, docker, vaultID, userID, existing.VolumeName)
 	}
 
 	if !errors.Is(err, sql.ErrNoRows) {
@@ -216,7 +235,18 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench")
 	}
 
-	err = docker.CreateVolume(ctx, volumeName)
+	return s.provisionContainer(ctx, docker, vaultID, userID, volumeName)
+}
+
+// provisionContainer creates the Docker volume and (unstarted) container backing a workbenches
+// row already inserted for (vaultID, userID), records the resulting container id with
+// status='created', then returns the refetched row. Shared by CreateWorkbench's fresh-row path
+// and its resume path for a stuck 'configuring' row (empty ContainerId) left behind by a prior
+// call whose provisioning failed partway through.
+func (s *Service) provisionContainer(
+	ctx context.Context, docker dockerClient, vaultID, userID uuid.UUID, volumeName string,
+) (domain.Workbench, error) {
+	err := docker.CreateVolume(ctx, volumeName)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error creating workbench volume")
 	}
@@ -244,11 +274,11 @@ func (s *Service) CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domai
 	return workbench, nil
 }
 
-// ResolveTerminalTarget returns the base URL ("http://<container-ip>:<ttyd-port>") of userID's
-// running workbench for vaultID's in-container ttyd server, as reachable from this process over
-// the workbench docker network. Returns user_errors.WorkbenchNotRunning when the workbench isn't
-// in the 'running' state — a stopped/never-started container has no ttyd listening, and no IP
-// assigned on the network either.
+// ResolveTerminalTarget returns the base URL ("http://<host>:<bridge-port>") of userID's
+// running workbench for vaultID's in-container chat bridge (deploy/workbench/bridge), as
+// reachable from this process. Returns user_errors.WorkbenchNotRunning when the workbench isn't
+// in the 'running' state — a stopped/never-started container has no bridge listening, and no
+// published host port either.
 //
 // userID is an explicit parameter rather than resolved from ctx here: this method's only caller
 // (internal/transport/vaults_api/workbench_terminal.go) sits outside the gRPC auth interceptor
@@ -281,6 +311,36 @@ func (s *Service) ResolveTerminalTarget(ctx context.Context, vaultID, userID uui
 	return "http://" + address, nil
 }
 
+// ResolveTerminalShellTarget returns the base URL ("http://<host>:<ttyd-port>") of userID's
+// running workbench for vaultID's ttyd server (the interactive tmux-tab terminal, restored
+// alongside the chat bridge), as reachable from this process. Mirrors ResolveTerminalTarget
+// exactly — same auth/status-check logic, same explicit-userID-param reasoning (its only caller,
+// the raw terminal-shell reverse proxy in internal/transport/vaults_api, likewise sits outside
+// the gRPC auth interceptor chain) — resolving docker.TtydAddress instead of
+// docker.ContainerAddress.
+func (s *Service) ResolveTerminalShellTarget(ctx context.Context, vaultID, userID uuid.UUID) (string, error) {
+	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, userID)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.Status != domain.WorkbenchStatusRunning {
+		return "", user_errors.WorkbenchNotRunning
+	}
+
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	address, err := docker.TtydAddress(ctx, wb.ContainerId)
+	if err != nil {
+		return "", rerrors.Wrap(err, "error resolving workbench ttyd address")
+	}
+
+	return "http://" + address, nil
+}
+
 // GetWorkbench returns the calling user's own workbench for vaultID.
 func (s *Service) GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error) {
 	uc, ok := user_context.GetUserContext(ctx)
@@ -296,10 +356,9 @@ func (s *Service) GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.W
 	return workbench, nil
 }
 
-// StartWorkbench starts the calling user's workbench container for vaultID under authMode — see
-// docs/workbench/03_auth_and_login_flow.md for both modes' designs. Any mode besides the two
-// domain.WorkbenchAuthMode constants fails with user_errors.WorkbenchAuthModeNotImplemented
-// rather than silently falling back.
+// StartWorkbench starts the calling user's workbench container for vaultID under authMode. Any
+// mode besides the two domain.WorkbenchAuthMode constants fails with
+// user_errors.WorkbenchAuthModeNotImplemented rather than silently falling back.
 func (s *Service) StartWorkbench(
 	ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode,
 ) (domain.Workbench, error) {
@@ -320,11 +379,16 @@ func (s *Service) StartWorkbench(
 
 // startWithApiKey resolves the workbench owner's BYOK Anthropic api key (failing fast with
 // user_errors.WorkbenchMissingAnthropicConnection if none is connected), starts the container
-// with it injected as ANTHROPIC_API_KEY, then records status='running'/started_at.
+// with it injected as ANTHROPIC_API_KEY (alongside WORKBENCH_AUTH_MODE=api_key, which tells the
+// in-container chat bridge it needs no login flow), then records status='running'/started_at.
 func (s *Service) startWithApiKey(ctx context.Context, vaultID, userID uuid.UUID) (domain.Workbench, error) {
 	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, userID)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.ContainerId == "" {
+		return domain.Workbench{}, user_errors.WorkbenchNotProvisioned
 	}
 
 	docker, err := s.resolveClient(ctx, wb)
@@ -342,7 +406,8 @@ func (s *Service) startWithApiKey(ctx context.Context, vaultID, userID uuid.UUID
 	}
 
 	env := map[string]string{
-		anthropicApiKeyEnvVar: apiKey,
+		anthropicApiKeyEnvVar:   apiKey,
+		workbenchAuthModeEnvVar: string(domain.WorkbenchAuthModeAPIKey),
 	}
 
 	err = s.workbenchesRepo.MarkConfiguring(ctx, vaultID, userID)
@@ -358,18 +423,23 @@ func (s *Service) startWithApiKey(ctx context.Context, vaultID, userID uuid.UUID
 	return s.markRunningAndReload(ctx, vaultID, userID, domain.WorkbenchAuthModeAPIKey)
 }
 
-// startWithSubscriptionLogin starts the container with no auth env vars injected at all — see
-// docs/workbench/03_auth_and_login_flow.md, "Mechanism (confirmed)", step 1. The workbench is
-// recorded as status='running' as soon as the container starts, independent of whether the
-// in-container login TUI flow has completed — see
-// docs/workbench/01_data_model_and_lifecycle.md's state table: "running" means "container
-// started", not "authenticated". The user drives the actual in-container login flow themselves,
-// interactively, through the workbench terminal (ttyd, proxied by
-// internal/transport/vaults_api/workbench_terminal.go) — see ResolveTerminalTarget.
+// startWithSubscriptionLogin starts the container with no Anthropic key injected at all, only
+// WORKBENCH_AUTH_MODE=subscription_login. The workbench is recorded as status='running' as soon
+// as the container starts, independent of whether the in-container login flow has completed:
+// domain.WorkbenchStatusRunning means "container started", not "authenticated". Seeing that env
+// var, the in-container chat bridge
+// (deploy/workbench/bridge) drives `claude setup-token` itself and relays the resulting
+// authorization URL / code prompt to whoever is attached to its chat WebSocket, which is
+// reverse-proxied by internal/transport/vaults_api/workbench_terminal.go — see
+// ResolveTerminalTarget.
 func (s *Service) startWithSubscriptionLogin(ctx context.Context, vaultID, userID uuid.UUID) (domain.Workbench, error) {
 	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, userID)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.ContainerId == "" {
+		return domain.Workbench{}, user_errors.WorkbenchNotProvisioned
 	}
 
 	docker, err := s.resolveClient(ctx, wb)
@@ -382,7 +452,11 @@ func (s *Service) startWithSubscriptionLogin(ctx context.Context, vaultID, userI
 		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
-	err = docker.StartContainer(ctx, wb.ContainerId, nil)
+	env := map[string]string{
+		workbenchAuthModeEnvVar: string(domain.WorkbenchAuthModeSubscriptionLogin),
+	}
+
+	err = docker.StartContainer(ctx, wb.ContainerId, env)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
 	}
@@ -577,8 +651,8 @@ func (s *Service) CloseTerminalTab(ctx context.Context, vaultID uuid.UUID, tabID
 // DeleteWorkbench tears down the calling user's own workbench for vaultID: stops (if a
 // container was created) and removes the container, removes the volume, then deletes the DB row
 // — in that order, so a failure partway through never leaves the DB pointing at nothing while
-// Docker still holds a live container (see docs/workbench/01_data_model_and_lifecycle.md, "Vault
-// deletion"). A missing workbench row is treated as already-deleted, not an error. "Not found"
+// Docker still holds a live container. A missing workbench row is treated as already-deleted,
+// not an error. "Not found"
 // from Docker (container/volume already gone, e.g. a retry picking up after a prior partial
 // failure) is likewise tolerated at each step rather than failing the whole call.
 func (s *Service) DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error {

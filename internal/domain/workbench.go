@@ -23,8 +23,9 @@ const (
 	WorkbenchAuthModeSubscriptionLogin WorkbenchAuthMode = "subscription_login"
 )
 
-// Workbench is a thin reflection of the Docker container backing a vault's cloud workbench —
-// see docs/workbench/01_data_model_and_lifecycle.md for the full state machine.
+// Workbench is a thin reflection of the Docker container backing a vault's cloud workbench;
+// Status moves through the WorkbenchStatus values above as CreateWorkbench/StartWorkbench/
+// StopWorkbench/DeleteWorkbench (internal/service/v1/workbench) proceed.
 type Workbench struct {
 	Uuid        uuid.UUID
 	VaultUuid   uuid.UUID

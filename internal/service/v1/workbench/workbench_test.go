@@ -99,6 +99,51 @@ func (f *fakeWorkbenchesRepo) ListByVaultID(ctx context.Context, vaultID uuid.UU
 	return out, nil
 }
 
+func (f *fakeWorkbenchesRepo) GetMostRecentByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Workbench], error) {
+	var (
+		best    domain.Workbench
+		haveOne bool
+	)
+
+	for key, wb := range f.rows {
+		if key.userID != userID {
+			continue
+		}
+
+		if !haveOne || wbSortsAfter(wb, best) {
+			best = wb
+			haveOne = true
+		}
+	}
+
+	if !haveOne {
+		return sql.Null[domain.Workbench]{}, nil
+	}
+
+	result := sql.Null[domain.Workbench]{V: best, Valid: true}
+
+	return result, nil
+}
+
+// wbSortsAfter reports whether candidate is more recent than current, mirroring the production
+// query's "ORDER BY started_at DESC NULLS LAST, created_at DESC" — StartedAt wins when both have
+// it, a never-started workbench always loses to one that has started, and CreatedAt breaks ties.
+func wbSortsAfter(candidate, current domain.Workbench) bool {
+	if candidate.StartedAt != nil && current.StartedAt != nil {
+		return candidate.StartedAt.After(*current.StartedAt)
+	}
+
+	if candidate.StartedAt != nil {
+		return true
+	}
+
+	if current.StartedAt != nil {
+		return false
+	}
+
+	return candidate.CreatedAt.After(current.CreatedAt)
+}
+
 func (f *fakeWorkbenchesRepo) MarkContainerCreated(ctx context.Context, vaultID, userID uuid.UUID, containerID string) error {
 	key := workbenchKey{vaultID, userID}
 
@@ -268,6 +313,7 @@ func (f *fakeDockerHostsRepo) WithTx(tx postgres.DB) repository.DockerHosts {
 // the methods exercised by a given test set a func field, the rest panic if called unexpectedly.
 type fakeDockerClient struct {
 	containerAddressFunc func(ctx context.Context, containerID string) (string, error)
+	ttydAddressFunc      func(ctx context.Context, containerID string) (string, error)
 	createVolumeFunc     func(ctx context.Context, name string) error
 	createContainerFunc  func(ctx context.Context, opts workbenchdocker.CreateOpts) (string, error)
 	startContainerFunc   func(ctx context.Context, containerID string, env map[string]string) error
@@ -281,6 +327,7 @@ type fakeDockerClient struct {
 	killTmuxWindowFunc   func(ctx context.Context, containerID, windowID string) error
 
 	containerAddressCalls []string
+	ttydAddressCalls      []string
 
 	// listTmuxWindowsCalls/newTmuxWindowCalls/selectTmuxWindowCalls/killTmuxWindowCalls count
 	// invocations of the corresponding method — used by tests to assert a docker call was (or was
@@ -290,9 +337,21 @@ type fakeDockerClient struct {
 	newTmuxWindowCalls    int
 	selectTmuxWindowCalls int
 	killTmuxWindowCalls   int
+
+	// startContainerEnvs records the env map every StartContainer call was given, so tests can
+	// assert on what gets injected into a workbench container at start time.
+	startContainerEnvs []map[string]string
+
+	// createVolumeCalls/createContainerCalls count invocations of the corresponding method — used
+	// by tests asserting provisioning was (re)attempted, e.g. CreateWorkbench resuming a stuck
+	// 'configuring' row.
+	createVolumeCalls    int
+	createContainerCalls int
 }
 
 func (f *fakeDockerClient) CreateVolume(ctx context.Context, name string) error {
+	f.createVolumeCalls++
+
 	if f.createVolumeFunc != nil {
 		return f.createVolumeFunc(ctx, name)
 	}
@@ -309,6 +368,8 @@ func (f *fakeDockerClient) RemoveVolume(ctx context.Context, name string) error 
 }
 
 func (f *fakeDockerClient) CreateContainer(ctx context.Context, opts workbenchdocker.CreateOpts) (string, error) {
+	f.createContainerCalls++
+
 	if f.createContainerFunc != nil {
 		return f.createContainerFunc(ctx, opts)
 	}
@@ -317,6 +378,8 @@ func (f *fakeDockerClient) CreateContainer(ctx context.Context, opts workbenchdo
 }
 
 func (f *fakeDockerClient) StartContainer(ctx context.Context, containerID string, env map[string]string) error {
+	f.startContainerEnvs = append(f.startContainerEnvs, env)
+
 	if f.startContainerFunc != nil {
 		return f.startContainerFunc(ctx, containerID, env)
 	}
@@ -344,6 +407,12 @@ func (f *fakeDockerClient) ContainerAddress(ctx context.Context, containerID str
 	f.containerAddressCalls = append(f.containerAddressCalls, containerID)
 
 	return f.containerAddressFunc(ctx, containerID)
+}
+
+func (f *fakeDockerClient) TtydAddress(ctx context.Context, containerID string) (string, error) {
+	f.ttydAddressCalls = append(f.ttydAddressCalls, containerID)
+
+	return f.ttydAddressFunc(ctx, containerID)
 }
 
 func (f *fakeDockerClient) ListTmuxWindows(ctx context.Context, containerID string) ([]domain.TerminalTab, error) {
@@ -499,6 +568,78 @@ func TestResolveTerminalTarget_DockerClientError(t *testing.T) {
 	}
 }
 
+// TestResolveTerminalShellTarget_Running mirrors TestResolveTerminalTarget_Running, but for the
+// ttyd-backed interactive terminal shell target — resolving TtydAddress instead of
+// ContainerAddress.
+func TestResolveTerminalShellTarget_Running(t *testing.T) {
+	client := &fakeDockerClient{
+		ttydAddressFunc: func(ctx context.Context, containerID string) (string, error) {
+			return "172.18.0.7:7682", nil
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	target, err := svc.ResolveTerminalShellTarget(context.Background(), uuid.New(), uuid.New())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if target != "http://172.18.0.7:7682" {
+		t.Fatalf("target = %q, want %q", target, "http://172.18.0.7:7682")
+	}
+
+	if len(client.ttydAddressCalls) != 1 || client.ttydAddressCalls[0] != testContainerId {
+		t.Fatalf("TtydAddress calls = %v, want exactly [%s]", client.ttydAddressCalls, testContainerId)
+	}
+}
+
+func TestResolveTerminalShellTarget_NotRunning(t *testing.T) {
+	for _, status := range notRunningStatuses {
+		t.Run(string(status), func(t *testing.T) {
+			client := &fakeDockerClient{}
+
+			svc := newTestService(t, status, client)
+
+			_, err := svc.ResolveTerminalShellTarget(context.Background(), uuid.New(), uuid.New())
+			if !errors.Is(err, user_errors.WorkbenchNotRunning) {
+				t.Fatalf("expected user_errors.WorkbenchNotRunning, got %v", err)
+			}
+
+			if len(client.ttydAddressCalls) != 0 {
+				t.Fatalf("TtydAddress called %d times for a non-running workbench, want 0", len(client.ttydAddressCalls))
+			}
+		})
+	}
+}
+
+func TestResolveTerminalShellTarget_DockerClientError(t *testing.T) {
+	wantErr := errors.New("boom")
+
+	client := &fakeDockerClient{
+		ttydAddressFunc: func(ctx context.Context, containerID string) (string, error) {
+			return "", wantErr
+		},
+	}
+
+	svc := newTestService(t, domain.WorkbenchStatusRunning, client)
+
+	_, err := svc.ResolveTerminalShellTarget(context.Background(), uuid.New(), uuid.New())
+	if !errors.Is(err, wantErr) {
+		t.Fatalf("expected wrapped TtydAddress error, got %v", err)
+	}
+}
+
+// notRunningStatuses is every domain.WorkbenchStatus other than 'running' — the four terminal-tab
+// methods (and ResolveTerminalShellTarget above) must reject every one of them with
+// user_errors.WorkbenchNotRunning before ever reaching the docker client.
+var notRunningStatuses = []domain.WorkbenchStatus{
+	domain.WorkbenchStatusCreated,
+	domain.WorkbenchStatusConfiguring,
+	domain.WorkbenchStatusStopped,
+	domain.WorkbenchStatusRemoved,
+}
+
 // newCreateWorkbenchService builds a Service wired to fakes sufficient to drive CreateWorkbench
 // end to end: an always-accepting vault membership check, a single-host docker pool, and a
 // fakeDockerClient whose CreateVolume/CreateContainer/StartContainer all default to success.
@@ -648,6 +789,73 @@ func TestCreateWorkbench_Unauthenticated(t *testing.T) {
 	}
 }
 
+// TestCreateWorkbench_ResumesStuckProvisioning confirms that a pre-existing workbenches row left
+// stuck in 'configuring' with no ContainerId (Docker provisioning failed after the row insert on
+// a prior call) is retried rather than returned as-is or duplicated — the fix for a workbench
+// that gets stuck at status='configuring' forever.
+func TestCreateWorkbench_ResumesStuckProvisioning(t *testing.T) {
+	workbenchesRepo := newFakeWorkbenchesRepo()
+
+	vaultID := uuid.New()
+	userID := uuid.New()
+	hostUuid := uuid.New()
+
+	stuck := domain.Workbench{
+		Uuid:           uuid.New(),
+		VaultUuid:      vaultID,
+		UserUuid:       userID,
+		Status:         domain.WorkbenchStatusConfiguring,
+		ContainerId:    "",
+		VolumeName:     fmt.Sprintf("workbench-%s-%s", vaultID, userID),
+		DockerHostUuid: &hostUuid,
+	}
+	workbenchesRepo.rows[workbenchKey{vaultID, userID}] = stuck
+
+	client := &fakeDockerClient{}
+
+	dockerHostsRepo := &fakeDockerHostsRepo{
+		getWithCredsFunc: func(ctx context.Context, id uuid.UUID) (domain.DockerHost, error) {
+			return domain.DockerHost{Uuid: id}, nil
+		},
+	}
+
+	newDockerClient := func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error) {
+		return client, nil
+	}
+
+	svc := &Service{
+		workbenchesRepo: workbenchesRepo,
+		vaultMembers:    alwaysVaultMember(),
+		dockerHostsRepo: dockerHostsRepo,
+		newDockerClient: newDockerClient,
+	}
+
+	result, err := svc.CreateWorkbench(withUser(userID), vaultID)
+	if err != nil {
+		t.Fatalf("unexpected error resuming stuck provisioning: %v", err)
+	}
+
+	if client.createVolumeCalls != 1 {
+		t.Fatalf("CreateVolume called %d times, want 1", client.createVolumeCalls)
+	}
+
+	if client.createContainerCalls != 1 {
+		t.Fatalf("CreateContainer called %d times, want 1", client.createContainerCalls)
+	}
+
+	if result.ContainerId == "" {
+		t.Fatal("expected a non-empty ContainerId after resuming provisioning")
+	}
+
+	if result.Status != domain.WorkbenchStatusCreated {
+		t.Fatalf("Status = %q, want %q", result.Status, domain.WorkbenchStatusCreated)
+	}
+
+	if len(workbenchesRepo.rows) != 1 {
+		t.Fatalf("expected exactly 1 row stored, got %d", len(workbenchesRepo.rows))
+	}
+}
+
 // newDeletableWorkbenchRow seeds workbenchesRepo with a row for (vaultID, userID) in a state
 // deleteWorkbenchRow can tear down (has a container id and a resolvable docker host).
 func newDeletableWorkbenchRow(workbenchesRepo *fakeWorkbenchesRepo, vaultID, userID uuid.UUID, hostUuid uuid.UUID) {
@@ -779,14 +987,202 @@ func TestDeleteWorkbenchesForVault_PartialFailureContinues(t *testing.T) {
 	}
 }
 
-// notRunningStatuses is every domain.WorkbenchStatus other than 'running' — the four terminal-tab
-// methods must reject all of them with user_errors.WorkbenchNotRunning before ever reaching the
-// docker client.
-var notRunningStatuses = []domain.WorkbenchStatus{
-	domain.WorkbenchStatusCreated,
-	domain.WorkbenchStatusConfiguring,
-	domain.WorkbenchStatusStopped,
-	domain.WorkbenchStatusRemoved,
+// fakeExternalConnections stands in for the external-connections service's single method this
+// service depends on, so the api_key StartWorkbench branch can run without a real credential
+// store.
+type fakeExternalConnections struct {
+	apiKey string
+	err    error
+}
+
+func (f *fakeExternalConnections) GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error) {
+	return f.apiKey, f.err
+}
+
+// newStartWorkbenchService builds a Service wired to fakes sufficient to drive StartWorkbench
+// end to end for an existing, created-but-not-yet-running workbench row: unlike newTestService's
+// synthetic getByVaultAndUserFunc, this seeds a real row into the fake repo's map so the
+// MarkConfiguring/MarkRunning steps StartWorkbench performs find something to update.
+func newStartWorkbenchService(
+	t *testing.T, vaultID, userID uuid.UUID, client *fakeDockerClient,
+) *Service {
+	t.Helper()
+
+	hostUuid := uuid.New()
+
+	workbenchesRepo := newFakeWorkbenchesRepo()
+
+	key := workbenchKey{vaultID, userID}
+	workbenchesRepo.rows[key] = domain.Workbench{
+		Uuid:           uuid.New(),
+		VaultUuid:      vaultID,
+		UserUuid:       userID,
+		Status:         domain.WorkbenchStatusCreated,
+		ContainerId:    testContainerId,
+		DockerHostUuid: &hostUuid,
+	}
+
+	dockerHostsRepo := &fakeDockerHostsRepo{
+		getWithCredsFunc: func(ctx context.Context, id uuid.UUID) (domain.DockerHost, error) {
+			return domain.DockerHost{Uuid: id}, nil
+		},
+	}
+
+	newDockerClient := func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error) {
+		return client, nil
+	}
+
+	svc := &Service{
+		workbenchesRepo: workbenchesRepo,
+		dockerHostsRepo: dockerHostsRepo,
+		newDockerClient: newDockerClient,
+	}
+
+	return svc
+}
+
+// TestStartWorkbench_ApiKeyInjectsAuthMode confirms the api_key branch injects both the BYOK key
+// and WORKBENCH_AUTH_MODE, which is what tells the in-container chat bridge it must not drive a
+// `claude setup-token` login flow.
+func TestStartWorkbench_ApiKeyInjectsAuthMode(t *testing.T) {
+	client := &fakeDockerClient{}
+	vaultID := uuid.New()
+	userID := uuid.New()
+
+	svc := newStartWorkbenchService(t, vaultID, userID, client)
+	svc.externalConnections = &fakeExternalConnections{apiKey: "sk-ant-test"}
+
+	_, err := svc.StartWorkbench(withUser(userID), vaultID, domain.WorkbenchAuthModeAPIKey)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if len(client.startContainerEnvs) != 1 {
+		t.Fatalf("StartContainer called %d times, want 1", len(client.startContainerEnvs))
+	}
+
+	env := client.startContainerEnvs[0]
+
+	if env[anthropicApiKeyEnvVar] != "sk-ant-test" {
+		t.Fatalf("%s = %q, want %q", anthropicApiKeyEnvVar, env[anthropicApiKeyEnvVar], "sk-ant-test")
+	}
+
+	wantMode := string(domain.WorkbenchAuthModeAPIKey)
+	if env[workbenchAuthModeEnvVar] != wantMode {
+		t.Fatalf("%s = %q, want %q", workbenchAuthModeEnvVar, env[workbenchAuthModeEnvVar], wantMode)
+	}
+}
+
+// TestStartWorkbench_SubscriptionLoginInjectsAuthModeOnly confirms the subscription_login branch
+// injects the auth mode and nothing else — in particular no Anthropic key, since the whole point
+// of that mode is that the bridge obtains an OAuth token itself.
+func TestStartWorkbench_SubscriptionLoginInjectsAuthModeOnly(t *testing.T) {
+	client := &fakeDockerClient{}
+	vaultID := uuid.New()
+	userID := uuid.New()
+
+	svc := newStartWorkbenchService(t, vaultID, userID, client)
+
+	_, err := svc.StartWorkbench(withUser(userID), vaultID, domain.WorkbenchAuthModeSubscriptionLogin)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if len(client.startContainerEnvs) != 1 {
+		t.Fatalf("StartContainer called %d times, want 1", len(client.startContainerEnvs))
+	}
+
+	env := client.startContainerEnvs[0]
+
+	if len(env) != 1 {
+		t.Fatalf("injected env = %v, want only %s", env, workbenchAuthModeEnvVar)
+	}
+
+	wantMode := string(domain.WorkbenchAuthModeSubscriptionLogin)
+	if env[workbenchAuthModeEnvVar] != wantMode {
+		t.Fatalf("%s = %q, want %q", workbenchAuthModeEnvVar, env[workbenchAuthModeEnvVar], wantMode)
+	}
+}
+
+// newUnprovisionedWorkbenchService builds a Service wired to fakes for a workbenches row that
+// exists but was never provisioned (empty ContainerId) — the stuck-row shape StartWorkbench must
+// reject with user_errors.WorkbenchNotProvisioned before ever resolving a docker client.
+func newUnprovisionedWorkbenchService(
+	t *testing.T, vaultID, userID uuid.UUID, client *fakeDockerClient,
+) *Service {
+	t.Helper()
+
+	hostUuid := uuid.New()
+
+	workbenchesRepo := newFakeWorkbenchesRepo()
+
+	key := workbenchKey{vaultID, userID}
+	workbenchesRepo.rows[key] = domain.Workbench{
+		Uuid:           uuid.New(),
+		VaultUuid:      vaultID,
+		UserUuid:       userID,
+		Status:         domain.WorkbenchStatusConfiguring,
+		ContainerId:    "",
+		DockerHostUuid: &hostUuid,
+	}
+
+	dockerHostsRepo := &fakeDockerHostsRepo{
+		getWithCredsFunc: func(ctx context.Context, id uuid.UUID) (domain.DockerHost, error) {
+			return domain.DockerHost{Uuid: id}, nil
+		},
+	}
+
+	newDockerClient := func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error) {
+		return client, nil
+	}
+
+	svc := &Service{
+		workbenchesRepo: workbenchesRepo,
+		dockerHostsRepo: dockerHostsRepo,
+		newDockerClient: newDockerClient,
+	}
+
+	return svc
+}
+
+// TestStartWorkbench_ApiKey_NotProvisioned confirms the api_key branch refuses to start a
+// workbench whose container was never created, with user_errors.WorkbenchNotProvisioned, and
+// never reaches the docker client.
+func TestStartWorkbench_ApiKey_NotProvisioned(t *testing.T) {
+	client := &fakeDockerClient{}
+	vaultID := uuid.New()
+	userID := uuid.New()
+
+	svc := newUnprovisionedWorkbenchService(t, vaultID, userID, client)
+	svc.externalConnections = &fakeExternalConnections{apiKey: "sk-ant-test"}
+
+	_, err := svc.StartWorkbench(withUser(userID), vaultID, domain.WorkbenchAuthModeAPIKey)
+	if !errors.Is(err, user_errors.WorkbenchNotProvisioned) {
+		t.Fatalf("expected user_errors.WorkbenchNotProvisioned, got %v", err)
+	}
+
+	if len(client.startContainerEnvs) != 0 {
+		t.Fatalf("StartContainer called %d times for an unprovisioned workbench, want 0", len(client.startContainerEnvs))
+	}
+}
+
+// TestStartWorkbench_SubscriptionLogin_NotProvisioned mirrors
+// TestStartWorkbench_ApiKey_NotProvisioned for the subscription_login branch.
+func TestStartWorkbench_SubscriptionLogin_NotProvisioned(t *testing.T) {
+	client := &fakeDockerClient{}
+	vaultID := uuid.New()
+	userID := uuid.New()
+
+	svc := newUnprovisionedWorkbenchService(t, vaultID, userID, client)
+
+	_, err := svc.StartWorkbench(withUser(userID), vaultID, domain.WorkbenchAuthModeSubscriptionLogin)
+	if !errors.Is(err, user_errors.WorkbenchNotProvisioned) {
+		t.Fatalf("expected user_errors.WorkbenchNotProvisioned, got %v", err)
+	}
+
+	if len(client.startContainerEnvs) != 0 {
+		t.Fatalf("StartContainer called %d times for an unprovisioned workbench, want 0", len(client.startContainerEnvs))
+	}
 }
 
 // TestListTerminalTabs_NotRunning confirms ListTerminalTabs rejects every non-running workbench

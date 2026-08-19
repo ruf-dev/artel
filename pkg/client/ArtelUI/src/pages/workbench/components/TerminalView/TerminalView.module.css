@@ -1,0 +1,26 @@
+.TerminalViewContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+
+    /* Groups TerminalTabBar + Terminal with zero gap so the tab strip sits flush
+       against the terminal panel's top edge (browser-tab look) — WorkbenchPage's own
+       .Body gap (1rem) still applies before/after this container as one flex item. */
+    .TerminalPanel {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+    }
+
+    /* Height + .Body's gap above it (1rem) must sum to WorkbenchPageContainer's extra
+       +3rem (see WorkbenchPage.module.css's .TerminalViewActive) so the terminal
+       itself nets back to its original size. */
+    .TerminalSpacer {
+        flex-shrink: 0;
+        height: 2rem;
+    }
+}

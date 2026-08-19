@@ -187,20 +187,19 @@ type VaultService interface {
 }
 
 // WorkbenchService manages the per-(vault, user) Docker workbench container — every vault
-// member gets their own workbench — see docs/workbench/01_data_model_and_lifecycle.md for the
-// state machine it drives, and docs/workbench/03_auth_and_login_flow.md for both auth modes
-// StartWorkbench implements.
+// member gets their own workbench, tracked through domain.WorkbenchStatus's state machine; see
+// domain.WorkbenchAuthMode for the two auth modes StartWorkbench implements.
 //
 // CreateWorkbench/GetWorkbench/StartWorkbench/StopWorkbench/DeleteWorkbench all resolve the
 // calling user from ctx internally (via user_context.GetUserContext, same idiom as
 // vault.Service.requireVaultMember) rather than taking an explicit userID parameter — they're
 // only ever called from gRPC handlers behind the auth interceptor, which injects it. Never trust
-// a client-supplied user id for these. ResolveTerminalTarget is the one exception: its only
-// caller (the terminal reverse-proxy handler) sits outside that interceptor chain and
-// authenticates the request itself, so it passes userID explicitly. The four terminal-tab methods
-// below (ListTerminalTabs/CreateTerminalTab/SelectTerminalTab/CloseTerminalTab) resolve the
-// caller from ctx too, same as Create/Get/Start/Stop/Delete — they are not part of the
-// ResolveTerminalTarget exception.
+// a client-supplied user id for these. ResolveTerminalTarget/ResolveTerminalShellTarget are the
+// exceptions: their only callers (the chat-bridge and ttyd reverse-proxy handlers, respectively)
+// sit outside that interceptor chain and authenticate the request themselves, so they pass userID
+// explicitly. The four terminal-tab methods below (ListTerminalTabs/CreateTerminalTab/
+// SelectTerminalTab/CloseTerminalTab) resolve the caller from ctx too, same as
+// Create/Get/Start/Stop/Delete — they are not part of that exception.
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
@@ -210,11 +209,17 @@ type WorkbenchService interface {
 	// DeleteWorkbenchesForVault tears down every member's workbench for vaultID — used by full
 	// vault deletion, which must clean up every user's Docker resources, not just the caller's.
 	DeleteWorkbenchesForVault(ctx context.Context, vaultID uuid.UUID) error
-	// ResolveTerminalTarget returns the "http://<ip>:<port>" base URL of userID's running
-	// workbench's in-container ttyd server, for the terminal reverse-proxy handler
+	// ResolveTerminalTarget returns the "http://<host>:<port>" base URL of userID's running
+	// workbench's in-container chat bridge, for the reverse-proxy handler
 	// (internal/transport/vaults_api/workbench_terminal.go) to forward to. Returns
 	// user_errors.WorkbenchNotRunning when the workbench isn't running.
 	ResolveTerminalTarget(ctx context.Context, vaultID, userID uuid.UUID) (string, error)
+	// ResolveTerminalShellTarget returns the "http://<host>:<port>" base URL of userID's running
+	// workbench's in-container ttyd server (the interactive tmux-tab terminal), for the
+	// terminal-shell reverse-proxy handler
+	// (internal/transport/vaults_api/workbench_terminal_shell.go) to forward to. Returns
+	// user_errors.WorkbenchNotRunning when the workbench isn't running.
+	ResolveTerminalShellTarget(ctx context.Context, vaultID, userID uuid.UUID) (string, error)
 	// ListTerminalTabs lists the calling user's own running workbench's terminal tabs (tmux
 	// windows) for vaultID, in tmux's own window order.
 	ListTerminalTabs(ctx context.Context, vaultID uuid.UUID) ([]domain.TerminalTab, error)
@@ -243,8 +248,8 @@ type CouchInstanceService interface {
 }
 
 // DockerHostService is admin CRUD over the pool of Docker daemons that back per-vault workbench
-// containers — see docs/workbench/02_docker_topology.md. Unlike CouchInstanceService/
-// S3InstanceService there's no setup/status concept and no single credential blob; instead there
+// containers. Unlike CouchInstanceService/S3InstanceService there's no setup/status concept and
+// no single credential blob; instead there
 // are three optional TLS/mTLS fields for the remote-daemon case (migrations/
 // 062_docker_hosts_tls.sql).
 type DockerHostService interface {

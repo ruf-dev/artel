@@ -62,6 +62,10 @@ type Querier interface {
 	GetMcpDefinition(ctx context.Context, name string) (Mcp, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
 	GetMcpTool(ctx context.Context, arg GetMcpToolParams) (McpTool, error)
+	// Used by the telegram webhook relay (internal/transport/telegram_webhook) to pick which of a
+	// user's (possibly several) vault workbenches to relay chat into, v1 scope: just the one most
+	// recently started (falling back to most recently created for a workbench never started).
+	GetMostRecentWorkbenchByUser(ctx context.Context, userID uuid.UUID) (Workbench, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetPostgresInstance(ctx context.Context, id uuid.UUID) (PostgresInstance, error)
 	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)

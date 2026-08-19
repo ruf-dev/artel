@@ -440,9 +440,9 @@ func GetPostgresInstance(t *testing.T, ctx context.Context, svcs *svcv1.Services
 }
 
 // ProvisionDockerHost registers url as the e2e admin-pool docker host — no TLS material, since
-// test-dockerd is a plain-TCP daemon (tests/docker-compose.yaml, DOCKER_TLS_CERTDIR: "") — see
-// docs/workbench/02_docker_topology.md. Same one-shot guarantee as ProvisionCouchInstance/
-// ProvisionS3Instance/ProvisionPostgresInstance: called once from tests/bootstrap.
+// test-dockerd is a plain-TCP daemon (tests/docker-compose.yaml, DOCKER_TLS_CERTDIR: "").
+// Same one-shot guarantee as ProvisionCouchInstance/ProvisionS3Instance/ProvisionPostgresInstance:
+// called once from tests/bootstrap.
 func ProvisionDockerHost(t *testing.T, ctx context.Context, svcs *svcv1.Services, url string) string {
 	t.Helper()
 

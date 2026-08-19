@@ -14,9 +14,11 @@ import {
 } from "@/app/hooks/Workbench.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
-import Terminal from "@/pages/workbench/components/Terminal/Terminal.tsx"
-import TerminalTabBar from "@/pages/workbench/components/Terminal/components/TerminalTabBar/TerminalTabBar.tsx"
-import WorkbenchToolbar from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
+import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
+import TerminalView from "@/pages/workbench/components/TerminalView/TerminalView.tsx"
+import WorkbenchToolbar, {
+    type WorkbenchView,
+} from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
 
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
@@ -30,6 +32,8 @@ export default function WorkbenchPage() {
     const [showSetup, setShowSetup] = useState(false)
     const [stopping, setStopping] = useState(false)
     const [creating, setCreating] = useState(false)
+    const [resuming, setResuming] = useState(false)
+    const [view, setView] = useState<WorkbenchView>("chat")
 
     const vault = vaults.find(v => v.id === vaultId)
     const vaultName = vault?.name ?? "Vault"
@@ -42,6 +46,14 @@ export default function WorkbenchPage() {
             .finally(() => setCreating(false))
     }
 
+    function handleStartClick() {
+        setResuming(true)
+        create()
+            .then(() => setShowSetup(true))
+            .catch(e => bakeError("Failed to prepare workbench", e))
+            .finally(() => setResuming(false))
+    }
+
     function handleStop() {
         setStopping(true)
         stop()
@@ -50,9 +62,10 @@ export default function WorkbenchPage() {
     }
 
     const bodyCentered = isLoading || !exists || (status !== "running" && !showSetup)
+    const terminalViewActive = status === "running" && view === "terminal"
 
     return (
-        <div className={cls.WorkbenchPageContainer}>
+        <div className={cn(cls.WorkbenchPageContainer, terminalViewActive && cls.TerminalViewActive)}>
             <Link className={cls.BackLink} to={Path.HomePage}>← Back to vaults</Link>
             {!isLoading && exists && vaultId && (
                 <WorkbenchToolbar
@@ -60,9 +73,12 @@ export default function WorkbenchPage() {
                     status={status}
                     exists={exists}
                     vaultId={vaultId}
-                    onStart={() => setShowSetup(true)}
+                    onStart={handleStartClick}
                     onStop={handleStop}
                     stopping={stopping}
+                    starting={resuming}
+                    view={view}
+                    onViewChange={setView}
                 />
             )}
             <div className={cn(cls.Body, bodyCentered && cls.BodyCentered)}>
@@ -80,28 +96,26 @@ export default function WorkbenchPage() {
                         </Button>
                     </>
                 )}
-                {!isLoading && exists && status === "running" && vaultId && (
-                    <>
-                        <div className={cls.TerminalPanel}>
-                            <TerminalTabBar
-                                tabs={tabs}
-                                onSelect={(tabId) => {
-                                    selectTab(tabId)
-                                        .catch(e => bakeError("Failed to select tab", e))
-                                }}
-                                onCreate={() => {
-                                    createTab()
-                                        .catch(e => bakeError("Failed to create tab", e))
-                                }}
-                                onClose={(tabId) => {
-                                    closeTab(tabId)
-                                        .catch(e => bakeError("Failed to close tab", e))
-                                }}
-                            />
-                            <Terminal vaultId={vaultId}/>
-                        </div>
-                        <div className={cls.TerminalSpacer}/>
-                    </>
+                {!isLoading && exists && status === "running" && vaultId && view === "chat" && (
+                    <Chat vaultId={vaultId}/>
+                )}
+                {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
+                    <TerminalView
+                        vaultId={vaultId}
+                        tabs={tabs}
+                        onSelectTab={(tabId) => {
+                            selectTab(tabId)
+                                .catch(e => bakeError("Failed to select tab", e))
+                        }}
+                        onCreateTab={() => {
+                            createTab()
+                                .catch(e => bakeError("Failed to create tab", e))
+                        }}
+                        onCloseTab={(tabId) => {
+                            closeTab(tabId)
+                                .catch(e => bakeError("Failed to close tab", e))
+                        }}
+                    />
                 )}
                 {!isLoading && exists && status !== "running" && showSetup && vaultId && (
                     <PickAuthModeScreen vaultId={vaultId}/>

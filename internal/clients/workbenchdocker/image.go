@@ -6,6 +6,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"io"
 	"io/fs"
 	"sort"
@@ -89,24 +90,34 @@ func (c *Client) buildImage(ctx context.Context, tag string) error {
 }
 
 // workbenchImageTag computes a deterministic tag for the workbench image from the content of
-// the embedded deploy/workbench build context: each embedded file's name and content are hashed
-// together (sorted by filename, so the result doesn't depend on directory-listing order), and
-// the first workbenchImageTagHashLen hex characters of the resulting sha256 digest become the
-// tag suffix.
+// the embedded deploy/workbench build context: every embedded file's path and content are hashed
+// together (sorted by path, so the result doesn't depend on directory-walk order), and the first
+// workbenchImageTagHashLen hex characters of the resulting sha256 digest become the tag suffix.
+//
+// This hashes bridge.tar's own bytes as one opaque file rather than unpacking it first — unlike
+// workbenchBuildContext below, which must unpack it (Docker needs the real bridge/... paths, not
+// a literal file called "bridge.tar" in its build context). For tagging purposes the raw bytes
+// are just as good a fingerprint: bridge.tar's content is a pure function of bridge/'s content
+// (see gen_bridge_tar.go), so any change under bridge/ that gets regenerated into bridge.tar still
+// changes this hash.
 func workbenchImageTag() (string, error) {
-	entries, err := fs.ReadDir(workbenchimage.Files, ".")
-	if err != nil {
-		return "", rerrors.Wrap(err, "error listing embedded workbench build context")
-	}
+	var names []string
 
-	names := make([]string, 0, len(entries))
-
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
+	walkErr := fs.WalkDir(workbenchimage.Files, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
 
-		names = append(names, entry.Name())
+		if d.IsDir() {
+			return nil
+		}
+
+		names = append(names, path)
+
+		return nil
+	})
+	if walkErr != nil {
+		return "", rerrors.Wrap(walkErr, "error listing embedded workbench build context")
 	}
 
 	sort.Strings(names)
@@ -136,8 +147,17 @@ func workbenchImageTag() (string, error) {
 	return workbenchImageTagPrefix + hexSum[:workbenchImageTagHashLen], nil
 }
 
+// workbenchBridgeTarName is the embedded file gen_bridge_tar.go produces — see
+// workbenchimage.Files' doc comment for why the bridge/ module tree travels as one packaged file
+// rather than being named directly in the //go:embed pattern.
+const workbenchBridgeTarName = "bridge.tar"
+
 // workbenchBuildContext packs the embedded deploy/workbench build context (workbenchimage.Files)
 // into an in-memory tar archive, as required by the Docker Engine API's ImageBuild endpoint.
+//
+// workbenchBridgeTarName is unpacked rather than copied through as one opaque file: Docker's
+// COPY bridge/... instructions need the real bridge/go.mod, bridge/main.go, etc. paths to exist
+// in the build context, not a single file literally named "bridge.tar".
 func workbenchBuildContext() (*bytes.Buffer, error) {
 	var tarBuf bytes.Buffer
 
@@ -150,6 +170,10 @@ func workbenchBuildContext() (*bytes.Buffer, error) {
 
 		if d.IsDir() {
 			return nil
+		}
+
+		if path == workbenchBridgeTarName {
+			return unpackBridgeTar(tarWriter)
 		}
 
 		content, err := fs.ReadFile(workbenchimage.Files, path)
@@ -182,4 +206,38 @@ func workbenchBuildContext() (*bytes.Buffer, error) {
 	}
 
 	return &tarBuf, nil
+}
+
+// unpackBridgeTar re-emits every entry of the embedded bridge.tar into tarWriter unchanged. Its
+// entries are already named "bridge/..." (gen_bridge_tar.go walks from deploy/workbench, so the
+// prefix is baked in), so each one lands at exactly the path the Dockerfile's
+// COPY bridge/... instructions expect.
+func unpackBridgeTar(tarWriter *tar.Writer) error {
+	content, err := fs.ReadFile(workbenchimage.Files, workbenchBridgeTarName)
+	if err != nil {
+		return err
+	}
+
+	bridgeReader := tar.NewReader(bytes.NewReader(content))
+
+	for {
+		header, err := bridgeReader.Next()
+		if errors.Is(err, io.EOF) {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		err = tarWriter.WriteHeader(header)
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(tarWriter, bridgeReader)
+		if err != nil {
+			return err
+		}
+	}
 }
