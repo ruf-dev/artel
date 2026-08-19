@@ -90,6 +90,13 @@ type AnthropicKeyCredentials struct {
 // TelegramCredentials is stored encrypted in credentials_enc for the telegram provider.
 type TelegramCredentials struct {
 	BotToken string `json:"bot_token"`
+	// ChatID is captured from the first inbound webhook update once the user messages their
+	// linked bot; zero until then.
+	ChatID int64 `json:"chat_id,omitempty"`
+	// WebhookSecret is generated when the connection is created and passed to Telegram's
+	// setWebhook as secret_token, then compared against the X-Telegram-Bot-Api-Secret-Token
+	// header on each inbound webhook request (mirrors GitlabCredentials.WebhookSecret).
+	WebhookSecret string `json:"webhook_secret,omitempty"`
 }
 
 // OpenAIKeyCredentials is stored encrypted in credentials_enc for the openai provider.

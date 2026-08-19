@@ -11,7 +11,7 @@ export default function ConnectedContent({botUsername, onDisconnect}: ConnectedC
     return (
         <div className={cls.ConnectedContentContainer}>
             <p className={cls.ModalSub}>
-                Connected as <b>@{botUsername}</b>.
+                Connected as <b>@{botUsername}</b>. Messages you send this bot also relay into your workbench chat.
             </p>
             <div className={cls.ModalActions}>
                 <Button variant="danger" onClick={onDisconnect}>Disconnect</Button>

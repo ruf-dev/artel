@@ -631,7 +631,19 @@ func (s *Service) CheckGitlabConnection(
 	return username, nil
 }
 
-// AddTelegramConnection validates the bot token against Telegram, then persists it.
+// AddTelegramConnection validates the bot token against Telegram, then persists it along with a
+// freshly generated inbound-webhook secret (compared against X-Telegram-Bot-Api-Secret-Token by
+// internal/transport/telegram_webhook.Handler on every delivery — see domain.TelegramCredentials).
+//
+// It deliberately does NOT call Telegram's setWebhook here: doing so requires Artel's own public
+// base URL to build the callback URL (https://<host>/webhooks/telegram/<connection_id>), and no
+// such config field exists yet (checked internal/config/EnvironmentConfig and config/*.yaml —
+// neither has a PublicURL/BaseURL/ExternalURL equivalent). SetTelegramWebhook below implements the
+// actual call and is ready to be wired in once that config exists; until then the secret is
+// generated and stored so the webhook handler can authenticate deliveries as soon as the
+// operator points Telegram's setWebhook at this connection's URL by hand (e.g. via BotFather or a
+// one-off curl), mirroring how GenerateGitlabWebhookSecret hands the caller a secret to paste into
+// GitLab's own webhook UI rather than registering it via a GitLab API call.
 func (s *Service) AddTelegramConnection(
 	ctx context.Context,
 	botToken string,
@@ -647,7 +659,8 @@ func (s *Service) AddTelegramConnection(
 	}
 
 	creds := domain.TelegramCredentials{
-		BotToken: botToken,
+		BotToken:      botToken,
+		WebhookSecret: randomHex(32),
 	}
 
 	credJSON, err := json.Marshal(creds)
@@ -697,6 +710,55 @@ func (s *Service) CheckTelegramConnection(
 	}
 
 	return botUsername, nil
+}
+
+// SetTelegramWebhook registers publicBaseURL+"/webhooks/telegram/"+connection id as the caller's
+// telegram connection's inbound webhook with Telegram, via the telegram.set_webhook MoM tool
+// (see migrations/073_telegram_webhook_mom.sql). Not called anywhere yet — see the "does
+// deliberately NOT call Telegram's setWebhook" note on AddTelegramConnection for why: no
+// public-base-URL config exists for a caller to supply here. Left in place so wiring it in later
+// is a one-line call once that config field exists, rather than more service-layer work.
+func (s *Service) SetTelegramWebhook(ctx context.Context, publicBaseURL string) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return user_errors.Unauthenticated
+	}
+
+	result, err := s.connections.GetByUserAndProvider(ctx, uc.UserUuid, domain.ProviderTelegram)
+	if err != nil {
+		return rerrors.Wrap(err, "error getting telegram connection")
+	}
+
+	if !result.Valid {
+		return user_errors.TelegramWebhookConnectionNotFound
+	}
+
+	conn := result.V
+
+	var creds domain.TelegramCredentials
+
+	err = json.Unmarshal(conn.CredentialsJSON, &creds)
+	if err != nil {
+		return rerrors.Wrap(err, "error parsing telegram credentials")
+	}
+
+	if creds.WebhookSecret == "" {
+		return user_errors.TelegramWebhookConnectionNotFound
+	}
+
+	callbackURL := strings.TrimRight(publicBaseURL, "/") + "/webhooks/telegram/" + conn.Uuid.String()
+
+	params := map[string]interface{}{
+		"url":          callbackURL,
+		"secret_token": creds.WebhookSecret,
+	}
+
+	_, err = s.mom.ExecuteToolForConnection(ctx, conn.Uuid, "telegram", "set_webhook", params)
+	if err != nil {
+		return rerrors.Wrap(err, "error calling telegram set_webhook")
+	}
+
+	return nil
 }
 
 // AddTrelloConnection validates the API key/token pair against Trello, then persists it.
