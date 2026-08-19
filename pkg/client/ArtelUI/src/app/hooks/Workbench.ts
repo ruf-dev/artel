@@ -67,7 +67,6 @@ export function useWorkbenchTerminalTabs(vaultId: string | undefined, enabled: b
         queryKey: workbenchTerminalTabsQueryKey(vaultId),
         queryFn: () => workbenchService.listTerminalTabs(vaultId!),
         enabled: !!vaultId && enabled,
-        refetchInterval: 4000,
         refetchOnWindowFocus: true,
     })
 

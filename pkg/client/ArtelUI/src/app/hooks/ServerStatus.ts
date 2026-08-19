@@ -4,7 +4,6 @@ import {AuthAPI} from "@/app/api/artel"
 import {apiPrefix} from "@/app/api/api.ts"
 import {useAppConfig} from "@/app/hooks/AppConfig.ts"
 
-const PING_INTERVAL_MS = 10_000
 const PING_TIMEOUT_MS = 5_000
 
 // Uses the public /api/auth/config endpoint rather than an authenticated one:
@@ -64,10 +63,8 @@ export function useServerStatus(): boolean {
         }
 
         check()
-        const id = setInterval(check, PING_INTERVAL_MS)
         return () => {
             cancelled = true
-            clearInterval(id)
         }
     }, [])
 

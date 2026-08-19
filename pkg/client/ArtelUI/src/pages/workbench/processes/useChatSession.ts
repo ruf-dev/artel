@@ -22,6 +22,7 @@ function buildWsUrl(vaultId: string): string {
 export function useChatSession(vaultId: string | undefined) {
     const [items, setItems] = useState<ChatItem[]>([])
     const [status, setStatus] = useState<ChatConnectionStatus>("connecting")
+    const [authComplete, setAuthComplete] = useState(false)
     const wsRef = useRef<WebSocket | null>(null)
     const backoffRef = useRef(INITIAL_BACKOFF_MS)
     const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -33,6 +34,7 @@ export function useChatSession(vaultId: string | undefined) {
         closedByUserRef.current = false
         setItems([])
         setStatus("connecting")
+        setAuthComplete(false)
 
         function connect() {
             if (closedByUserRef.current) return
@@ -51,6 +53,7 @@ export function useChatSession(vaultId: string | undefined) {
                 } catch {
                     return
                 }
+                if (parsed.type === "auth_complete") setAuthComplete(true)
                 setItems(prev => applyEvent(prev, parsed))
             }
             ws.onclose = () => {
@@ -77,11 +80,10 @@ export function useChatSession(vaultId: string | undefined) {
     }, [vaultId])
 
     const dispatch = useCallback((event: ChatEvent) => {
-        setItems(prev => applyEvent(prev, event))
         const ws = wsRef.current
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(event))
-        }
+        if (!ws || ws.readyState !== WebSocket.OPEN) return
+        ws.send(JSON.stringify(event))
+        setItems(prev => applyEvent(prev, event))
     }, [])
 
     const sendMessage = useCallback((text: string) => {
@@ -96,5 +98,5 @@ export function useChatSession(vaultId: string | undefined) {
         dispatch({type: "auth_code_submit", code})
     }, [dispatch])
 
-    return {items, status, sendMessage, sendPermissionDecision, sendAuthCode}
+    return {items, status, authComplete, sendMessage, sendPermissionDecision, sendAuthCode}
 }

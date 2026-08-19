@@ -36,6 +36,13 @@ const (
 	EventAuthCodeNeeded EventType = "auth_code_needed"
 	// EventAuthCodeSubmit: consumer → bridge, carries Code.
 	EventAuthCodeSubmit EventType = "auth_code_submit"
+	// EventAuthComplete: bridge → consumer, carries no payload fields. Broadcast once, immediately
+	// after the bridge's startup auth check finishes — whether a subscription login actually ran,
+	// was skipped (api_key mode / token already present), or failed — since the bridge falls
+	// through to normal operation in every case. This is the one unambiguous signal a consumer can
+	// use to switch off an "auth pending" UI, instead of inferring completion from the absence of
+	// further auth_link/auth_code_needed events.
+	EventAuthComplete EventType = "auth_complete"
 )
 
 type PermissionDecision string

@@ -45,6 +45,17 @@ import (
 // copied into the Parser's growing transcript anyway.
 const readChunkSize = 4096
 
+// ptyWinsize is the window size given to the pty setup-token runs under. pty.Start (no size
+// specified) leaves the kernel's default 0x0 winsize in place; setup-token's Ink-based TUI treats
+// that as "can't detect width" and falls back to wrapping its own output at a defaulted 80
+// columns — counting the invisible OSC 8 escape bytes toward that budget the same as visible
+// characters, since it wraps the fully-composed line rather than the rendered text. That
+// inserts a real line break partway through the sign-in URL's escape sequence, at whatever byte
+// offset 80 columns happens to land on for that particular run's client_id/state values — not
+// even at a consistent point, since those are per-run random values of varying rendered width.
+// A wide, fixed window size removes the incentive to wrap this line at all.
+var ptyWinsize = &pty.Winsize{Rows: 50, Cols: 2000}
+
 // Runner drives one claude setup-token attempt.
 type Runner struct {
 	// binary is the `claude` executable to run; a field so tests could point it at a stub script
@@ -72,7 +83,7 @@ func NewRunner(binary string) *Runner {
 func (r *Runner) Run(ctx context.Context, envStore *envdrop.Store, emit func(chatprotocol.Event), codes <-chan string) error {
 	cmd := exec.CommandContext(ctx, r.binary, "setup-token")
 
-	ptmx, err := pty.Start(cmd)
+	ptmx, err := pty.StartWithSize(cmd, ptyWinsize)
 	if err != nil {
 		return fmt.Errorf("error starting claude setup-token under a pty: %w", err)
 	}

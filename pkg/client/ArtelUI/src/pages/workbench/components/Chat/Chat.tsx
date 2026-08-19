@@ -4,14 +4,19 @@ import cls from "@/pages/workbench/components/Chat/Chat.module.css"
 import ChatStatusBanner from "@/pages/workbench/components/Chat/components/ChatStatusBanner/ChatStatusBanner.tsx"
 import ChatMessageList from "@/pages/workbench/components/Chat/components/ChatMessageList/ChatMessageList.tsx"
 import ChatComposer from "@/pages/workbench/components/Chat/components/ChatComposer/ChatComposer.tsx"
-import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
+import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
+import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
+import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
 
 interface Props {
-    vaultId: string
+    items: ChatItem[]
+    status: ChatConnectionStatus
+    sendMessage: (text: string) => void
+    sendPermissionDecision: (id: string, decision: PermissionDecision) => void
+    sendAuthCode: (code: string) => void
 }
 
-export default function Chat({vaultId}: Props) {
-    const {items, status, sendMessage, sendPermissionDecision, sendAuthCode} = useChatSession(vaultId)
+export default function Chat({items, status, sendMessage, sendPermissionDecision, sendAuthCode}: Props) {
     const [draft, setDraft] = useState("")
 
     const pendingAuthCode = items.some(item => item.kind === "auth_code_needed" && !item.resolved)

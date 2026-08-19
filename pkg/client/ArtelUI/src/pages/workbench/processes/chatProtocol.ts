@@ -17,6 +17,7 @@ export type EventType =
     | "auth_link"
     | "auth_code_needed"
     | "auth_code_submit"
+    | "auth_complete"
 
 export type PermissionDecision = "allow_once" | "allow_always" | "deny"
 

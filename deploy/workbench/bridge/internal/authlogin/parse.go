@@ -28,10 +28,16 @@ type Signal struct {
 	Token string
 }
 
-// osc8LinkPattern extracts the URI parameter of an OSC 8 hyperlink escape sequence:
-// ESC ] 8 ; params ; URI BEL. Confirmed against real CLI 2.1.234 output (captured by running
-// `claude setup-token` under a pty and inspecting the raw bytes — see testdata/ and parse_test.go):
-// the sign-in link is emitted as
+// authLinkPattern extracts the sign-in URL by keying off its known stable prefix
+// (https://claude.com/cai/oauth/authorize?) and stopping at the first control character —
+// rather than requiring the exact OSC 8 escape framing (ESC ] 8 ; ... ; URI BEL) the CLI happened
+// to use in the captured fixture. This tolerates minor CLI-version drift in the escape sequence
+// itself (e.g. a terminator of ESC \ instead of BEL, or a differently-shaped params field), or
+// even the link being printed as plain unstyled text with no OSC 8 wrapper at all, since only the
+// URL's own character run is matched, not the surrounding escape structure.
+//
+// Confirmed against real CLI 2.1.234 output (captured by running `claude setup-token` under a pty
+// and inspecting the raw bytes — see testdata/ and parse_test.go): the sign-in link is emitted as
 //
 //	\x1b]8;id=<id>;https://claude.com/cai/oauth/authorize?...\x07
 //
@@ -44,7 +50,7 @@ type Signal struct {
 // The escape sequence's own URI field is used rather than the wrapped visible text because the
 // latter is split across multiple styled segments mid-word (to fit terminal width) and would have
 // to be reassembled; the URI field carries it whole and unstyled every time.
-var osc8LinkPattern = regexp.MustCompile(`\x1b\]8;[^;]*;(https://[^\x07\x1b]+)\x07`)
+var authLinkPattern = regexp.MustCompile(`https://claude\.com/cai/oauth/authorize\?[^\x00-\x1f\x7f]+`)
 
 // oauthErrorPattern extracts the message of an "OAuth error: ..." line. Confirmed against real
 // output: submitting an invalid code produces (raw, escapes elided)
@@ -58,7 +64,7 @@ var oauthErrorPattern = regexp.MustCompile(`OAuth error:([^\r\x1b]+)`)
 // tokenPattern matches claude's long-lived OAuth token prefix (the same "sk-ant-" family as
 // regular API keys, just from a different subcommand).
 //
-// Unlike osc8LinkPattern and oauthErrorPattern, this was NOT confirmed against a real success
+// Unlike authLinkPattern and oauthErrorPattern, this was NOT confirmed against a real success
 // screen — completing the flow requires an actual Claude subscription and a real browser login,
 // which is out of scope for this change (see the package doc). If setup-token's actual success
 // output doesn't contain a bare sk-ant-... token on its own (e.g. it's boxed, wrapped, or printed
@@ -68,9 +74,10 @@ var oauthErrorPattern = regexp.MustCompile(`OAuth error:([^\r\x1b]+)`)
 var tokenPattern = regexp.MustCompile(`sk-ant-[A-Za-z0-9_-]{20,}`)
 
 // Parser incrementally scans claude setup-token's raw pty output — control sequences included,
-// deliberately not stripped, since the OSC 8 escape is what makes link extraction reliable — and
-// reports each new signal at most once (errors are the exception: a user can submit several bad
-// codes in a row, and each distinct message is reported).
+// deliberately not stripped, since oauthErrorPattern and tokenPattern still rely on escape bytes
+// to bound where a match ends — and reports each new signal at most once (errors are the
+// exception: a user can submit several bad codes in a row, and each distinct message is
+// reported).
 //
 // Not safe for concurrent use; one Parser is used per login attempt.
 type Parser struct {
@@ -99,10 +106,17 @@ func (p *Parser) Feed(chunk []byte) []Signal {
 	var signals []Signal
 
 	if !p.sawLink {
-		if m := osc8LinkPattern.FindSubmatch(p.buf); m != nil {
+		// Same reasoning as oauthErrorPattern below: a match whose end coincides with the
+		// buffer's current end is only proof the URL run hasn't been cut off by a real
+		// terminator yet — it may just be where this Feed call's chunk happened to stop. A pty
+		// Read splitting the OSC 8 sequence mid-URL (the link is ~150-250 bytes, well within a
+		// single readChunkSize but not guaranteed to arrive in one syscall) would otherwise
+		// latch sawLink on a truncated URL forever, silently dropping trailing query params
+		// such as redirect_uri.
+		if loc := authLinkPattern.FindIndex(p.buf); loc != nil && loc[1] < len(p.buf) {
 			p.sawLink = true
 
-			signals = append(signals, Signal{Kind: SignalAuthLink, URL: string(m[1])})
+			signals = append(signals, Signal{Kind: SignalAuthLink, URL: string(p.buf[loc[0]:loc[1]])})
 		}
 	}
 

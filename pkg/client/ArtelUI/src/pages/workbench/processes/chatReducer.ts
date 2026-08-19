@@ -120,6 +120,7 @@ export function applyEvent(prev: ChatItem[], event: ChatEvent): ChatItem[] {
     switch (event.type) {
         case "system_init":
         case "turn_done":
+        case "auth_complete":
             return prev
         case "user_message":
             return applyUserMessage(prev, event)

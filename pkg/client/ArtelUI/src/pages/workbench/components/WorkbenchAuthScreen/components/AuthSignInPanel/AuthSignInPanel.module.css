@@ -1,0 +1,24 @@
+.AuthSignInPanelContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+
+    & .LinkButton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.5rem;
+        background: var(--coral);
+        color: var(--color-fg-white);
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+}

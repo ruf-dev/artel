@@ -8,7 +8,6 @@ import {Path} from "@/app/routing/Router.tsx"
 import {useVaults} from "@/app/hooks/Vaults.ts"
 import {
     useWorkbench,
-    useWorkbenchMutations,
     useWorkbenchTerminalTabs,
     useWorkbenchTerminalTabMutations,
 } from "@/app/hooks/Workbench.ts"
@@ -16,52 +15,38 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
 import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
 import TerminalView from "@/pages/workbench/components/TerminalView/TerminalView.tsx"
+import WorkbenchAuthScreen from "@/pages/workbench/components/WorkbenchAuthScreen/WorkbenchAuthScreen.tsx"
 import WorkbenchToolbar, {
     type WorkbenchView,
 } from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
+import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
+import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLifecycle.ts"
 
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
     const {vaults} = useVaults()
     const {exists, status, isLoading} = useWorkbench(vaultId)
-    const {create, stop} = useWorkbenchMutations(vaultId)
+    const lifecycle = useWorkbenchLifecycle(vaultId)
     const {tabs} = useWorkbenchTerminalTabs(vaultId, status === "running")
     const {create: createTab, select: selectTab, close: closeTab} = useWorkbenchTerminalTabMutations(vaultId)
     const bakeError = useBakeError()
+    const {
+        items,
+        status: chatStatus,
+        authComplete,
+        sendMessage,
+        sendPermissionDecision,
+        sendAuthCode,
+    } = useChatSession(status === "running" ? vaultId : undefined)
 
-    const [showSetup, setShowSetup] = useState(false)
-    const [stopping, setStopping] = useState(false)
-    const [creating, setCreating] = useState(false)
-    const [resuming, setResuming] = useState(false)
     const [view, setView] = useState<WorkbenchView>("chat")
 
     const vault = vaults.find(v => v.id === vaultId)
     const vaultName = vault?.name ?? "Vault"
 
-    function handleCreate() {
-        setCreating(true)
-        create()
-            .then(() => setShowSetup(true))
-            .catch(e => bakeError("Failed to set up workbench", e))
-            .finally(() => setCreating(false))
-    }
+    const awaitingAuth = items.some(i => i.kind === "auth_link" || i.kind === "auth_code_needed") && !authComplete
 
-    function handleStartClick() {
-        setResuming(true)
-        create()
-            .then(() => setShowSetup(true))
-            .catch(e => bakeError("Failed to prepare workbench", e))
-            .finally(() => setResuming(false))
-    }
-
-    function handleStop() {
-        setStopping(true)
-        stop()
-            .catch(e => bakeError("Failed to stop workbench", e))
-            .finally(() => setStopping(false))
-    }
-
-    const bodyCentered = isLoading || !exists || (status !== "running" && !showSetup)
+    const bodyCentered = isLoading || !exists || (status !== "running" && !lifecycle.showSetup) || awaitingAuth
     const terminalViewActive = status === "running" && view === "terminal"
 
     return (
@@ -73,12 +58,13 @@ export default function WorkbenchPage() {
                     status={status}
                     exists={exists}
                     vaultId={vaultId}
-                    onStart={handleStartClick}
-                    onStop={handleStop}
-                    stopping={stopping}
-                    starting={resuming}
+                    onStart={lifecycle.handleStartClick}
+                    onStop={lifecycle.handleStop}
+                    stopping={lifecycle.stopping}
+                    starting={lifecycle.resuming}
                     view={view}
                     onViewChange={setView}
+                    awaitingAuth={awaitingAuth}
                 />
             )}
             <div className={cn(cls.Body, bodyCentered && cls.BodyCentered)}>
@@ -91,15 +77,19 @@ export default function WorkbenchPage() {
                             This vault doesn&apos;t have a Workbench. It may predate the feature, or Docker
                             isn&apos;t configured for this deployment.
                         </p>
-                        <Button variant="primary" onClick={handleCreate} disabled={creating}>
-                            {creating ? "Setting up…" : "Set up Workbench"}
+                        <Button variant="primary" onClick={lifecycle.handleCreate} disabled={lifecycle.creating}>
+                            {lifecycle.creating ? "Setting up…" : "Set up Workbench"}
                         </Button>
                     </>
                 )}
-                {!isLoading && exists && status === "running" && vaultId && view === "chat" && (
-                    <Chat vaultId={vaultId}/>
+                {!isLoading && exists && status === "running" && vaultId && awaitingAuth && (
+                    <WorkbenchAuthScreen items={items} status={chatStatus} onSubmitCode={sendAuthCode}/>
                 )}
-                {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
+                {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
+                    <Chat items={items} status={chatStatus} sendMessage={sendMessage}
+                          sendPermissionDecision={sendPermissionDecision} sendAuthCode={sendAuthCode}/>
+                )}
+                {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "terminal" && (
                     <TerminalView
                         vaultId={vaultId}
                         tabs={tabs}
@@ -117,7 +107,7 @@ export default function WorkbenchPage() {
                         }}
                     />
                 )}
-                {!isLoading && exists && status !== "running" && showSetup && vaultId && (
+                {!isLoading && exists && status !== "running" && lifecycle.showSetup && vaultId && (
                     <PickAuthModeScreen vaultId={vaultId}/>
                 )}
             </div>

@@ -67,16 +67,43 @@ describe("useChatSession", () => {
         unmount()
     })
 
-    it("optimistically applies and sends a user message even while the socket is still connecting", () => {
+    it("does nothing when sending a user message while the socket is still connecting", () => {
         const {result} = renderHook(() => useChatSession("v1"))
 
         act(() => {
             result.current.sendMessage("hi there")
         })
 
-        expect(result.current.items).toEqual([{kind: "user_message", key: "user_message-0", text: "hi there"}])
-        // Socket not open yet -> nothing should have been written to the wire.
+        // Socket not open yet -> nothing should have been written to the wire, and no
+        // optimistic item should have been applied locally either (a send that never
+        // went out must not render as if it had).
         expect(MockWebSocket.instances[0].sent).toHaveLength(0)
+        expect(result.current.items).toEqual([])
+    })
+
+    it("does not send or mutate items when submitting an auth code while the socket is not open", () => {
+        const {result} = renderHook(() => useChatSession("v1"))
+
+        act(() => {
+            MockWebSocket.instances[0].open()
+        })
+        act(() => {
+            MockWebSocket.instances[0].emit({type: "auth_code_needed"})
+        })
+
+        act(() => {
+            MockWebSocket.instances[0].close()
+        })
+        expect(result.current.status).toBe("reconnecting")
+
+        act(() => {
+            result.current.sendAuthCode("123456")
+        })
+
+        expect(MockWebSocket.instances[0].sent).toHaveLength(0)
+        expect(result.current.items).toEqual([
+            {kind: "auth_code_needed", key: "auth_code_needed-0", resolved: false},
+        ])
     })
 
     it("sends over the wire once open", () => {
@@ -111,4 +138,78 @@ describe("useChatSession", () => {
 
         await waitFor(() => expect(MockWebSocket.instances).toHaveLength(2), {timeout: 3000})
     }, 10000)
+})
+
+describe("useChatSession authComplete", () => {
+    beforeEach(() => {
+        MockWebSocket.instances = []
+        vi.stubGlobal("WebSocket", MockWebSocket)
+    })
+
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
+    it("marks authComplete once an auth_complete event arrives", async () => {
+        const {result} = renderHook(() => useChatSession("v1"))
+
+        act(() => {
+            MockWebSocket.instances[0].open()
+        })
+        await waitFor(() => expect(result.current.status).toBe("open"))
+
+        expect(result.current.authComplete).toBe(false)
+
+        act(() => {
+            MockWebSocket.instances[0].emit({type: "auth_complete"})
+        })
+        await waitFor(() => expect(result.current.authComplete).toBe(true))
+    })
+
+    it("keeps authComplete true across a reconnect, same as items", async () => {
+        // A dropped/reconnecting socket doesn't wipe `items` either (only a fresh
+        // effect run — i.e. a vaultId change — does that): the hub replays backlog
+        // to newly-attached consumers, so authComplete should survive a reconnect
+        // the same way the already-applied items do.
+        const {result} = renderHook(() => useChatSession("v1"))
+        const first = MockWebSocket.instances[0]
+
+        act(() => {
+            first.open()
+        })
+        await waitFor(() => expect(result.current.status).toBe("open"))
+
+        act(() => {
+            first.emit({type: "auth_complete"})
+        })
+        await waitFor(() => expect(result.current.authComplete).toBe(true))
+
+        act(() => {
+            first.onclose?.()
+        })
+        expect(result.current.status).toBe("reconnecting")
+        expect(result.current.authComplete).toBe(true)
+
+        await waitFor(() => expect(MockWebSocket.instances).toHaveLength(2), {timeout: 3000})
+    }, 10000)
+
+    it("resets authComplete when the connect-effect re-runs for a new vaultId", async () => {
+        const {result, rerender} = renderHook(({vaultId}) => useChatSession(vaultId), {
+            initialProps: {vaultId: "v1"},
+        })
+
+        act(() => {
+            MockWebSocket.instances[0].open()
+        })
+        await waitFor(() => expect(result.current.status).toBe("open"))
+
+        act(() => {
+            MockWebSocket.instances[0].emit({type: "auth_complete"})
+        })
+        await waitFor(() => expect(result.current.authComplete).toBe(true))
+
+        rerender({vaultId: "v2"})
+
+        expect(result.current.authComplete).toBe(false)
+    })
 })

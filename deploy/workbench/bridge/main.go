@@ -60,6 +60,9 @@ func main() {
 		log.Printf("workbench-bridge: subscription login did not complete: %v", err)
 	}
 
+	authCompleteEvent := chatprotocol.Event{Type: chatprotocol.EventAuthComplete}
+	chatHub.Broadcast(authCompleteEvent)
+
 	runMainLoop(ctx, chatHub, runner, broker)
 
 	shutdown(hookServer, chatServer)

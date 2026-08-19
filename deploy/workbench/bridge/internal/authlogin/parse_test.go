@@ -124,6 +124,96 @@ func TestParser_NoSignalsOnEmptyInput(t *testing.T) {
 	}
 }
 
+// TestParser_AuthLinkOSC8TerminatedByST confirms authLinkPattern matches an OSC 8 hyperlink
+// terminated by ST (\x1b\\) rather than the BEL (\x07) terminator seen in the captured fixture —
+// the old osc8LinkPattern hardcoded \x07 and could not have matched this.
+func TestParser_AuthLinkOSC8TerminatedByST(t *testing.T) {
+	parser := NewParser()
+
+	chunk := []byte("\x1b]8;id=1;https://claude.com/cai/oauth/authorize?code=true&client_id=abc&state=xyz\x1b\\")
+	signals := parser.Feed(chunk)
+
+	var got *Signal
+
+	for i := range signals {
+		if signals[i].Kind == SignalAuthLink {
+			got = &signals[i]
+		}
+	}
+
+	if got == nil {
+		t.Fatal("expected a SignalAuthLink, got none")
+	}
+
+	want := "https://claude.com/cai/oauth/authorize?code=true&client_id=abc&state=xyz"
+	if got.URL != want {
+		t.Errorf("auth link URL mismatch:\n got:  %s\n want: %s", got.URL, want)
+	}
+}
+
+// TestParser_AuthLinkPlainText confirms authLinkPattern matches the sign-in URL even with no OSC
+// 8 wrapper at all (e.g. a hypothetical non-tty-detection fallback that prints plain text).
+func TestParser_AuthLinkPlainText(t *testing.T) {
+	parser := NewParser()
+
+	chunk := []byte("Visit: https://claude.com/cai/oauth/authorize?code=true&client_id=abc&state=xyz\r\n")
+	signals := parser.Feed(chunk)
+
+	var got *Signal
+
+	for i := range signals {
+		if signals[i].Kind == SignalAuthLink {
+			got = &signals[i]
+		}
+	}
+
+	if got == nil {
+		t.Fatal("expected a SignalAuthLink, got none")
+	}
+
+	want := "https://claude.com/cai/oauth/authorize?code=true&client_id=abc&state=xyz"
+	if got.URL != want {
+		t.Errorf("auth link URL mismatch:\n got:  %s\n want: %s", got.URL, want)
+	}
+}
+
+// TestParser_AuthLinkSplitAcrossReads reproduces a pty Read splitting the OSC 8 sequence mid-URL:
+// the first Feed call's chunk ends inside the URL, with no terminator byte yet available. Before
+// the fix, authLinkPattern.Find would match everything up to that arbitrary cutoff and latch
+// sawLink on the truncated URL, permanently dropping trailing params like redirect_uri.
+func TestParser_AuthLinkSplitAcrossReads(t *testing.T) {
+	parser := NewParser()
+
+	firstChunk := []byte("\x1b]8;id=1;https://claude.com/cai/oauth/authorize?code=true&client_id=abc&redirect")
+	signals := parser.Feed(firstChunk)
+
+	for _, signal := range signals {
+		if signal.Kind == SignalAuthLink {
+			t.Fatalf("did not expect a SignalAuthLink before the terminator arrives, got URL %q", signal.URL)
+		}
+	}
+
+	secondChunk := []byte("_uri=https%3A%2F%2Fexample.com%2Fcallback&state=xyz\x07")
+	signals = parser.Feed(secondChunk)
+
+	var got *Signal
+
+	for i := range signals {
+		if signals[i].Kind == SignalAuthLink {
+			got = &signals[i]
+		}
+	}
+
+	if got == nil {
+		t.Fatal("expected a SignalAuthLink once the terminator arrives, got none")
+	}
+
+	want := "https://claude.com/cai/oauth/authorize?code=true&client_id=abc&redirect_uri=https%3A%2F%2Fexample.com%2Fcallback&state=xyz"
+	if got.URL != want {
+		t.Errorf("auth link URL mismatch:\n got:  %s\n want: %s", got.URL, want)
+	}
+}
+
 func TestParser_TokenSignal(t *testing.T) {
 	parser := NewParser()
 
