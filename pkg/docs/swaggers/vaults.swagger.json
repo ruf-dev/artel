@@ -1335,6 +1335,13 @@
         "status": {
           "type": "string",
           "description": "status: \"created\"/\"configuring\"/\"running\"/\"stopped\"/\"removed\" (see domain.WorkbenchStatus)."
+        },
+        "syncConflicts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "sync_conflicts lists the paths where a genuine edit conflict was detected while syncing\nthe workbench's edited files back into the vault (see notes.Service.SyncFromWorkbench) —\nthose paths were NOT overwritten in the vault. Empty when the sync found no conflicts."
         }
       }
     },

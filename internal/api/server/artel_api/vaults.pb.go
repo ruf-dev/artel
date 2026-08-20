@@ -3104,7 +3104,11 @@ func (x *StopWorkbench_Request) GetVaultId() string {
 type StopWorkbench_Response struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// status: "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
-	Status        string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	// sync_conflicts lists the paths where a genuine edit conflict was detected while syncing
+	// the workbench's edited files back into the vault (see notes.Service.SyncFromWorkbench) —
+	// those paths were NOT overwritten in the vault. Empty when the sync found no conflicts.
+	SyncConflicts []string `protobuf:"bytes,2,rep,name=sync_conflicts,json=syncConflicts,proto3" json:"sync_conflicts,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3144,6 +3148,13 @@ func (x *StopWorkbench_Response) GetStatus() string {
 		return x.Status
 	}
 	return ""
+}
+
+func (x *StopWorkbench_Response) GetSyncConflicts() []string {
+	if x != nil {
+		return x.SyncConflicts
+	}
+	return nil
 }
 
 type DeleteWorkbench_Request struct {
@@ -3986,12 +3997,13 @@ const file_vaults_proto_rawDesc = "" +
 	"\tauth_mode\x18\x02 \x01(\tR\bauthMode\x1a?\n" +
 	"\bResponse\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x1b\n" +
-	"\tauth_mode\x18\x02 \x01(\tR\bauthMode\"Y\n" +
+	"\tauth_mode\x18\x02 \x01(\tR\bauthMode\"\x80\x01\n" +
 	"\rStopWorkbench\x1a$\n" +
 	"\aRequest\x12\x19\n" +
-	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a\"\n" +
+	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1aI\n" +
 	"\bResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status\"[\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12%\n" +
+	"\x0esync_conflicts\x18\x02 \x03(\tR\rsyncConflicts\"[\n" +
 	"\x0fDeleteWorkbench\x1a$\n" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x1a\"\n" +

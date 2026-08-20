@@ -104,7 +104,8 @@ func (c *Custom) Init(a *App) error {
 	// unconstructed anymore.
 	// nil newDockerClient defaults to real workbenchdocker.New construction inside workbench.New.
 	workbenchSvc := workbench.New(
-		repo.Workbenches(), repo.Vaults(), repo.VaultMembers(), repo.DockerHosts(), services.ExternalConnections, nil,
+		repo.Workbenches(), repo.Vaults(), repo.VaultMembers(), repo.DockerHosts(),
+		services.ExternalConnections, services.Notes, nil,
 	)
 	services.Workbench = workbenchSvc
 

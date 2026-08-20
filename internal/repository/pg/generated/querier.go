@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/sqlc-dev/pqtype"
 )
 
 type Querier interface {
@@ -26,7 +27,7 @@ type Querier interface {
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
 	CreateVaultPostgresDatabase(ctx context.Context, arg CreateVaultPostgresDatabaseParams) (VaultPostgresDatabase, error)
-	CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (Workbench, error)
+	CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (CreateWorkbenchRow, error)
 	DeleteCouchAccount(ctx context.Context, id uuid.UUID) error
 	DeleteCouchInstance(ctx context.Context, id uuid.UUID) error
 	DeleteDockerHost(ctx context.Context, id uuid.UUID) error
@@ -65,7 +66,7 @@ type Querier interface {
 	// Used by the telegram webhook relay (internal/transport/telegram_webhook) to pick which of a
 	// user's (possibly several) vault workbenches to relay chat into, v1 scope: just the one most
 	// recently started (falling back to most recently created for a workbench never started).
-	GetMostRecentWorkbenchByUser(ctx context.Context, userID uuid.UUID) (Workbench, error)
+	GetMostRecentWorkbenchByUser(ctx context.Context, userID uuid.UUID) (GetMostRecentWorkbenchByUserRow, error)
 	GetPendingAuthCode(ctx context.Context, code string) (PendingAuthCode, error)
 	GetPostgresInstance(ctx context.Context, id uuid.UUID) (PostgresInstance, error)
 	GetS3Instance(ctx context.Context, id uuid.UUID) (GetS3InstanceRow, error)
@@ -100,7 +101,8 @@ type Querier interface {
 	GetVaultInviteByToken(ctx context.Context, token string) (VaultInvite, error)
 	GetVaultMembership(ctx context.Context, arg GetVaultMembershipParams) (VaultMember, error)
 	GetVaultPostgresDatabaseByVaultID(ctx context.Context, vaultID uuid.UUID) (VaultPostgresDatabase, error)
-	GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkbenchByVaultAndUserParams) (Workbench, error)
+	GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkbenchByVaultAndUserParams) (GetWorkbenchByVaultAndUserRow, error)
+	GetWorkbenchContentSnapshot(ctx context.Context, arg GetWorkbenchContentSnapshotParams) (pqtype.NullRawMessage, error)
 	IncrementTractTemplateInstallCount(ctx context.Context, id uuid.UUID) error
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
@@ -146,7 +148,7 @@ type Querier interface {
 	ListVaultMembers(ctx context.Context, vaultID uuid.UUID) ([]VaultMember, error)
 	ListVaultMembersWithUsers(ctx context.Context, vaultID uuid.UUID) ([]ListVaultMembersWithUsersRow, error)
 	ListVaultsByMembership(ctx context.Context, userID uuid.UUID) ([]ListVaultsByMembershipRow, error)
-	ListWorkbenchesByVaultID(ctx context.Context, vaultID uuid.UUID) ([]Workbench, error)
+	ListWorkbenchesByVaultID(ctx context.Context, vaultID uuid.UUID) ([]ListWorkbenchesByVaultIDRow, error)
 	MarkVaultPostgresDatabaseError(ctx context.Context, arg MarkVaultPostgresDatabaseErrorParams) error
 	MarkVaultPostgresDatabaseReady(ctx context.Context, vaultID uuid.UUID) error
 	MarkWorkbenchConfiguring(ctx context.Context, arg MarkWorkbenchConfiguringParams) error
@@ -184,6 +186,7 @@ type Querier interface {
 	SetTriggerEnabled(ctx context.Context, arg SetTriggerEnabledParams) error
 	SetVaultLiveSyncPassphrase(ctx context.Context, arg SetVaultLiveSyncPassphraseParams) error
 	SetVaultUseCouchDBForBinaries(ctx context.Context, arg SetVaultUseCouchDBForBinariesParams) error
+	SetWorkbenchContentSnapshot(ctx context.Context, arg SetWorkbenchContentSnapshotParams) error
 	SweepStaleTractRunSteps(ctx context.Context, startedAt time.Time) error
 	SweepStaleTractRuns(ctx context.Context, createdAt time.Time) error
 	TouchMcpKeyLastAccessed(ctx context.Context, id uuid.UUID) error

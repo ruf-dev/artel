@@ -32,6 +32,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
@@ -66,6 +67,14 @@ type WorkbenchSuite struct {
 
 	dockerHostURL string
 	dockerSDK     *dockerclient.Client
+
+	// dockerClient talks to the same dockerHostURL through the typed workbenchdocker.Client
+	// wrapper (the exact production WriteFilesToVolume/ReadFilesFromVolume codepath
+	// workbench.Service.materializeVault/syncWorkbenchToVault themselves use), so the vault-sync
+	// tests can simulate an in-container edit and read the workspace back without going through
+	// the service layer twice — dockerSDK above stays for the raw container/volume state
+	// assertions the rest of the suite already does.
+	dockerClient *workbenchdocker.Client
 
 	authClient  pb.AuthAPIClient
 	vaultClient pb.VaultsAPIClient
@@ -102,7 +111,7 @@ func (s *WorkbenchSuite) SetupSuite() {
 	// harness.BuildServices can't do it generically for every suite.
 	workbenchSvc := workbench.New(
 		s.repos.Workbenches(), s.repos.Vaults(), s.repos.VaultMembers(), s.repos.DockerHosts(),
-		s.svcs.ExternalConnections, nil,
+		s.svcs.ExternalConnections, s.svcs.Notes, nil,
 	)
 	s.svcs.Workbench = workbenchSvc
 
@@ -117,6 +126,10 @@ func (s *WorkbenchSuite) SetupSuite() {
 	)
 	s.Require().NoError(err, "create docker sdk client for direct container/volume assertions")
 	s.dockerSDK = dockerSDK
+
+	dockerClient, err := workbenchdocker.New(s.dockerHostURL, workbenchdocker.TLSConfig{})
+	s.Require().NoError(err, "create typed workbenchdocker client for volume file assertions")
+	s.dockerClient = dockerClient
 
 	s.startGrpcServer(credsEncrypted)
 }
@@ -497,4 +510,132 @@ func (s *WorkbenchSuite) TestDeleteWorkbench_RPC() {
 
 	_, err = s.svcs.Workbench.GetWorkbench(workbenchCtx(user.userUuid), user.vaultUuid)
 	s.Require().Error(err, "workbench row should be gone after DeleteWorkbench RPC")
+}
+
+// createAndStartWorkbench creates and starts user's workbench in api_key auth mode via the real
+// VaultsAPI RPCs — mirrors TestFullLifecycle's own Create+Start sequence, so the vault-sync tests
+// below exercise the same call path the rest of the suite already covers rather than inventing a
+// second one (subscription_login). Callers must have already seeded an Anthropic connection for
+// user.userUuid (seedAnthropicConnection) so startWithApiKey's key resolution succeeds. Returns
+// the running workbench's domain row so callers can read its ContainerId.
+func (s *WorkbenchSuite) createAndStartWorkbench(user workbenchTestUser) domain.Workbench {
+	createReq := &pb.CreateWorkbench_Request{VaultId: user.vaultUuid.String()}
+
+	_, err := s.vaultClient.CreateWorkbench(user.authedCtx, createReq)
+	s.Require().NoError(err, "create workbench")
+
+	startReq := &pb.StartWorkbench_Request{
+		VaultId:  user.vaultUuid.String(),
+		AuthMode: string(domain.WorkbenchAuthModeAPIKey),
+	}
+
+	startResp, err := s.vaultClient.StartWorkbench(user.authedCtx, startReq)
+	s.Require().NoError(err, "start workbench")
+	s.Require().Equal(string(domain.WorkbenchStatusRunning), startResp.Status)
+
+	wb, err := s.svcs.Workbench.GetWorkbench(workbenchCtx(user.userUuid), user.vaultUuid)
+	s.Require().NoError(err, "get workbench")
+	s.Require().NotEmpty(wb.ContainerId)
+
+	return wb
+}
+
+// TestMaterializeOnStart_VaultNotesLandInContainerVolume seeds a note into the vault before the
+// workbench exists, then starts the workbench and confirms the seeded note actually landed in the
+// container's real Docker volume — exercises workbench.Service.materializeVault's
+// ExportFolder->unzip->WriteFilesToVolume path end to end.
+func (s *WorkbenchSuite) TestMaterializeOnStart_VaultNotesLandInContainerVolume() {
+	ctx := context.Background()
+	user := s.setupUser("materialize")
+	s.seedAnthropicConnection(user.userUuid)
+
+	notePath := "hello.md"
+	noteContent := "# Hello\nseeded before the workbench starts"
+
+	err := s.svcs.Notes.SaveNote(workbenchCtx(user.userUuid), user.vaultUuid, notePath, noteContent)
+	s.Require().NoError(err, "seed a note before workbench creation")
+
+	wb := s.createAndStartWorkbench(user)
+
+	files, err := s.dockerClient.ReadFilesFromVolume(ctx, wb.ContainerId)
+	s.Require().NoError(err, "read files from the workbench's container volume")
+
+	content, ok := files[notePath]
+	s.Require().True(ok, "the seeded note should have been materialized into the workbench volume")
+	s.Equal(noteContent, string(content))
+}
+
+// TestStopWorkbench_PushesContainerEditBackToVault_NoConflict edits a note's file only inside the
+// running workbench's container volume (simulating `claude` editing it), stops the workbench, and
+// confirms the edit landed back in the vault's note with no reported conflict — exercises
+// workbench.Service.syncWorkbenchToVault's "safe to overwrite" branch (the vault-side copy is
+// unchanged since materialization).
+func (s *WorkbenchSuite) TestStopWorkbench_PushesContainerEditBackToVault_NoConflict() {
+	ctx := context.Background()
+	user := s.setupUser("pushback")
+	s.seedAnthropicConnection(user.userUuid)
+
+	notePath := "pushback.md"
+	original := "# Original\noriginal vault content, unchanged after materialization"
+
+	err := s.svcs.Notes.SaveNote(workbenchCtx(user.userUuid), user.vaultUuid, notePath, original)
+	s.Require().NoError(err)
+
+	wb := s.createAndStartWorkbench(user)
+
+	edited := "# Edited\nedited inside the workbench container"
+	editedFiles := map[string][]byte{notePath: []byte(edited)}
+
+	err = s.dockerClient.WriteFilesToVolume(ctx, wb.ContainerId, editedFiles)
+	s.Require().NoError(err, "simulate an in-container edit via the same tar-write mechanism materializeVault uses")
+
+	stopReq := &pb.StopWorkbench_Request{VaultId: user.vaultUuid.String()}
+
+	stopResp, err := s.vaultClient.StopWorkbench(user.authedCtx, stopReq)
+	s.Require().NoError(err, "stop workbench")
+	s.Empty(stopResp.SyncConflicts, "an untouched-since-materialization note should sync back without conflict")
+
+	note, err := s.svcs.Notes.GetNote(workbenchCtx(user.userUuid), user.vaultUuid, notePath)
+	s.Require().NoError(err)
+	s.Equal(edited, note.Content, "the vault's note should now hold the container-side edit")
+}
+
+// TestStopWorkbench_ConcurrentEditConflict_VaultSideNotClobbered edits the same note both inside
+// the workbench's container volume AND via notes.Service.SaveNote (simulating a concurrent edit
+// through the Obsidian app) with genuinely different content in each place, then stops the
+// workbench and confirms: the path is reported as a conflict, and the vault's note still holds the
+// vault-side edit — it must NOT be clobbered by the container's edit. Exercises
+// workbench.Service.syncWorkbenchToVault's conflict-detection branch (the vault-side mtime moved
+// past the materialization snapshot, and the two contents genuinely diverged).
+func (s *WorkbenchSuite) TestStopWorkbench_ConcurrentEditConflict_VaultSideNotClobbered() {
+	ctx := context.Background()
+	user := s.setupUser("conflict")
+	s.seedAnthropicConnection(user.userUuid)
+
+	notePath := "conflict.md"
+	original := "# Original\noriginal vault content"
+
+	err := s.svcs.Notes.SaveNote(workbenchCtx(user.userUuid), user.vaultUuid, notePath, original)
+	s.Require().NoError(err)
+
+	wb := s.createAndStartWorkbench(user)
+
+	containerEdit := "# Container edit\nedited inside the workbench, never reaches the vault"
+	err = s.dockerClient.WriteFilesToVolume(ctx, wb.ContainerId, map[string][]byte{notePath: []byte(containerEdit)})
+	s.Require().NoError(err, "simulate an in-container edit")
+
+	vaultEdit := "# Vault edit\nedited concurrently via the Obsidian app while the workbench was running"
+
+	err = s.svcs.Notes.SaveNote(workbenchCtx(user.userUuid), user.vaultUuid, notePath, vaultEdit)
+	s.Require().NoError(err, "simulate a concurrent vault-side edit")
+
+	stopReq := &pb.StopWorkbench_Request{VaultId: user.vaultUuid.String()}
+
+	stopResp, err := s.vaultClient.StopWorkbench(user.authedCtx, stopReq)
+	s.Require().NoError(err, "stop workbench")
+	s.Contains(stopResp.SyncConflicts, notePath, "diverging concurrent edits should be reported as a conflict")
+
+	note, err := s.svcs.Notes.GetNote(workbenchCtx(user.userUuid), user.vaultUuid, notePath)
+	s.Require().NoError(err)
+	s.Equal(vaultEdit, note.Content, "the vault-side edit must not be clobbered by the container's conflicting edit")
 }

@@ -59,3 +59,15 @@ FROM workbenches
 WHERE user_id = $1
 ORDER BY started_at DESC NULLS LAST, created_at DESC
 LIMIT 1;
+
+-- name: GetWorkbenchContentSnapshot :one
+SELECT content_snapshot
+FROM workbenches
+WHERE vault_id = $1
+  AND user_id = $2;
+
+-- name: SetWorkbenchContentSnapshot :exec
+UPDATE workbenches
+SET content_snapshot = $3
+WHERE vault_id = $1
+  AND user_id = $2;

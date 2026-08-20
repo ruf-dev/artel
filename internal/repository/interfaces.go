@@ -124,6 +124,13 @@ type Workbenches interface {
 	// workbench at all yet.
 	GetMostRecentByUser(ctx context.Context, userID uuid.UUID) (sql.Null[domain.Workbench], error)
 
+	// GetContentSnapshot returns the path→mtime baseline captured at the (vault, user)
+	// workbench's last materialization, or a nil map if it has never been started.
+	GetContentSnapshot(ctx context.Context, vaultID, userID uuid.UUID) (map[string]int64, error)
+	// SetContentSnapshot overwrites the (vault, user) workbench's path→mtime baseline — called
+	// once per materialization (workbench start).
+	SetContentSnapshot(ctx context.Context, vaultID, userID uuid.UUID, snapshot map[string]int64) error
+
 	WithTx(tx postgres.DB) Workbenches
 }
 

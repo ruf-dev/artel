@@ -8,8 +8,10 @@ package artel_q
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/sqlc-dev/pqtype"
 )
 
 const createWorkbench = `-- name: CreateWorkbench :one
@@ -25,14 +27,28 @@ type CreateWorkbenchParams struct {
 	DockerHostID uuid.NullUUID
 }
 
-func (q *Queries) CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (Workbench, error) {
+type CreateWorkbenchRow struct {
+	ID           uuid.UUID
+	VaultID      uuid.UUID
+	UserID       uuid.UUID
+	Status       WorkbenchStatus
+	AuthMode     NullWorkbenchAuthMode
+	ContainerID  sql.NullString
+	VolumeName   string
+	CreatedAt    time.Time
+	StartedAt    sql.NullTime
+	StoppedAt    sql.NullTime
+	DockerHostID uuid.NullUUID
+}
+
+func (q *Queries) CreateWorkbench(ctx context.Context, arg CreateWorkbenchParams) (CreateWorkbenchRow, error) {
 	row := q.db.QueryRowContext(ctx, createWorkbench,
 		arg.VaultID,
 		arg.UserID,
 		arg.VolumeName,
 		arg.DockerHostID,
 	)
-	var i Workbench
+	var i CreateWorkbenchRow
 	err := row.Scan(
 		&i.ID,
 		&i.VaultID,
@@ -74,12 +90,26 @@ ORDER BY started_at DESC NULLS LAST, created_at DESC
 LIMIT 1
 `
 
+type GetMostRecentWorkbenchByUserRow struct {
+	ID           uuid.UUID
+	VaultID      uuid.UUID
+	UserID       uuid.UUID
+	Status       WorkbenchStatus
+	AuthMode     NullWorkbenchAuthMode
+	ContainerID  sql.NullString
+	VolumeName   string
+	CreatedAt    time.Time
+	StartedAt    sql.NullTime
+	StoppedAt    sql.NullTime
+	DockerHostID uuid.NullUUID
+}
+
 // Used by the telegram webhook relay (internal/transport/telegram_webhook) to pick which of a
 // user's (possibly several) vault workbenches to relay chat into, v1 scope: just the one most
 // recently started (falling back to most recently created for a workbench never started).
-func (q *Queries) GetMostRecentWorkbenchByUser(ctx context.Context, userID uuid.UUID) (Workbench, error) {
+func (q *Queries) GetMostRecentWorkbenchByUser(ctx context.Context, userID uuid.UUID) (GetMostRecentWorkbenchByUserRow, error) {
 	row := q.db.QueryRowContext(ctx, getMostRecentWorkbenchByUser, userID)
-	var i Workbench
+	var i GetMostRecentWorkbenchByUserRow
 	err := row.Scan(
 		&i.ID,
 		&i.VaultID,
@@ -108,9 +138,23 @@ type GetWorkbenchByVaultAndUserParams struct {
 	UserID  uuid.UUID
 }
 
-func (q *Queries) GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkbenchByVaultAndUserParams) (Workbench, error) {
+type GetWorkbenchByVaultAndUserRow struct {
+	ID           uuid.UUID
+	VaultID      uuid.UUID
+	UserID       uuid.UUID
+	Status       WorkbenchStatus
+	AuthMode     NullWorkbenchAuthMode
+	ContainerID  sql.NullString
+	VolumeName   string
+	CreatedAt    time.Time
+	StartedAt    sql.NullTime
+	StoppedAt    sql.NullTime
+	DockerHostID uuid.NullUUID
+}
+
+func (q *Queries) GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkbenchByVaultAndUserParams) (GetWorkbenchByVaultAndUserRow, error) {
 	row := q.db.QueryRowContext(ctx, getWorkbenchByVaultAndUser, arg.VaultID, arg.UserID)
-	var i Workbench
+	var i GetWorkbenchByVaultAndUserRow
 	err := row.Scan(
 		&i.ID,
 		&i.VaultID,
@@ -127,21 +171,54 @@ func (q *Queries) GetWorkbenchByVaultAndUser(ctx context.Context, arg GetWorkben
 	return i, err
 }
 
+const getWorkbenchContentSnapshot = `-- name: GetWorkbenchContentSnapshot :one
+SELECT content_snapshot
+FROM workbenches
+WHERE vault_id = $1
+  AND user_id = $2
+`
+
+type GetWorkbenchContentSnapshotParams struct {
+	VaultID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) GetWorkbenchContentSnapshot(ctx context.Context, arg GetWorkbenchContentSnapshotParams) (pqtype.NullRawMessage, error) {
+	row := q.db.QueryRowContext(ctx, getWorkbenchContentSnapshot, arg.VaultID, arg.UserID)
+	var content_snapshot pqtype.NullRawMessage
+	err := row.Scan(&content_snapshot)
+	return content_snapshot, err
+}
+
 const listWorkbenchesByVaultID = `-- name: ListWorkbenchesByVaultID :many
 SELECT id, vault_id, user_id, status, auth_mode, container_id, volume_name, created_at, started_at, stopped_at, docker_host_id
 FROM workbenches
 WHERE vault_id = $1
 `
 
-func (q *Queries) ListWorkbenchesByVaultID(ctx context.Context, vaultID uuid.UUID) ([]Workbench, error) {
+type ListWorkbenchesByVaultIDRow struct {
+	ID           uuid.UUID
+	VaultID      uuid.UUID
+	UserID       uuid.UUID
+	Status       WorkbenchStatus
+	AuthMode     NullWorkbenchAuthMode
+	ContainerID  sql.NullString
+	VolumeName   string
+	CreatedAt    time.Time
+	StartedAt    sql.NullTime
+	StoppedAt    sql.NullTime
+	DockerHostID uuid.NullUUID
+}
+
+func (q *Queries) ListWorkbenchesByVaultID(ctx context.Context, vaultID uuid.UUID) ([]ListWorkbenchesByVaultIDRow, error) {
 	rows, err := q.db.QueryContext(ctx, listWorkbenchesByVaultID, vaultID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Workbench{}
+	items := []ListWorkbenchesByVaultIDRow{}
 	for rows.Next() {
-		var i Workbench
+		var i ListWorkbenchesByVaultIDRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.VaultID,
@@ -252,5 +329,23 @@ type MarkWorkbenchStoppedParams struct {
 
 func (q *Queries) MarkWorkbenchStopped(ctx context.Context, arg MarkWorkbenchStoppedParams) error {
 	_, err := q.db.ExecContext(ctx, markWorkbenchStopped, arg.VaultID, arg.UserID)
+	return err
+}
+
+const setWorkbenchContentSnapshot = `-- name: SetWorkbenchContentSnapshot :exec
+UPDATE workbenches
+SET content_snapshot = $3
+WHERE vault_id = $1
+  AND user_id = $2
+`
+
+type SetWorkbenchContentSnapshotParams struct {
+	VaultID         uuid.UUID
+	UserID          uuid.UUID
+	ContentSnapshot pqtype.NullRawMessage
+}
+
+func (q *Queries) SetWorkbenchContentSnapshot(ctx context.Context, arg SetWorkbenchContentSnapshotParams) error {
+	_, err := q.db.ExecContext(ctx, setWorkbenchContentSnapshot, arg.VaultID, arg.UserID, arg.ContentSnapshot)
 	return err
 }

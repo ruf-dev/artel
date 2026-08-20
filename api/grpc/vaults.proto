@@ -361,6 +361,10 @@ message StopWorkbench {
   message Response {
     // status: "created"/"configuring"/"running"/"stopped"/"removed" (see domain.WorkbenchStatus).
     string status = 1;
+    // sync_conflicts lists the paths where a genuine edit conflict was detected while syncing
+    // the workbench's edited files back into the vault (see notes.Service.SyncFromWorkbench) —
+    // those paths were NOT overwritten in the vault. Empty when the sync found no conflicts.
+    repeated string sync_conflicts = 2;
   }
 }
 

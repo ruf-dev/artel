@@ -204,7 +204,10 @@ type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	StartWorkbench(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) (domain.Workbench, error)
-	StopWorkbench(ctx context.Context, vaultID uuid.UUID) error
+	// StopWorkbench returns the paths where a genuine edit conflict was detected while syncing
+	// the workbench's edited files back into the vault (see notes.Service.SyncFromWorkbench) —
+	// the workbench itself is still marked stopped regardless.
+	StopWorkbench(ctx context.Context, vaultID uuid.UUID) (conflicts []string, err error)
 	DeleteWorkbench(ctx context.Context, vaultID uuid.UUID) error
 	// DeleteWorkbenchesForVault tears down every member's workbench for vaultID — used by full
 	// vault deletion, which must clean up every user's Docker resources, not just the caller's.
@@ -427,6 +430,12 @@ type NotesService interface {
 	) (imported int, skipped int, err error)
 	DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) (deletedCount int, failedPaths []string, err error)
 	MoveFolder(ctx context.Context, vaultID uuid.UUID, oldPath, newPath string) (movedCount int, err error)
+	// SyncFromWorkbench pushes markdown files edited inside a stopped workbench container's
+	// workspace back into vaultID's notes — see internal/service/v1/notes.Service.
+	// SyncFromWorkbench's doc comment for the full snapshot-sync/conflict-detection semantics.
+	SyncFromWorkbench(
+		ctx context.Context, vaultID uuid.UUID, files map[string][]byte, snapshot map[string]int64,
+	) (conflicts []string, err error)
 }
 
 // PublicDocsService is the anonymous, auth-exempt read surface backing PublicDocsAPI (see

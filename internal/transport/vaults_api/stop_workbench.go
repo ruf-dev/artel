@@ -17,13 +17,14 @@ func (v *VaultsImpl) StopWorkbench(
 		return nil, rerrors.Wrap(err, "parse vault id")
 	}
 
-	err = v.workbenchSvc.StopWorkbench(ctx, vaultID)
+	conflicts, err := v.workbenchSvc.StopWorkbench(ctx, vaultID)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "stop workbench")
 	}
 
 	resp := &pb.StopWorkbench_Response{
-		Status: string(domain.WorkbenchStatusStopped),
+		Status:        string(domain.WorkbenchStatusStopped),
+		SyncConflicts: conflicts,
 	}
 
 	return resp, nil

@@ -5,19 +5,24 @@
 package workbench
 
 import (
+	"archive/zip"
+	"bytes"
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
+	"io"
 
 	"github.com/containerd/errdefs"
 	"github.com/google/uuid"
 
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
+	"github.com/ruf-dev/artel/internal/utils"
 	"go.redsock.ru/rerrors"
 )
 
@@ -48,6 +53,8 @@ type dockerClient interface {
 	NewTmuxWindow(ctx context.Context, containerID string) (domain.TerminalTab, error)
 	SelectTmuxWindow(ctx context.Context, containerID, windowID string) error
 	KillTmuxWindow(ctx context.Context, containerID, windowID string) error
+	WriteFilesToVolume(ctx context.Context, containerID string, files map[string][]byte) error
+	ReadFilesFromVolume(ctx context.Context, containerID string) (map[string][]byte, error)
 }
 
 // externalConnectionService is the narrow subset of service.ExternalConnectionService this
@@ -55,6 +62,18 @@ type dockerClient interface {
 // compile-time dependency on the whole external-connections service.
 type externalConnectionService interface {
 	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
+}
+
+// vaultContentService is the narrow subset of service.NotesService this service depends on to
+// materialize a vault's notes into a workbench's workspace on start (ExportFolder/ListNotes) and
+// push edits back on stop (SyncFromWorkbench) — kept narrow rather than a compile-time dependency
+// on the whole notes service.
+type vaultContentService interface {
+	ExportFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) ([]byte, error)
+	ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.NoteEntry, error)
+	SyncFromWorkbench(
+		ctx context.Context, vaultID uuid.UUID, files map[string][]byte, snapshot map[string]int64,
+	) (conflicts []string, err error)
 }
 
 type Service struct {
@@ -71,6 +90,7 @@ type Service struct {
 	newDockerClient func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error)
 
 	externalConnections externalConnectionService
+	vaultContent        vaultContentService
 }
 
 func New(
@@ -79,6 +99,7 @@ func New(
 	vaultMembers repository.VaultMembers,
 	dockerHosts repository.DockerHosts,
 	externalConnections externalConnectionService,
+	vaultContent vaultContentService,
 	newDockerClient func(host string, tlsCfg workbenchdocker.TLSConfig) (dockerClient, error),
 ) *Service {
 	if newDockerClient == nil {
@@ -93,6 +114,7 @@ func New(
 
 		newDockerClient:     newDockerClient,
 		externalConnections: externalConnections,
+		vaultContent:        vaultContent,
 	}
 }
 
@@ -137,6 +159,113 @@ func (s *Service) resolveClient(ctx context.Context, wb domain.Workbench) (docke
 	}
 
 	return client, nil
+}
+
+// unzipEntry reads a single zip entry into memory — split out of unzipToFiles so its deferred
+// close is scoped to one entry rather than held open for the whole archive.
+func unzipEntry(f *zip.File) ([]byte, error) {
+	rc, err := f.Open()
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error opening zip entry")
+	}
+	defer utils.CloseWithLog(rc, "vault export zip entry reader")
+
+	content, err := io.ReadAll(rc)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error reading zip entry")
+	}
+
+	return content, nil
+}
+
+// unzipToFiles unpacks zipData (as produced by vaultContentService.ExportFolder) into a map
+// keyed by path relative to the archive root — the shape WriteFilesToVolume expects.
+func unzipToFiles(zipData []byte) (map[string][]byte, error) {
+	reader, err := zip.NewReader(bytes.NewReader(zipData), int64(len(zipData)))
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error reading vault export zip")
+	}
+
+	files := make(map[string][]byte, len(reader.File))
+
+	for _, f := range reader.File {
+		if f.FileInfo().IsDir() {
+			continue
+		}
+
+		content, err := unzipEntry(f)
+		if err != nil {
+			return nil, err
+		}
+
+		files[f.Name] = content
+	}
+
+	return files, nil
+}
+
+// materializeVault exports wb's vault's current notes and writes them into wb's container
+// workspace volume, then records a path→mtime snapshot of the vault state at that exact moment
+// — the baseline syncWorkbenchToVault later uses to tell an untouched vault-side note apart from
+// one edited elsewhere (e.g. the Obsidian app) while the workbench was running. Called before
+// docker.StartContainer by both StartWorkbench auth-mode branches, so the workspace is never
+// started stale/empty; any failure here fails the whole StartWorkbench call.
+func (s *Service) materializeVault(ctx context.Context, docker dockerClient, wb domain.Workbench) error {
+	zipData, err := s.vaultContent.ExportFolder(ctx, wb.VaultUuid, "")
+	if err != nil {
+		return rerrors.Wrap(err, "error exporting vault for workbench materialization")
+	}
+
+	files, err := unzipToFiles(zipData)
+	if err != nil {
+		return rerrors.Wrap(err, "error unzipping exported vault")
+	}
+
+	notes, err := s.vaultContent.ListNotes(ctx, wb.VaultUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "error listing vault notes for workbench snapshot")
+	}
+
+	snapshot := make(map[string]int64, len(notes))
+	for _, n := range notes {
+		snapshot[n.Path] = n.Mtime
+	}
+
+	err = docker.WriteFilesToVolume(ctx, wb.ContainerId, files)
+	if err != nil {
+		return rerrors.Wrap(err, "error writing vault files to workbench volume")
+	}
+
+	err = s.workbenchesRepo.SetContentSnapshot(ctx, wb.VaultUuid, wb.UserUuid, snapshot)
+	if err != nil {
+		return rerrors.Wrap(err, "error saving workbench content snapshot")
+	}
+
+	return nil
+}
+
+// syncWorkbenchToVault reads whatever files exist in wb's now-stopped container's volume and
+// pushes them back into the vault's notes via vaultContentService.SyncFromWorkbench, using the
+// path→mtime baseline materializeVault recorded at start to detect vault-side edits that
+// happened concurrently (e.g. via the Obsidian app) while the workbench was running. Called by
+// StopWorkbench after docker.StopContainer succeeds.
+func (s *Service) syncWorkbenchToVault(ctx context.Context, docker dockerClient, wb domain.Workbench) ([]string, error) {
+	files, err := docker.ReadFilesFromVolume(ctx, wb.ContainerId)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error reading files from workbench volume")
+	}
+
+	snapshot, err := s.workbenchesRepo.GetContentSnapshot(ctx, wb.VaultUuid, wb.UserUuid)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error getting workbench content snapshot")
+	}
+
+	conflicts, err := s.vaultContent.SyncFromWorkbench(ctx, wb.VaultUuid, files, snapshot)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error syncing workbench files into vault")
+	}
+
+	return conflicts, nil
 }
 
 // CreateWorkbench records a 'configuring' workbenches row for the caller's (vaultID, userID)
@@ -415,6 +544,11 @@ func (s *Service) startWithApiKey(ctx context.Context, vaultID, userID uuid.UUID
 		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
+	err = s.materializeVault(ctx, docker, wb)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error materializing vault into workbench")
+	}
+
 	err = docker.StartContainer(ctx, wb.ContainerId, env)
 	if err != nil {
 		return domain.Workbench{}, rerrors.Wrap(err, "error starting workbench container")
@@ -452,6 +586,11 @@ func (s *Service) startWithSubscriptionLogin(ctx context.Context, vaultID, userI
 		return domain.Workbench{}, rerrors.Wrap(err, "error marking workbench configuring")
 	}
 
+	err = s.materializeVault(ctx, docker, wb)
+	if err != nil {
+		return domain.Workbench{}, rerrors.Wrap(err, "error materializing vault into workbench")
+	}
+
 	env := map[string]string{
 		workbenchAuthModeEnvVar: string(domain.WorkbenchAuthModeSubscriptionLogin),
 	}
@@ -483,34 +622,49 @@ func (s *Service) markRunningAndReload(
 }
 
 // StopWorkbench stops the calling user's running workbench container for vaultID, retaining it
-// (and its volume) for a later restart, and records status='stopped'/stopped_at.
-func (s *Service) StopWorkbench(ctx context.Context, vaultID uuid.UUID) error {
+// (and its volume) for a later restart, syncs whatever the workbench's workspace holds back into
+// the vault's notes (syncWorkbenchToVault), and records status='stopped'/stopped_at.
+//
+// The workbench is marked stopped unconditionally once docker.StopContainer succeeds — the
+// container IS stopped either way, regardless of whether the file sync that follows finds
+// conflicts or hard-fails. Conflicting paths are returned to the caller rather than silently
+// dropped; a hard sync failure (not just conflicts) is likewise returned as an error, so the
+// caller knows the workbench stopped but its edits may not have made it back into the vault —
+// mirrors how deleteWorkbenchRow tolerates partial Docker state without ever leaving the DB row
+// stuck.
+func (s *Service) StopWorkbench(ctx context.Context, vaultID uuid.UUID) ([]string, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
-		return rerrors.Wrap(user_errors.Unauthenticated)
+		return nil, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
 	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, uc.UserUuid)
 	if err != nil {
-		return rerrors.Wrap(err, "error getting workbench by vault and user")
+		return nil, rerrors.Wrap(err, "error getting workbench by vault and user")
 	}
 
 	docker, err := s.resolveClient(ctx, wb)
 	if err != nil {
-		return rerrors.Wrap(err, "error resolving docker client")
+		return nil, rerrors.Wrap(err, "error resolving docker client")
 	}
 
 	err = docker.StopContainer(ctx, wb.ContainerId)
 	if err != nil {
-		return rerrors.Wrap(err, "error stopping workbench container")
+		return nil, rerrors.Wrap(err, "error stopping workbench container")
 	}
+
+	conflicts, syncErr := s.syncWorkbenchToVault(ctx, docker, wb)
 
 	err = s.workbenchesRepo.MarkStopped(ctx, vaultID, uc.UserUuid)
 	if err != nil {
-		return rerrors.Wrap(err, "error marking workbench stopped")
+		return nil, rerrors.Wrap(err, "error marking workbench stopped")
 	}
 
-	return nil
+	if syncErr != nil {
+		return nil, rerrors.Wrap(syncErr, "error syncing workbench files back to vault")
+	}
+
+	return conflicts, nil
 }
 
 // ListTerminalTabs lists the calling user's own running workbench's terminal tabs (tmux windows)

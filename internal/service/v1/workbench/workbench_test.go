@@ -1,6 +1,8 @@
 package workbench
 
 import (
+	"archive/zip"
+	"bytes"
 	"context"
 	"database/sql"
 	"errors"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/postgres"
 	"github.com/ruf-dev/artel/internal/clients/workbenchdocker"
 	"github.com/ruf-dev/artel/internal/domain"
@@ -42,6 +45,12 @@ type workbenchKey struct {
 // a specific error or a fixed row regardless of what's in the map.
 type fakeWorkbenchesRepo struct {
 	rows map[workbenchKey]domain.Workbench
+
+	// contentSnapshots backs GetContentSnapshot/SetContentSnapshot — kept as a separate map
+	// (mirroring the real repo's dedicated queries) rather than a field on domain.Workbench
+	// itself, and left nil until first written so a zero-value fakeWorkbenchesRepo still works
+	// for every test that doesn't touch it.
+	contentSnapshots map[workbenchKey]map[string]int64
 
 	getByVaultAndUserFunc func(ctx context.Context, vaultID, userID uuid.UUID) (domain.Workbench, error)
 	listByVaultIDFunc     func(ctx context.Context, vaultID uuid.UUID) ([]domain.Workbench, error)
@@ -222,6 +231,24 @@ func (f *fakeWorkbenchesRepo) Delete(ctx context.Context, vaultID, userID uuid.U
 	return nil
 }
 
+func (f *fakeWorkbenchesRepo) GetContentSnapshot(ctx context.Context, vaultID, userID uuid.UUID) (map[string]int64, error) {
+	if f.contentSnapshots == nil {
+		return nil, nil
+	}
+
+	return f.contentSnapshots[workbenchKey{vaultID, userID}], nil
+}
+
+func (f *fakeWorkbenchesRepo) SetContentSnapshot(ctx context.Context, vaultID, userID uuid.UUID, snapshot map[string]int64) error {
+	if f.contentSnapshots == nil {
+		f.contentSnapshots = make(map[workbenchKey]map[string]int64)
+	}
+
+	f.contentSnapshots[workbenchKey{vaultID, userID}] = snapshot
+
+	return nil
+}
+
 func (f *fakeWorkbenchesRepo) WithTx(tx postgres.DB) repository.Workbenches {
 	panic("not implemented")
 }
@@ -325,6 +352,13 @@ type fakeDockerClient struct {
 	newTmuxWindowFunc    func(ctx context.Context, containerID string) (domain.TerminalTab, error)
 	selectTmuxWindowFunc func(ctx context.Context, containerID, windowID string) error
 	killTmuxWindowFunc   func(ctx context.Context, containerID, windowID string) error
+
+	writeFilesToVolumeFunc  func(ctx context.Context, containerID string, files map[string][]byte) error
+	readFilesFromVolumeFunc func(ctx context.Context, containerID string) (map[string][]byte, error)
+
+	// writeFilesToVolumeCalls records the files argument of every WriteFilesToVolume call — used
+	// by tests asserting what materializeVault actually wrote into the workbench's volume.
+	writeFilesToVolumeCalls []map[string][]byte
 
 	containerAddressCalls []string
 	ttydAddressCalls      []string
@@ -453,6 +487,71 @@ func (f *fakeDockerClient) KillTmuxWindow(ctx context.Context, containerID, wind
 	}
 
 	return nil
+}
+
+func (f *fakeDockerClient) WriteFilesToVolume(ctx context.Context, containerID string, files map[string][]byte) error {
+	f.writeFilesToVolumeCalls = append(f.writeFilesToVolumeCalls, files)
+
+	if f.writeFilesToVolumeFunc != nil {
+		return f.writeFilesToVolumeFunc(ctx, containerID, files)
+	}
+
+	return nil
+}
+
+func (f *fakeDockerClient) ReadFilesFromVolume(ctx context.Context, containerID string) (map[string][]byte, error) {
+	if f.readFilesFromVolumeFunc != nil {
+		return f.readFilesFromVolumeFunc(ctx, containerID)
+	}
+
+	return nil, nil
+}
+
+// fakeVaultContentService stands in for vaultContentService — the notes-service surface
+// materializeVault/syncWorkbenchToVault depend on — so StartWorkbench/StopWorkbench tests can run
+// without a real notes.Service/CouchDB. The zero value is a no-op vault: ExportFolder returns an
+// empty (but valid) zip archive and ListNotes returns no notes, so materializeVault succeeds
+// without writing anything meaningful into the fakeDockerClient it's paired with.
+type fakeVaultContentService struct {
+	exportFolderFunc      func(ctx context.Context, vaultID uuid.UUID, folderPath string) ([]byte, error)
+	listNotesFunc         func(ctx context.Context, vaultID uuid.UUID) ([]couchdb.NoteEntry, error)
+	syncFromWorkbenchFunc func(
+		ctx context.Context, vaultID uuid.UUID, files map[string][]byte, snapshot map[string]int64,
+	) ([]string, error)
+}
+
+func (f *fakeVaultContentService) ExportFolder(ctx context.Context, vaultID uuid.UUID, folderPath string) ([]byte, error) {
+	if f.exportFolderFunc != nil {
+		return f.exportFolderFunc(ctx, vaultID, folderPath)
+	}
+
+	buf := new(bytes.Buffer)
+	zw := zip.NewWriter(buf)
+
+	err := zw.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+func (f *fakeVaultContentService) ListNotes(ctx context.Context, vaultID uuid.UUID) ([]couchdb.NoteEntry, error) {
+	if f.listNotesFunc != nil {
+		return f.listNotesFunc(ctx, vaultID)
+	}
+
+	return nil, nil
+}
+
+func (f *fakeVaultContentService) SyncFromWorkbench(
+	ctx context.Context, vaultID uuid.UUID, files map[string][]byte, snapshot map[string]int64,
+) ([]string, error) {
+	if f.syncFromWorkbenchFunc != nil {
+		return f.syncFromWorkbenchFunc(ctx, vaultID, files, snapshot)
+	}
+
+	return nil, nil
 }
 
 // testContainerId is the container id newTestService's fake workbenches repo reports, asserted
@@ -1036,6 +1135,7 @@ func newStartWorkbenchService(
 		workbenchesRepo: workbenchesRepo,
 		dockerHostsRepo: dockerHostsRepo,
 		newDockerClient: newDockerClient,
+		vaultContent:    &fakeVaultContentService{},
 	}
 
 	return svc

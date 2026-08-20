@@ -655,15 +655,16 @@ type VaultPostgresDatabase struct {
 }
 
 type Workbench struct {
-	ID           uuid.UUID
-	VaultID      uuid.UUID
-	UserID       uuid.UUID
-	Status       WorkbenchStatus
-	AuthMode     NullWorkbenchAuthMode
-	ContainerID  sql.NullString
-	VolumeName   string
-	CreatedAt    time.Time
-	StartedAt    sql.NullTime
-	StoppedAt    sql.NullTime
-	DockerHostID uuid.NullUUID
+	ID              uuid.UUID
+	VaultID         uuid.UUID
+	UserID          uuid.UUID
+	Status          WorkbenchStatus
+	AuthMode        NullWorkbenchAuthMode
+	ContainerID     sql.NullString
+	VolumeName      string
+	CreatedAt       time.Time
+	StartedAt       sql.NullTime
+	StoppedAt       sql.NullTime
+	DockerHostID    uuid.NullUUID
+	ContentSnapshot pqtype.NullRawMessage
 }

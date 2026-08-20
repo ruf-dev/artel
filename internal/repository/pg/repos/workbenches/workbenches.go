@@ -3,6 +3,7 @@ package workbenches
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
+	"github.com/sqlc-dev/pqtype"
 	"go.redsock.ru/rerrors"
 )
 
@@ -228,6 +230,57 @@ func (r *Repo) Delete(ctx context.Context, vaultID, userID uuid.UUID) error {
 	err := r.q.DeleteWorkbench(ctx, params)
 	if err != nil {
 		return rerrors.Wrap(err, "error deleting workbench")
+	}
+
+	return nil
+}
+
+// GetContentSnapshot returns the path→mtime baseline captured at the (vault, user) workbench's
+// last materialization (see internal/service/v1/workbench/workbench.go), or a nil map if the
+// workbench has never been started (content_snapshot is NULL).
+func (r *Repo) GetContentSnapshot(ctx context.Context, vaultID, userID uuid.UUID) (map[string]int64, error) {
+	params := artel_q.GetWorkbenchContentSnapshotParams{
+		VaultID: vaultID,
+		UserID:  userID,
+	}
+
+	raw, err := r.q.GetWorkbenchContentSnapshot(ctx, params)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error getting workbench content snapshot")
+	}
+
+	if !raw.Valid {
+		return nil, nil
+	}
+
+	snapshot := make(map[string]int64)
+
+	err = json.Unmarshal(raw.RawMessage, &snapshot)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error unmarshalling workbench content snapshot")
+	}
+
+	return snapshot, nil
+}
+
+// SetContentSnapshot overwrites the (vault, user) workbench's path→mtime baseline — called once
+// per materialization (workbench start), with the vault state at that exact moment.
+func (r *Repo) SetContentSnapshot(ctx context.Context, vaultID, userID uuid.UUID, snapshot map[string]int64) error {
+	data, err := json.Marshal(snapshot)
+	if err != nil {
+		return rerrors.Wrap(err, "error marshalling workbench content snapshot")
+	}
+
+	raw := pqtype.NullRawMessage{RawMessage: data, Valid: true}
+	params := artel_q.SetWorkbenchContentSnapshotParams{
+		VaultID:         vaultID,
+		UserID:          userID,
+		ContentSnapshot: raw,
+	}
+
+	err = r.q.SetWorkbenchContentSnapshot(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error setting workbench content snapshot")
 	}
 
 	return nil

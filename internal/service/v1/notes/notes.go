@@ -648,6 +648,81 @@ func (s *Service) DeleteFolder(ctx context.Context, vaultID uuid.UUID, folderPat
 	return deletedCount, failedPaths, nil
 }
 
+// SyncFromWorkbench pushes markdown files edited inside a stopped workbench container's
+// workspace back into vaultID's CouchDB notes. This is a snapshot sync, not continuous/live
+// sync: snapshot is the path→mtime baseline captured when the vault was last materialized into
+// the workbench (internal/service/v1/workbench/workbench.go's materializeVault), used to tell an
+// untouched vault-side note apart from one edited elsewhere (e.g. the Obsidian app) while the
+// workbench was running. Binary/bucket files are explicitly out of scope for this stage (see
+// ExportFolder's bucket half) — non-markdown paths in files are silently skipped, never treated
+// as conflicts.
+//
+// Only a failure resolving the vault or listing its current notes aborts the whole call early;
+// a single path's write/read failure doesn't abort the rest (best-effort, mirrors DeleteFolder)
+// — since the only return values are the conflicts slice and an overall error, such a path is
+// folded into conflicts too, so the caller still knows it wasn't safely synced.
+func (s *Service) SyncFromWorkbench(
+	ctx context.Context, vaultID uuid.UUID, files map[string][]byte, snapshot map[string]int64,
+) (conflicts []string, err error) {
+	client, err := s.liveSyncClient(ctx, vaultID)
+	if err != nil {
+		return nil, err
+	}
+
+	return syncNotesFromWorkbench(ctx, client, files, snapshot)
+}
+
+// syncNotesFromWorkbench holds SyncFromWorkbench's actual conflict-detection logic, factored out
+// as a free function purely to keep SyncFromWorkbench itself short.
+func syncNotesFromWorkbench(
+	ctx context.Context, client *couchdb.LiveSyncClient, files map[string][]byte, snapshot map[string]int64,
+) (conflicts []string, err error) {
+	currentNotes, err := client.ListNotes(ctx)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error listing notes")
+	}
+
+	currentMtime := make(map[string]int64, len(currentNotes))
+	for _, n := range currentNotes {
+		currentMtime[n.Path] = n.Mtime
+	}
+
+	for path, content := range files {
+		if !storage.IsMarkdown(path) {
+			continue
+		}
+
+		mtime, exists := currentMtime[path]
+		if !exists || mtime <= snapshot[path] {
+			// New file, or unchanged in the vault since materialization — safe to overwrite.
+			writeErr := client.WriteNote(ctx, path, string(content))
+			if writeErr != nil {
+				conflicts = append(conflicts, path)
+			}
+
+			continue
+		}
+
+		// The vault-side copy changed since materialization (e.g. edited via the Obsidian app
+		// while the workbench was running) — only a genuine conflict if its content actually
+		// diverged from what the workbench started with; otherwise the "change" is just the
+		// workbench's own prior write being observed back.
+		current, readErr := client.ReadNote(ctx, path)
+		if readErr != nil {
+			conflicts = append(conflicts, path)
+			continue
+		}
+
+		if current.Content == string(content) {
+			continue
+		}
+
+		conflicts = append(conflicts, path)
+	}
+
+	return conflicts, nil
+}
+
 // destPathUnderFolder rewrites a path living under oldFolder so it lives under newFolder
 // instead, preserving everything past the oldFolder prefix.
 func destPathUnderFolder(path, oldFolder, newFolder string) string {

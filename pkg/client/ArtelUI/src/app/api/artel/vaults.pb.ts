@@ -199,6 +199,7 @@ export type StopWorkbenchRequest = {
 
 export type StopWorkbenchResponse = {
   status?: string;
+  syncConflicts?: string[];
 };
 
 export type StopWorkbench = Record<string, never>;
