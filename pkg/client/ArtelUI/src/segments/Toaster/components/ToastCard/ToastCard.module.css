@@ -1,0 +1,89 @@
+.ToastCardContainer {
+	display: flex;
+	align-items: center;
+	gap: var(--space-4);
+	padding: var(--space-4);
+	background: var(--color-bg-card);
+	border: var(--border-thickness) solid var(--color-border);
+	border-radius: var(--border-radius-sm);
+	min-width: 15rem;
+	max-width: 24rem;
+	box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 25%);
+	cursor: grab;
+
+	&:active {
+		cursor: grabbing;
+	}
+
+	& .ContentWrapper {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-3);
+		width: 100%;
+
+		/* Default to secondary text color (info level) */
+		color: var(--color-fg-secondary);
+		border-left: var(--border-thickness-accent) solid var(--color-fg-secondary);
+		padding-left: var(--space-3);
+	}
+
+	& .ContentWrapper.LevelError {
+		color: var(--color-error);
+		border-left-color: var(--color-error);
+	}
+
+	& .ContentWrapper.LevelWarn {
+		color: var(--color-warning);
+		border-left-color: var(--color-warning);
+	}
+
+	& .ContentWrapper.LevelInfo {
+		color: var(--color-info);
+		border-left-color: var(--color-info);
+	}
+
+	& .TextContent {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		flex: 1;
+		min-width: 0;
+	}
+
+	& .Title {
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		color: var(--color-fg-primary);
+		overflow-wrap: break-word;
+	}
+
+	& .Description {
+		font-size: var(--font-size-sm);
+		color: var(--color-fg-secondary);
+		overflow-wrap: break-word;
+	}
+
+	& .CloseButton {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		flex-shrink: 0;
+		background: transparent;
+		border: none;
+		color: var(--color-fg-secondary);
+		cursor: pointer;
+		padding: 0;
+	}
+
+	& .CloseButton:hover {
+		color: var(--color-fg-primary);
+	}
+}
+
+[data-theme="light"] .ToastCardContainer {
+	background: var(--color-bg-card);
+	border-color: var(--color-border);
+	box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 10%);
+}

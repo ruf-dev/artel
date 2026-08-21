@@ -1,9 +1,9 @@
 import {useEffect} from "react"
 import {Navigate, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
 import { Tooltip } from "react-tooltip"
-import { Toaster } from "@vervstack/chures"
 
 import cls from "@/app/routing/Router.module.css"
+import Toaster from "@/segments/Toaster/Toaster.tsx"
 import InitPage from "@/pages/init/InitPage.tsx"
 import HomePage from "@/pages/home/HomePage.tsx"
 import McpKeysPage from "@/pages/mcp-keys/McpKeysPage.tsx"
