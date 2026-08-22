@@ -142,7 +142,10 @@ func (s *WorkbenchSuite) startGrpcServer(credsEncrypted bool) {
 		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
 		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
 	)
-	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench)
+	workbenchTerminalShellHandler := vaults_api.NewWorkbenchTerminalShellHandler(
+		s.svcs.Auth, s.repos.VaultMembers(), s.svcs.Workbench,
+	)
+	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, workbenchTerminalShellHandler)
 
 	conn := harness.NewBufconnServer(s.T(), s.svcs, authImpl.Register, vaultsImpl.Register)
 

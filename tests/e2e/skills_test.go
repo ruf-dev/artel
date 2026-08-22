@@ -95,7 +95,10 @@ func (s *SkillsSuite) startGrpcServer(credsEncrypted bool) {
 		s.svcs.Auth, "", s.svcs.S3Instance, s.svcs.CouchInstance,
 		false, credsEncrypted, s.svcs.DockerHost, s.svcs.SetupWizard,
 	)
-	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench)
+	workbenchTerminalShellHandler := vaults_api.NewWorkbenchTerminalShellHandler(
+		s.svcs.Auth, s.repos.VaultMembers(), s.svcs.Workbench,
+	)
+	vaultsImpl := vaults_api.NewVaultsImpl(s.svcs.Vault, s.svcs.Workbench, workbenchTerminalShellHandler)
 	mcpKeysImpl := mcp_keys_api.NewMcpKeysImpl(s.svcs.Mcp, s.svcs.Mom)
 	notesImpl := notes_api.NewNotesImpl(s.svcs.Notes)
 	skillsImpl := skills_api.NewSkillsImpl(s.svcs.SkillsService())
