@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	"go.redsock.ru/rerrors"
+
 	"github.com/ruf-dev/artel/internal/domain"
 )
 
@@ -74,6 +76,59 @@ func TestParseTmuxWindowList(t *testing.T) {
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Fatalf("parseTmuxWindowList(%q) = %#v, want %#v", tt.output, got, tt.want)
+			}
+		})
+	}
+}
+
+// TestIsSessionMissingErr exercises isSessionMissingErr against nil, generic, and tmux's
+// session/server-gone errors — including KillTmuxWindow's distinct "can't find window" wording,
+// to prove there's no false-positive collision between the two substrings (see tmux_tabs.go's
+// doc comment on isSessionMissingErr).
+func TestIsSessionMissingErr(t *testing.T) {
+	tests := []struct {
+		name string
+		err  error
+		want bool
+	}{
+		{
+			name: "nil error",
+			err:  nil,
+			want: false,
+		},
+		{
+			name: "generic error not matching either substring",
+			err:  rerrors.New("tmux exited with status 1: can't find window: @9"),
+			want: false,
+		},
+		{
+			name: "can't find session",
+			err:  rerrors.New("tmux exited with status 1: can't find session: workbench"),
+			want: true,
+		},
+		{
+			name: "no server running",
+			err:  rerrors.New("tmux exited with status 1: no server running on /tmp/tmux-0/default"),
+			want: true,
+		},
+		{
+			name: "can't find session wrapped a second time",
+			err:  rerrors.Wrap(rerrors.New("tmux exited with status 1: can't find session: workbench"), "listing tmux windows"),
+			want: true,
+		},
+		{
+			name: "empty message string",
+			err:  rerrors.New(""),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := isSessionMissingErr(tt.err)
+
+			if got != tt.want {
+				t.Fatalf("isSessionMissingErr(%v) = %v, want %v", tt.err, got, tt.want)
 			}
 		})
 	}

@@ -21,13 +21,41 @@ import (
 // separator that can't collide with real window-name content and be misparsed.
 const tmuxWindowListFormat = "#{window_id}\t#{window_active}\t#{window_name}"
 
+// isSessionMissingErr reports whether err is tmux's expected "session/server is gone" outcome of
+// a window's command exiting on its own (e.g. a user double-pressing Ctrl+C inside `claude`,
+// which tears down that window and — since it was the workbench session's only window — the
+// session itself, and potentially the tmux server if no other session is left). Callers should
+// treat this as a normal zero-tabs state, not a hard failure.
+//
+// This is deliberately distinct from KillTmuxWindow's already-documented "can't find window"
+// string — that's a single vanished window inside an otherwise-live session, a different case —
+// so the two substrings must never collide.
+func isSessionMissingErr(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	msg := err.Error()
+
+	return strings.Contains(msg, "can't find session") || strings.Contains(msg, "no server running")
+}
+
 // ListTmuxWindows lists every tmux window (surfaced to the browser as a "terminal tab") in
 // containerID's workbench session, in tmux's own window order.
+//
+// If the workbench session (or the tmux server itself) no longer exists — expected when the last
+// window's command exited on its own and tore the session down with it, see isSessionMissingErr —
+// this is not treated as an error: it returns an empty, non-nil slice so the caller sees "zero
+// tabs" rather than a failure.
 func (c *Client) ListTmuxWindows(ctx context.Context, containerID string) ([]domain.TerminalTab, error) {
 	script := `exec tmux list-windows -t "$1" -F "` + tmuxWindowListFormat + `"`
 
 	stdout, err := c.execTmuxCommand(ctx, containerID, script, []string{})
 	if err != nil {
+		if isSessionMissingErr(err) {
+			return []domain.TerminalTab{}, nil
+		}
+
 		return nil, rerrors.Wrap(err, "listing tmux windows")
 	}
 
@@ -75,12 +103,27 @@ func parseTmuxWindowList(output string) []domain.TerminalTab {
 // the window's name once `claude` starts printing its title escape sequence, which hasn't
 // happened yet by the time this call returns. A caller that needs the settled name should do a
 // fresh ListTmuxWindows shortly after.
+//
+// If the workbench session (or the tmux server) is gone — expected when the last window's command
+// exited on its own, see isSessionMissingErr — there is nothing left for `new-window` to target,
+// so this falls back once to `tmux new-session`, recreating the workbench session with `claude`
+// running in its (only) window. Any other failure, or a failure of that fallback itself, is
+// returned as a real error.
 func (c *Client) NewTmuxWindow(ctx context.Context, containerID string) (domain.TerminalTab, error) {
 	script := `exec tmux new-window -t "$1" -P -F "#{window_id}" claude`
 
 	stdout, err := c.execTmuxCommand(ctx, containerID, script, []string{})
 	if err != nil {
-		return domain.TerminalTab{}, rerrors.Wrap(err, "creating tmux window")
+		if !isSessionMissingErr(err) {
+			return domain.TerminalTab{}, rerrors.Wrap(err, "creating tmux window")
+		}
+
+		fallbackScript := `exec tmux new-session -d -s "$1" -P -F "#{window_id}" claude`
+
+		stdout, err = c.execTmuxCommand(ctx, containerID, fallbackScript, []string{})
+		if err != nil {
+			return domain.TerminalTab{}, rerrors.Wrap(err, "creating tmux session")
+		}
 	}
 
 	windowID := strings.TrimSpace(stdout)

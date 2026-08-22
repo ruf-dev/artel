@@ -20,7 +20,11 @@ export default function TerminalView(props: Props) {
                     onCreate={props.onCreateTab}
                     onClose={props.onCloseTab}
                 />
-                <Terminal vaultId={props.vaultId}/>
+                {props.tabs.length === 0 ? (
+                    <p className={cls.EmptyState}>No terminal sessions yet. Click + to start one.</p>
+                ) : (
+                    <Terminal vaultId={props.vaultId}/>
+                )}
             </div>
             <div className={cls.TerminalSpacer}/>
         </div>

@@ -68,6 +68,11 @@ export function useWorkbenchTerminalTabs(vaultId: string | undefined, enabled: b
         queryFn: () => workbenchService.listTerminalTabs(vaultId!),
         enabled: !!vaultId && enabled,
         refetchOnWindowFocus: true,
+        // A natural tmux-session death (e.g. double Ctrl+C) never goes through any of
+        // useWorkbenchTerminalTabMutations's create/select/close, so nothing invalidates
+        // this query on its own — a short poll is the only way the UI notices the tab
+        // count dropped to zero without the user refocusing the browser window.
+        refetchInterval: 5000,
     })
 
     return {
