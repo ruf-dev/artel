@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {Link, useParams} from "react-router-dom"
 import {Button, Loader} from "@vervstack/chures"
 
@@ -15,7 +15,6 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
 import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
 import TerminalView from "@/pages/workbench/components/TerminalView/TerminalView.tsx"
-import WorkbenchAuthScreen from "@/pages/workbench/components/WorkbenchAuthScreen/WorkbenchAuthScreen.tsx"
 import WorkbenchToolbar, {
     type WorkbenchView,
 } from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
@@ -44,11 +43,22 @@ export default function WorkbenchPage() {
     const vault = vaults.find(v => v.id === vaultId)
     const vaultName = vault?.name ?? "Vault"
 
-    const awaitingAuth = items.some(i => i.kind === "auth_link" || i.kind === "auth_code_needed") && !authComplete
+    const awaitingAuth = !authComplete &&
+        (items.some(i => i.kind === "auth_link" || i.kind === "auth_code_needed") ||
+            lifecycle.pendingAuthMode === "subscription_login")
 
-    const bodyCentered = isLoading || !exists || (status !== "running" && !lifecycle.showSetup) ||
-        (view === "chat" && awaitingAuth)
+    const genericCentered = isLoading || !exists || (status !== "running" && !lifecycle.showSetup)
     const terminalViewActive = status === "running" && view === "terminal"
+
+    // Terminal login and the chat's own sign-in flow share the same in-container
+    // credentials file, so there's no chat-side auth screen anymore — lock the Chat
+    // toggle to Terminal while unauthenticated instead. Unlock-only: once auth
+    // completes this stops firing, but view is never forced back to "chat" on its own.
+    useEffect(() => {
+        if (awaitingAuth && view === "chat") {
+            setView("terminal")
+        }
+    }, [awaitingAuth, view])
 
     return (
         <div className={cn(cls.WorkbenchPageContainer, terminalViewActive && cls.TerminalViewActive)}>
@@ -65,9 +75,10 @@ export default function WorkbenchPage() {
                     starting={lifecycle.resuming}
                     view={view}
                     onViewChange={setView}
+                    chatLocked={awaitingAuth}
                 />
             )}
-            <div className={cn(cls.Body, bodyCentered && cls.BodyCentered)}>
+            <div className={cn(cls.Body, genericCentered && cls.BodyCentered)}>
                 {isLoading && (
                     <Loader variant="arcs" size="sm" color="var(--coral)"/>
                 )}
@@ -81,9 +92,6 @@ export default function WorkbenchPage() {
                             {lifecycle.creating ? "Setting up…" : "Set up Workbench"}
                         </Button>
                     </>
-                )}
-                {!isLoading && exists && status === "running" && vaultId && view === "chat" && awaitingAuth && (
-                    <WorkbenchAuthScreen items={items} status={chatStatus} onSubmitCode={sendAuthCode}/>
                 )}
                 {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
                     <Chat items={items} status={chatStatus} sendMessage={sendMessage}
@@ -108,7 +116,10 @@ export default function WorkbenchPage() {
                     />
                 )}
                 {!isLoading && exists && status !== "running" && lifecycle.showSetup && vaultId && (
-                    <PickAuthModeScreen vaultId={vaultId}/>
+                    <PickAuthModeScreen
+                        onStart={lifecycle.handleStartWorkbench}
+                        starting={lifecycle.startingWorkbench}
+                    />
                 )}
             </div>
         </div>

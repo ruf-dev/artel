@@ -28,6 +28,7 @@ describe("WorkbenchToolbar", () => {
         starting: false,
         view: "chat" as const,
         onViewChange: mockOnViewChange,
+        chatLocked: false,
     }
 
     it("renders both Chat and Terminal toggle buttons when status is running and exists is true", () => {
@@ -77,5 +78,31 @@ describe("WorkbenchToolbar", () => {
 
         expect(chatButton).toHaveAttribute("aria-pressed", "true")
         expect(terminalButton).toHaveAttribute("aria-pressed", "false")
+    })
+
+    it("disables the Chat button when chatLocked is true", () => {
+        render(<WorkbenchToolbar {...defaultProps} chatLocked/>)
+
+        const chatButton = screen.getByRole("button", {name: "Chat"})
+
+        expect(chatButton).toBeDisabled()
+    })
+
+    it("enables the Chat button when chatLocked is false", () => {
+        render(<WorkbenchToolbar {...defaultProps} chatLocked={false}/>)
+
+        const chatButton = screen.getByRole("button", {name: "Chat"})
+
+        expect(chatButton).not.toBeDisabled()
+    })
+
+    it("keeps the Terminal button always enabled regardless of chatLocked", () => {
+        const {rerender} = render(<WorkbenchToolbar {...defaultProps} chatLocked/>)
+
+        expect(screen.getByRole("button", {name: "Terminal"})).not.toBeDisabled()
+
+        rerender(<WorkbenchToolbar {...defaultProps} chatLocked={false}/>)
+
+        expect(screen.getByRole("button", {name: "Terminal"})).not.toBeDisabled()
     })
 })

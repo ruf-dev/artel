@@ -5,26 +5,22 @@ import {Button} from "@vervstack/chures"
 import cls from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.module.css"
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
-import {useWorkbenchMutations} from "@/app/hooks/Workbench.ts"
-import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {Path} from "@/app/routing/Router.tsx"
 import AuthModeOption from "@/pages/workbench/components/AuthModeOption/AuthModeOption.tsx"
 
 type AuthMode = "api_key" | "subscription_login"
 
 interface Props {
-    vaultId: string
+    onStart: (authMode: "api_key" | "subscription_login") => Promise<void>
+    starting: boolean
 }
 
-export default function PickAuthModeScreen({vaultId}: Props) {
+export default function PickAuthModeScreen({onStart, starting}: Props) {
     const {connections, fetch: fetchConnections} = useExternalConnections()
-    const {start} = useWorkbenchMutations(vaultId)
     const navigate = useNavigate()
-    const bakeError = useBakeError()
 
     const [authMode, setAuthMode] = useState<AuthMode>("subscription_login")
     const [touched, setTouched] = useState(false)
-    const [starting, setStarting] = useState(false)
 
     useEffect(() => {
         void fetchConnections()
@@ -47,10 +43,7 @@ export default function PickAuthModeScreen({vaultId}: Props) {
     }
 
     function handleStart() {
-        setStarting(true)
-        start(authMode)
-            .catch(e => bakeError("Failed to start workbench", e))
-            .finally(() => setStarting(false))
+        void onStart(authMode)
     }
 
     return (

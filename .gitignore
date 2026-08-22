@@ -33,3 +33,6 @@ docs/tasks/
 
 # graphify knowledge graph is a local dev-tool cache, not shipped with the service
 graphify-out/
+
+# Playwright MCP debug logs/screenshots
+.playwright-mcp/

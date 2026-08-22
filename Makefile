@@ -22,6 +22,26 @@ build-local-container:
 			--platform linux/arm64 \
 			-t artel:local .
 
+# Prebuilds the workbench Docker image (deploy/workbench) and tags it exactly as EnsureImage
+# (internal/clients/workbenchdocker/image.go) will look for it, so the first CreateWorkbench call
+# against this daemon finds it already present instead of building it inline — the in-request
+# build is what left an in-flight CreateWorkbench vulnerable to a mid-build backend restart
+# canceling its context. Regenerates bridge.tar first since it's a checked-in generated file (see
+# deploy/workbench/gen_bridge_tar.go) that goes stale on any bridge/ change.
+#
+# Builds against whatever `docker` resolves by default (DOCKER_HOST env var, or the local socket)
+# — critically, that is NOT necessarily the daemon workbench.Service actually schedules
+# containers against. In local dev (see setup-dev-docker-host above and
+# scripts/setup_dev_docker_host.sh), that's test-dockerd, a separate dind daemon exposed at
+# tcp://localhost:12375, not this host's own Docker Desktop/OrbStack daemon — building against
+# the wrong one leaves EnsureImage unable to find the tag and it silently falls back to its
+# inline build path again. Point at the right one explicitly:
+#
+#	DOCKER_HOST=tcp://localhost:12375 make workbench-image
+workbench-image:
+	go generate ./deploy/workbench/...
+	docker build -t $$(go run ./cmd/workbenchimage) -f deploy/workbench/Dockerfile deploy/workbench
+
 lint: .lint-go .lint-react
 
 .lint-go:

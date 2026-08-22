@@ -19,6 +19,7 @@ interface WorkbenchToolbarProps {
     starting: boolean
     view: WorkbenchView
     onViewChange: (view: WorkbenchView) => void
+    chatLocked: boolean
 }
 
 // >6 props — kept as one object instead of exploding into separate destructured
@@ -44,6 +45,8 @@ export default function WorkbenchToolbar(props: WorkbenchToolbarProps) {
                                 )}
                                 onClick={() => props.onViewChange("chat")}
                                 aria-pressed={props.view === "chat"}
+                                disabled={props.chatLocked}
+                                title={props.chatLocked ? "Log in via the terminal first" : undefined}
                             >
                                 Chat
                             </Button>

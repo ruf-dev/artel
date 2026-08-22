@@ -22,7 +22,7 @@ import (
 )
 
 // workbenchImageTagPrefix is the repository name every workbench image is tagged under — see
-// workbenchImageTag for how the tag suffix is derived.
+// WorkbenchImageTag for how the tag suffix is derived.
 const workbenchImageTagPrefix = "artel-workbench:"
 
 // workbenchImageTagHashLen is the number of hex characters of the content hash kept in the
@@ -33,11 +33,11 @@ const workbenchImageTagHashLen = 12
 // EnsureImage returns the tag of the workbench Docker image on the daemon this Client talks to,
 // building it from the embedded deploy/workbench build context (workbenchimage.Files) if an
 // image with that tag isn't already present. The tag is a deterministic hash of the embedded
-// files' content (see workbenchImageTag), so a changed Dockerfile/entrypoint.sh automatically
+// files' content (see WorkbenchImageTag), so a changed Dockerfile/entrypoint.sh automatically
 // produces a new tag and triggers a rebuild on next use, while an unchanged build context reuses
 // whatever was already built — on this daemon or a previous run against it.
 func (c *Client) EnsureImage(ctx context.Context) (string, error) {
-	tag, err := workbenchImageTag()
+	tag, err := WorkbenchImageTag()
 	if err != nil {
 		return "", rerrors.Wrap(err, "error computing workbench image tag")
 	}
@@ -89,7 +89,7 @@ func (c *Client) buildImage(ctx context.Context, tag string) error {
 	return nil
 }
 
-// workbenchImageTag computes a deterministic tag for the workbench image from the content of
+// WorkbenchImageTag computes a deterministic tag for the workbench image from the content of
 // the embedded deploy/workbench build context: every embedded file's path and content are hashed
 // together (sorted by path, so the result doesn't depend on directory-walk order), and the first
 // workbenchImageTagHashLen hex characters of the resulting sha256 digest become the tag suffix.
@@ -100,7 +100,7 @@ func (c *Client) buildImage(ctx context.Context, tag string) error {
 // are just as good a fingerprint: bridge.tar's content is a pure function of bridge/'s content
 // (see gen_bridge_tar.go), so any change under bridge/ that gets regenerated into bridge.tar still
 // changes this hash.
-func workbenchImageTag() (string, error) {
+func WorkbenchImageTag() (string, error) {
 	var names []string
 
 	walkErr := fs.WalkDir(workbenchimage.Files, ".", func(path string, d fs.DirEntry, err error) error {

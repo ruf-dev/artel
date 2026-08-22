@@ -47,6 +47,30 @@ RUN set -eu; \
 
 RUN npm install -g @anthropic-ai/claude-code
 
+# Claude Code's first-run onboarding wizard (theme picker: "Choose the text style that looks
+# best with your terminal") is gated purely on the global config's hasCompletedOnboarding field
+# (~/.claude.json, resolved as $CLAUDE_CONFIG_DIR/.claude.json when that env var is set, else
+# $HOME/.claude.json — this image sets neither, so it's /root/.claude.json), checked once at
+# `claude` startup regardless of subcommand. Every workbench container starts with a brand-new
+# $HOME, so without this the wizard is the very first thing either `claude` process here produces
+# — both entrypoint.sh's tmux REPL and workbench-bridge's `claude setup-token` run share this same
+# $HOME. For the bridge specifically this is fatal, not just cosmetic: its authlogin parser
+# (bridge/internal/authlogin/parse.go) only recognizes setup-token's own auth-link/code-prompt/
+# error/token text, so an onboarding screen in front of that is invisible to it — the
+# subscription-login flow hangs forever with no output and no error, since nothing ever matches.
+# Pre-seeding hasCompletedOnboarding (and theme, so it isn't reprompted separately) skips the
+# wizard entirely, the same way the UTF-8 locale fix below works around another `claude`-first-run
+# assumption.
+#
+# Same file also pre-accepts the per-project "Do you trust the files in this folder?" dialog —
+# a second, independent first-run gate keyed by cwd (projects["<path>"].hasTrustDialogAccepted in
+# this same config), which the CLI's own error text documents as settable exactly this way ("...or
+# set projects[<path>].hasTrustDialogAccepted: true in ~/.claude.json"). Every `claude` invocation
+# here runs at /workspace (this image's WORKDIR, and workspaceMountPath in
+# internal/clients/workbenchdocker/client.go — the volume every workbench container mounts its
+# one working directory at), so that's the only project key that ever needs accepting.
+RUN mkdir -p /root && printf '%s' '{"hasCompletedOnboarding":true,"theme":"dark","projects":{"/workspace":{"hasTrustDialogAccepted":true}}}' > /root/.claude.json
+
 # Without a UTF-8 locale, Claude Code's own terminal-capability detection assumes the
 # terminal can't render Unicode and falls back to ASCII-safe glyphs (e.g. "_"/"*"/"."
 # instead of box-drawing lines, "❯", "✔"). node:20-slim has no locale configured by

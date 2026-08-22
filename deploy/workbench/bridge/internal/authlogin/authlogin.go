@@ -25,20 +25,44 @@
 // for this change. Token extraction (see tokenPattern in parse.go) is a best-effort regex over
 // the well-known "sk-ant-" credential prefix and should be re-verified against real output before
 // being relied on in production.
+//
+// # Credentials-file fallback
+//
+// Because tokenPattern was never confirmed against a real success screen, Run does not rely on it
+// alone: `claude setup-token` (like `claude login`) persists its result as a side effect to
+// $CLAUDE_CONFIG_DIR/.credentials.json (default $HOME/.claude/.credentials.json) — a
+// {"claudeAiOauth":{"accessToken":"sk-ant-...",...}} document, read by every later `claude`
+// invocation (headless or interactive) regardless of env vars. This is the same file `claude
+// login` writes, confirmed from the CLI's own bundled source. Run polls for that file appearing
+// or changing after the process starts (see readFreshToken) as a second, independent path to a
+// token — one that doesn't depend on recognizing the literal printed success text at all, only on
+// the process having completed successfully. Whichever detection fires first (regex match on the
+// pty transcript, or the credentials file showing up) wins; either way the token is written to
+// envStore the same way, so downstream code (main.go's ensureAuthenticated gate, claudecli.Runner)
+// doesn't need to know which path produced it.
 package authlogin
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"time"
 
 	"github.com/creack/pty"
 
 	"workbenchbridge/internal/chatprotocol"
 	"workbenchbridge/internal/envdrop"
 )
+
+// credentialsPollInterval bounds how quickly the credentials-file fallback (see package doc)
+// notices `claude setup-token` finishing when the pty transcript itself never produces a
+// recognized SignalToken. Short enough not to be perceptible against a human pasting a code.
+const credentialsPollInterval = 500 * time.Millisecond
 
 // readChunkSize is the buffer size for each pty Read. setup-token's screen redraws are small
 // (a spinner frame, a line of text); there is no benefit to a larger buffer and every Read is
@@ -81,6 +105,8 @@ func NewRunner(binary string) *Runner {
 // envStore.Write(envdrop.OauthTokenVar, ...) before returning), or an error if the process exits
 // without one or ctx is cancelled first.
 func (r *Runner) Run(ctx context.Context, envStore *envdrop.Store, emit func(chatprotocol.Event), codes <-chan string) error {
+	startTime := time.Now()
+
 	cmd := exec.CommandContext(ctx, r.binary, "setup-token")
 
 	ptmx, err := pty.StartWithSize(cmd, ptyWinsize)
@@ -93,11 +119,14 @@ func (r *Runner) Run(ctx context.Context, envStore *envdrop.Store, emit func(cha
 
 	parser := NewParser()
 
+	ticker := time.NewTicker(credentialsPollInterval)
+	defer ticker.Stop()
+
 	for {
 		select {
 		case chunk, ok := <-output:
 			if !ok {
-				return r.finish(cmd, <-readErrCh)
+				return r.finish(cmd, <-readErrCh, envStore, startTime)
 			}
 
 			for _, signal := range parser.Feed(chunk) {
@@ -105,6 +134,11 @@ func (r *Runner) Run(ctx context.Context, envStore *envdrop.Store, emit func(cha
 				if done {
 					return err
 				}
+			}
+		case <-ticker.C:
+			done, err := r.checkCredentialsFile(cmd, envStore, startTime)
+			if done {
+				return err
 			}
 		case code := <-codes:
 			_, err := ptmx.Write([]byte(code + "\r"))
@@ -156,9 +190,11 @@ func (r *Runner) handleSignal(signal Signal, ptmx io.Writer, envStore *envdrop.S
 }
 
 // finish is reached once the pty's read side hits EOF, i.e. claude setup-token has exited without
-// ever producing a token (a token exit returns from the main loop directly via handleSignal). It
-// reports whatever went wrong, preferring the process's own exit error over a plain EOF.
-func (r *Runner) finish(cmd *exec.Cmd, readErr error) error {
+// its transcript ever producing a recognized SignalToken (a token found that way returns from the
+// main loop directly via handleSignal). Before declaring failure, it makes one last check of the
+// credentials file (see package doc's "Credentials-file fallback") in case the process wrote it
+// and exited between the last tick and EOF.
+func (r *Runner) finish(cmd *exec.Cmd, readErr error, envStore *envdrop.Store, startTime time.Time) error {
 	waitErr := cmd.Wait()
 	if waitErr != nil {
 		return fmt.Errorf("claude setup-token exited without producing a token: %w", waitErr)
@@ -168,7 +204,105 @@ func (r *Runner) finish(cmd *exec.Cmd, readErr error) error {
 		return fmt.Errorf("error reading claude setup-token output: %w", readErr)
 	}
 
+	token, found, err := readFreshToken(startTime)
+	if err == nil && found {
+		writeErr := envStore.Write(envdrop.OauthTokenVar, token)
+		if writeErr != nil {
+			return fmt.Errorf("error persisting the OAuth token: %w", writeErr)
+		}
+
+		return nil
+	}
+
 	return errors.New("claude setup-token exited without producing a token")
+}
+
+// checkCredentialsFile is the ticker-driven half of the credentials-file fallback (see package
+// doc): it lets Run notice claude setup-token has already succeeded even while the process is
+// still alive and its pty transcript never produced a recognized SignalToken — the case that
+// otherwise hangs the flow forever, since neither a new signal nor EOF would ever arrive. Returns
+// done=true once a fresh token is found, at which point the still-running process is no longer
+// needed and is killed so its pty fully closes (unblocking readLoop's goroutine via Run's deferred
+// ptmx.Close, which happens regardless of how Run returns).
+func (r *Runner) checkCredentialsFile(cmd *exec.Cmd, envStore *envdrop.Store, startTime time.Time) (bool, error) {
+	token, found, err := readFreshToken(startTime)
+	if err != nil || !found {
+		return false, nil
+	}
+
+	writeErr := envStore.Write(envdrop.OauthTokenVar, token)
+
+	_ = cmd.Process.Kill()
+	_, _ = cmd.Process.Wait()
+
+	if writeErr != nil {
+		return true, fmt.Errorf("error persisting the OAuth token: %w", writeErr)
+	}
+
+	return true, nil
+}
+
+// credentialsPath resolves where `claude` stores its own persistent credentials, matching the
+// resolution order confirmed in the CLI's own bundled source: $CLAUDE_CONFIG_DIR/.credentials.json
+// when that env var is set, else $HOME/.claude/.credentials.json.
+func credentialsPath() string {
+	if dir := os.Getenv("CLAUDE_CONFIG_DIR"); dir != "" {
+		return filepath.Join(dir, ".credentials.json")
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		home = "/root"
+	}
+
+	return filepath.Join(home, ".claude", ".credentials.json")
+}
+
+// credentialsFile is the subset of claude's own .credentials.json this package reads — see
+// package doc's "Credentials-file fallback".
+type credentialsFile struct {
+	ClaudeAiOauth struct {
+		AccessToken string `json:"accessToken"`
+	} `json:"claudeAiOauth"`
+}
+
+// readFreshToken reports the access token in claude's credentials file, but only if that file's
+// mtime is after since (i.e. it was written during this Run, not left over from some earlier
+// login in this same $HOME) — a missing file, or one that predates since, is not an error, just a
+// "not yet" (found=false).
+func readFreshToken(since time.Time) (string, bool, error) {
+	path := credentialsPath()
+
+	info, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", false, nil
+		}
+
+		return "", false, err
+	}
+
+	if !info.ModTime().After(since) {
+		return "", false, nil
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", false, err
+	}
+
+	var creds credentialsFile
+
+	err = json.Unmarshal(data, &creds)
+	if err != nil {
+		return "", false, err
+	}
+
+	if creds.ClaudeAiOauth.AccessToken == "" {
+		return "", false, nil
+	}
+
+	return creds.ClaudeAiOauth.AccessToken, true, nil
 }
 
 // readLoop copies ptmx into a channel of chunks so Run's select loop can multiplex pty output
