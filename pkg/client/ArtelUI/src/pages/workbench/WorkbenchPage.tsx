@@ -24,7 +24,7 @@ import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLif
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
     const {vaults} = useVaults()
-    const {exists, status, isLoading} = useWorkbench(vaultId)
+    const {exists, status, isLoading, pendingTerminalAuthLink} = useWorkbench(vaultId)
     const lifecycle = useWorkbenchLifecycle(vaultId)
     const {tabs} = useWorkbenchTerminalTabs(vaultId, status === "running")
     const {create: createTab, select: selectTab, close: closeTab} = useWorkbenchTerminalTabMutations(vaultId)
@@ -62,22 +62,6 @@ export default function WorkbenchPage() {
 
     return (
         <div className={cn(cls.WorkbenchPageContainer, terminalViewActive && cls.TerminalViewActive)}>
-            <Link className={cls.BackLink} to={Path.HomePage}>← Back to vaults</Link>
-            {!isLoading && exists && vaultId && (
-                <WorkbenchToolbar
-                    vaultName={vaultName}
-                    status={status}
-                    exists={exists}
-                    vaultId={vaultId}
-                    onStart={lifecycle.handleStartClick}
-                    onStop={lifecycle.handleStop}
-                    stopping={lifecycle.stopping}
-                    starting={lifecycle.resuming}
-                    view={view}
-                    onViewChange={setView}
-                    chatLocked={awaitingAuth}
-                />
-            )}
             <div className={cn(cls.Body, genericCentered && cls.BodyCentered)}>
                 {isLoading && (
                     <Loader variant="arcs" size="sm" color="var(--coral)"/>
@@ -101,6 +85,7 @@ export default function WorkbenchPage() {
                     <TerminalView
                         vaultId={vaultId}
                         tabs={tabs}
+                        pendingTerminalAuthLink={pendingTerminalAuthLink}
                         onSelectTab={(tabId) => {
                             selectTab(tabId)
                                 .catch(e => bakeError("Failed to select tab", e))
@@ -122,6 +107,23 @@ export default function WorkbenchPage() {
                     />
                 )}
             </div>
+            {!isLoading && exists && vaultId ? (
+                <WorkbenchToolbar
+                    vaultName={vaultName}
+                    status={status}
+                    exists={exists}
+                    vaultId={vaultId}
+                    onStart={lifecycle.handleStartClick}
+                    onStop={lifecycle.handleStop}
+                    stopping={lifecycle.stopping}
+                    starting={lifecycle.resuming}
+                    view={view}
+                    onViewChange={setView}
+                    chatLocked={awaitingAuth}
+                />
+            ) : (
+                <Link className={cls.BackLink} to={Path.HomePage}>← Back to vaults</Link>
+            )}
         </div>
     )
 }

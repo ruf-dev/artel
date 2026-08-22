@@ -1,7 +1,10 @@
 import {Button} from "@vervstack/chures"
+import {useNavigate} from "react-router-dom"
 
 import {cn} from "@/app/utils/cn.ts"
+import {Path} from "@/app/routing/Router.tsx"
 import WorkbenchStatusBadge from "@/pages/workbench/components/WorkbenchStatusBadge/WorkbenchStatusBadge.tsx"
+import BackIcon from "@/pages/workbench/components/WorkbenchToolbar/components/BackIcon/BackIcon.tsx"
 import WorkbenchSettingsMenu
     from "@/pages/workbench/components/WorkbenchToolbar/components/WorkbenchSettingsMenu/WorkbenchSettingsMenu.tsx"
 import cls from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.module.css"
@@ -26,10 +29,20 @@ interface WorkbenchToolbarProps {
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
 export default function WorkbenchToolbar(props: WorkbenchToolbarProps) {
     const isRunning = props.status === "running"
+    const navigate = useNavigate()
 
     return (
         <div className={cls.WorkbenchToolbarContainer}>
             <div className={cls.LeftSection}>
+                <Button
+                    variant="secondary"
+                    className={cls.BackButton}
+                    onClick={() => navigate(Path.HomePage)}
+                    aria-label="Back to vaults"
+                    title="Back to vaults"
+                >
+                    <BackIcon/>
+                </Button>
                 <span className={cls.VaultName}>{props.vaultName}</span>
                 <WorkbenchStatusBadge status={props.exists ? props.status : "not_configured"}/>
             </div>

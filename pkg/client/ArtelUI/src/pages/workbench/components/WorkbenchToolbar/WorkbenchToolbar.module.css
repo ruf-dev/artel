@@ -3,10 +3,13 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 0 2rem;
+    padding: 1rem 2rem 0.75rem;
+    position: sticky;
+    top: 0;
+    background: var(--main-bg-color);
 
     @media (width <= 45rem) {
-        padding: 0 1.125rem;
+        padding: 1rem 1.125rem 0.75rem;
     }
 
     & .LeftSection {
@@ -31,6 +34,17 @@
         width: var(--icon-button-size);
         height: var(--icon-button-size);
         padding: 0;
+    }
+
+    & .BackButton {
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+        color: var(--color-fg-secondary);
+
+        &:hover {
+            color: var(--color-fg-primary);
+        }
     }
 
     & .ViewToggle {
