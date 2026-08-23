@@ -96,3 +96,61 @@ describe("applyEvent", () => {
         expect(applyEvent(items, {type: "new_chat"})).toEqual([])
     })
 })
+
+describe("applyEvent - deduplication", () => {
+    it("deduplicates user_message by id when the same id is seen twice", () => {
+        let items = applyEvent([], {type: "user_message", text: "hi", id: "msg-1"})
+        expect(items).toEqual([{kind: "user_message", key: "user_message-0", text: "hi", id: "msg-1"}])
+
+        // The same id arrives again (e.g., echoed from the bridge) — should skip appending.
+        items = applyEvent(items, {type: "user_message", text: "hi", id: "msg-1"})
+        expect(items).toHaveLength(1)
+        expect(items[0]).toMatchObject({kind: "user_message", text: "hi", id: "msg-1"})
+    })
+
+    it("appends different user_message ids separately", () => {
+        let items = applyEvent([], {type: "user_message", text: "first", id: "msg-1"})
+        items = applyEvent(items, {type: "user_message", text: "second", id: "msg-2"})
+        expect(items).toHaveLength(2)
+        expect(items[0]).toMatchObject({kind: "user_message", text: "first", id: "msg-1"})
+        expect(items[1]).toMatchObject({kind: "user_message", text: "second", id: "msg-2"})
+    })
+
+    it("appends user_message without id normally (backward compatibility)", () => {
+        let items = applyEvent([], {type: "user_message", text: "legacy"})
+        items = applyEvent(items, {type: "user_message", text: "legacy"})
+        expect(items).toHaveLength(2)
+    })
+
+    it("deduplicates permission_request by id when the same id is seen twice", () => {
+        let items: ChatItem[] = []
+        items = applyEvent(items, {
+            type: "permission_request", id: "p1", tool_name: "Bash", input_summary: "rm -rf /tmp/x",
+            options: ["allow_once", "allow_always", "deny"],
+        })
+        expect(items).toHaveLength(1)
+
+        // The same id arrives again (e.g., re-broadcast from the bridge) — should skip appending.
+        items = applyEvent(items, {
+            type: "permission_request", id: "p1", tool_name: "Bash", input_summary: "rm -rf /tmp/x",
+            options: ["allow_once", "allow_always", "deny"],
+        })
+        expect(items).toHaveLength(1)
+        expect(items[0]).toMatchObject({kind: "permission_request", id: "p1"})
+    })
+
+    it("appends different permission_request ids separately", () => {
+        let items: ChatItem[] = []
+        items = applyEvent(items, {
+            type: "permission_request", id: "p1", tool_name: "Bash", input_summary: "cmd1",
+            options: ["allow_once", "allow_always", "deny"],
+        })
+        items = applyEvent(items, {
+            type: "permission_request", id: "p2", tool_name: "Write", input_summary: "file.txt",
+            options: ["allow_once", "allow_always", "deny"],
+        })
+        expect(items).toHaveLength(2)
+        expect(items[0]).toMatchObject({kind: "permission_request", id: "p1"})
+        expect(items[1]).toMatchObject({kind: "permission_request", id: "p2"})
+    })
+})

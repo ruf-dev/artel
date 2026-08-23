@@ -5,7 +5,7 @@ import {ChatEvent, PermissionDecision} from "@/pages/workbench/processes/chatPro
 // useChatSession.ts) into a flat list keyed for React. One item per visible unit in the
 // conversation; system_init/turn_done carry no visible unit and are absorbed silently.
 export type ChatItem =
-    | {kind: "user_message"; key: string; text: string}
+    | {kind: "user_message"; key: string; text: string; id?: string}
     | {kind: "assistant_message"; key: string; id: string; text: string; done: boolean}
     | {
         kind: "tool_call"
@@ -31,7 +31,18 @@ export type ChatItem =
     | {kind: "error"; key: string; text: string}
 
 function applyUserMessage(prev: ChatItem[], event: ChatEvent): ChatItem[] {
-    const item: ChatItem = {kind: "user_message", key: `user_message-${prev.length}`, text: event.text ?? ""}
+    // Deduplicate by id if present: if an existing item with the same id is found,
+    // skip appending (it's the optimistic copy already rendered, or a duplicate replay).
+    // Events with no id at all must still append normally (backward compatibility).
+    if (event.id && prev.some(i => i.kind === "user_message" && i.id === event.id)) {
+        return prev
+    }
+    const item: ChatItem = {
+        kind: "user_message",
+        key: `user_message-${prev.length}`,
+        text: event.text ?? "",
+        id: event.id,
+    }
     return [...prev, item]
 }
 
@@ -88,6 +99,11 @@ function applyToolCallResult(prev: ChatItem[], event: ChatEvent): ChatItem[] {
 
 function applyPermissionRequest(prev: ChatItem[], event: ChatEvent): ChatItem[] {
     const id = event.id ?? `permission-${prev.length}`
+    // Deduplicate by id: if an item with the same id already exists, skip appending.
+    const idx = prev.findIndex(i => i.kind === "permission_request" && i.id === id)
+    if (idx !== -1) {
+        return prev
+    }
     const item: ChatItem = {
         kind: "permission_request",
         key: `permission_request-${id}`,

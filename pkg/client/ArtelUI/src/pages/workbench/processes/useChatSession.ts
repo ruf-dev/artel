@@ -18,7 +18,10 @@ function buildWsUrl(vaultId: string): string {
 // bytes to ChatEvent JSON), reconnecting with exponential backoff on drop. Exposes the
 // folded item list (see chatReducer.ts) plus helpers for the consumer -> bridge event
 // types; each helper both sends over the wire and applies the event to local state
-// optimistically, since the bridge never echoes these back.
+// optimistically. The bridge does echo user_message back to every consumer (including
+// the sender, since consumers are treated as equals — see hub.go), so sendMessage tags
+// it with a client-generated id: chatReducer's applyUserMessage recognizes the echo by
+// that id and skips re-appending it.
 export function useChatSession(vaultId: string | undefined) {
     const [items, setItems] = useState<ChatItem[]>([])
     const [status, setStatus] = useState<ChatConnectionStatus>("connecting")
@@ -100,7 +103,8 @@ export function useChatSession(vaultId: string | undefined) {
     }, [])
 
     const sendMessage = useCallback((text: string) => {
-        dispatch({type: "user_message", text})
+        const id = crypto.randomUUID()
+        dispatch({type: "user_message", text, id})
     }, [dispatch])
 
     const sendPermissionDecision = useCallback((id: string, decision: PermissionDecision) => {
