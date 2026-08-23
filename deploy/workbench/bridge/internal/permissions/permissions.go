@@ -113,19 +113,28 @@ func (b *Broker) SetWait(wait time.Duration) {
 //
 // allow_always is recorded before unblocking, so a tool call the model makes immediately
 // afterwards is answered from memory rather than racing the consumer.
-func (b *Broker) Decide(id string, decision chatprotocol.PermissionDecision) {
+//
+// Decide returns true if id had a live waiter that this call unblocked, false if it was a no-op
+// (id wasn't in b.pending). Decide itself never broadcasts — it only sees an id and a decision,
+// not the original chatprotocol.Event, so it stays decoupled from that shape. The caller is
+// responsible for broadcasting the decision when (and only when) this returns true, so a decision
+// that actually applied is the only kind that gets persisted/replayed (see main.go's
+// EventPermissionDecision case).
+func (b *Broker) Decide(id string, decision chatprotocol.PermissionDecision) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
 	waiter, ok := b.pending[id]
 	if !ok {
-		return
+		return false
 	}
 
 	delete(b.pending, id)
 
 	waiter <- decision
 	close(waiter)
+
+	return true
 }
 
 // ServeHTTP is the PreToolUse hook endpoint. It always answers 2xx with an explicit allow or
@@ -195,10 +204,20 @@ func (b *Broker) resolve(r *http.Request, request hookRequest) (string, string) 
 		return b.apply(request.ToolName, decision)
 	case <-timer.C:
 		b.abandon(id)
+		b.broadcast(chatprotocol.Event{
+			Type:     chatprotocol.EventPermissionDecision,
+			ID:       id,
+			Decision: chatprotocol.DecisionDeny,
+		})
 
 		return "deny", "no one approved this tool call in time"
 	case <-r.Context().Done():
 		b.abandon(id)
+		b.broadcast(chatprotocol.Event{
+			Type:     chatprotocol.EventPermissionDecision,
+			ID:       id,
+			Decision: chatprotocol.DecisionDeny,
+		})
 
 		return "deny", "the request was cancelled before it was approved"
 	}

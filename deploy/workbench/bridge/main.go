@@ -116,7 +116,9 @@ func runMainLoop(ctx context.Context, chatHub *hub.Hub, runner *claudecli.Runner
 				chatHub.Broadcast(event)
 				runner.RunTurn(ctx, event.Text, chatHub.Broadcast)
 			case chatprotocol.EventPermissionDecision:
-				broker.Decide(event.ID, event.Decision)
+				if broker.Decide(event.ID, event.Decision) {
+					chatHub.Broadcast(event)
+				}
 			case chatprotocol.EventNewChat:
 				runner.SetSessionId("")
 				chatHub.Reset(event)
