@@ -11,7 +11,9 @@ func (e *ExternalConnectionsImpl) AddOpenAIConnection(
 	ctx context.Context,
 	req *pb.AddOpenAIConnection_Request,
 ) (*pb.AddOpenAIConnection_Response, error) {
-	conn, err := e.svc.AddOpenAIConnection(ctx, req.ApiKey, req.BaseUrl, req.DefaultModel)
+	provider := OpenAICompatibleProviderFromProto(req.Provider)
+
+	conn, err := e.svc.AddOpenAIConnection(ctx, req.ApiKey, req.BaseUrl, req.DefaultModel, provider)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "add openai connection")
 	}

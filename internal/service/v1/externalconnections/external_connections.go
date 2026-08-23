@@ -50,6 +50,12 @@ const anthropicDefaultBaseUrl = "https://api.anthropic.com"
 // proxy/regional endpoint or an OpenAI-compatible third-party provider).
 const openaiDefaultBaseUrl = "https://api.openai.com/v1"
 
+// openrouterDefaultBaseUrl is used when the caller doesn't override the API host for an
+// OpenRouter connection (added via AddOpenAIConnection/CheckOpenAIConnection with
+// provider == domain.ProviderOpenRouter, since OpenRouter speaks the same OpenAI-compatible
+// Chat Completions + GET /v1/models protocol).
+const openrouterDefaultBaseUrl = "https://openrouter.ai/api/v1"
+
 // emailConnectionCheckTimeout bounds each of the IMAP/SMTP dial+auth round trips in
 // CheckEmailConnection, so a host that never responds fails fast instead of hanging the request.
 const emailConnectionCheckTimeout = 10 * time.Second
@@ -1501,12 +1507,16 @@ func anthropicKeyPreview(apiKey string) string {
 	return "..." + apiKey[len(apiKey)-previewLen:]
 }
 
-// AddOpenAIConnection validates the API key against OpenAI, then persists it. A blank
-// apiKey means "keep the current key" when editing an existing connection, mirroring
-// AddAnthropicConnection's storedAnthropicApiKey fallback.
+// AddOpenAIConnection validates the API key against the given provider, then persists it. A
+// blank apiKey means "keep the current key" when editing an existing connection, mirroring
+// AddAnthropicConnection's storedAnthropicApiKey fallback. provider is a domain.Provider*
+// constant (domain.ProviderOpenAI or domain.ProviderOpenRouter) selecting which OpenAI-compatible
+// provider this connection is for — both share this RPC since they speak the same protocol; see
+// external_connections_api.OpenAICompatibleProviderFromProto for how the transport layer derives
+// it from the request.
 func (s *Service) AddOpenAIConnection(
 	ctx context.Context,
-	apiKey, baseUrl, defaultModel string,
+	apiKey, baseUrl, defaultModel, provider string,
 ) (domain.ExternalConnectionMeta, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
@@ -1516,18 +1526,18 @@ func (s *Service) AddOpenAIConnection(
 	if apiKey == "" {
 		var err error
 
-		apiKey, err = s.storedOpenAIApiKey(ctx, uc.UserUuid)
+		apiKey, err = s.storedOpenAIApiKey(ctx, uc.UserUuid, provider)
 		if err != nil {
 			return domain.ExternalConnectionMeta{}, err
 		}
 	}
 
-	models, err := s.validateOpenAIKey(ctx, apiKey, baseUrl, defaultModel)
+	models, err := s.validateOpenAIKey(ctx, apiKey, baseUrl, defaultModel, provider)
 	if err != nil {
 		return domain.ExternalConnectionMeta{}, err
 	}
 
-	resolvedDefaultModel := recommendedDefaultOpenAIModel(defaultModel, models)
+	resolvedDefaultModel := recommendedDefaultOpenAIModel(defaultModel, models, provider)
 
 	creds := domain.OpenAIKeyCredentials{
 		ApiKey:  apiKey,
@@ -1553,7 +1563,7 @@ func (s *Service) AddOpenAIConnection(
 
 	conn := domain.ExternalConnection{
 		UserUuid:        uc.UserUuid,
-		Provider:        domain.ProviderOpenAI,
+		Provider:        provider,
 		ProviderType:    artel_q.ExternalProviderTypeApiKey,
 		CredentialsJSON: json.RawMessage(credJSON),
 		Metadata:        json.RawMessage(metaJSON),
@@ -1564,7 +1574,7 @@ func (s *Service) AddOpenAIConnection(
 		return domain.ExternalConnectionMeta{}, rerrors.Wrap(err, "save openai connection")
 	}
 
-	displayName := "GPT (OpenAI)"
+	displayName := openaiCompatibleDisplayName(provider)
 	if resolvedDefaultModel != "" {
 		displayName = resolvedDefaultModel
 	}
@@ -1577,28 +1587,28 @@ func (s *Service) AddOpenAIConnection(
 // committing to AddOpenAIConnection.
 func (s *Service) CheckOpenAIConnection(
 	ctx context.Context,
-	apiKey, baseUrl, defaultModel string,
+	apiKey, baseUrl, defaultModel, provider string,
 ) ([]openaiClient.ModelInfo, string, error) {
 	_, ok := user_context.GetUserContext(ctx)
 	if !ok {
 		return nil, "", user_errors.Unauthenticated
 	}
 
-	models, err := s.validateOpenAIKey(ctx, apiKey, baseUrl, defaultModel)
+	models, err := s.validateOpenAIKey(ctx, apiKey, baseUrl, defaultModel, provider)
 	if err != nil {
 		return nil, "", err
 	}
 
-	recommendedDefault := recommendedDefaultOpenAIModel(defaultModel, models)
+	recommendedDefault := recommendedDefaultOpenAIModel(defaultModel, models, provider)
 
 	return models, recommendedDefault, nil
 }
 
-// storedOpenAIApiKey resolves the API key of the user's existing openai connection, used to
+// storedOpenAIApiKey resolves the API key of the user's existing connection for provider, used to
 // fall back when the caller submits a blank key (edit forms leave it blank to mean "keep the
 // current key").
-func (s *Service) storedOpenAIApiKey(ctx context.Context, userUuid uuid.UUID) (string, error) {
-	existing, err := s.connections.GetByUserAndProvider(ctx, userUuid, domain.ProviderOpenAI)
+func (s *Service) storedOpenAIApiKey(ctx context.Context, userUuid uuid.UUID, provider string) (string, error) {
+	existing, err := s.connections.GetByUserAndProvider(ctx, userUuid, provider)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error loading existing openai connection")
 	}
@@ -1617,6 +1627,16 @@ func (s *Service) storedOpenAIApiKey(ctx context.Context, userUuid uuid.UUID) (s
 	return creds.ApiKey, nil
 }
 
+// openaiCompatibleDisplayName returns the fallback display name for an OpenAI-compatible
+// connection when no default model was resolved, keyed by provider.
+func openaiCompatibleDisplayName(provider string) string {
+	if provider == domain.ProviderOpenRouter {
+		return "OpenRouter"
+	}
+
+	return "GPT (OpenAI)"
+}
+
 // validateOpenAIKey resolves baseUrl to openaiDefaultBaseUrl when blank, then confirms the
 // key actually authenticates against the provider by listing its model catalog. ListModels is a
 // zero-token metadata call, so it doubles as key validation before anything is persisted.
@@ -1628,9 +1648,9 @@ func (s *Service) storedOpenAIApiKey(ctx context.Context, userUuid uuid.UUID) (s
 // listing endpoint to populate it from) but the key itself is still confirmed to work.
 func (s *Service) validateOpenAIKey(
 	ctx context.Context,
-	apiKey, baseUrl, defaultModel string,
+	apiKey, baseUrl, defaultModel, provider string,
 ) ([]openaiClient.ModelInfo, error) {
-	client := openaiClient.New(apiKey, resolveOpenAIBaseUrl(baseUrl))
+	client := openaiClient.New(apiKey, resolveOpenAIBaseUrl(baseUrl, provider))
 
 	models, err := client.ListModels(ctx)
 	if err == nil {
@@ -1658,31 +1678,46 @@ func (s *Service) validateOpenAIKey(
 	}
 }
 
-// resolveOpenAIBaseUrl returns baseUrl unchanged when set, or openaiDefaultBaseUrl when
-// blank.
-func resolveOpenAIBaseUrl(baseUrl string) string {
-	if baseUrl == "" {
-		return openaiDefaultBaseUrl
+// resolveOpenAIBaseUrl returns baseUrl unchanged when set, or provider's default base URL
+// (openaiDefaultBaseUrl / openrouterDefaultBaseUrl) when blank.
+func resolveOpenAIBaseUrl(baseUrl, provider string) string {
+	if baseUrl != "" {
+		return baseUrl
 	}
 
-	return baseUrl
+	if provider == domain.ProviderOpenRouter {
+		return openrouterDefaultBaseUrl
+	}
+
+	return openaiDefaultBaseUrl
 }
 
 // openaiModelAllowlist is the preference order recommendedDefaultOpenAIModel falls back to when
-// the caller doesn't set a default model. Ordered most- to least-preferred.
+// the caller doesn't set a default model for the openai provider. Ordered most- to
+// least-preferred.
 var openaiModelAllowlist = []string{"gpt-4o", "gpt-4o-mini", "gpt-4-turbo"}
 
-// recommendedDefaultOpenAIModel returns the caller's chosen default model if set. Otherwise it
-// picks the first entry of openaiModelAllowlist present in models.
+// recommendedDefaultOpenAIModel returns the caller's chosen default model if set. Otherwise, for
+// provider == domain.ProviderOpenAI, it picks the first entry of openaiModelAllowlist present in
+// models.
 //
 // This differs from recommendedDefaultAnthropicModel's "first entry" heuristic deliberately:
 // OpenAI's GET /v1/models response is not reverse-chronological and mixes in non-chat models
 // (embeddings, moderation, TTS, etc.), so "first entry" is not a safe signal of "newest/best chat
 // model" the way it is for Anthropic. If none of the allowlisted models are present, "" is
 // returned rather than guessing at an arbitrary entry.
-func recommendedDefaultOpenAIModel(defaultModel string, models []openaiClient.ModelInfo) string {
+//
+// For provider == domain.ProviderOpenRouter, no allowlist is applied at all: OpenRouter's catalog
+// is large and vendor-prefixed (anthropic/claude-..., openai/gpt-..., ...), so there's no safe
+// "best" default to guess at — the caller's own defaultModel (if any) is the only source, exactly
+// like the "nothing in the allowlist matched" branch below.
+func recommendedDefaultOpenAIModel(defaultModel string, models []openaiClient.ModelInfo, provider string) string {
 	if defaultModel != "" {
 		return defaultModel
+	}
+
+	if provider != domain.ProviderOpenAI {
+		return ""
 	}
 
 	available := make(map[string]bool, len(models))

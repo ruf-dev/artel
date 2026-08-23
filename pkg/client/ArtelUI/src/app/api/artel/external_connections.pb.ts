@@ -30,6 +30,7 @@ export enum ExternalProvider {
   EXTERNAL_PROVIDER_S3 = "EXTERNAL_PROVIDER_S3",
   EXTERNAL_PROVIDER_COUCHDB = "EXTERNAL_PROVIDER_COUCHDB",
   EXTERNAL_PROVIDER_POSTGRES = "EXTERNAL_PROVIDER_POSTGRES",
+  EXTERNAL_PROVIDER_OPENROUTER = "EXTERNAL_PROVIDER_OPENROUTER",
 }
 
 export type GoogleConnectionInfo = {
@@ -279,6 +280,7 @@ export type AddOpenAIConnectionRequest = {
   apiKey?: string;
   baseUrl?: string;
   defaultModel?: string;
+  provider?: ExternalProvider;
 };
 
 export type AddOpenAIConnectionResponse = {
@@ -291,6 +293,7 @@ export type CheckOpenAIConnectionRequest = {
   apiKey?: string;
   baseUrl?: string;
   defaultModel?: string;
+  provider?: ExternalProvider;
 };
 
 export type CheckOpenAIConnectionResponse = {

@@ -578,11 +578,16 @@ type ExternalConnectionService interface {
 	// WorkbenchService to inject ANTHROPIC_API_KEY when starting a workbench in api_key auth
 	// mode. Returns user_errors.LlmKeyRequired if userUuid has no anthropic connection.
 	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
+	// AddOpenAIConnection and CheckOpenAIConnection are shared across every provider that speaks
+	// the OpenAI Chat Completions protocol (currently openai and openrouter); provider selects
+	// which one, via a domain.Provider* constant — see
+	// external_connections_api.OpenAICompatibleProviderFromProto for how the transport layer
+	// derives it from the request's proto ExternalProvider field.
 	AddOpenAIConnection(
-		ctx context.Context, apiKey, baseUrl, defaultModel string,
+		ctx context.Context, apiKey, baseUrl, defaultModel, provider string,
 	) (domain.ExternalConnectionMeta, error)
 	CheckOpenAIConnection(
-		ctx context.Context, apiKey, baseUrl, defaultModel string,
+		ctx context.Context, apiKey, baseUrl, defaultModel, provider string,
 	) (models []openaiClient.ModelInfo, recommendedDefaultModel string, err error)
 	AddGenericConnection(
 		ctx context.Context, provider string, credentials map[string]string,

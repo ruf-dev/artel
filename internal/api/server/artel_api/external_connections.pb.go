@@ -37,6 +37,7 @@ const (
 	ExternalProvider_EXTERNAL_PROVIDER_S3            ExternalProvider = 9
 	ExternalProvider_EXTERNAL_PROVIDER_COUCHDB       ExternalProvider = 10
 	ExternalProvider_EXTERNAL_PROVIDER_POSTGRES      ExternalProvider = 11
+	ExternalProvider_EXTERNAL_PROVIDER_OPENROUTER    ExternalProvider = 12
 )
 
 // Enum value maps for ExternalProvider.
@@ -54,6 +55,7 @@ var (
 		9:  "EXTERNAL_PROVIDER_S3",
 		10: "EXTERNAL_PROVIDER_COUCHDB",
 		11: "EXTERNAL_PROVIDER_POSTGRES",
+		12: "EXTERNAL_PROVIDER_OPENROUTER",
 	}
 	ExternalProvider_value = map[string]int32{
 		"EXTERNAL_PROVIDER_UNSPECIFIED":   0,
@@ -68,6 +70,7 @@ var (
 		"EXTERNAL_PROVIDER_S3":            9,
 		"EXTERNAL_PROVIDER_COUCHDB":       10,
 		"EXTERNAL_PROVIDER_POSTGRES":      11,
+		"EXTERNAL_PROVIDER_OPENROUTER":    12,
 	}
 )
 
@@ -3376,8 +3379,13 @@ type AddOpenAIConnection_Request struct {
 	// optional; defaults to https://api.openai.com/v1 — for OpenAI-compatible proxies, include
 	// any required path prefix the proxy expects (OpenAI's API is rooted at /v1, unlike Anthropic
 	// where base_url is just the host)
-	BaseUrl       string `protobuf:"bytes,2,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"`
-	DefaultModel  string `protobuf:"bytes,3,opt,name=default_model,json=defaultModel,proto3" json:"default_model,omitempty"` // optional; falls back to a recommended default from the live model list
+	BaseUrl      string `protobuf:"bytes,2,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"`
+	DefaultModel string `protobuf:"bytes,3,opt,name=default_model,json=defaultModel,proto3" json:"default_model,omitempty"` // optional; falls back to a recommended default from the live model list
+	// optional; which OpenAI-compatible identity to persist this key under (EXTERNAL_PROVIDER_OPENAI
+	// or EXTERNAL_PROVIDER_OPENROUTER). Unset/UNSPECIFIED defaults to EXTERNAL_PROVIDER_OPENAI —
+	// this RPC is reused across every provider that speaks the OpenAI Chat Completions protocol
+	// rather than forking a bespoke RPC pair per provider (they all use the same underlying client).
+	Provider      ExternalProvider `protobuf:"varint,4,opt,name=provider,proto3,enum=artel_api.ExternalProvider" json:"provider,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3433,6 +3441,13 @@ func (x *AddOpenAIConnection_Request) GetDefaultModel() string {
 	return ""
 }
 
+func (x *AddOpenAIConnection_Request) GetProvider() ExternalProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return ExternalProvider_EXTERNAL_PROVIDER_UNSPECIFIED
+}
+
 type AddOpenAIConnection_Response struct {
 	state         protoimpl.MessageState  `protogen:"open.v1"`
 	Connection    *ExternalConnectionInfo `protobuf:"bytes,1,opt,name=connection,proto3" json:"connection,omitempty"`
@@ -3481,7 +3496,8 @@ type CheckOpenAIConnection_Request struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ApiKey        string                 `protobuf:"bytes,1,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
 	BaseUrl       string                 `protobuf:"bytes,2,opt,name=base_url,json=baseUrl,proto3" json:"base_url,omitempty"`
-	DefaultModel  string                 `protobuf:"bytes,3,opt,name=default_model,json=defaultModel,proto3" json:"default_model,omitempty"` // optional; used as the fallback validation target when the provider doesn't support GET /v1/models
+	DefaultModel  string                 `protobuf:"bytes,3,opt,name=default_model,json=defaultModel,proto3" json:"default_model,omitempty"`      // optional; used as the fallback validation target when the provider doesn't support GET /v1/models
+	Provider      ExternalProvider       `protobuf:"varint,4,opt,name=provider,proto3,enum=artel_api.ExternalProvider" json:"provider,omitempty"` // optional; see AddOpenAIConnection.Request.provider
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3535,6 +3551,13 @@ func (x *CheckOpenAIConnection_Request) GetDefaultModel() string {
 		return x.DefaultModel
 	}
 	return ""
+}
+
+func (x *CheckOpenAIConnection_Request) GetProvider() ExternalProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return ExternalProvider_EXTERNAL_PROVIDER_UNSPECIFIED
 }
 
 type CheckOpenAIConnection_Response struct {
@@ -4545,21 +4568,23 @@ const file_external_connections_proto_rawDesc = "" +
 	"\rdefault_model\x18\x03 \x01(\tR\fdefaultModel\x1aq\n" +
 	"\bResponse\x12)\n" +
 	"\x10available_models\x18\x01 \x03(\tR\x0favailableModels\x12:\n" +
-	"\x19recommended_default_model\x18\x02 \x01(\tR\x17recommendedDefaultModel\"\xc8\x01\n" +
-	"\x13AddOpenAIConnection\x1ab\n" +
+	"\x19recommended_default_model\x18\x02 \x01(\tR\x17recommendedDefaultModel\"\x82\x02\n" +
+	"\x13AddOpenAIConnection\x1a\x9b\x01\n" +
 	"\aRequest\x12\x17\n" +
 	"\aapi_key\x18\x01 \x01(\tR\x06apiKey\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrl\x12#\n" +
-	"\rdefault_model\x18\x03 \x01(\tR\fdefaultModel\x1aM\n" +
+	"\rdefault_model\x18\x03 \x01(\tR\fdefaultModel\x127\n" +
+	"\bprovider\x18\x04 \x01(\x0e2\x1b.artel_api.ExternalProviderR\bprovider\x1aM\n" +
 	"\bResponse\x12A\n" +
 	"\n" +
 	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
-	"connection\"\xee\x01\n" +
-	"\x15CheckOpenAIConnection\x1ab\n" +
+	"connection\"\xa8\x02\n" +
+	"\x15CheckOpenAIConnection\x1a\x9b\x01\n" +
 	"\aRequest\x12\x17\n" +
 	"\aapi_key\x18\x01 \x01(\tR\x06apiKey\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrl\x12#\n" +
-	"\rdefault_model\x18\x03 \x01(\tR\fdefaultModel\x1aq\n" +
+	"\rdefault_model\x18\x03 \x01(\tR\fdefaultModel\x127\n" +
+	"\bprovider\x18\x04 \x01(\x0e2\x1b.artel_api.ExternalProviderR\bprovider\x1aq\n" +
 	"\bResponse\x12)\n" +
 	"\x10available_models\x18\x01 \x03(\tR\x0favailableModels\x12:\n" +
 	"\x19recommended_default_model\x18\x02 \x01(\tR\x17recommendedDefaultModel\"\x96\x02\n" +
@@ -4639,7 +4664,7 @@ const file_external_connections_proto_rawDesc = "" +
 	"\bResponse\x12A\n" +
 	"\n" +
 	"connection\x18\x01 \x01(\v2!.artel_api.ExternalConnectionInfoR\n" +
-	"connection*\x87\x03\n" +
+	"connection*\xa9\x03\n" +
 	"\x10ExternalProvider\x12!\n" +
 	"\x1dEXTERNAL_PROVIDER_UNSPECIFIED\x10\x00\x12#\n" +
 	"\x1fEXTERNAL_PROVIDER_GOOGLE_SHEETS\x10\x01\x12\x1c\n" +
@@ -4653,7 +4678,8 @@ const file_external_connections_proto_rawDesc = "" +
 	"\x14EXTERNAL_PROVIDER_S3\x10\t\x12\x1d\n" +
 	"\x19EXTERNAL_PROVIDER_COUCHDB\x10\n" +
 	"\x12\x1e\n" +
-	"\x1aEXTERNAL_PROVIDER_POSTGRES\x10\v2\xb7$\n" +
+	"\x1aEXTERNAL_PROVIDER_POSTGRES\x10\v\x12 \n" +
+	"\x1cEXTERNAL_PROVIDER_OPENROUTER\x10\f2\xb7$\n" +
 	"\x16ExternalConnectionsAPI\x12\x9c\x01\n" +
 	"\x13InitiateGoogleOAuth\x12&.artel_api.InitiateGoogleOAuth.Request\x1a'.artel_api.InitiateGoogleOAuth.Response\"4\x82\xd3\xe4\x93\x02.:\x01*\")/api/external-connections/google/initiate\x12\x85\x01\n" +
 	"\x0fListConnections\x12\".artel_api.ListConnections.Request\x1a#.artel_api.ListConnections.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/external-connections/list\x12\x94\x01\n" +
@@ -4812,75 +4838,77 @@ var file_external_connections_proto_depIdxs = []int32{
 	3,  // 11: artel_api.AddTrelloConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
 	3,  // 12: artel_api.AddTelegramConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
 	3,  // 13: artel_api.AddAnthropicConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	3,  // 14: artel_api.AddOpenAIConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	3,  // 15: artel_api.AddS3Connection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	3,  // 16: artel_api.AddCouchDBConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	3,  // 17: artel_api.AddPostgresConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	94, // 18: artel_api.AddGenericConnection.Request.credentials:type_name -> artel_api.AddGenericConnection.Request.CredentialsEntry
-	3,  // 19: artel_api.AddGenericConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
-	36, // 20: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
-	38, // 21: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
-	40, // 22: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
-	42, // 23: artel_api.ExternalConnectionsAPI.DisconnectConnection:input_type -> artel_api.DisconnectConnection.Request
-	44, // 24: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:input_type -> artel_api.GooglePickerToken.Request
-	46, // 25: artel_api.ExternalConnectionsAPI.AddSpreadsheet:input_type -> artel_api.AddSpreadsheet.Request
-	48, // 26: artel_api.ExternalConnectionsAPI.ListSpreadsheets:input_type -> artel_api.ListSpreadsheets.Request
-	50, // 27: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:input_type -> artel_api.RemoveSpreadsheet.Request
-	52, // 28: artel_api.ExternalConnectionsAPI.AddEmailConnection:input_type -> artel_api.AddEmailConnection.Request
-	54, // 29: artel_api.ExternalConnectionsAPI.CheckEmailConnection:input_type -> artel_api.CheckEmailConnection.Request
-	56, // 30: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:input_type -> artel_api.ListMailServerSuggestions.Request
-	58, // 31: artel_api.ExternalConnectionsAPI.AddGitlabConnection:input_type -> artel_api.AddGitlabConnection.Request
-	60, // 32: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:input_type -> artel_api.CheckGitlabConnection.Request
-	62, // 33: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:input_type -> artel_api.GenerateGitlabWebhookSecret.Request
-	64, // 34: artel_api.ExternalConnectionsAPI.AddTrelloConnection:input_type -> artel_api.AddTrelloConnection.Request
-	66, // 35: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:input_type -> artel_api.CheckTrelloConnection.Request
-	68, // 36: artel_api.ExternalConnectionsAPI.AddTelegramConnection:input_type -> artel_api.AddTelegramConnection.Request
-	70, // 37: artel_api.ExternalConnectionsAPI.CheckTelegramConnection:input_type -> artel_api.CheckTelegramConnection.Request
-	72, // 38: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:input_type -> artel_api.AddAnthropicConnection.Request
-	74, // 39: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:input_type -> artel_api.CheckAnthropicConnection.Request
-	76, // 40: artel_api.ExternalConnectionsAPI.AddOpenAIConnection:input_type -> artel_api.AddOpenAIConnection.Request
-	78, // 41: artel_api.ExternalConnectionsAPI.CheckOpenAIConnection:input_type -> artel_api.CheckOpenAIConnection.Request
-	92, // 42: artel_api.ExternalConnectionsAPI.AddGenericConnection:input_type -> artel_api.AddGenericConnection.Request
-	80, // 43: artel_api.ExternalConnectionsAPI.AddS3Connection:input_type -> artel_api.AddS3Connection.Request
-	82, // 44: artel_api.ExternalConnectionsAPI.CheckS3Connection:input_type -> artel_api.CheckS3Connection.Request
-	84, // 45: artel_api.ExternalConnectionsAPI.AddCouchDBConnection:input_type -> artel_api.AddCouchDBConnection.Request
-	86, // 46: artel_api.ExternalConnectionsAPI.CheckCouchDBConnection:input_type -> artel_api.CheckCouchDBConnection.Request
-	88, // 47: artel_api.ExternalConnectionsAPI.AddPostgresConnection:input_type -> artel_api.AddPostgresConnection.Request
-	90, // 48: artel_api.ExternalConnectionsAPI.CheckPostgresConnection:input_type -> artel_api.CheckPostgresConnection.Request
-	37, // 49: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
-	39, // 50: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
-	41, // 51: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
-	43, // 52: artel_api.ExternalConnectionsAPI.DisconnectConnection:output_type -> artel_api.DisconnectConnection.Response
-	45, // 53: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:output_type -> artel_api.GooglePickerToken.Response
-	47, // 54: artel_api.ExternalConnectionsAPI.AddSpreadsheet:output_type -> artel_api.AddSpreadsheet.Response
-	49, // 55: artel_api.ExternalConnectionsAPI.ListSpreadsheets:output_type -> artel_api.ListSpreadsheets.Response
-	51, // 56: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:output_type -> artel_api.RemoveSpreadsheet.Response
-	53, // 57: artel_api.ExternalConnectionsAPI.AddEmailConnection:output_type -> artel_api.AddEmailConnection.Response
-	55, // 58: artel_api.ExternalConnectionsAPI.CheckEmailConnection:output_type -> artel_api.CheckEmailConnection.Response
-	57, // 59: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:output_type -> artel_api.ListMailServerSuggestions.Response
-	59, // 60: artel_api.ExternalConnectionsAPI.AddGitlabConnection:output_type -> artel_api.AddGitlabConnection.Response
-	61, // 61: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:output_type -> artel_api.CheckGitlabConnection.Response
-	63, // 62: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:output_type -> artel_api.GenerateGitlabWebhookSecret.Response
-	65, // 63: artel_api.ExternalConnectionsAPI.AddTrelloConnection:output_type -> artel_api.AddTrelloConnection.Response
-	67, // 64: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:output_type -> artel_api.CheckTrelloConnection.Response
-	69, // 65: artel_api.ExternalConnectionsAPI.AddTelegramConnection:output_type -> artel_api.AddTelegramConnection.Response
-	71, // 66: artel_api.ExternalConnectionsAPI.CheckTelegramConnection:output_type -> artel_api.CheckTelegramConnection.Response
-	73, // 67: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:output_type -> artel_api.AddAnthropicConnection.Response
-	75, // 68: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:output_type -> artel_api.CheckAnthropicConnection.Response
-	77, // 69: artel_api.ExternalConnectionsAPI.AddOpenAIConnection:output_type -> artel_api.AddOpenAIConnection.Response
-	79, // 70: artel_api.ExternalConnectionsAPI.CheckOpenAIConnection:output_type -> artel_api.CheckOpenAIConnection.Response
-	93, // 71: artel_api.ExternalConnectionsAPI.AddGenericConnection:output_type -> artel_api.AddGenericConnection.Response
-	81, // 72: artel_api.ExternalConnectionsAPI.AddS3Connection:output_type -> artel_api.AddS3Connection.Response
-	83, // 73: artel_api.ExternalConnectionsAPI.CheckS3Connection:output_type -> artel_api.CheckS3Connection.Response
-	85, // 74: artel_api.ExternalConnectionsAPI.AddCouchDBConnection:output_type -> artel_api.AddCouchDBConnection.Response
-	87, // 75: artel_api.ExternalConnectionsAPI.CheckCouchDBConnection:output_type -> artel_api.CheckCouchDBConnection.Response
-	89, // 76: artel_api.ExternalConnectionsAPI.AddPostgresConnection:output_type -> artel_api.AddPostgresConnection.Response
-	91, // 77: artel_api.ExternalConnectionsAPI.CheckPostgresConnection:output_type -> artel_api.CheckPostgresConnection.Response
-	49, // [49:78] is the sub-list for method output_type
-	20, // [20:49] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	0,  // 14: artel_api.AddOpenAIConnection.Request.provider:type_name -> artel_api.ExternalProvider
+	3,  // 15: artel_api.AddOpenAIConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	0,  // 16: artel_api.CheckOpenAIConnection.Request.provider:type_name -> artel_api.ExternalProvider
+	3,  // 17: artel_api.AddS3Connection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	3,  // 18: artel_api.AddCouchDBConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	3,  // 19: artel_api.AddPostgresConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	94, // 20: artel_api.AddGenericConnection.Request.credentials:type_name -> artel_api.AddGenericConnection.Request.CredentialsEntry
+	3,  // 21: artel_api.AddGenericConnection.Response.connection:type_name -> artel_api.ExternalConnectionInfo
+	36, // 22: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:input_type -> artel_api.InitiateGoogleOAuth.Request
+	38, // 23: artel_api.ExternalConnectionsAPI.ListConnections:input_type -> artel_api.ListConnections.Request
+	40, // 24: artel_api.ExternalConnectionsAPI.DisconnectProvider:input_type -> artel_api.DisconnectProvider.Request
+	42, // 25: artel_api.ExternalConnectionsAPI.DisconnectConnection:input_type -> artel_api.DisconnectConnection.Request
+	44, // 26: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:input_type -> artel_api.GooglePickerToken.Request
+	46, // 27: artel_api.ExternalConnectionsAPI.AddSpreadsheet:input_type -> artel_api.AddSpreadsheet.Request
+	48, // 28: artel_api.ExternalConnectionsAPI.ListSpreadsheets:input_type -> artel_api.ListSpreadsheets.Request
+	50, // 29: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:input_type -> artel_api.RemoveSpreadsheet.Request
+	52, // 30: artel_api.ExternalConnectionsAPI.AddEmailConnection:input_type -> artel_api.AddEmailConnection.Request
+	54, // 31: artel_api.ExternalConnectionsAPI.CheckEmailConnection:input_type -> artel_api.CheckEmailConnection.Request
+	56, // 32: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:input_type -> artel_api.ListMailServerSuggestions.Request
+	58, // 33: artel_api.ExternalConnectionsAPI.AddGitlabConnection:input_type -> artel_api.AddGitlabConnection.Request
+	60, // 34: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:input_type -> artel_api.CheckGitlabConnection.Request
+	62, // 35: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:input_type -> artel_api.GenerateGitlabWebhookSecret.Request
+	64, // 36: artel_api.ExternalConnectionsAPI.AddTrelloConnection:input_type -> artel_api.AddTrelloConnection.Request
+	66, // 37: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:input_type -> artel_api.CheckTrelloConnection.Request
+	68, // 38: artel_api.ExternalConnectionsAPI.AddTelegramConnection:input_type -> artel_api.AddTelegramConnection.Request
+	70, // 39: artel_api.ExternalConnectionsAPI.CheckTelegramConnection:input_type -> artel_api.CheckTelegramConnection.Request
+	72, // 40: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:input_type -> artel_api.AddAnthropicConnection.Request
+	74, // 41: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:input_type -> artel_api.CheckAnthropicConnection.Request
+	76, // 42: artel_api.ExternalConnectionsAPI.AddOpenAIConnection:input_type -> artel_api.AddOpenAIConnection.Request
+	78, // 43: artel_api.ExternalConnectionsAPI.CheckOpenAIConnection:input_type -> artel_api.CheckOpenAIConnection.Request
+	92, // 44: artel_api.ExternalConnectionsAPI.AddGenericConnection:input_type -> artel_api.AddGenericConnection.Request
+	80, // 45: artel_api.ExternalConnectionsAPI.AddS3Connection:input_type -> artel_api.AddS3Connection.Request
+	82, // 46: artel_api.ExternalConnectionsAPI.CheckS3Connection:input_type -> artel_api.CheckS3Connection.Request
+	84, // 47: artel_api.ExternalConnectionsAPI.AddCouchDBConnection:input_type -> artel_api.AddCouchDBConnection.Request
+	86, // 48: artel_api.ExternalConnectionsAPI.CheckCouchDBConnection:input_type -> artel_api.CheckCouchDBConnection.Request
+	88, // 49: artel_api.ExternalConnectionsAPI.AddPostgresConnection:input_type -> artel_api.AddPostgresConnection.Request
+	90, // 50: artel_api.ExternalConnectionsAPI.CheckPostgresConnection:input_type -> artel_api.CheckPostgresConnection.Request
+	37, // 51: artel_api.ExternalConnectionsAPI.InitiateGoogleOAuth:output_type -> artel_api.InitiateGoogleOAuth.Response
+	39, // 52: artel_api.ExternalConnectionsAPI.ListConnections:output_type -> artel_api.ListConnections.Response
+	41, // 53: artel_api.ExternalConnectionsAPI.DisconnectProvider:output_type -> artel_api.DisconnectProvider.Response
+	43, // 54: artel_api.ExternalConnectionsAPI.DisconnectConnection:output_type -> artel_api.DisconnectConnection.Response
+	45, // 55: artel_api.ExternalConnectionsAPI.GetGooglePickerToken:output_type -> artel_api.GooglePickerToken.Response
+	47, // 56: artel_api.ExternalConnectionsAPI.AddSpreadsheet:output_type -> artel_api.AddSpreadsheet.Response
+	49, // 57: artel_api.ExternalConnectionsAPI.ListSpreadsheets:output_type -> artel_api.ListSpreadsheets.Response
+	51, // 58: artel_api.ExternalConnectionsAPI.RemoveSpreadsheet:output_type -> artel_api.RemoveSpreadsheet.Response
+	53, // 59: artel_api.ExternalConnectionsAPI.AddEmailConnection:output_type -> artel_api.AddEmailConnection.Response
+	55, // 60: artel_api.ExternalConnectionsAPI.CheckEmailConnection:output_type -> artel_api.CheckEmailConnection.Response
+	57, // 61: artel_api.ExternalConnectionsAPI.ListMailServerSuggestions:output_type -> artel_api.ListMailServerSuggestions.Response
+	59, // 62: artel_api.ExternalConnectionsAPI.AddGitlabConnection:output_type -> artel_api.AddGitlabConnection.Response
+	61, // 63: artel_api.ExternalConnectionsAPI.CheckGitlabConnection:output_type -> artel_api.CheckGitlabConnection.Response
+	63, // 64: artel_api.ExternalConnectionsAPI.GenerateGitlabWebhookSecret:output_type -> artel_api.GenerateGitlabWebhookSecret.Response
+	65, // 65: artel_api.ExternalConnectionsAPI.AddTrelloConnection:output_type -> artel_api.AddTrelloConnection.Response
+	67, // 66: artel_api.ExternalConnectionsAPI.CheckTrelloConnection:output_type -> artel_api.CheckTrelloConnection.Response
+	69, // 67: artel_api.ExternalConnectionsAPI.AddTelegramConnection:output_type -> artel_api.AddTelegramConnection.Response
+	71, // 68: artel_api.ExternalConnectionsAPI.CheckTelegramConnection:output_type -> artel_api.CheckTelegramConnection.Response
+	73, // 69: artel_api.ExternalConnectionsAPI.AddAnthropicConnection:output_type -> artel_api.AddAnthropicConnection.Response
+	75, // 70: artel_api.ExternalConnectionsAPI.CheckAnthropicConnection:output_type -> artel_api.CheckAnthropicConnection.Response
+	77, // 71: artel_api.ExternalConnectionsAPI.AddOpenAIConnection:output_type -> artel_api.AddOpenAIConnection.Response
+	79, // 72: artel_api.ExternalConnectionsAPI.CheckOpenAIConnection:output_type -> artel_api.CheckOpenAIConnection.Response
+	93, // 73: artel_api.ExternalConnectionsAPI.AddGenericConnection:output_type -> artel_api.AddGenericConnection.Response
+	81, // 74: artel_api.ExternalConnectionsAPI.AddS3Connection:output_type -> artel_api.AddS3Connection.Response
+	83, // 75: artel_api.ExternalConnectionsAPI.CheckS3Connection:output_type -> artel_api.CheckS3Connection.Response
+	85, // 76: artel_api.ExternalConnectionsAPI.AddCouchDBConnection:output_type -> artel_api.AddCouchDBConnection.Response
+	87, // 77: artel_api.ExternalConnectionsAPI.CheckCouchDBConnection:output_type -> artel_api.CheckCouchDBConnection.Response
+	89, // 78: artel_api.ExternalConnectionsAPI.AddPostgresConnection:output_type -> artel_api.AddPostgresConnection.Response
+	91, // 79: artel_api.ExternalConnectionsAPI.CheckPostgresConnection:output_type -> artel_api.CheckPostgresConnection.Response
+	51, // [51:80] is the sub-list for method output_type
+	22, // [22:51] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_external_connections_proto_init() }

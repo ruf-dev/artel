@@ -16,9 +16,23 @@ var providerToProto = map[string]pb.ExternalProvider{
 	domain.ProviderGitlab:       pb.ExternalProvider_EXTERNAL_PROVIDER_GITLAB,
 	domain.ProviderAnthropic:    pb.ExternalProvider_EXTERNAL_PROVIDER_ANTHROPIC,
 	domain.ProviderOpenAI:       pb.ExternalProvider_EXTERNAL_PROVIDER_OPENAI,
+	domain.ProviderOpenRouter:   pb.ExternalProvider_EXTERNAL_PROVIDER_OPENROUTER,
 	domain.ProviderS3:           pb.ExternalProvider_EXTERNAL_PROVIDER_S3,
 	domain.ProviderCouchDB:      pb.ExternalProvider_EXTERNAL_PROVIDER_COUCHDB,
 	domain.ProviderPostgres:     pb.ExternalProvider_EXTERNAL_PROVIDER_POSTGRES,
+}
+
+// OpenAICompatibleProviderFromProto resolves the domain provider constant AddOpenAIConnection /
+// CheckOpenAIConnection should operate on for the given request's provider field. Both RPCs are
+// shared across every provider that speaks the OpenAI Chat Completions protocol, distinguished
+// only by this field; EXTERNAL_PROVIDER_UNSPECIFIED preserves pre-OpenRouter callers' behavior by
+// defaulting to OpenAI.
+func OpenAICompatibleProviderFromProto(p pb.ExternalProvider) string {
+	if p == pb.ExternalProvider_EXTERNAL_PROVIDER_OPENROUTER {
+		return domain.ProviderOpenRouter
+	}
+
+	return domain.ProviderOpenAI
 }
 
 func ConnectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {
