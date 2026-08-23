@@ -356,6 +356,8 @@ type fakeDockerClient struct {
 	writeFilesToVolumeFunc  func(ctx context.Context, containerID string, files map[string][]byte) error
 	readFilesFromVolumeFunc func(ctx context.Context, containerID string) (map[string][]byte, error)
 
+	checkClaudeLoggedInFunc func(ctx context.Context, containerID string) (bool, error)
+
 	// writeFilesToVolumeCalls records the files argument of every WriteFilesToVolume call — used
 	// by tests asserting what materializeVault actually wrote into the workbench's volume.
 	writeFilesToVolumeCalls []map[string][]byte
@@ -381,6 +383,11 @@ type fakeDockerClient struct {
 	// 'configuring' row.
 	createVolumeCalls    int
 	createContainerCalls int
+
+	// checkClaudeLoggedInCalls counts CheckClaudeLoggedIn invocations — used by
+	// TestService_IsClaudeLoggedIn to assert the docker client is never reached for a non-running
+	// workbench.
+	checkClaudeLoggedInCalls int
 }
 
 func (f *fakeDockerClient) CreateVolume(ctx context.Context, name string) error {
@@ -505,6 +512,16 @@ func (f *fakeDockerClient) ReadFilesFromVolume(ctx context.Context, containerID 
 	}
 
 	return nil, nil
+}
+
+func (f *fakeDockerClient) CheckClaudeLoggedIn(ctx context.Context, containerID string) (bool, error) {
+	f.checkClaudeLoggedInCalls++
+
+	if f.checkClaudeLoggedInFunc != nil {
+		return f.checkClaudeLoggedInFunc(ctx, containerID)
+	}
+
+	return false, nil
 }
 
 // fakeVaultContentService stands in for vaultContentService — the notes-service surface
@@ -726,6 +743,83 @@ func TestResolveTerminalShellTarget_DockerClientError(t *testing.T) {
 	_, err := svc.ResolveTerminalShellTarget(context.Background(), uuid.New(), uuid.New())
 	if !errors.Is(err, wantErr) {
 		t.Fatalf("expected wrapped TtydAddress error, got %v", err)
+	}
+}
+
+// TestService_IsClaudeLoggedIn covers IsClaudeLoggedIn's branching: a non-running workbench short
+// circuits to false, nil without ever reaching the docker client, while a running workbench passes
+// CheckClaudeLoggedIn's result (or error) straight through.
+func TestService_IsClaudeLoggedIn(t *testing.T) {
+	wantErr := errors.New("boom")
+
+	tests := []struct {
+		name             string
+		status           domain.WorkbenchStatus
+		checkLoggedInErr error
+		checkLoggedIn    bool
+		wantLoggedIn     bool
+		wantErr          error
+		wantDockerCalled bool
+	}{
+		{
+			name:             "not running",
+			status:           domain.WorkbenchStatusStopped,
+			wantLoggedIn:     false,
+			wantDockerCalled: false,
+		},
+		{
+			name:             "running and logged in",
+			status:           domain.WorkbenchStatusRunning,
+			checkLoggedIn:    true,
+			wantLoggedIn:     true,
+			wantDockerCalled: true,
+		},
+		{
+			name:             "running and not logged in",
+			status:           domain.WorkbenchStatusRunning,
+			checkLoggedIn:    false,
+			wantLoggedIn:     false,
+			wantDockerCalled: true,
+		},
+		{
+			name:             "running and docker check errors",
+			status:           domain.WorkbenchStatusRunning,
+			checkLoggedInErr: wantErr,
+			wantLoggedIn:     false,
+			wantErr:          wantErr,
+			wantDockerCalled: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := &fakeDockerClient{
+				checkClaudeLoggedInFunc: func(ctx context.Context, containerID string) (bool, error) {
+					return tt.checkLoggedIn, tt.checkLoggedInErr
+				},
+			}
+
+			svc := newTestService(t, tt.status, client)
+
+			loggedIn, err := svc.IsClaudeLoggedIn(withUser(uuid.New()), uuid.New())
+
+			if tt.wantErr != nil {
+				if !errors.Is(err, tt.wantErr) {
+					t.Fatalf("expected wrapped error %v, got %v", tt.wantErr, err)
+				}
+			} else if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			if loggedIn != tt.wantLoggedIn {
+				t.Fatalf("loggedIn = %v, want %v", loggedIn, tt.wantLoggedIn)
+			}
+
+			gotDockerCalled := client.checkClaudeLoggedInCalls != 0
+			if gotDockerCalled != tt.wantDockerCalled {
+				t.Fatalf("CheckClaudeLoggedIn called = %v, want %v", gotDockerCalled, tt.wantDockerCalled)
+			}
+		})
 	}
 }
 

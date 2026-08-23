@@ -14,12 +14,14 @@ import (
 
 // terminalAuthLinkCache is the narrow subset of *WorkbenchTerminalShellHandler GetVault depends
 // on: reading back whatever Claude CLI OAuth sign-in link its WS relay most recently detected on
-// a vault's terminal output. It's the WS relay handler, not VaultService, that owns this
+// a vault's terminal output, and clearing that cache once GetVault's own live login-status check
+// confirms login actually completed. It's the WS relay handler, not VaultService, that owns this
 // in-memory cache — see WorkbenchTerminalShellHandler's doc comment on its authLinks field — so
 // VaultsImpl depends on it directly, through this narrow interface, rather than through
 // service.WorkbenchService.
 type terminalAuthLinkCache interface {
 	PendingTerminalAuthLink(vaultID uuid.UUID) string
+	ClearPendingTerminalAuthLink(vaultID uuid.UUID)
 }
 
 type VaultsImpl struct {

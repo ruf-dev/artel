@@ -203,6 +203,11 @@ type VaultService interface {
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
+	// IsClaudeLoggedIn reports whether the calling user's own workbench for vaultID currently has
+	// a completed claude CLI login (its credentials file exists in the container) — ground truth,
+	// checked live via docker exec, unlike a terminal-output-based sign-in-link detection. Returns
+	// false, nil (not an error) when the workbench isn't running.
+	IsClaudeLoggedIn(ctx context.Context, vaultID uuid.UUID) (bool, error)
 	StartWorkbench(ctx context.Context, vaultID uuid.UUID, authMode domain.WorkbenchAuthMode) (domain.Workbench, error)
 	// StopWorkbench returns the paths where a genuine edit conflict was detected while syncing
 	// the workbench's edited files back into the vault (see notes.Service.SyncFromWorkbench) —

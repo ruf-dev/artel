@@ -55,6 +55,7 @@ type dockerClient interface {
 	KillTmuxWindow(ctx context.Context, containerID, windowID string) error
 	WriteFilesToVolume(ctx context.Context, containerID string, files map[string][]byte) error
 	ReadFilesFromVolume(ctx context.Context, containerID string) (map[string][]byte, error)
+	CheckClaudeLoggedIn(ctx context.Context, containerID string) (bool, error)
 }
 
 // externalConnectionService is the narrow subset of service.ExternalConnectionService this
@@ -483,6 +484,40 @@ func (s *Service) GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.W
 	}
 
 	return workbench, nil
+}
+
+// IsClaudeLoggedIn reports whether the calling user's own workbench for vaultID currently has a
+// completed claude CLI login (its credentials file exists in the container) — ground truth,
+// unlike WorkbenchTerminalShellHandler's terminal-output-based sign-in-link detection. Used by
+// GetVault to decide whether a previously detected sign-in link is still actually pending.
+// Returns false, nil (not an error) when the workbench isn't running — there's no container to
+// check.
+func (s *Service) IsClaudeLoggedIn(ctx context.Context, vaultID uuid.UUID) (bool, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return false, rerrors.Wrap(user_errors.Unauthenticated)
+	}
+
+	wb, err := s.workbenchesRepo.GetByVaultAndUser(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error getting workbench by vault and user")
+	}
+
+	if wb.Status != domain.WorkbenchStatusRunning {
+		return false, nil
+	}
+
+	docker, err := s.resolveClient(ctx, wb)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error resolving docker client")
+	}
+
+	loggedIn, err := docker.CheckClaudeLoggedIn(ctx, wb.ContainerId)
+	if err != nil {
+		return false, rerrors.Wrap(err, "error checking claude login status")
+	}
+
+	return loggedIn, nil
 }
 
 // StartWorkbench starts the calling user's workbench container for vaultID under authMode. Any
