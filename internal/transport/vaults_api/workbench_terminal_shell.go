@@ -1,6 +1,7 @@
 package vaults_api
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"net"
@@ -9,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -20,6 +22,27 @@ import (
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/terminalauth"
 )
+
+// authLinkQuietWindow is how long a cached auth link entry is kept after the last frame that
+// affirmed it (either by containing its URL, or by being the frame that reported it via
+// terminalauth.Parser.Feed) before a frame that doesn't contain it clears the cache.
+//
+// The CLI's Ink-based TUI can redraw in small incremental diffs (e.g. a spinner tick) while the
+// sign-in screen is still showing, without re-printing the URL line in that particular frame —
+// clearing on the very first frame that doesn't contain the link would make the banner disappear
+// before the user has had a chance to click it. This window tolerates that while still clearing
+// promptly once the terminal genuinely moves on.
+//
+// A var, not a const, specifically so a test in this package can lower it directly (no exported
+// setter needed) to exercise the "elapsed" / "not elapsed" cases without real multi-second sleeps.
+var authLinkQuietWindow = 3 * time.Second
+
+// authLinkEntry is the cached state for one vault's most recently detected Claude CLI OAuth
+// sign-in link.
+type authLinkEntry struct {
+	url            string
+	lastAffirmedAt time.Time
+}
 
 const (
 	// TerminalShellRoutePattern is the http.ServeMux pattern this handler is registered under in
@@ -64,16 +87,17 @@ type WorkbenchTerminalShellHandler struct {
 	authLinksMu sync.Mutex
 	// authLinks caches the most recently detected Claude CLI OAuth sign-in link per vault, so
 	// GetVault can surface it without holding a live reference to any particular WS connection.
-	// Single-instance-deployment assumption: this is process-local, in-memory state (see
-	// docs/architecture.md — no horizontal-scaling/session-affinity setup is documented), an
-	// explicit design choice rather than an oversight.
-	authLinks map[uuid.UUID]string
+	// An entry is cleared once its terminal output stops reaffirming it for authLinkQuietWindow —
+	// see observeTerminalOutput. Single-instance-deployment assumption: this is process-local,
+	// in-memory state (see docs/architecture.md — no horizontal-scaling/session-affinity setup is
+	// documented), an explicit design choice rather than an oversight.
+	authLinks map[uuid.UUID]authLinkEntry
 }
 
 func NewWorkbenchTerminalShellHandler(
 	authSvc terminalAuthService, vaultMembers terminalVaultMembers, workbenchSvc terminalShellTargetResolver,
 ) *WorkbenchTerminalShellHandler {
-	authLinks := make(map[uuid.UUID]string)
+	authLinks := make(map[uuid.UUID]authLinkEntry)
 
 	return &WorkbenchTerminalShellHandler{
 		authSvc:      authSvc,
@@ -90,12 +114,14 @@ func (h *WorkbenchTerminalShellHandler) PendingTerminalAuthLink(vaultID uuid.UUI
 	h.authLinksMu.Lock()
 	defer h.authLinksMu.Unlock()
 
-	return h.authLinks[vaultID]
+	return h.authLinks[vaultID].url
 }
 
 func (h *WorkbenchTerminalShellHandler) setPendingTerminalAuthLink(vaultID uuid.UUID, link string) {
+	entry := authLinkEntry{url: link, lastAffirmedAt: time.Now()}
+
 	h.authLinksMu.Lock()
-	h.authLinks[vaultID] = link
+	h.authLinks[vaultID] = entry
 	h.authLinksMu.Unlock()
 }
 
@@ -324,6 +350,12 @@ func relayWebsocketMessages(src, dst *websocket.Conn, observe func(messageType i
 // detected Claude CLI OAuth sign-in link, caches it for vaultUuid. Ignores every other ttyd
 // command frame (SET_WINDOW_TITLE, SET_PREFERENCES) — only OUTPUT carries pty bytes worth
 // scanning.
+//
+// A frame that doesn't report a new/changed link (parser.Feed's "found" meaning "different from
+// the last link this Parser reported", per its doc comment — a frame redrawing the *same* link
+// reports found=false) is checked against any cached entry for this vault: still containing the
+// entry's URL reaffirms it, and not containing it at all is only cleared once authLinkQuietWindow
+// has elapsed since it was last affirmed — see reaffirmOrClearPendingTerminalAuthLink.
 func (h *WorkbenchTerminalShellHandler) observeTerminalOutput(
 	vaultUuid uuid.UUID, parser *terminalauth.Parser, _ int, payload []byte,
 ) {
@@ -331,12 +363,43 @@ func (h *WorkbenchTerminalShellHandler) observeTerminalOutput(
 		return
 	}
 
-	link, found := parser.Feed(payload[1:])
-	if !found {
+	body := payload[1:]
+
+	link, found := parser.Feed(body)
+	if found {
+		h.setPendingTerminalAuthLink(vaultUuid, link)
+
 		return
 	}
 
-	h.setPendingTerminalAuthLink(vaultUuid, link)
+	h.reaffirmOrClearPendingTerminalAuthLink(vaultUuid, body)
+}
+
+// reaffirmOrClearPendingTerminalAuthLink handles an OUTPUT frame that didn't itself report a
+// new/changed link via parser.Feed. If vaultUuid has no cached entry, there's nothing to do. If it
+// does and body still contains that entry's URL, this frame reaffirms it (e.g. the CLI simply
+// redrew the same sign-in screen) and lastAffirmedAt is bumped. Otherwise the entry is only cleared
+// once authLinkQuietWindow has elapsed since it was last affirmed — see that var's doc comment for
+// why a single no-link frame isn't enough on its own.
+func (h *WorkbenchTerminalShellHandler) reaffirmOrClearPendingTerminalAuthLink(vaultUuid uuid.UUID, body []byte) {
+	h.authLinksMu.Lock()
+	defer h.authLinksMu.Unlock()
+
+	entry, ok := h.authLinks[vaultUuid]
+	if !ok {
+		return
+	}
+
+	if bytes.Contains(body, []byte(entry.url)) {
+		entry.lastAffirmedAt = time.Now()
+		h.authLinks[vaultUuid] = entry
+
+		return
+	}
+
+	if time.Since(entry.lastAffirmedAt) >= authLinkQuietWindow {
+		delete(h.authLinks, vaultUuid)
+	}
 }
 
 // authenticate resolves the caller from the access_token cookie, the same credential the

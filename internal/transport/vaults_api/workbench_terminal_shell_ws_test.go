@@ -239,3 +239,165 @@ func TestWorkbenchTerminalShell_Websocket_NoLinkStaysEmpty(t *testing.T) {
 		t.Fatalf("PendingTerminalAuthLink = %q, want empty", got)
 	}
 }
+
+// lowerAuthLinkQuietWindow overrides the package-level authLinkQuietWindow var for the duration of
+// one test, restoring the previous value via t.Cleanup so the override never leaks into other
+// tests in this package. authLinkQuietWindow is a var rather than a const specifically so tests
+// like this one can shrink it and exercise the "elapsed"/"not elapsed" clearing behavior without
+// real multi-second sleeps.
+func lowerAuthLinkQuietWindow(t *testing.T, window time.Duration) {
+	t.Helper()
+
+	previous := authLinkQuietWindow
+	authLinkQuietWindow = window
+
+	t.Cleanup(func() {
+		authLinkQuietWindow = previous
+	})
+}
+
+// dialTerminalShellWebsocket dials the terminal-shell WS route for vaultID against proxy and
+// returns the client connection, failing the test on any error.
+func dialTerminalShellWebsocket(t *testing.T, proxyURL string, vaultID uuid.UUID) *websocket.Conn {
+	t.Helper()
+
+	wsURL := "ws" + strings.TrimPrefix(proxyURL, "http") +
+		"/api/vaults/workbench/" + vaultID.String() + "/terminal-shell/ws"
+
+	dialHeader := http.Header{}
+	dialHeader.Set("Cookie", middleware.AccessTokenCookieName+"=token-1")
+
+	clientConn, _, err := websocket.DefaultDialer.Dial(wsURL, dialHeader)
+	if err != nil {
+		t.Fatalf("unexpected error dialing terminal-shell websocket: %v", err)
+	}
+
+	return clientConn
+}
+
+// TestWorkbenchTerminalShell_Websocket_AuthLinkPersistsAcrossRedraws confirms that several frames
+// redrawing the *same* auth link within the quiet window keep PendingTerminalAuthLink pointing at
+// it, rather than treating terminalauth.Parser.Feed's found=false on a repeat redraw as a signal to
+// clear the cache.
+func TestWorkbenchTerminalShell_Websocket_AuthLinkPersistsAcrossRedraws(t *testing.T) {
+	lowerAuthLinkQuietWindow(t, time.Hour)
+
+	linkFrame := append([]byte{'0'}, []byte("sign in: "+authLinkForWsTest+"\r\n")...)
+	redrawFrame := append([]byte{'0'}, []byte("sign in: "+authLinkForWsTest+"\r\n")...)
+
+	outputFrames := [][]byte{linkFrame, redrawFrame, redrawFrame}
+
+	advance := make(chan struct{})
+	clientMsg := make(chan []byte, 1)
+	ttyd := newFakeTtydWebsocketServer(t, outputFrames, advance, clientMsg)
+	defer ttyd.Close()
+
+	vaultID := uuid.New()
+	userID := uuid.New()
+
+	workbenchSvc := &fakeTerminalShellTargetResolver{
+		resolveFunc: func(ctx context.Context, gotVaultID, gotUserID uuid.UUID) (string, error) {
+			return ttyd.URL, nil
+		},
+	}
+
+	handler := NewWorkbenchTerminalShellHandler(authedAs(userID), alwaysMember(), workbenchSvc)
+
+	proxy := httptest.NewServer(newTerminalShellMux(handler))
+	defer proxy.Close()
+
+	clientConn := dialTerminalShellWebsocket(t, proxy.URL, vaultID)
+	defer utils.CloseWithLog(clientConn, "terminal-shell websocket test client")
+
+	for range outputFrames {
+		advance <- struct{}{}
+
+		_, _, err := clientConn.ReadMessage()
+		if err != nil {
+			t.Fatalf("unexpected error reading relayed frame: %v", err)
+		}
+
+		if got := handler.PendingTerminalAuthLink(vaultID); got != authLinkForWsTest {
+			t.Fatalf("PendingTerminalAuthLink = %q, want %q", got, authLinkForWsTest)
+		}
+	}
+}
+
+// TestWorkbenchTerminalShell_Websocket_AuthLinkClearedAfterQuietWindow confirms a cached auth link
+// is cleared once a frame with no link content arrives after authLinkQuietWindow has elapsed since
+// the link was last affirmed, but is NOT cleared by a no-link frame arriving before the window
+// elapses.
+func TestWorkbenchTerminalShell_Websocket_AuthLinkClearedAfterQuietWindow(t *testing.T) {
+	quietWindow := 50 * time.Millisecond
+	lowerAuthLinkQuietWindow(t, quietWindow)
+
+	linkFrame := append([]byte{'0'}, []byte("sign in: "+authLinkForWsTest+"\r\n")...)
+	noLinkFrame := append([]byte{'0'}, []byte("still working...\r\n")...)
+
+	// Two no-link frames: the first is read back well before the quiet window elapses (asserting
+	// "not cleared yet"), then the test sleeps past the window before releasing the second (asserting
+	// "cleared once the window has genuinely elapsed").
+	outputFrames := [][]byte{linkFrame, noLinkFrame, noLinkFrame}
+
+	advance := make(chan struct{})
+	clientMsg := make(chan []byte, 1)
+	ttyd := newFakeTtydWebsocketServer(t, outputFrames, advance, clientMsg)
+	defer ttyd.Close()
+
+	vaultID := uuid.New()
+	userID := uuid.New()
+
+	workbenchSvc := &fakeTerminalShellTargetResolver{
+		resolveFunc: func(ctx context.Context, gotVaultID, gotUserID uuid.UUID) (string, error) {
+			return ttyd.URL, nil
+		},
+	}
+
+	handler := NewWorkbenchTerminalShellHandler(authedAs(userID), alwaysMember(), workbenchSvc)
+
+	proxy := httptest.NewServer(newTerminalShellMux(handler))
+	defer proxy.Close()
+
+	clientConn := dialTerminalShellWebsocket(t, proxy.URL, vaultID)
+	defer utils.CloseWithLog(clientConn, "terminal-shell websocket test client")
+
+	// linkFrame: the link is detected and cached.
+	advance <- struct{}{}
+
+	_, _, err := clientConn.ReadMessage()
+	if err != nil {
+		t.Fatalf("unexpected error reading relayed frame: %v", err)
+	}
+
+	if got := handler.PendingTerminalAuthLink(vaultID); got != authLinkForWsTest {
+		t.Fatalf("PendingTerminalAuthLink after link frame = %q, want %q", got, authLinkForWsTest)
+	}
+
+	// First noLinkFrame: arrives well before the quiet window elapses, so the entry must survive.
+	advance <- struct{}{}
+
+	_, _, err = clientConn.ReadMessage()
+	if err != nil {
+		t.Fatalf("unexpected error reading relayed frame: %v", err)
+	}
+
+	if got := handler.PendingTerminalAuthLink(vaultID); got != authLinkForWsTest {
+		t.Fatalf("PendingTerminalAuthLink after no-link frame before quiet window elapsed = %q, want %q (not cleared)",
+			got, authLinkForWsTest)
+	}
+
+	// Sleep past the quiet window (measured from linkFrame's lastAffirmedAt), then send a second
+	// no-link frame — this one must clear the cache.
+	time.Sleep(quietWindow * 3)
+
+	advance <- struct{}{}
+
+	_, _, err = clientConn.ReadMessage()
+	if err != nil {
+		t.Fatalf("unexpected error reading relayed frame: %v", err)
+	}
+
+	if got := handler.PendingTerminalAuthLink(vaultID); got != "" {
+		t.Fatalf("PendingTerminalAuthLink after no-link frame past quiet window = %q, want empty (cleared)", got)
+	}
+}
