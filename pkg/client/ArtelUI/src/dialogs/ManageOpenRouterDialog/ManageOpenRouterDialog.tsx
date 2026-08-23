@@ -53,8 +53,8 @@ export default function ManageOpenRouterDialog() {
                         + "provider. We'll verify the key against OpenRouter before saving it."
                     }
                     apiKeyPlaceholder="sk-or-…"
-                    baseUrlPlaceholder="https://openrouter.ai/api/v1"
-                    modelPlaceholder="anthropic/claude-sonnet-4.5"
+                    fixedBaseUrl="https://openrouter.ai/api/v1"
+                    hideModelField
                     addConnection={(req) => addOpenAIConnection({
                         ...req,
                         provider: ExternalProvider.EXTERNAL_PROVIDER_OPENROUTER,

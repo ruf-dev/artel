@@ -14,8 +14,10 @@ interface LlmKeyConnectFormProps {
     providerName: string
     bodyCopy: string
     apiKeyPlaceholder: string
-    baseUrlPlaceholder: string
-    modelPlaceholder: string
+    baseUrlPlaceholder?: string
+    modelPlaceholder?: string
+    fixedBaseUrl?: string
+    hideModelField?: boolean
     addConnection: (req: CheckRequest) => Promise<unknown>
     checkConnection: (req: CheckRequest) => Promise<CheckAnthropicConnectionResponse>
 }
@@ -23,7 +25,7 @@ interface LlmKeyConnectFormProps {
 export default function LlmKeyConnectForm(props: LlmKeyConnectFormProps) {
     const [connecting, setConnecting] = useState(false)
     const [apiKey, setApiKey] = useState("")
-    const [baseUrl, setBaseUrl] = useState("")
+    const [baseUrl, setBaseUrl] = useState(props.fixedBaseUrl ?? "")
     const [model, setModel] = useState("")
     const [verified, setVerified] = useState(false)
     const [checkError, setCheckError] = useState<string | null>(null)
@@ -78,31 +80,35 @@ export default function LlmKeyConnectForm(props: LlmKeyConnectFormProps) {
                     autoComplete="off"
                 />
             </label>
-            <label className={cls.Field}>
-                <span className={cls.FieldLabel}>Base URL (optional)</span>
-                <Input
-                    placeholder={props.baseUrlPlaceholder}
-                    value={baseUrl}
-                    setValue={handleBaseUrlChange}
-                    disabled={connecting}
-                    autoComplete="off"
-                />
-            </label>
-            <label className={cls.Field}>
-                <span className={cls.FieldLabel}>Model id (optional)</span>
-                <Input
-                    placeholder={props.modelPlaceholder}
-                    value={model}
-                    setValue={handleModelChange}
-                    disabled={connecting}
-                    autoComplete="off"
-                />
-                <div className={cls.FieldHint}>
-                    Used as the default model. If your provider doesn&apos;t support listing models
-                    (common for non-official endpoints), it&apos;s also used to
-                    verify the key.
-                </div>
-            </label>
+            {!props.fixedBaseUrl && (
+                <label className={cls.Field}>
+                    <span className={cls.FieldLabel}>Base URL (optional)</span>
+                    <Input
+                        placeholder={props.baseUrlPlaceholder}
+                        value={baseUrl}
+                        setValue={handleBaseUrlChange}
+                        disabled={connecting}
+                        autoComplete="off"
+                    />
+                </label>
+            )}
+            {!props.hideModelField && (
+                <label className={cls.Field}>
+                    <span className={cls.FieldLabel}>Model id (optional)</span>
+                    <Input
+                        placeholder={props.modelPlaceholder}
+                        value={model}
+                        setValue={handleModelChange}
+                        disabled={connecting}
+                        autoComplete="off"
+                    />
+                    <div className={cls.FieldHint}>
+                        Used as the default model. If your provider doesn&apos;t support listing models
+                        (common for non-official endpoints), it&apos;s also used to
+                        verify the key.
+                    </div>
+                </label>
+            )}
             <div className={cls.ModalActions}>
                 <LlmKeyCheckButton
                     req={{apiKey, baseUrl, defaultModel: model}}
