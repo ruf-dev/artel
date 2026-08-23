@@ -15,6 +15,7 @@ export type EventType =
     | "turn_done"
     | "error"
     | "auth_complete"
+    | "new_chat"
 
 export type PermissionDecision = "allow_once" | "allow_always" | "deny"
 

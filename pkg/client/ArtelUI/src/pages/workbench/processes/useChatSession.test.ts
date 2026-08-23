@@ -114,6 +114,27 @@ describe("useChatSession", () => {
         ])
     })
 
+    it("sends new_chat over the wire and clears items locally when startNewChat is called", () => {
+        const {result} = renderHook(() => useChatSession("v1"))
+
+        act(() => {
+            MockWebSocket.instances[0].open()
+        })
+        act(() => {
+            MockWebSocket.instances[0].emit({type: "assistant_text_done", id: "a1", text: "hello"})
+        })
+        expect(result.current.items).toHaveLength(1)
+
+        act(() => {
+            result.current.startNewChat()
+        })
+
+        expect(MockWebSocket.instances[0].sent).toEqual([
+            JSON.stringify({type: "new_chat"}),
+        ])
+        expect(result.current.items).toEqual([])
+    })
+
     it("reconnects with a fresh socket after the connection drops", async () => {
         const {result} = renderHook(() => useChatSession("v1"))
         const first = MockWebSocket.instances[0]

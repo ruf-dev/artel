@@ -85,4 +85,14 @@ describe("applyEvent", () => {
         const items = applyEvent([], {type: "error", text: "boom"})
         expect(items).toEqual([{kind: "error", key: "error-0", text: "boom"}])
     })
+
+    it("clears all items on new_chat regardless of prior contents", () => {
+        let items: ChatItem[] = []
+        items = applyEvent(items, {type: "user_message", text: "hi"})
+        items = applyEvent(items, {type: "assistant_text_done", id: "a1", text: "hello"})
+        items = applyEvent(items, {type: "error", text: "boom"})
+        expect(items).toHaveLength(3)
+
+        expect(applyEvent(items, {type: "new_chat"})).toEqual([])
+    })
 })

@@ -97,6 +97,28 @@ func (h *Hub) ConsumerCount() int {
 // Broadcast records event in the backlog and delivers it to every currently attached consumer.
 // Safe to call from any goroutine, including concurrently with a consumer attaching.
 func (h *Hub) Broadcast(event chatprotocol.Event) {
+	h.publish(event, func() {
+		h.backlog = append(h.backlog, event)
+		if len(h.backlog) > backlogLimit {
+			h.backlog = h.backlog[len(h.backlog)-backlogLimit:]
+		}
+	})
+}
+
+// Reset discards the entire backlog in favor of event alone, then delivers event to every
+// currently attached consumer. Use it for starting a new chat: existing history should not be
+// replayed to a consumer connecting after this point, only event (typically the new_chat event
+// itself) and whatever is broadcast from here on.
+func (h *Hub) Reset(event chatprotocol.Event) {
+	h.publish(event, func() {
+		h.backlog = []chatprotocol.Event{event}
+	})
+}
+
+// publish marshals event, then — under h.mu — runs mutateBacklog to apply Broadcast's or Reset's
+// differing backlog-mutation step and delivers event to every currently attached consumer. Safe to
+// call from any goroutine, including concurrently with a consumer attaching.
+func (h *Hub) publish(event chatprotocol.Event, mutateBacklog func()) {
 	payload, err := json.Marshal(event)
 	if err != nil {
 		log.Printf("hub: error marshalling %s event: %v", event.Type, err)
@@ -107,10 +129,7 @@ func (h *Hub) Broadcast(event chatprotocol.Event) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
-	h.backlog = append(h.backlog, event)
-	if len(h.backlog) > backlogLimit {
-		h.backlog = h.backlog[len(h.backlog)-backlogLimit:]
-	}
+	mutateBacklog()
 
 	for conn := range h.conns {
 		h.deliverLocked(conn, payload)

@@ -293,6 +293,11 @@ func (s *bridgeSession) handleEvent(ctx context.Context, event chatprotocol.Even
 		s.handleAuthCodeNeeded(ctx, event)
 	case chatprotocol.EventAuthComplete:
 		// No Telegram message — nothing user-facing to relay.
+	case chatprotocol.EventUserMessage:
+		// No Telegram message — this consumer already knows what it (or another consumer) sent.
+	case chatprotocol.EventNewChat:
+		// No Telegram message — nothing user-facing to relay; a fresh conversation just means the
+		// next reply isn't a continuation of the old one.
 	default:
 		log.Warn().Str("external_connection_id", s.connUuid.String()).Str("event_type", string(event.Type)).
 			Msg("telegram webhook: unrecognized bridge event type")

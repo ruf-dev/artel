@@ -94,5 +94,9 @@ export function useChatSession(vaultId: string | undefined) {
         dispatch({type: "permission_decision", id, decision})
     }, [dispatch])
 
-    return {items, status, authComplete, sendMessage, sendPermissionDecision}
+    const startNewChat = useCallback(() => {
+        dispatch({type: "new_chat"})
+    }, [dispatch])
+
+    return {items, status, authComplete, sendMessage, sendPermissionDecision, startNewChat}
 }

@@ -8,6 +8,7 @@ import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.t
 function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open") {
     const sendMessage = vi.fn()
     const sendPermissionDecision = vi.fn()
+    const onNewChat = vi.fn()
 
     render(
         <Chat
@@ -15,10 +16,11 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             status={status}
             sendMessage={sendMessage}
             sendPermissionDecision={sendPermissionDecision}
+            onNewChat={onNewChat}
         />,
     )
 
-    return {sendMessage, sendPermissionDecision}
+    return {sendMessage, sendPermissionDecision, onNewChat}
 }
 
 describe("Chat", () => {
@@ -36,5 +38,13 @@ describe("Chat", () => {
         renderChat([], "reconnecting")
 
         expect(screen.getByText("Reconnecting…")).toBeInTheDocument()
+    })
+
+    it("calls onNewChat when the New Chat button is clicked", () => {
+        const {onNewChat} = renderChat()
+
+        fireEvent.click(screen.getByText("New Chat"))
+
+        expect(onNewChat).toHaveBeenCalledTimes(1)
     })
 })

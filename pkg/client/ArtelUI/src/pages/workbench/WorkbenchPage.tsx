@@ -35,6 +35,7 @@ export default function WorkbenchPage() {
         authComplete,
         sendMessage,
         sendPermissionDecision,
+        startNewChat,
     } = useChatSession(status === "running" ? vaultId : undefined)
 
     const [view, setView] = useState<WorkbenchView>("chat")
@@ -76,7 +77,7 @@ export default function WorkbenchPage() {
                 )}
                 {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
                     <Chat items={items} status={chatStatus} sendMessage={sendMessage}
-                          sendPermissionDecision={sendPermissionDecision}/>
+                          sendPermissionDecision={sendPermissionDecision} onNewChat={startNewChat}/>
                 )}
                 {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
                     <TerminalView

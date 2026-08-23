@@ -135,6 +135,12 @@ export function applyEvent(prev: ChatItem[], event: ChatEvent): ChatItem[] {
             return applyPermissionDecision(prev, event)
         case "error":
             return [...prev, {kind: "error", key: `error-${prev.length}`, text: event.text ?? ""}]
+        case "new_chat":
+            // Starts a fresh conversation, mirroring the backend's Hub.Reset — that call
+            // makes this event the sole backlog entry from that point on, so wiping local
+            // items here keeps replay-on-reconnect consistent whether it arrives live or
+            // via backlog replay.
+            return []
         default:
             return prev
     }

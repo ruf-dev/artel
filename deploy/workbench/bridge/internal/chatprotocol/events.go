@@ -14,6 +14,10 @@ const (
 	EventSystemInit EventType = "system_init"
 	// EventUserMessage: consumer → bridge, carries Text.
 	EventUserMessage EventType = "user_message"
+	// EventNewChat: consumer → bridge, carries no payload fields. Broadcast back to every attached
+	// consumer via Hub.Reset (see hub.go) as the sole backlog entry going forward — a consumer
+	// reconnecting afterward replays only the new conversation, not the one this discarded.
+	EventNewChat EventType = "new_chat"
 	// EventAssistantTextDelta: bridge → consumer, carries Text and ID.
 	EventAssistantTextDelta EventType = "assistant_text_delta"
 	// EventAssistantTextDone: bridge → consumer, carries Text and ID.

@@ -104,9 +104,13 @@ func runMainLoop(ctx context.Context, chatHub *hub.Hub, runner *claudecli.Runner
 		case event := <-chatHub.Inbound():
 			switch event.Type {
 			case chatprotocol.EventUserMessage:
+				chatHub.Broadcast(event)
 				runner.RunTurn(ctx, event.Text, chatHub.Broadcast)
 			case chatprotocol.EventPermissionDecision:
 				broker.Decide(event.ID, event.Decision)
+			case chatprotocol.EventNewChat:
+				runner.SetSessionId("")
+				chatHub.Reset(event)
 			default:
 				log.Printf("workbench-bridge: ignoring unexpected inbound event type %q during normal operation", event.Type)
 			}
