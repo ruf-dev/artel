@@ -35,7 +35,6 @@ export default function WorkbenchPage() {
         authComplete,
         sendMessage,
         sendPermissionDecision,
-        sendAuthCode,
     } = useChatSession(status === "running" ? vaultId : undefined)
 
     const [view, setView] = useState<WorkbenchView>("chat")
@@ -43,9 +42,7 @@ export default function WorkbenchPage() {
     const vault = vaults.find(v => v.id === vaultId)
     const vaultName = vault?.name ?? "Vault"
 
-    const awaitingAuth = !authComplete &&
-        (items.some(i => i.kind === "auth_link" || i.kind === "auth_code_needed") ||
-            lifecycle.pendingAuthMode === "subscription_login")
+    const awaitingAuth = !authComplete && lifecycle.pendingAuthMode === "subscription_login"
 
     const genericCentered = isLoading || !exists || (status !== "running" && !lifecycle.showSetup)
     const terminalViewActive = status === "running" && view === "terminal"
@@ -79,7 +76,7 @@ export default function WorkbenchPage() {
                 )}
                 {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
                     <Chat items={items} status={chatStatus} sendMessage={sendMessage}
-                          sendPermissionDecision={sendPermissionDecision} sendAuthCode={sendAuthCode}/>
+                          sendPermissionDecision={sendPermissionDecision}/>
                 )}
                 {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
                     <TerminalView

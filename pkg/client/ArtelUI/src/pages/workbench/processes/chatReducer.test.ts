@@ -1,6 +1,7 @@
 import {describe, expect, it} from "vitest"
 
 import {applyEvent, ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
+import {ChatEvent} from "@/pages/workbench/processes/chatProtocol.ts"
 
 describe("applyEvent", () => {
     it("ignores system_init and turn_done", () => {
@@ -67,14 +68,17 @@ describe("applyEvent", () => {
         }])
     })
 
-    it("resolves the most recent open auth_code_needed on auth_code_submit", () => {
-        let items: ChatItem[] = []
-        items = applyEvent(items, {type: "auth_link", url: "https://example.com/authorize"})
-        items = applyEvent(items, {type: "auth_code_needed"})
-        expect(items[1]).toEqual({kind: "auth_code_needed", key: "auth_code_needed-1", resolved: false})
-
-        items = applyEvent(items, {type: "auth_code_submit", code: "123456"})
-        expect(items[1]).toEqual({kind: "auth_code_needed", key: "auth_code_needed-1", resolved: true})
+    it("silently absorbs stale auth_link/auth_code_needed/auth_code_submit events via the default case", () => {
+        // These event types no longer exist in the wire protocol (the setup-token pty
+        // flow that produced them is gone — see chatProtocol.ts), but a still-running
+        // bridge's in-memory backlog can still replay old instances of them on
+        // reconnect. Cast past the type union, the same way a genuinely unknown/future
+        // event type arriving over the wire would: it must render as nothing, not
+        // resurrect a permanent "authorize" card.
+        const items: ChatItem[] = []
+        expect(applyEvent(items, {type: "auth_link"} as unknown as ChatEvent)).toBe(items)
+        expect(applyEvent(items, {type: "auth_code_needed"} as unknown as ChatEvent)).toBe(items)
+        expect(applyEvent(items, {type: "auth_code_submit"} as unknown as ChatEvent)).toBe(items)
     })
 
     it("appends an error item", () => {

@@ -16,7 +16,7 @@ function buildWsUrl(vaultId: string): string {
 // Connects to the workbench chat WebSocket (same route the old ttyd terminal iframe used —
 // the backend track keeps the route/port, only the wire protocol changes from raw terminal
 // bytes to ChatEvent JSON), reconnecting with exponential backoff on drop. Exposes the
-// folded item list (see chatReducer.ts) plus helpers for the three consumer -> bridge event
+// folded item list (see chatReducer.ts) plus helpers for the consumer -> bridge event
 // types; each helper both sends over the wire and applies the event to local state
 // optimistically, since the bridge never echoes these back.
 export function useChatSession(vaultId: string | undefined) {
@@ -94,9 +94,5 @@ export function useChatSession(vaultId: string | undefined) {
         dispatch({type: "permission_decision", id, decision})
     }, [dispatch])
 
-    const sendAuthCode = useCallback((code: string) => {
-        dispatch({type: "auth_code_submit", code})
-    }, [dispatch])
-
-    return {items, status, authComplete, sendMessage, sendPermissionDecision, sendAuthCode}
+    return {items, status, authComplete, sendMessage, sendPermissionDecision}
 }

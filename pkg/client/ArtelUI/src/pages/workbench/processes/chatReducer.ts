@@ -28,8 +28,6 @@ export type ChatItem =
         options: PermissionDecision[]
         decision?: PermissionDecision
     }
-    | {kind: "auth_link"; key: string; url: string}
-    | {kind: "auth_code_needed"; key: string; resolved: boolean}
     | {kind: "error"; key: string; text: string}
 
 function applyUserMessage(prev: ChatItem[], event: ChatEvent): ChatItem[] {
@@ -109,18 +107,17 @@ function applyPermissionDecision(prev: ChatItem[], event: ChatEvent): ChatItem[]
         : it)
 }
 
-function applyAuthCodeSubmit(prev: ChatItem[]): ChatItem[] {
-    // No correlation id on auth events — resolve the most recent still-open prompt.
-    const idx = prev.map(it => it.kind === "auth_code_needed" && !it.resolved).lastIndexOf(true)
-    if (idx === -1) return prev
-    return prev.map((it, i) => i === idx && it.kind === "auth_code_needed" ? {...it, resolved: true} : it)
-}
-
 export function applyEvent(prev: ChatItem[], event: ChatEvent): ChatItem[] {
     switch (event.type) {
         case "system_init":
         case "turn_done":
         case "auth_complete":
+            // auth_link/auth_code_needed/auth_code_submit are handled by the default
+            // case below: the bridge no longer emits the first two (the setup-token
+            // pty flow that produced them is gone), but a still-running bridge's
+            // in-memory event backlog can still replay old instances of them to a
+            // newly-attached consumer — absorb silently rather than resurrecting a
+            // permanent "authorize" card for an already-completed login.
             return prev
         case "user_message":
             return applyUserMessage(prev, event)
@@ -136,12 +133,6 @@ export function applyEvent(prev: ChatItem[], event: ChatEvent): ChatItem[] {
             return applyPermissionRequest(prev, event)
         case "permission_decision":
             return applyPermissionDecision(prev, event)
-        case "auth_link":
-            return [...prev, {kind: "auth_link", key: `auth_link-${prev.length}`, url: event.url ?? ""}]
-        case "auth_code_needed":
-            return [...prev, {kind: "auth_code_needed", key: `auth_code_needed-${prev.length}`, resolved: false}]
-        case "auth_code_submit":
-            return applyAuthCodeSubmit(prev)
         case "error":
             return [...prev, {kind: "error", key: `error-${prev.length}`, text: event.text ?? ""}]
         default:

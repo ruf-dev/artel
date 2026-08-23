@@ -8,7 +8,6 @@ import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.t
 function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open") {
     const sendMessage = vi.fn()
     const sendPermissionDecision = vi.fn()
-    const sendAuthCode = vi.fn()
 
     render(
         <Chat
@@ -16,11 +15,10 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             status={status}
             sendMessage={sendMessage}
             sendPermissionDecision={sendPermissionDecision}
-            sendAuthCode={sendAuthCode}
         />,
     )
 
-    return {sendMessage, sendPermissionDecision, sendAuthCode}
+    return {sendMessage, sendPermissionDecision}
 }
 
 describe("Chat", () => {
@@ -38,18 +36,5 @@ describe("Chat", () => {
         renderChat([], "reconnecting")
 
         expect(screen.getByText("Reconnecting…")).toBeInTheDocument()
-    })
-
-    it("switches the composer to auth-code mode while a code prompt is pending", () => {
-        const {sendAuthCode, sendMessage} = renderChat(
-            [{kind: "auth_code_needed", key: "auth_code_needed-0", resolved: false}],
-        )
-
-        const input = screen.getByPlaceholderText("Enter the authentication code…")
-        fireEvent.change(input, {target: {value: "123456"}})
-        fireEvent.click(screen.getByLabelText("Send message"))
-
-        expect(sendAuthCode).toHaveBeenCalledWith("123456")
-        expect(sendMessage).not.toHaveBeenCalled()
     })
 })

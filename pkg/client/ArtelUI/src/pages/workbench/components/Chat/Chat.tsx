@@ -13,22 +13,15 @@ interface Props {
     status: ChatConnectionStatus
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
-    sendAuthCode: (code: string) => void
 }
 
-export default function Chat({items, status, sendMessage, sendPermissionDecision, sendAuthCode}: Props) {
+export default function Chat({items, status, sendMessage, sendPermissionDecision}: Props) {
     const [draft, setDraft] = useState("")
-
-    const pendingAuthCode = items.some(item => item.kind === "auth_code_needed" && !item.resolved)
 
     function handleSend() {
         const text = draft.trim()
         if (!text) return
-        if (pendingAuthCode) {
-            sendAuthCode(text)
-        } else {
-            sendMessage(text)
-        }
+        sendMessage(text)
         setDraft("")
     }
 
@@ -41,7 +34,7 @@ export default function Chat({items, status, sendMessage, sendPermissionDecision
                 onChange={setDraft}
                 onSend={handleSend}
                 disabled={status !== "open"}
-                placeholder={pendingAuthCode ? "Enter the authentication code…" : "Message the workbench…"}
+                placeholder="Message the workbench…"
             />
         </div>
     )

@@ -81,7 +81,11 @@ describe("useChatSession", () => {
         expect(result.current.items).toEqual([])
     })
 
-    it("does not send or mutate items when submitting an auth code while the socket is not open", () => {
+    it("silently absorbs a stale auth_code_needed replayed from the bridge backlog", () => {
+        // The bridge no longer emits this event type (the setup-token pty flow that
+        // produced it is gone), but a still-running bridge's in-memory backlog can
+        // still replay old instances of it on reconnect — it must fold to nothing
+        // rather than surfacing a permanent "authorize" item.
         const {result} = renderHook(() => useChatSession("v1"))
 
         act(() => {
@@ -91,19 +95,7 @@ describe("useChatSession", () => {
             MockWebSocket.instances[0].emit({type: "auth_code_needed"})
         })
 
-        act(() => {
-            MockWebSocket.instances[0].close()
-        })
-        expect(result.current.status).toBe("reconnecting")
-
-        act(() => {
-            result.current.sendAuthCode("123456")
-        })
-
-        expect(MockWebSocket.instances[0].sent).toHaveLength(0)
-        expect(result.current.items).toEqual([
-            {kind: "auth_code_needed", key: "auth_code_needed-0", resolved: false},
-        ])
+        expect(result.current.items).toEqual([])
     })
 
     it("sends over the wire once open", () => {

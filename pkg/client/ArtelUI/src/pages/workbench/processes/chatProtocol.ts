@@ -14,9 +14,6 @@ export type EventType =
     | "permission_decision"
     | "turn_done"
     | "error"
-    | "auth_link"
-    | "auth_code_needed"
-    | "auth_code_submit"
     | "auth_complete"
 
 export type PermissionDecision = "allow_once" | "allow_always" | "deny"
@@ -47,8 +44,4 @@ export interface ChatEvent {
     // turn_done
     session_id?: string
     cost_usd?: number
-
-    // auth_link / auth_code_submit
-    url?: string
-    code?: string
 }

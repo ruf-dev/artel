@@ -4,8 +4,6 @@ import AssistantMessageBubble
 import ToolCallCard from "@/pages/workbench/components/Chat/components/ToolCallCard/ToolCallCard.tsx"
 import PermissionRequestCard
     from "@/pages/workbench/components/Chat/components/PermissionRequestCard/PermissionRequestCard.tsx"
-import AuthLinkCard from "@/pages/workbench/components/Chat/components/AuthLinkCard/AuthLinkCard.tsx"
-import AuthCodeCard from "@/pages/workbench/components/Chat/components/AuthCodeCard/AuthCodeCard.tsx"
 import ErrorCard from "@/pages/workbench/components/Chat/components/ErrorCard/ErrorCard.tsx"
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
@@ -43,10 +41,6 @@ export default function ChatMessageItem({item, onPermissionDecision}: Props) {
                     onDecide={decision => onPermissionDecision(item.id, decision)}
                 />
             )
-        case "auth_link":
-            return <AuthLinkCard url={item.url}/>
-        case "auth_code_needed":
-            return <AuthCodeCard resolved={item.resolved}/>
         case "error":
             return <ErrorCard text={item.text}/>
         default:
