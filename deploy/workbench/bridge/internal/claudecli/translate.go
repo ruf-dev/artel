@@ -51,10 +51,24 @@ const (
 // Not safe for concurrent use; the bridge runs exactly one turn at a time.
 type Translator struct {
 	// messageId is the id of the assistant message currently streaming, from the most recent
-	// message_start. Combined with a content block's index it forms the correlation id shared by
-	// assistant_text_delta and assistant_text_done, which is what lets a consumer replace an
-	// accumulating bubble with the final text rather than appending it twice.
+	// message_start. Combined with a text block's ordinal (see textBlockSeq) it forms the
+	// correlation id shared by assistant_text_delta and assistant_text_done, which is what lets a
+	// consumer replace an accumulating bubble with the final text rather than appending it twice.
 	messageId string
+
+	// textBlockSeq maps a content_block_delta's raw stream index (event.Index, which counts every
+	// block type — text, tool_use, thinking, ...) to its ordinal among *text* blocks only, for the
+	// message currently streaming. translateAssistant computes the same ordinal independently, by
+	// counting only "text" entries in the final assembled message.Content array.
+	//
+	// The two counters exist because the raw stream's block index space and the final message's
+	// array index space aren't guaranteed to agree: a block type that appears in the raw stream
+	// (observed case: "thinking") can be absent from the final assembled message, shifting every
+	// index after it. Correlating by "ordinal among text blocks" instead of raw index is immune to
+	// that, since both sides only advance their counter on an actual text block.
+	textBlockSeq map[int]int
+	// nextTextSeq is the ordinal to assign the next not-yet-seen raw index in textBlockSeq.
+	nextTextSeq int
 }
 
 // NewTranslator returns a Translator for one turn.
@@ -185,6 +199,8 @@ func (t *Translator) translateStreamEvent(parsed streamLine) []chatprotocol.Even
 
 	if event.Type == "message_start" && event.Message != nil {
 		t.messageId = event.Message.Id
+		t.textBlockSeq = nil
+		t.nextTextSeq = 0
 
 		return nil
 	}
@@ -199,11 +215,31 @@ func (t *Translator) translateStreamEvent(parsed streamLine) []chatprotocol.Even
 
 	delta := chatprotocol.Event{
 		Type: chatprotocol.EventAssistantTextDelta,
-		ID:   blockId(t.messageId, event.Index),
+		ID:   blockId(t.messageId, t.textSeqFor(event.Index)),
 		Text: event.Delta.Text,
 	}
 
 	return []chatprotocol.Event{delta}
+}
+
+// textSeqFor returns rawIndex's ordinal among the text blocks seen so far in the current message,
+// assigning it the next ordinal on first sight. See Translator.textBlockSeq for why this exists
+// instead of using rawIndex directly.
+func (t *Translator) textSeqFor(rawIndex int) int {
+	if t.textBlockSeq == nil {
+		t.textBlockSeq = make(map[int]int)
+	}
+
+	seq, ok := t.textBlockSeq[rawIndex]
+	if ok {
+		return seq
+	}
+
+	seq = t.nextTextSeq
+	t.textBlockSeq[rawIndex] = seq
+	t.nextTextSeq++
+
+	return seq
 }
 
 // translateAssistant turns a completed assistant message into one assistant_text_done per text
@@ -222,7 +258,13 @@ func (t *Translator) translateAssistant(parsed streamLine) []chatprotocol.Event 
 
 	events := make([]chatprotocol.Event, 0, len(message.Content))
 
-	for index, part := range message.Content {
+	// textSeq counts only "text" blocks, matching Translator.textSeqFor on the streaming side —
+	// see Translator.textBlockSeq for why a text-only ordinal is used instead of the loop index
+	// (a block type present in the raw stream but absent here, e.g. "thinking", would otherwise
+	// shift this index out of sync with the streaming side's).
+	textSeq := 0
+
+	for _, part := range message.Content {
 		switch part.Type {
 		case "text":
 			if part.Text == "" {
@@ -231,11 +273,12 @@ func (t *Translator) translateAssistant(parsed streamLine) []chatprotocol.Event 
 
 			done := chatprotocol.Event{
 				Type: chatprotocol.EventAssistantTextDone,
-				ID:   blockId(message.Id, index),
+				ID:   blockId(message.Id, textSeq),
 				Text: part.Text,
 			}
 
 			events = append(events, done)
+			textSeq++
 		case "tool_use":
 			started := chatprotocol.Event{
 				Type:         chatprotocol.EventToolCallStarted,
