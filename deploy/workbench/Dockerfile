@@ -45,6 +45,17 @@ RUN set -eu; \
       "https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION}/${ttyd_asset}"; \
     chmod +x /usr/local/bin/ttyd
 
+# DISABLE_AUTOUPDATER=1 stops `claude` from self-updating in place at runtime. Without it, the
+# CLI checks for a newer npm-published version on first real invocation and, if found, rewrites
+# its own install (including the /usr/local/bin/claude symlink target) in the background — while
+# that's in flight, ANY other process trying to exec `claude` races it and can hit ENOENT ("claude:
+# executable file not found in $PATH"), since the two processes sharing this image (the bridge's
+# own invocations and the tmux-interactive session) both exec the same bare `claude` concurrently.
+# This image is rebuilt regularly via `make workbench-image`, which already reinstalls
+# @anthropic-ai/claude-code fresh each time — an ephemeral per-session container self-updating at
+# runtime only adds this race (and an unpinned, unaudited version bump) for no benefit.
+ENV DISABLE_AUTOUPDATER=1
+
 RUN npm install -g @anthropic-ai/claude-code
 
 # Claude Code's first-run onboarding wizard (theme picker: "Choose the text style that looks
