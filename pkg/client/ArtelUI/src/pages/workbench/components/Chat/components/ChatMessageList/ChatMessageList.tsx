@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react"
+import {AnimatePresence} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/ChatMessageList/ChatMessageList.module.css"
 import ChatMessageItem from "@/pages/workbench/components/Chat/components/ChatMessageItem/ChatMessageItem.tsx"
@@ -36,9 +37,11 @@ export default function ChatMessageList({items, onPermissionDecision}: Props) {
     return (
         <div className={cls.ChatMessageListContainer} ref={containerRef} onScroll={handleScroll}>
             {items.length === 0 && <p className={cls.EmptyState}>Send a message to start the conversation.</p>}
-            {items.map(item => (
-                <ChatMessageItem key={item.key} item={item} onPermissionDecision={onPermissionDecision}/>
-            ))}
+            <AnimatePresence initial={false}>
+                {items.map(item => (
+                    <ChatMessageItem key={item.key} item={item} onPermissionDecision={onPermissionDecision}/>
+                ))}
+            </AnimatePresence>
         </div>
     )
 }

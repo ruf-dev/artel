@@ -1,4 +1,5 @@
 import {useState} from "react"
+import {motion} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/ToolCallCard/ToolCallCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -20,7 +21,13 @@ export default function ToolCallCard({toolName, input, inputSummary, output, isE
     const statusClass = !done ? cls.DotPending : isError ? cls.DotErr : cls.DotOk
 
     return (
-        <div className={cls.ToolCallCardContainer}>
+        <motion.div
+            className={cls.ToolCallCardContainer}
+            initial={{opacity: 0, y: 14}}
+            animate={{opacity: 1, y: 0}}
+            exit={{opacity: 0}}
+            transition={{duration: 0.22, ease: "easeOut"}}
+        >
             <div
                 className={cn(cls.Line, toggle && cls.LineClickable)}
                 onClick={toggle}
@@ -40,6 +47,6 @@ export default function ToolCallCard({toolName, input, inputSummary, output, isE
                     {output && <pre className={cn(cls.Output, isError && cls.OutputError)}>{output}</pre>}
                 </div>
             )}
-        </div>
+        </motion.div>
     )
 }

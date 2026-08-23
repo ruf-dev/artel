@@ -36,6 +36,16 @@
         padding: 0;
     }
 
+    & .HistoryButtonWrapper {
+        display: flex;
+    }
+
+    & .HistoryButton {
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+    }
+
     & .BackButton {
         width: var(--icon-button-size);
         height: var(--icon-button-size);

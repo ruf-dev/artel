@@ -6,10 +6,16 @@ import * as chatHistoryApi from "@/pages/workbench/processes/chatHistoryApi.ts"
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 
-function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open", vaultId?: string) {
+function renderChat(
+    items: ChatItem[] = [],
+    status: ChatConnectionStatus = "open",
+    vaultId?: string,
+    historyOpen = false,
+) {
     const sendMessage = vi.fn()
     const sendPermissionDecision = vi.fn()
     const onNewChat = vi.fn()
+    const onCloseHistory = vi.fn()
 
     const result = render(
         <Chat
@@ -19,10 +25,12 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             sendPermissionDecision={sendPermissionDecision}
             onNewChat={onNewChat}
             vaultId={vaultId}
+            historyOpen={historyOpen}
+            onCloseHistory={onCloseHistory}
         />,
     )
 
-    return {sendMessage, sendPermissionDecision, onNewChat, container: result.container}
+    return {sendMessage, sendPermissionDecision, onNewChat, onCloseHistory, container: result.container}
 }
 
 describe("Chat", () => {
@@ -45,84 +53,59 @@ describe("Chat", () => {
     it("calls onNewChat when the New Chat button is clicked", () => {
         const {onNewChat} = renderChat()
 
-        fireEvent.click(screen.getByText("New Chat"))
+        fireEvent.click(screen.getByLabelText("New chat"))
 
         expect(onNewChat).toHaveBeenCalledTimes(1)
     })
 
-    it("shows the history button when vaultId is provided", () => {
-        renderChat([], "open", "v1")
+    it("does not render the sidebar overlay when historyOpen is false", () => {
+        const {container} = renderChat([], "open", "v1", false)
 
-        expect(screen.getByLabelText("View chat history")).toBeInTheDocument()
+        expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeFalsy()
     })
 
-    it("does not show the history button when vaultId is not provided", () => {
-        renderChat()
-
-        expect(screen.queryByLabelText("View chat history")).not.toBeInTheDocument()
-    })
-
-    it("opens the history sidebar and fetches sessions when the history button is clicked", async () => {
+    it("renders the history sidebar and fetches sessions when historyOpen is true", async () => {
         const listSessionsSpy = vi.spyOn(chatHistoryApi, "listChatSessions").mockResolvedValue([])
 
-        renderChat([], "open", "v1")
-
-        fireEvent.click(screen.getByLabelText("View chat history"))
+        const {container} = renderChat([], "open", "v1", true)
 
         await waitFor(() => {
             expect(listSessionsSpy).toHaveBeenCalledWith("v1")
             expect(screen.getByText("Chat History")).toBeInTheDocument()
+            expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeTruthy()
         })
 
         listSessionsSpy.mockRestore()
     })
 
-    it("closes the history sidebar when its close button is clicked", async () => {
+    it("calls onCloseHistory when the overlay is clicked", async () => {
         vi.spyOn(chatHistoryApi, "listChatSessions").mockResolvedValue([])
 
-        const {container} = renderChat([], "open", "v1")
-
-        fireEvent.click(screen.getByLabelText("View chat history"))
+        const {container, onCloseHistory} = renderChat([], "open", "v1", true)
 
         await waitFor(() => {
-            expect(screen.getByText("Chat History")).toBeInTheDocument()
             expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeTruthy()
         })
 
-        fireEvent.click(screen.getByLabelText("Close chat history"))
+        fireEvent.click(container.querySelector('[class*="ChatContentOverlay"]') as Element)
 
-        // The sidebar itself stays mounted (so it can slide back out via CSS
-        // transition) — closed is expressed by the "open" modifier class and the
-        // blur overlay disappearing, not by the sidebar unmounting.
-        await waitFor(() => {
-            expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeFalsy()
-            const sidebar = container.querySelector('[class*="ChatHistorySidebarContainer"]')
-            expect(sidebar?.className).not.toMatch(/ChatHistorySidebarOpen/)
-        })
+        expect(onCloseHistory).toHaveBeenCalledTimes(1)
 
         vi.restoreAllMocks()
     })
 
-    it("closes the history sidebar when clicking outside it on the blurred content", async () => {
+    it("calls onCloseHistory when the sidebar's own close button is clicked", async () => {
         vi.spyOn(chatHistoryApi, "listChatSessions").mockResolvedValue([])
 
-        const {container} = renderChat([], "open", "v1")
-
-        fireEvent.click(screen.getByLabelText("View chat history"))
+        const {onCloseHistory} = renderChat([], "open", "v1", true)
 
         await waitFor(() => {
             expect(screen.getByText("Chat History")).toBeInTheDocument()
         })
 
-        const overlay = container.querySelector('[class*="ChatContentOverlay"]')
-        expect(overlay).toBeTruthy()
-        fireEvent.click(overlay as Element)
+        fireEvent.click(screen.getByLabelText("Close chat history"))
 
-        await waitFor(() => {
-            expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeFalsy()
-            const sidebar = container.querySelector('[class*="ChatHistorySidebarContainer"]')
-            expect(sidebar?.className).not.toMatch(/ChatHistorySidebarOpen/)
-        })
+        expect(onCloseHistory).toHaveBeenCalledTimes(1)
 
         vi.restoreAllMocks()
     })

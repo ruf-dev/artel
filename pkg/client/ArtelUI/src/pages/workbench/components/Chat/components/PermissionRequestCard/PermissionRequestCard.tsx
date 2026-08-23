@@ -1,5 +1,6 @@
 import {useState} from "react"
 import {Button} from "@vervstack/chures"
+import {motion} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/PermissionRequestCard/PermissionRequestCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -41,7 +42,13 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
     const toggle = hasInput ? () => setExpanded(e => !e) : undefined
 
     return (
-        <div className={cls.PermissionRequestCardContainer}>
+        <motion.div
+            className={cls.PermissionRequestCardContainer}
+            initial={{opacity: 0, y: 14}}
+            animate={{opacity: 1, y: 0}}
+            exit={{opacity: 0}}
+            transition={{duration: 0.22, ease: "easeOut"}}
+        >
             <div
                 className={cn(cls.Header, toggle && cls.HeaderClickable)}
                 onClick={toggle}
@@ -67,6 +74,6 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
                     ))}
                 </div>
             )}
-        </div>
+        </motion.div>
     )
 }

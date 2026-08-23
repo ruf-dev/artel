@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react"
 import {Link, useParams} from "react-router-dom"
 import {Button, Loader} from "@vervstack/chures"
+import {AnimatePresence} from "framer-motion"
 
 import cls from "@/pages/workbench/WorkbenchPage.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -14,12 +15,13 @@ import {
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
 import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
-import TerminalView from "@/pages/workbench/components/TerminalView/TerminalView.tsx"
+import AnimatedTerminalView from "@/pages/workbench/components/TerminalView/AnimatedTerminalView.tsx"
 import WorkbenchToolbar, {
     type WorkbenchView,
 } from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
 import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
 import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLifecycle.ts"
+import {useWorkbenchPanelControls} from "@/pages/workbench/processes/useWorkbenchPanelControls.ts"
 
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
@@ -39,6 +41,8 @@ export default function WorkbenchPage() {
     } = useChatSession(status === "running" ? vaultId : undefined)
 
     const [view, setView] = useState<WorkbenchView>("chat")
+    const {historyOpen, handleSelectTab, handleCreateTab, handleCloseTab, toggleHistory, closeHistory} =
+        useWorkbenchPanelControls({selectTab, createTab, closeTab, bakeError})
 
     const vault = vaults.find(v => v.id === vaultId)
     const vaultName = vault?.name ?? "Vault"
@@ -75,29 +79,24 @@ export default function WorkbenchPage() {
                         </Button>
                     </>
                 )}
-                {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
-                    <Chat items={items} status={chatStatus} sendMessage={sendMessage}
-                          sendPermissionDecision={sendPermissionDecision} onNewChat={startNewChat} vaultId={vaultId}/>
-                )}
-                {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
-                    <TerminalView
-                        vaultId={vaultId}
-                        tabs={tabs}
-                        pendingTerminalAuthLink={pendingTerminalAuthLink}
-                        onSelectTab={(tabId) => {
-                            selectTab(tabId)
-                                .catch(e => bakeError("Failed to select tab", e))
-                        }}
-                        onCreateTab={() => {
-                            createTab()
-                                .catch(e => bakeError("Failed to create tab", e))
-                        }}
-                        onCloseTab={(tabId) => {
-                            closeTab(tabId)
-                                .catch(e => bakeError("Failed to close tab", e))
-                        }}
-                    />
-                )}
+                <AnimatePresence mode="wait">
+                    {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
+                        <Chat key="chat" items={items} status={chatStatus} sendMessage={sendMessage}
+                              sendPermissionDecision={sendPermissionDecision} onNewChat={startNewChat}
+                              vaultId={vaultId} historyOpen={historyOpen} onCloseHistory={closeHistory}/>
+                    )}
+                    {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
+                        <AnimatedTerminalView
+                            key="terminal"
+                            vaultId={vaultId}
+                            tabs={tabs}
+                            pendingTerminalAuthLink={pendingTerminalAuthLink}
+                            onSelectTab={handleSelectTab}
+                            onCreateTab={handleCreateTab}
+                            onCloseTab={handleCloseTab}
+                        />
+                    )}
+                </AnimatePresence>
                 {!isLoading && exists && status !== "running" && lifecycle.showSetup && vaultId && (
                     <PickAuthModeScreen
                         onStart={lifecycle.handleStartWorkbench}
@@ -118,6 +117,7 @@ export default function WorkbenchPage() {
                     view={view}
                     onViewChange={setView}
                     chatLocked={awaitingAuth}
+                    onToggleHistory={toggleHistory}
                 />
             ) : (
                 <Link className={cls.BackLink} to={Path.HomePage}>← Back to vaults</Link>

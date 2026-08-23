@@ -10,4 +10,17 @@
         flex: 1;
         min-width: 0;
     }
+
+    & .NewChatButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+        background: var(--color-accent-dim);
+        border: var(--border-thickness) solid var(--color-accent-border);
+        border-radius: var(--border-radius-sm);
+    }
 }

@@ -4,7 +4,8 @@
     padding: 0.5rem 0.75rem;
     background: var(--color-bg-elevated);
     border: var(--border-thickness) solid var(--color-border);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
+    border-bottom-left-radius: 0.25rem;
 
     &.Streaming {
         border-color: var(--color-accent-border);
@@ -22,6 +23,19 @@
             &:last-child {
                 margin-bottom: 0;
             }
+        }
+
+        & :global(ul), & :global(ol) {
+            margin: 0 0 0.5rem;
+            padding-left: 1.25rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        & :global(li) {
+            margin-bottom: 0.25rem;
         }
 
         & :global(pre) {
