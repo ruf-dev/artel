@@ -48,6 +48,7 @@ const (
 	ExternalConnectionsAPI_CheckCouchDBConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection"
 	ExternalConnectionsAPI_AddPostgresConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddPostgresConnection"
 	ExternalConnectionsAPI_CheckPostgresConnection_FullMethodName     = "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection"
+	ExternalConnectionsAPI_GetProviderStatistics_FullMethodName       = "/artel_api.ExternalConnectionsAPI/GetProviderStatistics"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -86,6 +87,7 @@ type ExternalConnectionsAPIClient interface {
 	CheckCouchDBConnection(ctx context.Context, in *CheckCouchDBConnection_Request, opts ...grpc.CallOption) (*CheckCouchDBConnection_Response, error)
 	AddPostgresConnection(ctx context.Context, in *AddPostgresConnection_Request, opts ...grpc.CallOption) (*AddPostgresConnection_Response, error)
 	CheckPostgresConnection(ctx context.Context, in *CheckPostgresConnection_Request, opts ...grpc.CallOption) (*CheckPostgresConnection_Response, error)
+	GetProviderStatistics(ctx context.Context, in *GetProviderStatistics_Request, opts ...grpc.CallOption) (*GetProviderStatistics_Response, error)
 }
 
 type externalConnectionsAPIClient struct {
@@ -357,6 +359,15 @@ func (c *externalConnectionsAPIClient) CheckPostgresConnection(ctx context.Conte
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) GetProviderStatistics(ctx context.Context, in *GetProviderStatistics_Request, opts ...grpc.CallOption) (*GetProviderStatistics_Response, error) {
+	out := new(GetProviderStatistics_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_GetProviderStatistics_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExternalConnectionsAPIServer is the server API for ExternalConnectionsAPI service.
 // All implementations must embed UnimplementedExternalConnectionsAPIServer
 // for forward compatibility
@@ -393,6 +404,7 @@ type ExternalConnectionsAPIServer interface {
 	CheckCouchDBConnection(context.Context, *CheckCouchDBConnection_Request) (*CheckCouchDBConnection_Response, error)
 	AddPostgresConnection(context.Context, *AddPostgresConnection_Request) (*AddPostgresConnection_Response, error)
 	CheckPostgresConnection(context.Context, *CheckPostgresConnection_Request) (*CheckPostgresConnection_Response, error)
+	GetProviderStatistics(context.Context, *GetProviderStatistics_Request) (*GetProviderStatistics_Response, error)
 	mustEmbedUnimplementedExternalConnectionsAPIServer()
 }
 
@@ -486,6 +498,9 @@ func (UnimplementedExternalConnectionsAPIServer) AddPostgresConnection(context.C
 }
 func (UnimplementedExternalConnectionsAPIServer) CheckPostgresConnection(context.Context, *CheckPostgresConnection_Request) (*CheckPostgresConnection_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPostgresConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) GetProviderStatistics(context.Context, *GetProviderStatistics_Request) (*GetProviderStatistics_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProviderStatistics not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) mustEmbedUnimplementedExternalConnectionsAPIServer() {
 }
@@ -1023,6 +1038,24 @@ func _ExternalConnectionsAPI_CheckPostgresConnection_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_GetProviderStatistics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProviderStatistics_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).GetProviderStatistics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_GetProviderStatistics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).GetProviderStatistics(ctx, req.(*GetProviderStatistics_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExternalConnectionsAPI_ServiceDesc is the grpc.ServiceDesc for ExternalConnectionsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1145,6 +1178,10 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckPostgresConnection",
 			Handler:    _ExternalConnectionsAPI_CheckPostgresConnection_Handler,
+		},
+		{
+			MethodName: "GetProviderStatistics",
+			Handler:    _ExternalConnectionsAPI_GetProviderStatistics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

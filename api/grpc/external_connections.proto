@@ -212,6 +212,13 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc GetProviderStatistics(GetProviderStatistics.Request) returns (GetProviderStatistics.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/statistics"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -227,6 +234,7 @@ enum ExternalProvider {
   EXTERNAL_PROVIDER_S3 = 9;
   EXTERNAL_PROVIDER_COUCHDB = 10;
   EXTERNAL_PROVIDER_POSTGRES = 11;
+  EXTERNAL_PROVIDER_OPENROUTER = 12;
 }
 
 message GoogleConnectionInfo {
@@ -461,6 +469,11 @@ message AddOpenAIConnection {
     // where base_url is just the host)
     string base_url      = 2;
     string default_model = 3; // optional; falls back to a recommended default from the live model list
+    // optional; which OpenAI-compatible identity to persist this key under (EXTERNAL_PROVIDER_OPENAI
+    // or EXTERNAL_PROVIDER_OPENROUTER). Unset/UNSPECIFIED defaults to EXTERNAL_PROVIDER_OPENAI —
+    // this RPC is reused across every provider that speaks the OpenAI Chat Completions protocol
+    // rather than forking a bespoke RPC pair per provider (they all use the same underlying client).
+    ExternalProvider provider = 4;
   }
   message Response {
     ExternalConnectionInfo connection = 1;
@@ -472,6 +485,7 @@ message CheckOpenAIConnection {
     string api_key       = 1;
     string base_url      = 2;
     string default_model = 3; // optional; used as the fallback validation target when the provider doesn't support GET /v1/models
+    ExternalProvider provider = 4; // optional; see AddOpenAIConnection.Request.provider
   }
   message Response {
     repeated string available_models          = 1;
@@ -559,4 +573,26 @@ message AddGenericConnection {
   message Response {
     ExternalConnectionInfo connection = 1;
   }
+}
+
+message GetProviderStatistics {
+  message Request {
+    ExternalProvider provider = 1;
+  }
+  message Response {
+    oneof statistics {
+      OpenRouterStatistics openrouter = 1;
+    }
+  }
+}
+
+message OpenRouterStatistics {
+  double limit = 1;
+  bool   limit_unlimited = 2;
+  double limit_remaining = 3;
+  double usage_total = 4;
+  double usage_daily = 5;
+  double usage_weekly = 6;
+  double usage_monthly = 7;
+  bool   is_free_tier = 8;
 }

@@ -1,0 +1,54 @@
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ViewOpenRouterUsageDialogContainer {
+    width: var(--dialog-width-connection);
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 2rem 5rem -1.25rem rgb(0 0 0 / 80%);
+    max-height: var(--dialog-max-height);
+    overflow-y: auto;
+    animation: modalIn 280ms cubic-bezier(.2,.7,.2,1) both;
+
+    & .Field {
+        display: block;
+        margin-bottom: 1rem;
+        min-width: 0;
+    }
+
+    & .FieldLabel {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+        margin-bottom: 0.4rem;
+        letter-spacing: -0.00375rem;
+    }
+
+    & .FieldValue {
+        font-size: 0.8125rem;
+        color: var(--color-fg-primary);
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    & .UsageGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.625rem;
+        margin-bottom: 1rem;
+    }
+
+    & .FreeTierNotice {
+        font-size: 0.75rem;
+        color: var(--color-fg-secondary);
+    }
+}
+
+[data-theme="light"] .ViewOpenRouterUsageDialogContainer {
+    box-shadow: 0 2rem 5rem -1.25rem rgb(0 0 0 / 16%);
+}

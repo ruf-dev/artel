@@ -17,6 +17,7 @@ const (
 	ProviderAnthropic    = "anthropic"
 	ProviderTelegram     = "telegram"
 	ProviderOpenAI       = "openai"
+	ProviderOpenRouter   = "openrouter"
 	ProviderS3           = "s3"
 	ProviderCouchDB      = "couchdb"
 	ProviderPostgres     = "postgres"

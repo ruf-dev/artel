@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
+	openrouterClient "github.com/ruf-dev/artel/internal/clients/openrouter"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -583,11 +584,16 @@ type ExternalConnectionService interface {
 	// WorkbenchService to inject ANTHROPIC_API_KEY when starting a workbench in api_key auth
 	// mode. Returns user_errors.LlmKeyRequired if userUuid has no anthropic connection.
 	GetAnthropicApiKey(ctx context.Context, userUuid uuid.UUID) (string, error)
+	// AddOpenAIConnection and CheckOpenAIConnection are shared across every provider that speaks
+	// the OpenAI Chat Completions protocol (currently openai and openrouter); provider selects
+	// which one, via a domain.Provider* constant — see
+	// external_connections_api.OpenAICompatibleProviderFromProto for how the transport layer
+	// derives it from the request's proto ExternalProvider field.
 	AddOpenAIConnection(
-		ctx context.Context, apiKey, baseUrl, defaultModel string,
+		ctx context.Context, apiKey, baseUrl, defaultModel, provider string,
 	) (domain.ExternalConnectionMeta, error)
 	CheckOpenAIConnection(
-		ctx context.Context, apiKey, baseUrl, defaultModel string,
+		ctx context.Context, apiKey, baseUrl, defaultModel, provider string,
 	) (models []openaiClient.ModelInfo, recommendedDefaultModel string, err error)
 	AddGenericConnection(
 		ctx context.Context, provider string, credentials map[string]string,
@@ -608,6 +614,10 @@ type ExternalConnectionService interface {
 	CheckPostgresConnection(
 		ctx context.Context, host string, port int, database, username, password, sslMode string,
 	) error
+	// GetOpenRouterStatistics fetches the caller's live usage/limit/balance info from
+	// OpenRouter's own account-management API, using the API key on their OpenRouter connection.
+	// Returns user_errors.LlmKeyRequired if they have no OpenRouter connection.
+	GetOpenRouterStatistics(ctx context.Context) (openrouterClient.KeyInfo, error)
 }
 
 // PostgresInstanceService is admin CRUD over the shared pool of Postgres servers (admin pool or

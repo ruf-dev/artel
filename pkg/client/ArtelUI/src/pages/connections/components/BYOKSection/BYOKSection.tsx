@@ -7,11 +7,13 @@ import ProviderCard from "@/widgets/ProviderCard/ProviderCard.tsx"
 import ComingSoonCard from "@/components/ComingSoonCard/ComingSoonCard.tsx"
 import ManageAnthropicDialog from "@/dialogs/ManageAnthropicDialog/ManageAnthropicDialog.tsx"
 import ManageOpenAIDialog from "@/dialogs/ManageOpenAIDialog/ManageOpenAIDialog.tsx"
+import ManageOpenRouterDialog from "@/dialogs/ManageOpenRouterDialog/ManageOpenRouterDialog.tsx"
 import ManageCouchDBDialog from "@/dialogs/ManageCouchDBDialog/ManageCouchDBDialog.tsx"
 import ManageS3Dialog from "@/dialogs/ManageS3Dialog/ManageS3Dialog.tsx"
 import ManagePostgresDialog from "@/dialogs/ManagePostgresDialog/ManagePostgresDialog.tsx"
 import claudeIcon from "@/icons/llm/claude-color.svg"
 import gptIcon from "@/icons/llm/gpt-color.svg"
+import openrouterIcon from "@/icons/llm/openrouter-color.svg"
 import cls from "@/pages/connections/components/BYOKSection/BYOKSection.module.css"
 
 type BYOKProvider = {
@@ -33,6 +35,12 @@ const LLM_BYOK_PROVIDERS: BYOKProvider[] = [
         name: "GPT (OpenAI)",
         icon: <img src={gptIcon} alt="GPT" className={cls.ProviderIconImage}/>,
         dialogFactory: () => <ManageOpenAIDialog/>,
+    },
+    {
+        provider: ExternalProvider.EXTERNAL_PROVIDER_OPENROUTER,
+        name: "OpenRouter",
+        icon: <img src={openrouterIcon} alt="OpenRouter" className={cls.ProviderIconImage}/>,
+        dialogFactory: () => <ManageOpenRouterDialog/>,
     },
 ]
 

@@ -5,9 +5,10 @@ import cls from "@/components/LlmKeyConnectedContent/LlmKeyConnectedContent.modu
 interface LlmKeyConnectedContentProps {
     fields: Record<string, string>
     onDisconnect: () => void
+    onViewUsage?: () => void
 }
 
-export default function LlmKeyConnectedContent({fields, onDisconnect}: LlmKeyConnectedContentProps) {
+export default function LlmKeyConnectedContent({fields, onDisconnect, onViewUsage}: LlmKeyConnectedContentProps) {
     const availableModels = fields.available_models ? fields.available_models.split(",").filter(Boolean) : []
 
     return (
@@ -28,6 +29,7 @@ export default function LlmKeyConnectedContent({fields, onDisconnect}: LlmKeyCon
                 </label>
             )}
             <div className={cls.ModalActions}>
+                {onViewUsage && <Button variant="secondary" onClick={onViewUsage}>View usage</Button>}
                 <Button variant="danger" onClick={onDisconnect}>Disconnect</Button>
             </div>
         </div>

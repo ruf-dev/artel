@@ -89,7 +89,7 @@ func (a *llmExecutorAdapter) Call(
 	switch conn.Provider {
 	case domain.ProviderAnthropic:
 		return callAnthropic(ctx, conn, req)
-	case domain.ProviderOpenAI:
+	case domain.ProviderOpenAI, domain.ProviderOpenRouter:
 		return callOpenAI(ctx, conn, req)
 	default:
 		return LlmCallResult{}, rerrors.Wrap(user_errors.TractLlmConnectionProviderMismatch, connectionUuid.String())

@@ -817,6 +817,38 @@
         ]
       }
     },
+    "/api/external-connections/statistics": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_GetProviderStatistics",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetProviderStatisticsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetProviderStatisticsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/telegram/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddTelegramConnection",
@@ -1080,6 +1112,10 @@
         "defaultModel": {
           "type": "string",
           "title": "optional; falls back to a recommended default from the live model list"
+        },
+        "provider": {
+          "$ref": "#/definitions/artel_apiExternalProvider",
+          "description": "optional; which OpenAI-compatible identity to persist this key under (EXTERNAL_PROVIDER_OPENAI\nor EXTERNAL_PROVIDER_OPENROUTER). Unset/UNSPECIFIED defaults to EXTERNAL_PROVIDER_OPENAI —\nthis RPC is reused across every provider that speaks the OpenAI Chat Completions protocol\nrather than forking a bespoke RPC pair per provider (they all use the same underlying client)."
         }
       }
     },
@@ -1313,6 +1349,10 @@
         "defaultModel": {
           "type": "string",
           "title": "optional; used as the fallback validation target when the provider doesn't support GET /v1/models"
+        },
+        "provider": {
+          "$ref": "#/definitions/artel_apiExternalProvider",
+          "title": "optional; see AddOpenAIConnection.Request.provider"
         }
       }
     },
@@ -1480,7 +1520,8 @@
         "EXTERNAL_PROVIDER_OPENAI",
         "EXTERNAL_PROVIDER_S3",
         "EXTERNAL_PROVIDER_COUCHDB",
-        "EXTERNAL_PROVIDER_POSTGRES"
+        "EXTERNAL_PROVIDER_POSTGRES",
+        "EXTERNAL_PROVIDER_OPENROUTER"
       ],
       "default": "EXTERNAL_PROVIDER_UNSPECIFIED"
     },
@@ -1507,6 +1548,22 @@
           "additionalProperties": {
             "type": "string"
           }
+        }
+      }
+    },
+    "artel_apiGetProviderStatisticsRequest": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "$ref": "#/definitions/artel_apiExternalProvider"
+        }
+      }
+    },
+    "artel_apiGetProviderStatisticsResponse": {
+      "type": "object",
+      "properties": {
+        "openrouter": {
+          "$ref": "#/definitions/artel_apiOpenRouterStatistics"
         }
       }
     },
@@ -1620,6 +1677,41 @@
         },
         "appPasswordUrl": {
           "type": "string"
+        }
+      }
+    },
+    "artel_apiOpenRouterStatistics": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "number",
+          "format": "double"
+        },
+        "limitUnlimited": {
+          "type": "boolean"
+        },
+        "limitRemaining": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageTotal": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageDaily": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageWeekly": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageMonthly": {
+          "type": "number",
+          "format": "double"
+        },
+        "isFreeTier": {
+          "type": "boolean"
         }
       }
     },

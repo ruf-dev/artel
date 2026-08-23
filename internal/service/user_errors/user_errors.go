@@ -385,6 +385,11 @@ var (
 		codes.InvalidArgument,
 		rerrors.WithHttpStatus(http.StatusBadRequest),
 	)
+	ProviderStatisticsUnsupported = rerrors.New(
+		"usage statistics aren't available for this provider yet",
+		codes.Unimplemented,
+		rerrors.WithHttpStatus(http.StatusNotImplemented),
+	)
 
 	// s3 (byok) connection.
 	S3ConnectionValidationFailed = rerrors.New(

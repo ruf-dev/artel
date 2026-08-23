@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	openrouterClient "github.com/ruf-dev/artel/internal/clients/openrouter"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
@@ -16,9 +17,23 @@ var providerToProto = map[string]pb.ExternalProvider{
 	domain.ProviderGitlab:       pb.ExternalProvider_EXTERNAL_PROVIDER_GITLAB,
 	domain.ProviderAnthropic:    pb.ExternalProvider_EXTERNAL_PROVIDER_ANTHROPIC,
 	domain.ProviderOpenAI:       pb.ExternalProvider_EXTERNAL_PROVIDER_OPENAI,
+	domain.ProviderOpenRouter:   pb.ExternalProvider_EXTERNAL_PROVIDER_OPENROUTER,
 	domain.ProviderS3:           pb.ExternalProvider_EXTERNAL_PROVIDER_S3,
 	domain.ProviderCouchDB:      pb.ExternalProvider_EXTERNAL_PROVIDER_COUCHDB,
 	domain.ProviderPostgres:     pb.ExternalProvider_EXTERNAL_PROVIDER_POSTGRES,
+}
+
+// OpenAICompatibleProviderFromProto resolves the domain provider constant AddOpenAIConnection /
+// CheckOpenAIConnection should operate on for the given request's provider field. Both RPCs are
+// shared across every provider that speaks the OpenAI Chat Completions protocol, distinguished
+// only by this field; EXTERNAL_PROVIDER_UNSPECIFIED preserves pre-OpenRouter callers' behavior by
+// defaulting to OpenAI.
+func OpenAICompatibleProviderFromProto(p pb.ExternalProvider) string {
+	if p == pb.ExternalProvider_EXTERNAL_PROVIDER_OPENROUTER {
+		return domain.ProviderOpenRouter
+	}
+
+	return domain.ProviderOpenAI
 }
 
 func ConnectionToProto(m domain.ExternalConnectionMeta) *pb.ExternalConnectionInfo {
@@ -52,6 +67,21 @@ func googleDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Google {
 	}
 
 	return &pb.ExternalConnectionInfo_Google{Google: googleInfo}
+}
+
+func toOpenRouterStatisticsProto(info openrouterClient.KeyInfo) *pb.OpenRouterStatistics {
+	stats := &pb.OpenRouterStatistics{
+		Limit:          info.Limit,
+		LimitUnlimited: info.LimitUnlimited,
+		LimitRemaining: info.LimitRemaining,
+		UsageTotal:     info.Usage,
+		UsageDaily:     info.UsageDaily,
+		UsageWeekly:    info.UsageWeekly,
+		UsageMonthly:   info.UsageMonthly,
+		IsFreeTier:     info.IsFreeTier,
+	}
+
+	return stats
 }
 
 func genericDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Generic {

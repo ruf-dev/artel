@@ -7,6 +7,7 @@ import GitlabIcon from "@/components/ProviderIcon/components/GitlabIcon"
 import TelegramIcon from "@/components/ProviderIcon/components/TelegramIcon"
 import AnthropicIcon from "@/components/ProviderIcon/components/AnthropicIcon"
 import OpenAIIcon from "@/components/ProviderIcon/components/OpenAIIcon"
+import OpenRouterIcon from "@/components/ProviderIcon/components/OpenRouterIcon"
 import CouchDBIcon from "@/components/ProviderIcon/components/CouchDBIcon"
 import S3Icon from "@/components/ProviderIcon/components/S3Icon"
 import UnknownProviderIcon from "@/components/ProviderIcon/components/UnknownProviderIcon"
@@ -29,6 +30,8 @@ export default function ProviderIcon({provider}: {provider?: ExternalProvider}) 
             return <AnthropicIcon/>
         case ExternalProvider.EXTERNAL_PROVIDER_OPENAI:
             return <OpenAIIcon/>
+        case ExternalProvider.EXTERNAL_PROVIDER_OPENROUTER:
+            return <OpenRouterIcon/>
         case ExternalProvider.EXTERNAL_PROVIDER_COUCHDB:
             return <CouchDBIcon/>
         case ExternalProvider.EXTERNAL_PROVIDER_S3:
