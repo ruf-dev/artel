@@ -1,10 +1,14 @@
 package authlogin
 
 import (
+	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"workbenchbridge/internal/envdrop"
 )
 
 // writeCredentials writes a minimal claude .credentials.json at path with the given access token.
@@ -121,5 +125,86 @@ func TestReadFreshToken_EmptyAccessTokenIsNotFound(t *testing.T) {
 
 	if found {
 		t.Fatalf("readFreshToken() found = true, want false when accessToken is empty")
+	}
+}
+
+func TestWaitForLogin_AlreadyValidFileReturnsImmediately(t *testing.T) {
+	configDir := t.TempDir()
+	t.Setenv("CLAUDE_CONFIG_DIR", configDir)
+
+	// The credentials file is written well before WaitForLogin is even called, simulating a
+	// terminal login that happened before this bridge run started (even an old one) — there is
+	// no freshness gating, so it must still count.
+	writeCredentials(t, filepath.Join(configDir, ".credentials.json"), "sk-ant-oat01-preexisting")
+
+	envStore := envdrop.New(t.TempDir())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	err := WaitForLogin(ctx, envStore)
+	if err != nil {
+		t.Fatalf("WaitForLogin() error = %v, want nil", err)
+	}
+
+	values, err := envStore.Read()
+	if err != nil {
+		t.Fatalf("envStore.Read() error = %v, want nil", err)
+	}
+
+	if values[envdrop.OauthTokenVar] != "sk-ant-oat01-preexisting" {
+		t.Fatalf("envStore token = %q, want %q", values[envdrop.OauthTokenVar], "sk-ant-oat01-preexisting")
+	}
+}
+
+func TestWaitForLogin_FilePollAppearsMidWait(t *testing.T) {
+	configDir := t.TempDir()
+	t.Setenv("CLAUDE_CONFIG_DIR", configDir)
+
+	envStore := envdrop.New(t.TempDir())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	go func() {
+		// Shorter than a couple of credentialsPollInterval ticks, so WaitForLogin's poll loop
+		// (not just its immediate pre-loop check) is what has to notice this write.
+		time.Sleep(credentialsPollInterval + credentialsPollInterval/2)
+
+		writeCredentials(t, filepath.Join(configDir, ".credentials.json"), "sk-ant-oat01-midwait")
+	}()
+
+	err := WaitForLogin(ctx, envStore)
+	if err != nil {
+		t.Fatalf("WaitForLogin() error = %v, want nil", err)
+	}
+
+	values, err := envStore.Read()
+	if err != nil {
+		t.Fatalf("envStore.Read() error = %v, want nil", err)
+	}
+
+	if values[envdrop.OauthTokenVar] != "sk-ant-oat01-midwait" {
+		t.Fatalf("envStore token = %q, want %q", values[envdrop.OauthTokenVar], "sk-ant-oat01-midwait")
+	}
+}
+
+func TestWaitForLogin_ContextCancelledReturnsPromptly(t *testing.T) {
+	t.Setenv("CLAUDE_CONFIG_DIR", filepath.Join(t.TempDir(), "does-not-exist"))
+
+	envStore := envdrop.New(t.TempDir())
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	start := time.Now()
+
+	err := WaitForLogin(ctx, envStore)
+	if !errors.Is(err, context.Canceled) {
+		t.Fatalf("WaitForLogin() error = %v, want context.Canceled", err)
+	}
+
+	if elapsed := time.Since(start); elapsed > time.Second {
+		t.Fatalf("WaitForLogin() took %v after ctx cancellation, want prompt return", elapsed)
 	}
 }

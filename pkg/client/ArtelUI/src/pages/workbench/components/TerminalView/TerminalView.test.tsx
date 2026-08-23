@@ -8,9 +8,13 @@ vi.mock('@/pages/workbench/components/Terminal/Terminal.tsx', () => ({
     default: () => <span data-testid="terminal-component">Terminal</span>,
 }))
 
-// Mock TerminalTabBar as it renders cleanly on its own
+// Mock TerminalTabBar and TerminalAuthLinkBanner as they render cleanly
 vi.mock('@/pages/workbench/components/Terminal/components/TerminalTabBar/TerminalTabBar.tsx', () => ({
     default: () => <span data-testid="terminal-tab-bar">TerminalTabBar</span>,
+}))
+
+vi.mock('@/pages/workbench/components/Terminal/components/TerminalAuthLinkBanner/TerminalAuthLinkBanner.tsx', () => ({
+    default: () => <span data-testid="terminal-auth-link-banner">TerminalAuthLinkBanner</span>,
 }))
 
 describe('TerminalView', () => {
@@ -19,6 +23,7 @@ describe('TerminalView', () => {
         onSelectTab: vi.fn(),
         onCreateTab: vi.fn(),
         onCloseTab: vi.fn(),
+        pendingTerminalAuthLink: undefined,
     }
 
     it('renders empty state when tabs array is empty', () => {
@@ -47,7 +52,7 @@ describe('TerminalView', () => {
         expect(screen.getByTestId('terminal-component')).toBeInTheDocument()
     })
 
-    it('renders TerminalTabBar regardless of tab count', () => {
+    it('renders TerminalTabBar and TerminalAuthLinkBanner regardless of tab count', () => {
         render(
             <TerminalView
                 {...mockProps}
@@ -56,5 +61,6 @@ describe('TerminalView', () => {
         )
 
         expect(screen.getByTestId('terminal-tab-bar')).toBeInTheDocument()
+        expect(screen.getByTestId('terminal-auth-link-banner')).toBeInTheDocument()
     })
 })

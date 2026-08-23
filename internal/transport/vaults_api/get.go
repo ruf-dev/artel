@@ -53,15 +53,16 @@ func (v *VaultsImpl) GetVault(ctx context.Context, req *pb.GetVault_Request) (*p
 	}
 
 	resp := &pb.GetVault_Response{
-		Id:              vault.Uuid.String(),
-		Name:            vault.Name,
-		DbUrl:           vault.CouchDBURL,
-		S3InstanceId:    s3InstanceId,
-		S3BucketName:    vault.S3BucketName,
-		WorkbenchExists: workbenchExists,
-		WorkbenchStatus: workbenchStatus,
-		PostgresEnabled: postgresEnabled,
-		PostgresStatus:  postgresStatus,
+		Id:                      vault.Uuid.String(),
+		Name:                    vault.Name,
+		DbUrl:                   vault.CouchDBURL,
+		S3InstanceId:            s3InstanceId,
+		S3BucketName:            vault.S3BucketName,
+		WorkbenchExists:         workbenchExists,
+		WorkbenchStatus:         workbenchStatus,
+		PostgresEnabled:         postgresEnabled,
+		PostgresStatus:          postgresStatus,
+		PendingTerminalAuthLink: v.terminalAuthLinks.PendingTerminalAuthLink(vaultID),
 	}
 
 	return resp, nil

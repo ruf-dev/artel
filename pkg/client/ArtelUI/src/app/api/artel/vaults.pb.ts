@@ -34,6 +34,7 @@ export type GetVaultResponse = {
   workbenchStatus?: string;
   postgresEnabled?: boolean;
   postgresStatus?: string;
+  pendingTerminalAuthLink?: string;
 };
 
 export type GetVault = Record<string, never>;

@@ -25,6 +25,7 @@ export function useWorkbench(vaultId?: string) {
     return {
         exists: q.data?.exists ?? false,
         status: q.data?.status ?? "",
+        pendingTerminalAuthLink: q.data?.pendingTerminalAuthLink ?? "",
         isLoading: q.isLoading,
         refetch: q.refetch,
     }

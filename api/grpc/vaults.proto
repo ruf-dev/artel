@@ -205,6 +205,12 @@ message GetVault {
     // "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
     bool postgres_enabled = 8;
     string postgres_status = 9;
+    // pending_terminal_auth_link is the Claude CLI OAuth sign-in link most recently detected in
+    // this vault's workbench terminal WS output (e.g. from a `claude setup-token` run started
+    // inside a terminal tab), or empty when no such login link has been detected yet. Unlike
+    // workbench_status/postgres_status, this is process-local, in-memory state, not persisted —
+    // see WorkbenchTerminalShellHandler.PendingTerminalAuthLink.
+    string pending_terminal_auth_link = 10;
   }
 }
 

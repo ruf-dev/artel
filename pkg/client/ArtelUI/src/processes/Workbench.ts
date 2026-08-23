@@ -2,7 +2,7 @@ import useUser from "@/hooks/user/User.ts"
 import {VaultsAPI} from "@/app/api/artel/vaults.pb.ts"
 
 export interface IWorkbenchService {
-    getStatus: (vaultId: string) => Promise<{ exists: boolean; status: string }>
+    getStatus: (vaultId: string) => Promise<{ exists: boolean; status: string; pendingTerminalAuthLink: string }>
     create: (vaultId: string) => Promise<{ status: string }>
     start: (vaultId: string, authMode: string) => Promise<{ status: string; authMode: string }>
     stop: (vaultId: string) => Promise<{ status: string }>
@@ -14,9 +14,13 @@ export interface IWorkbenchService {
 }
 
 export class WorkbenchService implements IWorkbenchService {
-    async getStatus(vaultId: string): Promise<{ exists: boolean; status: string }> {
+    async getStatus(vaultId: string): Promise<{ exists: boolean; status: string; pendingTerminalAuthLink: string }> {
         const res = await VaultsAPI.GetVault({id: vaultId}, useUser.getState().auth.getInitReq())
-        return {exists: res.workbenchExists ?? false, status: res.workbenchStatus ?? ""}
+        return {
+            exists: res.workbenchExists ?? false,
+            status: res.workbenchStatus ?? "",
+            pendingTerminalAuthLink: res.pendingTerminalAuthLink ?? "",
+        }
     }
 
     async create(vaultId: string): Promise<{ status: string }> {

@@ -1521,8 +1521,14 @@ type GetVault_Response struct {
 	// "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
 	PostgresEnabled bool   `protobuf:"varint,8,opt,name=postgres_enabled,json=postgresEnabled,proto3" json:"postgres_enabled,omitempty"`
 	PostgresStatus  string `protobuf:"bytes,9,opt,name=postgres_status,json=postgresStatus,proto3" json:"postgres_status,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// pending_terminal_auth_link is the Claude CLI OAuth sign-in link most recently detected in
+	// this vault's workbench terminal WS output (e.g. from a `claude setup-token` run started
+	// inside a terminal tab), or empty when no such login link has been detected yet. Unlike
+	// workbench_status/postgres_status, this is process-local, in-memory state, not persisted —
+	// see WorkbenchTerminalShellHandler.PendingTerminalAuthLink.
+	PendingTerminalAuthLink string `protobuf:"bytes,10,opt,name=pending_terminal_auth_link,json=pendingTerminalAuthLink,proto3" json:"pending_terminal_auth_link,omitempty"`
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GetVault_Response) Reset() {
@@ -1614,6 +1620,13 @@ func (x *GetVault_Response) GetPostgresEnabled() bool {
 func (x *GetVault_Response) GetPostgresStatus() string {
 	if x != nil {
 		return x.PostgresStatus
+	}
+	return ""
+}
+
+func (x *GetVault_Response) GetPendingTerminalAuthLink() string {
+	if x != nil {
+		return x.PendingTerminalAuthLink
 	}
 	return ""
 }
@@ -3891,10 +3904,10 @@ const file_vaults_proto_rawDesc = "" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
-	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"\xe3\x02\n" +
+	"\x06db_url\x18\x03 \x01(\tR\x05dbUrl\"\xa0\x03\n" +
 	"\bGetVault\x1a\x19\n" +
 	"\aRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x1a\xbb\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x1a\xf8\x02\n" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x15\n" +
@@ -3904,7 +3917,9 @@ const file_vaults_proto_rawDesc = "" +
 	"\x10workbench_exists\x18\x06 \x01(\bR\x0fworkbenchExists\x12)\n" +
 	"\x10workbench_status\x18\a \x01(\tR\x0fworkbenchStatus\x12)\n" +
 	"\x10postgres_enabled\x18\b \x01(\bR\x0fpostgresEnabled\x12'\n" +
-	"\x0fpostgres_status\x18\t \x01(\tR\x0epostgresStatus\"T\n" +
+	"\x0fpostgres_status\x18\t \x01(\tR\x0epostgresStatus\x12;\n" +
+	"\x1apending_terminal_auth_link\x18\n" +
+	" \x01(\tR\x17pendingTerminalAuthLink\"T\n" +
 	"\n" +
 	"ListVaults\x1a\t\n" +
 	"\aRequest\x1a;\n" +

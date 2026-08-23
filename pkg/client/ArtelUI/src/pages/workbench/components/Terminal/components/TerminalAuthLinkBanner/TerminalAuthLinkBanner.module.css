@@ -1,0 +1,47 @@
+.TerminalAuthLinkBannerContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    background: var(--color-accent-dim);
+    border: var(--border-thickness) solid var(--color-accent-border);
+    border-radius: var(--border-radius-sm);
+
+    & .Text {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        font-size: var(--font-size-base);
+        color: var(--color-fg-primary);
+    }
+
+    & .LinkButton {
+        flex-shrink: 0;
+        padding: 0.375rem 0.875rem;
+        background: var(--coral);
+        color: var(--color-fg-white);
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+
+    & .DismissButton {
+        width: 1.125rem;
+        height: 1.125rem;
+        padding: 0;
+        flex-shrink: 0;
+        border: none;
+        background: transparent;
+        opacity: 0.45;
+
+        &:hover {
+            opacity: 1;
+            background: var(--color-bg-hover);
+        }
+    }
+}

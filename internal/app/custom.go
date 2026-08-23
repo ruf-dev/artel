@@ -145,7 +145,14 @@ func (c *Custom) Init(a *App) error {
 		return rerrors.Wrap(err, "error creating server manager")
 	}
 
-	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench)
+	// Constructed ahead of vaultsImpl (rather than alongside workbenchTerminalHandler below, where
+	// it's registered as an http handler) because GetVault needs a reference to it: it owns the
+	// in-memory cache of Claude CLI OAuth sign-in links detected on each vault's terminal WS
+	// output, and GetVault surfaces that cache's contents via pending_terminal_auth_link.
+	workbenchTerminalShellHandler := vaults_api.NewWorkbenchTerminalShellHandler(
+		services.Auth, repo.VaultMembers(), services.Workbench,
+	)
+	vaultsImpl := vaults_api.NewVaultsImpl(services.Vault, services.Workbench, workbenchTerminalShellHandler)
 	notesImpl := notes_api.NewNotesImpl(services.NotesService())
 	skillsImpl := skills_api.NewSkillsImpl(services.SkillsService())
 	publicDocsImpl := public_docs_api.New(services.PublicDocsService())
@@ -180,13 +187,10 @@ func (c *Custom) Init(a *App) error {
 	workbenchTerminalHandler := vaults_api.NewWorkbenchTerminalHandler(
 		services.Auth, repo.VaultMembers(), services.Workbench,
 	)
-	// Registered as a raw http handler for the same reason as workbenchTerminalHandler above, but
-	// proxying to the workbench's ttyd server instead of its chat bridge: this is the restored
-	// interactive terminal (tmux tabs, each a live `claude` TUI), a separate view from the chat
-	// bridge with zero shared history.
-	workbenchTerminalShellHandler := vaults_api.NewWorkbenchTerminalShellHandler(
-		services.Auth, repo.VaultMembers(), services.Workbench,
-	)
+	// workbenchTerminalShellHandler itself (proxying to the workbench's ttyd server instead of the
+	// chat bridge — the restored interactive terminal, tmux tabs each a live `claude` TUI, zero
+	// shared history with the chat bridge) is constructed earlier, alongside vaultsImpl, which
+	// needs a reference to it — see that construction site's comment.
 	// Registered as a raw http handler for the same reason as workbenchTerminalHandler above: it
 	// relays a user's linked Telegram bot into their workbench chat bridge, which needs its own
 	// outbound WebSocket dial per inbound Telegram update rather than an RPC request/response.

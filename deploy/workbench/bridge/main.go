@@ -55,7 +55,7 @@ func main() {
 
 	runner := claudecli.NewRunner("", "", settingsPath, envStore)
 
-	err = ensureAuthenticated(ctx, envStore, chatHub)
+	err = ensureAuthenticated(ctx, envStore)
 	if err != nil {
 		log.Printf("workbench-bridge: subscription login did not complete: %v", err)
 	}
@@ -68,11 +68,15 @@ func main() {
 	shutdown(hookServer, chatServer)
 }
 
-// ensureAuthenticated runs the subscription-login device flow to completion before the bridge
-// accepts any user_message, if WORKBENCH_AUTH_MODE=subscription_login and no OAuth token has been
-// injected (or produced by a previous run of this same container) yet. api_key mode, or a
-// subscription_login mode that already has a token dropped, returns immediately.
-func ensureAuthenticated(ctx context.Context, envStore *envdrop.Store, chatHub *hub.Hub) error {
+// ensureAuthenticated blocks until the bridge has an OAuth token to run `claude` with, if
+// WORKBENCH_AUTH_MODE=subscription_login and no token has been injected (or produced by a
+// previous run of this same container) yet. api_key mode, or a subscription_login mode that
+// already has a token dropped, returns immediately.
+//
+// The bridge no longer drives its own sign-in flow (see authlogin.WaitForLogin's doc comment) —
+// it only waits for someone to have logged in (or to log in) via the container's interactive
+// terminal, which writes claude's own credentials file independently of this process.
+func ensureAuthenticated(ctx context.Context, envStore *envdrop.Store) error {
 	values, err := envStore.Read()
 	if err != nil {
 		return err
@@ -86,47 +90,7 @@ func ensureAuthenticated(ctx context.Context, envStore *envdrop.Store, chatHub *
 		return nil
 	}
 
-	codes := make(chan string, 1)
-	done := make(chan struct{})
-
-	go relayAuthCodes(ctx, chatHub, codes, done)
-	defer close(done)
-
-	loginRunner := authlogin.NewRunner("")
-
-	return loginRunner.Run(ctx, envStore, chatHub.Broadcast, codes)
-}
-
-// relayAuthCodes forwards every auth_code_submit event the hub receives to codes, for as long as
-// the login flow (ensureAuthenticated) is running. Any other inbound event type is dropped: a
-// consumer sending a user_message or permission_decision before login has completed has nothing
-// to act on yet.
-//
-// The forwarding send is itself inside a select on done/ctx.Done(), not a bare `codes <- ...`:
-// codes is a size-1 buffered channel only drained by authlogin.Runner.Run's own select loop, and
-// once Run has returned (success, failure, or ctx cancellation) nothing reads it again. Without
-// this, a code arriving in that narrow window would block the send forever — done and ctx.Done()
-// are both already true by the time this goroutine could next be scheduled, but only if the send
-// itself can observe them.
-func relayAuthCodes(ctx context.Context, chatHub *hub.Hub, codes chan<- string, done <-chan struct{}) {
-	for {
-		select {
-		case event := <-chatHub.Inbound():
-			if event.Type == chatprotocol.EventAuthCodeSubmit {
-				select {
-				case codes <- event.Code:
-				case <-done:
-					return
-				case <-ctx.Done():
-					return
-				}
-			}
-		case <-done:
-			return
-		case <-ctx.Done():
-			return
-		}
-	}
+	return authlogin.WaitForLogin(ctx, envStore)
 }
 
 // runMainLoop is the bridge's steady-state loop, reached once authentication (if any was needed)

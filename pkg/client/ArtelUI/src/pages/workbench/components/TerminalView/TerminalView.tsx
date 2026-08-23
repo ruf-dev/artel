@@ -1,5 +1,7 @@
 import Terminal from "@/pages/workbench/components/Terminal/Terminal.tsx"
 import TerminalTabBar from "@/pages/workbench/components/Terminal/components/TerminalTabBar/TerminalTabBar.tsx"
+import TerminalAuthLinkBanner
+    from "@/pages/workbench/components/Terminal/components/TerminalAuthLinkBanner/TerminalAuthLinkBanner.tsx"
 import cls from "@/pages/workbench/components/TerminalView/TerminalView.module.css"
 
 interface Props {
@@ -8,6 +10,7 @@ interface Props {
     onSelectTab: (id: string) => void
     onCreateTab: () => void
     onCloseTab: (id: string) => void
+    pendingTerminalAuthLink?: string
 }
 
 export default function TerminalView(props: Props) {
@@ -20,6 +23,7 @@ export default function TerminalView(props: Props) {
                     onCreate={props.onCreateTab}
                     onClose={props.onCloseTab}
                 />
+                <TerminalAuthLinkBanner url={props.pendingTerminalAuthLink}/>
                 {props.tabs.length === 0 ? (
                     <p className={cls.EmptyState}>No terminal sessions yet. Click + to start one.</p>
                 ) : (

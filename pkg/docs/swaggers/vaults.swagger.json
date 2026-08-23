@@ -1138,6 +1138,10 @@
         },
         "postgresStatus": {
           "type": "string"
+        },
+        "pendingTerminalAuthLink": {
+          "type": "string",
+          "description": "pending_terminal_auth_link is the Claude CLI OAuth sign-in link most recently detected in\nthis vault's workbench terminal WS output (e.g. from a `claude setup-token` run started\ninside a terminal tab), or empty when no such login link has been detected yet. Unlike\nworkbench_status/postgres_status, this is process-local, in-memory state, not persisted —\nsee WorkbenchTerminalShellHandler.PendingTerminalAuthLink."
         }
       }
     },
