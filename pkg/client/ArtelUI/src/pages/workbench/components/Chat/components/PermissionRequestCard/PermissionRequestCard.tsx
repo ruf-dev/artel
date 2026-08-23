@@ -44,6 +44,7 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
     return (
         <motion.div
             className={cls.PermissionRequestCardContainer}
+            layout="size"
             initial={{opacity: 0, y: 14}}
             animate={{opacity: 1, y: 0}}
             exit={{opacity: 0}}
@@ -65,10 +66,10 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
                     <motion.div
                         key="detail"
                         className={cls.Detail}
-                        initial={{height: 0, opacity: 0}}
-                        animate={{height: "auto", opacity: 1}}
-                        exit={{height: 0, opacity: 0}}
-                        transition={{duration: 0.18, ease: "easeInOut"}}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
+                        transition={{duration: 0.15, ease: "easeInOut"}}
                     >
                         <JsonBlock label="Input" value={input} defaultCollapsed/>
                     </motion.div>
