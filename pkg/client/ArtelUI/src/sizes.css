@@ -43,6 +43,7 @@
     --dialog-width-note:        clamp(30rem, 40vw, 42.5rem);
     --dialog-width-new-tract:   clamp(22.5rem, 30vw, 30rem);
     --drawer-width-mobile:      85vw;
+    --sidebar-width-chat-history: clamp(14rem, 45%, 18rem);
     --dialog-max-height:        80vh;
     --dialog-max-height-lg:     90vh;
     --dialog-width-toolbox:     80vw;

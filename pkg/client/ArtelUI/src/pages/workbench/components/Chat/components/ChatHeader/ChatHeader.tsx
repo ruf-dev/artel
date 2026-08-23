@@ -1,25 +1,22 @@
 import {Button} from "@vervstack/chures"
 
-import {useDialog} from "@/app/hooks/Dialog.ts"
-import ChatHistoryDialog from "@/dialogs/ChatHistoryDialog/ChatHistoryDialog.tsx"
 import cls from "@/pages/workbench/components/Chat/components/ChatHeader/ChatHeader.module.css"
 
 interface Props {
     onNewChat: () => void
+    onToggleHistory: () => void
     disabled?: boolean
     vaultId?: string
 }
 
-export default function ChatHeader({onNewChat, disabled, vaultId}: Props) {
-    const {OpenDialog} = useDialog()
-
+export default function ChatHeader({onNewChat, onToggleHistory, disabled, vaultId}: Props) {
     return (
         <div className={cls.ChatHeaderContainer}>
             {vaultId && (
                 <Button
                     variant="secondary"
                     className={cls.HistoryButton}
-                    onClick={() => OpenDialog(<ChatHistoryDialog vaultId={vaultId}/>)}
+                    onClick={onToggleHistory}
                     aria-label="View chat history"
                     title="View chat history"
                 >
