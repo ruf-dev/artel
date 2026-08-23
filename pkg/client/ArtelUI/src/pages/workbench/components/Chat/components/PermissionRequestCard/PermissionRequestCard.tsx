@@ -1,6 +1,6 @@
 import {useState} from "react"
 import {Button} from "@vervstack/chures"
-import {motion} from "framer-motion"
+import {AnimatePresence, motion} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/PermissionRequestCard/PermissionRequestCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -60,11 +60,20 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
                 {hasInput && <span className={cn(cls.Caret, expanded && cls.CaretOpen)}>▸</span>}
             </div>
             {inputSummary && <p className={cls.Summary}>{inputSummary}</p>}
-            {expanded && hasInput && (
-                <div className={cls.Detail}>
-                    <JsonBlock label="Input" value={input} defaultCollapsed/>
-                </div>
-            )}
+            <AnimatePresence initial={false}>
+                {expanded && hasInput && (
+                    <motion.div
+                        key="detail"
+                        className={cls.Detail}
+                        initial={{height: 0, opacity: 0}}
+                        animate={{height: "auto", opacity: 1}}
+                        exit={{height: 0, opacity: 0}}
+                        transition={{duration: 0.18, ease: "easeInOut"}}
+                    >
+                        <JsonBlock label="Input" value={input} defaultCollapsed/>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             {decision ? (
                 <p className={cls.Resolved}>{RESOLVED_LABELS[decision]}</p>
             ) : (

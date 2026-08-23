@@ -1,5 +1,5 @@
 import {useState} from "react"
-import {motion} from "framer-motion"
+import {AnimatePresence, motion} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/ToolCallCard/ToolCallCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -40,13 +40,22 @@ export default function ToolCallCard({toolName, input, inputSummary, output, isE
                 {!done && <span className={cls.Pending}>running…</span>}
                 {hasDetail && <span className={cn(cls.Caret, expanded && cls.CaretOpen)}>▸</span>}
             </div>
-            {expanded && (
-                <div className={cls.Detail}>
-                    {input !== undefined && <JsonBlock label="Input" value={input} defaultCollapsed/>}
-                    {output && <p className={cls.OutputLabel}>Output</p>}
-                    {output && <pre className={cn(cls.Output, isError && cls.OutputError)}>{output}</pre>}
-                </div>
-            )}
+            <AnimatePresence initial={false}>
+                {expanded && (
+                    <motion.div
+                        key="detail"
+                        className={cls.Detail}
+                        initial={{height: 0, opacity: 0}}
+                        animate={{height: "auto", opacity: 1}}
+                        exit={{height: 0, opacity: 0}}
+                        transition={{duration: 0.18, ease: "easeInOut"}}
+                    >
+                        {input !== undefined && <JsonBlock label="Input" value={input} defaultCollapsed/>}
+                        {output && <p className={cls.OutputLabel}>Output</p>}
+                        {output && <pre className={cn(cls.Output, isError && cls.OutputError)}>{output}</pre>}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     )
 }
