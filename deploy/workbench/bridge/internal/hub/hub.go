@@ -54,8 +54,10 @@ type Hub struct {
 	nextSeq uint64
 
 	// historyDir is where each chat session's events are persisted as one append-only JSONL file
-	// — see history.go. It should live on the workbench's persistent named volume so history
-	// survives a bridge process restart (container restart/redeploy); see New's caller.
+	// — see history.go. Deliberately outside the workbench's mounted volume (see New's caller in
+	// main.go): history survives a `docker stop`/`start` of the same container (the container's
+	// writable layer), but not a full container recreate, and — unlike the volume — is never
+	// synced back as vault content.
 	historyDir string
 
 	// sessionFile is the active session's append-only JSONL file that every published event is
@@ -81,9 +83,8 @@ type connection struct {
 
 // New returns a Hub that persists every published event as JSONL under historyDir and rehydrates
 // its backlog and sequence numbering from the most recent session file already there, if any —
-// see loadHistory. historyDir is created if missing. Pass a path on the workbench's persistent
-// named volume so history survives a bridge process restart (container restart/redeploy); the
-// caller (main.go) hardcodes the one that satisfies this.
+// see loadHistory. historyDir is created if missing. The caller (main.go) hardcodes a path outside
+// the workbench's mounted volume — see historyDir's own doc comment for why.
 func New(historyDir string) *Hub {
 	upgrader := websocket.Upgrader{
 		ReadBufferSize:  4096,

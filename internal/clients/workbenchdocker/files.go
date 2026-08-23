@@ -50,7 +50,7 @@ func (c *Client) WriteFilesToVolume(ctx context.Context, containerID string, fil
 
 	copyOptions := container.CopyToContainerOptions{}
 
-	err = c.cli.CopyToContainer(ctx, containerID, workspaceMountPath, buf, copyOptions)
+	err = c.cli.CopyToContainer(ctx, containerID, homeMountPath, buf, copyOptions)
 	if err != nil {
 		return rerrors.Wrap(err, "error copying files to workbench volume")
 	}
@@ -64,12 +64,12 @@ func (c *Client) WriteFilesToVolume(ctx context.Context, containerID string, fil
 // WriteFilesToVolume, this works whether the container is running or stopped.
 //
 // The Docker Engine API's archive endpoint always wraps the requested path in one leading
-// directory component named after the last path segment of workspaceMountPath (i.e. "workspace/
+// directory component named after the last path segment of homeMountPath (i.e. "vault/
 // notes/foo.md" rather than "notes/foo.md") — that leading component is stripped off here so
 // callers see paths relative to the workspace root, matching WriteFilesToVolume's own path
 // shape.
 func (c *Client) ReadFilesFromVolume(ctx context.Context, containerID string) (map[string][]byte, error) {
-	reader, _, err := c.cli.CopyFromContainer(ctx, containerID, workspaceMountPath)
+	reader, _, err := c.cli.CopyFromContainer(ctx, containerID, homeMountPath)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "error copying files from workbench volume")
 	}

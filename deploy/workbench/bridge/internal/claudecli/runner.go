@@ -33,7 +33,8 @@ const stderrTailLimit = 4000
 type Runner struct {
 	// binary is the `claude` executable to run; a field so tests can point it at a stub script.
 	binary string
-	// workdir is the cwd every turn runs in — the workbench's mounted volume.
+	// workdir is the cwd every turn runs in — the workbench's mounted volume (see NewRunner's
+	// default, /root/vault).
 	workdir string
 	// settingsPath registers the PreToolUse hook (see ../claudesettings) and is passed to every
 	// invocation.
@@ -58,7 +59,7 @@ func NewRunner(binary, workdir, settingsPath string, env *envdrop.Store) *Runner
 	}
 
 	if workdir == "" {
-		workdir = "/workspace"
+		workdir = "/root/vault"
 	}
 
 	return &Runner{

@@ -329,12 +329,18 @@ func (s *WorkbenchSuite) TestFullLifecycle() {
 	running, _ := s.containerState(wb.ContainerId)
 	s.False(running, "container should not be running yet — CreateWorkbench only creates it")
 
-	// Confirm the network attachment matches what workbenchdocker.CreateContainer wires up.
+	// Confirm the network attachment matches what workbenchdocker.CreateContainer wires up: a
+	// dedicated per-container network (named "<volume name>-net", mirroring the unexported
+	// containerNetworkName helper in internal/clients/workbenchdocker/container.go), not the old
+	// shared workbench-net — isolation hardening so no two workbench containers can reach each
+	// other's ports.
 	inspect, err := s.dockerSDK.ContainerInspect(ctx, wb.ContainerId)
 	s.Require().NoError(err)
 	s.Require().NotNil(inspect.NetworkSettings)
-	_, attached := inspect.NetworkSettings.Networks["workbench-net"]
-	s.True(attached, "container should be attached to workbench-net")
+	_, onSharedNetwork := inspect.NetworkSettings.Networks["workbench-net"]
+	s.False(onSharedNetwork, "container should no longer be attached to the shared workbench-net")
+	_, onOwnNetwork := inspect.NetworkSettings.Networks[wb.VolumeName+"-net"]
+	s.True(onOwnNetwork, "container should be attached to its own dedicated network")
 
 	// Step 2: StartWorkbench via the real VaultsAPI RPC, api_key auth mode.
 	startReq := &pb.StartWorkbench_Request{

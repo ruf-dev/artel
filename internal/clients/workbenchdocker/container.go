@@ -52,12 +52,12 @@ const envDropTmpfsOptions = "rw,noexec,nosuid,nodev,mode=0700"
 //
 // Published to a host port in [bridgeHostPortRangeStart, bridgeHostPortRangeEnd] (see CreateContainer)
 // rather than left unpublished: the configured daemon (docker_hosts.url) is frequently itself a
-// docker:dind *container* (nested Docker), whose inner bridge network (workbenchNetworkName
-// included) lives in a network namespace private to that container — a workbench container's IP
-// on it is only ever reachable from processes inside the dind container's own netns, never from
-// Artel's process, regardless of which host or execution mode (bare binary, containerized) Artel
-// runs as. Publishing the port routes through the dind container's own (reachable) address
-// instead — see ContainerAddress.
+// docker:dind *container* (nested Docker), whose inner networks (including each workbench
+// container's own dedicated network — see containerNetworkName) live in a network namespace
+// private to that container — a workbench container's IP on any of them is only ever reachable
+// from processes inside the dind container's own netns, never from Artel's process, regardless of
+// which host or execution mode (bare binary, containerized) Artel runs as. Publishing the port
+// routes through the dind container's own (reachable) address instead — see ContainerAddress.
 const bridgePort = 7681
 
 // bridgeNatPort is bridgePort in github.com/docker/go-connections/nat's "<port>/<proto>" key
@@ -103,16 +103,68 @@ const (
 // workbench container is created with no auth env vars at all; those are only decided and
 // supplied later, at StartContainer time.
 type CreateOpts struct {
-	// Name is the container name (e.g. "workbench-<vault_id>-<user_id>").
+	// Name is the container name (e.g. "workbench-<vault_id>-<user_id>"). Also the seed for the
+	// dedicated per-container Docker network CreateContainer creates — see containerNetworkName.
 	Name string
-	// VolumeName is the pre-created named volume to mount at workspaceMountPath.
+	// VolumeName is the pre-created named volume to mount at homeMountPath.
 	VolumeName string
 }
 
+// containerNetworkName derives the dedicated, per-container Docker network name CreateContainer
+// creates and attaches solely to this one container, from name (CreateOpts.Name — already unique
+// per (vault, user), the same identifier the container and volume names share). One network per
+// container, rather than every workbench container sharing workbenchNetworkName, so no two
+// workbench containers can ever reach each other's ports.
+func containerNetworkName(name string) string {
+	return name + "-net"
+}
+
+// newWorkbenchHostConfig builds the HostConfig for a new workbench container: mounts, resource
+// limits, port bindings, the secret-injection tmpfs, and the isolation hardening applied to every
+// workbench container regardless of caller — dropping every Linux capability (CapDrop), blocking
+// setuid/setgid/file-capability privilege escalation (SecurityOpt's no-new-privileges), and
+// capping the number of PIDs the container's cgroup may create (PidsLimit) as a fork-bomb guard.
+// Split out from CreateContainer so these fields can be asserted on directly in tests without a
+// live Docker daemon.
+func newWorkbenchHostConfig(volumeName string, portBindings nat.PortMap) *container.HostConfig {
+	homeMount := mount.Mount{
+		Type:   mount.TypeVolume,
+		Source: volumeName,
+		Target: homeMountPath,
+	}
+
+	resources := container.Resources{
+		NanoCPUs:  workbenchCpuLimitNanoCpus,
+		Memory:    workbenchMemLimitBytes,
+		PidsLimit: &pidsLimit,
+	}
+
+	// envDropDir is a tmpfs, not part of the container's writable layer and not part of the
+	// mounted volume, so the secrets injectEnv drops into it never outlive the container's own
+	// runtime and never reach durable storage.
+	tmpfs := map[string]string{
+		envDropDir: envDropTmpfsOptions,
+	}
+
+	capDrop := []string{"ALL"}
+	securityOpt := []string{"no-new-privileges"}
+
+	hostConfig := &container.HostConfig{
+		Mounts:       []mount.Mount{homeMount},
+		Resources:    resources,
+		PortBindings: portBindings,
+		Tmpfs:        tmpfs,
+		CapDrop:      capDrop,
+		SecurityOpt:  securityOpt,
+	}
+
+	return hostConfig
+}
+
 // CreateContainer creates (but does not start) a workbench container: the hardcoded workbench
-// image, attached to the dedicated workbench-net network (assumed to pre-exist on the configured
-// daemon), with opts.VolumeName mounted at workspaceMountPath, hardcoded CPU/memory limits, and
-// labeled for operational visibility.
+// image, attached to a dedicated network created just for it (see containerNetworkName), with
+// opts.VolumeName mounted at homeMountPath, hardcoded CPU/memory/PID limits, capability/privilege
+// hardening (see newWorkbenchHostConfig), and labeled for operational visibility.
 //
 // The container runs two independently-addressable in-container servers: the chat bridge
 // (bridgePort) and ttyd (ttydPort, the interactive tmux-tab terminal). Each is published to a
@@ -142,6 +194,17 @@ func (c *Client) CreateContainer(ctx context.Context, opts CreateOpts) (string, 
 		workbenchLabelKey: workbenchLabelValue,
 	}
 
+	networkName := containerNetworkName(opts.Name)
+
+	networkCreateOpts := network.CreateOptions{
+		Labels: labels,
+	}
+
+	_, err = c.cli.NetworkCreate(ctx, networkName, networkCreateOpts)
+	if err != nil {
+		return "", rerrors.Wrap(err, "creating per-container workbench network")
+	}
+
 	exposedPorts := nat.PortSet{
 		bridgeNatPort: struct{}{},
 		ttydNatPort:   struct{}{},
@@ -151,17 +214,6 @@ func (c *Client) CreateContainer(ctx context.Context, opts CreateOpts) (string, 
 		Image:        tag,
 		Labels:       labels,
 		ExposedPorts: exposedPorts,
-	}
-
-	workspaceMount := mount.Mount{
-		Type:   mount.TypeVolume,
-		Source: opts.VolumeName,
-		Target: workspaceMountPath,
-	}
-
-	resources := container.Resources{
-		NanoCPUs: workbenchCpuLimitNanoCpus,
-		Memory:   workbenchMemLimitBytes,
 	}
 
 	bridgePortBinding := nat.PortBinding{
@@ -177,23 +229,11 @@ func (c *Client) CreateContainer(ctx context.Context, opts CreateOpts) (string, 
 		ttydNatPort:   []nat.PortBinding{ttydPortBinding},
 	}
 
-	// envDropDir is a tmpfs, not part of the container's writable layer and not part of the
-	// mounted workspace volume, so the secrets injectEnv drops into it never outlive the
-	// container's own runtime and never reach durable storage.
-	tmpfs := map[string]string{
-		envDropDir: envDropTmpfsOptions,
-	}
-
-	hostConfig := &container.HostConfig{
-		Mounts:       []mount.Mount{workspaceMount},
-		Resources:    resources,
-		PortBindings: portBindings,
-		Tmpfs:        tmpfs,
-	}
+	hostConfig := newWorkbenchHostConfig(opts.VolumeName, portBindings)
 
 	workbenchEndpoint := &network.EndpointSettings{}
 	endpointsConfig := map[string]*network.EndpointSettings{
-		workbenchNetworkName: workbenchEndpoint,
+		networkName: workbenchEndpoint,
 	}
 	networkingConfig := &network.NetworkingConfig{
 		EndpointsConfig: endpointsConfig,
@@ -324,14 +364,15 @@ func (c *Client) injectEnv(ctx context.Context, containerID string, env map[stri
 // bridge running inside it, as reachable from Artel's own process. Used by the workbench
 // reverse-proxy handler in internal/transport/vaults_api.
 //
-// This deliberately does not resolve the container's IP on workbenchNetworkName: the configured
-// daemon (c.host) is commonly itself a docker:dind *container*, whose inner networks — including
-// workbenchNetworkName — live in a network namespace private to that container, so a workbench
-// container's IP on it is never routable from outside the dind container regardless of where
-// Artel's own process runs. Reading back the Docker-assigned host port CreateContainer published
-// bridgePort to and pairing it with c.host's own hostname instead routes through the dind
-// container's (or, for a bare/second-dockerd host, the host's) already-reachable address — the
-// same address Artel used to create/start the container in the first place.
+// This deliberately does not resolve the container's IP on its dedicated per-container network
+// (see containerNetworkName): the configured daemon (c.host) is commonly itself a docker:dind
+// *container*, whose inner networks live in a network namespace private to that container, so a
+// workbench container's IP on any of them is never routable from outside the dind container
+// regardless of where Artel's own process runs. Reading back the Docker-assigned host port
+// CreateContainer published bridgePort to and pairing it with c.host's own hostname instead
+// routes through the dind container's (or, for a bare/second-dockerd host, the host's)
+// already-reachable address — the same address Artel used to create/start the container in the
+// first place.
 //
 // Fails rather than guessing when the daemon hasn't assigned a host port yet (i.e. the container
 // isn't running) — an empty/absent address would otherwise surface much later as an opaque proxy
@@ -394,17 +435,80 @@ func (c *Client) StopContainer(ctx context.Context, containerID string) error {
 	return nil
 }
 
-// RemoveContainer force-removes a workbench container. It does not remove the container's
+// RemoveContainer force-removes a workbench container and the dedicated per-container network
+// CreateContainer created for it (see containerNetworkName). It does not remove the container's
 // volume — call RemoveVolume separately.
+//
+// The network(s) containerID is attached to are read back via ContainerInspect before removal —
+// once the container is gone there is nothing left to inspect them from — and each is deleted via
+// NetworkRemove only after ContainerRemove succeeds, since a network can't be removed while a
+// container endpoint is still attached to it. workbenchNetworkName is deliberately never removed
+// here even if found attached: it's the old shared network every workbench container used to
+// share (see its own doc comment), so removing it out from under a container created before this
+// change would break every other container still using it.
 func (c *Client) RemoveContainer(ctx context.Context, containerID string) error {
+	networkNames, err := c.attachedNetworks(ctx, containerID)
+	if err != nil {
+		return rerrors.Wrap(err, "inspecting workbench container networks")
+	}
+
 	removeOptions := container.RemoveOptions{
 		Force: true,
 	}
 
-	err := c.cli.ContainerRemove(ctx, containerID, removeOptions)
+	err = c.cli.ContainerRemove(ctx, containerID, removeOptions)
 	if err != nil {
 		return rerrors.Wrap(err, "removing workbench container")
 	}
 
+	for _, networkName := range networkNames {
+		err = c.cli.NetworkRemove(ctx, networkName)
+		if err != nil {
+			return rerrors.Wrap(err, "removing per-container workbench network "+networkName)
+		}
+	}
+
 	return nil
+}
+
+// attachedNetworks returns the names of every Docker network containerID is currently attached
+// to that RemoveContainer should also remove (see filterRemovableNetworks). Returns an empty,
+// non-nil slice if the container has no recorded network settings at all rather than erroring,
+// since that's a shape ContainerInspect can legitimately return.
+func (c *Client) attachedNetworks(ctx context.Context, containerID string) ([]string, error) {
+	inspect, err := c.cli.ContainerInspect(ctx, containerID)
+	if err != nil {
+		return nil, rerrors.Wrap(err, "inspecting workbench container")
+	}
+
+	if inspect.NetworkSettings == nil {
+		return []string{}, nil
+	}
+
+	names := make([]string, 0, len(inspect.NetworkSettings.Networks))
+
+	for name := range inspect.NetworkSettings.Networks {
+		names = append(names, name)
+	}
+
+	return filterRemovableNetworks(names), nil
+}
+
+// filterRemovableNetworks returns the subset of networkNames RemoveContainer should delete: every
+// one except workbenchNetworkName. Split out from attachedNetworks as a pure function so the
+// exclusion — the one thing that must never regress, since removing the old shared network out
+// from under a container created before this change would break every other container still
+// using it — can be unit tested without a Docker daemon.
+func filterRemovableNetworks(networkNames []string) []string {
+	removable := make([]string, 0, len(networkNames))
+
+	for _, name := range networkNames {
+		if name == workbenchNetworkName {
+			continue
+		}
+
+		removable = append(removable, name)
+	}
+
+	return removable
 }

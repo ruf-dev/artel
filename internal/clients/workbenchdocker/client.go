@@ -9,9 +9,10 @@
 // pointed at whichever docker_hosts row a given workbench is assigned to (resolved by
 // internal/service/v1/workbench/workbench.go's resolveClient), not a single startup-time config
 // value: a docker host is expected to be a dedicated second dockerd process, not the daemon
-// Artel's own containers run on. It intentionally does not create the `workbench-net` network
-// itself (assumed to pre-exist on the configured daemon) and does not expose any inbound port on
-// the containers it creates.
+// Artel's own containers run on. It creates a dedicated, isolated Docker network per container
+// (see container.go's containerNetworkName) rather than attaching containers to one shared
+// network, and does not expose any inbound port on the containers it creates beyond the fixed
+// bridge/ttyd port publications below.
 package workbenchdocker
 
 import (
@@ -26,16 +27,22 @@ import (
 )
 
 const (
-	// workbenchNetworkName is the dedicated, isolated Docker network workbench containers are
-	// attached to. Not created by this client — assumed to pre-exist on the configured daemon.
+	// workbenchNetworkName was the single, shared Docker network every workbench container used
+	// to attach to. No longer used to attach containers (CreateContainer now creates a dedicated
+	// per-container network instead — see container.go's containerNetworkName), because two
+	// containers sharing one network could reach each other's ports. Kept around only so
+	// RemoveContainer recognizes and skips it if it's ever found still attached to a container
+	// created before this change — see RemoveContainer's doc comment.
 	workbenchNetworkName = "workbench-net"
 
-	// workspaceMountPath is the fixed in-container path the workbench's named volume is
-	// mounted at.
-	workspaceMountPath = "/workspace"
+	// homeMountPath is the fixed in-container path the workbench's named volume is mounted at —
+	// the `claude` CLI's vault working directory under $HOME, replacing the old top-level
+	// /workspace mount so the container's actual $HOME (/root) can hold ordinary dotfiles
+	// (~/.claude.json, ~/.claude/) outside the synced volume.
+	homeMountPath = "/root/vault"
 
-	// workbenchLabelKey/workbenchLabelValue tag every container/volume this client creates,
-	// for operational visibility even on a dedicated daemon.
+	// workbenchLabelKey/workbenchLabelValue tag every container/volume/network this client
+	// creates, for operational visibility even on a dedicated daemon.
 	workbenchLabelKey   = "artel.workbench"
 	workbenchLabelValue = "true"
 
@@ -43,6 +50,12 @@ const (
 	workbenchCpuLimitNanoCpus = 1_000_000_000          // 1 CPU
 	workbenchMemLimitBytes    = 2 * 1024 * 1024 * 1024 // 2GB
 )
+
+// pidsLimit caps the number of PIDs a workbench container may create — a guard against a fork
+// bomb (deliberate or accidental) from anything running inside it, including `claude`-spawned
+// subprocesses. A var, not a const, because container.HostConfig.PidsLimit is *int64 and only a
+// variable's address can be taken.
+var pidsLimit int64 = 512
 
 // Client wraps the Docker SDK client with the narrow surface a workbench's container/volume
 // lifecycle needs.

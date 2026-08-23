@@ -28,10 +28,10 @@ const firstUserMessagePreviewRunes = 80
 
 // loadHistory prepares h's on-disk persistence: it creates h.historyDir if missing, then either
 // rehydrates from the most recently modified existing session file in it — a bridge process
-// restart mid-session, since h.historyDir lives on the workbench's persistent named volume (see
-// New's doc comment) — or starts a brand-new session file when there's no history to continue at
-// all. Called once, from New, before h is shared with any goroutine, so it needs no locking of
-// its own.
+// restart mid-session, since h.historyDir survives the same container being stopped and started
+// again (see New's doc comment) — or starts a brand-new session file when there's no history to
+// continue at all. Called once, from New, before h is shared with any goroutine, so it needs no
+// locking of its own.
 func (h *Hub) loadHistory() {
 	err := os.MkdirAll(h.historyDir, 0o700)
 	if err != nil {

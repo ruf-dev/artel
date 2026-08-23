@@ -37,18 +37,22 @@ const listenAddr = ":7681"
 const wsPath = "/ws"
 
 // historyDir is where the bridge persists each chat session as append-only JSONL, so a consumer
-// reconnecting can be replayed accurate history and a restarted bridge process (container
-// restart/redeploy) can recover it — see hub.New's doc comment. This must stay in sync with
-// workspaceMountPath in internal/clients/workbenchdocker/client.go (the main repo, a different Go
-// module this one can't import): it's the fixed path where the workbench's persistent named
-// volume is mounted inside the container, which is what makes history survive the container
-// being stopped and started again.
-const historyDir = "/workspace/.chat-history"
+// reconnecting can be replayed accurate history and a restarted (not recreated — see below)
+// bridge process can recover it — see hub.New's doc comment.
+//
+// Deliberately outside homeMountPath (internal/clients/workbenchdocker/client.go — the main repo,
+// a different Go module this one can't import — where the workbench's persistent named volume is
+// mounted, /root/vault): chat history is bridge-internal state, not vault content, and mounting it
+// under the volume would make it get vacuumed up alongside real vault files by
+// WriteFilesToVolume/ReadFilesFromVolume's whole-mount copy. Living outside the volume means it
+// only survives a `docker stop`/`start` of the same container (the container's writable layer),
+// not a full container recreate — an accepted tradeoff for keeping it out of synced vault content.
+const historyDir = "/root/.chat-history"
 
 func main() {
 	envStore := envdrop.New("")
 
-	settingsPath, err := claudesettings.Write("")
+	settingsPath, err := claudesettings.Write("", os.Getenv("HOME"))
 	if err != nil {
 		log.Fatalf("workbench-bridge: error writing claude settings file: %v", err)
 	}

@@ -66,10 +66,10 @@ RUN npm install -g @anthropic-ai/claude-code
 # a second, independent first-run gate keyed by cwd (projects["<path>"].hasTrustDialogAccepted in
 # this same config), which the CLI's own error text documents as settable exactly this way ("...or
 # set projects[<path>].hasTrustDialogAccepted: true in ~/.claude.json"). Every `claude` invocation
-# here runs at /workspace (this image's WORKDIR, and workspaceMountPath in
+# here runs at /root/vault (this image's WORKDIR, and homeMountPath in
 # internal/clients/workbenchdocker/client.go — the volume every workbench container mounts its
 # one working directory at), so that's the only project key that ever needs accepting.
-RUN mkdir -p /root && printf '%s' '{"hasCompletedOnboarding":true,"theme":"dark","projects":{"/workspace":{"hasTrustDialogAccepted":true}}}' > /root/.claude.json
+RUN mkdir -p /root && printf '%s' '{"hasCompletedOnboarding":true,"theme":"dark","projects":{"/root/vault":{"hasTrustDialogAccepted":true}}}' > /root/.claude.json
 
 # Without a UTF-8 locale, Claude Code's own terminal-capability detection assumes the
 # terminal can't render Unicode and falls back to ASCII-safe glyphs (e.g. "_"/"*"/"."
@@ -81,7 +81,7 @@ RUN mkdir -p /root && printf '%s' '{"hasCompletedOnboarding":true,"theme":"dark"
 ENV LANG=C.utf8
 ENV LC_ALL=C.utf8
 
-WORKDIR /workspace
+WORKDIR /root/vault
 
 COPY --from=bridge-builder /workbench-bridge /usr/local/bin/workbench-bridge
 COPY entrypoint.sh /entrypoint.sh
