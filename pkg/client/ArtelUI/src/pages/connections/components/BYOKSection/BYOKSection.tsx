@@ -25,6 +25,12 @@ type BYOKProvider = {
 
 const LLM_BYOK_PROVIDERS: BYOKProvider[] = [
     {
+        provider: ExternalProvider.EXTERNAL_PROVIDER_OPENROUTER,
+        name: "OpenRouter",
+        icon: <img src={openrouterIcon} alt="OpenRouter" className={cls.ProviderIconImage}/>,
+        dialogFactory: () => <ManageOpenRouterDialog/>,
+    },
+    {
         provider: ExternalProvider.EXTERNAL_PROVIDER_ANTHROPIC,
         name: "Claude (Anthropic)",
         icon: <img src={claudeIcon} alt="Claude" className={cls.ProviderIconImage}/>,
@@ -35,12 +41,6 @@ const LLM_BYOK_PROVIDERS: BYOKProvider[] = [
         name: "GPT (OpenAI)",
         icon: <img src={gptIcon} alt="GPT" className={cls.ProviderIconImage}/>,
         dialogFactory: () => <ManageOpenAIDialog/>,
-    },
-    {
-        provider: ExternalProvider.EXTERNAL_PROVIDER_OPENROUTER,
-        name: "OpenRouter",
-        icon: <img src={openrouterIcon} alt="OpenRouter" className={cls.ProviderIconImage}/>,
-        dialogFactory: () => <ManageOpenRouterDialog/>,
     },
 ]
 
