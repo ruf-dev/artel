@@ -1,0 +1,106 @@
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ChatHistoryDialogContainer {
+    width: var(--dialog-width-md);
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: 0 2rem 5rem -1.25rem rgb(0 0 0 / 80%);
+    max-height: var(--dialog-max-height-lg);
+    overflow-y: auto;
+    animation: modalIn 280ms cubic-bezier(.2,.7,.2,1) both;
+    display: flex;
+    flex-direction: column;
+
+    & .Header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    & .Title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        margin: 0;
+        flex: 1;
+    }
+
+    & .BackButton {
+        background: none;
+        border: none;
+        color: var(--color-fg-secondary);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            color: var(--color-fg-primary);
+        }
+    }
+
+    & .ListContainer {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    & .DetailContainer {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    & .SessionRow {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.75rem 1rem;
+        background: var(--color-bg-base);
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        text-align: left;
+        transition: background-color 150ms ease-in-out;
+
+        &:hover {
+            background: var(--color-bg-hover);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    }
+
+    & .SessionTitle {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-fg-primary);
+    }
+
+    & .SessionTime {
+        font-size: 0.75rem;
+        color: var(--color-fg-tertiary);
+    }
+
+    & .EmptyState {
+        text-align: center;
+        color: var(--color-fg-secondary);
+        padding: 2rem 1rem;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+}

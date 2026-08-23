@@ -5,7 +5,7 @@ import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 
-function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open") {
+function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open", vaultId?: string) {
     const sendMessage = vi.fn()
     const sendPermissionDecision = vi.fn()
     const onNewChat = vi.fn()
@@ -17,6 +17,7 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             sendMessage={sendMessage}
             sendPermissionDecision={sendPermissionDecision}
             onNewChat={onNewChat}
+            vaultId={vaultId}
         />,
     )
 
@@ -46,5 +47,17 @@ describe("Chat", () => {
         fireEvent.click(screen.getByText("New Chat"))
 
         expect(onNewChat).toHaveBeenCalledTimes(1)
+    })
+
+    it("shows the history button when vaultId is provided", () => {
+        renderChat([], "open", "v1")
+
+        expect(screen.getByLabelText("View chat history")).toBeInTheDocument()
+    })
+
+    it("does not show the history button when vaultId is not provided", () => {
+        renderChat()
+
+        expect(screen.queryByLabelText("View chat history")).not.toBeInTheDocument()
     })
 })

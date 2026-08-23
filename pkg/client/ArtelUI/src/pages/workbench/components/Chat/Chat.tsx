@@ -15,9 +15,10 @@ interface Props {
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
+    vaultId?: string
 }
 
-export default function Chat({items, status, sendMessage, sendPermissionDecision, onNewChat}: Props) {
+export default function Chat({items, status, sendMessage, sendPermissionDecision, onNewChat, vaultId}: Props) {
     const [draft, setDraft] = useState("")
 
     function handleSend() {
@@ -29,7 +30,7 @@ export default function Chat({items, status, sendMessage, sendPermissionDecision
 
     return (
         <div className={cls.ChatContainer}>
-            <ChatHeader onNewChat={onNewChat} disabled={status !== "open"}/>
+            <ChatHeader onNewChat={onNewChat} disabled={status !== "open"} vaultId={vaultId}/>
             <ChatStatusBanner status={status}/>
             <ChatMessageList items={items} onPermissionDecision={sendPermissionDecision}/>
             <ChatComposer

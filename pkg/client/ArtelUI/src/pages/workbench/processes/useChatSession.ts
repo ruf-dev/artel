@@ -27,6 +27,7 @@ export function useChatSession(vaultId: string | undefined) {
     const backoffRef = useRef(INITIAL_BACKOFF_MS)
     const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
     const closedByUserRef = useRef(false)
+    const lastSeqRef = useRef(0)
 
     useEffect(() => {
         if (!vaultId) return
@@ -35,6 +36,7 @@ export function useChatSession(vaultId: string | undefined) {
         setItems([])
         setStatus("connecting")
         setAuthComplete(false)
+        lastSeqRef.current = 0
 
         function connect() {
             if (closedByUserRef.current) return
@@ -52,6 +54,17 @@ export function useChatSession(vaultId: string | undefined) {
                     parsed = JSON.parse(event.data as string) as ChatEvent
                 } catch {
                     return
+                }
+                // Deduplicate already-seen events based on seq. The backend stamps a
+                // monotonically increasing seq once per event for the lifetime of the
+                // bridge process; on reconnect, the backlog replays all events with their
+                // original seqs, so we skip any where seq <= lastSeq (and seq !== 0, which
+                // means "not set" with omitempty on the backend).
+                if (typeof parsed.seq === "number" && parsed.seq > 0 && parsed.seq <= lastSeqRef.current) {
+                    return
+                }
+                if (typeof parsed.seq === "number" && parsed.seq > 0) {
+                    lastSeqRef.current = parsed.seq
                 }
                 if (parsed.type === "auth_complete") setAuthComplete(true)
                 setItems(prev => applyEvent(prev, parsed))

@@ -77,7 +77,7 @@ export default function WorkbenchPage() {
                 )}
                 {!isLoading && exists && status === "running" && vaultId && !awaitingAuth && view === "chat" && (
                     <Chat items={items} status={chatStatus} sendMessage={sendMessage}
-                          sendPermissionDecision={sendPermissionDecision} onNewChat={startNewChat}/>
+                          sendPermissionDecision={sendPermissionDecision} onNewChat={startNewChat} vaultId={vaultId}/>
                 )}
                 {!isLoading && exists && status === "running" && vaultId && view === "terminal" && (
                     <TerminalView

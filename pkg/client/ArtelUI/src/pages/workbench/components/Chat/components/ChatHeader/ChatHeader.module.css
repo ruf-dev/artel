@@ -4,6 +4,16 @@
     align-items: center;
     padding: 0.625rem 1rem;
     border-bottom: var(--border-thickness) solid var(--color-border-light);
+    gap: 0.5rem;
+
+    & .HistoryButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+    }
 
     & .NewChatButton {
         display: flex;
