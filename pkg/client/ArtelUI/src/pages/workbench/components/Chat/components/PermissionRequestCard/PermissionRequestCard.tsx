@@ -1,6 +1,6 @@
 import {useState} from "react"
 import {Button} from "@vervstack/chures"
-import {AnimatePresence, motion} from "framer-motion"
+import {motion} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/PermissionRequestCard/PermissionRequestCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -44,7 +44,6 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
     return (
         <motion.div
             className={cls.PermissionRequestCardContainer}
-            layout="size"
             initial={{opacity: 0, y: 14}}
             animate={{opacity: 1, y: 0}}
             exit={{opacity: 0}}
@@ -61,20 +60,21 @@ export default function PermissionRequestCard({toolName, input, inputSummary, op
                 {hasInput && <span className={cn(cls.Caret, expanded && cls.CaretOpen)}>▸</span>}
             </div>
             {inputSummary && <p className={cls.Summary}>{inputSummary}</p>}
-            <AnimatePresence initial={false}>
-                {expanded && hasInput && (
-                    <motion.div
-                        key="detail"
-                        className={cls.Detail}
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        exit={{opacity: 0}}
-                        transition={{duration: 0.15, ease: "easeInOut"}}
-                    >
-                        <JsonBlock label="Input" value={input} defaultCollapsed/>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {hasInput && (
+                <motion.div
+                    className={cls.Detail}
+                    initial={false}
+                    animate={{
+                        height: expanded ? "auto" : 0,
+                        opacity: expanded ? 1 : 0,
+                        marginTop: expanded ? "0.125rem" : 0,
+                    }}
+                    transition={{duration: 0.2, ease: "easeInOut"}}
+                    aria-hidden={!expanded}
+                >
+                    <JsonBlock label="Input" value={input} defaultCollapsed/>
+                </motion.div>
+            )}
             {decision ? (
                 <p className={cls.Resolved}>{RESOLVED_LABELS[decision]}</p>
             ) : (

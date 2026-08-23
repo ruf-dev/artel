@@ -1,5 +1,5 @@
 import {useState} from "react"
-import {AnimatePresence, motion} from "framer-motion"
+import {motion} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/ToolCallCard/ToolCallCard.module.css"
 import {cn} from "@/app/utils/cn.ts"
@@ -23,7 +23,6 @@ export default function ToolCallCard({toolName, input, inputSummary, output, isE
     return (
         <motion.div
             className={cls.ToolCallCardContainer}
-            layout="size"
             initial={{opacity: 0, y: 14}}
             animate={{opacity: 1, y: 0}}
             exit={{opacity: 0}}
@@ -41,22 +40,23 @@ export default function ToolCallCard({toolName, input, inputSummary, output, isE
                 {!done && <span className={cls.Pending}>running…</span>}
                 {hasDetail && <span className={cn(cls.Caret, expanded && cls.CaretOpen)}>▸</span>}
             </div>
-            <AnimatePresence initial={false}>
-                {expanded && (
-                    <motion.div
-                        key="detail"
-                        className={cls.Detail}
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        exit={{opacity: 0}}
-                        transition={{duration: 0.15, ease: "easeInOut"}}
-                    >
-                        {input !== undefined && <JsonBlock label="Input" value={input} defaultCollapsed/>}
-                        {output && <p className={cls.OutputLabel}>Output</p>}
-                        {output && <pre className={cn(cls.Output, isError && cls.OutputError)}>{output}</pre>}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {hasDetail && (
+                <motion.div
+                    className={cls.Detail}
+                    initial={false}
+                    animate={{
+                        height: expanded ? "auto" : 0,
+                        opacity: expanded ? 1 : 0,
+                        marginTop: expanded ? "0.5rem" : 0,
+                    }}
+                    transition={{duration: 0.2, ease: "easeInOut"}}
+                    aria-hidden={!expanded}
+                >
+                    {input !== undefined && <JsonBlock label="Input" value={input} defaultCollapsed/>}
+                    {output && <p className={cls.OutputLabel}>Output</p>}
+                    {output && <pre className={cn(cls.Output, isError && cls.OutputError)}>{output}</pre>}
+                </motion.div>
+            )}
         </motion.div>
     )
 }
