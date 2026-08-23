@@ -61,7 +61,7 @@ func readOneEvent(t *testing.T, conn *websocket.Conn) chatprotocol.Event {
 // calling Reset with a new one, a consumer attaching afterward replays only the Reset event — none
 // of the earlier Broadcast ones survive in the backlog.
 func TestHub_ResetDiscardsBacklog(t *testing.T) {
-	h := New()
+	h := New(t.TempDir())
 
 	server := httptest.NewServer(h)
 	defer server.Close()

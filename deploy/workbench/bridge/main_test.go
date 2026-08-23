@@ -116,7 +116,7 @@ func isTurnDone(event chatprotocol.Event) bool {
 // would then contain "system_init" and "turn_done" but no "user_message", and the assertion below
 // on event types would fail.
 func TestRunMainLoop_UserMessageSurvivesReconnect(t *testing.T) {
-	chatHub := hub.New()
+	chatHub := hub.New(t.TempDir())
 	broker := permissions.NewBroker(chatHub.Broadcast)
 
 	server := httptest.NewServer(chatHub)
@@ -187,7 +187,7 @@ func isNewChat(event chatprotocol.Event) bool {
 // of the prior conversation), and the runner's session id is cleared (the next turn starts a fresh
 // `claude` conversation rather than --resume-ing the discarded one).
 func TestRunMainLoop_NewChatResetsBacklogAndSession(t *testing.T) {
-	chatHub := hub.New()
+	chatHub := hub.New(t.TempDir())
 	broker := permissions.NewBroker(chatHub.Broadcast)
 
 	server := httptest.NewServer(chatHub)

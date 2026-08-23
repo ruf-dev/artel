@@ -28,6 +28,11 @@ export interface ChatEvent {
     // permission_request <-> permission_decision.
     id?: string
 
+    // Monotonically increasing sequence number stamped by the bridge once per event
+    // for the lifetime of the bridge process; used to deduplicate replayed events
+    // on reconnect.
+    seq?: number
+
     // assistant_text_delta / assistant_text_done / user_message / error
     text?: string
 

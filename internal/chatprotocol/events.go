@@ -87,4 +87,9 @@ type Event struct {
 	// auth_link / auth_code_submit
 	URL  string `json:"url,omitempty"`
 	Code string `json:"code,omitempty"`
+
+	// Seq is a monotonically increasing sequence number assigned by Hub.publish, used by a
+	// consumer to skip events it has already applied when the backlog is replayed to it
+	// (on first attach or after a reconnect), instead of re-rendering/duplicating them.
+	Seq uint64 `json:"seq,omitempty"`
 }

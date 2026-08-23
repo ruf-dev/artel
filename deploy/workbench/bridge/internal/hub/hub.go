@@ -13,6 +13,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -35,13 +37,35 @@ const sendQueueSize = 4096
 type Hub struct {
 	upgrader websocket.Upgrader
 
-	// mu guards conns, backlog, and every connection's send channel and closed flag together.
-	// One lock for all of it, rather than a lock per connection, is what makes "queue the backlog
-	// and register the connection" atomic against a concurrent Broadcast: a consumer attaching
-	// mid-turn sees each event exactly once, either as replayed backlog or as a live broadcast.
+	// mu guards conns, backlog, nextSeq, and the active session file, together with every
+	// connection's send channel and closed flag. One lock for all of it, rather than a lock per
+	// connection, is what makes "queue the backlog and register the connection" atomic against a
+	// concurrent Broadcast: a consumer attaching mid-turn sees each event exactly once, either as
+	// replayed backlog or as a live broadcast.
 	mu      sync.Mutex
 	conns   map[*connection]struct{}
 	backlog []chatprotocol.Event
+
+	// nextSeq is the Seq stamped onto the next published event (see publish). It starts at 1 for
+	// a brand-new Hub with no prior history, or continues past the highest Seq found in an
+	// existing session file when one is rehydrated — see loadHistory. It is deliberately never
+	// reset by a session rotation (Reset/rotateSession): Seq is monotonic for this Hub's entire
+	// lifetime, spanning any number of chat sessions, not just the current one.
+	nextSeq uint64
+
+	// historyDir is where each chat session's events are persisted as one append-only JSONL file
+	// — see history.go. It should live on the workbench's persistent named volume so history
+	// survives a bridge process restart (container restart/redeploy); see New's caller.
+	historyDir string
+
+	// sessionFile is the active session's append-only JSONL file that every published event is
+	// appended to (see publish/appendToSession). Rotated — closed and replaced — by
+	// rotateSession, which Reset calls before writing its event.
+	sessionFile *os.File
+
+	// sessionID is the active session file's name without its .jsonl extension, kept only for
+	// log messages (see rotateSession).
+	sessionID string
 
 	inbound chan chatprotocol.Event
 }
@@ -55,8 +79,12 @@ type connection struct {
 	closed bool
 }
 
-// New returns an empty Hub.
-func New() *Hub {
+// New returns a Hub that persists every published event as JSONL under historyDir and rehydrates
+// its backlog and sequence numbering from the most recent session file already there, if any —
+// see loadHistory. historyDir is created if missing. Pass a path on the workbench's persistent
+// named volume so history survives a bridge process restart (container restart/redeploy); the
+// caller (main.go) hardcodes the one that satisfies this.
+func New(historyDir string) *Hub {
 	upgrader := websocket.Upgrader{
 		ReadBufferSize:  4096,
 		WriteBufferSize: 4096,
@@ -68,11 +96,16 @@ func New() *Hub {
 		CheckOrigin: alwaysAllowOrigin,
 	}
 
-	return &Hub{
-		upgrader: upgrader,
-		conns:    map[*connection]struct{}{},
-		inbound:  make(chan chatprotocol.Event, 64),
+	h := &Hub{
+		upgrader:   upgrader,
+		conns:      map[*connection]struct{}{},
+		inbound:    make(chan chatprotocol.Event, 64),
+		historyDir: historyDir,
 	}
+
+	h.loadHistory()
+
+	return h
 }
 
 func alwaysAllowOrigin(r *http.Request) bool {
@@ -97,8 +130,8 @@ func (h *Hub) ConsumerCount() int {
 // Broadcast records event in the backlog and delivers it to every currently attached consumer.
 // Safe to call from any goroutine, including concurrently with a consumer attaching.
 func (h *Hub) Broadcast(event chatprotocol.Event) {
-	h.publish(event, func() {
-		h.backlog = append(h.backlog, event)
+	h.publish(event, func(stamped chatprotocol.Event) {
+		h.backlog = append(h.backlog, stamped)
 		if len(h.backlog) > backlogLimit {
 			h.backlog = h.backlog[len(h.backlog)-backlogLimit:]
 		}
@@ -108,28 +141,43 @@ func (h *Hub) Broadcast(event chatprotocol.Event) {
 // Reset discards the entire backlog in favor of event alone, then delivers event to every
 // currently attached consumer. Use it for starting a new chat: existing history should not be
 // replayed to a consumer connecting after this point, only event (typically the new_chat event
-// itself) and whatever is broadcast from here on.
+// itself) and whatever is broadcast from here on. It also rotates to a brand-new session file
+// (see rotateSession) before event is written to disk, so the discarded chat's history stays
+// intact and browsable under its own file rather than being appended to.
 func (h *Hub) Reset(event chatprotocol.Event) {
-	h.publish(event, func() {
-		h.backlog = []chatprotocol.Event{event}
+	h.publish(event, func(stamped chatprotocol.Event) {
+		h.rotateSession()
+		h.backlog = []chatprotocol.Event{stamped}
 	})
 }
 
-// publish marshals event, then — under h.mu — runs mutateBacklog to apply Broadcast's or Reset's
-// differing backlog-mutation step and delivers event to every currently attached consumer. Safe to
-// call from any goroutine, including concurrently with a consumer attaching.
-func (h *Hub) publish(event chatprotocol.Event, mutateBacklog func()) {
+// publish stamps event with the next sequence number and — under h.mu — runs mutateBacklog to
+// apply Broadcast's or Reset's differing backlog-mutation step (Reset's also rotates the session
+// file), appends event to the active session file, marshals it, and delivers it to every
+// currently attached consumer. Safe to call from any goroutine, including concurrently with a
+// consumer attaching.
+//
+// mutateBacklog receives the stamped event rather than closing over the caller's original copy:
+// Broadcast/Reset's event parameter and this function's are distinct copies (Go passes by value),
+// so the Seq assigned here would otherwise never reach what gets appended to h.backlog or written
+// to disk.
+func (h *Hub) publish(event chatprotocol.Event, mutateBacklog func(stamped chatprotocol.Event)) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	event.Seq = h.nextSeq
+	h.nextSeq++
+
+	mutateBacklog(event)
+
+	h.appendToSession(event)
+
 	payload, err := json.Marshal(event)
 	if err != nil {
 		log.Printf("hub: error marshalling %s event: %v", event.Type, err)
 
 		return
 	}
-
-	h.mu.Lock()
-	defer h.mu.Unlock()
-
-	mutateBacklog()
 
 	for conn := range h.conns {
 		h.deliverLocked(conn, payload)
@@ -157,7 +205,7 @@ func (h *Hub) deliverLocked(conn *connection, payload []byte) {
 // route prefix here verbatim and each consumer track picks its own path.
 func (h *Hub) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if !websocket.IsWebSocketUpgrade(r) {
-		h.serveStatus(w)
+		h.serveNonUpgrade(w, r)
 
 		return
 	}
@@ -182,8 +230,31 @@ func (h *Hub) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.readLoop(conn)
 }
 
-// serveStatus answers a plain (non-upgrade) GET, so a health check or a curious operator hitting
-// the bridge through the backend proxy gets something intelligible instead of a protocol error.
+// serveNonUpgrade routes every plain (non-upgrade) request: the /history session listing and
+// /history/<id> session detail endpoints (see history.go), or — for anything else — the status
+// response (see serveStatus), exactly as before those two were added. Routed by inspecting
+// r.Method/r.URL.Path directly rather than an http.ServeMux, since that's the whole surface: two
+// GET routes plus a catch-all fallback don't warrant a second router nested inside Hub.
+func (h *Hub) serveNonUpgrade(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet && r.URL.Path == "/history" {
+		h.serveHistoryList(w)
+
+		return
+	}
+
+	if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/history/") {
+		id := strings.TrimPrefix(r.URL.Path, "/history/")
+		h.serveHistoryDetail(w, id)
+
+		return
+	}
+
+	h.serveStatus(w)
+}
+
+// serveStatus answers a plain (non-upgrade) GET that isn't a /history route, so a health check or
+// a curious operator hitting the bridge through the backend proxy gets something intelligible
+// instead of a protocol error.
 func (h *Hub) serveStatus(w http.ResponseWriter) {
 	h.mu.Lock()
 	status := map[string]any{

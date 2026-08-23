@@ -36,6 +36,15 @@ const listenAddr = ":7681"
 // wsPath is where hub.Hub is mounted. See listenAddr's doc comment.
 const wsPath = "/ws"
 
+// historyDir is where the bridge persists each chat session as append-only JSONL, so a consumer
+// reconnecting can be replayed accurate history and a restarted bridge process (container
+// restart/redeploy) can recover it — see hub.New's doc comment. This must stay in sync with
+// workspaceMountPath in internal/clients/workbenchdocker/client.go (the main repo, a different Go
+// module this one can't import): it's the fixed path where the workbench's persistent named
+// volume is mounted inside the container, which is what makes history survive the container
+// being stopped and started again.
+const historyDir = "/workspace/.chat-history"
+
 func main() {
 	envStore := envdrop.New("")
 
@@ -44,7 +53,7 @@ func main() {
 		log.Fatalf("workbench-bridge: error writing claude settings file: %v", err)
 	}
 
-	chatHub := hub.New()
+	chatHub := hub.New(historyDir)
 	broker := permissions.NewBroker(chatHub.Broadcast)
 
 	hookServer := startHookServer(broker)
