@@ -8,8 +8,8 @@ import {
     CheckS3ConnectionRequest, CheckS3ConnectionResponse,
     CheckCouchDBConnectionRequest, CheckCouchDBConnectionResponse,
     CheckPostgresConnectionRequest, CheckPostgresConnectionResponse,
-    ExternalConnectionInfo,
-    ExternalConnectionsAPI, Spreadsheet,
+    ExternalConnectionInfo, ExternalProvider,
+    ExternalConnectionsAPI, GetProviderStatisticsResponse, Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import * as fm from "@/app/api/artel/fetch.pb.ts"
 import useUser from "@/hooks/user/User.ts"
@@ -40,6 +40,7 @@ export interface IExternalConnectionsService {
     addPostgresConnection: (req: AddPostgresConnectionRequest) => Promise<ExternalConnectionInfo>
     checkPostgresConnection: (req: CheckPostgresConnectionRequest) => Promise<CheckPostgresConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<ExternalConnectionInfo>
+    getProviderStatistics: (provider: ExternalProvider) => Promise<GetProviderStatisticsResponse>
 }
 
 export class ExternalConnectionsService implements IExternalConnectionsService {
@@ -166,6 +167,10 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     async addGenericConnection(req: AddGenericConnectionRequest): Promise<ExternalConnectionInfo> {
         const res = await ExternalConnectionsAPI.AddGenericConnection(req, useUser.getState().auth.getInitReq())
         return res.connection!
+    }
+
+    async getProviderStatistics(provider: ExternalProvider): Promise<GetProviderStatisticsResponse> {
+        return ExternalConnectionsAPI.GetProviderStatistics({provider}, useUser.getState().auth.getInitReq())
     }
 }
 

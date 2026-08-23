@@ -11,6 +11,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
+	openrouterClient "github.com/ruf-dev/artel/internal/clients/openrouter"
 	"github.com/ruf-dev/artel/internal/domain"
 	"github.com/ruf-dev/artel/internal/repository"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
@@ -608,6 +609,10 @@ type ExternalConnectionService interface {
 	CheckPostgresConnection(
 		ctx context.Context, host string, port int, database, username, password, sslMode string,
 	) error
+	// GetOpenRouterStatistics fetches the caller's live usage/limit/balance info from
+	// OpenRouter's own account-management API, using the API key on their OpenRouter connection.
+	// Returns user_errors.LlmKeyRequired if they have no OpenRouter connection.
+	GetOpenRouterStatistics(ctx context.Context) (openrouterClient.KeyInfo, error)
 }
 
 // PostgresInstanceService is admin CRUD over the shared pool of Postgres servers (admin pool or

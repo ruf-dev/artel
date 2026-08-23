@@ -392,6 +392,31 @@ export type AddGenericConnectionResponse = {
 
 export type AddGenericConnection = Record<string, never>;
 
+export type GetProviderStatisticsRequest = {
+  provider?: ExternalProvider;
+};
+
+type BaseGetProviderStatisticsResponse = {
+};
+
+export type GetProviderStatisticsResponse = BaseGetProviderStatisticsResponse &
+  OneOf<{
+    openrouter: OpenRouterStatistics;
+  }>;
+
+export type GetProviderStatistics = Record<string, never>;
+
+export type OpenRouterStatistics = {
+  limit?: number;
+  limitUnlimited?: boolean;
+  limitRemaining?: number;
+  usageTotal?: number;
+  usageDaily?: number;
+  usageWeekly?: number;
+  usageMonthly?: number;
+  isFreeTier?: boolean;
+};
+
 export class ExternalConnectionsAPI {
   static InitiateGoogleOAuth(this:void, req: InitiateGoogleOAuthRequest, initReq?: fm.InitReq): Promise<InitiateGoogleOAuthResponse> {
     return fm.fetchRequest<InitiateGoogleOAuthResponse>(`/api/external-connections/google/initiate`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
@@ -479,5 +504,8 @@ export class ExternalConnectionsAPI {
   }
   static CheckPostgresConnection(this:void, req: CheckPostgresConnectionRequest, initReq?: fm.InitReq): Promise<CheckPostgresConnectionResponse> {
     return fm.fetchRequest<CheckPostgresConnectionResponse>(`/api/external-connections/postgres/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static GetProviderStatistics(this:void, req: GetProviderStatisticsRequest, initReq?: fm.InitReq): Promise<GetProviderStatisticsResponse> {
+    return fm.fetchRequest<GetProviderStatisticsResponse>(`/api/external-connections/statistics`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

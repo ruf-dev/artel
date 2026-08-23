@@ -22,6 +22,7 @@ import (
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
 	"github.com/ruf-dev/artel/internal/clients/imap"
 	openaiClient "github.com/ruf-dev/artel/internal/clients/openai"
+	openrouterClient "github.com/ruf-dev/artel/internal/clients/openrouter"
 	s3client "github.com/ruf-dev/artel/internal/clients/s3"
 	"github.com/ruf-dev/artel/internal/clients/smtp"
 	"github.com/ruf-dev/artel/internal/clients/vaultpg"
@@ -1755,6 +1756,42 @@ func openaiKeyPreview(apiKey string) string {
 	}
 
 	return "..." + apiKey[len(apiKey)-previewLen:]
+}
+
+// GetOpenRouterStatistics fetches the caller's live usage/limit/balance info from OpenRouter's
+// own account-management API (GET /key), using the API key stored on their OpenRouter connection.
+// No caching: this is a live call every time, backing the "View usage" dialog on the OpenRouter
+// BYOK connection screen.
+func (s *Service) GetOpenRouterStatistics(ctx context.Context) (openrouterClient.KeyInfo, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return openrouterClient.KeyInfo{}, user_errors.Unauthenticated
+	}
+
+	result, err := s.connections.GetByUserAndProvider(ctx, uc.UserUuid, domain.ProviderOpenRouter)
+	if err != nil {
+		return openrouterClient.KeyInfo{}, rerrors.Wrap(err, "error getting openrouter connection")
+	}
+
+	if !result.Valid {
+		return openrouterClient.KeyInfo{}, user_errors.LlmKeyRequired
+	}
+
+	var creds domain.OpenAIKeyCredentials
+
+	err = json.Unmarshal(result.V.CredentialsJSON, &creds)
+	if err != nil {
+		return openrouterClient.KeyInfo{}, rerrors.Wrap(err, "error parsing openrouter credentials")
+	}
+
+	client := openrouterClient.New(creds.ApiKey)
+
+	info, err := client.GetKeyInfo(ctx)
+	if err != nil {
+		return openrouterClient.KeyInfo{}, rerrors.Wrap(err, "error fetching openrouter key info")
+	}
+
+	return info, nil
 }
 
 // GenerateGitlabWebhookSecret mints a fresh random secret for the caller's GitLab connection and

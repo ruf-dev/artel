@@ -10,7 +10,8 @@ import {
     CheckS3ConnectionRequest, CheckS3ConnectionResponse,
     CheckCouchDBConnectionRequest, CheckCouchDBConnectionResponse,
     CheckPostgresConnectionRequest, CheckPostgresConnectionResponse,
-    ExternalConnectionInfo,
+    ExternalConnectionInfo, ExternalProvider,
+    GetProviderStatisticsResponse,
     Spreadsheet,
 } from "@/app/api/artel/external_connections.pb.ts"
 import {externalConnectionsService} from "@/processes/ExternalConnections.ts"
@@ -44,6 +45,7 @@ interface ExternalConnectionsState {
     addPostgresConnection: (req: AddPostgresConnectionRequest) => Promise<void>
     checkPostgresConnection: (req: CheckPostgresConnectionRequest) => Promise<CheckPostgresConnectionResponse>
     addGenericConnection: (req: AddGenericConnectionRequest) => Promise<void>
+    getProviderStatistics: (provider: ExternalProvider) => Promise<GetProviderStatisticsResponse>
 }
 
 // eslint-disable-next-line max-lines-per-function -- Zustand store with many methods
@@ -174,5 +176,9 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
     addGenericConnection: async (req: AddGenericConnectionRequest) => {
         await externalConnectionsService.addGenericConnection(req)
         await get().fetch()
+    },
+
+    getProviderStatistics: (provider: ExternalProvider) => {
+        return externalConnectionsService.getProviderStatistics(provider)
     },
 }))

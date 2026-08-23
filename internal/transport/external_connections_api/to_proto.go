@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	pb "github.com/ruf-dev/artel/internal/api/server/artel_api"
+	openrouterClient "github.com/ruf-dev/artel/internal/clients/openrouter"
 	"github.com/ruf-dev/artel/internal/domain"
 	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
@@ -66,6 +67,21 @@ func googleDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Google {
 	}
 
 	return &pb.ExternalConnectionInfo_Google{Google: googleInfo}
+}
+
+func toOpenRouterStatisticsProto(info openrouterClient.KeyInfo) *pb.OpenRouterStatistics {
+	stats := &pb.OpenRouterStatistics{
+		Limit:          info.Limit,
+		LimitUnlimited: info.LimitUnlimited,
+		LimitRemaining: info.LimitRemaining,
+		UsageTotal:     info.Usage,
+		UsageDaily:     info.UsageDaily,
+		UsageWeekly:    info.UsageWeekly,
+		UsageMonthly:   info.UsageMonthly,
+		IsFreeTier:     info.IsFreeTier,
+	}
+
+	return stats
 }
 
 func genericDetails(raw json.RawMessage) *pb.ExternalConnectionInfo_Generic {

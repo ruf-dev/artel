@@ -8,6 +8,8 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import LlmKeyDialogHead from "@/components/LlmKeyDialogHead/LlmKeyDialogHead.tsx"
 import LlmKeyConnectForm from "@/components/LlmKeyConnectForm/LlmKeyConnectForm.tsx"
 import LlmKeyConnectedContent from "@/components/LlmKeyConnectedContent/LlmKeyConnectedContent.tsx"
+import ViewOpenRouterUsageDialog from
+    "@/dialogs/ManageOpenRouterDialog/components/ViewOpenRouterUsageDialog/ViewOpenRouterUsageDialog.tsx"
 
 export default function ManageOpenRouterDialog() {
     const {CloseDialog, OpenDialog} = useDialog()
@@ -42,6 +44,7 @@ export default function ManageOpenRouterDialog() {
                 ? <LlmKeyConnectedContent
                     fields={connection.generic?.fields ?? {}}
                     onDisconnect={handleDisconnect}
+                    onViewUsage={() => OpenDialog(<ViewOpenRouterUsageDialog/>)}
                 />
                 : <LlmKeyConnectForm
                     providerName="OpenRouter"

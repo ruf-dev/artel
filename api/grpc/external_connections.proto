@@ -212,6 +212,13 @@ service ExternalConnectionsAPI {
       body: "*"
     };
   }
+
+  rpc GetProviderStatistics(GetProviderStatistics.Request) returns (GetProviderStatistics.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/statistics"
+      body: "*"
+    };
+  }
 }
 
 enum ExternalProvider {
@@ -566,4 +573,26 @@ message AddGenericConnection {
   message Response {
     ExternalConnectionInfo connection = 1;
   }
+}
+
+message GetProviderStatistics {
+  message Request {
+    ExternalProvider provider = 1;
+  }
+  message Response {
+    oneof statistics {
+      OpenRouterStatistics openrouter = 1;
+    }
+  }
+}
+
+message OpenRouterStatistics {
+  double limit = 1;
+  bool   limit_unlimited = 2;
+  double limit_remaining = 3;
+  double usage_total = 4;
+  double usage_daily = 5;
+  double usage_weekly = 6;
+  double usage_monthly = 7;
+  bool   is_free_tier = 8;
 }

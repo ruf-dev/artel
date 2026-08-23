@@ -817,6 +817,38 @@
         ]
       }
     },
+    "/api/external-connections/statistics": {
+      "post": {
+        "operationId": "ExternalConnectionsAPI_GetProviderStatistics",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetProviderStatisticsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetProviderStatisticsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/telegram/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddTelegramConnection",
@@ -1519,6 +1551,22 @@
         }
       }
     },
+    "artel_apiGetProviderStatisticsRequest": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "$ref": "#/definitions/artel_apiExternalProvider"
+        }
+      }
+    },
+    "artel_apiGetProviderStatisticsResponse": {
+      "type": "object",
+      "properties": {
+        "openrouter": {
+          "$ref": "#/definitions/artel_apiOpenRouterStatistics"
+        }
+      }
+    },
     "artel_apiGoogleConnectionInfo": {
       "type": "object",
       "properties": {
@@ -1629,6 +1677,41 @@
         },
         "appPasswordUrl": {
           "type": "string"
+        }
+      }
+    },
+    "artel_apiOpenRouterStatistics": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "number",
+          "format": "double"
+        },
+        "limitUnlimited": {
+          "type": "boolean"
+        },
+        "limitRemaining": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageTotal": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageDaily": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageWeekly": {
+          "type": "number",
+          "format": "double"
+        },
+        "usageMonthly": {
+          "type": "number",
+          "format": "double"
+        },
+        "isFreeTier": {
+          "type": "boolean"
         }
       }
     },
