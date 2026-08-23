@@ -250,3 +250,165 @@ func TestRunMainLoop_NewChatResetsBacklogAndSession(t *testing.T) {
 			"the backlog should have been reset, not appended to", replayed)
 	}
 }
+
+// writeStubClaudeWithHookCall writes a fake `claude` binary that mimics a turn where the model
+// wants to call a gated tool: it prints the init line, then actually calls out to the real
+// PreToolUse hook endpoint (a POST to permissions.HookUrl, in the request shape
+// internal/permissions/permissions.go's package doc describes) and blocks until that responds,
+// before printing the result line — modeling the way a real gated tool call parks on the hook.
+//
+// hookResponsePath is where the hook's raw HTTP response body is captured (via curl's -o), so the
+// test can assert the decision that actually reached the "tool call" was the consumer's real
+// answer, not a timeout-driven deny.
+func writeStubClaudeWithHookCall(t *testing.T, hookResponsePath string) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "claude")
+
+	script := "#!/bin/sh\n" +
+		`echo '{"type":"system","subtype":"init"}'` + "\n" +
+		`curl -s -o '` + hookResponsePath + `' -X POST ` +
+		`-d '{"tool_name":"Bash","tool_use_id":"test-tool-id","tool_input":{}}' ` +
+		permissions.HookUrl + "\n" +
+		`echo '{"type":"result","session_id":"test-session","total_cost_usd":0}'` + "\n"
+
+	err := os.WriteFile(path, []byte(script), 0o755)
+	if err != nil {
+		t.Fatalf("error writing stub claude script: %v", err)
+	}
+
+	return path
+}
+
+func isPermissionRequest(event chatprotocol.Event) bool {
+	return event.Type == chatprotocol.EventPermissionRequest
+}
+
+// hookResponseBody mirrors just the field this test needs from permissions.hookResponse, which is
+// unexported and so can't be reused directly from this package.
+type hookResponseBody struct {
+	HookSpecificOutput struct {
+		PermissionDecision string `json:"permissionDecision"`
+	} `json:"hookSpecificOutput"`
+}
+
+// TestRunMainLoop_PermissionDecisionProcessedWhileTurnInFlight is the regression test for the
+// self-deadlock described in runMainLoop's doc comment: before the fix, the EventUserMessage case
+// called runner.RunTurn synchronously, so the very goroutine that must dequeue a
+// permission_decision from chatHub.Inbound() and call broker.Decide was itself blocked inside
+// RunTurn for the whole turn. A gated tool call's PreToolUse hook (permissions.Broker.resolve)
+// parks waiting for exactly that Decide call — which could then never happen until RunTurn
+// returned, but RunTurn could not return until the hook was answered. The only way out was the
+// broker's own DecisionWait timeout auto-denying the request out from under a consumer's real,
+// already-sent "allow" click.
+//
+// This drives the real Broker and its real hook HTTP server (started via startHookServer, exactly
+// as main() does) — the only stand-in is the `claude` binary, and even that stub actually calls
+// out to the hook over HTTP via curl, exactly like a real gated tool call would.
+//
+// Without the `go runner.RunTurn(...)` fix, this test would not hang forever, but it would only
+// pass (if at all) after broker's SetWait duration elapses: the permission_decision sent below
+// would sit unprocessed in chatHub.Inbound() until that timeout auto-denies the parked request, at
+// which point the stub's curl call finally returns, RunTurn finishes, and runMainLoop loops back
+// around to dequeue the now-stale decision as a no-op (Broker.Decide finds no live waiter). The
+// elapsed-time assertion below is what actually catches that regression, and the captured hook
+// response body proves the decision that took effect was the consumer's real "allow_once", not the
+// broker's fallback "deny".
+func TestRunMainLoop_PermissionDecisionProcessedWhileTurnInFlight(t *testing.T) {
+	chatHub := hub.New(t.TempDir())
+	broker := permissions.NewBroker(chatHub.Broadcast)
+
+	// Long enough that "resolved promptly" and "only resolved via the broker's own timeout" are
+	// unambiguous — see the elapsed-time assertion below.
+	broker.SetWait(9 * time.Second)
+
+	hookServer := startHookServer(broker)
+	defer hookServer.Close()
+
+	server := httptest.NewServer(chatHub)
+	defer server.Close()
+
+	hookResponsePath := filepath.Join(t.TempDir(), "hook-response.json")
+	stubBinary := writeStubClaudeWithHookCall(t, hookResponsePath)
+
+	envStore := envdrop.New(t.TempDir())
+	runner := claudecli.NewRunner(stubBinary, t.TempDir(), "", envStore)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go runMainLoop(ctx, chatHub, runner, broker)
+
+	consumer := dialChat(t, server.URL)
+	defer consumer.Close()
+
+	err := consumer.WriteJSON(chatprotocol.Event{
+		Type: chatprotocol.EventUserMessage,
+		Text: "please run a gated tool",
+	})
+	if err != nil {
+		t.Fatalf("error sending user_message: %v", err)
+	}
+
+	// Wait for the permission_request that proves the stub's curl call actually reached the hook
+	// and parked there.
+	requestEvents := readEvents(t, consumer, isPermissionRequest)
+
+	var sawRequest bool
+
+	for _, event := range requestEvents {
+		if event.Type == chatprotocol.EventPermissionRequest && event.ID == "test-tool-id" {
+			sawRequest = true
+		}
+	}
+
+	if !sawRequest {
+		t.Fatalf("did not observe a permission_request for id %q; events: %+v", "test-tool-id", requestEvents)
+	}
+
+	start := time.Now()
+
+	err = consumer.WriteJSON(chatprotocol.Event{
+		Type:     chatprotocol.EventPermissionDecision,
+		ID:       "test-tool-id",
+		Decision: chatprotocol.DecisionAllowOnce,
+	})
+	if err != nil {
+		t.Fatalf("error sending permission_decision: %v", err)
+	}
+
+	readEvents(t, consumer, isTurnDone)
+
+	elapsed := time.Since(start)
+
+	// The crux of the regression test: the fix leaves runMainLoop free to process the
+	// permission_decision while RunTurn is still in flight, so the turn should finish almost
+	// immediately after the decision is sent — nowhere near broker's 9s SetWait. Without the fix,
+	// this only ever completes after ~9s (the broker's own timeout auto-denying the parked
+	// request), which this threshold catches well before wsReadTimeout would.
+	const maxExpectedLatency = 3 * time.Second
+	if elapsed > maxExpectedLatency {
+		t.Fatalf("turn_done arrived %v after the permission_decision was sent, want well under %v — "+
+			"this indicates the decision was not processed promptly and the turn only completed via "+
+			"the broker's own timeout, reproducing the runMainLoop self-deadlock", elapsed, maxExpectedLatency)
+	}
+
+	responseBytes, err := os.ReadFile(hookResponsePath)
+	if err != nil {
+		t.Fatalf("error reading captured hook response: %v", err)
+	}
+
+	var response hookResponseBody
+
+	err = json.Unmarshal(responseBytes, &response)
+	if err != nil {
+		t.Fatalf("error unmarshalling captured hook response %q: %v", responseBytes, err)
+	}
+
+	if response.HookSpecificOutput.PermissionDecision != "allow" {
+		t.Fatalf("hook response permissionDecision = %q, want %q — the request was resolved by the "+
+			"broker's timeout-driven deny, not the consumer's real allow_once decision",
+			response.HookSpecificOutput.PermissionDecision, "allow")
+	}
+}

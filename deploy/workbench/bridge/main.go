@@ -103,10 +103,19 @@ func ensureAuthenticated(ctx context.Context, envStore *envdrop.Store) error {
 }
 
 // runMainLoop is the bridge's steady-state loop, reached once authentication (if any was needed)
-// has completed. It runs exactly one claude turn at a time — RunTurn itself never crashes the
-// process on a bad turn (see its doc comment) — so no extra recover() is needed here as long as
-// this loop stays synchronous, which it deliberately does: a second concurrent turn would
-// interleave two processes resuming the same session.
+// has completed. It dispatches each turn asynchronously (see the EventUserMessage case) so that it
+// keeps servicing Inbound() — in particular EventPermissionDecision — while a turn is in flight.
+// A turn's PreToolUse hook call parks in permissions.Broker.resolve until this very loop processes
+// the matching EventPermissionDecision and calls broker.Decide; if the loop instead blocked
+// synchronously inside RunTurn for the whole turn (as it used to), it could never dequeue that
+// decision, deadlocking until the broker's own DecisionWait timeout auto-denied the request out
+// from under the loop.
+//
+// This does not risk two `claude` processes actually running concurrently: Runner.mu (see its doc
+// comment) serialises real turn execution regardless of how many goroutines call RunTurn — a
+// second concurrent call simply blocks on that mutex until the first turn's process exits.
+// RunTurn itself never crashes the process on a bad turn (see its doc comment), so no extra
+// recover() is needed around the dispatch here either.
 func runMainLoop(ctx context.Context, chatHub *hub.Hub, runner *claudecli.Runner, broker *permissions.Broker) {
 	for {
 		select {
@@ -114,7 +123,7 @@ func runMainLoop(ctx context.Context, chatHub *hub.Hub, runner *claudecli.Runner
 			switch event.Type {
 			case chatprotocol.EventUserMessage:
 				chatHub.Broadcast(event)
-				runner.RunTurn(ctx, event.Text, chatHub.Broadcast)
+				go runner.RunTurn(ctx, event.Text, chatHub.Broadcast)
 			case chatprotocol.EventPermissionDecision:
 				if broker.Decide(event.ID, event.Decision) {
 					chatHub.Broadcast(event)
