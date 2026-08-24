@@ -2,9 +2,11 @@ package middleware
 
 import (
 	"context"
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/metadata"
@@ -160,6 +162,48 @@ func TestRequestWasSecure(t *testing.T) {
 				t.Fatalf("requestWasSecure() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+// TestCookieForwardResponseOption_CSRFExpiryTracksRefreshToken guards against the csrf_token
+// cookie reverting to the access token's short expiry: isAuthenticated() on the frontend reads
+// only csrf_token's presence, synchronously and without an API call, so if it expired alongside
+// the (much shorter-lived) access token, users would be bounced to the login page long before
+// their still-valid refresh token actually ran out.
+func TestCookieForwardResponseOption_CSRFExpiryTracksRefreshToken(t *testing.T) {
+	accessExpiry := time.Now().Add(time.Hour).UTC().Format(time.RFC3339)
+	refreshExpiry := time.Now().Add(30 * 24 * time.Hour).UTC().Format(time.RFC3339)
+
+	headerMD := metadata.Pairs(
+		SetCookieAccessTokenKey, "access-token-value",
+		SetCookieAccessTokenExpiryKey, accessExpiry,
+		SetCookieRefreshTokenKey, "refresh-token-value",
+		SetCookieRefreshTokenExpiryKey, refreshExpiry,
+	)
+	ctx := buildForwardResponseCtx(true, headerMD)
+
+	w := httptest.NewRecorder()
+
+	opt := CookieForwardResponseOption()
+
+	err := opt(ctx, w, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var csrfCookie *http.Cookie
+	for _, c := range w.Result().Cookies() {
+		if c.Name == CSRFCookieName {
+			csrfCookie = c
+		}
+	}
+	if csrfCookie == nil {
+		t.Fatal("expected csrf_token cookie to be set")
+	}
+
+	wantExpiry := parseCookieExpiry(refreshExpiry)
+	if !csrfCookie.Expires.Equal(wantExpiry) {
+		t.Fatalf("csrf_token cookie Expires = %v, want %v (refresh token expiry)", csrfCookie.Expires, wantExpiry)
 	}
 }
 

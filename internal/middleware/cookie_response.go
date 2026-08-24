@@ -52,10 +52,20 @@ func CookieForwardResponseOption() func(context.Context, http.ResponseWriter, pr
 		accessExpiry := parseCookieExpiry(metadataValue(serverMD.HeaderMD, SetCookieAccessTokenExpiryKey))
 		setAuthCookie(w, AccessTokenCookieName, accessToken, accessExpiry, true, secure, CookiePath)
 
+		// csrfExpiry defaults to the access token's expiry, but is widened to the refresh
+		// token's expiry below when one is issued (the normal case). isAuthenticated() on the
+		// frontend reads csrf_token's mere presence as its synchronous "am I logged in" signal,
+		// so it must track the actual session lifetime backed by the refresh token, not the much
+		// shorter-lived access token — otherwise the client redirects to login (without ever
+		// attempting a refresh) as soon as the access token's hour is up, even though the
+		// refresh token is still good for weeks.
+		csrfExpiry := accessExpiry
+
 		refreshToken := metadataValue(serverMD.HeaderMD, SetCookieRefreshTokenKey)
 		if refreshToken != "" {
 			refreshExpiry := parseCookieExpiry(metadataValue(serverMD.HeaderMD, SetCookieRefreshTokenExpiryKey))
 			setAuthCookie(w, RefreshTokenCookieName, refreshToken, refreshExpiry, true, secure, CookiePath)
+			csrfExpiry = refreshExpiry
 		}
 
 		csrfToken, err := generateCSRFToken()
@@ -63,7 +73,7 @@ func CookieForwardResponseOption() func(context.Context, http.ResponseWriter, pr
 			log.Error().Err(err).Msg("error generating csrf token")
 			return nil
 		}
-		setAuthCookie(w, CSRFCookieName, csrfToken, accessExpiry, false, secure, CSRFCookiePath)
+		setAuthCookie(w, CSRFCookieName, csrfToken, csrfExpiry, false, secure, CSRFCookiePath)
 
 		return nil
 	}
