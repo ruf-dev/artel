@@ -1,0 +1,25 @@
+.SimpleChatModeFormContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-top: 0.25rem;
+
+    & .ToggleField {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.625rem;
+    }
+
+    & .FieldLabel {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-fg-secondary);
+    }
+
+    & .ModalFooter {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.625rem;
+    }
+}

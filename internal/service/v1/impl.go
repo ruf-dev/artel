@@ -57,6 +57,10 @@ type Services struct {
 	// DockerHost, purely because it composes services.ExternalConnections, which doesn't exist
 	// yet mid-construction of this struct literal. Set unconditionally by custom.go.
 	Workbench service.WorkbenchService
+	// SimpleChat is constructed in internal/app/custom.go (not here) for the same reason as
+	// Tract: its agent loop composes the already-built Mcp service to list and execute tools,
+	// which isn't available as a service.McpService value mid-construction of this struct.
+	SimpleChat service.SimpleChatService
 }
 
 func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
@@ -214,6 +218,10 @@ func (s *Services) TractService() service.TractService {
 
 func (s *Services) WorkbenchService() service.WorkbenchService {
 	return s.Workbench
+}
+
+func (s *Services) SimpleChatService() service.SimpleChatService {
+	return s.SimpleChat
 }
 
 func (s *Services) PublicDocsService() service.PublicDocsService {

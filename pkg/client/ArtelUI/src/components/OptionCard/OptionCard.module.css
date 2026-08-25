@@ -1,4 +1,4 @@
-.AuthModeOptionContainer {
+.OptionCardContainer {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -23,24 +23,25 @@
         opacity: 0.55;
     }
 
-    &.AuthModeOptionSelected {
+    &.OptionCardSelected {
         border-color: var(--coral);
         background: rgb(var(--coral-rgb, 220,90,70), 0.06);
     }
 
-    .AuthModeOptionLabel {
+    & .OptionCardLabel {
         font-size: 0.875rem;
         font-weight: 600;
         color: var(--color-fg-primary);
     }
 
-    .AuthModeOptionDesc {
+    & .OptionCardDesc {
         font-size: 0.75rem;
         color: var(--color-fg-secondary);
         line-height: 1.45;
+        white-space: normal;
     }
 
-    .AuthModeOptionHint {
+    & .OptionCardHint {
         font-size: 0.6875rem;
         color: var(--color-fg-tertiary);
         line-height: 1.45;

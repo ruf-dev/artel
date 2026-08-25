@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+// SimpleChatAPI is CRUD-only: the live chat turn itself runs over the existing
+// internal/chatprotocol.Event WebSocket (see docs/architecture.md), not a unary RPC.
+service SimpleChatAPI {
+    rpc CreateSimpleChat(CreateSimpleChat.Request) returns (CreateSimpleChat.Response) {
+        option (google.api.http) = {
+            post: "/api/simple-chats/create"
+            body: "*"
+        };
+    }
+
+    rpc ListSimpleChats(ListSimpleChats.Request) returns (ListSimpleChats.Response) {
+        option (google.api.http) = {
+            post: "/api/simple-chats/list"
+            body: "*"
+        };
+    }
+
+    rpc GetSimpleChat(GetSimpleChat.Request) returns (GetSimpleChat.Response) {
+        option (google.api.http) = {
+            post: "/api/simple-chats/get"
+            body: "*"
+        };
+    }
+
+    rpc DeleteSimpleChat(DeleteSimpleChat.Request) returns (DeleteSimpleChat.Response) {
+        option (google.api.http) = {
+            post: "/api/simple-chats/delete"
+            body: "*"
+        };
+    }
+}
+
+message SimpleChat {
+    string id               = 1;
+    string vault_id         = 2;
+    string title             = 3;
+    string model             = 4;
+    bool   vault_access      = 5;
+    string created_at        = 6;
+    string updated_at        = 7;
+    string last_activity_at  = 8;
+}
+
+// SimpleChatMessage is a flat, wire-only projection of domain.SimpleChatMessage —
+// tool_call_id/tool_input are internal-only and intentionally omitted here.
+message SimpleChatMessage {
+    string id         = 1;
+    string role       = 2;
+    string content    = 3;
+    string tool_name  = 4;
+    bool   is_error    = 5;
+    string model       = 6;
+    int64  seq         = 7;
+    string created_at  = 8;
+}
+
+message CreateSimpleChat {
+    message Request {
+        string vault_id     = 1;
+        bool   vault_access = 2;
+        // model is the OpenRouter model id the thread defaults to (simple_chats.model is
+        // NOT NULL). A turn may override it per-message via chatprotocol.Event.Model.
+        string model        = 3;
+    }
+    message Response {
+        SimpleChat chat = 1;
+    }
+}
+
+message ListSimpleChats {
+    message Request {
+        string vault_id = 1;
+    }
+    message Response {
+        repeated SimpleChat chats = 1;
+    }
+}
+
+message GetSimpleChat {
+    message Request {
+        string chat_id = 1;
+    }
+    message Response {
+        SimpleChat                  chat     = 1;
+        repeated SimpleChatMessage  messages = 2;
+    }
+}
+
+message DeleteSimpleChat {
+    message Request {
+        string chat_id = 1;
+    }
+    message Response {}
+}

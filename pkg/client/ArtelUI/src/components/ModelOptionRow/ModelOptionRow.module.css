@@ -1,0 +1,47 @@
+.ModelOptionRowContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1.125rem;
+    font-size: var(--chures-font-sm);
+    color: var(--chures-fg-muted);
+    cursor: pointer;
+    transition: background 0.1s ease, color 0.1s ease;
+
+    &:hover {
+        background: var(--chures-dropdown-hover);
+        color: var(--chures-fg);
+    }
+
+    &.Selected {
+        color: var(--chures-fg);
+    }
+
+    &.Indented {
+        padding-left: 2.125rem;
+    }
+
+    & .Label {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .LatestBadge {
+        flex-shrink: 0;
+        border-radius: var(--border-radius-sm);
+        padding: 0.0625rem 0.375rem;
+        font-size: var(--font-size-xs);
+        color: var(--color-fg-secondary);
+        background: var(--color-bg-hover);
+        border: var(--border-thickness) solid var(--color-border-light);
+        white-space: nowrap;
+    }
+
+    & .Checkmark {
+        color: var(--chures-accent);
+        font-size: var(--chures-font-xs);
+        flex-shrink: 0;
+    }
+}

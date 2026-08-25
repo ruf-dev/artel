@@ -50,4 +50,9 @@ export interface ChatEvent {
     // turn_done
     session_id?: string
     cost_usd?: number
+
+    // Attributes which model produced an assistant_text_delta/assistant_text_done/turn_done
+    // event. Populated only by Simple Chat's in-process engine — the Docker workbench bridge
+    // never sets this field.
+    model?: string
 }

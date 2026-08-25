@@ -106,6 +106,13 @@ component file grow — same tool as the project-wide `src/processes/` used by
   touching it, don't sweep the whole codebase in one pass. New code should use an
   existing `--*` token from `sizes.css` or add a new one there rather than writing a
   raw non-rem unit.
+- `--standard-button-height` (`sizes.css`) is the shared height for compact/icon
+  action buttons (e.g. `SimpleChat`'s History/New Chat header buttons) — it also
+  backs `--chures-input-height`'s mobile value (`width <= 480px`), so the chat
+  text input, model-selector dropdown, and composer buttons all shrink to the same
+  height on mobile automatically. If you hit an "unsettled" button-height decision
+  (a control's height doesn't match its neighbors, especially at the mobile
+  breakpoint), reuse this token instead of hardcoding a new value.
 - The global dialog mount lives at `pages/segments/Dialog.tsx`, not `src/segments/`
   where `Topbar` lives — two different locations for the same "app-level segment"
   concept. New app-level segments go in `src/segments/`; don't add a third location.

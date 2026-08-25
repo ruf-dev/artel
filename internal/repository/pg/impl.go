@@ -20,6 +20,9 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/prompts"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/s3instances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/sessions"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/simplechatmessages"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/simplechats"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/simplechattoolallowances"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptionplans"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/subscriptions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/systemsettings"
@@ -38,34 +41,37 @@ import (
 )
 
 type Repos struct {
-	users                  repository.Users
-	vaults                 repository.Vaults
-	workbenches            repository.Workbenches
-	vaultMembers           repository.VaultMembers
-	vaultInvitesRepo       repository.VaultInvites
-	sessions               repository.Sessions
-	subscriptions          repository.Subscriptions
-	subscriptionPlans      repository.SubscriptionPlansRepo
-	couchAccounts          repository.CouchAccounts
-	couchInstances         repository.CouchInstances
-	s3Instances            repository.S3Instances
-	postgresInstances      repository.PostgresInstances
-	vaultPostgresDatabases repository.VaultPostgresDatabases
-	dockerHosts            repository.DockerHosts
-	userPermissions        repository.UserPermissionsRepo
-	mcpKey                 repository.McpKeyRepository
-	pendingAuthCodes       repository.PendingAuthCodes
-	mailServerSuggestions  repository.MailServerSuggestions
-	promptsRepo            repository.Prompts
-	externalConnections    repository.ExternalConnectionRepo
-	mcpSpreadsheets        repository.McpSpreadsheetsRepo
-	mcpDefinitions         repository.McpDefinitionsRepo
-	mcpConnectors          repository.McpConnectorsRepo
-	tracts                 repository.TractsRepo
-	tractTemplates         repository.TractTemplatesRepo
-	triggers               repository.TriggersRepo
-	triggerPresets         repository.TriggerPresetsRepo
-	systemSettings         repository.SystemSettingsRepo
+	users                    repository.Users
+	vaults                   repository.Vaults
+	workbenches              repository.Workbenches
+	vaultMembers             repository.VaultMembers
+	vaultInvitesRepo         repository.VaultInvites
+	sessions                 repository.Sessions
+	subscriptions            repository.Subscriptions
+	subscriptionPlans        repository.SubscriptionPlansRepo
+	couchAccounts            repository.CouchAccounts
+	couchInstances           repository.CouchInstances
+	s3Instances              repository.S3Instances
+	postgresInstances        repository.PostgresInstances
+	vaultPostgresDatabases   repository.VaultPostgresDatabases
+	dockerHosts              repository.DockerHosts
+	userPermissions          repository.UserPermissionsRepo
+	mcpKey                   repository.McpKeyRepository
+	pendingAuthCodes         repository.PendingAuthCodes
+	mailServerSuggestions    repository.MailServerSuggestions
+	promptsRepo              repository.Prompts
+	externalConnections      repository.ExternalConnectionRepo
+	mcpSpreadsheets          repository.McpSpreadsheetsRepo
+	mcpDefinitions           repository.McpDefinitionsRepo
+	mcpConnectors            repository.McpConnectorsRepo
+	tracts                   repository.TractsRepo
+	tractTemplates           repository.TractTemplatesRepo
+	triggers                 repository.TriggersRepo
+	triggerPresets           repository.TriggerPresetsRepo
+	systemSettings           repository.SystemSettingsRepo
+	simpleChats              repository.SimpleChats
+	simpleChatMessages       repository.SimpleChatMessages
+	simpleChatToolAllowances repository.SimpleChatToolAllowances
 
 	txManager tx_manager.TxManager
 }
@@ -186,6 +192,18 @@ func (r Repos) SystemSettings() repository.SystemSettingsRepo {
 	return r.systemSettings
 }
 
+func (r Repos) SimpleChats() repository.SimpleChats {
+	return r.simpleChats
+}
+
+func (r Repos) SimpleChatMessages() repository.SimpleChatMessages {
+	return r.simpleChatMessages
+}
+
+func (r Repos) SimpleChatToolAllowances() repository.SimpleChatToolAllowances {
+	return r.simpleChatToolAllowances
+}
+
 func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 	txManager := tx_manager.New(db)
@@ -201,25 +219,28 @@ func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 		vaultPostgresDatabases: vaultpostgresdatabases.New(db, encryptor),
 		dockerHosts:            dockerhosts.New(db, encryptor),
 
-		users:                 users.New(q, db),
-		sessions:              sessions.New(q),
-		subscriptions:         subscriptions.New(q),
-		subscriptionPlans:     subscriptionplans.New(q),
-		couchAccounts:         couchaccounts.New(db, encryptor),
-		userPermissions:       userpermissions.New(q),
-		mcpKey:                mcpkeys.New(q),
-		pendingAuthCodes:      pendingauthcodes.New(q),
-		mailServerSuggestions: mailserversuggestions.New(q),
-		promptsRepo:           prompts.New(db),
-		externalConnections:   externalconnections.New(q, encryptor),
-		mcpSpreadsheets:       mcpspreadsheets.New(q),
-		mcpDefinitions:        mcpdefinitions.New(q),
-		mcpConnectors:         mcpconnectors.New(q),
-		tracts:                tracts.New(q, txManager),
-		tractTemplates:        tract_templates.New(q, txManager),
-		triggers:              triggers.New(q),
-		triggerPresets:        triggerpresets.New(q),
-		systemSettings:        systemsettings.New(q),
+		users:                    users.New(q, db),
+		sessions:                 sessions.New(q),
+		subscriptions:            subscriptions.New(q),
+		subscriptionPlans:        subscriptionplans.New(q),
+		couchAccounts:            couchaccounts.New(db, encryptor),
+		userPermissions:          userpermissions.New(q),
+		mcpKey:                   mcpkeys.New(q),
+		pendingAuthCodes:         pendingauthcodes.New(q),
+		mailServerSuggestions:    mailserversuggestions.New(q),
+		promptsRepo:              prompts.New(db),
+		externalConnections:      externalconnections.New(q, encryptor),
+		mcpSpreadsheets:          mcpspreadsheets.New(q),
+		mcpDefinitions:           mcpdefinitions.New(q),
+		mcpConnectors:            mcpconnectors.New(q),
+		tracts:                   tracts.New(q, txManager),
+		tractTemplates:           tract_templates.New(q, txManager),
+		triggers:                 triggers.New(q),
+		triggerPresets:           triggerpresets.New(q),
+		systemSettings:           systemsettings.New(q),
+		simpleChats:              simplechats.New(db),
+		simpleChatMessages:       simplechatmessages.New(db),
+		simpleChatToolAllowances: simplechattoolallowances.New(db),
 
 		txManager: txManager,
 	}

@@ -18,6 +18,7 @@
   --chures-fg:         var(--color-fg-primary);
   --chures-fg-muted:   var(--color-fg-secondary);
   --chures-bg:         var(--color-bg-elevated);
+  --chures-dropdown-bg: var(--color-bg-elevated);
   --chures-surface:    var(--color-bg-card);
   --chures-input-bg:   var(--color-bg-input);
 

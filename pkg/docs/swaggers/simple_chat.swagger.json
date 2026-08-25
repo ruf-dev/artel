@@ -1,0 +1,315 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "simple_chat.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SimpleChatAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/simple-chats/create": {
+      "post": {
+        "operationId": "SimpleChatAPI_CreateSimpleChat",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiCreateSimpleChatResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiCreateSimpleChatRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleChatAPI"
+        ]
+      }
+    },
+    "/api/simple-chats/delete": {
+      "post": {
+        "operationId": "SimpleChatAPI_DeleteSimpleChat",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteSimpleChatResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiDeleteSimpleChatRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleChatAPI"
+        ]
+      }
+    },
+    "/api/simple-chats/get": {
+      "post": {
+        "operationId": "SimpleChatAPI_GetSimpleChat",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetSimpleChatResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetSimpleChatRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleChatAPI"
+        ]
+      }
+    },
+    "/api/simple-chats/list": {
+      "post": {
+        "operationId": "SimpleChatAPI_ListSimpleChats",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiListSimpleChatsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiListSimpleChatsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleChatAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_apiCreateSimpleChatRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "vaultAccess": {
+          "type": "boolean"
+        },
+        "model": {
+          "type": "string",
+          "description": "model is the OpenRouter model id the thread defaults to (simple_chats.model is\nNOT NULL). A turn may override it per-message via chatprotocol.Event.Model."
+        }
+      }
+    },
+    "artel_apiCreateSimpleChatResponse": {
+      "type": "object",
+      "properties": {
+        "chat": {
+          "$ref": "#/definitions/artel_apiSimpleChat"
+        }
+      }
+    },
+    "artel_apiDeleteSimpleChatRequest": {
+      "type": "object",
+      "properties": {
+        "chatId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiDeleteSimpleChatResponse": {
+      "type": "object"
+    },
+    "artel_apiGetSimpleChatRequest": {
+      "type": "object",
+      "properties": {
+        "chatId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiGetSimpleChatResponse": {
+      "type": "object",
+      "properties": {
+        "chat": {
+          "$ref": "#/definitions/artel_apiSimpleChat"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiSimpleChatMessage"
+          }
+        }
+      }
+    },
+    "artel_apiListSimpleChatsRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiListSimpleChatsResponse": {
+      "type": "object",
+      "properties": {
+        "chats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/artel_apiSimpleChat"
+          }
+        }
+      }
+    },
+    "artel_apiSimpleChat": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "vaultId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "vaultAccess": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "lastActivityAt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiSimpleChatMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "toolName": {
+          "type": "string"
+        },
+        "isError": {
+          "type": "boolean"
+        },
+        "model": {
+          "type": "string"
+        },
+        "seq": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "description": "SimpleChatMessage is a flat, wire-only projection of domain.SimpleChatMessage —\ntool_call_id/tool_input are internal-only and intentionally omitted here."
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

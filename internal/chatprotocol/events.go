@@ -84,6 +84,11 @@ type Event struct {
 	SessionID string  `json:"session_id,omitempty"`
 	CostUSD   float64 `json:"cost_usd,omitempty"`
 
+	// Model attributes which model produced an assistant_text_delta/assistant_text_done/
+	// turn_done event. Populated only by Simple Chat's in-process engine — the Docker
+	// workbench bridge never sets this field.
+	Model string `json:"model,omitempty"`
+
 	// auth_link / auth_code_submit
 	URL  string `json:"url,omitempty"`
 	Code string `json:"code,omitempty"`

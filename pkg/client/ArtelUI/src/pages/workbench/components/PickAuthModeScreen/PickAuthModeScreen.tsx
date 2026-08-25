@@ -6,7 +6,7 @@ import cls from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScr
 import {useExternalConnections} from "@/app/hooks/ExternalConnections.ts"
 import {ExternalProvider} from "@/app/api/artel/external_connections.pb.ts"
 import {Path} from "@/app/routing/Router.tsx"
-import AuthModeOption from "@/pages/workbench/components/AuthModeOption/AuthModeOption.tsx"
+import OptionCard from "@/components/OptionCard/OptionCard.tsx"
 
 type AuthMode = "api_key" | "subscription_login"
 
@@ -50,7 +50,7 @@ export default function PickAuthModeScreen({onStart, starting}: Props) {
         <div className={cls.PickAuthModeScreenContainer}>
             <p className={cls.ModalSub}>Choose how Claude Code should authenticate.</p>
             <div className={cls.OptionList}>
-                <AuthModeOption
+                <OptionCard
                     selected={authMode === "api_key"}
                     label="Use my Anthropic API key"
                     desc="Runs Claude Code with a connected Anthropic API key."
@@ -58,7 +58,7 @@ export default function PickAuthModeScreen({onStart, starting}: Props) {
                     hint="Connect an Anthropic key in Connections first"
                     onSelect={() => handleSelect("api_key")}
                 />
-                <AuthModeOption
+                <OptionCard
                     selected={authMode === "subscription_login"}
                     label="Log in with my Claude subscription"
                     desc="Sign in with your Claude.ai account inside the Workbench."

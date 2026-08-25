@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react"
 
-import {cn} from "@/app/utils/cn.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
-import cls from "@/pages/workbench/components/Chat/components/ChatHistorySidebar/ChatHistorySidebar.module.css"
+import HistorySidebarShell from "@/pages/workbench/components/HistorySidebarShell/HistorySidebarShell.tsx"
 // eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
 import ChatHistoryDetailScreen from "@/pages/workbench/components/Chat/components/ChatHistorySidebar/components/ChatHistoryDetailScreen/ChatHistoryDetailScreen.tsx"
 // eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
@@ -62,7 +61,7 @@ export default function ChatHistorySidebar({vaultId, open, onClose}: Props) {
     }
 
     return (
-        <div className={cn(cls.ChatHistorySidebarContainer, open && cls.ChatHistorySidebarOpen)}>
+        <HistorySidebarShell open={open}>
             {screen === "list" && (
                 <ChatHistoryListScreen
                     sessions={sessions}
@@ -79,6 +78,6 @@ export default function ChatHistorySidebar({vaultId, open, onClose}: Props) {
                     onClose={onClose}
                 />
             )}
-        </div>
+        </HistorySidebarShell>
     )
 }

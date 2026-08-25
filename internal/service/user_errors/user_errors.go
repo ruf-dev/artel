@@ -450,6 +450,38 @@ var (
 		"no docker hosts are registered — ask an administrator to add one",
 		codes.FailedPrecondition,
 	)
+
+	// simple chat.
+	// SimpleChatMissingOpenRouterConnection surfaces from simplechat.Service.CreateChat when the
+	// caller has no OpenRouter BYOK connection — Simple Chat runs entirely on the member's own
+	// key, so there is no model to talk to until one is connected.
+	SimpleChatMissingOpenRouterConnection = rerrors.New(
+		"no openrouter api key connected for this account; connect one before starting a chat",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+	)
+	// SimpleChatRequiresVaultMembership surfaces from simplechat.Service.CreateChat when the
+	// caller isn't a member of the target vault.
+	SimpleChatRequiresVaultMembership = rerrors.New(
+		"must be a vault member to create a chat",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+	// SimpleChatNotOwned surfaces whenever a caller addresses a chat thread that belongs to a
+	// different user. A Simple Chat thread is personal to its creator — unlike a workbench it is
+	// never shared across vault members — so membership in the chat's vault is not enough.
+	SimpleChatNotOwned = rerrors.New(
+		"this chat belongs to another user",
+		codes.PermissionDenied,
+		rerrors.WithHttpStatus(http.StatusForbidden),
+	)
+	// SimpleChatToolLoopExceeded guards the agent loop in run_turn.go: a model that keeps
+	// requesting tool calls without ever settling on a text answer would otherwise spin against
+	// the member's own OpenRouter credit indefinitely.
+	SimpleChatToolLoopExceeded = rerrors.New(
+		"chat exceeded the maximum number of consecutive tool calls in a single turn",
+		codes.ResourceExhausted,
+	)
 	// WorkbenchMissingDockerHost surfaces from resolveClient for a workbenches row that predates
 	// the docker_hosts pool (nullable docker_host_id, no backfill — see
 	// migrations/061_docker_hosts.sql) — there's no host to resolve a docker client from, so the

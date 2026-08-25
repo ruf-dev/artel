@@ -66,7 +66,32 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 		return domain.McpKeyContext{}, rerrors.Wrap(user_errors.Unauthenticated)
 	}
 
-	vault, err := s.vaults.GetByID(ctx, mcpKey.VaultUuid)
+	result, err := s.buildKeyContext(ctx, mcpKey.Uuid, mcpKey.VaultUuid, mcpKey.UserUuid)
+	if err != nil {
+		return domain.McpKeyContext{}, rerrors.Wrap(err, "build key context")
+	}
+
+	// context.Background() is intentional: this must outlive the request context, which
+	// net/http cancels as soon as the MCP handler's response is written.
+	go func() { //nolint:gosec,contextcheck // see comment above
+		touchErr := s.mcpKeys.TouchLastAccessed(context.Background(), mcpKey.Uuid)
+		if touchErr != nil {
+			log.Error().
+				Err(touchErr).
+				Str("key_uuid", mcpKey.Uuid.String()).
+				Msg("ResolveKey: touch last accessed failed")
+		}
+	}()
+
+	return result, nil
+}
+
+// buildKeyContext resolves vaultUuid's storage backends (CouchDB, optional S3, optional
+// ready Postgres) into a domain.McpKeyContext for keyUuid/userUuid. Shared by ResolveKey
+// (token-authenticated MCP callers) and BuildKeyContext (in-process callers, e.g. Simple
+// Chat's agent loop) — see build_key_context.go.
+func (s *ServiceImpl) buildKeyContext(ctx context.Context, keyUuid, vaultUuid, userUuid uuid.UUID) (domain.McpKeyContext, error) {
+	vault, err := s.vaults.GetByID(ctx, vaultUuid)
 	if err != nil {
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get vault")
 	}
@@ -97,7 +122,7 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 
 	var pgCtx *domain.McpKeyPostgresContext
 
-	vpgDB, err := s.vaultPostgresDatabases.GetByVaultID(ctx, mcpKey.VaultUuid)
+	vpgDB, err := s.vaultPostgresDatabases.GetByVaultID(ctx, vaultUuid)
 	if err != nil {
 		return domain.McpKeyContext{}, rerrors.Wrap(err, "get vault postgres database")
 	}
@@ -119,9 +144,9 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 	}
 
 	result := domain.McpKeyContext{
-		KeyUuid:   mcpKey.Uuid,
-		VaultUuid: mcpKey.VaultUuid,
-		UserUuid:  mcpKey.UserUuid,
+		KeyUuid:   keyUuid,
+		VaultUuid: vaultUuid,
+		UserUuid:  userUuid,
 		CouchURL:  couchInstance.Url,
 		CouchDb:   vault.CouchDBName,
 		CouchUser: couchInstance.Username,
@@ -131,18 +156,6 @@ func (s *ServiceImpl) ResolveKey(ctx context.Context, rawToken string) (domain.M
 
 		UseCouchDBForBinaries: vault.UseCouchDBForBinaries,
 	}
-
-	// context.Background() is intentional: this must outlive the request context, which
-	// net/http cancels as soon as the MCP handler's response is written.
-	go func() { //nolint:gosec,contextcheck // see comment above
-		touchErr := s.mcpKeys.TouchLastAccessed(context.Background(), mcpKey.Uuid)
-		if touchErr != nil {
-			log.Error().
-				Err(touchErr).
-				Str("key_uuid", mcpKey.Uuid.String()).
-				Msg("ResolveKey: touch last accessed failed")
-		}
-	}()
 
 	return result, nil
 }

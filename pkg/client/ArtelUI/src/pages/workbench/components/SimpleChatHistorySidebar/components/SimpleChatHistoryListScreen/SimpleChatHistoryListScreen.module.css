@@ -1,0 +1,59 @@
+.SimpleChatHistoryListScreenContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+
+    & .Header {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.75rem 1rem;
+        border-bottom: var(--border-thickness) solid var(--color-border-light);
+        flex-shrink: 0;
+    }
+
+    & .Title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        margin: 0;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .NewChatButton,
+    & .CloseButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        padding: 0;
+        flex-shrink: 0;
+
+        & .CloseIcon {
+            width: 0.9375rem;
+            height: 0.9375rem;
+        }
+    }
+
+    & .ListContainer {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    & .EmptyState {
+        text-align: center;
+        color: var(--color-fg-secondary);
+        padding: 2rem 1rem;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+}

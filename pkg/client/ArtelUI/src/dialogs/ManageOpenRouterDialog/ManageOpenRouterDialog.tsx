@@ -11,6 +11,8 @@ import LlmKeyConnectedContent from "@/components/LlmKeyConnectedContent/LlmKeyCo
 import ViewOpenRouterUsageDialog from
     "@/dialogs/ManageOpenRouterDialog/components/ViewOpenRouterUsageDialog/ViewOpenRouterUsageDialog.tsx"
 
+const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
 export default function ManageOpenRouterDialog() {
     const {CloseDialog, OpenDialog} = useDialog()
     const {connections, disconnect, addOpenAIConnection, checkOpenAIConnection} = useExternalConnections()
@@ -33,6 +35,19 @@ export default function ManageOpenRouterDialog() {
         )
     }
 
+    // Persists a newly picked model as this connection's default via the existing
+    // upsert RPC — a blank apiKey means "keep the current key" server-side (see
+    // Service.AddOpenAIConnection's doc comment), so this only ever updates
+    // defaultModel without requiring the user to re-enter their key.
+    function handleSelectDefaultModel(model: string) {
+        return addOpenAIConnection({
+            apiKey: "",
+            baseUrl: OPENROUTER_BASE_URL,
+            defaultModel: model,
+            provider: ExternalProvider.EXTERNAL_PROVIDER_OPENROUTER,
+        }).catch(e => bakeError("Failed to update default model", e))
+    }
+
     return (
         <div className={cls.ModalContainer} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
             <LlmKeyDialogHead
@@ -45,6 +60,7 @@ export default function ManageOpenRouterDialog() {
                     fields={connection.generic?.fields ?? {}}
                     onDisconnect={handleDisconnect}
                     onViewUsage={() => OpenDialog(<ViewOpenRouterUsageDialog/>)}
+                    onSelectDefaultModel={handleSelectDefaultModel}
                 />
                 : <LlmKeyConnectForm
                     providerName="OpenRouter"
@@ -53,7 +69,7 @@ export default function ManageOpenRouterDialog() {
                         + "provider. We'll verify the key against OpenRouter before saving it."
                     }
                     apiKeyPlaceholder="sk-or-…"
-                    fixedBaseUrl="https://openrouter.ai/api/v1"
+                    fixedBaseUrl={OPENROUTER_BASE_URL}
                     hideModelField
                     addConnection={(req) => addOpenAIConnection({
                         ...req,

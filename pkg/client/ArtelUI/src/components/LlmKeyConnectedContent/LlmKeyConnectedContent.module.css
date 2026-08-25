@@ -28,6 +28,10 @@
         overflow-wrap: anywhere;
     }
 
+    & .DropdownWrapper {
+        min-width: 10rem;
+    }
+
     & .ModalActions {
         display: flex;
         align-items: center;

@@ -16,11 +16,20 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        width: var(--icon-button-size);
-        height: var(--icon-button-size);
+        width: var(--chures-input-height);
+        height: var(--chures-input-height);
         padding: 0;
         background: var(--color-accent-dim);
         border: var(--border-thickness) solid var(--color-accent-border);
         border-radius: var(--border-radius-sm);
+
+        &.NewChatButtonHidden {
+            display: none;
+        }
+    }
+
+    & .SendButton {
+        flex-shrink: 0;
+        height: var(--chures-input-height);
     }
 }

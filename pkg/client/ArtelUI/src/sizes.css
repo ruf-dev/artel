@@ -53,8 +53,9 @@
     --inspector-scroll-spacer:  40vh;
     --workbench-body-padding-top: 30vh;
     --chures-input-height: 2rem;
+    --standard-button-height: 1.75rem;
 }
 
 @media (width <= 480px) {
-    :root { --chures-input-height: 3.5rem; }
+    :root { --chures-input-height: var(--standard-button-height); }
 }

@@ -1,4 +1,4 @@
-.ChatHistorySidebarContainer {
+.HistorySidebarShellContainer {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -15,7 +15,7 @@
     overflow: hidden;
     text-align: left;
 
-    &.ChatHistorySidebarOpen {
+    &.HistorySidebarShellOpen {
         transform: translateX(0);
     }
 }

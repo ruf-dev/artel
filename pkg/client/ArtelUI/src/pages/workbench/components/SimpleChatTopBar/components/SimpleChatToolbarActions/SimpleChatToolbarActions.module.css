@@ -1,0 +1,29 @@
+.SimpleChatToolbarActionsContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    & .ModelSwitcherWrapper {
+        display: flex;
+    }
+
+    & .NewChatButtonWrapper {
+        display: flex;
+    }
+
+    & .HistoryButtonWrapper {
+        display: flex;
+    }
+
+    & .NewChatButton {
+        width: var(--standard-button-height);
+        height: var(--standard-button-height);
+        padding: 0;
+    }
+
+    & .HistoryButton {
+        width: var(--standard-button-height);
+        height: var(--standard-button-height);
+        padding: 0;
+    }
+}

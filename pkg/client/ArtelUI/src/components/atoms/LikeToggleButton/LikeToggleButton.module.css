@@ -1,0 +1,26 @@
+.LikeToggleButtonContainer {
+    display: contents;
+
+    & .ToggleBtn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.25rem;
+        height: 1.25rem;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: var(--color-fg-disabled);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: color 120ms ease;
+
+        &:hover {
+            color: var(--chures-accent);
+        }
+
+        &.Liked {
+            color: var(--chures-accent);
+        }
+    }
+}

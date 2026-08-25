@@ -42,6 +42,9 @@ type Repo interface {
 	Triggers() TriggersRepo
 	TriggerPresets() TriggerPresetsRepo
 	SystemSettings() SystemSettingsRepo
+	SimpleChats() SimpleChats
+	SimpleChatMessages() SimpleChatMessages
+	SimpleChatToolAllowances() SimpleChatToolAllowances
 
 	TxManager() tx_manager.TxManager
 }
@@ -507,6 +510,42 @@ type SystemSettingsRepo interface {
 	UpdateDefaultDocsSource(ctx context.Context, source domain.DocsSource) error
 
 	WithTx(tx *sql.Tx) SystemSettingsRepo
+}
+
+// SimpleChats is the pure-DB layer for simple_chats — one saved chat thread of the in-process
+// "Simple Chat" agent per (vault, user), see domain.SimpleChat.
+type SimpleChats interface {
+	Create(ctx context.Context, vaultUuid, userUuid uuid.UUID, model string, vaultAccess bool) (domain.SimpleChat, error)
+	GetByID(ctx context.Context, chatUuid uuid.UUID) (domain.SimpleChat, error)
+	ListByVaultAndUser(ctx context.Context, vaultUuid, userUuid uuid.UUID) ([]domain.SimpleChat, error)
+	// UpdateLastActivity bumps last_activity_at (and updated_at) to now — called once per turn
+	// so ListByVaultAndUser's most-recently-active-first ordering stays accurate.
+	UpdateLastActivity(ctx context.Context, chatUuid uuid.UUID) error
+	Delete(ctx context.Context, chatUuid uuid.UUID) error
+
+	WithTx(tx postgres.DB) SimpleChats
+}
+
+// SimpleChatMessages is the pure-DB layer for simple_chat_messages — the append-only turn
+// history of a SimpleChat, see domain.SimpleChatMessage.
+type SimpleChatMessages interface {
+	Insert(ctx context.Context, msg domain.SimpleChatMessage) (domain.SimpleChatMessage, error)
+	ListByChatID(ctx context.Context, chatUuid uuid.UUID) ([]domain.SimpleChatMessage, error)
+	// GetMaxSeq returns the highest seq value stored for chatUuid, or 0 if it has no messages
+	// yet — the caller adds 1 to compute the next message's seq.
+	GetMaxSeq(ctx context.Context, chatUuid uuid.UUID) (int64, error)
+
+	WithTx(tx postgres.DB) SimpleChatMessages
+}
+
+// SimpleChatToolAllowances is the pure-DB layer for simple_chat_tool_allowances — a chat's
+// remembered "allow always" decisions for individual MCP tools, keyed by (chat_id, tool_name).
+type SimpleChatToolAllowances interface {
+	Upsert(ctx context.Context, chatUuid uuid.UUID, toolName, decision string) error
+	// Get returns Valid: false when chatUuid has no stored decision for toolName yet.
+	Get(ctx context.Context, chatUuid uuid.UUID, toolName string) (sql.Null[string], error)
+
+	WithTx(tx postgres.DB) SimpleChatToolAllowances
 }
 
 // TractTriggerLink is a read-side join projection — see TriggersRepo doc comments above for

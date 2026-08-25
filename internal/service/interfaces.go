@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/ruf-dev/artel/internal/chatprotocol"
 	anthropicClient "github.com/ruf-dev/artel/internal/clients/anthropic"
 	"github.com/ruf-dev/artel/internal/clients/couchdb"
 	"github.com/ruf-dev/artel/internal/clients/googleapi"
@@ -201,6 +202,28 @@ type VaultService interface {
 // explicitly. The four terminal-tab methods below (ListTerminalTabs/CreateTerminalTab/
 // SelectTerminalTab/CloseTerminalTab) resolve the caller from ctx too, same as
 // Create/Get/Start/Stop/Delete — they are not part of that exception.
+// SimpleChatService is the in-process, container-free "Simple Chat" agent: saved chat threads
+// per (vault, user) plus the live turn loop that streams chatprotocol.Events while calling
+// Artel's MCP tools behind permission prompts. A thread is personal to its creator — every
+// method below checks ownership, not merely vault membership.
+type SimpleChatService interface {
+	CreateChat(
+		ctx context.Context, vaultId uuid.UUID, model string, vaultAccess bool,
+	) (domain.SimpleChat, error)
+	ListChats(ctx context.Context, vaultId uuid.UUID) ([]domain.SimpleChat, error)
+	GetChat(ctx context.Context, chatId uuid.UUID) (domain.SimpleChat, []domain.SimpleChatMessage, error)
+	DeleteChat(ctx context.Context, chatId uuid.UUID) error
+	// OwnedChat loads a chat and asserts userUuid created it. Used by the chat websocket
+	// transport, which authenticates from a cookie rather than a user_context.
+	OwnedChat(ctx context.Context, chatId, userUuid uuid.UUID) (domain.SimpleChat, error)
+	// RunTurn drives one full agent turn, emitting events through sink and blocking until the
+	// model settles on a reply with no further tool calls. model overrides the thread's stored
+	// default for this turn only; empty falls back to it.
+	RunTurn(
+		ctx context.Context, chatId uuid.UUID, userText, model string, sink chatprotocol.EventSink,
+	) error
+}
+
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
@@ -325,6 +348,11 @@ type McpService interface {
 	DeleteCommunityConnector(ctx context.Context, name string) error
 	// ResolveKey validates the raw bearer token and returns vault+couch context.
 	ResolveKey(ctx context.Context, rawToken string) (domain.McpKeyContext, error)
+	// BuildKeyContext builds a domain.McpKeyContext for an already-authenticated in-process
+	// caller (e.g. Simple Chat's agent loop) acting as userUuid within vaultUuid — unlike
+	// ResolveKey, there is no mcp_keys token involved. Requires userUuid to be a member of
+	// vaultUuid.
+	BuildKeyContext(ctx context.Context, vaultUuid, userUuid uuid.UUID) (domain.McpKeyContext, error)
 	// ListTools returns the built-in tool definitions (vault tools + connections).
 	ListTools(ctx context.Context) ([]domain.McpToolDef, error)
 	// IsBuiltinTool reports whether name is a built-in tool (vault tools + connections).

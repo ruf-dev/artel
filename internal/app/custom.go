@@ -22,6 +22,7 @@ import (
 	repopg "github.com/ruf-dev/artel/internal/repository/pg"
 	"github.com/ruf-dev/artel/internal/service"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
+	"github.com/ruf-dev/artel/internal/service/v1/simplechat"
 	"github.com/ruf-dev/artel/internal/service/v1/tract"
 	"github.com/ruf-dev/artel/internal/service/v1/tract/script"
 	"github.com/ruf-dev/artel/internal/service/v1/workbench"
@@ -42,6 +43,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/public_docs_api"
 	"github.com/ruf-dev/artel/internal/transport/s3_instances_api"
 	"github.com/ruf-dev/artel/internal/transport/setup_wizard_api"
+	"github.com/ruf-dev/artel/internal/transport/simple_chat_api"
 	"github.com/ruf-dev/artel/internal/transport/skills_api"
 	"github.com/ruf-dev/artel/internal/transport/task_trackers_api"
 	"github.com/ruf-dev/artel/internal/transport/telegram_webhook"
@@ -128,6 +130,14 @@ func (c *Custom) Init(a *App) error {
 		repo.McpDefinitions(), tractToolExecutor, services.SubscriptionService(), scriptEngines, tractLlmExecutor,
 	)
 
+	// SimpleChat is constructed here (not in svcv1.New) for the same reason as Tract: its agent
+	// loop composes the already-built Mcp service to list and execute tools, which isn't
+	// available as a service.McpService value mid-construction of the Services struct literal.
+	services.SimpleChat = simplechat.New(
+		repo.SimpleChats(), repo.SimpleChatMessages(), repo.SimpleChatToolAllowances(),
+		repo.VaultMembers(), repo.ExternalConnections(), services.McpService(),
+	)
+
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that
 	// TractService exists — breaks the construction-order cycle without Mcp importing Tract.
 	services.McpService().SetTractService(a.Ctx, services.TractService())
@@ -178,6 +188,12 @@ func (c *Custom) Init(a *App) error {
 	)
 	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
 	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
+	simpleChatImpl := simple_chat_api.New(services.SimpleChatService())
+	// Registered as a raw http handler rather than an RPC: the live Simple Chat turn is a
+	// chatprotocol.Event WebSocket exchange, which the grpc-gateway can't carry. Running outside
+	// the gRPC interceptor chain, it authenticates each connection itself from the session
+	// cookie — hence the auth service passed in alongside the chat service.
+	simpleChatWsHandler := simple_chat_api.NewChatWsHandler(services.Auth, services.SimpleChatService())
 	oauthHandler := mcp_api.NewOAuthHandler(services.Auth, services.Vault, services.McpService(), repo.PendingAuthCodes())
 	// Registered as a raw http handler rather than an RPC: it reverse-proxies a browser straight
 	// through to the ttyd server inside a vault's workbench container (HTML/JS/CSS plus a
@@ -300,6 +316,8 @@ func (c *Custom) Init(a *App) error {
 			pb.VaultsAPI_ListInviteLinks_FullMethodName,
 			pb.VaultsAPI_ListMembers_FullMethodName,
 			pb.VaultsAPI_ListVaults_FullMethodName,
+			pb.SimpleChatAPI_ListSimpleChats_FullMethodName,
+			pb.SimpleChatAPI_GetSimpleChat_FullMethodName,
 		),
 		middleware.GrpcAdminInterceptor(services.Auth,
 			pb.CouchInstancesAPI_RegisterCouchInstance_FullMethodName,
@@ -340,11 +358,12 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSystemSettingsAPI_UpdateDefaultDocsVault_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, skillsImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl)
+	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, skillsImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl, simpleChatImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler(vaults_api.TerminalRoutePattern, workbenchTerminalHandler)
 	c.Transport.AddHttpHandler(vaults_api.TerminalShellRoutePattern, workbenchTerminalShellHandler)
+	c.Transport.AddHttpHandler(simple_chat_api.ChatWsRoutePattern, simpleChatWsHandler)
 	c.Transport.AddHttpHandler("/mcp", mcpHandler)
 	c.Transport.AddHttpHandler("/webhooks/gitlab/", gitlabWebhookHandler)
 	c.Transport.AddHttpHandler("/webhooks/telegram/", telegramWebhookHandler)

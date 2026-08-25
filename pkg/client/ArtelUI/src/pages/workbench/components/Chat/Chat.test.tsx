@@ -1,112 +1,81 @@
 import {describe, expect, it, vi} from "vitest"
-import {fireEvent, render, screen, waitFor} from "@testing-library/react"
+import {render, screen} from "@testing-library/react"
+import {ReactNode} from "react"
 
 import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
-import * as chatHistoryApi from "@/pages/workbench/processes/chatHistoryApi.ts"
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 
-function renderChat(
-    items: ChatItem[] = [],
-    status: ChatConnectionStatus = "open",
-    vaultId?: string,
-    historyOpen = false,
-) {
-    const sendMessage = vi.fn()
-    const sendPermissionDecision = vi.fn()
-    const onNewChat = vi.fn()
-    const onCloseHistory = vi.fn()
+interface MockChatPanelShellProps {
+    bannerStatus: ChatConnectionStatus
+    composerPlaceholder: string
+    composerDisabled: boolean
+    historySidebar?: ReactNode
+}
 
-    const result = render(
+// Chat.tsx is now a thin prop-passthrough wrapper around ChatPanelShell — the
+// behavioral scenarios (composer send/clear, overlay click, history fetch, etc.)
+// live in ChatPanelShell.test.tsx, so this only asserts the right props reach it.
+vi.mock("@/pages/workbench/components/ChatPanelShell/ChatPanelShell.tsx", () => ({
+    default: (props: MockChatPanelShellProps) => (
+        <div className="chat-panel-shell" data-testid="chat-panel-shell">
+            <span data-testid="banner-status">{props.bannerStatus}</span>
+            <span data-testid="composer-placeholder">{props.composerPlaceholder}</span>
+            <span data-testid="composer-disabled">{String(props.composerDisabled)}</span>
+            <span data-testid="history-sidebar-present">{String(Boolean(props.historySidebar))}</span>
+        </div>
+    ),
+}))
+
+function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open", vaultId?: string) {
+    render(
         <Chat
             items={items}
             status={status}
-            sendMessage={sendMessage}
-            sendPermissionDecision={sendPermissionDecision}
-            onNewChat={onNewChat}
+            sendMessage={vi.fn()}
+            sendPermissionDecision={vi.fn()}
+            onNewChat={vi.fn()}
             vaultId={vaultId}
-            historyOpen={historyOpen}
-            onCloseHistory={onCloseHistory}
+            historyOpen={false}
+            onCloseHistory={vi.fn()}
         />,
     )
-
-    return {sendMessage, sendPermissionDecision, onNewChat, onCloseHistory, container: result.container}
 }
 
 describe("Chat", () => {
-    it("sends a user message via the composer and clears the input", () => {
-        const {sendMessage} = renderChat()
-
-        const input = screen.getByPlaceholderText("Message the workbench…")
-        fireEvent.change(input, {target: {value: "hello there"}})
-        fireEvent.click(screen.getByLabelText("Send message"))
-
-        expect(sendMessage).toHaveBeenCalledWith("hello there")
-    })
-
-    it("shows the reconnecting banner when the socket drops", () => {
+    it("passes status through to ChatPanelShell as bannerStatus", () => {
         renderChat([], "reconnecting")
 
-        expect(screen.getByText("Reconnecting…")).toBeInTheDocument()
+        expect(screen.getByTestId("banner-status")).toHaveTextContent("reconnecting")
     })
 
-    it("calls onNewChat when the New Chat button is clicked", () => {
-        const {onNewChat} = renderChat()
+    it("passes the workbench composer placeholder", () => {
+        renderChat()
 
-        fireEvent.click(screen.getByLabelText("New chat"))
-
-        expect(onNewChat).toHaveBeenCalledTimes(1)
+        expect(screen.getByTestId("composer-placeholder")).toHaveTextContent("Message the workbench…")
     })
 
-    it("does not render the sidebar overlay when historyOpen is false", () => {
-        const {container} = renderChat([], "open", "v1", false)
+    it("disables the composer when status is not open", () => {
+        renderChat([], "connecting")
 
-        expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeFalsy()
+        expect(screen.getByTestId("composer-disabled")).toHaveTextContent("true")
     })
 
-    it("renders the history sidebar and fetches sessions when historyOpen is true", async () => {
-        const listSessionsSpy = vi.spyOn(chatHistoryApi, "listChatSessions").mockResolvedValue([])
+    it("enables the composer when status is open", () => {
+        renderChat([], "open")
 
-        const {container} = renderChat([], "open", "v1", true)
-
-        await waitFor(() => {
-            expect(listSessionsSpy).toHaveBeenCalledWith("v1")
-            expect(screen.getByText("Chat History")).toBeInTheDocument()
-            expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeTruthy()
-        })
-
-        listSessionsSpy.mockRestore()
+        expect(screen.getByTestId("composer-disabled")).toHaveTextContent("false")
     })
 
-    it("calls onCloseHistory when the overlay is clicked", async () => {
-        vi.spyOn(chatHistoryApi, "listChatSessions").mockResolvedValue([])
+    it("passes a history sidebar when vaultId is set", () => {
+        renderChat([], "open", "v1")
 
-        const {container, onCloseHistory} = renderChat([], "open", "v1", true)
-
-        await waitFor(() => {
-            expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeTruthy()
-        })
-
-        fireEvent.click(container.querySelector('[class*="ChatContentOverlay"]') as Element)
-
-        expect(onCloseHistory).toHaveBeenCalledTimes(1)
-
-        vi.restoreAllMocks()
+        expect(screen.getByTestId("history-sidebar-present")).toHaveTextContent("true")
     })
 
-    it("calls onCloseHistory when the sidebar's own close button is clicked", async () => {
-        vi.spyOn(chatHistoryApi, "listChatSessions").mockResolvedValue([])
+    it("passes no history sidebar when vaultId is undefined", () => {
+        renderChat([], "open", undefined)
 
-        const {onCloseHistory} = renderChat([], "open", "v1", true)
-
-        await waitFor(() => {
-            expect(screen.getByText("Chat History")).toBeInTheDocument()
-        })
-
-        fireEvent.click(screen.getByLabelText("Close chat history"))
-
-        expect(onCloseHistory).toHaveBeenCalledTimes(1)
-
-        vi.restoreAllMocks()
+        expect(screen.getByTestId("history-sidebar-present")).toHaveTextContent("false")
     })
 })
