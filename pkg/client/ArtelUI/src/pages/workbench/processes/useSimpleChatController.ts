@@ -1,6 +1,7 @@
-import {useMemo} from "react"
+import {useCallback, useMemo} from "react"
 
 import {useSimpleChat, useSimpleChatMutations} from "@/app/hooks/SimpleChat.ts"
+import {useLastUsedModel} from "@/app/hooks/useLastUsedModel.ts"
 import {simpleChatMessagesToItems} from "@/pages/workbench/processes/simpleChatMessages.ts"
 import {useOpenRouterModels} from "@/pages/workbench/processes/useOpenRouterModels.ts"
 import {useSimpleChatSession} from "@/pages/workbench/processes/useSimpleChatSession.ts"
@@ -15,26 +16,37 @@ interface Params {
 
 // Lifts Simple Chat's session/model state out of SimpleChat.tsx up to
 // WorkbenchPage.tsx, mirroring how docker's chatSession (useChatSession) already
-// lives there — needed so the page-level SimpleChatTopBar (a sibling of the chat
-// panel, not nested inside it) can render the model switcher/new-chat button.
-// `active` gates every underlying hook exactly like docker's chatSession is only
-// constructed while Docker mode is the effective mode, so switching to Simple
-// Chat mode doesn't leave two sets of network calls/sockets running at once.
+// lives there. `active` gates every underlying hook exactly like docker's
+// chatSession is only constructed while Docker mode is the effective mode, so
+// switching to Simple Chat mode doesn't leave two sets of network calls/sockets
+// running at once.
 export function useSimpleChatController({chatId, vaultId, active, onChatCreated, bakeError}: Params) {
     const effectiveChatId = active ? chatId : undefined
 
     const {chat, messages} = useSimpleChat(effectiveChatId)
     const {models, recommendedDefaultModel, isLoading: modelsLoading} = useOpenRouterModels(active)
     const {create} = useSimpleChatMutations(vaultId)
+    const {lastUsedModel, setLastUsedModel} = useLastUsedModel()
 
     const initialItems = useMemo(() => simpleChatMessagesToItems(messages), [messages])
-    const initialModel = chat?.model || recommendedDefaultModel || models[0] || ""
+    const initialModel = chat?.model || lastUsedModel || recommendedDefaultModel || models[0] || ""
 
     const {items, status, sendMessage, sendPermissionDecision, currentModel, setModel} =
         useSimpleChatSession(effectiveChatId, initialModel, initialItems)
 
+    // Remembers whatever model ends up selected (explicit switcher change, or the
+    // one a new chat gets created with) so the next chat defaults to it — see
+    // useLastUsedModel.ts.
+    const handleSetModel = useCallback((model: string) => {
+        setModel(model)
+        setLastUsedModel(model)
+    }, [setModel, setLastUsedModel])
+
     function handleNewChat() {
-        const model = currentModel || recommendedDefaultModel || models[0] || ""
+        const model = currentModel || lastUsedModel || recommendedDefaultModel || models[0] || ""
+        if (model) {
+            setLastUsedModel(model)
+        }
         create({model, vaultAccess: true})
             .then(newChat => onChatCreated(newChat.id))
             .catch(e => bakeError("Failed to create chat", e))
@@ -46,7 +58,7 @@ export function useSimpleChatController({chatId, vaultId, active, onChatCreated,
         sendMessage,
         sendPermissionDecision,
         currentModel,
-        setModel,
+        setModel: handleSetModel,
         models,
         modelsLoading,
         handleNewChat,
@@ -66,20 +78,9 @@ export function toSimpleChatSessionBundle(controller: SimpleChatController) {
         sendMessage: controller.sendMessage,
         sendPermissionDecision: controller.sendPermissionDecision,
         onNewChat: controller.handleNewChat,
-    }
-}
-
-// Same rationale as toSimpleChatSessionBundle, for WorkbenchHeader.tsx's
-// SimpleChatTopBar-facing prop bundle. `onToggleHistory` is page-owned
-// (simpleHistoryOpen toggling lives in useWorkbenchModeControls), not part of
-// the controller itself, so it's threaded through as a parameter.
-export function toSimpleChatTopBarProps(controller: SimpleChatController, onToggleHistory: () => void) {
-    return {
         models: controller.models,
         currentModel: controller.currentModel,
         modelsLoading: controller.modelsLoading,
         onChangeModel: controller.setModel,
-        onNewChat: controller.handleNewChat,
-        onToggleHistory,
     }
 }

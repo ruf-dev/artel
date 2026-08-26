@@ -203,22 +203,22 @@ func (h *ChatWsHandler) startTurn(
 
 	turns.Add(1)
 
-	go h.runTurn(ctx, turns, sink, chat.Uuid, text, model)
+	go h.runTurn(ctx, turns, sink, chat, text, model)
 }
 
 func (h *ChatWsHandler) runTurn(
 	ctx context.Context,
 	turns *sync.WaitGroup,
 	sink *connSink,
-	chatUuid uuid.UUID,
+	chat domain.SimpleChat,
 	text string,
 	model string,
 ) {
 	defer turns.Done()
 
-	err := h.simpleChatSvc.RunTurn(ctx, chatUuid, text, model, sink)
+	err := h.simpleChatSvc.RunTurn(ctx, chat, text, model, sink)
 	if err != nil {
-		log.Warn().Err(err).Str("chat_id", chatUuid.String()).Msg("simple chat turn failed")
+		log.Warn().Err(err).Str("chat_id", chat.Uuid.String()).Msg("simple chat turn failed")
 	}
 }
 

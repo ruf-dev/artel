@@ -3,6 +3,7 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
+    box-sizing: border-box;
 
     & .Header {
         display: flex;
@@ -24,8 +25,7 @@
         white-space: nowrap;
     }
 
-    & .NewChatButton,
-    & .CloseButton {
+    & .CollapseButton {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -33,11 +33,26 @@
         height: 1.75rem;
         padding: 0;
         flex-shrink: 0;
+    }
 
-        & .CloseIcon {
-            width: 0.9375rem;
-            height: 0.9375rem;
-        }
+    & .CollapseIcon {
+        transform: rotate(90deg);
+    }
+
+    & .NewChatButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    & .ModelRow {
+        padding: 0.75rem 1rem;
+        border-bottom: var(--border-thickness) solid var(--color-border-light);
+        flex-shrink: 0;
     }
 
     & .ListContainer {

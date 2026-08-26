@@ -24,7 +24,6 @@ interface Params {
 export function useWorkbenchModeControls({exists, handleCreateDocker}: Params) {
     const [modeChoice, setModeChoice] = useState<WorkbenchModeChoice>(null)
     const [simpleChatId, setSimpleChatId] = useState<string | undefined>(undefined)
-    const [simpleHistoryOpen, setSimpleHistoryOpen] = useState(false)
 
     const effectiveMode: WorkbenchMode | "picking" = modeChoice ?? (exists ? "docker" : "picking")
 
@@ -38,23 +37,11 @@ export function useWorkbenchModeControls({exists, handleCreateDocker}: Params) {
         setSimpleChatId(chatId)
     }
 
-    function toggleSimpleHistory() {
-        setSimpleHistoryOpen(open => !open)
-    }
-
-    function closeSimpleHistory() {
-        if (simpleChatId) setSimpleHistoryOpen(false)
-    }
-
     return {
         effectiveMode,
         simpleChatId,
         setSimpleChatId,
-        simpleHistoryOpen,
-        setSimpleHistoryOpen,
         handlePickDocker,
         handleSimpleChatCreated,
-        toggleSimpleHistory,
-        closeSimpleHistory,
     }
 }

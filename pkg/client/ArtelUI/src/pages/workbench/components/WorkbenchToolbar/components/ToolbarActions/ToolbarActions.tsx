@@ -1,5 +1,7 @@
 import {Button} from "@vervstack/chures"
 import {AnimatePresence, motion} from "framer-motion"
+import {MorphIcon} from "morphicons/react"
+import {Play, Square} from "lucide"
 
 import {cn} from "@/app/utils/cn.ts"
 import WorkbenchSettingsMenu
@@ -87,15 +89,12 @@ export default function ToolbarActions(props: Props) {
                     disabled={props.stopping || props.starting}
                     aria-label={props.stopping ? "Stopping" : props.isRunning ? "Stop" : "Start"}
                 >
-                    {props.isRunning ? (
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="var(--color-error)">
-                            <rect x="5" y="5" width="14" height="14" rx="1.5"/>
-                        </svg>
-                    ) : (
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="#a0dc8c">
-                            <polygon points="6 4 20 12 6 20"/>
-                        </svg>
-                    )}
+                    <MorphIcon
+                        icon={props.isRunning ? Square : Play}
+                        size={20}
+                        strokeWidth={1.6}
+                        className={cn(cls.StartStopIcon, props.isRunning && cls.StartStopIconRunning)}
+                    />
                 </Button>
             </motion.div>
             {props.vaultId && (

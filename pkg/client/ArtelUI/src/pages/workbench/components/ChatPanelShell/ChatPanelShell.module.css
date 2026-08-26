@@ -4,9 +4,6 @@
     flex: 1;
     min-height: 0;
     width: 100%;
-    background: var(--color-bg-card);
-    border: var(--border-thickness) solid var(--color-border-light);
-    border-radius: var(--border-radius-md);
     overflow: hidden;
     position: relative;
     text-align: left;

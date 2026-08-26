@@ -42,20 +42,41 @@ func NewLiveSyncClient(baseURL, dbName, username, password string) *LiveSyncClie
 // same style as the existing "_design/" skip below.
 const skillsFolderPrefix = ".skills/"
 
+// chatHistoryFolderPrefix mirrors domain.ChatHistoryFolderPrefix — kept as a local literal for
+// the same reason as skillsFolderPrefix above.
+const chatHistoryFolderPrefix = ".chat_history/"
+
 func (c *LiveSyncClient) ListNotes(ctx context.Context) ([]NoteEntry, error) {
-	return c.listNoteEntries(ctx, false)
+	return c.listNoteEntries(ctx, reservedFolderNone)
 }
 
-// ListSkillNotes lists notes under the reserved .skills/ folder — the mirror image of
+// ListSkillNotes lists notes under the reserved .skills/ folder — one of the mirror images of
 // ListNotes's skip. The skills service uses this to enumerate skill definitions that ListNotes
 // intentionally hides from the regular notes listing.
 func (c *LiveSyncClient) ListSkillNotes(ctx context.Context) ([]NoteEntry, error) {
-	return c.listNoteEntries(ctx, true)
+	return c.listNoteEntries(ctx, reservedFolderSkills)
 }
 
-// listNoteEntries is the shared AllDocs scan behind ListNotes and ListSkillNotes; skillsOnly
-// picks which side of the .skills/ boundary to keep.
-func (c *LiveSyncClient) listNoteEntries(ctx context.Context, skillsOnly bool) ([]NoteEntry, error) {
+// ListChatNotes lists notes under the reserved .chat_history/ folder — the Simple Chat mirror of
+// ListSkillNotes. The simplechat service uses this to enumerate saved chat threads that
+// ListNotes intentionally hides from the regular notes listing.
+func (c *LiveSyncClient) ListChatNotes(ctx context.Context) ([]NoteEntry, error) {
+	return c.listNoteEntries(ctx, reservedFolderChatHistory)
+}
+
+// reservedFolder selects which side of a reserved-folder boundary listNoteEntries keeps.
+type reservedFolder int
+
+const (
+	// reservedFolderNone is ListNotes's mode: every note outside every reserved folder.
+	reservedFolderNone reservedFolder = iota
+	reservedFolderSkills
+	reservedFolderChatHistory
+)
+
+// listNoteEntries is the shared AllDocs scan behind ListNotes, ListSkillNotes, and
+// ListChatNotes; want picks which side of the reserved-folder boundaries to keep.
+func (c *LiveSyncClient) listNoteEntries(ctx context.Context, want reservedFolder) ([]NoteEntry, error) {
 	rows := c.db.AllDocs(ctx, kivik.Params(map[string]any{"include_docs": true}))
 	defer utils.CloseWithLog(rows, "error closing list notes request")
 
@@ -71,8 +92,22 @@ func (c *LiveSyncClient) listNoteEntries(ctx context.Context, skillsOnly bool) (
 			continue
 		}
 
-		if strings.HasPrefix(id, skillsFolderPrefix) != skillsOnly {
-			continue
+		isSkill := strings.HasPrefix(id, skillsFolderPrefix)
+		isChatHistory := strings.HasPrefix(id, chatHistoryFolderPrefix)
+
+		switch want {
+		case reservedFolderNone:
+			if isSkill || isChatHistory {
+				continue
+			}
+		case reservedFolderSkills:
+			if !isSkill {
+				continue
+			}
+		case reservedFolderChatHistory:
+			if !isChatHistory {
+				continue
+			}
 		}
 
 		var doc docScan
@@ -299,6 +334,10 @@ func (c *LiveSyncClient) ListFiles(ctx context.Context) ([]FileEntry, error) {
 		}
 
 		if strings.HasPrefix(id, skillsFolderPrefix) {
+			continue
+		}
+
+		if strings.HasPrefix(id, chatHistoryFolderPrefix) {
 			continue
 		}
 

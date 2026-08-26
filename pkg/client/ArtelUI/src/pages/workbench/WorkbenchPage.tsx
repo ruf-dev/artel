@@ -11,6 +11,7 @@ import {
     useWorkbenchTerminalTabMutations,
 } from "@/app/hooks/Workbench.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import {useDocumentTitle} from "@/app/hooks/useDocumentTitle.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
 import PickWorkbenchModeScreen from "@/pages/workbench/components/PickWorkbenchModeScreen/PickWorkbenchModeScreen.tsx"
 import WorkbenchHeader from "@/pages/workbench/components/WorkbenchHeader/WorkbenchHeader.tsx"
@@ -19,7 +20,6 @@ import {type WorkbenchView} from "@/pages/workbench/components/WorkbenchToolbar/
 import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
 import {
     toSimpleChatSessionBundle,
-    toSimpleChatTopBarProps,
     useSimpleChatController,
 } from "@/pages/workbench/processes/useSimpleChatController.ts"
 import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLifecycle.ts"
@@ -75,6 +75,8 @@ export default function WorkbenchPage() {
         }
     }, [awaitingAuth, view])
 
+    useDocumentTitle(vaultName)
+
     return (
         <div className={cn(cls.WorkbenchPageContainer, terminalViewActive && cls.TerminalViewActive)}>
             <div className={cn(cls.Body, genericCentered && cls.BodyCentered)}>
@@ -107,8 +109,6 @@ export default function WorkbenchPage() {
                         onCloseTab={handleCloseTab}
                         simpleChatId={modeControls.simpleChatId}
                         onSelectSimpleChat={modeControls.setSimpleChatId}
-                        simpleHistoryOpen={modeControls.simpleHistoryOpen}
-                        onCloseSimpleHistory={modeControls.closeSimpleHistory}
                         simpleChatSession={toSimpleChatSessionBundle(simpleChatController)}
                     />
                 )}
@@ -125,7 +125,6 @@ export default function WorkbenchPage() {
                 effectiveMode={effectiveMode}
                 exists={exists}
                 vaultId={vaultId}
-                vaultName={vaultName}
                 status={status}
                 onStart={lifecycle.handleStartClick}
                 onStop={lifecycle.handleStop}
@@ -135,7 +134,6 @@ export default function WorkbenchPage() {
                 onViewChange={setView}
                 chatLocked={awaitingAuth}
                 onToggleHistory={toggleHistory}
-                simpleChatTopBar={toSimpleChatTopBarProps(simpleChatController, modeControls.toggleSimpleHistory)}
             />
         </div>
     )

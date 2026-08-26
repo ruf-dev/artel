@@ -1,0 +1,22 @@
+.SimpleChatHistorySidebarCollapsedRailContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+
+    & button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--icon-button-size);
+        height: var(--icon-button-size);
+        padding: 0;
+        flex-shrink: 0;
+    }
+}
+
+.ExpandIcon {
+    transform: rotate(-90deg);
+}

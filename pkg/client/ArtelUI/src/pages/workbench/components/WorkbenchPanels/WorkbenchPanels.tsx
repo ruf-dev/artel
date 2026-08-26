@@ -23,6 +23,10 @@ interface SimpleChatSessionBundle {
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
+    models: string[]
+    currentModel: string
+    modelsLoading?: boolean
+    onChangeModel: (model: string) => void
 }
 
 interface Props {
@@ -42,8 +46,6 @@ interface Props {
     onCloseTab: (tabId: string) => void
     simpleChatId?: string
     onSelectSimpleChat: (chatId: string | undefined) => void
-    simpleHistoryOpen: boolean
-    onCloseSimpleHistory: () => void
     simpleChatSession: SimpleChatSessionBundle
 }
 
@@ -80,8 +82,6 @@ export default function WorkbenchPanels(props: Props) {
                     vaultId={props.vaultId}
                     onSelectChat={props.onSelectSimpleChat}
                     session={props.simpleChatSession}
-                    historyOpen={props.simpleHistoryOpen || !props.simpleChatId}
-                    onCloseHistory={props.onCloseSimpleHistory}
                 />
             )}
         </AnimatePresence>

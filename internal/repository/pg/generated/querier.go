@@ -23,7 +23,6 @@ type Querier interface {
 	CreateMcpKey(ctx context.Context, arg CreateMcpKeyParams) (McpKey, error)
 	CreatePendingAuthCode(ctx context.Context, arg CreatePendingAuthCodeParams) error
 	CreateSession(ctx context.Context, arg CreateSessionParams) (CreateSessionRow, error)
-	CreateSimpleChat(ctx context.Context, arg CreateSimpleChatParams) (SimpleChat, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error)
 	CreateVaultInvite(ctx context.Context, arg CreateVaultInviteParams) (VaultInvite, error)
@@ -45,7 +44,6 @@ type Querier interface {
 	DeletePostgresInstance(ctx context.Context, id uuid.UUID) error
 	DeleteS3Instance(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, token string) error
-	DeleteSimpleChat(ctx context.Context, id uuid.UUID) error
 	DeleteTract(ctx context.Context, id uuid.UUID) error
 	DeleteTractTemplate(ctx context.Context, id uuid.UUID) error
 	DeleteTrigger(ctx context.Context, id uuid.UUID) error
@@ -61,7 +59,6 @@ type Querier interface {
 	GetDockerHostWithCreds(ctx context.Context, id uuid.UUID) (DockerHost, error)
 	GetExternalConnectionByID(ctx context.Context, id uuid.UUID) (ExternalConnection, error)
 	GetExternalConnectionByUserAndProvider(ctx context.Context, arg GetExternalConnectionByUserAndProviderParams) (ExternalConnection, error)
-	GetMaxSeqForChat(ctx context.Context, chatID uuid.UUID) (int64, error)
 	GetMcpConnector(ctx context.Context, arg GetMcpConnectorParams) (McpConnector, error)
 	GetMcpDefinition(ctx context.Context, name string) (Mcp, error)
 	GetMcpKeyByID(ctx context.Context, id uuid.UUID) (McpKey, error)
@@ -77,8 +74,6 @@ type Querier interface {
 	GetSessionByToken(ctx context.Context, token string) (GetSessionByTokenRow, error)
 	GetSessionWithUser(ctx context.Context, token string) (GetSessionWithUserRow, error)
 	GetSessionsByUserID(ctx context.Context, userID uuid.UUID) ([]Session, error)
-	GetSimpleChatByID(ctx context.Context, id uuid.UUID) (SimpleChat, error)
-	GetSimpleChatToolAllowance(ctx context.Context, arg GetSimpleChatToolAllowanceParams) (string, error)
 	GetSubscriptionByUser(ctx context.Context, userID uuid.UUID) (Subscription, error)
 	GetSubscriptionPlan(ctx context.Context, planKey string) (GetSubscriptionPlanRow, error)
 	GetSubscriptionWithPlan(ctx context.Context, userID uuid.UUID) (GetSubscriptionWithPlanRow, error)
@@ -112,7 +107,6 @@ type Querier interface {
 	InsertExternalConnection(ctx context.Context, arg InsertExternalConnectionParams) (ExternalConnection, error)
 	InsertMcpConnector(ctx context.Context, arg InsertMcpConnectorParams) (McpConnector, error)
 	InsertMcpSpreadsheet(ctx context.Context, arg InsertMcpSpreadsheetParams) (McpSpreadsheet, error)
-	InsertSimpleChatMessage(ctx context.Context, arg InsertSimpleChatMessageParams) (SimpleChatMessage, error)
 	InsertTract(ctx context.Context, arg InsertTractParams) (Tract, error)
 	InsertTractRun(ctx context.Context, arg InsertTractRunParams) (TractRun, error)
 	InsertTractRunStep(ctx context.Context, arg InsertTractRunStepParams) (TractRunStep, error)
@@ -136,8 +130,6 @@ type Querier interface {
 	ListMcpToolsByMcpName(ctx context.Context, mcpName string) ([]McpTool, error)
 	ListPostgresInstances(ctx context.Context) ([]PostgresInstance, error)
 	ListS3Instances(ctx context.Context) ([]ListS3InstancesRow, error)
-	ListSimpleChatMessagesByChatID(ctx context.Context, chatID uuid.UUID) ([]SimpleChatMessage, error)
-	ListSimpleChatsByVaultAndUser(ctx context.Context, arg ListSimpleChatsByVaultAndUserParams) ([]SimpleChat, error)
 	ListSubscriptionPlans(ctx context.Context) ([]ListSubscriptionPlansRow, error)
 	ListTractRunStepsByRun(ctx context.Context, runID uuid.UUID) ([]TractRunStep, error)
 	ListTractRunsByTract(ctx context.Context, arg ListTractRunsByTractParams) ([]TractRun, error)
@@ -210,7 +202,6 @@ type Querier interface {
 	UpdateDockerHost(ctx context.Context, arg UpdateDockerHostParams) error
 	UpdatePostgresInstance(ctx context.Context, arg UpdatePostgresInstanceParams) error
 	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
-	UpdateSimpleChatLastActivity(ctx context.Context, id uuid.UUID) error
 	UpdateSystemSettingsAuthMethods(ctx context.Context, arg UpdateSystemSettingsAuthMethodsParams) error
 	UpdateSystemSettingsDefaultDocsSource(ctx context.Context, defaultDocsSource string) error
 	UpdateSystemSettingsDefaultDocsVault(ctx context.Context, defaultDocsVaultID uuid.NullUUID) error
@@ -225,7 +216,6 @@ type Querier interface {
 	UpsertExternalConnection(ctx context.Context, arg UpsertExternalConnectionParams) (ExternalConnection, error)
 	UpsertMcpDefinition(ctx context.Context, arg UpsertMcpDefinitionParams) (Mcp, error)
 	UpsertMcpTool(ctx context.Context, arg UpsertMcpToolParams) (McpTool, error)
-	UpsertSimpleChatToolAllowance(ctx context.Context, arg UpsertSimpleChatToolAllowanceParams) error
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)
 	UpsertSubscriptionOverrides(ctx context.Context, arg UpsertSubscriptionOverridesParams) (Subscription, error)
 	UpsertTelegramIdentity(ctx context.Context, arg UpsertTelegramIdentityParams) error

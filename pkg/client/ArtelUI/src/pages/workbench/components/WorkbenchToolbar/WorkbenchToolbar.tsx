@@ -6,7 +6,6 @@ import {WorkbenchView} from "@/pages/workbench/components/WorkbenchToolbar/Workb
 export type {WorkbenchView} from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchView.ts"
 
 interface WorkbenchToolbarProps {
-    vaultName: string
     status: string
     exists: boolean
     vaultId?: string
@@ -27,7 +26,6 @@ export default function WorkbenchToolbar(props: WorkbenchToolbarProps) {
 
     return (
         <WorkbenchTopBarShell
-            vaultName={props.vaultName}
             statusBadge={<WorkbenchStatusBadge status={props.exists ? props.status : "not_configured"}/>}
             actions={props.exists && (
                 <ToolbarActions

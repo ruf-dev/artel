@@ -134,8 +134,8 @@ func (c *Custom) Init(a *App) error {
 	// loop composes the already-built Mcp service to list and execute tools, which isn't
 	// available as a service.McpService value mid-construction of the Services struct literal.
 	services.SimpleChat = simplechat.New(
-		repo.SimpleChats(), repo.SimpleChatMessages(), repo.SimpleChatToolAllowances(),
-		repo.VaultMembers(), repo.ExternalConnections(), services.McpService(),
+		repo.Vaults(), repo.VaultMembers(), repo.CouchInstances(), repo.CouchAccounts(),
+		repo.ExternalConnections(), services.McpService(),
 	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that

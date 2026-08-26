@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
@@ -57,15 +58,10 @@ type streamResult struct {
 // between an assistant row and its tool-result rows leaves the partial prefix persisted, which
 // replays as valid history because tool rows always carry their own tool_call_id.
 func (s *Service) RunTurn(
-	ctx context.Context, chatId uuid.UUID, userText, model string, sink chatprotocol.EventSink,
+	ctx context.Context, chat domain.SimpleChat, userText, model string, sink chatprotocol.EventSink,
 ) error {
 	// Writes outlive ctx so a disconnect mid-turn doesn't discard completed work.
 	persistCtx := context.WithoutCancel(ctx)
-
-	chat, err := s.chatsRepo.GetByID(ctx, chatId)
-	if err != nil {
-		return failTurn(sink, rerrors.Wrap(err, "error getting simple chat by id"))
-	}
 
 	if model == "" {
 		model = chat.Model
@@ -78,29 +74,22 @@ func (s *Service) RunTurn(
 
 	client := openai.New(creds.ApiKey, creds.BaseUrl)
 
-	rows, err := s.messagesRepo.ListByChatID(ctx, chatId)
+	file, err := s.currentChatFile(ctx, chat)
 	if err != nil {
-		return failTurn(sink, rerrors.Wrap(err, "error listing simple chat messages"))
+		return failTurn(sink, rerrors.Wrap(err, "error reading simple chat file"))
 	}
 
-	maxSeq, err := s.messagesRepo.GetMaxSeq(ctx, chatId)
-	if err != nil {
-		return failTurn(sink, rerrors.Wrap(err, "error getting max simple chat message seq"))
-	}
-	nextSeq := maxSeq + 1
+	rows := file.Messages
 
 	userRow := domain.SimpleChatMessage{
-		ChatUuid: chatId,
-		Role:     string(domain.SimpleChatRoleUser),
-		Content:  userText,
-		Seq:      nextSeq,
+		Role:    string(domain.SimpleChatRoleUser),
+		Content: userText,
 	}
 
-	_, err = s.messagesRepo.Insert(persistCtx, userRow)
+	err = s.appendMessage(persistCtx, chat, userRow)
 	if err != nil {
 		return failTurn(sink, rerrors.Wrap(err, "error inserting user message"))
 	}
-	nextSeq++
 
 	tools, err := s.resolveTools(ctx, chat)
 	if err != nil {
@@ -119,25 +108,22 @@ func (s *Service) RunTurn(
 
 		if result.text != "" {
 			assistantRow := domain.SimpleChatMessage{
-				ChatUuid: chatId,
-				Role:     string(domain.SimpleChatRoleAssistant),
-				Content:  result.text,
-				Model:    &model,
-				Seq:      nextSeq,
+				Role:    string(domain.SimpleChatRoleAssistant),
+				Content: result.text,
+				Model:   &model,
 			}
 
-			_, err = s.messagesRepo.Insert(persistCtx, assistantRow)
+			err = s.appendMessage(persistCtx, chat, assistantRow)
 			if err != nil {
 				return failTurn(sink, rerrors.Wrap(err, "error inserting assistant message"))
 			}
-			nextSeq++
 
 			textMsg := openai.Message{Role: "assistant", Content: result.text}
 			messages = append(messages, textMsg)
 		}
 
 		if len(result.toolCalls) == 0 {
-			return s.finishTurn(persistCtx, chatId, model, sink)
+			return s.finishTurn(persistCtx, chat, model, sink)
 		}
 
 		// The Chat Completions API requires the assistant message that requested the calls to
@@ -146,32 +132,37 @@ func (s *Service) RunTurn(
 		messages = append(messages, callMsg)
 
 		for _, call := range result.toolCalls {
-			toolMsg, toolErr := s.runToolCall(ctx, persistCtx, chat, call, nextSeq, sink)
+			toolMsg, toolErr := s.runToolCall(ctx, persistCtx, chat, call, sink)
 			if toolErr != nil {
 				return failTurn(sink, toolErr)
 			}
-			nextSeq++
 
 			messages = append(messages, toolMsg)
 		}
 	}
 
-	return failTurn(sink, rerrors.Wrap(user_errors.SimpleChatToolLoopExceeded, chatId.String()))
+	return failTurn(sink, rerrors.Wrap(user_errors.SimpleChatToolLoopExceeded, chat.Uuid.String()))
 }
 
 // finishTurn bumps the thread's activity timestamp and emits turn_done.
 func (s *Service) finishTurn(
-	persistCtx context.Context, chatId uuid.UUID, model string, sink chatprotocol.EventSink,
+	persistCtx context.Context, chat domain.SimpleChat, model string, sink chatprotocol.EventSink,
 ) error {
-	err := s.chatsRepo.UpdateLastActivity(persistCtx, chatId)
+	bumpFn := func(file *domain.SimpleChatFile) {
+		now := time.Now().UTC()
+		file.Header.LastActivityAt = now
+		file.Header.UpdatedAt = now
+	}
+
+	err := s.mutateChatFile(persistCtx, chat, bumpFn)
 	if err != nil {
-		log.Warn().Err(err).Str("chat_id", chatId.String()).
+		log.Warn().Err(err).Str("chat_id", chat.Uuid.String()).
 			Msg("error updating simple chat last activity")
 	}
 
 	doneEvent := chatprotocol.Event{
 		Type:      chatprotocol.EventTurnDone,
-		SessionID: chatId.String(),
+		SessionID: chat.Uuid.String(),
 		Model:     model,
 	}
 
@@ -283,7 +274,6 @@ func (s *Service) runToolCall(
 	persistCtx context.Context,
 	chat domain.SimpleChat,
 	call openai.ToolCall,
-	seq int64,
 	sink chatprotocol.EventSink,
 ) (openai.Message, error) {
 	input := rawArguments(call.ArgumentsJSON)
@@ -330,17 +320,15 @@ func (s *Service) runToolCall(
 	toolName := call.Name
 
 	toolRow := domain.SimpleChatMessage{
-		ChatUuid:   chat.Uuid,
 		Role:       string(domain.SimpleChatRoleTool),
 		Content:    output,
 		ToolCallID: &callId,
 		ToolName:   &toolName,
 		ToolInput:  input,
 		IsError:    isError,
-		Seq:        seq,
 	}
 
-	_, err = s.messagesRepo.Insert(persistCtx, toolRow)
+	err = s.appendMessage(persistCtx, chat, toolRow)
 	if err != nil {
 		return openai.Message{}, rerrors.Wrap(err, "error inserting tool message")
 	}
@@ -393,12 +381,12 @@ func (s *Service) resolvePermission(
 	input json.RawMessage,
 	sink chatprotocol.EventSink,
 ) (chatprotocol.PermissionDecision, error) {
-	stored, err := s.allowancesRepo.Get(ctx, chat.Uuid, call.Name)
+	storedDecision, ok, err := s.getToolAllowance(ctx, chat, call.Name)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error getting simple chat tool allowance")
 	}
 
-	if stored.Valid && stored.V == string(chatprotocol.DecisionAllowAlways) {
+	if ok && storedDecision == string(chatprotocol.DecisionAllowAlways) {
 		return chatprotocol.DecisionAllowAlways, nil
 	}
 
@@ -428,7 +416,7 @@ func (s *Service) resolvePermission(
 	}
 
 	if decision == chatprotocol.DecisionAllowAlways {
-		err = s.allowancesRepo.Upsert(persistCtx, chat.Uuid, call.Name, string(decision))
+		err = s.upsertToolAllowance(persistCtx, chat, call.Name, string(decision))
 		if err != nil {
 			return "", rerrors.Wrap(err, "error upserting simple chat tool allowance")
 		}

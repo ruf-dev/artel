@@ -19,8 +19,8 @@ interface Props {
     composerDisabled: boolean
     composerPlaceholder: string
     hideNewChatButton?: boolean
-    historyOpen: boolean
-    onCloseHistory: () => void
+    historyOpen?: boolean
+    onCloseHistory?: () => void
     historySidebar?: ReactNode
 }
 
@@ -32,6 +32,8 @@ interface Props {
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
 export default function ChatPanelShell(props: Props) {
     const [draft, setDraft] = useState("")
+    const historyOpen = props.historyOpen ?? false
+    const onCloseHistory = props.onCloseHistory ?? (() => {})
 
     function handleSend() {
         const text = draft.trim()
@@ -48,7 +50,7 @@ export default function ChatPanelShell(props: Props) {
             exit={{opacity: 0, y: -12}}
             transition={{duration: 0.22, ease: "easeOut"}}
         >
-            <div className={cn(cls.ChatContent, props.historyOpen && cls.ChatContentBlurred)}>
+            <div className={cn(cls.ChatContent, historyOpen && cls.ChatContentBlurred)}>
                 <ChatStatusBanner status={props.bannerStatus}/>
                 <ChatMessageList items={props.items} onPermissionDecision={props.sendPermissionDecision}/>
                 <ChatComposer
@@ -60,7 +62,7 @@ export default function ChatPanelShell(props: Props) {
                     placeholder={props.composerPlaceholder}
                     hideNewChatButton={props.hideNewChatButton}
                 />
-                {props.historyOpen && <div className={cls.ChatContentOverlay} onClick={props.onCloseHistory}/>}
+                {historyOpen && <div className={cls.ChatContentOverlay} onClick={onCloseHistory}/>}
             </div>
             {props.historySidebar}
         </motion.div>

@@ -467,39 +467,6 @@ type Session struct {
 	RefreshExpiresAt sql.NullTime
 }
 
-type SimpleChat struct {
-	ID             uuid.UUID
-	VaultID        uuid.UUID
-	UserID         uuid.UUID
-	Title          sql.NullString
-	Model          string
-	VaultAccess    bool
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	LastActivityAt time.Time
-}
-
-type SimpleChatMessage struct {
-	ID         uuid.UUID
-	ChatID     uuid.UUID
-	Role       string
-	Content    string
-	ToolCallID sql.NullString
-	ToolName   sql.NullString
-	ToolInput  pqtype.NullRawMessage
-	IsError    bool
-	Model      sql.NullString
-	Seq        int64
-	CreatedAt  time.Time
-}
-
-type SimpleChatToolAllowance struct {
-	ChatID    uuid.UUID
-	ToolName  string
-	Decision  string
-	CreatedAt time.Time
-}
-
 type Subscription struct {
 	UserID                   uuid.UUID
 	Active                   bool

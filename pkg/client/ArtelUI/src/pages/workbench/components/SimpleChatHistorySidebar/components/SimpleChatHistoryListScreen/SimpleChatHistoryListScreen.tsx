@@ -1,8 +1,8 @@
-import {Button} from "@vervstack/chures"
+import {Button, ChevronDownIcon} from "@vervstack/chures"
 
-import CloseIcon from "@/icons/common/CloseIcon.tsx"
 import PlusIcon from "@/icons/common/PlusIcon.tsx"
 import {SimpleChat} from "@/processes/SimpleChat.ts"
+import ModelSwitcher from "@/pages/workbench/components/SimpleChat/components/ModelSwitcher/ModelSwitcher.tsx"
 import SimpleChatHistoryRow from
     "@/pages/workbench/components/SimpleChatHistorySidebar/components/SimpleChatHistoryRow/SimpleChatHistoryRow.tsx"
 import cls from
@@ -16,14 +16,27 @@ interface Props {
     onSelectChat: (chatId: string) => void
     onDeleteChat: (chat: SimpleChat) => void
     onNewChat: () => void
-    onClose: () => void
+    onCollapse: () => void
+    models: string[]
+    currentModel: string
+    modelsLoading?: boolean
+    onChangeModel: (model: string) => void
 }
 
 export default function SimpleChatHistoryListScreen(props: Props) {
     return (
         <div className={cls.SimpleChatHistoryListScreenContainer}>
             <div className={cls.Header}>
-                <h2 className={cls.Title}>Simple Chats</h2>
+                <Button
+                    variant="secondary"
+                    className={cls.CollapseButton}
+                    onClick={props.onCollapse}
+                    aria-label="Collapse sidebar"
+                    title="Collapse sidebar"
+                >
+                    <ChevronDownIcon className={cls.CollapseIcon}/>
+                </Button>
+                <h2 className={cls.Title}>History</h2>
                 <Button
                     variant="secondary"
                     className={cls.NewChatButton}
@@ -33,15 +46,14 @@ export default function SimpleChatHistoryListScreen(props: Props) {
                 >
                     <PlusIcon/>
                 </Button>
-                <Button
-                    variant="secondary"
-                    className={cls.CloseButton}
-                    onClick={props.onClose}
-                    aria-label="Close chat history"
-                    title="Close chat history"
-                >
-                    <CloseIcon className={cls.CloseIcon}/>
-                </Button>
+            </div>
+            <div className={cls.ModelRow}>
+                <ModelSwitcher
+                    models={props.models}
+                    value={props.currentModel}
+                    isLoading={props.modelsLoading}
+                    onChange={props.onChangeModel}
+                />
             </div>
             <div className={cls.ListContainer}>
                 {props.loading && props.chats.length === 0 && (

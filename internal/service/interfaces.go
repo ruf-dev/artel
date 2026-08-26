@@ -218,9 +218,11 @@ type SimpleChatService interface {
 	OwnedChat(ctx context.Context, chatId, userUuid uuid.UUID) (domain.SimpleChat, error)
 	// RunTurn drives one full agent turn, emitting events through sink and blocking until the
 	// model settles on a reply with no further tool calls. model overrides the thread's stored
-	// default for this turn only; empty falls back to it.
+	// default for this turn only; empty falls back to it. chat is the already-resolved (and
+	// ownership-checked) thread — callers get it from OwnedChat rather than a bare chat id, since
+	// the vault-scoped CouchDB storage needs chat.VaultUuid to locate the transcript.
 	RunTurn(
-		ctx context.Context, chatId uuid.UUID, userText, model string, sink chatprotocol.EventSink,
+		ctx context.Context, chat domain.SimpleChat, userText, model string, sink chatprotocol.EventSink,
 	) error
 }
 

@@ -17,21 +17,4 @@
         align-items: center;
         gap: 0.75rem;
     }
-
-    & .VaultName {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--color-fg-primary);
-    }
-
-    & .BackButton {
-        width: var(--icon-button-size);
-        height: var(--icon-button-size);
-        padding: 0;
-        color: var(--color-fg-secondary);
-
-        &:hover {
-            color: var(--color-fg-primary);
-        }
-    }
 }

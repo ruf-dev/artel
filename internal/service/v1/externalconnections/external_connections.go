@@ -1542,7 +1542,7 @@ func (s *Service) AddOpenAIConnection(
 
 	creds := domain.OpenAIKeyCredentials{
 		ApiKey:  apiKey,
-		BaseUrl: baseUrl,
+		BaseUrl: resolveOpenAIBaseUrl(baseUrl, provider),
 	}
 
 	credJSON, err := json.Marshal(creds)

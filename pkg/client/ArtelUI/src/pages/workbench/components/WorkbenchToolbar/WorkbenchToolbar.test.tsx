@@ -12,14 +12,6 @@ vi.mock(
     }),
 )
 
-// WorkbenchToolbar composes WorkbenchTopBarShell, which calls useNavigate() for its
-// back button — mock it out rather than wrapping every render/rerender call below in
-// a <MemoryRouter>, same approach WorkbenchTopBarShell.test.tsx uses directly.
-vi.mock("react-router-dom", async () => {
-    const actual = await vi.importActual("react-router-dom")
-    return {...actual, useNavigate: () => vi.fn()}
-})
-
 describe("WorkbenchToolbar", () => {
     const mockOnStart = vi.fn()
     const mockOnStop = vi.fn()
@@ -27,7 +19,6 @@ describe("WorkbenchToolbar", () => {
     const mockOnToggleHistory = vi.fn()
 
     const defaultProps = {
-        vaultName: "Test Vault",
         status: "running" as const,
         exists: true,
         vaultId: "vault-123",

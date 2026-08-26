@@ -9,6 +9,14 @@
         padding: 0;
     }
 
+    & .StartStopIcon {
+        color: #a0dc8c;
+    }
+
+    & .StartStopIconRunning {
+        color: var(--color-error);
+    }
+
     & .HistoryButtonWrapper {
         display: flex;
     }

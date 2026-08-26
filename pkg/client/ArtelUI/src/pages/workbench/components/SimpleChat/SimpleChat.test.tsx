@@ -8,11 +8,7 @@ let lastChatPanelShellProps: Record<string, unknown> | undefined
 vi.mock("@/pages/workbench/components/ChatPanelShell/ChatPanelShell.tsx", () => ({
     default: (props: Record<string, unknown>) => {
         lastChatPanelShellProps = props
-        return (
-            <div className="chat-panel-shell" data-testid="chat-panel-shell">
-                {props.historySidebar as React.ReactNode}
-            </div>
-        )
+        return <div className="chat-panel-shell" data-testid="chat-panel-shell"/>
     },
 }))
 
@@ -27,6 +23,10 @@ describe("SimpleChat", () => {
         sendMessage: vi.fn(),
         sendPermissionDecision: vi.fn(),
         onNewChat: vi.fn(),
+        models: ["m1"],
+        currentModel: "m1",
+        modelsLoading: false,
+        onChangeModel: vi.fn(),
     }
 
     const defaultProps = {
@@ -34,8 +34,6 @@ describe("SimpleChat", () => {
         vaultId: "vault-1",
         onSelectChat: vi.fn(),
         session: baseSession,
-        historyOpen: false,
-        onCloseHistory: vi.fn(),
     }
 
     it("always hides ChatPanelShell's own new-chat button, since the top bar owns it", () => {
@@ -74,9 +72,10 @@ describe("SimpleChat", () => {
         expect(lastChatPanelShellProps?.composerDisabled).toBe(false)
     })
 
-    it("renders SimpleChatHistorySidebar into the historySidebar slot", () => {
+    it("renders SimpleChatHistorySidebar alongside the chat panel", () => {
         render(<SimpleChat {...defaultProps}/>)
 
         expect(screen.getByTestId("simple-chat-history-sidebar")).toBeInTheDocument()
+        expect(screen.getByTestId("chat-panel-shell")).toBeInTheDocument()
     })
 })

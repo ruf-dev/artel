@@ -1,7 +1,7 @@
 .WorkbenchPageContainer {
     display: flex;
 
-    /* Header (WorkbenchToolbar or the fallback BackLink) is the last JSX child in
+    /* Header (WorkbenchToolbar) is the last JSX child in
        WorkbenchPage.tsx, so it always wins paint order against positioned descendants
        in .Body (e.g. terminal/chat content) — column-reverse restores the visual
        order (header on top, Body below) without touching z-index. See "Never use
@@ -22,25 +22,6 @@
         height: calc(100% + 3rem);
     }
 
-    .BackLink {
-        display: inline-block;
-        font-size: 0.8125rem;
-        color: var(--color-fg-secondary);
-        margin: 1rem 0 0.75rem 2rem;
-        width: fit-content;
-        position: sticky;
-        top: 0;
-        background: var(--main-bg-color);
-
-        &:hover {
-            color: var(--color-fg-primary);
-        }
-
-        @media (width <= 45rem) {
-            margin-left: 1.125rem;
-        }
-    }
-
     .Body {
         display: flex;
         flex-direction: column;
@@ -49,15 +30,14 @@
         gap: 1rem;
         flex: 1;
         min-height: 0;
-        padding: 0 1rem 0.75rem;
-        margin-top: 1.5rem;
+        padding: 0 0 0.75rem;
 
         &.BodyCentered {
             padding-top: var(--workbench-body-padding-top);
         }
 
         @media (width <= 45rem) {
-            padding: 0 0.625rem 0.75rem;
+            padding: 0 0 0.75rem;
         }
     }
 
