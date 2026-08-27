@@ -83,7 +83,8 @@ func New(
 // CreateChat starts a new chat thread for the calling vault member. It refuses up front when the
 // caller has no OpenRouter BYOK connection, so the failure surfaces at creation time rather than
 // on the first turn once the websocket is already open. The thread's transcript file is written
-// immediately with a header line only — ListChats hides it until it gains its first message.
+// immediately with a header line only. ListChats returns it so the workbench can restore the
+// selected mode and thread even before the first message is sent.
 func (s *Service) CreateChat(
 	ctx context.Context, vaultId uuid.UUID, model string, vaultAccess bool,
 ) (domain.SimpleChat, error) {
@@ -132,9 +133,9 @@ func (s *Service) CreateChat(
 	return header.ToSimpleChat(), nil
 }
 
-// ListChats returns the caller's own threads in the vault that have at least one message, most
-// recently active first. A thread created via CreateChat but never sent a first message stays
-// hidden until run_turn.go persists its first message line.
+// ListChats returns the caller's own threads in the vault, most recently active first. Empty
+// threads are included because their existence is the durable record that the caller selected
+// Simple Chat for this vault.
 func (s *Service) ListChats(ctx context.Context, vaultId uuid.UUID) ([]domain.SimpleChat, error) {
 	uc, ok := user_context.GetUserContext(ctx)
 	if !ok {
@@ -174,10 +175,6 @@ func (s *Service) ListChats(ctx context.Context, vaultId uuid.UUID) ([]domain.Si
 		file, decodeErr := domain.DecodeSimpleChatFile([]byte(noteDoc.Content))
 		if decodeErr != nil {
 			return nil, rerrors.Wrap(decodeErr, "error decoding simple chat file")
-		}
-
-		if !file.HasMessages() {
-			continue
 		}
 
 		chats = append(chats, file.Header.ToSimpleChat())

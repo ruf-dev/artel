@@ -1,4 +1,6 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
+
+import type {SimpleChat} from "@/processes/SimpleChat.ts"
 
 // Simple Chat has no dependency on the Docker workbench at all (no "exists"/
 // "status" concept of its own), so it's tracked as an independent top-level mode
@@ -15,17 +17,33 @@ export type WorkbenchModeChoice = WorkbenchMode | "picking" | null
 interface Params {
     exists: boolean
     handleCreateDocker: () => void
+    simpleChats: SimpleChat[]
+    simpleChatsLoading: boolean
 }
 
 // Bundles the top-level Docker-vs-Simple-Chat mode state and its transition
 // handlers — split out purely to keep WorkbenchPage.tsx's render function under
 // the max-lines-per-function lint limit, same rationale as
 // useWorkbenchPanelControls.ts.
-export function useWorkbenchModeControls({exists, handleCreateDocker}: Params) {
+export function useWorkbenchModeControls({exists, handleCreateDocker, simpleChats, simpleChatsLoading}: Params) {
     const [modeChoice, setModeChoice] = useState<WorkbenchModeChoice>(null)
     const [simpleChatId, setSimpleChatId] = useState<string | undefined>(undefined)
 
-    const effectiveMode: WorkbenchMode | "picking" = modeChoice ?? (exists ? "docker" : "picking")
+    useEffect(() => {
+        if (modeChoice !== null || simpleChatsLoading) return
+
+        if (simpleChats.length > 0) {
+            setModeChoice("simple-chat")
+            setSimpleChatId(simpleChats[0].id)
+            return
+        }
+
+        if (exists) setModeChoice("docker")
+    }, [exists, modeChoice, simpleChats, simpleChatsLoading])
+
+    const effectiveMode: WorkbenchMode | "picking" = simpleChatsLoading
+        ? "picking"
+        : modeChoice ?? (exists ? "docker" : "picking")
 
     function handlePickDocker() {
         setModeChoice(null)

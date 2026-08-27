@@ -5,6 +5,7 @@ import {Loader} from "@vervstack/chures"
 import cls from "@/pages/workbench/WorkbenchPage.module.css"
 import {cn} from "@/app/utils/cn.ts"
 import {useVaults} from "@/app/hooks/Vaults.ts"
+import {useSimpleChats} from "@/app/hooks/SimpleChat.ts"
 import {
     useWorkbench,
     useWorkbenchTerminalTabs,
@@ -30,6 +31,7 @@ export default function WorkbenchPage() {
     const {vaultId} = useParams()
     const {vaults} = useVaults()
     const {exists, status, isLoading, pendingTerminalAuthLink} = useWorkbench(vaultId)
+    const {chats: simpleChats, isLoading: simpleChatsLoading} = useSimpleChats(vaultId)
     const lifecycle = useWorkbenchLifecycle(vaultId)
     const {tabs} = useWorkbenchTerminalTabs(vaultId, status === "running")
     const {create: createTab, select: selectTab, close: closeTab} = useWorkbenchTerminalTabMutations(vaultId)
@@ -37,14 +39,14 @@ export default function WorkbenchPage() {
     const [view, setView] = useState<WorkbenchView>("chat")
     const {historyOpen, handleSelectTab, handleCreateTab, handleCloseTab, toggleHistory, closeHistory} =
         useWorkbenchPanelControls({selectTab, createTab, closeTab, bakeError})
-
-    const modeControls = useWorkbenchModeControls({exists, handleCreateDocker: lifecycle.handleCreate})
+    const modeControls = useWorkbenchModeControls({
+        exists,
+        handleCreateDocker: lifecycle.handleCreate,
+        simpleChats,
+        simpleChatsLoading,
+    })
     const {effectiveMode} = modeControls
-
-    // Only connect the Docker bridge WebSocket while Docker mode is actually the
-    // active mode — otherwise a vault with both a running Docker workbench and an
-    // active Simple Chat thread would hold two live sockets open at once for no
-    // reason, since Simple Chat's own WS connection lives in SimpleChat.tsx.
+    // Connect Docker's bridge only while Docker mode is active; Simple Chat owns its own socket.
     const chatSession = useChatSession(effectiveMode === "docker" && status === "running" ? vaultId : undefined)
 
     const simpleChatController = useSimpleChatController({
@@ -61,8 +63,7 @@ export default function WorkbenchPage() {
     const awaitingAuth = !chatSession.authComplete && lifecycle.pendingAuthMode === "subscription_login"
 
     const dockerCentered = !exists || (status !== "running" && !lifecycle.showSetup)
-    const modeCentered = effectiveMode === "docker" ? dockerCentered : false
-    const genericCentered = isLoading || modeCentered
+    const genericCentered = isLoading || (effectiveMode === "docker" && dockerCentered)
     const terminalViewActive = effectiveMode === "docker" && status === "running" && view === "terminal"
 
     // Terminal login and the chat's own sign-in flow share the same in-container
