@@ -95,6 +95,7 @@ type Querier interface {
 	// raw columns on this row.
 	GetUserDetails(ctx context.Context, id uuid.UUID) (GetUserDetailsRow, error)
 	GetUserPermissions(ctx context.Context, userID uuid.UUID) (UserPermission, error)
+	GetUserSettings(ctx context.Context, id uuid.UUID) (GetUserSettingsRow, error)
 	GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error)
 	GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error)
 	GetVaultBySlug(ctx context.Context, slug sql.NullString) (GetVaultBySlugRow, error)
@@ -202,6 +203,7 @@ type Querier interface {
 	UpdateDockerHost(ctx context.Context, arg UpdateDockerHostParams) error
 	UpdatePostgresInstance(ctx context.Context, arg UpdatePostgresInstanceParams) error
 	UpdateS3Instance(ctx context.Context, arg UpdateS3InstanceParams) error
+	UpdateSystemPrompt(ctx context.Context, systemPrompt string) error
 	UpdateSystemSettingsAuthMethods(ctx context.Context, arg UpdateSystemSettingsAuthMethodsParams) error
 	UpdateSystemSettingsDefaultDocsSource(ctx context.Context, defaultDocsSource string) error
 	UpdateSystemSettingsDefaultDocsVault(ctx context.Context, defaultDocsVaultID uuid.NullUUID) error
@@ -211,6 +213,7 @@ type Querier interface {
 	UpdateTractRunStepFinish(ctx context.Context, arg UpdateTractRunStepFinishParams) error
 	UpdateUserPasswordHash(ctx context.Context, arg UpdateUserPasswordHashParams) error
 	UpdateUserPhotoUrl(ctx context.Context, arg UpdateUserPhotoUrlParams) error
+	UpdateVaultPrompts(ctx context.Context, arg UpdateVaultPromptsParams) error
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error
 	UpsertExternalConnection(ctx context.Context, arg UpsertExternalConnectionParams) (ExternalConnection, error)

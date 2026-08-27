@@ -18,6 +18,11 @@ type User struct {
 	UpdatedAt    time.Time
 }
 
+type UserSettings struct {
+	UserUuid   uuid.UUID
+	UserPrompt string
+}
+
 type TelegramIdentity struct {
 	UserUuid   uuid.UUID
 	TelegramId string

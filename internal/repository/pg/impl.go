@@ -29,6 +29,7 @@ import (
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/triggers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/userpermissions"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/users"
+	"github.com/ruf-dev/artel/internal/repository/pg/repos/usersettings"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultinvites"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultmembers"
 	"github.com/ruf-dev/artel/internal/repository/pg/repos/vaultpostgresdatabases"
@@ -66,6 +67,7 @@ type Repos struct {
 	triggers               repository.TriggersRepo
 	triggerPresets         repository.TriggerPresetsRepo
 	systemSettings         repository.SystemSettingsRepo
+	userSettings           repository.UserSettingsRepo
 
 	txManager tx_manager.TxManager
 }
@@ -186,6 +188,8 @@ func (r Repos) SystemSettings() repository.SystemSettingsRepo {
 	return r.systemSettings
 }
 
+func (r Repos) UserSettings() repository.UserSettingsRepo { return r.userSettings }
+
 func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 	q := artel_q.New(newLoggingDB(db))
 	txManager := tx_manager.New(db)
@@ -220,6 +224,7 @@ func New(db *sql.DB, encryptor cryptoutil.Encryptor) *Repos {
 		triggers:              triggers.New(q),
 		triggerPresets:        triggerpresets.New(q),
 		systemSettings:        systemsettings.New(q),
+		userSettings:          usersettings.New(q),
 
 		txManager: txManager,
 	}

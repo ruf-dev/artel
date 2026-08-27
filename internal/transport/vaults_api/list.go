@@ -48,6 +48,8 @@ func (v *VaultsImpl) ListVaults(ctx context.Context, req *pb.ListVaults_Request)
 			Role:                  vault.MyRole,
 			PostgresEnabled:       postgresEnabled,
 			PostgresStatus:        postgresStatus,
+			Prompt:                vault.Prompt,
+			UseSystemPrompt:       vault.UseSystemPrompt,
 		}
 		items = append(items, item)
 	}

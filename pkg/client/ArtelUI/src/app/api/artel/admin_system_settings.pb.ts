@@ -20,9 +20,18 @@ export type GetSettingsResponse = {
   defaultDocsVaultName?: string;
   defaultDocsVaultSlug?: string;
   defaultDocsSource?: ArtelPublicDocsPublicDocs.DocsSource;
+  systemPrompt?: string;
 };
 
 export type GetSettings = Record<string, never>;
+
+export type UpdateSystemPromptRequest = {
+  prompt?: string;
+};
+
+export type UpdateSystemPromptResponse = Record<string, never>;
+
+export type UpdateSystemPrompt = Record<string, never>;
 
 export type UpdateAuthMethodsRequest = {
   passwordEnabled?: boolean;
@@ -62,5 +71,8 @@ export class AdminSystemSettingsAPI {
   }
   static UpdateDefaultDocsVault(this:void, req: UpdateDefaultDocsVaultRequest, initReq?: fm.InitReq): Promise<UpdateDefaultDocsVaultResponse> {
     return fm.fetchRequest<UpdateDefaultDocsVaultResponse>(`/api/admin_system_settings/update_default_docs_vault`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static UpdateSystemPrompt(this:void, req: UpdateSystemPromptRequest, initReq?: fm.InitReq): Promise<UpdateSystemPromptResponse> {
+    return fm.fetchRequest<UpdateSystemPromptResponse>(`/api/admin_system_settings/update_system_prompt`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
 }

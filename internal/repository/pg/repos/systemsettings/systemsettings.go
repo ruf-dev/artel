@@ -111,8 +111,17 @@ func (r *Repo) UpdateDefaultDocsSource(ctx context.Context, source domain.DocsSo
 	return nil
 }
 
+func (r *Repo) UpdateSystemPrompt(ctx context.Context, prompt string) error {
+	err := r.q.UpdateSystemPrompt(ctx, prompt)
+	if err != nil {
+		return rerrors.Wrap(err, "error updating system prompt")
+	}
+	return nil
+}
+
 func settingsFromRow(row artel_q.SystemSetting) domain.SystemSettings {
 	settings := domain.SystemSettings{
+		SystemPrompt:        row.SystemPrompt,
 		SetupCompleted:      row.SetupCompleted,
 		PasswordAuthEnabled: row.PasswordAuthEnabled,
 		TelegramAuthEnabled: row.TelegramAuthEnabled,

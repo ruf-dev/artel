@@ -72,6 +72,9 @@ export function useVaultMutations() {
         setBinaryStorage: async (vaultId: string, useCouchDb: boolean): Promise<void> => {
             await VaultsAPI.SetVaultBinaryStorage({vaultId, useCouchdb: useCouchDb}, auth.getInitReq())
         },
+        updatePrompts: async (vaultId: string, prompt: string, useSystemPrompt: boolean): Promise<void> => {
+            await VaultsAPI.UpdateVaultPrompts({vaultId, prompt, useSystemPrompt}, auth.getInitReq())
+        },
         publish: async (vaultId: string, slug: string): Promise<VaultItem> => {
             const res = await VaultsAPI.PublishVault({vaultId, slug}, auth.getInitReq())
             return res.vault!

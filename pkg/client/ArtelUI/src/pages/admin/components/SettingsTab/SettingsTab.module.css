@@ -32,6 +32,9 @@
                     background: var(--color-bg-tertiary);
                 }
             }
+
+            & .PromptInput { width: 100%; padding: 0.75rem; min-height: 10rem; resize: vertical; }
+            & .PromptButton { align-self: flex-start; padding: 0.65rem 1rem; border-radius: var(--border-radius); background: var(--coral); color: var(--color-fg-white); }
         }
 
         & .ModeButtonGroup {

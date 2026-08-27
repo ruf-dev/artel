@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react"
+import {Button, ConfirmDialog} from "@vervstack/chures"
 
 import {
     AdminSystemSettingsAPI,
@@ -12,7 +13,9 @@ import AuthMethodsSection from "@/pages/admin/components/SettingsTab/components/
 import RegistrationModeSection from "@/pages/admin/components/SettingsTab/components/RegistrationModeSection/RegistrationModeSection.tsx" // eslint-disable-line max-len
 import DefaultDocsVaultSection from "@/pages/admin/components/SettingsTab/components/DefaultDocsVaultSection/DefaultDocsVaultSection.tsx" // eslint-disable-line max-len
 import {createDocsSettingsHandlers} from "@/pages/admin/components/SettingsTab/processes/docsSettingsHandlers.ts"
+import {useDialog} from "@/app/hooks/Dialog.ts"
 
+// eslint-disable-next-line max-lines-per-function
 export default function SettingsTab() {
     const {auth} = useUser()
     const bakeError = useBakeError()
@@ -24,6 +27,8 @@ export default function SettingsTab() {
     )
     const [defaultDocsVaultId, setDefaultDocsVaultId] = useState("")
     const [docsSource, setDocsSource] = useState<DocsSource>(DocsSource.VAULT)
+    const [systemPrompt, setSystemPrompt] = useState("")
+    const {OpenDialog, CloseDialog} = useDialog()
 
     useEffect(() => {
         AdminSystemSettingsAPI.GetSettings({}, auth.getInitReq())
@@ -33,6 +38,7 @@ export default function SettingsTab() {
                 setRegistrationMode(res.registrationMode ?? RegistrationMode.ADMIN_ONLY)
                 setDefaultDocsVaultId(res.defaultDocsVaultId ?? "")
                 setDocsSource(res.defaultDocsSource ?? DocsSource.VAULT)
+                setSystemPrompt(res.systemPrompt ?? "")
             })
             .catch(err => bakeError("Failed to load settings", err))
             .finally(() => setLoading(false))
@@ -50,6 +56,20 @@ export default function SettingsTab() {
                 bakeError("Failed to update auth methods", err)
                 setPasswordAuthEnabled(oldValue)
             })
+    }
+
+    function saveSystemPrompt() {
+        OpenDialog(
+            <ConfirmDialog
+                title="Change system prompt"
+                message="You are about to change system wide promt. it will affect ALL users. Are you sure?"
+                confirmLabel="Save prompt"
+                onClose={CloseDialog}
+                onConfirm={() => AdminSystemSettingsAPI.UpdateSystemPrompt({prompt: systemPrompt}, auth.getInitReq())
+                    .then(() => undefined)
+                    .catch(err => bakeError("Failed to update system prompt", err))}
+            />,
+        )
     }
 
     function handleTelegramAuthToggle(enabled: boolean) {
@@ -110,6 +130,14 @@ export default function SettingsTab() {
                 docsSource={docsSource}
                 onDocsSourceChange={handleDocsSourceChange}
             />
+            <section className={cls.Section}>
+                <h2 className={cls.SectionTitle}>System prompt</h2>
+                <div className={cls.SettingsGroup}>
+                    <textarea className={cls.PromptInput} value={systemPrompt}
+                        onChange={e => setSystemPrompt(e.target.value)} rows={8} />
+                    <Button className={cls.PromptButton} onClick={saveSystemPrompt}>Save system prompt</Button>
+                </div>
+            </section>
         </div>
     )
 }

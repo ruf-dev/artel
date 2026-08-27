@@ -116,3 +116,17 @@ func (s *Service) UpdateDefaultDocsVault(ctx context.Context, vaultUuid *uuid.UU
 
 	return nil
 }
+
+func (s *Service) UpdateSystemPrompt(ctx context.Context, prompt string) error {
+	repo, ok := s.settingsRepo.(interface {
+		UpdateSystemPrompt(context.Context, string) error
+	})
+	if !ok {
+		return rerrors.New("system prompt storage is unavailable")
+	}
+	err := repo.UpdateSystemPrompt(ctx, prompt)
+	if err != nil {
+		return rerrors.Wrap(err, "update system prompt")
+	}
+	return nil
+}

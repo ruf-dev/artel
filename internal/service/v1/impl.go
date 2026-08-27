@@ -107,7 +107,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 
 	services := &Services{
 		Auth:          authSvc,
-		Vault:         vault.New(repo, subscriptionSvc),
+		Vault:         vault.New(repo, subscriptionSvc, authSvc),
 		CouchInstance: couchinstances.New(repo),
 		S3Instance:    s3instances.New(repo),
 		DockerHost:    dockerhosts.New(repo),

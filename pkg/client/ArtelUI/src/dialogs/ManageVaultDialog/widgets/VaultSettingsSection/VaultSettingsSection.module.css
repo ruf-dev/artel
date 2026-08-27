@@ -2,3 +2,8 @@
     display: flex;
     flex-direction: column;
 }
+
+.PromptLabel { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.PromptLabel textarea { min-height: 8rem; resize: vertical; padding: 0.5rem; }
+.PromptButton { align-self: flex-start; margin: 0.75rem 0; padding: 0.5rem 0.75rem; border-radius: var(--border-radius); background: var(--coral); color: var(--color-fg-white); }
+.PromptToggle { margin-top: 0.5rem; }

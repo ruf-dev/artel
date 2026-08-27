@@ -304,7 +304,19 @@ export type VaultItem = {
   role?: string;
   postgresEnabled?: boolean;
   postgresStatus?: string;
+  prompt?: string;
+  useSystemPrompt?: boolean;
 };
+
+export type UpdateVaultPromptsRequest = {
+  vaultId?: string;
+  prompt?: string;
+  useSystemPrompt?: boolean;
+};
+
+export type UpdateVaultPromptsResponse = Record<string, never>;
+
+export type UpdateVaultPrompts = Record<string, never>;
 
 export type VaultMemberInfo = {
   id?: string;
@@ -371,6 +383,9 @@ export class VaultsAPI {
   }
   static UnpublishVault(this:void, req: UnpublishVaultRequest, initReq?: fm.InitReq): Promise<UnpublishVaultResponse> {
     return fm.fetchRequest<UnpublishVaultResponse>(`/api/vaults/${req.vaultId}/unpublish`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static UpdateVaultPrompts(this:void, req: UpdateVaultPromptsRequest, initReq?: fm.InitReq): Promise<UpdateVaultPromptsResponse> {
+    return fm.fetchRequest<UpdateVaultPromptsResponse>(`/api/vaults/prompts/update`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static CreateWorkbench(this:void, req: CreateWorkbenchRequest, initReq?: fm.InitReq): Promise<CreateWorkbenchResponse> {
     return fm.fetchRequest<CreateWorkbenchResponse>(`/api/vaults/workbench/create`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

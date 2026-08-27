@@ -56,6 +56,7 @@ func (a *AdminSystemSettingsImpl) GetSettings(
 		TelegramAuthEnabled: settings.TelegramAuthEnabled,
 		RegistrationMode:    registrationModeToProto(settings.RegistrationMode),
 		DefaultDocsSource:   docsSourceToProto(settings.DefaultDocsSource),
+		SystemPrompt:        settings.SystemPrompt,
 	}
 
 	if defaultVault.Uuid != uuid.Nil {
@@ -65,6 +66,14 @@ func (a *AdminSystemSettingsImpl) GetSettings(
 	}
 
 	return resp, nil
+}
+
+func (a *AdminSystemSettingsImpl) UpdateSystemPrompt(ctx context.Context, req *artel_api.UpdateSystemPrompt_Request) (*artel_api.UpdateSystemPrompt_Response, error) {
+	err := a.svc.UpdateSystemPrompt(ctx, req.GetPrompt())
+	if err != nil {
+		return nil, rerrors.Wrap(err, "error updating system prompt")
+	}
+	return &artel_api.UpdateSystemPrompt_Response{}, nil
 }
 
 func (a *AdminSystemSettingsImpl) UpdateDefaultDocsVault(

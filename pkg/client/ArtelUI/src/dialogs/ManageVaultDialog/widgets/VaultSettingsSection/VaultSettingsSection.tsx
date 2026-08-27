@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react"
-import {ConfirmDialog} from "@vervstack/chures"
+import {Button, ConfirmDialog, Toggle} from "@vervstack/chures"
 
 import cls from "@/dialogs/ManageVaultDialog/widgets/VaultSettingsSection/VaultSettingsSection.module.css"
 import {VaultItem} from "@/app/api/artel/vaults.pb.ts"
@@ -22,9 +22,10 @@ interface Props {
     onChanged: (patch: Partial<VaultItem>) => void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export default function VaultSettingsSection({vault, onChanged}: Props) {
     const {auth} = useUser()
-    const {setBinaryStorage, publish, unpublish} = useVaultMutations()
+    const {setBinaryStorage, publish, unpublish, updatePrompts} = useVaultMutations()
     const bakeError = useBakeError()
     const {OpenDialog, CloseDialog} = useDialog()
 
@@ -36,6 +37,8 @@ export default function VaultSettingsSection({vault, onChanged}: Props) {
     const [slugFormOpen, setSlugFormOpen] = useState(false)
     const [publishing, setPublishing] = useState(false)
     const [postgresStatus, setPostgresStatus] = useState(vault.postgresStatus)
+    const [prompt, setPrompt] = useState(vault.prompt ?? "")
+    const [useSystemPrompt, setUseSystemPrompt] = useState(vault.useSystemPrompt ?? true)
 
     useEffect(() => {
         AuthAPI.GetConfig({}, auth.getInitReq())
@@ -51,6 +54,12 @@ export default function VaultSettingsSection({vault, onChanged}: Props) {
                 setUseCouchDb(!v)
                 bakeError("Error updating binary storage setting", e)
             })
+    }
+
+    function savePrompts(nextPrompt = prompt, nextUseSystemPrompt = useSystemPrompt) {
+        updatePrompts(vault.id ?? "", nextPrompt, nextUseSystemPrompt)
+            .then(() => onChanged({prompt: nextPrompt, useSystemPrompt: nextUseSystemPrompt}))
+            .catch(e => bakeError("Error updating chat prompt settings", e))
     }
 
     // While S3 isn't confirmed available, force the toggle to appear on
@@ -120,6 +129,15 @@ export default function VaultSettingsSection({vault, onChanged}: Props) {
                     onChanged({postgresStatus: status})
                 }}
             />
+            <label className={cls.PromptLabel}>
+                Vault prompt
+                <textarea value={prompt} rows={6} onChange={e => setPrompt(e.target.value)} />
+            </label>
+            <Button className={cls.PromptButton} onClick={() => savePrompts()}>Save vault prompt</Button>
+            <Toggle checked={useSystemPrompt} onChange={value => {
+                setUseSystemPrompt(value)
+                savePrompts(prompt, value)
+            }} label="Use system prompt in this vault" className={cls.PromptToggle} />
         </div>
     )
 }

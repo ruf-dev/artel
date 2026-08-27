@@ -74,6 +74,7 @@ type AdminSystemSettingsService interface {
 	// it is not required to already be published; see PublicDocsService.GetDefaultVault for the
 	// read-time IsPublic enforcement.
 	UpdateDefaultDocsVault(ctx context.Context, vaultUuid *uuid.UUID, source domain.DocsSource) error
+	UpdateSystemPrompt(ctx context.Context, prompt string) error
 }
 
 // SetupWizardService drives the first-run setup wizard — a short-lived, unauthenticated flow
@@ -174,6 +175,7 @@ type VaultService interface {
 	LinkS3Bucket(ctx context.Context, vaultID uuid.UUID, s3InstanceID *uuid.UUID, bucketName string) error
 	UnlinkS3Bucket(ctx context.Context, vaultID uuid.UUID) error
 	SetUseCouchDBForBinaries(ctx context.Context, vaultID uuid.UUID, useCouchDB bool) error
+	UpdatePrompts(ctx context.Context, vaultID uuid.UUID, prompt string, useSystemPrompt bool) error
 	PublishVault(ctx context.Context, vaultID uuid.UUID, slug string) (domain.Vault, error)
 	UnpublishVault(ctx context.Context, vaultID uuid.UUID) error
 

@@ -42,6 +42,7 @@ type Repo interface {
 	Triggers() TriggersRepo
 	TriggerPresets() TriggerPresetsRepo
 	SystemSettings() SystemSettingsRepo
+	UserSettings() UserSettingsRepo
 
 	TxManager() tx_manager.TxManager
 }
@@ -507,6 +508,10 @@ type SystemSettingsRepo interface {
 	UpdateDefaultDocsSource(ctx context.Context, source domain.DocsSource) error
 
 	WithTx(tx *sql.Tx) SystemSettingsRepo
+}
+
+type UserSettingsRepo interface {
+	Get(ctx context.Context, userID uuid.UUID) (domain.UserSettings, error)
 }
 
 // TractTriggerLink is a read-side join projection — see TriggersRepo doc comments above for

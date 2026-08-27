@@ -52,6 +52,8 @@ type Service struct {
 	couchInstances repository.CouchInstances
 	couchAccounts  repository.CouchAccounts
 	connections    repository.ExternalConnectionRepo
+	systemSettings repository.SystemSettingsRepo
+	userSettings   repository.UserSettingsRepo
 
 	mcp mcpService
 }
@@ -62,6 +64,8 @@ func New(
 	couchInstances repository.CouchInstances,
 	couchAccounts repository.CouchAccounts,
 	connections repository.ExternalConnectionRepo,
+	systemSettings repository.SystemSettingsRepo,
+	userSettings repository.UserSettingsRepo,
 	mcp mcpService,
 ) *Service {
 	return &Service{
@@ -70,6 +74,8 @@ func New(
 		couchInstances: couchInstances,
 		couchAccounts:  couchAccounts,
 		connections:    connections,
+		systemSettings: systemSettings,
+		userSettings:   userSettings,
 		mcp:            mcp,
 	}
 }

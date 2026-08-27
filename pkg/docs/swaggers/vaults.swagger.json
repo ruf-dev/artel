@@ -496,6 +496,38 @@
         ]
       }
     },
+    "/api/vaults/prompts/update": {
+      "post": {
+        "operationId": "VaultsAPI_UpdateVaultPrompts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsUpdateVaultPromptsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_vaultsUpdateVaultPromptsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "VaultsAPI"
+        ]
+      }
+    },
     "/api/vaults/s3/link": {
       "post": {
         "operationId": "VaultsAPI_LinkS3Bucket",
@@ -1383,6 +1415,23 @@
         }
       }
     },
+    "artel_vaultsUpdateVaultPromptsRequest": {
+      "type": "object",
+      "properties": {
+        "vaultId": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "useSystemPrompt": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artel_vaultsUpdateVaultPromptsResponse": {
+      "type": "object"
+    },
     "artel_vaultsVaultInviteItem": {
       "type": "object",
       "properties": {
@@ -1446,6 +1495,12 @@
         },
         "postgresStatus": {
           "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "useSystemPrompt": {
+          "type": "boolean"
         }
       }
     },

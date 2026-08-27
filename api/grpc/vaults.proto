@@ -105,6 +105,12 @@ service VaultsAPI {
       body: "*"
     };
   };
+  rpc UpdateVaultPrompts(UpdateVaultPrompts.Request) returns (UpdateVaultPrompts.Response) {
+    option (google.api.http) = {
+      post: "/api/vaults/prompts/update"
+      body: "*"
+    };
+  };
   rpc CreateWorkbench(CreateWorkbench.Request) returns (CreateWorkbench.Response) {
     option (google.api.http) = {
       post: "/api/vaults/workbench/create"
@@ -476,6 +482,17 @@ message VaultItem {
   // "not_enabled"/"provisioning"/"ready"/"error" (see domain.VaultPostgresStatus).
   bool postgres_enabled = 11;
   string postgres_status = 12;
+  string prompt = 13;
+  bool use_system_prompt = 14;
+}
+
+message UpdateVaultPrompts {
+  message Request {
+    string vault_id = 1;
+    string prompt = 2;
+    bool use_system_prompt = 3;
+  }
+  message Response {}
 }
 
 message VaultMemberInfo {

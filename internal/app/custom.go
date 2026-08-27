@@ -135,7 +135,7 @@ func (c *Custom) Init(a *App) error {
 	// available as a service.McpService value mid-construction of the Services struct literal.
 	services.SimpleChat = simplechat.New(
 		repo.Vaults(), repo.VaultMembers(), repo.CouchInstances(), repo.CouchAccounts(),
-		repo.ExternalConnections(), services.McpService(),
+		repo.ExternalConnections(), repo.SystemSettings(), repo.UserSettings(), services.McpService(),
 	)
 
 	// Wires the tract-authoring builtin tools (list_tract_actions, create_tract, ...) now that

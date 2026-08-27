@@ -59,6 +59,42 @@ func (*GetSettings) Descriptor() ([]byte, []int) {
 	return file_admin_system_settings_proto_rawDescGZIP(), []int{0}
 }
 
+type UpdateSystemPrompt struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSystemPrompt) Reset() {
+	*x = UpdateSystemPrompt{}
+	mi := &file_admin_system_settings_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSystemPrompt) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSystemPrompt) ProtoMessage() {}
+
+func (x *UpdateSystemPrompt) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_system_settings_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSystemPrompt.ProtoReflect.Descriptor instead.
+func (*UpdateSystemPrompt) Descriptor() ([]byte, []int) {
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{1}
+}
+
 type UpdateAuthMethods struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -67,7 +103,7 @@ type UpdateAuthMethods struct {
 
 func (x *UpdateAuthMethods) Reset() {
 	*x = UpdateAuthMethods{}
-	mi := &file_admin_system_settings_proto_msgTypes[1]
+	mi := &file_admin_system_settings_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -79,7 +115,7 @@ func (x *UpdateAuthMethods) String() string {
 func (*UpdateAuthMethods) ProtoMessage() {}
 
 func (x *UpdateAuthMethods) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[1]
+	mi := &file_admin_system_settings_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -92,7 +128,7 @@ func (x *UpdateAuthMethods) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAuthMethods.ProtoReflect.Descriptor instead.
 func (*UpdateAuthMethods) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{1}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{2}
 }
 
 type UpdateRegistrationMode struct {
@@ -103,7 +139,7 @@ type UpdateRegistrationMode struct {
 
 func (x *UpdateRegistrationMode) Reset() {
 	*x = UpdateRegistrationMode{}
-	mi := &file_admin_system_settings_proto_msgTypes[2]
+	mi := &file_admin_system_settings_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -115,7 +151,7 @@ func (x *UpdateRegistrationMode) String() string {
 func (*UpdateRegistrationMode) ProtoMessage() {}
 
 func (x *UpdateRegistrationMode) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[2]
+	mi := &file_admin_system_settings_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -128,7 +164,7 @@ func (x *UpdateRegistrationMode) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRegistrationMode.ProtoReflect.Descriptor instead.
 func (*UpdateRegistrationMode) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{2}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{3}
 }
 
 type UpdateDefaultDocsVault struct {
@@ -139,7 +175,7 @@ type UpdateDefaultDocsVault struct {
 
 func (x *UpdateDefaultDocsVault) Reset() {
 	*x = UpdateDefaultDocsVault{}
-	mi := &file_admin_system_settings_proto_msgTypes[3]
+	mi := &file_admin_system_settings_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -151,7 +187,7 @@ func (x *UpdateDefaultDocsVault) String() string {
 func (*UpdateDefaultDocsVault) ProtoMessage() {}
 
 func (x *UpdateDefaultDocsVault) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[3]
+	mi := &file_admin_system_settings_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -164,7 +200,7 @@ func (x *UpdateDefaultDocsVault) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDefaultDocsVault.ProtoReflect.Descriptor instead.
 func (*UpdateDefaultDocsVault) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{3}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{4}
 }
 
 type GetSettings_Request struct {
@@ -175,7 +211,7 @@ type GetSettings_Request struct {
 
 func (x *GetSettings_Request) Reset() {
 	*x = GetSettings_Request{}
-	mi := &file_admin_system_settings_proto_msgTypes[4]
+	mi := &file_admin_system_settings_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -187,7 +223,7 @@ func (x *GetSettings_Request) String() string {
 func (*GetSettings_Request) ProtoMessage() {}
 
 func (x *GetSettings_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[4]
+	mi := &file_admin_system_settings_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -214,13 +250,14 @@ type GetSettings_Response struct {
 	DefaultDocsVaultName string     `protobuf:"bytes,5,opt,name=default_docs_vault_name,json=defaultDocsVaultName,proto3" json:"default_docs_vault_name,omitempty"`
 	DefaultDocsVaultSlug string     `protobuf:"bytes,6,opt,name=default_docs_vault_slug,json=defaultDocsVaultSlug,proto3" json:"default_docs_vault_slug,omitempty"`
 	DefaultDocsSource    DocsSource `protobuf:"varint,7,opt,name=default_docs_source,json=defaultDocsSource,proto3,enum=artel_public_docs.DocsSource" json:"default_docs_source,omitempty"`
+	SystemPrompt         string     `protobuf:"bytes,8,opt,name=system_prompt,json=systemPrompt,proto3" json:"system_prompt,omitempty"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
 
 func (x *GetSettings_Response) Reset() {
 	*x = GetSettings_Response{}
-	mi := &file_admin_system_settings_proto_msgTypes[5]
+	mi := &file_admin_system_settings_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -232,7 +269,7 @@ func (x *GetSettings_Response) String() string {
 func (*GetSettings_Response) ProtoMessage() {}
 
 func (x *GetSettings_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[5]
+	mi := &file_admin_system_settings_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -297,6 +334,93 @@ func (x *GetSettings_Response) GetDefaultDocsSource() DocsSource {
 	return DocsSource_VAULT
 }
 
+func (x *GetSettings_Response) GetSystemPrompt() string {
+	if x != nil {
+		return x.SystemPrompt
+	}
+	return ""
+}
+
+type UpdateSystemPrompt_Request struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Prompt        string                 `protobuf:"bytes,1,opt,name=prompt,proto3" json:"prompt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSystemPrompt_Request) Reset() {
+	*x = UpdateSystemPrompt_Request{}
+	mi := &file_admin_system_settings_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSystemPrompt_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSystemPrompt_Request) ProtoMessage() {}
+
+func (x *UpdateSystemPrompt_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_system_settings_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSystemPrompt_Request.ProtoReflect.Descriptor instead.
+func (*UpdateSystemPrompt_Request) Descriptor() ([]byte, []int) {
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *UpdateSystemPrompt_Request) GetPrompt() string {
+	if x != nil {
+		return x.Prompt
+	}
+	return ""
+}
+
+type UpdateSystemPrompt_Response struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSystemPrompt_Response) Reset() {
+	*x = UpdateSystemPrompt_Response{}
+	mi := &file_admin_system_settings_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSystemPrompt_Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSystemPrompt_Response) ProtoMessage() {}
+
+func (x *UpdateSystemPrompt_Response) ProtoReflect() protoreflect.Message {
+	mi := &file_admin_system_settings_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSystemPrompt_Response.ProtoReflect.Descriptor instead.
+func (*UpdateSystemPrompt_Response) Descriptor() ([]byte, []int) {
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{1, 1}
+}
+
 type UpdateAuthMethods_Request struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	PasswordEnabled bool                   `protobuf:"varint,1,opt,name=password_enabled,json=passwordEnabled,proto3" json:"password_enabled,omitempty"`
@@ -307,7 +431,7 @@ type UpdateAuthMethods_Request struct {
 
 func (x *UpdateAuthMethods_Request) Reset() {
 	*x = UpdateAuthMethods_Request{}
-	mi := &file_admin_system_settings_proto_msgTypes[6]
+	mi := &file_admin_system_settings_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -319,7 +443,7 @@ func (x *UpdateAuthMethods_Request) String() string {
 func (*UpdateAuthMethods_Request) ProtoMessage() {}
 
 func (x *UpdateAuthMethods_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[6]
+	mi := &file_admin_system_settings_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -332,7 +456,7 @@ func (x *UpdateAuthMethods_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAuthMethods_Request.ProtoReflect.Descriptor instead.
 func (*UpdateAuthMethods_Request) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{1, 0}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *UpdateAuthMethods_Request) GetPasswordEnabled() bool {
@@ -357,7 +481,7 @@ type UpdateAuthMethods_Response struct {
 
 func (x *UpdateAuthMethods_Response) Reset() {
 	*x = UpdateAuthMethods_Response{}
-	mi := &file_admin_system_settings_proto_msgTypes[7]
+	mi := &file_admin_system_settings_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -369,7 +493,7 @@ func (x *UpdateAuthMethods_Response) String() string {
 func (*UpdateAuthMethods_Response) ProtoMessage() {}
 
 func (x *UpdateAuthMethods_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[7]
+	mi := &file_admin_system_settings_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -382,7 +506,7 @@ func (x *UpdateAuthMethods_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAuthMethods_Response.ProtoReflect.Descriptor instead.
 func (*UpdateAuthMethods_Response) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{1, 1}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{2, 1}
 }
 
 type UpdateRegistrationMode_Request struct {
@@ -394,7 +518,7 @@ type UpdateRegistrationMode_Request struct {
 
 func (x *UpdateRegistrationMode_Request) Reset() {
 	*x = UpdateRegistrationMode_Request{}
-	mi := &file_admin_system_settings_proto_msgTypes[8]
+	mi := &file_admin_system_settings_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -406,7 +530,7 @@ func (x *UpdateRegistrationMode_Request) String() string {
 func (*UpdateRegistrationMode_Request) ProtoMessage() {}
 
 func (x *UpdateRegistrationMode_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[8]
+	mi := &file_admin_system_settings_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -419,7 +543,7 @@ func (x *UpdateRegistrationMode_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRegistrationMode_Request.ProtoReflect.Descriptor instead.
 func (*UpdateRegistrationMode_Request) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{2, 0}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *UpdateRegistrationMode_Request) GetMode() RegistrationMode {
@@ -437,7 +561,7 @@ type UpdateRegistrationMode_Response struct {
 
 func (x *UpdateRegistrationMode_Response) Reset() {
 	*x = UpdateRegistrationMode_Response{}
-	mi := &file_admin_system_settings_proto_msgTypes[9]
+	mi := &file_admin_system_settings_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -449,7 +573,7 @@ func (x *UpdateRegistrationMode_Response) String() string {
 func (*UpdateRegistrationMode_Response) ProtoMessage() {}
 
 func (x *UpdateRegistrationMode_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[9]
+	mi := &file_admin_system_settings_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -462,7 +586,7 @@ func (x *UpdateRegistrationMode_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRegistrationMode_Response.ProtoReflect.Descriptor instead.
 func (*UpdateRegistrationMode_Response) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{2, 1}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{3, 1}
 }
 
 type UpdateDefaultDocsVault_Request struct {
@@ -475,7 +599,7 @@ type UpdateDefaultDocsVault_Request struct {
 
 func (x *UpdateDefaultDocsVault_Request) Reset() {
 	*x = UpdateDefaultDocsVault_Request{}
-	mi := &file_admin_system_settings_proto_msgTypes[10]
+	mi := &file_admin_system_settings_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -487,7 +611,7 @@ func (x *UpdateDefaultDocsVault_Request) String() string {
 func (*UpdateDefaultDocsVault_Request) ProtoMessage() {}
 
 func (x *UpdateDefaultDocsVault_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[10]
+	mi := &file_admin_system_settings_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,7 +624,7 @@ func (x *UpdateDefaultDocsVault_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDefaultDocsVault_Request.ProtoReflect.Descriptor instead.
 func (*UpdateDefaultDocsVault_Request) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{3, 0}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *UpdateDefaultDocsVault_Request) GetVaultId() string {
@@ -525,7 +649,7 @@ type UpdateDefaultDocsVault_Response struct {
 
 func (x *UpdateDefaultDocsVault_Response) Reset() {
 	*x = UpdateDefaultDocsVault_Response{}
-	mi := &file_admin_system_settings_proto_msgTypes[11]
+	mi := &file_admin_system_settings_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -537,7 +661,7 @@ func (x *UpdateDefaultDocsVault_Response) String() string {
 func (*UpdateDefaultDocsVault_Response) ProtoMessage() {}
 
 func (x *UpdateDefaultDocsVault_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_admin_system_settings_proto_msgTypes[11]
+	mi := &file_admin_system_settings_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -550,16 +674,16 @@ func (x *UpdateDefaultDocsVault_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDefaultDocsVault_Response.ProtoReflect.Descriptor instead.
 func (*UpdateDefaultDocsVault_Response) Descriptor() ([]byte, []int) {
-	return file_admin_system_settings_proto_rawDescGZIP(), []int{3, 1}
+	return file_admin_system_settings_proto_rawDescGZIP(), []int{4, 1}
 }
 
 var File_admin_system_settings_proto protoreflect.FileDescriptor
 
 const file_admin_system_settings_proto_rawDesc = "" +
 	"\n" +
-	"\x1badmin_system_settings.proto\x12\x1bartel_admin_system_settings\x1a\x1cgoogle/api/annotations.proto\x1a\tnpm.proto\x1a\x11public_docs.proto\x1a\x12setup_wizard.proto\"\xd0\x03\n" +
+	"\x1badmin_system_settings.proto\x12\x1bartel_admin_system_settings\x1a\x1cgoogle/api/annotations.proto\x1a\tnpm.proto\x1a\x11public_docs.proto\x1a\x12setup_wizard.proto\"\xf5\x03\n" +
 	"\vGetSettings\x1a\t\n" +
-	"\aRequest\x1a\xb5\x03\n" +
+	"\aRequest\x1a\xda\x03\n" +
 	"\bResponse\x122\n" +
 	"\x15password_auth_enabled\x18\x01 \x01(\bR\x13passwordAuthEnabled\x122\n" +
 	"\x15telegram_auth_enabled\x18\x02 \x01(\bR\x13telegramAuthEnabled\x12Q\n" +
@@ -567,7 +691,13 @@ const file_admin_system_settings_proto_rawDesc = "" +
 	"\x15default_docs_vault_id\x18\x04 \x01(\tR\x12defaultDocsVaultId\x125\n" +
 	"\x17default_docs_vault_name\x18\x05 \x01(\tR\x14defaultDocsVaultName\x125\n" +
 	"\x17default_docs_vault_slug\x18\x06 \x01(\tR\x14defaultDocsVaultSlug\x12M\n" +
-	"\x13default_docs_source\x18\a \x01(\x0e2\x1d.artel_public_docs.DocsSourceR\x11defaultDocsSource\"\x80\x01\n" +
+	"\x13default_docs_source\x18\a \x01(\x0e2\x1d.artel_public_docs.DocsSourceR\x11defaultDocsSource\x12#\n" +
+	"\rsystem_prompt\x18\b \x01(\tR\fsystemPrompt\"C\n" +
+	"\x12UpdateSystemPrompt\x1a!\n" +
+	"\aRequest\x12\x16\n" +
+	"\x06prompt\x18\x01 \x01(\tR\x06prompt\x1a\n" +
+	"\n" +
+	"\bResponse\"\x80\x01\n" +
 	"\x11UpdateAuthMethods\x1a_\n" +
 	"\aRequest\x12)\n" +
 	"\x10password_enabled\x18\x01 \x01(\bR\x0fpasswordEnabled\x12)\n" +
@@ -584,12 +714,13 @@ const file_admin_system_settings_proto_rawDesc = "" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x125\n" +
 	"\x06source\x18\x02 \x01(\x0e2\x1d.artel_public_docs.DocsSourceR\x06source\x1a\n" +
 	"\n" +
-	"\bResponse2\xa7\x06\n" +
+	"\bResponse2\xed\a\n" +
 	"\x16AdminSystemSettingsAPI\x12\x9d\x01\n" +
 	"\vGetSettings\x120.artel_admin_system_settings.GetSettings.Request\x1a1.artel_admin_system_settings.GetSettings.Response\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/admin_system_settings/get\x12\xbf\x01\n" +
 	"\x11UpdateAuthMethods\x126.artel_admin_system_settings.UpdateAuthMethods.Request\x1a7.artel_admin_system_settings.UpdateAuthMethods.Response\"9\x82\xd3\xe4\x93\x023:\x01*\"./api/admin_system_settings/update_auth_methods\x12\xd3\x01\n" +
 	"\x16UpdateRegistrationMode\x12;.artel_admin_system_settings.UpdateRegistrationMode.Request\x1a<.artel_admin_system_settings.UpdateRegistrationMode.Response\">\x82\xd3\xe4\x93\x028:\x01*\"3/api/admin_system_settings/update_registration_mode\x12\xd4\x01\n" +
-	"\x16UpdateDefaultDocsVault\x12;.artel_admin_system_settings.UpdateDefaultDocsVault.Request\x1a<.artel_admin_system_settings.UpdateDefaultDocsVault.Response\"?\x82\xd3\xe4\x93\x029:\x01*\"4/api/admin_system_settings/update_default_docs_vaultB\x1a\x92\x82\x19\n" +
+	"\x16UpdateDefaultDocsVault\x12;.artel_admin_system_settings.UpdateDefaultDocsVault.Request\x1a<.artel_admin_system_settings.UpdateDefaultDocsVault.Response\"?\x82\xd3\xe4\x93\x029:\x01*\"4/api/admin_system_settings/update_default_docs_vault\x12\xc3\x01\n" +
+	"\x12UpdateSystemPrompt\x127.artel_admin_system_settings.UpdateSystemPrompt.Request\x1a8.artel_admin_system_settings.UpdateSystemPrompt.Response\":\x82\xd3\xe4\x93\x024:\x01*\"//api/admin_system_settings/update_system_promptB\x1a\x92\x82\x19\n" +
 	"@artel/apiZ\n" +
 	"/artel_apib\x06proto3"
 
@@ -605,38 +736,43 @@ func file_admin_system_settings_proto_rawDescGZIP() []byte {
 	return file_admin_system_settings_proto_rawDescData
 }
 
-var file_admin_system_settings_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_admin_system_settings_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_admin_system_settings_proto_goTypes = []any{
 	(*GetSettings)(nil),                     // 0: artel_admin_system_settings.GetSettings
-	(*UpdateAuthMethods)(nil),               // 1: artel_admin_system_settings.UpdateAuthMethods
-	(*UpdateRegistrationMode)(nil),          // 2: artel_admin_system_settings.UpdateRegistrationMode
-	(*UpdateDefaultDocsVault)(nil),          // 3: artel_admin_system_settings.UpdateDefaultDocsVault
-	(*GetSettings_Request)(nil),             // 4: artel_admin_system_settings.GetSettings.Request
-	(*GetSettings_Response)(nil),            // 5: artel_admin_system_settings.GetSettings.Response
-	(*UpdateAuthMethods_Request)(nil),       // 6: artel_admin_system_settings.UpdateAuthMethods.Request
-	(*UpdateAuthMethods_Response)(nil),      // 7: artel_admin_system_settings.UpdateAuthMethods.Response
-	(*UpdateRegistrationMode_Request)(nil),  // 8: artel_admin_system_settings.UpdateRegistrationMode.Request
-	(*UpdateRegistrationMode_Response)(nil), // 9: artel_admin_system_settings.UpdateRegistrationMode.Response
-	(*UpdateDefaultDocsVault_Request)(nil),  // 10: artel_admin_system_settings.UpdateDefaultDocsVault.Request
-	(*UpdateDefaultDocsVault_Response)(nil), // 11: artel_admin_system_settings.UpdateDefaultDocsVault.Response
-	(RegistrationMode)(0),                   // 12: artel_setup_wizard.RegistrationMode
-	(DocsSource)(0),                         // 13: artel_public_docs.DocsSource
+	(*UpdateSystemPrompt)(nil),              // 1: artel_admin_system_settings.UpdateSystemPrompt
+	(*UpdateAuthMethods)(nil),               // 2: artel_admin_system_settings.UpdateAuthMethods
+	(*UpdateRegistrationMode)(nil),          // 3: artel_admin_system_settings.UpdateRegistrationMode
+	(*UpdateDefaultDocsVault)(nil),          // 4: artel_admin_system_settings.UpdateDefaultDocsVault
+	(*GetSettings_Request)(nil),             // 5: artel_admin_system_settings.GetSettings.Request
+	(*GetSettings_Response)(nil),            // 6: artel_admin_system_settings.GetSettings.Response
+	(*UpdateSystemPrompt_Request)(nil),      // 7: artel_admin_system_settings.UpdateSystemPrompt.Request
+	(*UpdateSystemPrompt_Response)(nil),     // 8: artel_admin_system_settings.UpdateSystemPrompt.Response
+	(*UpdateAuthMethods_Request)(nil),       // 9: artel_admin_system_settings.UpdateAuthMethods.Request
+	(*UpdateAuthMethods_Response)(nil),      // 10: artel_admin_system_settings.UpdateAuthMethods.Response
+	(*UpdateRegistrationMode_Request)(nil),  // 11: artel_admin_system_settings.UpdateRegistrationMode.Request
+	(*UpdateRegistrationMode_Response)(nil), // 12: artel_admin_system_settings.UpdateRegistrationMode.Response
+	(*UpdateDefaultDocsVault_Request)(nil),  // 13: artel_admin_system_settings.UpdateDefaultDocsVault.Request
+	(*UpdateDefaultDocsVault_Response)(nil), // 14: artel_admin_system_settings.UpdateDefaultDocsVault.Response
+	(RegistrationMode)(0),                   // 15: artel_setup_wizard.RegistrationMode
+	(DocsSource)(0),                         // 16: artel_public_docs.DocsSource
 }
 var file_admin_system_settings_proto_depIdxs = []int32{
-	12, // 0: artel_admin_system_settings.GetSettings.Response.registration_mode:type_name -> artel_setup_wizard.RegistrationMode
-	13, // 1: artel_admin_system_settings.GetSettings.Response.default_docs_source:type_name -> artel_public_docs.DocsSource
-	12, // 2: artel_admin_system_settings.UpdateRegistrationMode.Request.mode:type_name -> artel_setup_wizard.RegistrationMode
-	13, // 3: artel_admin_system_settings.UpdateDefaultDocsVault.Request.source:type_name -> artel_public_docs.DocsSource
-	4,  // 4: artel_admin_system_settings.AdminSystemSettingsAPI.GetSettings:input_type -> artel_admin_system_settings.GetSettings.Request
-	6,  // 5: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateAuthMethods:input_type -> artel_admin_system_settings.UpdateAuthMethods.Request
-	8,  // 6: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateRegistrationMode:input_type -> artel_admin_system_settings.UpdateRegistrationMode.Request
-	10, // 7: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateDefaultDocsVault:input_type -> artel_admin_system_settings.UpdateDefaultDocsVault.Request
-	5,  // 8: artel_admin_system_settings.AdminSystemSettingsAPI.GetSettings:output_type -> artel_admin_system_settings.GetSettings.Response
-	7,  // 9: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateAuthMethods:output_type -> artel_admin_system_settings.UpdateAuthMethods.Response
-	9,  // 10: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateRegistrationMode:output_type -> artel_admin_system_settings.UpdateRegistrationMode.Response
-	11, // 11: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateDefaultDocsVault:output_type -> artel_admin_system_settings.UpdateDefaultDocsVault.Response
-	8,  // [8:12] is the sub-list for method output_type
-	4,  // [4:8] is the sub-list for method input_type
+	15, // 0: artel_admin_system_settings.GetSettings.Response.registration_mode:type_name -> artel_setup_wizard.RegistrationMode
+	16, // 1: artel_admin_system_settings.GetSettings.Response.default_docs_source:type_name -> artel_public_docs.DocsSource
+	15, // 2: artel_admin_system_settings.UpdateRegistrationMode.Request.mode:type_name -> artel_setup_wizard.RegistrationMode
+	16, // 3: artel_admin_system_settings.UpdateDefaultDocsVault.Request.source:type_name -> artel_public_docs.DocsSource
+	5,  // 4: artel_admin_system_settings.AdminSystemSettingsAPI.GetSettings:input_type -> artel_admin_system_settings.GetSettings.Request
+	9,  // 5: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateAuthMethods:input_type -> artel_admin_system_settings.UpdateAuthMethods.Request
+	11, // 6: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateRegistrationMode:input_type -> artel_admin_system_settings.UpdateRegistrationMode.Request
+	13, // 7: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateDefaultDocsVault:input_type -> artel_admin_system_settings.UpdateDefaultDocsVault.Request
+	7,  // 8: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateSystemPrompt:input_type -> artel_admin_system_settings.UpdateSystemPrompt.Request
+	6,  // 9: artel_admin_system_settings.AdminSystemSettingsAPI.GetSettings:output_type -> artel_admin_system_settings.GetSettings.Response
+	10, // 10: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateAuthMethods:output_type -> artel_admin_system_settings.UpdateAuthMethods.Response
+	12, // 11: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateRegistrationMode:output_type -> artel_admin_system_settings.UpdateRegistrationMode.Response
+	14, // 12: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateDefaultDocsVault:output_type -> artel_admin_system_settings.UpdateDefaultDocsVault.Response
+	8,  // 13: artel_admin_system_settings.AdminSystemSettingsAPI.UpdateSystemPrompt:output_type -> artel_admin_system_settings.UpdateSystemPrompt.Response
+	9,  // [9:14] is the sub-list for method output_type
+	4,  // [4:9] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -655,7 +791,7 @@ func file_admin_system_settings_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_admin_system_settings_proto_rawDesc), len(file_admin_system_settings_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

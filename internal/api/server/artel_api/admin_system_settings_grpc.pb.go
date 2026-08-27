@@ -23,6 +23,7 @@ const (
 	AdminSystemSettingsAPI_UpdateAuthMethods_FullMethodName      = "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateAuthMethods"
 	AdminSystemSettingsAPI_UpdateRegistrationMode_FullMethodName = "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateRegistrationMode"
 	AdminSystemSettingsAPI_UpdateDefaultDocsVault_FullMethodName = "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateDefaultDocsVault"
+	AdminSystemSettingsAPI_UpdateSystemPrompt_FullMethodName     = "/artel_admin_system_settings.AdminSystemSettingsAPI/UpdateSystemPrompt"
 )
 
 // AdminSystemSettingsAPIClient is the client API for AdminSystemSettingsAPI service.
@@ -33,6 +34,7 @@ type AdminSystemSettingsAPIClient interface {
 	UpdateAuthMethods(ctx context.Context, in *UpdateAuthMethods_Request, opts ...grpc.CallOption) (*UpdateAuthMethods_Response, error)
 	UpdateRegistrationMode(ctx context.Context, in *UpdateRegistrationMode_Request, opts ...grpc.CallOption) (*UpdateRegistrationMode_Response, error)
 	UpdateDefaultDocsVault(ctx context.Context, in *UpdateDefaultDocsVault_Request, opts ...grpc.CallOption) (*UpdateDefaultDocsVault_Response, error)
+	UpdateSystemPrompt(ctx context.Context, in *UpdateSystemPrompt_Request, opts ...grpc.CallOption) (*UpdateSystemPrompt_Response, error)
 }
 
 type adminSystemSettingsAPIClient struct {
@@ -79,6 +81,15 @@ func (c *adminSystemSettingsAPIClient) UpdateDefaultDocsVault(ctx context.Contex
 	return out, nil
 }
 
+func (c *adminSystemSettingsAPIClient) UpdateSystemPrompt(ctx context.Context, in *UpdateSystemPrompt_Request, opts ...grpc.CallOption) (*UpdateSystemPrompt_Response, error) {
+	out := new(UpdateSystemPrompt_Response)
+	err := c.cc.Invoke(ctx, AdminSystemSettingsAPI_UpdateSystemPrompt_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminSystemSettingsAPIServer is the server API for AdminSystemSettingsAPI service.
 // All implementations must embed UnimplementedAdminSystemSettingsAPIServer
 // for forward compatibility
@@ -87,6 +98,7 @@ type AdminSystemSettingsAPIServer interface {
 	UpdateAuthMethods(context.Context, *UpdateAuthMethods_Request) (*UpdateAuthMethods_Response, error)
 	UpdateRegistrationMode(context.Context, *UpdateRegistrationMode_Request) (*UpdateRegistrationMode_Response, error)
 	UpdateDefaultDocsVault(context.Context, *UpdateDefaultDocsVault_Request) (*UpdateDefaultDocsVault_Response, error)
+	UpdateSystemPrompt(context.Context, *UpdateSystemPrompt_Request) (*UpdateSystemPrompt_Response, error)
 	mustEmbedUnimplementedAdminSystemSettingsAPIServer()
 }
 
@@ -105,6 +117,9 @@ func (UnimplementedAdminSystemSettingsAPIServer) UpdateRegistrationMode(context.
 }
 func (UnimplementedAdminSystemSettingsAPIServer) UpdateDefaultDocsVault(context.Context, *UpdateDefaultDocsVault_Request) (*UpdateDefaultDocsVault_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDefaultDocsVault not implemented")
+}
+func (UnimplementedAdminSystemSettingsAPIServer) UpdateSystemPrompt(context.Context, *UpdateSystemPrompt_Request) (*UpdateSystemPrompt_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSystemPrompt not implemented")
 }
 func (UnimplementedAdminSystemSettingsAPIServer) mustEmbedUnimplementedAdminSystemSettingsAPIServer() {
 }
@@ -192,6 +207,24 @@ func _AdminSystemSettingsAPI_UpdateDefaultDocsVault_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminSystemSettingsAPI_UpdateSystemPrompt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSystemPrompt_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminSystemSettingsAPIServer).UpdateSystemPrompt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminSystemSettingsAPI_UpdateSystemPrompt_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminSystemSettingsAPIServer).UpdateSystemPrompt(ctx, req.(*UpdateSystemPrompt_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminSystemSettingsAPI_ServiceDesc is the grpc.ServiceDesc for AdminSystemSettingsAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -214,6 +247,10 @@ var AdminSystemSettingsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDefaultDocsVault",
 			Handler:    _AdminSystemSettingsAPI_UpdateDefaultDocsVault_Handler,
+		},
+		{
+			MethodName: "UpdateSystemPrompt",
+			Handler:    _AdminSystemSettingsAPI_UpdateSystemPrompt_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

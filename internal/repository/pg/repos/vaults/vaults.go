@@ -65,6 +65,8 @@ func (r *Repo) Upsert(
 		row.CreatedAt,
 		row.IsPublic,
 		row.Slug,
+		row.Prompt,
+		row.UseSystemPrompt,
 		r.encryptor,
 	)
 	if err != nil {
@@ -94,6 +96,8 @@ func (r *Repo) GetByID(ctx context.Context, id uuid.UUID) (domain.Vault, error) 
 		row.CreatedAt,
 		row.IsPublic,
 		row.Slug,
+		row.Prompt,
+		row.UseSystemPrompt,
 		r.encryptor,
 	)
 	if err != nil {
@@ -128,6 +132,8 @@ func (r *Repo) GetByNameAndUser(ctx context.Context, userID uuid.UUID, name stri
 		row.CreatedAt,
 		row.IsPublic,
 		row.Slug,
+		row.Prompt,
+		row.UseSystemPrompt,
 		r.encryptor,
 	)
 	if err != nil {
@@ -148,6 +154,16 @@ func (r *Repo) UpdateStatus(ctx context.Context, vaultID uuid.UUID, status strin
 		return rerrors.Wrap(err, "error updating vault status")
 	}
 
+	return nil
+}
+
+func (r *Repo) UpdatePrompts(ctx context.Context, vaultID uuid.UUID, prompt string, useSystemPrompt bool) error {
+	err := r.q.UpdateVaultPrompts(ctx, artel_q.UpdateVaultPromptsParams{
+		ID: vaultID, Prompt: prompt, UseSystemPrompt: useSystemPrompt,
+	})
+	if err != nil {
+		return rerrors.Wrap(err, "error updating vault prompts")
+	}
 	return nil
 }
 
@@ -193,6 +209,8 @@ func (r *Repo) ListByMembership(ctx context.Context, userID uuid.UUID) ([]domain
 			row.CreatedAt,
 			row.IsPublic,
 			row.Slug,
+			row.Prompt,
+			row.UseSystemPrompt,
 			r.encryptor,
 		)
 		if err != nil {
@@ -281,6 +299,8 @@ func (r *Repo) PublishVault(ctx context.Context, vaultID uuid.UUID, slug string)
 		row.CreatedAt,
 		row.IsPublic,
 		row.Slug,
+		row.Prompt,
+		row.UseSystemPrompt,
 		r.encryptor,
 	)
 	if err != nil {
@@ -319,6 +339,8 @@ func (r *Repo) GetBySlug(ctx context.Context, slug string) (domain.Vault, error)
 		row.CreatedAt,
 		row.IsPublic,
 		row.Slug,
+		row.Prompt,
+		row.UseSystemPrompt,
 		r.encryptor,
 	)
 	if err != nil {
@@ -344,6 +366,8 @@ func rowToVault(
 	createdAt time.Time,
 	isPublic bool,
 	slug sql.NullString,
+	prompt string,
+	useSystemPrompt bool,
 	encryptor cryptoutil.Encryptor,
 ) (domain.Vault, error) {
 	v := domain.Vault{
@@ -355,6 +379,8 @@ func rowToVault(
 		UseCouchDBForBinaries: useCouchDBForBinaries,
 		CreatedAt:             createdAt,
 		IsPublic:              isPublic,
+		Prompt:                prompt,
+		UseSystemPrompt:       useSystemPrompt,
 	}
 	if couchInstanceID.Valid {
 		v.CouchInstanceUuid = couchInstanceID.UUID

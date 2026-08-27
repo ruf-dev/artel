@@ -16,7 +16,7 @@ import (
 const createVault = `-- name: CreateVault :one
 INSERT INTO vaults (user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug, prompt, use_system_prompt
 `
 
 type CreateVaultParams struct {
@@ -44,6 +44,8 @@ type CreateVaultRow struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 }
 
 func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (CreateVaultRow, error) {
@@ -72,6 +74,8 @@ func (q *Queries) CreateVault(ctx context.Context, arg CreateVaultParams) (Creat
 		&i.CreatedAt,
 		&i.IsPublic,
 		&i.Slug,
+		&i.Prompt,
+		&i.UseSystemPrompt,
 	)
 	return i, err
 }
@@ -88,7 +92,7 @@ func (q *Queries) DeleteVault(ctx context.Context, id uuid.UUID) error {
 }
 
 const getVaultByID = `-- name: GetVaultByID :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug, prompt, use_system_prompt
 FROM vaults
 WHERE id = $1
 `
@@ -107,6 +111,8 @@ type GetVaultByIDRow struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 }
 
 func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDRow, error) {
@@ -126,12 +132,14 @@ func (q *Queries) GetVaultByID(ctx context.Context, id uuid.UUID) (GetVaultByIDR
 		&i.CreatedAt,
 		&i.IsPublic,
 		&i.Slug,
+		&i.Prompt,
+		&i.UseSystemPrompt,
 	)
 	return i, err
 }
 
 const getVaultByNameAndUser = `-- name: GetVaultByNameAndUser :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug, prompt, use_system_prompt
 FROM vaults
 WHERE user_id = $1
   AND name = $2
@@ -156,6 +164,8 @@ type GetVaultByNameAndUserRow struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 }
 
 func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameAndUserParams) (GetVaultByNameAndUserRow, error) {
@@ -175,12 +185,14 @@ func (q *Queries) GetVaultByNameAndUser(ctx context.Context, arg GetVaultByNameA
 		&i.CreatedAt,
 		&i.IsPublic,
 		&i.Slug,
+		&i.Prompt,
+		&i.UseSystemPrompt,
 	)
 	return i, err
 }
 
 const getVaultBySlug = `-- name: GetVaultBySlug :one
-SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+SELECT id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug, prompt, use_system_prompt
 FROM vaults
 WHERE slug = $1
   AND is_public
@@ -200,6 +212,8 @@ type GetVaultBySlugRow struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 }
 
 func (q *Queries) GetVaultBySlug(ctx context.Context, slug sql.NullString) (GetVaultBySlugRow, error) {
@@ -219,6 +233,8 @@ func (q *Queries) GetVaultBySlug(ctx context.Context, slug sql.NullString) (GetV
 		&i.CreatedAt,
 		&i.IsPublic,
 		&i.Slug,
+		&i.Prompt,
+		&i.UseSystemPrompt,
 	)
 	return i, err
 }
@@ -239,7 +255,7 @@ func (q *Queries) LinkVaultS3Bucket(ctx context.Context, arg LinkVaultS3BucketPa
 }
 
 const listVaultsByMembership = `-- name: ListVaultsByMembership :many
-SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.s3_instance_id, v.s3_bucket_name, v.use_couchdb_for_binaries, v.created_at, v.is_public, v.slug, vm.role AS member_role
+SELECT v.id, v.user_id, v.name, v.couch_db_name, v.couch_instance_id, v.status, v.livesync_passphrase_enc, v.s3_instance_id, v.s3_bucket_name, v.use_couchdb_for_binaries, v.created_at, v.is_public, v.slug, v.prompt, v.use_system_prompt, vm.role AS member_role
 FROM vaults v
          LEFT JOIN vault_members vm ON vm.vault_id = v.id AND vm.user_id = $1
 WHERE vm.user_id IS NOT NULL
@@ -260,6 +276,8 @@ type ListVaultsByMembershipRow struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 	MemberRole            NullVaultRole
 }
 
@@ -286,6 +304,8 @@ func (q *Queries) ListVaultsByMembership(ctx context.Context, userID uuid.UUID) 
 			&i.CreatedAt,
 			&i.IsPublic,
 			&i.Slug,
+			&i.Prompt,
+			&i.UseSystemPrompt,
 			&i.MemberRole,
 		); err != nil {
 			return nil, err
@@ -306,7 +326,7 @@ UPDATE vaults
 SET is_public = true,
     slug      = $2
 WHERE id = $1
-RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug
+RETURNING id, user_id, name, couch_db_name, couch_instance_id, status, livesync_passphrase_enc, s3_instance_id, s3_bucket_name, use_couchdb_for_binaries, created_at, is_public, slug, prompt, use_system_prompt
 `
 
 type PublishVaultParams struct {
@@ -328,6 +348,8 @@ type PublishVaultRow struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 }
 
 func (q *Queries) PublishVault(ctx context.Context, arg PublishVaultParams) (PublishVaultRow, error) {
@@ -347,6 +369,8 @@ func (q *Queries) PublishVault(ctx context.Context, arg PublishVaultParams) (Pub
 		&i.CreatedAt,
 		&i.IsPublic,
 		&i.Slug,
+		&i.Prompt,
+		&i.UseSystemPrompt,
 	)
 	return i, err
 }
@@ -398,6 +422,21 @@ WHERE id = $1
 
 func (q *Queries) UnpublishVault(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, unpublishVault, id)
+	return err
+}
+
+const updateVaultPrompts = `-- name: UpdateVaultPrompts :exec
+UPDATE vaults SET prompt = $2, use_system_prompt = $3 WHERE id = $1
+`
+
+type UpdateVaultPromptsParams struct {
+	ID              uuid.UUID
+	Prompt          string
+	UseSystemPrompt bool
+}
+
+func (q *Queries) UpdateVaultPrompts(ctx context.Context, arg UpdateVaultPromptsParams) error {
+	_, err := q.db.ExecContext(ctx, updateVaultPrompts, arg.ID, arg.Prompt, arg.UseSystemPrompt)
 	return err
 }
 

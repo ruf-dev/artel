@@ -28,7 +28,7 @@ func (q *Queries) CompleteSetup(ctx context.Context) error {
 const getSystemSettings = `-- name: GetSystemSettings :one
 SELECT id, setup_completed, password_auth_enabled, telegram_auth_enabled, registration_mode,
        setup_token_hash, setup_token_issued_at, created_at, updated_at, default_docs_vault_id,
-       default_docs_source
+       default_docs_source, system_prompt
 FROM system_settings
 WHERE id = 1
 `
@@ -48,6 +48,7 @@ func (q *Queries) GetSystemSettings(ctx context.Context) (SystemSetting, error) 
 		&i.UpdatedAt,
 		&i.DefaultDocsVaultID,
 		&i.DefaultDocsSource,
+		&i.SystemPrompt,
 	)
 	return i, err
 }
@@ -55,7 +56,7 @@ func (q *Queries) GetSystemSettings(ctx context.Context) (SystemSetting, error) 
 const getSystemSettingsForUpdate = `-- name: GetSystemSettingsForUpdate :one
 SELECT id, setup_completed, password_auth_enabled, telegram_auth_enabled, registration_mode,
        setup_token_hash, setup_token_issued_at, created_at, updated_at, default_docs_vault_id,
-       default_docs_source
+       default_docs_source, system_prompt
 FROM system_settings
 WHERE id = 1
 FOR UPDATE
@@ -76,6 +77,7 @@ func (q *Queries) GetSystemSettingsForUpdate(ctx context.Context) (SystemSetting
 		&i.UpdatedAt,
 		&i.DefaultDocsVaultID,
 		&i.DefaultDocsSource,
+		&i.SystemPrompt,
 	)
 	return i, err
 }
@@ -95,6 +97,15 @@ type SetSetupTokenParams struct {
 
 func (q *Queries) SetSetupToken(ctx context.Context, arg SetSetupTokenParams) error {
 	_, err := q.db.ExecContext(ctx, setSetupToken, arg.SetupTokenHash, arg.SetupTokenIssuedAt)
+	return err
+}
+
+const updateSystemPrompt = `-- name: UpdateSystemPrompt :exec
+UPDATE system_settings SET system_prompt = $1, updated_at = NOW() WHERE id = 1
+`
+
+func (q *Queries) UpdateSystemPrompt(ctx context.Context, systemPrompt string) error {
+	_, err := q.db.ExecContext(ctx, updateSystemPrompt, systemPrompt)
 	return err
 }
 

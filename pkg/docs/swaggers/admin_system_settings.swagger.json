@@ -143,6 +143,38 @@
           "AdminSystemSettingsAPI"
         ]
       }
+    },
+    "/api/admin_system_settings/update_system_prompt": {
+      "post": {
+        "operationId": "AdminSystemSettingsAPI_UpdateSystemPrompt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateSystemPromptResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_admin_system_settingsUpdateSystemPromptRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AdminSystemSettingsAPI"
+        ]
+      }
     }
   },
   "definitions": {
@@ -173,6 +205,9 @@
         },
         "defaultDocsSource": {
           "$ref": "#/definitions/artel_public_docsDocsSource"
+        },
+        "systemPrompt": {
+          "type": "string"
         }
       }
     },
@@ -213,6 +248,17 @@
       }
     },
     "artel_admin_system_settingsUpdateRegistrationModeResponse": {
+      "type": "object"
+    },
+    "artel_admin_system_settingsUpdateSystemPromptRequest": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_admin_system_settingsUpdateSystemPromptResponse": {
       "type": "object"
     },
     "artel_public_docsDocsSource": {

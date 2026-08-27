@@ -35,6 +35,12 @@ service AdminSystemSettingsAPI {
       body: "*"
     };
   };
+  rpc UpdateSystemPrompt(UpdateSystemPrompt.Request) returns (UpdateSystemPrompt.Response) {
+    option (google.api.http) = {
+      post: "/api/admin_system_settings/update_system_prompt"
+      body: "*"
+    };
+  };
 }
 
 message GetSettings {
@@ -49,7 +55,13 @@ message GetSettings {
     string default_docs_vault_name = 5;
     string default_docs_vault_slug = 6;
     artel_public_docs.DocsSource default_docs_source = 7;
+    string system_prompt = 8;
   }
+}
+
+message UpdateSystemPrompt {
+  message Request { string prompt = 1; }
+  message Response {}
 }
 
 message UpdateAuthMethods {

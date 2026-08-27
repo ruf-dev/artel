@@ -29,6 +29,7 @@ const (
 // and instance-wide auth policy — see migrations/064_system_settings.sql and, for
 // DefaultDocsVaultID, migrations/069_default_docs_vault.sql.
 type SystemSettings struct {
+	SystemPrompt        string
 	SetupCompleted      bool
 	PasswordAuthEnabled bool
 	TelegramAuthEnabled bool

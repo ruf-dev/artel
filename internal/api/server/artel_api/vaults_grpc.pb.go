@@ -35,6 +35,7 @@ const (
 	VaultsAPI_SetVaultBinaryStorage_FullMethodName      = "/artel_vaults.VaultsAPI/SetVaultBinaryStorage"
 	VaultsAPI_PublishVault_FullMethodName               = "/artel_vaults.VaultsAPI/PublishVault"
 	VaultsAPI_UnpublishVault_FullMethodName             = "/artel_vaults.VaultsAPI/UnpublishVault"
+	VaultsAPI_UpdateVaultPrompts_FullMethodName         = "/artel_vaults.VaultsAPI/UpdateVaultPrompts"
 	VaultsAPI_CreateWorkbench_FullMethodName            = "/artel_vaults.VaultsAPI/CreateWorkbench"
 	VaultsAPI_StartWorkbench_FullMethodName             = "/artel_vaults.VaultsAPI/StartWorkbench"
 	VaultsAPI_StopWorkbench_FullMethodName              = "/artel_vaults.VaultsAPI/StopWorkbench"
@@ -68,6 +69,7 @@ type VaultsAPIClient interface {
 	SetVaultBinaryStorage(ctx context.Context, in *SetVaultBinaryStorage_Request, opts ...grpc.CallOption) (*SetVaultBinaryStorage_Response, error)
 	PublishVault(ctx context.Context, in *PublishVault_Request, opts ...grpc.CallOption) (*PublishVault_Response, error)
 	UnpublishVault(ctx context.Context, in *UnpublishVault_Request, opts ...grpc.CallOption) (*UnpublishVault_Response, error)
+	UpdateVaultPrompts(ctx context.Context, in *UpdateVaultPrompts_Request, opts ...grpc.CallOption) (*UpdateVaultPrompts_Response, error)
 	CreateWorkbench(ctx context.Context, in *CreateWorkbench_Request, opts ...grpc.CallOption) (*CreateWorkbench_Response, error)
 	StartWorkbench(ctx context.Context, in *StartWorkbench_Request, opts ...grpc.CallOption) (*StartWorkbench_Response, error)
 	StopWorkbench(ctx context.Context, in *StopWorkbench_Request, opts ...grpc.CallOption) (*StopWorkbench_Response, error)
@@ -233,6 +235,15 @@ func (c *vaultsAPIClient) UnpublishVault(ctx context.Context, in *UnpublishVault
 	return out, nil
 }
 
+func (c *vaultsAPIClient) UpdateVaultPrompts(ctx context.Context, in *UpdateVaultPrompts_Request, opts ...grpc.CallOption) (*UpdateVaultPrompts_Response, error) {
+	out := new(UpdateVaultPrompts_Response)
+	err := c.cc.Invoke(ctx, VaultsAPI_UpdateVaultPrompts_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *vaultsAPIClient) CreateWorkbench(ctx context.Context, in *CreateWorkbench_Request, opts ...grpc.CallOption) (*CreateWorkbench_Response, error) {
 	out := new(CreateWorkbench_Response)
 	err := c.cc.Invoke(ctx, VaultsAPI_CreateWorkbench_FullMethodName, in, out, opts...)
@@ -352,6 +363,7 @@ type VaultsAPIServer interface {
 	SetVaultBinaryStorage(context.Context, *SetVaultBinaryStorage_Request) (*SetVaultBinaryStorage_Response, error)
 	PublishVault(context.Context, *PublishVault_Request) (*PublishVault_Response, error)
 	UnpublishVault(context.Context, *UnpublishVault_Request) (*UnpublishVault_Response, error)
+	UpdateVaultPrompts(context.Context, *UpdateVaultPrompts_Request) (*UpdateVaultPrompts_Response, error)
 	CreateWorkbench(context.Context, *CreateWorkbench_Request) (*CreateWorkbench_Response, error)
 	StartWorkbench(context.Context, *StartWorkbench_Request) (*StartWorkbench_Response, error)
 	StopWorkbench(context.Context, *StopWorkbench_Request) (*StopWorkbench_Response, error)
@@ -417,6 +429,9 @@ func (UnimplementedVaultsAPIServer) PublishVault(context.Context, *PublishVault_
 }
 func (UnimplementedVaultsAPIServer) UnpublishVault(context.Context, *UnpublishVault_Request) (*UnpublishVault_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnpublishVault not implemented")
+}
+func (UnimplementedVaultsAPIServer) UpdateVaultPrompts(context.Context, *UpdateVaultPrompts_Request) (*UpdateVaultPrompts_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVaultPrompts not implemented")
 }
 func (UnimplementedVaultsAPIServer) CreateWorkbench(context.Context, *CreateWorkbench_Request) (*CreateWorkbench_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateWorkbench not implemented")
@@ -752,6 +767,24 @@ func _VaultsAPI_UnpublishVault_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VaultsAPI_UpdateVaultPrompts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateVaultPrompts_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultsAPIServer).UpdateVaultPrompts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VaultsAPI_UpdateVaultPrompts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultsAPIServer).UpdateVaultPrompts(ctx, req.(*UpdateVaultPrompts_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VaultsAPI_CreateWorkbench_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateWorkbench_Request)
 	if err := dec(in); err != nil {
@@ -1020,6 +1053,10 @@ var VaultsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnpublishVault",
 			Handler:    _VaultsAPI_UnpublishVault_Handler,
+		},
+		{
+			MethodName: "UpdateVaultPrompts",
+			Handler:    _VaultsAPI_UpdateVaultPrompts_Handler,
 		},
 		{
 			MethodName: "CreateWorkbench",

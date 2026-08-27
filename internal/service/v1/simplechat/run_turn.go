@@ -16,13 +16,6 @@ import (
 	"go.redsock.ru/rerrors"
 )
 
-// systemPrompt frames the agent for the tools it has been given. Deliberately short — the tool
-// descriptions themselves carry the detail.
-const systemPrompt = "You are Artel's in-app assistant, helping a user work with their vault. " +
-	"You may call the provided tools to read or change the user's data. " +
-	"Every tool call is shown to the user and requires their approval, so prefer one focused " +
-	"call at a time and explain what you are doing."
-
 // maxToolIterations caps how many consecutive tool-calling rounds one turn may run before it is
 // abandoned — see user_errors.SimpleChatToolLoopExceeded.
 const maxToolIterations = 25
@@ -96,12 +89,26 @@ func (s *Service) RunTurn(
 		return failTurn(sink, rerrors.Wrap(err, "error resolving tools"))
 	}
 
+	systemSettings, err := s.systemSettings.Get(ctx)
+	if err != nil {
+		return failTurn(sink, rerrors.Wrap(err, "error getting system prompt"))
+	}
+	userSettings, err := s.userSettings.Get(ctx, chat.UserUuid)
+	if err != nil {
+		return failTurn(sink, rerrors.Wrap(err, "error getting user prompt"))
+	}
+	vault, err := s.vaults.GetByID(ctx, chat.VaultUuid)
+	if err != nil {
+		return failTurn(sink, rerrors.Wrap(err, "error getting vault prompt"))
+	}
+	system := mergePrompts(systemSettings.SystemPrompt, userSettings.UserPrompt, vault.Prompt, vault.UseSystemPrompt)
+
 	messages := historyToMessages(rows)
 	userMsg := openai.Message{Role: "user", Content: userText}
 	messages = append(messages, userMsg)
 
 	for iteration := 0; iteration < maxToolIterations; iteration++ {
-		result, streamErr := s.streamOnce(ctx, client, model, messages, tools, sink)
+		result, streamErr := s.streamOnce(ctx, client, model, system, messages, tools, sink)
 		if streamErr != nil {
 			return failTurn(sink, streamErr)
 		}
@@ -184,13 +191,14 @@ func (s *Service) streamOnce(
 	ctx context.Context,
 	client *openai.Client,
 	model string,
+	system string,
 	messages []openai.Message,
 	tools []openai.ToolDefinition,
 	sink chatprotocol.EventSink,
 ) (streamResult, error) {
 	req := openai.StreamCompleteRequest{
 		Model:    model,
-		System:   systemPrompt,
+		System:   system,
 		Messages: messages,
 		Tools:    tools,
 	}

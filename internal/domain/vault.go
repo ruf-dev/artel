@@ -29,6 +29,8 @@ type Vault struct {
 	CreatedAt             time.Time
 	IsPublic              bool
 	Slug                  string // "" when vault has never been published
+	Prompt                string
+	UseSystemPrompt       bool
 
 	// MyRole is the calling user's membership role on this vault ("owner"/"reader"/"maintainer"),
 	// or "" if they have no membership row. Only populated by ListByMembership — every other

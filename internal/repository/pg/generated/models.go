@@ -501,6 +501,7 @@ type SystemSetting struct {
 	UpdatedAt           time.Time
 	DefaultDocsVaultID  uuid.NullUUID
 	DefaultDocsSource   string
+	SystemPrompt        string
 }
 
 type Tract struct {
@@ -608,6 +609,13 @@ type UserPermission struct {
 	IsAdministrator bool
 }
 
+type UserSetting struct {
+	UserID     uuid.UUID
+	UserPrompt string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
 type Vault struct {
 	ID                    uuid.UUID
 	UserID                uuid.UUID
@@ -622,6 +630,8 @@ type Vault struct {
 	UseCouchdbForBinaries bool
 	IsPublic              bool
 	Slug                  sql.NullString
+	Prompt                string
+	UseSystemPrompt       bool
 }
 
 type VaultInvite struct {

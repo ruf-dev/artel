@@ -45,6 +45,7 @@ type Service struct {
 	s3InstancesRepo       repository.S3Instances
 	postgresInstancesRepo repository.PostgresInstances
 	vaultPostgresRepo     repository.VaultPostgresDatabases
+	auth                  service.AuthService
 
 	subscriptions service.SubscriptionService
 
@@ -59,6 +60,7 @@ type Service struct {
 func New(
 	repo repository.Repo,
 	subscriptions service.SubscriptionService,
+	auth service.AuthService,
 ) *Service {
 	return &Service{
 		vaultsRepo:            repo.Vaults(),
@@ -71,11 +73,37 @@ func New(
 		vaultPostgresRepo:     repo.VaultPostgresDatabases(),
 
 		subscriptions: subscriptions,
+		auth:          auth,
 
 		newAdminClient: newRealAdminClient,
 
 		txManager: repo.TxManager(),
 	}
+}
+
+func (s *Service) UpdatePrompts(ctx context.Context, vaultID uuid.UUID, prompt string, useSystemPrompt bool) error {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return rerrors.Wrap(user_errors.Unauthenticated)
+	}
+	membership, err := s.vaultMembersRepo.Get(ctx, vaultID, uc.UserUuid)
+	if err != nil {
+		return rerrors.Wrap(err, "get vault membership")
+	}
+	if membership.Role != artel_q.VaultRoleOwner && (s.auth == nil || s.auth.CheckIsAdmin(ctx, uc.UserUuid) != nil) {
+		return rerrors.Wrap(user_errors.NotVaultOwner)
+	}
+	repo, ok := s.vaultsRepo.(interface {
+		UpdatePrompts(context.Context, uuid.UUID, string, bool) error
+	})
+	if !ok {
+		return rerrors.New("vault prompt storage is unavailable")
+	}
+	err = repo.UpdatePrompts(ctx, vaultID, prompt, useSystemPrompt)
+	if err != nil {
+		return rerrors.Wrap(err, "update vault prompts")
+	}
+	return nil
 }
 
 // newRealAdminClient wraps vaultpg.NewAdminClient behind the adminClient interface — the default
