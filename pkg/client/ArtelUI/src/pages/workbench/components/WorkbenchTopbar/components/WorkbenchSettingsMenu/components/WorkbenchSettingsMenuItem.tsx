@@ -3,7 +3,7 @@ import {Button} from "@vervstack/chures"
 
 import {cn} from "@/app/utils/cn"
 // eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
-import cls from "@/pages/workbench/components/WorkbenchToolbar/components/WorkbenchSettingsMenu/components/WorkbenchSettingsMenuItem.module.css"
+import cls from "@/pages/workbench/components/WorkbenchTopbar/components/WorkbenchSettingsMenu/components/WorkbenchSettingsMenuItem.module.css"
 
 interface WorkbenchSettingsMenuItemProps {
     icon: ReactNode

@@ -1,0 +1,19 @@
+.StartStopButtonContainer {
+    display: flex;
+
+    /* Nested two classes deep, so this beats chures' single-class Button rules
+       regardless of injection order — see "Never use !important" in ArtelUI CLAUDE.md. */
+    & .Btn {
+        width: var(--workbench-topbar-icon-size);
+        height: var(--workbench-topbar-icon-size);
+        padding: 0;
+    }
+
+    & .Icon {
+        color: #a0dc8c;
+    }
+
+    & .IconRunning {
+        color: var(--color-error);
+    }
+}

@@ -7,9 +7,17 @@
     flex-shrink: 0;
 
     /* Unified left sidebar (WorkbenchSidebar) occupies the first grid column when
-       shown — see useWorkbenchSidebar's `show` predicate. */
+       shown — see useWorkbenchSidebar's `show` predicate. Animate the column width
+       so the nav toggle (WorkbenchTopbar) slides the sidebar in/out. */
     &.WithSidebar {
         grid-template-columns: var(--workbench-sidebar-width) 1fr;
+        transition: grid-template-columns 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    /* Nav toggled shut: collapse the sidebar column to zero. WorkbenchSidebar's
+       container is `overflow: hidden`, so its content clips cleanly. */
+    &.NavCollapsed {
+        grid-template-columns: 0 1fr;
     }
 
     /* Terminal view only: 3rem taller than the viewport so a bit of scrollable room
@@ -23,9 +31,9 @@
     .MainColumn {
         display: flex;
 
-        /* WorkbenchHeader is the last JSX child of .MainColumn, so it always wins
+        /* WorkbenchTopbar is the last JSX child of .MainColumn, so it always wins
            paint order against positioned descendants in .Body (terminal/chat
-           content) — column-reverse restores the visual order (header on top, Body
+           content) — column-reverse restores the visual order (topbar on top, Body
            below) without touching z-index. See "Never use z-index" in
            pkg/client/ArtelUI/CLAUDE.md. */
         flex-direction: column-reverse;

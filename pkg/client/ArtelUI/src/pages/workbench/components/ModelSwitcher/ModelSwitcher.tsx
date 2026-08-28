@@ -1,9 +1,10 @@
 import {useCallback, useMemo} from "react"
 import {Dropdown} from "@vervstack/chures"
 
+import {cn} from "@/app/utils/cn.ts"
 import {useLikedModels} from "@/app/hooks/useLikedModels.ts"
 import ModelOptionRow from "@/components/ModelOptionRow/ModelOptionRow.tsx"
-import cls from "@/pages/workbench/components/SimpleChat/components/ModelSwitcher/ModelSwitcher.module.css"
+import cls from "@/pages/workbench/components/ModelSwitcher/ModelSwitcher.module.css"
 import {
     buildLatestModelFlags,
     filterModelTree,
@@ -17,15 +18,20 @@ interface Props {
     value: string
     isLoading?: boolean
     onChange: (model: string) => void
+    disabled?: boolean
+    placeholder?: string
 }
 
 // Lets the user change the OpenRouter model mid-conversation — wired to
 // useSimpleChatSession's currentModel/setModel, which stamps whatever is
-// currently selected onto every outgoing user_message.
-export default function ModelSwitcher({models, value, isLoading, onChange}: Props) {
+// currently selected onto every outgoing user_message. `disabled` renders a dimmed,
+// non-interactive trigger (used by the Docker topbar, where the model is fixed to
+// Claude Code and there's nothing to pick).
+export default function ModelSwitcher({models, value, isLoading, onChange, disabled, placeholder}: Props) {
     const {likedIds, isLiked, toggleLiked} = useLikedModels()
 
     function handleChange(ids: string[]) {
+        if (disabled) return
         const next = ids[0]
         if (next) onChange(next)
     }
@@ -44,9 +50,12 @@ export default function ModelSwitcher({models, value, isLoading, onChange}: Prop
     )
 
     return (
-        <div className={cls.ModelSwitcherContainer}>
+        <div
+            className={cn(cls.ModelSwitcherContainer, disabled && cls.ModelSwitcherDisabled)}
+            aria-disabled={disabled || undefined}
+        >
             <Dropdown
-                placeholder="Model…"
+                placeholder={placeholder ?? "Model…"}
                 isLoading={isLoading}
                 options={groupedModels}
                 value={value ? [value] : []}

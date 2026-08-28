@@ -1,8 +1,0 @@
-.ModelSwitcherContainer {
-    min-width: 14rem;
-
-    @media (width <= 30rem) {
-        min-width: 0;
-        flex: 1;
-    }
-}

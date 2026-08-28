@@ -1,3 +1,4 @@
+import {useState} from "react"
 import {useParams} from "react-router-dom"
 import {Loader} from "@vervstack/chures"
 
@@ -14,9 +15,9 @@ import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {useDocumentTitle} from "@/app/hooks/useDocumentTitle.ts"
 import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/PickAuthModeScreen.tsx"
 import PickWorkbenchModeScreen from "@/pages/workbench/components/PickWorkbenchModeScreen/PickWorkbenchModeScreen.tsx"
-import WorkbenchHeader from "@/pages/workbench/components/WorkbenchHeader/WorkbenchHeader.tsx"
 import WorkbenchPanels from "@/pages/workbench/components/WorkbenchPanels/WorkbenchPanels.tsx"
 import WorkbenchSidebar from "@/pages/workbench/components/WorkbenchSidebar/WorkbenchSidebar.tsx"
+import WorkbenchTopbar from "@/pages/workbench/components/WorkbenchTopbar/WorkbenchTopbar.tsx"
 import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
 import {
     toSimpleChatSessionBundle,
@@ -56,6 +57,8 @@ export default function WorkbenchPage() {
 
     const vaultName = vaults.find(v => v.id === vaultId)?.name ?? "Vault"
 
+    const [navOpen, setNavOpen] = useState(true)
+
     const {view, setView, awaitingAuth, genericCentered, terminalViewActive} = useWorkbenchViewState({
         exists, status, isLoading, effectiveMode, showSetup: lifecycle.showSetup,
         authComplete: chatSession.authComplete, pendingAuthMode: lifecycle.pendingAuthMode,
@@ -70,7 +73,7 @@ export default function WorkbenchPage() {
 
     return (
         <div className={cn(cls.WorkbenchPageContainer, sidebar.show && cls.WithSidebar,
-            terminalViewActive && cls.TerminalViewActive)}>
+            sidebar.show && !navOpen && cls.NavCollapsed, terminalViewActive && cls.TerminalViewActive)}>
             {sidebar.show && vaultId && (
                 <WorkbenchSidebar
                     history={sidebar.history} showCloseButton={sidebar.showCloseButton}
@@ -107,12 +110,21 @@ export default function WorkbenchPage() {
                         />
                     )}
                 </div>
-                <WorkbenchHeader
-                    isLoading={isLoading} effectiveMode={effectiveMode} exists={exists} vaultId={vaultId}
-                    status={status} onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
-                    stopping={lifecycle.stopping} starting={lifecycle.resuming} view={view}
-                    onViewChange={setView} chatLocked={awaitingAuth}
-                />
+                {!isLoading && effectiveMode !== "picking" && (
+                    <WorkbenchTopbar
+                        effectiveMode={effectiveMode} exists={exists} status={status} vaultId={vaultId}
+                        view={view} onViewChange={setView} chatLocked={awaitingAuth}
+                        navOpen={navOpen} onToggleNav={() => setNavOpen(v => !v)}
+                        onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
+                        stopping={lifecycle.stopping} starting={lifecycle.resuming}
+                        model={{
+                            models: simpleChatController.models,
+                            value: simpleChatController.currentModel,
+                            isLoading: simpleChatController.modelsLoading,
+                            onChange: simpleChatController.setModel,
+                        }}
+                    />
+                )}
             </div>
         </div>
     )

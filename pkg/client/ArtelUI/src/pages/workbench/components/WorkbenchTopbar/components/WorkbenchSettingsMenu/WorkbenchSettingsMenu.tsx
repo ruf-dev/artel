@@ -6,9 +6,9 @@ import {useDialog} from "@/app/hooks/Dialog"
 import {useWorkbenchMutations} from "@/app/hooks/Workbench.ts"
 import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 // eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
-import WorkbenchSettingsMenuItem from "@/pages/workbench/components/WorkbenchToolbar/components/WorkbenchSettingsMenu/components/WorkbenchSettingsMenuItem.tsx"
+import WorkbenchSettingsMenuItem from "@/pages/workbench/components/WorkbenchTopbar/components/WorkbenchSettingsMenu/components/WorkbenchSettingsMenuItem.tsx"
 // eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
-import cls from "@/pages/workbench/components/WorkbenchToolbar/components/WorkbenchSettingsMenu/WorkbenchSettingsMenu.module.css"
+import cls from "@/pages/workbench/components/WorkbenchTopbar/components/WorkbenchSettingsMenu/WorkbenchSettingsMenu.module.css"
 
 interface MenuRect {
     top?: number

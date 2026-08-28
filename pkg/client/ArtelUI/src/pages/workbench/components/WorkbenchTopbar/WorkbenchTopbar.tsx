@@ -1,0 +1,69 @@
+import TopbarLeft from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarLeft/TopbarLeft.tsx"
+import TopbarRight from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarRight/TopbarRight.tsx"
+import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
+import type {WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
+import cls from "@/pages/workbench/components/WorkbenchTopbar/WorkbenchTopbar.module.css"
+
+interface ModelProps {
+    models: string[]
+    value: string
+    isLoading?: boolean
+    onChange: (model: string) => void
+}
+
+interface Props {
+    effectiveMode: WorkbenchMode | "picking"
+    exists: boolean
+    status: string
+    vaultId?: string
+    view: WorkbenchView
+    onViewChange: (view: WorkbenchView) => void
+    chatLocked: boolean
+    navOpen: boolean
+    onToggleNav: () => void
+    onStart: () => void
+    onStop: () => void
+    stopping: boolean
+    starting: boolean
+    model: ModelProps
+}
+
+// The workbench top bar: sidebar toggle + status + model switcher on the left, the
+// Chat/Terminal switch + start/stop + settings + tweaks on the right. Renders for
+// api mode and for a provisioned docker workbench — the loading/picking states are
+// gated out by the caller, and the internal guard drops docker-without-a-workbench.
+//
+// >6 props — kept as one object instead of exploding into separate destructured
+// bindings, per the ObjectPattern[properties.length>6] lint rule.
+export default function WorkbenchTopbar(props: Props) {
+    const visible = props.effectiveMode === "api"
+        || (props.effectiveMode === "docker" && props.exists)
+    if (!visible) return null
+
+    return (
+        <div className={cls.WorkbenchTopbarContainer}>
+            <TopbarLeft
+                effectiveMode={props.effectiveMode}
+                exists={props.exists}
+                status={props.status}
+                navOpen={props.navOpen}
+                onToggleNav={props.onToggleNav}
+                model={props.model}
+            />
+            <div className={cls.Spacer}/>
+            <TopbarRight
+                effectiveMode={props.effectiveMode}
+                exists={props.exists}
+                status={props.status}
+                vaultId={props.vaultId}
+                view={props.view}
+                onViewChange={props.onViewChange}
+                chatLocked={props.chatLocked}
+                onStart={props.onStart}
+                onStop={props.onStop}
+                stopping={props.stopping}
+                starting={props.starting}
+            />
+        </div>
+    )
+}

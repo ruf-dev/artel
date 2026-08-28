@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 
-import {type WorkbenchView} from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
+import {type WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
 
 interface Params {
     exists: boolean
