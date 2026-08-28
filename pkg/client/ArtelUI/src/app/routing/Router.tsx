@@ -1,5 +1,5 @@
 import {useEffect} from "react"
-import {Navigate, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
+import {Navigate, useLocation, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
 import { Tooltip } from "react-tooltip"
 
 import cls from "@/app/routing/Router.module.css"
@@ -65,6 +65,23 @@ export enum Path {
 
 export const REDIRECT_AFTER_LOGIN_KEY = "artel_post_login_redirect"
 
+// eslint-disable-next-line react-refresh/only-export-components
+export function isPublicPath(pathname: string): boolean {
+    if (pathname.startsWith("/docs/")) {
+        return true
+    }
+
+    const publicPaths: string[] = [
+        Path.InitPage,
+        Path.SetupWizard,
+        Path.ClosedAlpha,
+        Path.McpAuth,
+        Path.DocsPageDefault,
+    ]
+
+    return publicPaths.includes(pathname)
+}
+
 const routes: RouteObject[] = [
     {
         element: <HomeLayout/>,
@@ -79,7 +96,6 @@ const routes: RouteObject[] = [
             {path: Path.NotesPage, element: <NotesPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPageVault, element: <NotesPage/>, errorElement: <ErrorPage/>},
             {path: Path.NotesPageNote, element: <NotesPage/>, errorElement: <ErrorPage/>},
-            {path: Path.WorkbenchPage, element: <WorkbenchPage/>, errorElement: <ErrorPage/>},
             {path: Path.ConnectionsPage, element: <ConnectionsPage/>, errorElement: <ErrorPage/>},
             {path: Path.GoogleOAuthCallback, element: <GoogleOAuthCallbackPage/>, errorElement: <ErrorPage/>},
             {path: Path.ToolboxPage, element: <ToolboxPage/>, errorElement: <ErrorPage/>},
@@ -93,6 +109,7 @@ const routes: RouteObject[] = [
     {path: Path.SetupWizard, element: <SetupWizardPage/>, errorElement: <ErrorPage/>},
     {path: Path.McpAuth, element: <McpAuthPage/>, errorElement: <ErrorPage/>},
     {path: Path.ClosedAlpha, element: <ClosedAlphaPage/>, errorElement: <ErrorPage/>},
+    {path: Path.WorkbenchPage, element: <WorkbenchPage/>, errorElement: <ErrorPage/>},
     {path: Path.JoinVault, element: <JoinVaultPage/>, errorElement: <ErrorPage/>},
     {path: Path.DocsPage, element: <DocsPage/>, errorElement: <ErrorPage/>},
     {
@@ -104,6 +121,7 @@ const routes: RouteObject[] = [
 
 export default function Router() {
     const navigate = useNavigate()
+    const {pathname} = useLocation()
 
     const {auth, setUserInfo} = useUser()
     const isServerAvailable = useServerStatus()
@@ -127,6 +145,17 @@ export default function Router() {
             navigate(Path.HomePage)
         }
     }, [])
+
+    // Keyed on `auth` too, not just `pathname`: logout() swaps in a fresh
+    // AuthMiddleware instance without changing the route, so this must re-run on
+    // that reference change to bounce the now-unauthenticated user to /init.
+    useEffect(() => {
+        if (auth.isAuthenticated()) return
+        if (isPublicPath(pathname)) return
+
+        localStorage.setItem(REDIRECT_AFTER_LOGIN_KEY, pathname)
+        navigate(Path.InitPage)
+    }, [pathname, auth])
 
     if (!isServerAvailable) {
         return (

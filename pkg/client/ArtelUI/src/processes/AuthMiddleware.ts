@@ -1,4 +1,4 @@
-import {apiPrefix, getCsrfToken} from "@/app/api/api.ts"
+import {apiPrefix, clearCsrfCookie, getCsrfToken} from "@/app/api/api.ts"
 import {Session} from "@/processes/Auth.ts";
 import {useAppConfig} from "@/app/hooks/AppConfig.ts";
 import {AuthAPI} from "@/app/api/artel"
@@ -62,6 +62,12 @@ export class AuthMiddleware {
         this.session = undefined
         this.userInfo = undefined
         clearLocalStorage()
+        // Drop the readable csrf_token cookie now, synchronously — the server
+        // clears it too, but AuthAPI.Logout() below is an async round-trip that
+        // loses the race against the post-logout navigation, leaving
+        // isAuthenticated() reading true (so InitPage bounces straight back to
+        // the app). Same rationale as forceLogout()'s clearCsrfCookie() call.
+        clearCsrfCookie()
         // Best-effort: clears the httpOnly auth cookies + csrf_token server
         // side. Local state is cleared regardless of whether this succeeds.
         AuthAPI.Logout({}, apiPrefix()).catch(() => {})

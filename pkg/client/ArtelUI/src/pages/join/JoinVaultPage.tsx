@@ -4,13 +4,11 @@ import {Button, Loader} from "@vervstack/chures"
 
 import cls from "@/pages/join/JoinVaultPage.module.css"
 import {useVaultMutations} from "@/app/hooks/Vaults.ts"
-import useUser from "@/hooks/user/User.ts"
-import {Path, REDIRECT_AFTER_LOGIN_KEY} from "@/app/routing/Router.tsx"
+import {Path} from "@/app/routing/Router.tsx"
 
 export default function JoinVaultPage() {
     const {token} = useParams<{token: string}>()
     const navigate = useNavigate()
-    const {auth} = useUser()
     const {acceptInvite} = useVaultMutations()
     const [status, setStatus] = useState<"joining" | "success" | "error">("joining")
     const [errorMsg, setErrorMsg] = useState("")
@@ -18,12 +16,6 @@ export default function JoinVaultPage() {
     useEffect(() => {
         if (!token) {
             navigate(Path.HomePage, {replace: true})
-            return
-        }
-
-        if (!auth.isAuthenticated()) {
-            localStorage.setItem(REDIRECT_AFTER_LOGIN_KEY, `/join/${token}`)
-            navigate(Path.InitPage, {replace: true})
             return
         }
 
@@ -36,7 +28,7 @@ export default function JoinVaultPage() {
                 setStatus("error")
                 setErrorMsg(err instanceof Error ? err.message : "Failed to join vault")
             })
-    }, [token, auth])
+    }, [token])
 
     return (
         <div className={cls.JoinContainer}>
