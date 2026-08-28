@@ -1,4 +1,5 @@
 import {useEffect} from "react"
+import {createPortal} from "react-dom"
 
 import {cn} from "@/app/utils/cn.ts"
 import CloseIcon from "@/icons/common/CloseIcon.tsx"
@@ -9,8 +10,6 @@ import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContex
 import TweaksSystemPromptSection
     // eslint-disable-next-line max-len -- path too long to wrap
     from "@/pages/workbench/components/WorkbenchTweaksPanel/components/TweaksSystemPromptSection/TweaksSystemPromptSection.tsx"
-import TweaksThemeSection
-    from "@/pages/workbench/components/WorkbenchTweaksPanel/components/TweaksThemeSection/TweaksThemeSection.tsx"
 import TweaksMaxTokensSection
     // eslint-disable-next-line max-len -- path too long to wrap
     from "@/pages/workbench/components/WorkbenchTweaksPanel/components/TweaksMaxTokensSection/TweaksMaxTokensSection.tsx"
@@ -19,6 +18,8 @@ import TweaksContextSection
 import TweaksConnectionsSection
     // eslint-disable-next-line max-len -- path too long to wrap
     from "@/pages/workbench/components/WorkbenchTweaksPanel/components/TweaksConnectionsSection/TweaksConnectionsSection.tsx"
+import SettingsFab
+    from "@/pages/workbench/components/WorkbenchTweaksPanel/components/SettingsFab/SettingsFab.tsx"
 import cls from "@/pages/workbench/components/WorkbenchTweaksPanel/WorkbenchTweaksPanel.module.css"
 
 interface Props {
@@ -28,17 +29,19 @@ interface Props {
     vaultId?: string
 }
 
-// Right-side, in-flow, width-animated Tweaks panel. Always mounted (width: 0 when
-// closed) so the open/close width transition runs; the section bodies mount only
-// while open, same as TractCanvasInspector. Being the last flex child of
-// .MainColumn, it paints over the chat content with no z-index. Escape closes it.
+// Full-viewport Tweaks overlay: a blurred backdrop over the whole page plus a
+// right-side panel that slides in. Portaled to document.body (appended after
+// #root) so it paints above everything with no z-index — same pattern as
+// WorkbenchSettingsMenu. Always mounted so the slide-out transition runs; the
+// section bodies mount only while open. Escape and a backdrop click close it. The
+// floating SettingsFab (its own portal) toggles the overlay open/closed.
 //
 // >6 props isn't hit, but Props stays an object for parity with the other
 // workbench panels.
 export default function WorkbenchTweaksPanel(props: Props) {
     const {ctx, effectiveMode, status, vaultId} = props
+    const {tweaksOpen, openTweaks, closeTweaks} = ctx
 
-    const {tweaksOpen, closeTweaks} = ctx
     useEffect(() => {
         if (!tweaksOpen) return
         function onKeyDown(e: KeyboardEvent) {
@@ -49,22 +52,36 @@ export default function WorkbenchTweaksPanel(props: Props) {
     }, [tweaksOpen, closeTweaks])
 
     return (
-        <div className={cn(cls.WorkbenchTweaksPanelContainer, cls.Panel, ctx.tweaksOpen && cls.Open)}>
-            <div className={cls.Head}>
-                <h2>Tweaks</h2>
-                <IconToggleButton icon={<CloseIcon/>} label="Close tweaks" onClick={ctx.closeTweaks}/>
-            </div>
-            <div className={cls.Body}>
-                {ctx.tweaksOpen && effectiveMode === "api" && (
-                    <TweaksSystemPromptSection vaultId={vaultId}/>
-                )}
-                {ctx.tweaksOpen && <TweaksThemeSection/>}
-                {ctx.tweaksOpen && <TweaksMaxTokensSection/>}
-                {ctx.tweaksOpen && <TweaksContextSection/>}
-                {ctx.tweaksOpen && (
-                    <TweaksConnectionsSection effectiveMode={effectiveMode} status={status}/>
-                )}
-            </div>
-        </div>
+        <>
+            {createPortal(
+                <div className={cn(cls.WorkbenchTweaksPanelContainer, tweaksOpen && cls.Open)}>
+                    <div className={cls.Backdrop} onClick={closeTweaks}/>
+                    <div className={cls.Panel}>
+                        <div className={cls.Head}>
+                            <h2>Tweaks</h2>
+                            <IconToggleButton icon={<CloseIcon/>} label="Close tweaks" onClick={closeTweaks}/>
+                        </div>
+                        <div className={cls.Body}>
+                            {tweaksOpen && effectiveMode === "api" && (
+                                <TweaksSystemPromptSection vaultId={vaultId}/>
+                            )}
+                            {tweaksOpen && <TweaksMaxTokensSection/>}
+                            {tweaksOpen && <TweaksContextSection/>}
+                            {tweaksOpen && (
+                                <TweaksConnectionsSection effectiveMode={effectiveMode} status={status}/>
+                            )}
+                        </div>
+                    </div>
+                </div>,
+                document.body,
+            )}
+            {createPortal(
+                <SettingsFab
+                    open={tweaksOpen}
+                    onToggle={() => tweaksOpen ? closeTweaks() : openTweaks()}
+                />,
+                document.body,
+            )}
+        </>
     )
 }

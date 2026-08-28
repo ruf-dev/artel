@@ -4,7 +4,7 @@ import {useCallback, useState} from "react"
 // panel. The panel scrolls/opens to the matching section; `undefined` just opens
 // it at the top. Threaded down as one `WorkbenchContext` object (not a store, not
 // N callbacks) from WorkbenchPage into the topbar and the composer chip row.
-export type TweaksSection = "system" | "theme" | "tokens" | "context" | "connections"
+export type TweaksSection = "system" | "tokens" | "context" | "connections"
 
 export interface WorkbenchContext {
     tweaksOpen: boolean

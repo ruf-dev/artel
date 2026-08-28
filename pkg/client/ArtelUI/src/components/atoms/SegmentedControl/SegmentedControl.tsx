@@ -8,11 +8,12 @@ interface SegmentedControlProps {
     options: {key: string; label: string; icon?: React.ReactNode; disabled?: boolean; tooltip?: string}[]
     active: string
     onChange: (key: string) => void
+    collapsed?: boolean
 }
 
-export default function SegmentedControl({options, active, onChange}: SegmentedControlProps) {
+export default function SegmentedControl({options, active, onChange, collapsed}: SegmentedControlProps) {
     return (
-        <div className={cls.SegmentedControlContainer}>
+        <div className={cn(cls.SegmentedControlContainer, collapsed && cls.Collapsed)}>
             {options.map(({key, label, icon, disabled, tooltip}) => (
                 <Button
                     key={key}
@@ -26,7 +27,7 @@ export default function SegmentedControl({options, active, onChange}: SegmentedC
                     }}
                 >
                     {icon && <span className={cls.SegmentIcon}>{icon}</span>}
-                    {label}
+                    <span className={cls.SegmentLabel}>{label}</span>
                 </Button>
             ))}
         </div>

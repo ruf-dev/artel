@@ -1,7 +1,6 @@
 import TopbarLeft from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarLeft/TopbarLeft.tsx"
 import TopbarRight from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarRight/TopbarRight.tsx"
 import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
-import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 import type {WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
 import cls from "@/pages/workbench/components/WorkbenchTopbar/WorkbenchTopbar.module.css"
 
@@ -20,20 +19,17 @@ interface Props {
     view: WorkbenchView
     onViewChange: (view: WorkbenchView) => void
     chatLocked: boolean
-    navOpen: boolean
-    onToggleNav: () => void
     onStart: () => void
     onStop: () => void
     stopping: boolean
     starting: boolean
     model: ModelProps
-    ctx: WorkbenchContext
 }
 
-// The workbench top bar: sidebar toggle + status + model switcher on the left, the
-// Chat/Terminal switch + start/stop + settings + tweaks on the right. Renders for
-// api mode and for a provisioned docker workbench — the loading/picking states are
-// gated out by the caller, and the internal guard drops docker-without-a-workbench.
+// The workbench top bar: status + model switcher on the left, the Chat/Terminal
+// switch + start/stop + settings on the right. Renders for api mode and for a
+// provisioned docker workbench — the loading/picking states are gated out by the
+// caller, and the internal guard drops docker-without-a-workbench.
 //
 // >6 props — kept as one object instead of exploding into separate destructured
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
@@ -48,8 +44,6 @@ export default function WorkbenchTopbar(props: Props) {
                 effectiveMode={props.effectiveMode}
                 exists={props.exists}
                 status={props.status}
-                navOpen={props.navOpen}
-                onToggleNav={props.onToggleNav}
                 model={props.model}
             />
             <div className={cls.Spacer}/>
@@ -65,7 +59,6 @@ export default function WorkbenchTopbar(props: Props) {
                 onStop={props.onStop}
                 stopping={props.stopping}
                 starting={props.starting}
-                ctx={props.ctx}
             />
         </div>
     )

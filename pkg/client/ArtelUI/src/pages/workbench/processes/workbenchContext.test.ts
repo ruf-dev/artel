@@ -33,7 +33,7 @@ describe("useWorkbenchContext", () => {
     it("closeTweaks() closes the panel", () => {
         const {result} = renderHook(() => useWorkbenchContext())
 
-        act(() => result.current.openTweaks("theme"))
+        act(() => result.current.openTweaks("system"))
         act(() => result.current.closeTweaks())
 
         expect(result.current.tweaksOpen).toBe(false)

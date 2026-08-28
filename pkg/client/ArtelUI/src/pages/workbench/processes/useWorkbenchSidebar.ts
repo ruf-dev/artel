@@ -21,14 +21,12 @@ interface Params {
 export interface WorkbenchSidebarState {
     show: boolean
     history: WorkbenchHistory
-    showCloseButton: boolean
 }
 
 // Bundles everything WorkbenchPage needs to render the unified WorkbenchSidebar
-// (the flat history list, the exit-to-home control, and the show/hide
-// predicate) — split out purely to keep WorkbenchPage.tsx's render function under
-// the max-lines-per-function lint limit, same rationale as
-// useWorkbenchPanelControls.ts / useWorkbenchViewState.ts.
+// (the flat history list and the show/hide predicate) — split out purely to keep
+// WorkbenchPage.tsx's render function under the max-lines-per-function lint
+// limit, same rationale as useWorkbenchPanelControls.ts / useWorkbenchViewState.ts.
 export function useWorkbenchSidebar(p: Params): WorkbenchSidebarState {
     const isApi = p.effectiveMode === "api"
     const mode: WorkbenchMode = p.effectiveMode === "docker" ? "docker" : "api"
@@ -48,6 +46,5 @@ export function useWorkbenchSidebar(p: Params): WorkbenchSidebarState {
     return {
         show,
         history,
-        showCloseButton: isApi,
     }
 }

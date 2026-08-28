@@ -1,0 +1,34 @@
+.SettingsFabContainer {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    display: flex;
+
+    /* Nested two classes deep, so this beats chures' single-class Button rules
+       regardless of injection order — see "Never use !important" in ArtelUI CLAUDE.md. */
+    & .Btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        padding: 0;
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-pill);
+        background: var(--color-bg-elevated);
+        color: var(--color-fg-secondary);
+        cursor: pointer;
+        box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 25%);
+        transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+
+        &:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-fg-primary);
+            border-color: var(--color-border-bright);
+        }
+    }
+
+    & .Icon {
+        flex-shrink: 0;
+    }
+}

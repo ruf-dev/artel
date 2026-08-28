@@ -14,10 +14,11 @@
         transition: grid-template-columns 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
 
-    /* Nav toggled shut: collapse the sidebar column to zero. WorkbenchSidebar's
-       container is `overflow: hidden`, so its content clips cleanly. */
+    /* Nav toggled shut: collapse the sidebar column to just the toggle-button
+       rail. WorkbenchSidebar's container is `overflow: hidden`, so the rest of
+       its content clips cleanly, leaving only the toggle button visible. */
     &.NavCollapsed {
-        grid-template-columns: 0 1fr;
+        grid-template-columns: var(--workbench-nav-collapsed-width) 1fr;
     }
 
     /* Terminal view only: 3rem taller than the viewport so a bit of scrollable room

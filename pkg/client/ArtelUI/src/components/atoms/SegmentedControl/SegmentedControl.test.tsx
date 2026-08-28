@@ -49,6 +49,17 @@ describe("SegmentedControl", () => {
         expect(onChange).not.toHaveBeenCalled()
     })
 
+    it("applies the collapsed modifier and keeps every option's accessible name", () => {
+        const {container} = render(
+            <SegmentedControl options={OPTIONS} active="history" onChange={vi.fn()} collapsed/>,
+        )
+
+        expect((container.firstChild as HTMLElement).className).toMatch(/Collapsed/)
+        OPTIONS.forEach(({label}) => {
+            expect(screen.getByRole("button", {name: label})).toBeInTheDocument()
+        })
+    })
+
     it("renders aria-disabled and tooltip data attributes on a disabled option with a tooltip", () => {
         const options = [
             {key: "history", label: "History"},

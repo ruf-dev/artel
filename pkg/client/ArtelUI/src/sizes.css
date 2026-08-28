@@ -48,9 +48,18 @@
     --sidebar-width-chat-history: clamp(14rem, 45%, 18rem);
     --sidebar-width-chat-history-collapsed: 3rem;
     --workbench-sidebar-width: 16rem;
+
+    /* Collapsed nav rail: the toggle button (--workbench-topbar-icon-size) plus
+       horizontal padding, so the button stays fully visible when the sidebar
+       column shrinks. */
+    --workbench-nav-collapsed-width: 3.25rem;
     --workbench-chat-col-width: 45rem;
     --workbench-composer-width: 47.5rem;
     --workbench-tweaks-width: 22.5rem;
+
+    /* Tweaks overlay panel: the fixed panel width, capped to the viewport so it
+       never overflows on a narrow screen. */
+    --workbench-tweaks-panel-width: min(22.5rem, 100vw);
     --dialog-max-height:        80vh;
     --dialog-max-height-lg:     90vh;
     --dialog-width-toolbox:     80vw;

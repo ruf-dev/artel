@@ -79,7 +79,7 @@ export default function WorkbenchPage() {
             sidebar.show && !navOpen && cls.NavCollapsed, terminalViewActive && cls.TerminalViewActive)}>
             {sidebar.show && vaultId && (
                 <WorkbenchSidebar
-                    history={sidebar.history} showCloseButton={sidebar.showCloseButton}
+                    history={sidebar.history} navOpen={navOpen} onToggleNav={() => setNavOpen(v => !v)}
                 />
             )}
             <div className={cls.MainColumn}>
@@ -117,8 +117,7 @@ export default function WorkbenchPage() {
                     {!isLoading && effectiveMode !== "picking" && (
                         <WorkbenchTopbar
                             effectiveMode={effectiveMode} exists={exists} status={status} vaultId={vaultId}
-                            view={view} onViewChange={setView} chatLocked={awaitingAuth} ctx={ctx}
-                            navOpen={navOpen} onToggleNav={() => setNavOpen(v => !v)}
+                            view={view} onViewChange={setView} chatLocked={awaitingAuth}
                             onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
                             stopping={lifecycle.stopping} starting={lifecycle.resuming}
                             model={{

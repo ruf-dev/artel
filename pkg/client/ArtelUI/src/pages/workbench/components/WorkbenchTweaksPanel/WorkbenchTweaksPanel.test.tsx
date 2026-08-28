@@ -13,10 +13,17 @@ vi.mock(
     "@/pages/workbench/components/WorkbenchTweaksPanel/components/TweaksConnectionsSection/TweaksConnectionsSection.tsx",
     () => ({default: () => <span data-testid="connections-section"/>}),
 )
-vi.mock(
-    "@/pages/workbench/components/WorkbenchTweaksPanel/components/TweaksThemeSection/TweaksThemeSection.tsx",
-    () => ({default: () => <span data-testid="theme-section"/>}),
-)
+
+interface MockFabProps {
+    open: boolean
+    onToggle: () => void
+}
+
+vi.mock("@/pages/workbench/components/WorkbenchTweaksPanel/components/SettingsFab/SettingsFab.tsx", () => ({
+    default: ({open, onToggle}: MockFabProps) => (
+        <span data-testid="settings-fab" data-open={String(open)} onClick={onToggle}/>
+    ),
+}))
 
 function makeCtx(tweaksOpen: boolean) {
     return {tweaksOpen, tweaksSection: undefined, openTweaks: vi.fn(), closeTweaks: vi.fn()}
@@ -29,15 +36,14 @@ describe("WorkbenchTweaksPanel", () => {
         render(<WorkbenchTweaksPanel {...base} ctx={makeCtx(false)}/>)
 
         expect(screen.getByRole("heading", {name: "Tweaks"})).toBeInTheDocument()
-        expect(screen.queryByTestId("theme-section")).not.toBeInTheDocument()
         expect(screen.queryByTestId("system-prompt-section")).not.toBeInTheDocument()
+        expect(screen.queryByTestId("connections-section")).not.toBeInTheDocument()
     })
 
     it("renders the section bodies when open, including System prompt in api mode", () => {
         render(<WorkbenchTweaksPanel {...base} effectiveMode="api" ctx={makeCtx(true)}/>)
 
         expect(screen.getByTestId("system-prompt-section")).toBeInTheDocument()
-        expect(screen.getByTestId("theme-section")).toBeInTheDocument()
         expect(screen.getByTestId("connections-section")).toBeInTheDocument()
     })
 
@@ -45,7 +51,7 @@ describe("WorkbenchTweaksPanel", () => {
         render(<WorkbenchTweaksPanel {...base} effectiveMode="docker" ctx={makeCtx(true)}/>)
 
         expect(screen.queryByTestId("system-prompt-section")).not.toBeInTheDocument()
-        expect(screen.getByTestId("theme-section")).toBeInTheDocument()
+        expect(screen.getByTestId("connections-section")).toBeInTheDocument()
     })
 
     it("closes on the close button", () => {
@@ -73,5 +79,28 @@ describe("WorkbenchTweaksPanel", () => {
         fireEvent.keyDown(document, {key: "Escape"})
 
         expect(ctx.closeTweaks).not.toHaveBeenCalled()
+    })
+
+    it("renders SettingsFab reflecting open state and opens the panel from it when closed", () => {
+        const ctx = makeCtx(false)
+        render(<WorkbenchTweaksPanel {...base} ctx={ctx}/>)
+
+        const fab = screen.getByTestId("settings-fab")
+        expect(fab).toHaveAttribute("data-open", "false")
+
+        fireEvent.click(fab)
+
+        expect(ctx.openTweaks).toHaveBeenCalledTimes(1)
+        expect(ctx.closeTweaks).not.toHaveBeenCalled()
+    })
+
+    it("closes the panel from SettingsFab when open", () => {
+        const ctx = makeCtx(true)
+        render(<WorkbenchTweaksPanel {...base} ctx={ctx}/>)
+
+        fireEvent.click(screen.getByTestId("settings-fab"))
+
+        expect(ctx.closeTweaks).toHaveBeenCalledTimes(1)
+        expect(ctx.openTweaks).not.toHaveBeenCalled()
     })
 })

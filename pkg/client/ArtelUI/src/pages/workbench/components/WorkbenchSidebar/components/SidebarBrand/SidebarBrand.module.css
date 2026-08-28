@@ -2,8 +2,9 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 1.1rem 1rem 0.9rem;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
 
     & .BrandButton {
         display: flex;
@@ -28,22 +29,5 @@
         font-weight: 700;
         letter-spacing: -0.02rem;
         font-size: 1rem;
-    }
-
-    & .CloseChatButton {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 1.75rem;
-        height: 1.75rem;
-        padding: 0;
-        flex-shrink: 0;
-        color: var(--color-fg-secondary);
-        cursor: pointer;
-
-        & .CloseChatIcon {
-            width: 0.875rem;
-            height: 0.875rem;
-        }
     }
 }

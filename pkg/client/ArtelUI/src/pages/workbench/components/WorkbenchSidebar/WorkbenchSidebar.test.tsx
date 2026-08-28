@@ -4,13 +4,10 @@ import {fireEvent, render, screen} from "@testing-library/react"
 import WorkbenchSidebar from "@/pages/workbench/components/WorkbenchSidebar/WorkbenchSidebar.tsx"
 import {WorkbenchHistory} from "@/pages/workbench/processes/useWorkbenchHistory.ts"
 
-let brandProps: Record<string, unknown> | undefined
+vi.mock("morphicons/react", () => ({MorphIcon: () => null}))
 
 vi.mock("@/pages/workbench/components/WorkbenchSidebar/components/SidebarBrand/SidebarBrand.tsx", () => ({
-    default: (props: Record<string, unknown>) => {
-        brandProps = props
-        return <div className="brand" data-testid="sidebar-brand"/>
-    },
+    default: () => <div className="brand" data-testid="sidebar-brand"/>,
 }))
 
 vi.mock("@/pages/workbench/components/WorkbenchSidebar/components/SidebarFooter/SidebarFooter.tsx", () => ({
@@ -33,38 +30,30 @@ function makeHistory(over: Partial<WorkbenchHistory> = {}): WorkbenchHistory {
     }
 }
 
+function makeProps(over: Partial<Parameters<typeof WorkbenchSidebar>[0]> = {}) {
+    return {history: makeHistory(), navOpen: true, onToggleNav: vi.fn(), ...over}
+}
+
 describe("WorkbenchSidebar", () => {
-    it("forwards showCloseButton to the brand as showClose", () => {
-        render(<WorkbenchSidebar history={makeHistory()} showCloseButton/>)
-
-        expect(brandProps?.showClose).toBe(true)
-    })
-
-    it("leaves showClose undefined on the brand when not provided", () => {
-        render(<WorkbenchSidebar history={makeHistory()}/>)
-
-        expect(brandProps?.showClose).toBeUndefined()
-    })
-
-    it("calls history.onNewChat when the New chat button is clicked", () => {
-        const onNewChat = vi.fn()
-        render(<WorkbenchSidebar history={makeHistory({onNewChat})}/>)
-
-        fireEvent.click(screen.getByRole("button", {name: /new chat/i}))
-
-        expect(onNewChat).toHaveBeenCalledTimes(1)
-    })
-
     it("renders the History pane and keeps the footer and brand", () => {
-        render(<WorkbenchSidebar history={makeHistory()}/>)
+        render(<WorkbenchSidebar {...makeProps()}/>)
 
         expect(screen.getByTestId("history-pane")).toBeInTheDocument()
         expect(screen.getByTestId("sidebar-brand")).toBeInTheDocument()
         expect(screen.getByTestId("sidebar-footer")).toBeInTheDocument()
     })
 
+    it("renders the collapse toggle and calls onToggleNav when it is clicked", () => {
+        const onToggleNav = vi.fn()
+        render(<WorkbenchSidebar {...makeProps({onToggleNav})}/>)
+
+        fireEvent.click(screen.getByRole("button", {name: "Toggle conversations"}))
+
+        expect(onToggleNav).toHaveBeenCalledTimes(1)
+    })
+
     it("keeps the History pane when the disabled Tools segment is clicked", () => {
-        render(<WorkbenchSidebar history={makeHistory()}/>)
+        render(<WorkbenchSidebar {...makeProps()}/>)
 
         fireEvent.click(screen.getByRole("button", {name: /tools/i}))
 
@@ -72,10 +61,26 @@ describe("WorkbenchSidebar", () => {
     })
 
     it("keeps the History pane when the disabled Vault segment is clicked", () => {
-        render(<WorkbenchSidebar history={makeHistory()}/>)
+        render(<WorkbenchSidebar {...makeProps()}/>)
 
         fireEvent.click(screen.getByRole("button", {name: /vault/i}))
 
         expect(screen.getByTestId("history-pane")).toBeInTheDocument()
+    })
+
+    it("hides the History pane and brand when collapsed, keeping the toggle", () => {
+        render(<WorkbenchSidebar {...makeProps({navOpen: false})}/>)
+
+        expect(screen.queryByTestId("history-pane")).not.toBeInTheDocument()
+        expect(screen.queryByTestId("sidebar-brand")).not.toBeInTheDocument()
+        expect(screen.getByRole("button", {name: "Toggle conversations"})).toBeInTheDocument()
+    })
+
+    it("shows the History pane and brand when expanded", () => {
+        render(<WorkbenchSidebar {...makeProps({navOpen: true})}/>)
+
+        expect(screen.getByTestId("history-pane")).toBeInTheDocument()
+        expect(screen.getByTestId("sidebar-brand")).toBeInTheDocument()
+        expect(screen.getByRole("button", {name: "Toggle conversations"})).toBeInTheDocument()
     })
 })

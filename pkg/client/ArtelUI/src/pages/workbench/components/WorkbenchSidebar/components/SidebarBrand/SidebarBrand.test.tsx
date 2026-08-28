@@ -22,17 +22,9 @@ describe("SidebarBrand", () => {
         expect(navigate).toHaveBeenCalledWith("/")
     })
 
-    it("does not render the close button without showClose", () => {
+    it("does not render a close button", () => {
         render(<SidebarBrand/>)
 
         expect(screen.queryByRole("button", {name: "Close chat"})).not.toBeInTheDocument()
-    })
-
-    it("renders the close button and navigates home on click when showClose is set", () => {
-        render(<SidebarBrand showClose/>)
-
-        fireEvent.click(screen.getByRole("button", {name: "Close chat"}))
-
-        expect(navigate).toHaveBeenCalledWith("/")
     })
 })

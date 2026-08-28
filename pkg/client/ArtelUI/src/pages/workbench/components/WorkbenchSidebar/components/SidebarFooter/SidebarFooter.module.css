@@ -1,28 +1,13 @@
 .SidebarFooterContainer {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.8rem 1rem;
+    justify-content: flex-end;
+    padding: 0.8rem 0.5rem;
     border-top: var(--border-thickness) solid var(--color-border);
-    background: transparent;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    color: var(--color-fg-secondary);
-    cursor: pointer;
     flex-shrink: 0;
+    transition: padding 180ms ease;
 
-    &:hover {
-        color: var(--color-fg-primary);
-    }
-
-    & .Gear {
-        width: 1rem;
-        height: 1rem;
-        flex-shrink: 0;
-    }
-
-    & .Label {
-        font-size: 0.8125rem;
+    &.Collapsed {
+        justify-content: center;
     }
 }

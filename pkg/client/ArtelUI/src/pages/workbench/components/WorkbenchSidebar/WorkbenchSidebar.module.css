@@ -9,26 +9,22 @@
     overflow: hidden;
     text-align: left;
 
-    & .NewChatButton {
+    & .TopRail {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        gap: 0.5rem;
-        margin: 0 1rem 0.9rem;
-        padding: 0.6rem 0.8rem;
-        border: var(--border-thickness) solid var(--color-border-light);
-        border-radius: var(--border-radius-sm);
-        background: var(--color-bg-elevated);
-        color: var(--color-fg-primary);
-        font-size: 0.875rem;
-
-        &:hover {
-            border-color: var(--color-border-bright);
-        }
+        justify-content: space-between;
+        gap: 0.4rem;
+        padding: 0.75rem 0.5rem 0.6rem;
+        flex-shrink: 0;
     }
 
     & .TabsRow {
-        margin: 0 1rem 0.7rem;
+        margin: 0 0.5rem 0.7rem;
         flex-shrink: 0;
+    }
+
+    & .CollapsedFiller {
+        flex: 1;
+        min-height: 0;
     }
 }
