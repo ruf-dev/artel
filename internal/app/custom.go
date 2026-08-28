@@ -253,6 +253,13 @@ func (c *Custom) Init(a *App) error {
 		// CheckGitlabConnection/CheckTelegramConnection/CheckTrelloConnection,
 		// notes.Service.CheckImportConflicts) to confirm none of them mutate state before
 		// being added here.
+		//
+		// Login/Register are also exempt despite being writes: they establish a session rather
+		// than acting on one, so there is no session for double-submit CSRF to protect. The
+		// annotator marks a request "authenticated via cookie" on the mere *presence* of an
+		// access_token cookie, so a stale/orphaned cookie (e.g. left behind when logout clears
+		// the readable csrf_token cookie but the async server-side Logout loses the race) would
+		// otherwise reject re-authentication with "csrf token missing or invalid".
 		middleware.GrpcCSRFInterceptor(
 			pb.AdminCouchAPI_GetUserDatabaseAccess_FullMethodName,
 			pb.AdminCouchAPI_ListCouchDatabases_FullMethodName,
@@ -264,6 +271,8 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminUsersAPI_ListArtelUsers_FullMethodName,
 			pb.AuthAPI_GetConfig_FullMethodName,
 			pb.AuthAPI_GetMe_FullMethodName,
+			pb.AuthAPI_Login_FullMethodName,
+			pb.AuthAPI_Register_FullMethodName,
 			pb.CouchInstancesAPI_GetCouchInstance_FullMethodName,
 			pb.CouchInstancesAPI_GetCouchInstanceStatus_FullMethodName,
 			pb.CouchInstancesAPI_ListCouchInstances_FullMethodName,
