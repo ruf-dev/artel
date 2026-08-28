@@ -11,7 +11,7 @@ import type {SimpleChat} from "@/processes/SimpleChat.ts"
 // user's landing experience byte-for-byte unchanged (no picker ever shown once
 // `exists` is true). "picking" is a distinct explicit choice (not the same as
 // `null`), kept for a future re-entry point back to the picker.
-export type WorkbenchMode = "docker" | "simple-chat"
+export type WorkbenchMode = "docker" | "api"
 export type WorkbenchModeChoice = WorkbenchMode | "picking" | null
 
 interface Params {
@@ -33,7 +33,7 @@ export function useWorkbenchModeControls({exists, handleCreateDocker, simpleChat
         if (modeChoice !== null || simpleChatsLoading) return
 
         if (simpleChats.length > 0) {
-            setModeChoice("simple-chat")
+            setModeChoice("api")
             setSimpleChatId(simpleChats[0].id)
             return
         }
@@ -51,13 +51,8 @@ export function useWorkbenchModeControls({exists, handleCreateDocker, simpleChat
     }
 
     function handleSimpleChatCreated(chatId: string) {
-        setModeChoice("simple-chat")
+        setModeChoice("api")
         setSimpleChatId(chatId)
-    }
-
-    function handleCloseSimpleChat() {
-        setSimpleChatId(undefined)
-        setModeChoice("picking")
     }
 
     return {
@@ -66,6 +61,5 @@ export function useWorkbenchModeControls({exists, handleCreateDocker, simpleChat
         setSimpleChatId,
         handlePickDocker,
         handleSimpleChatCreated,
-        handleCloseSimpleChat,
     }
 }

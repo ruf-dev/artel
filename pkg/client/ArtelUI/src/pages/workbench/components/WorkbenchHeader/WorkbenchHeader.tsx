@@ -14,7 +14,6 @@ interface Props {
     view: WorkbenchView
     onViewChange: (view: WorkbenchView) => void
     chatLocked: boolean
-    onToggleHistory: () => void
 }
 
 // Renders the docker toolbar for docker mode, nothing otherwise (Simple Chat mode
@@ -38,7 +37,6 @@ export default function WorkbenchHeader(props: Props) {
                 view={props.view}
                 onViewChange={props.onViewChange}
                 chatLocked={props.chatLocked}
-                onToggleHistory={props.onToggleHistory}
             />
         )
     }

@@ -1,5 +1,5 @@
 import {Button} from "@vervstack/chures"
-import {AnimatePresence, motion} from "framer-motion"
+import {motion} from "framer-motion"
 import {MorphIcon} from "morphicons/react"
 import {Play, Square} from "lucide"
 
@@ -15,7 +15,6 @@ interface Props {
     onViewChange: (view: WorkbenchView) => void
     chatLocked: boolean
     vaultId?: string
-    onToggleHistory: () => void
     onStart: () => void
     onStop: () => void
     stopping: boolean
@@ -55,32 +54,6 @@ export default function ToolbarActions(props: Props) {
                     </Button>
                 </motion.div>
             )}
-            <AnimatePresence mode="popLayout">
-                {props.isRunning && props.view === "chat" && props.vaultId && (
-                    <motion.div
-                        layout
-                        className={cls.HistoryButtonWrapper}
-                        initial={{opacity: 0, scale: 0.7, y: -6}}
-                        animate={{opacity: 1, scale: 1, y: 0}}
-                        exit={{opacity: 0, scale: 0.7, y: -6}}
-                        transition={{duration: 0.18}}
-                    >
-                        <Button
-                            variant="secondary"
-                            className={cls.HistoryButton}
-                            onClick={props.onToggleHistory}
-                            aria-label="View chat history"
-                            title="View chat history"
-                        >
-                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
-                                 strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="10"/>
-                                <polyline points="12 6 12 12 16 14"/>
-                            </svg>
-                        </Button>
-                    </motion.div>
-                )}
-            </AnimatePresence>
             <motion.div layout className={cls.StartStopButtonWrapper}>
                 <Button
                     variant="secondary"

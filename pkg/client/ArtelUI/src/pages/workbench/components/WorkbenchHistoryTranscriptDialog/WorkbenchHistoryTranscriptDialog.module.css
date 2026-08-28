@@ -1,0 +1,55 @@
+.WorkbenchHistoryTranscriptDialogContainer {
+    display: flex;
+    flex-direction: column;
+    width: var(--dialog-width-note);
+    max-width: 100%;
+    max-height: var(--dialog-max-height-lg);
+    overflow-y: auto;
+    background: var(--color-bg-card);
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: 1.25rem;
+    box-shadow: 0 2rem 5rem -1.25rem var(--color-shadow-deep);
+
+    & .Header {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 1rem 1.25rem;
+        border-bottom: var(--border-thickness) solid var(--color-border-light);
+        flex-shrink: 0;
+    }
+
+    & .Title {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & .CloseButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        padding: 0;
+        flex-shrink: 0;
+
+        & .CloseIcon {
+            width: 0.9375rem;
+            height: 0.9375rem;
+        }
+    }
+
+    & .Body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0.5rem 0.75rem 1rem;
+    }
+}

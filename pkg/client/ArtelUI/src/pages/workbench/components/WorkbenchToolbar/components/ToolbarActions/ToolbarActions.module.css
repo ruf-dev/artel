@@ -17,22 +17,12 @@
         color: var(--color-error);
     }
 
-    & .HistoryButtonWrapper {
-        display: flex;
-    }
-
     & .StartStopButtonWrapper {
         display: flex;
     }
 
     & .SettingsMenuWrapper {
         display: flex;
-    }
-
-    & .HistoryButton {
-        width: var(--icon-button-size);
-        height: var(--icon-button-size);
-        padding: 0;
     }
 
     & .ViewToggle {

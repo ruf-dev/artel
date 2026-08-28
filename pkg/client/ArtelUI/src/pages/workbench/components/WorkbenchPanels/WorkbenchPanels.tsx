@@ -37,21 +37,17 @@ interface Props {
     view: WorkbenchView
     awaitingAuth: boolean
     chatSession: ChatSession
-    historyOpen: boolean
-    onCloseHistory: () => void
     tabs: {id: string; name: string; active: boolean}[]
     pendingTerminalAuthLink?: string
     onSelectTab: (tabId: string) => void
     onCreateTab: () => void
     onCloseTab: (tabId: string) => void
     simpleChatId?: string
-    onSelectSimpleChat: (chatId: string | undefined) => void
     simpleChatSession: SimpleChatSessionBundle
-    onCloseSimpleChat: () => void
 }
 
 // The three mutually-exclusive workbench panels (Docker chat, Docker terminal,
-// Simple Chat), split out purely to keep WorkbenchPage.tsx's render function
+// api chat), split out purely to keep WorkbenchPage.tsx's render function
 // under the max-lines-per-function lint limit.
 export default function WorkbenchPanels(props: Props) {
     const isDockerRunning = props.effectiveMode === "docker" && props.exists && props.status === "running"
@@ -62,8 +58,7 @@ export default function WorkbenchPanels(props: Props) {
                 <Chat key="chat" items={props.chatSession.items} status={props.chatSession.status}
                       sendMessage={props.chatSession.sendMessage}
                       sendPermissionDecision={props.chatSession.sendPermissionDecision}
-                      onNewChat={props.chatSession.startNewChat} vaultId={props.vaultId}
-                      historyOpen={props.historyOpen} onCloseHistory={props.onCloseHistory}/>
+                      onNewChat={props.chatSession.startNewChat}/>
             )}
             {isDockerRunning && props.view === "terminal" && (
                 <AnimatedTerminalView
@@ -76,14 +71,11 @@ export default function WorkbenchPanels(props: Props) {
                     onCloseTab={props.onCloseTab}
                 />
             )}
-            {props.effectiveMode === "simple-chat" && (
+            {props.effectiveMode === "api" && (
                 <SimpleChat
-                    key="simple-chat"
+                    key="api"
                     chatId={props.simpleChatId}
-                    vaultId={props.vaultId}
-                    onSelectChat={props.onSelectSimpleChat}
                     session={props.simpleChatSession}
-                    onClose={props.onCloseSimpleChat}
                 />
             )}
         </AnimatePresence>

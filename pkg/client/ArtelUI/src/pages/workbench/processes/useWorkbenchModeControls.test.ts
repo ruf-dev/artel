@@ -15,7 +15,7 @@ describe("useWorkbenchModeControls", () => {
             simpleChatsLoading: false,
         }))
 
-        await waitFor(() => expect(result.current.effectiveMode).toBe("simple-chat"))
+        await waitFor(() => expect(result.current.effectiveMode).toBe("api"))
         expect(result.current.simpleChatId).toBe("chat-1")
     })
 

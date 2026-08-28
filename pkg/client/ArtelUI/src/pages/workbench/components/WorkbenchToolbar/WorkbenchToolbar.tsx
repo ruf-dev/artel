@@ -16,7 +16,6 @@ interface WorkbenchToolbarProps {
     view: WorkbenchView
     onViewChange: (view: WorkbenchView) => void
     chatLocked: boolean
-    onToggleHistory: () => void
 }
 
 // >6 props — kept as one object instead of exploding into separate destructured
@@ -34,7 +33,6 @@ export default function WorkbenchToolbar(props: WorkbenchToolbarProps) {
                     onViewChange={props.onViewChange}
                     chatLocked={props.chatLocked}
                     vaultId={props.vaultId}
-                    onToggleHistory={props.onToggleHistory}
                     onStart={props.onStart}
                     onStop={props.onStop}
                     stopping={props.stopping}

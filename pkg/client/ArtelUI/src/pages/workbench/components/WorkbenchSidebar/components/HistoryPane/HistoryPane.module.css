@@ -1,0 +1,26 @@
+.HistoryPaneContainer {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 0.6rem 0.5rem;
+
+    & .State {
+        text-align: center;
+        color: var(--color-fg-secondary);
+        font-size: 0.875rem;
+        padding: 2rem 1rem;
+        margin: 0;
+    }
+
+    & .Group {
+        padding-top: 0.25rem;
+    }
+
+    & .GroupLabel {
+        font-size: 0.6875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04rem;
+        color: var(--color-fg-tertiary);
+        padding: 0.9rem 0.6rem 0.35rem;
+    }
+}

@@ -46,6 +46,7 @@
     --drawer-width-mobile:      85vw;
     --sidebar-width-chat-history: clamp(14rem, 45%, 18rem);
     --sidebar-width-chat-history-collapsed: 3rem;
+    --workbench-sidebar-width: 16rem;
     --dialog-max-height:        80vh;
     --dialog-max-height-lg:     90vh;
     --dialog-width-toolbox:     80vw;

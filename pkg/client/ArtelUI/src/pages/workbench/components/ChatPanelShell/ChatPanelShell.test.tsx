@@ -8,13 +8,10 @@ import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.t
 function renderShell(
     items: ChatItem[] = [],
     bannerStatus: ChatConnectionStatus = "open",
-    historyOpen = false,
-    historySidebar?: React.ReactNode,
 ) {
     const sendMessage = vi.fn()
     const sendPermissionDecision = vi.fn()
     const onNewChat = vi.fn()
-    const onCloseHistory = vi.fn()
 
     const result = render(
         <ChatPanelShell
@@ -25,13 +22,10 @@ function renderShell(
             onNewChat={onNewChat}
             composerDisabled={bannerStatus !== "open"}
             composerPlaceholder="Message the workbench…"
-            historyOpen={historyOpen}
-            onCloseHistory={onCloseHistory}
-            historySidebar={historySidebar}
         />,
     )
 
-    return {sendMessage, sendPermissionDecision, onNewChat, onCloseHistory, container: result.container}
+    return {sendMessage, sendPermissionDecision, onNewChat, container: result.container}
 }
 
 describe("ChatPanelShell", () => {
@@ -57,28 +51,5 @@ describe("ChatPanelShell", () => {
         fireEvent.click(screen.getByLabelText("New chat"))
 
         expect(onNewChat).toHaveBeenCalledTimes(1)
-    })
-
-    it("does not render the overlay when historyOpen is false", () => {
-        const {container} = renderShell([], "open", false)
-
-        expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeFalsy()
-    })
-
-    it("renders the overlay and the historySidebar slot when historyOpen is true", () => {
-        const {container} = renderShell(
-            [], "open", true, <div className="sidebar-slot" data-testid="sidebar-slot">Sidebar</div>,
-        )
-
-        expect(container.querySelector('[class*="ChatContentOverlay"]')).toBeTruthy()
-        expect(screen.getByTestId("sidebar-slot")).toBeInTheDocument()
-    })
-
-    it("calls onCloseHistory when the overlay is clicked", () => {
-        const {container, onCloseHistory} = renderShell([], "open", true)
-
-        fireEvent.click(container.querySelector('[class*="ChatContentOverlay"]') as Element)
-
-        expect(onCloseHistory).toHaveBeenCalledTimes(1)
     })
 })

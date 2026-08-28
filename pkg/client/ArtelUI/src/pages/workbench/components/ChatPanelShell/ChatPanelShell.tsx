@@ -1,7 +1,6 @@
-import {ReactNode, useState} from "react"
+import {useState} from "react"
 import {motion} from "framer-motion"
 
-import {cn} from "@/app/utils/cn.ts"
 import cls from "@/pages/workbench/components/ChatPanelShell/ChatPanelShell.module.css"
 import ChatStatusBanner from "@/pages/workbench/components/Chat/components/ChatStatusBanner/ChatStatusBanner.tsx"
 import ChatMessageList from "@/pages/workbench/components/Chat/components/ChatMessageList/ChatMessageList.tsx"
@@ -19,21 +18,17 @@ interface Props {
     composerDisabled: boolean
     composerPlaceholder: string
     hideNewChatButton?: boolean
-    historyOpen?: boolean
-    onCloseHistory?: () => void
-    historySidebar?: ReactNode
 }
 
-// Shared chat-panel body (status banner, message list, composer, blur overlay,
-// history-sidebar slot) reused by the Docker workbench's Chat and Simple Chat's
-// SimpleChat — each mode owns its own session data/handlers and history sidebar.
+// Shared chat-panel body (status banner, message list, composer) reused by the
+// Docker workbench's Chat and the api chat's SimpleChat — each mode owns its own
+// session data/handlers. History now lives in the page-level WorkbenchSidebar,
+// not inside this shell.
 //
 // >6 props — kept as one object instead of exploding into separate destructured
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
 export default function ChatPanelShell(props: Props) {
     const [draft, setDraft] = useState("")
-    const historyOpen = props.historyOpen ?? false
-    const onCloseHistory = props.onCloseHistory ?? (() => {})
 
     function handleSend() {
         const text = draft.trim()
@@ -50,7 +45,7 @@ export default function ChatPanelShell(props: Props) {
             exit={{opacity: 0, y: -12}}
             transition={{duration: 0.22, ease: "easeOut"}}
         >
-            <div className={cn(cls.ChatContent, historyOpen && cls.ChatContentBlurred)}>
+            <div className={cls.ChatContent}>
                 <ChatStatusBanner status={props.bannerStatus}/>
                 <ChatMessageList items={props.items} onPermissionDecision={props.sendPermissionDecision}/>
                 <ChatComposer
@@ -62,9 +57,7 @@ export default function ChatPanelShell(props: Props) {
                     placeholder={props.composerPlaceholder}
                     hideNewChatButton={props.hideNewChatButton}
                 />
-                {historyOpen && <div className={cls.ChatContentOverlay} onClick={onCloseHistory}/>}
             </div>
-            {props.historySidebar}
         </motion.div>
     )
 }

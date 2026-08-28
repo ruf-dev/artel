@@ -1,25 +1,37 @@
 .WorkbenchPageContainer {
-    display: flex;
-
-    /* Header (WorkbenchToolbar) is the last JSX child in
-       WorkbenchPage.tsx, so it always wins paint order against positioned descendants
-       in .Body (e.g. terminal/chat content) — column-reverse restores the visual
-       order (header on top, Body below) without touching z-index. See "Never use
-       z-index" / the flex-atomic-painting gotcha in ../../CLAUDE.md. */
-    flex-direction: column-reverse;
+    display: grid;
+    grid-template-columns: 1fr;
     width: 100%;
     height: 100%;
+    min-height: 0;
     flex-shrink: 0;
+
+    /* Unified left sidebar (WorkbenchSidebar) occupies the first grid column when
+       shown — see useWorkbenchSidebar's `show` predicate. */
+    &.WithSidebar {
+        grid-template-columns: var(--workbench-sidebar-width) 1fr;
+    }
 
     /* Terminal view only: 3rem taller than the viewport so a bit of scrollable room
        appears below the terminal (see .TerminalSpacer) without shrinking the terminal
-       itself — .Body is flex:1 and always fills exactly what's left, so the same 3rem
-       is added here and then reserved by the spacer, netting the terminal back to its
-       original size. Requires HomeLayout.module.css's .Content to allow the resulting
-       overflow to scroll (overflow-y: auto). Not applied in the chat view, which has
-       no such sizing quirk and fits .Body's normal height. */
+       itself. Requires Router.module.css's .Content to allow the resulting overflow
+       to scroll (overflow-y: auto). Not applied in the chat view. */
     &.TerminalViewActive {
         height: calc(100% + 3rem);
+    }
+
+    .MainColumn {
+        display: flex;
+
+        /* WorkbenchHeader is the last JSX child of .MainColumn, so it always wins
+           paint order against positioned descendants in .Body (terminal/chat
+           content) — column-reverse restores the visual order (header on top, Body
+           below) without touching z-index. See "Never use z-index" in
+           pkg/client/ArtelUI/CLAUDE.md. */
+        flex-direction: column-reverse;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
     }
 
     .Body {
@@ -36,6 +48,10 @@
             padding-top: var(--workbench-body-padding-top);
         }
 
+        &.BodyPicking {
+            justify-content: center;
+        }
+
         @media (width <= 45rem) {
             padding: 0 0 0.75rem;
         }
@@ -48,5 +64,4 @@
         max-width: 32rem;
         margin-top: 0;
     }
-
 }

@@ -1,0 +1,34 @@
+.WorkbenchSidebarContainer {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    background: var(--color-bg-card);
+    border-right: var(--border-thickness) solid var(--color-border);
+    overflow: hidden;
+    text-align: left;
+
+    & .NewChatButton {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        margin: 0 1rem 0.9rem;
+        padding: 0.6rem 0.8rem;
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-bg-elevated);
+        color: var(--color-fg-primary);
+        font-size: 0.875rem;
+
+        &:hover {
+            border-color: var(--color-border-bright);
+        }
+    }
+
+    & .TabsRow {
+        margin: 0 1rem 0.7rem;
+        flex-shrink: 0;
+    }
+}

@@ -22,7 +22,6 @@ const defaultProps = {
     view: "chat" as const,
     onViewChange: vi.fn(),
     chatLocked: false,
-    onToggleHistory: vi.fn(),
 }
 
 function renderHeader(overrides: Partial<typeof defaultProps> = {}) {
@@ -40,8 +39,8 @@ describe("WorkbenchHeader", () => {
         expect(screen.getByTestId("workbench-toolbar")).toBeInTheDocument()
     })
 
-    it("renders nothing for simple-chat mode", () => {
-        renderHeader({effectiveMode: "simple-chat"})
+    it("renders nothing for api mode", () => {
+        renderHeader({effectiveMode: "api"})
 
         expect(screen.queryByTestId("workbench-toolbar")).not.toBeInTheDocument()
     })

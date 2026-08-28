@@ -1,0 +1,49 @@
+.SidebarBrandContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.1rem 1rem 0.9rem;
+    flex-shrink: 0;
+
+    & .BrandButton {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        color: var(--color-fg-primary);
+        cursor: pointer;
+    }
+
+    & .BrandMark {
+        width: 1.625rem;
+        height: 1.625rem;
+        flex-shrink: 0;
+    }
+
+    & .Wordmark {
+        font-weight: 700;
+        letter-spacing: -0.02rem;
+        font-size: 1rem;
+    }
+
+    & .CloseChatButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        padding: 0;
+        flex-shrink: 0;
+        color: var(--color-fg-secondary);
+        cursor: pointer;
+
+        & .CloseChatIcon {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+    }
+}

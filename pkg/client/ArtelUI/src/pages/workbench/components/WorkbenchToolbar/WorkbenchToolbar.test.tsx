@@ -16,7 +16,6 @@ describe("WorkbenchToolbar", () => {
     const mockOnStart = vi.fn()
     const mockOnStop = vi.fn()
     const mockOnViewChange = vi.fn()
-    const mockOnToggleHistory = vi.fn()
 
     const defaultProps = {
         status: "running" as const,
@@ -29,7 +28,6 @@ describe("WorkbenchToolbar", () => {
         view: "chat" as const,
         onViewChange: mockOnViewChange,
         chatLocked: false,
-        onToggleHistory: mockOnToggleHistory,
     }
 
     it("renders both Chat and Terminal toggle buttons when status is running and exists is true", () => {
@@ -105,25 +103,5 @@ describe("WorkbenchToolbar", () => {
         rerender(<WorkbenchToolbar {...defaultProps} chatLocked={false}/>)
 
         expect(screen.getByRole("button", {name: "Terminal"})).not.toBeDisabled()
-    })
-
-    it("shows the history button when the chat view is active", () => {
-        render(<WorkbenchToolbar {...defaultProps} view="chat"/>)
-
-        expect(screen.getByLabelText("View chat history")).toBeInTheDocument()
-    })
-
-    it("hides the history button when the terminal view is active", () => {
-        render(<WorkbenchToolbar {...defaultProps} view="terminal"/>)
-
-        expect(screen.queryByLabelText("View chat history")).not.toBeInTheDocument()
-    })
-
-    it("calls onToggleHistory when the history button is clicked", () => {
-        render(<WorkbenchToolbar {...defaultProps} view="chat"/>)
-
-        fireEvent.click(screen.getByLabelText("View chat history"))
-
-        expect(mockOnToggleHistory).toHaveBeenCalledTimes(1)
     })
 })
