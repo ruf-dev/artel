@@ -8,10 +8,26 @@
 
     /* Unified left sidebar (WorkbenchSidebar) occupies the first grid column when
        shown — see useWorkbenchSidebar's `show` predicate. Animate the column width
-       so the nav toggle (WorkbenchTopbar) slides the sidebar in/out. */
+       so the nav toggle (WorkbenchTopbar) slides the sidebar in/out.
+
+       .SidebarSlot is the LAST child in the DOM (after .MainColumn) so its mobile
+       fixed drawer paints above the topbar's position:relative model-switcher
+       trigger. grid-column pins it back to the visual first column on desktop —
+       grid-column placement doesn't reorder painting the way the `order` property
+       would. See "Never use z-index" in pkg/client/ArtelUI/CLAUDE.md. */
     &.WithSidebar {
         grid-template-columns: var(--workbench-sidebar-width) 1fr;
         transition: grid-template-columns 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+        & .SidebarSlot {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        & .MainColumn {
+            grid-column: 2;
+            grid-row: 1;
+        }
     }
 
     /* Nav toggled shut: collapse the sidebar column to just the toggle-button
@@ -27,6 +43,40 @@
        to scroll (overflow-y: auto). Not applied in the chat view. */
     &.TerminalViewActive {
         height: calc(100% + 3rem);
+    }
+
+    /* Mobile: the sidebar becomes a fixed off-canvas drawer (see
+       WorkbenchSidebar.module.css), so the grid is always a single column and the
+       column-width animation is dropped. */
+    @media (orientation: portrait), (width <= 767px) {
+        &.WithSidebar,
+        &.NavCollapsed {
+            grid-template-columns: 1fr;
+            transition: none;
+        }
+
+        /* Sidebar is a fixed off-canvas drawer here, so both slots collapse onto the
+           single column; the drawer overlays .MainColumn rather than sitting beside it. */
+        &.WithSidebar .MainColumn,
+        &.WithSidebar .SidebarSlot {
+            grid-column: 1;
+        }
+
+        /* .SidebarSlot's children are all position:fixed, so the slot itself must NOT
+           stretch to fill the grid cell — a stretched, later-painted slot would sit
+           invisibly on top of .MainColumn and swallow every click (burger included).
+           Collapse it to a zero-size point instead. */
+        &.WithSidebar .SidebarSlot {
+            align-self: start;
+            justify-self: start;
+        }
+    }
+
+    .SidebarSlot {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
     }
 
     .MainColumn {

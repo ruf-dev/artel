@@ -1,3 +1,11 @@
+/* The backdrop is a fixed-position sibling overlay rendered BEFORE the <aside> in
+   the DOM (not inside .WorkbenchSidebarContainer), so it lives as a top-level rule
+   here — the one sanctioned exception to this module's "everything nested under the
+   Container" convention. Desktop: hidden; the mobile media block below turns it on. */
+.Backdrop {
+    display: none;
+}
+
 .WorkbenchSidebarContainer {
     display: flex;
     flex-direction: column;
@@ -8,6 +16,9 @@
     border-right: var(--border-thickness) solid var(--color-border);
     overflow: hidden;
     text-align: left;
+
+    /* &.NavOpen is a no-op on desktop; it's defined only in the mobile media block
+       below, where it slides the off-canvas drawer into view. */
 
     & .TopRail {
         display: flex;
@@ -26,5 +37,38 @@
     & .CollapsedFiller {
         flex: 1;
         min-height: 0;
+    }
+}
+
+/* Mobile: the sidebar is a fully off-canvas drawer. The <aside> is fixed and slid
+   out via translateX; .NavOpen slides it back in. The backdrop (fixed sibling, in
+   the DOM before the aside — so the panel paints above it without z-index) fades in
+   with .BackdropVisible and closes the drawer on click. */
+@media (orientation: portrait), (width <= 767px) {
+    .WorkbenchSidebarContainer {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(18rem, 82vw);
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+        &.NavOpen {
+            transform: translateX(0);
+        }
+    }
+
+    .Backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: var(--overlay, rgb(0 0 0 / 58%));
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .BackdropVisible {
+        opacity: 1;
+        pointer-events: auto;
     }
 }

@@ -83,4 +83,21 @@ describe("WorkbenchSidebar", () => {
         expect(screen.getByTestId("sidebar-brand")).toBeInTheDocument()
         expect(screen.getByRole("button", {name: "Toggle conversations"})).toBeInTheDocument()
     })
+
+    it("always renders the backdrop, whether the drawer is open or closed", () => {
+        const {rerender} = render(<WorkbenchSidebar {...makeProps({navOpen: true})}/>)
+        expect(screen.getByTestId("sidebar-backdrop")).toBeInTheDocument()
+
+        rerender(<WorkbenchSidebar {...makeProps({navOpen: false})}/>)
+        expect(screen.getByTestId("sidebar-backdrop")).toBeInTheDocument()
+    })
+
+    it("clicking the backdrop calls onToggleNav", () => {
+        const onToggleNav = vi.fn()
+        render(<WorkbenchSidebar {...makeProps({navOpen: true, onToggleNav})}/>)
+
+        fireEvent.click(screen.getByTestId("sidebar-backdrop"))
+
+        expect(onToggleNav).toHaveBeenCalledTimes(1)
+    })
 })

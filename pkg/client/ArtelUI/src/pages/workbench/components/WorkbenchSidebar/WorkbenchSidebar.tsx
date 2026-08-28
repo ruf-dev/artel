@@ -11,6 +11,7 @@ import HistoryTabIcon from "@/pages/workbench/components/WorkbenchSidebar/compon
 import ToolsTabIcon from "@/pages/workbench/components/WorkbenchSidebar/components/icons/ToolsTabIcon.tsx"
 import VaultTabIcon from "@/pages/workbench/components/WorkbenchSidebar/components/icons/VaultTabIcon.tsx"
 import cls from "@/pages/workbench/components/WorkbenchSidebar/WorkbenchSidebar.module.css"
+import {cn} from "@/app/utils/cn.ts"
 
 interface Props {
     history: WorkbenchHistory
@@ -31,16 +32,25 @@ export default function WorkbenchSidebar({history, navOpen, onToggleNav}: Props)
     const [activeTab, setActiveTab] = useState("history")
 
     return (
-        <aside className={cls.WorkbenchSidebarContainer}>
-            <div className={cls.TopRail}>
-                {navOpen && <SidebarBrand/>}
-                <SidebarToggleButton open={navOpen} onToggle={onToggleNav}/>
-            </div>
-            <div className={cls.TabsRow}>
-                <SegmentedControl options={SEGMENTS} active={activeTab} onChange={setActiveTab} collapsed={!navOpen}/>
-            </div>
-            {navOpen ? <HistoryPane history={history}/> : <div className={cls.CollapsedFiller}/>}
-            <SidebarFooter collapsed={!navOpen}/>
-        </aside>
+        <>
+            <div
+                className={cn(cls.Backdrop, navOpen && cls.BackdropVisible)}
+                data-testid="sidebar-backdrop"
+                onClick={onToggleNav}
+            />
+            <aside className={cn(cls.WorkbenchSidebarContainer, navOpen && cls.NavOpen)}>
+                <div className={cls.TopRail}>
+                    {navOpen && <SidebarBrand/>}
+                    <SidebarToggleButton open={navOpen} onToggle={onToggleNav}/>
+                </div>
+                <div className={cls.TabsRow}>
+                    <SegmentedControl
+                        options={SEGMENTS} active={activeTab} onChange={setActiveTab} collapsed={!navOpen}
+                    />
+                </div>
+                {navOpen ? <HistoryPane history={history}/> : <div className={cls.CollapsedFiller}/>}
+                <SidebarFooter collapsed={!navOpen}/>
+            </aside>
+        </>
     )
 }

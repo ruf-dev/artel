@@ -1,4 +1,3 @@
-import {useState} from "react"
 import {useParams} from "react-router-dom"
 import {Loader} from "@vervstack/chures"
 
@@ -29,6 +28,7 @@ import {useWorkbenchPanelControls} from "@/pages/workbench/processes/useWorkbenc
 import {useWorkbenchModeControls} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
 import {useWorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 import {useWorkbenchSidebar} from "@/pages/workbench/processes/useWorkbenchSidebar.ts"
+import {useWorkbenchNavDrawer} from "@/pages/workbench/processes/useWorkbenchNavDrawer.ts"
 import {useWorkbenchViewState} from "@/pages/workbench/processes/useWorkbenchViewState.ts"
 
 export default function WorkbenchPage() {
@@ -60,7 +60,6 @@ export default function WorkbenchPage() {
     const vaultName = vaults.find(v => v.id === vaultId)?.name ?? "Vault"
 
     const ctx = useWorkbenchContext()
-    const [navOpen, setNavOpen] = useState(true)
 
     const {view, setView, awaitingAuth, genericCentered, terminalViewActive} = useWorkbenchViewState({
         exists, status, isLoading, effectiveMode, showSetup: lifecycle.showSetup,
@@ -72,16 +71,17 @@ export default function WorkbenchPage() {
         startNewDockerChat: chatSession.startNewChat, controller: simpleChatController,
     })
 
+    const {navOpen, toggleNav, sidebarHistory} = useWorkbenchNavDrawer(sidebar.history)
+
     useDocumentTitle(vaultName)
 
     return (
         <div className={cn(cls.WorkbenchPageContainer, sidebar.show && cls.WithSidebar,
             sidebar.show && !navOpen && cls.NavCollapsed, terminalViewActive && cls.TerminalViewActive)}>
-            {sidebar.show && vaultId && (
-                <WorkbenchSidebar
-                    history={sidebar.history} navOpen={navOpen} onToggleNav={() => setNavOpen(v => !v)}
-                />
-            )}
+            {/* MainColumn is rendered before the sidebar so the sidebar's mobile fixed
+                drawer paints above the topbar's position:relative model-switcher trigger.
+                Desktop column order is restored via grid-column placement (not `order`,
+                which would also reverse paint order) — see WorkbenchPage.module.css. */}
             <div className={cls.MainColumn}>
                 <div className={cls.ContentStack}>
                     <div className={cn(cls.Body, genericCentered && cls.BodyCentered,
@@ -120,6 +120,7 @@ export default function WorkbenchPage() {
                             view={view} onViewChange={setView} chatLocked={awaitingAuth}
                             onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
                             stopping={lifecycle.stopping} starting={lifecycle.resuming}
+                            onToggleNav={toggleNav} showNavToggle={sidebar.show}
                             model={{
                                 models: simpleChatController.models,
                                 value: simpleChatController.currentModel,
@@ -133,6 +134,11 @@ export default function WorkbenchPage() {
                     ctx={ctx} effectiveMode={effectiveMode} status={status} vaultId={vaultId}
                 />
             </div>
+            {sidebar.show && vaultId && (
+                <div className={cls.SidebarSlot}>
+                    <WorkbenchSidebar history={sidebarHistory} navOpen={navOpen} onToggleNav={toggleNav}/>
+                </div>
+            )}
         </div>
     )
 }

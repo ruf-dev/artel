@@ -1,7 +1,9 @@
 import {describe, expect, it, vi} from "vitest"
-import {render, screen} from "@testing-library/react"
+import {fireEvent, render, screen} from "@testing-library/react"
 
 import WorkbenchTopbar from "@/pages/workbench/components/WorkbenchTopbar/WorkbenchTopbar.tsx"
+
+vi.mock("morphicons/react", () => ({MorphIcon: () => null}))
 
 interface MockModelSwitcherProps {
     disabled?: boolean
@@ -38,6 +40,8 @@ const base = {
     stopping: false,
     starting: false,
     model,
+    onToggleNav: vi.fn(),
+    showNavToggle: true,
 }
 
 describe("WorkbenchTopbar", () => {
@@ -71,5 +75,23 @@ describe("WorkbenchTopbar", () => {
         render(<WorkbenchTopbar {...base} effectiveMode="docker" exists status="running" chatLocked/>)
 
         expect(screen.getByRole("button", {name: "Chat"})).toHaveAttribute("aria-disabled", "true")
+    })
+
+    it("showNavToggle: renders the burger and forwards clicks to onToggleNav", () => {
+        const onToggleNav = vi.fn()
+        render(<WorkbenchTopbar {...base} showNavToggle onToggleNav={onToggleNav}/>)
+
+        // hidden: true — the burger's container is `display: none` above the mobile breakpoint.
+        const burger = screen.getByRole("button", {name: "Open menu", hidden: true})
+        expect(burger).toBeInTheDocument()
+
+        fireEvent.click(burger)
+        expect(onToggleNav).toHaveBeenCalledTimes(1)
+    })
+
+    it("showNavToggle false: no burger button", () => {
+        render(<WorkbenchTopbar {...base} showNavToggle={false}/>)
+
+        expect(screen.queryByRole("button", {name: "Open menu", hidden: true})).toBeNull()
     })
 })

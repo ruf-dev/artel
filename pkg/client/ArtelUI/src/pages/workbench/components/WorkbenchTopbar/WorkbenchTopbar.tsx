@@ -1,4 +1,6 @@
 import TopbarLeft from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarLeft/TopbarLeft.tsx"
+// eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
+import TopbarNavToggle from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarNavToggle/TopbarNavToggle.tsx"
 import TopbarRight from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarRight/TopbarRight.tsx"
 import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
 import type {WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
@@ -24,6 +26,8 @@ interface Props {
     stopping: boolean
     starting: boolean
     model: ModelProps
+    onToggleNav: () => void
+    showNavToggle: boolean
 }
 
 // The workbench top bar: status + model switcher on the left, the Chat/Terminal
@@ -40,6 +44,7 @@ export default function WorkbenchTopbar(props: Props) {
 
     return (
         <div className={cls.WorkbenchTopbarContainer}>
+            {props.showNavToggle && <TopbarNavToggle onToggle={props.onToggleNav}/>}
             <TopbarLeft
                 effectiveMode={props.effectiveMode}
                 exists={props.exists}

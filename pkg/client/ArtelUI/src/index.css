@@ -5,6 +5,16 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+
+    /* Kill the translucent highlight box mobile browsers draw on tap. */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* No focus outline anywhere — affordance comes from hover/active and
+   component-level focus styling instead. */
+*:focus,
+*:focus-visible {
+    outline: none;
 }
 
 ::-webkit-scrollbar { display: none; }
