@@ -54,15 +54,6 @@ describe("WorkbenchTweaksPanel", () => {
         expect(screen.getByTestId("connections-section")).toBeInTheDocument()
     })
 
-    it("closes on the close button", () => {
-        const ctx = makeCtx(true)
-        render(<WorkbenchTweaksPanel {...base} ctx={ctx}/>)
-
-        fireEvent.click(screen.getByRole("button", {name: "Close tweaks"}))
-
-        expect(ctx.closeTweaks).toHaveBeenCalledTimes(1)
-    })
-
     it("closes on Escape while open", () => {
         const ctx = makeCtx(true)
         render(<WorkbenchTweaksPanel {...base} ctx={ctx}/>)

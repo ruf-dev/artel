@@ -2,9 +2,6 @@ import {useEffect} from "react"
 import {createPortal} from "react-dom"
 
 import {cn} from "@/app/utils/cn.ts"
-import CloseIcon from "@/icons/common/CloseIcon.tsx"
-import IconToggleButton
-    from "@/pages/workbench/components/WorkbenchTopbar/components/IconToggleButton/IconToggleButton.tsx"
 import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
 import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 import TweaksSystemPromptSection
@@ -59,7 +56,6 @@ export default function WorkbenchTweaksPanel(props: Props) {
                     <div className={cls.Panel}>
                         <div className={cls.Head}>
                             <h2>Tweaks</h2>
-                            <IconToggleButton icon={<CloseIcon/>} label="Close tweaks" onClick={closeTweaks}/>
                         </div>
                         <div className={cls.Body}>
                             {tweaksOpen && effectiveMode === "api" && (
