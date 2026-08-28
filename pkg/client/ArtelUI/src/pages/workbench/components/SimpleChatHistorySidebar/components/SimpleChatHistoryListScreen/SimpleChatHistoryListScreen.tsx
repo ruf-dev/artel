@@ -2,6 +2,7 @@ import {Button, ChevronDownIcon} from "@vervstack/chures"
 
 import PlusIcon from "@/icons/common/PlusIcon.tsx"
 import {SimpleChat} from "@/processes/SimpleChat.ts"
+import CloseIcon from "@/icons/common/CloseIcon.tsx"
 import ModelSwitcher from "@/pages/workbench/components/SimpleChat/components/ModelSwitcher/ModelSwitcher.tsx"
 import SimpleChatHistoryRow from
     "@/pages/workbench/components/SimpleChatHistorySidebar/components/SimpleChatHistoryRow/SimpleChatHistoryRow.tsx"
@@ -21,6 +22,7 @@ interface Props {
     currentModel: string
     modelsLoading?: boolean
     onChangeModel: (model: string) => void
+    onClose: () => void
 }
 
 export default function SimpleChatHistoryListScreen(props: Props) {
@@ -37,6 +39,10 @@ export default function SimpleChatHistoryListScreen(props: Props) {
                     <ChevronDownIcon className={cls.CollapseIcon}/>
                 </Button>
                 <h2 className={cls.Title}>History</h2>
+                <Button variant="secondary" className={cls.CloseButton} onClick={props.onClose}
+                        aria-label="Close chat" title="Back to workbench mode selection">
+                    <CloseIcon/>
+                </Button>
                 <Button
                     variant="secondary"
                     className={cls.NewChatButton}

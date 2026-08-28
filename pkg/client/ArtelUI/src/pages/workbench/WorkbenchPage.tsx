@@ -1,4 +1,3 @@
-import {useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {Loader} from "@vervstack/chures"
 
@@ -17,7 +16,6 @@ import PickAuthModeScreen from "@/pages/workbench/components/PickAuthModeScreen/
 import PickWorkbenchModeScreen from "@/pages/workbench/components/PickWorkbenchModeScreen/PickWorkbenchModeScreen.tsx"
 import WorkbenchHeader from "@/pages/workbench/components/WorkbenchHeader/WorkbenchHeader.tsx"
 import WorkbenchPanels from "@/pages/workbench/components/WorkbenchPanels/WorkbenchPanels.tsx"
-import {type WorkbenchView} from "@/pages/workbench/components/WorkbenchToolbar/WorkbenchToolbar.tsx"
 import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
 import {
     toSimpleChatSessionBundle,
@@ -26,6 +24,7 @@ import {
 import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLifecycle.ts"
 import {useWorkbenchPanelControls} from "@/pages/workbench/processes/useWorkbenchPanelControls.ts"
 import {useWorkbenchModeControls} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
+import {useWorkbenchViewState} from "@/pages/workbench/processes/useWorkbenchViewState.ts"
 
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
@@ -36,7 +35,6 @@ export default function WorkbenchPage() {
     const {tabs} = useWorkbenchTerminalTabs(vaultId, status === "running")
     const {create: createTab, select: selectTab, close: closeTab} = useWorkbenchTerminalTabMutations(vaultId)
     const bakeError = useBakeError()
-    const [view, setView] = useState<WorkbenchView>("chat")
     const {historyOpen, handleSelectTab, handleCreateTab, handleCloseTab, toggleHistory, closeHistory} =
         useWorkbenchPanelControls({selectTab, createTab, closeTab, bakeError})
     const modeControls = useWorkbenchModeControls({
@@ -60,21 +58,15 @@ export default function WorkbenchPage() {
     const vault = vaults.find(v => v.id === vaultId)
     const vaultName = vault?.name ?? "Vault"
 
-    const awaitingAuth = !chatSession.authComplete && lifecycle.pendingAuthMode === "subscription_login"
-
-    const dockerCentered = !exists || (status !== "running" && !lifecycle.showSetup)
-    const genericCentered = isLoading || (effectiveMode === "docker" && dockerCentered)
-    const terminalViewActive = effectiveMode === "docker" && status === "running" && view === "terminal"
-
-    // Terminal login and the chat's own sign-in flow share the same in-container
-    // credentials file, so there's no chat-side auth screen anymore — lock the Chat
-    // toggle to Terminal while unauthenticated instead. Unlock-only: once auth
-    // completes this stops firing, but view is never forced back to "chat" on its own.
-    useEffect(() => {
-        if (awaitingAuth && view === "chat") {
-            setView("terminal")
-        }
-    }, [awaitingAuth, view])
+    const {view, setView, awaitingAuth, genericCentered, terminalViewActive} = useWorkbenchViewState({
+        exists,
+        status,
+        isLoading,
+        effectiveMode,
+        showSetup: lifecycle.showSetup,
+        authComplete: chatSession.authComplete,
+        pendingAuthMode: lifecycle.pendingAuthMode,
+    })
 
     useDocumentTitle(vaultName)
 
@@ -111,6 +103,7 @@ export default function WorkbenchPage() {
                         simpleChatId={modeControls.simpleChatId}
                         onSelectSimpleChat={modeControls.setSimpleChatId}
                         simpleChatSession={toSimpleChatSessionBundle(simpleChatController)}
+                        onCloseSimpleChat={modeControls.handleCloseSimpleChat}
                     />
                 )}
                 {!isLoading && effectiveMode === "docker" && exists && status !== "running" && lifecycle.showSetup

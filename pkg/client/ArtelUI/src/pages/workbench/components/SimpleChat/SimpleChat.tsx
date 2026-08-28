@@ -23,6 +23,7 @@ interface Props {
     vaultId: string
     onSelectChat: (chatId: string | undefined) => void
     session: SimpleChatSessionBundle
+    onClose: () => void
 }
 
 // Simple Chat's own session/model state lives in useSimpleChatController, called
@@ -47,6 +48,7 @@ export default function SimpleChat(props: Props) {
                 currentModel={props.session.currentModel}
                 modelsLoading={props.session.modelsLoading}
                 onChangeModel={props.session.onChangeModel}
+                onClose={props.onClose}
             />
             <ChatPanelShell
                 items={props.session.items}

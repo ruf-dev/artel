@@ -47,6 +47,7 @@ interface Props {
     simpleChatId?: string
     onSelectSimpleChat: (chatId: string | undefined) => void
     simpleChatSession: SimpleChatSessionBundle
+    onCloseSimpleChat: () => void
 }
 
 // The three mutually-exclusive workbench panels (Docker chat, Docker terminal,
@@ -82,6 +83,7 @@ export default function WorkbenchPanels(props: Props) {
                     vaultId={props.vaultId}
                     onSelectChat={props.onSelectSimpleChat}
                     session={props.simpleChatSession}
+                    onClose={props.onCloseSimpleChat}
                 />
             )}
         </AnimatePresence>

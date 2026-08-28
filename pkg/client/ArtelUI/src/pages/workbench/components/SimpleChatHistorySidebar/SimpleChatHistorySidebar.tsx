@@ -23,6 +23,7 @@ interface Props {
     currentModel: string
     modelsLoading?: boolean
     onChangeModel: (model: string) => void
+    onClose: () => void
 }
 
 // New sibling to Chat/components/ChatHistorySidebar (not a modification of it) —
@@ -83,6 +84,7 @@ export default function SimpleChatHistorySidebar(props: Props) {
                     currentModel={props.currentModel}
                     modelsLoading={props.modelsLoading}
                     onChangeModel={props.onChangeModel}
+                    onClose={props.onClose}
                 />
             )}
         </div>

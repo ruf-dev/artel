@@ -84,6 +84,7 @@ describe("SimpleChatHistorySidebar", () => {
         vaultId: "vault-123",
         activeChatId: undefined,
         onSelectChat: vi.fn(),
+        onClose: vi.fn(),
         onNewChat: vi.fn(),
         models: ["m1"],
         currentModel: "m1",

@@ -33,6 +33,7 @@ describe("SimpleChat", () => {
         chatId: "chat-1",
         vaultId: "vault-1",
         onSelectChat: vi.fn(),
+        onClose: vi.fn(),
         session: baseSession,
     }
 

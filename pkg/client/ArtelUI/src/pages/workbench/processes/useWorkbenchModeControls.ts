@@ -55,11 +55,17 @@ export function useWorkbenchModeControls({exists, handleCreateDocker, simpleChat
         setSimpleChatId(chatId)
     }
 
+    function handleCloseSimpleChat() {
+        setSimpleChatId(undefined)
+        setModeChoice("picking")
+    }
+
     return {
         effectiveMode,
         simpleChatId,
         setSimpleChatId,
         handlePickDocker,
         handleSimpleChatCreated,
+        handleCloseSimpleChat,
     }
 }
