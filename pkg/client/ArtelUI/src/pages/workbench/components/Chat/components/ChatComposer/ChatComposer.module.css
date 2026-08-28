@@ -1,34 +1,31 @@
 .ChatComposerContainer {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     flex-shrink: 0;
-    padding: 0.75rem;
+    padding: 1rem 1.5rem 1.3rem;
 
-    & .InputWrapper {
-        flex: 1;
-        min-width: 0;
+    & .Composer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: var(--workbench-composer-width);
+        margin: 0 auto;
+        padding: 0.7rem 0.7rem 0.6rem 1rem;
+        background: var(--color-bg-card);
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-lg);
     }
 
-    & .NewChatButton {
+    & .CtxRow {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        width: var(--chures-input-height);
-        height: var(--chures-input-height);
-        padding: 0;
-        background: var(--color-accent-dim);
-        border: var(--border-thickness) solid var(--color-accent-border);
-        border-radius: var(--border-radius-sm);
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        padding: 0 0.3rem 0.1rem;
 
-        &.NewChatButtonHidden {
+        &:empty {
             display: none;
         }
     }
 
-    & .SendButton {
-        flex-shrink: 0;
-        height: var(--chures-input-height);
+    & .Input {
+        width: 100%;
     }
 }

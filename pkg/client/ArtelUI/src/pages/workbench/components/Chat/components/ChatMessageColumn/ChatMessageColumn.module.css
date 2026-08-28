@@ -1,0 +1,9 @@
+.ChatMessageColumnContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--workbench-chat-col-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+    gap: 1.6rem;
+}

@@ -1,0 +1,37 @@
+.ComposerRowContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    & .Spacer {
+        flex: 1;
+    }
+
+    & .NewChatButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.125rem;
+        height: 2.125rem;
+        padding: 0;
+        background: var(--color-accent-dim);
+        border: var(--border-thickness) solid var(--color-accent-border);
+        border-radius: var(--border-radius-sm);
+
+        &.NewChatButtonHidden {
+            display: none;
+        }
+    }
+
+    & .SendButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.125rem;
+        height: 2.125rem;
+        padding: 0;
+        border-radius: var(--border-radius-circle);
+    }
+}

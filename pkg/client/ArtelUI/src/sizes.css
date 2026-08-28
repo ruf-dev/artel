@@ -48,6 +48,8 @@
     --sidebar-width-chat-history: clamp(14rem, 45%, 18rem);
     --sidebar-width-chat-history-collapsed: 3rem;
     --workbench-sidebar-width: 16rem;
+    --workbench-chat-col-width: 45rem;
+    --workbench-composer-width: 47.5rem;
     --dialog-max-height:        80vh;
     --dialog-max-height-lg:     90vh;
     --dialog-width-toolbox:     80vw;

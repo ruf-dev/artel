@@ -31,4 +31,22 @@
             cursor: not-allowed;
         }
     }
+
+    &.AutoGrow {
+        & textarea {
+            min-height: 0;
+            padding: 0.25rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            resize: none;
+            overflow-y: auto;
+            line-height: 1.5;
+
+            &:focus {
+                background: none;
+                border: none;
+            }
+        }
+    }
 }

@@ -21,6 +21,12 @@ interface Props {
     session: SimpleChatSessionBundle
 }
 
+// Display name for the assistant label: the last path segment of the model id
+// (e.g. "anthropic/claude-sonnet-4" -> "claude-sonnet-4"), falling back to "Model".
+function prettyModel(id: string): string {
+    return (id.split("/").pop() || "") || "Model"
+}
+
 // The api chat body — a thin shaper over ChatPanelShell. Since Stage 2 the model
 // switcher, new-chat button, history list and close-to-picker control all live in
 // the page-level WorkbenchSidebar, so this component is just the message
@@ -36,6 +42,7 @@ export default function SimpleChat(props: Props) {
                 onNewChat={props.session.onNewChat}
                 composerDisabled={props.session.status !== "open" || !props.chatId}
                 composerPlaceholder="Message the agent…"
+                assistantLabel={prettyModel(props.session.currentModel)}
                 hideNewChatButton
             />
         </div>

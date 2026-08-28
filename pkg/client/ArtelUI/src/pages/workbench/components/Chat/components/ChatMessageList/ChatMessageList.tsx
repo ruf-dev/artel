@@ -1,13 +1,15 @@
 import {useEffect, useRef, useState} from "react"
-import {AnimatePresence} from "framer-motion"
 
 import cls from "@/pages/workbench/components/Chat/components/ChatMessageList/ChatMessageList.module.css"
-import ChatMessageItem from "@/pages/workbench/components/Chat/components/ChatMessageItem/ChatMessageItem.tsx"
+import ChatMessageColumn from "@/pages/workbench/components/Chat/components/ChatMessageColumn/ChatMessageColumn.tsx"
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
 
 interface Props {
     items: ChatItem[]
+    assistantLabel?: string
+    retryDisabled?: boolean
+    onRetryMessage?: (text: string) => void
     onPermissionDecision: (id: string, decision: PermissionDecision) => void
 }
 
@@ -16,7 +18,7 @@ interface Props {
 // the bottom by a streaming assistant reply.
 const BOTTOM_THRESHOLD_PX = 48
 
-export default function ChatMessageList({items, onPermissionDecision}: Props) {
+export default function ChatMessageList(props: Props) {
     const containerRef = useRef<HTMLDivElement>(null)
     const [autoScroll, setAutoScroll] = useState(true)
 
@@ -25,7 +27,7 @@ export default function ChatMessageList({items, onPermissionDecision}: Props) {
         const el = containerRef.current
         if (!el) return
         el.scrollTop = el.scrollHeight
-    }, [items, autoScroll])
+    }, [props.items, autoScroll])
 
     function handleScroll() {
         const el = containerRef.current
@@ -36,12 +38,14 @@ export default function ChatMessageList({items, onPermissionDecision}: Props) {
 
     return (
         <div className={cls.ChatMessageListContainer} ref={containerRef} onScroll={handleScroll}>
-            {items.length === 0 && <p className={cls.EmptyState}>Send a message to start the conversation.</p>}
-            <AnimatePresence initial={false}>
-                {items.map(item => (
-                    <ChatMessageItem key={item.key} item={item} onPermissionDecision={onPermissionDecision}/>
-                ))}
-            </AnimatePresence>
+            {props.items.length === 0 && <p className={cls.EmptyState}>Send a message to start the conversation.</p>}
+            <ChatMessageColumn
+                items={props.items}
+                assistantLabel={props.assistantLabel}
+                retryDisabled={props.retryDisabled}
+                onRetryMessage={props.onRetryMessage}
+                onPermissionDecision={props.onPermissionDecision}
+            />
         </div>
     )
 }

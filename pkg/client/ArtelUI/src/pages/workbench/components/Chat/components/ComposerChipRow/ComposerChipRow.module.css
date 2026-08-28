@@ -1,0 +1,22 @@
+.ComposerChipRowContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+    max-width: var(--workbench-chat-col-width);
+    margin: 0.7rem auto 0;
+
+    & .Chip {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.7rem;
+        border: var(--border-thickness) solid var(--color-border-light);
+        border-radius: var(--border-radius-pill);
+        background: var(--color-bg-card);
+        color: var(--color-fg-secondary);
+        font-size: 0.74rem;
+        cursor: default;
+        opacity: 0.7;
+    }
+}

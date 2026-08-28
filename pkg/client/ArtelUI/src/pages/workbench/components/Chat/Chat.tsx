@@ -26,6 +26,7 @@ export default function Chat(props: Props) {
             onNewChat={props.onNewChat}
             composerDisabled={props.status !== "open"}
             composerPlaceholder="Message the workbench…"
+            assistantLabel="Claude Code"
         />
     )
 }

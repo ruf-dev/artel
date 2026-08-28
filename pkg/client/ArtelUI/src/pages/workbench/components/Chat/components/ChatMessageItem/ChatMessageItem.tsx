@@ -10,15 +10,29 @@ import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
 
 interface Props {
     item: ChatItem
+    assistantLabel?: string
+    onCopy: () => void
+    onRetry: () => void
+    retryDisabled?: boolean
     onPermissionDecision: (id: string, decision: PermissionDecision) => void
 }
 
-export default function ChatMessageItem({item, onPermissionDecision}: Props) {
+export default function ChatMessageItem(props: Props) {
+    const {item, onPermissionDecision} = props
     switch (item.kind) {
         case "user_message":
             return <UserMessageBubble text={item.text}/>
         case "assistant_message":
-            return <AssistantMessageBubble text={item.text} done={item.done}/>
+            return (
+                <AssistantMessageBubble
+                    text={item.text}
+                    done={item.done}
+                    label={props.assistantLabel}
+                    onCopy={props.onCopy}
+                    onRetry={props.onRetry}
+                    retryDisabled={props.retryDisabled}
+                />
+            )
         case "tool_call":
             return (
                 <ToolCallCard

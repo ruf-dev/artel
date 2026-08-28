@@ -18,6 +18,7 @@ interface Props {
     composerDisabled: boolean
     composerPlaceholder: string
     hideNewChatButton?: boolean
+    assistantLabel?: string
 }
 
 // Shared chat-panel body (status banner, message list, composer) reused by the
@@ -47,7 +48,13 @@ export default function ChatPanelShell(props: Props) {
         >
             <div className={cls.ChatContent}>
                 <ChatStatusBanner status={props.bannerStatus}/>
-                <ChatMessageList items={props.items} onPermissionDecision={props.sendPermissionDecision}/>
+                <ChatMessageList
+                    items={props.items}
+                    assistantLabel={props.assistantLabel}
+                    onRetryMessage={props.sendMessage}
+                    retryDisabled={props.composerDisabled}
+                    onPermissionDecision={props.sendPermissionDecision}
+                />
                 <ChatComposer
                     value={draft}
                     onChange={setDraft}

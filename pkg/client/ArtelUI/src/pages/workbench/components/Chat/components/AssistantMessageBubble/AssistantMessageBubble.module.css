@@ -1,14 +1,24 @@
 .AssistantMessageBubbleContainer {
     align-self: flex-start;
-    max-width: 85%;
-    padding: 0.5rem 0.75rem;
-    background: var(--color-bg-elevated);
-    border: var(--border-thickness) solid var(--color-border);
+    max-width: 100%;
+    padding: 0;
+    background: none;
+    border: none;
     border-radius: var(--border-radius-lg);
-    border-bottom-left-radius: 0.25rem;
 
     &.Streaming {
-        border-color: var(--color-accent-border);
+        border-left: var(--border-thickness-accent) solid var(--color-accent-border);
+        padding-left: 0.6rem;
+    }
+
+    & .Actions {
+        opacity: 0;
+        transition: opacity 150ms ease;
+    }
+
+    &:hover .Actions,
+    &:focus-within .Actions {
+        opacity: 1;
     }
 
     & .Text {

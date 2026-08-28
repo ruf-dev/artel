@@ -1,0 +1,22 @@
+.AssistantLabelContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.45rem;
+    font-size: 0.72rem;
+    color: var(--color-fg-tertiary);
+
+    & .Dot {
+        width: 0.375rem;
+        height: 0.375rem;
+        border-radius: var(--border-radius-circle);
+        background: var(--coral);
+        flex-shrink: 0;
+    }
+
+    & .Label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
