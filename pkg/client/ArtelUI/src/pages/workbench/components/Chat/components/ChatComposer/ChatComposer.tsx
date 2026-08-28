@@ -1,6 +1,7 @@
 import Textarea from "@/components/atoms/Textarea/Textarea.tsx"
 import ComposerRow from "@/pages/workbench/components/Chat/components/ComposerRow/ComposerRow.tsx"
 import ComposerChipRow from "@/pages/workbench/components/Chat/components/ComposerChipRow/ComposerChipRow.tsx"
+import type {TweaksSection} from "@/pages/workbench/processes/workbenchContext.ts"
 import cls from "@/pages/workbench/components/Chat/components/ChatComposer/ChatComposer.module.css"
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
     disabled: boolean
     placeholder: string
     hideNewChatButton?: boolean
+    onOpenTweaks: (section?: TweaksSection) => void
 }
 
 // >6 props — kept as one object instead of exploding into separate destructured
@@ -43,7 +45,7 @@ export default function ChatComposer(props: Props) {
                     hideNewChatButton={props.hideNewChatButton}
                 />
             </div>
-            <ComposerChipRow/>
+            <ComposerChipRow onOpenTweaks={props.onOpenTweaks}/>
         </div>
     )
 }

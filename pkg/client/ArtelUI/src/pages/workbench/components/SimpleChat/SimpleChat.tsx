@@ -3,6 +3,7 @@ import ChatPanelShell from "@/pages/workbench/components/ChatPanelShell/ChatPane
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
+import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 
 interface SimpleChatSessionBundle {
     items: ChatItem[]
@@ -19,6 +20,7 @@ interface SimpleChatSessionBundle {
 interface Props {
     chatId: string | undefined
     session: SimpleChatSessionBundle
+    ctx: WorkbenchContext
 }
 
 // Display name for the assistant label: the last path segment of the model id
@@ -44,6 +46,7 @@ export default function SimpleChat(props: Props) {
                 composerPlaceholder="Message the agent…"
                 assistantLabel={prettyModel(props.session.currentModel)}
                 hideNewChatButton
+                ctx={props.ctx}
             />
         </div>
     )

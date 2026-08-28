@@ -1,16 +1,19 @@
 import {Button} from "@vervstack/chures"
 
 import {useTheme} from "@/app/hooks/useTheme"
-import cls from "@/segments/Topbar/components/TopbarThemeToggle/TopbarThemeToggle.module.css"
+import cls from "@/components/ThemeToggle/ThemeToggle.module.css"
 
-export default function TopbarThemeToggle() {
+// Shared icon-button that flips the app between dark and light themes. Promoted
+// out of the global Topbar so the workbench Tweaks panel can reuse the exact same
+// control instead of building a second segmented Dark/Light picker.
+export default function ThemeToggle() {
     const {theme, toggleTheme} = useTheme()
     const isLight = theme === "light"
 
     return (
         <Button
             variant="ghost"
-            className={cls.ThemeToggle}
+            className={cls.ThemeToggleContainer}
             aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
             onClick={toggleTheme}
         >

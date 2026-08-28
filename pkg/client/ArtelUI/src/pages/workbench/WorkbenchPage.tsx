@@ -18,6 +18,7 @@ import PickWorkbenchModeScreen from "@/pages/workbench/components/PickWorkbenchM
 import WorkbenchPanels from "@/pages/workbench/components/WorkbenchPanels/WorkbenchPanels.tsx"
 import WorkbenchSidebar from "@/pages/workbench/components/WorkbenchSidebar/WorkbenchSidebar.tsx"
 import WorkbenchTopbar from "@/pages/workbench/components/WorkbenchTopbar/WorkbenchTopbar.tsx"
+import WorkbenchTweaksPanel from "@/pages/workbench/components/WorkbenchTweaksPanel/WorkbenchTweaksPanel.tsx"
 import {useChatSession} from "@/pages/workbench/processes/useChatSession.ts"
 import {
     toSimpleChatSessionBundle,
@@ -26,6 +27,7 @@ import {
 import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLifecycle.ts"
 import {useWorkbenchPanelControls} from "@/pages/workbench/processes/useWorkbenchPanelControls.ts"
 import {useWorkbenchModeControls} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
+import {useWorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 import {useWorkbenchSidebar} from "@/pages/workbench/processes/useWorkbenchSidebar.ts"
 import {useWorkbenchViewState} from "@/pages/workbench/processes/useWorkbenchViewState.ts"
 
@@ -57,6 +59,7 @@ export default function WorkbenchPage() {
 
     const vaultName = vaults.find(v => v.id === vaultId)?.name ?? "Vault"
 
+    const ctx = useWorkbenchContext()
     const [navOpen, setNavOpen] = useState(true)
 
     const {view, setView, awaitingAuth, genericCentered, terminalViewActive} = useWorkbenchViewState({
@@ -80,51 +83,56 @@ export default function WorkbenchPage() {
                 />
             )}
             <div className={cls.MainColumn}>
-                <div className={cn(cls.Body, genericCentered && cls.BodyCentered,
-                    effectiveMode === "picking" && cls.BodyPicking)}>
-                    {isLoading && (
-                        <Loader variant="arcs" size="sm" color="var(--coral)"/>
-                    )}
-                    {!isLoading && effectiveMode === "picking" && vaultId && (
-                        <PickWorkbenchModeScreen
-                            vaultId={vaultId} onStartDocker={modeControls.handlePickDocker}
-                            startingDocker={lifecycle.creating}
-                            onSimpleChatCreated={modeControls.handleSimpleChatCreated}
-                        />
-                    )}
-                    {!isLoading && vaultId && (
-                        <WorkbenchPanels
+                <div className={cls.ContentStack}>
+                    <div className={cn(cls.Body, genericCentered && cls.BodyCentered,
+                        effectiveMode === "picking" && cls.BodyPicking)}>
+                        {isLoading && (
+                            <Loader variant="arcs" size="sm" color="var(--coral)"/>
+                        )}
+                        {!isLoading && effectiveMode === "picking" && vaultId && (
+                            <PickWorkbenchModeScreen
+                                vaultId={vaultId} onStartDocker={modeControls.handlePickDocker}
+                                startingDocker={lifecycle.creating}
+                                onSimpleChatCreated={modeControls.handleSimpleChatCreated}
+                            />
+                        )}
+                        {!isLoading && vaultId && (
+                            <WorkbenchPanels
+                                effectiveMode={effectiveMode} exists={exists} status={status} vaultId={vaultId}
+                                view={view} awaitingAuth={awaitingAuth} chatSession={chatSession} tabs={tabs}
+                                pendingTerminalAuthLink={pendingTerminalAuthLink} onSelectTab={handleSelectTab}
+                                onCreateTab={handleCreateTab} onCloseTab={handleCloseTab}
+                                simpleChatId={modeControls.simpleChatId} ctx={ctx}
+                                simpleChatSession={toSimpleChatSessionBundle(simpleChatController)}
+                            />
+                        )}
+                        {!isLoading && effectiveMode === "docker" && exists && status !== "running"
+                            && lifecycle.showSetup && vaultId && (
+                            <PickAuthModeScreen
+                                onStart={lifecycle.handleStartWorkbench}
+                                starting={lifecycle.startingWorkbench}
+                            />
+                        )}
+                    </div>
+                    {!isLoading && effectiveMode !== "picking" && (
+                        <WorkbenchTopbar
                             effectiveMode={effectiveMode} exists={exists} status={status} vaultId={vaultId}
-                            view={view} awaitingAuth={awaitingAuth} chatSession={chatSession} tabs={tabs}
-                            pendingTerminalAuthLink={pendingTerminalAuthLink} onSelectTab={handleSelectTab}
-                            onCreateTab={handleCreateTab} onCloseTab={handleCloseTab}
-                            simpleChatId={modeControls.simpleChatId}
-                            simpleChatSession={toSimpleChatSessionBundle(simpleChatController)}
-                        />
-                    )}
-                    {!isLoading && effectiveMode === "docker" && exists && status !== "running" && lifecycle.showSetup
-                        && vaultId && (
-                        <PickAuthModeScreen
-                            onStart={lifecycle.handleStartWorkbench}
-                            starting={lifecycle.startingWorkbench}
+                            view={view} onViewChange={setView} chatLocked={awaitingAuth} ctx={ctx}
+                            navOpen={navOpen} onToggleNav={() => setNavOpen(v => !v)}
+                            onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
+                            stopping={lifecycle.stopping} starting={lifecycle.resuming}
+                            model={{
+                                models: simpleChatController.models,
+                                value: simpleChatController.currentModel,
+                                isLoading: simpleChatController.modelsLoading,
+                                onChange: simpleChatController.setModel,
+                            }}
                         />
                     )}
                 </div>
-                {!isLoading && effectiveMode !== "picking" && (
-                    <WorkbenchTopbar
-                        effectiveMode={effectiveMode} exists={exists} status={status} vaultId={vaultId}
-                        view={view} onViewChange={setView} chatLocked={awaitingAuth}
-                        navOpen={navOpen} onToggleNav={() => setNavOpen(v => !v)}
-                        onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
-                        stopping={lifecycle.stopping} starting={lifecycle.resuming}
-                        model={{
-                            models: simpleChatController.models,
-                            value: simpleChatController.currentModel,
-                            isLoading: simpleChatController.modelsLoading,
-                            onChange: simpleChatController.setModel,
-                        }}
-                    />
-                )}
+                <WorkbenchTweaksPanel
+                    ctx={ctx} effectiveMode={effectiveMode} status={status} vaultId={vaultId}
+                />
             </div>
         </div>
     )

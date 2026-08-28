@@ -1,0 +1,39 @@
+.ConnectionRowContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    border-bottom: var(--border-thickness) solid var(--color-border);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    & .Dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #5fd97a;
+    }
+
+    & .DotOff {
+        background: var(--color-fg-disabled);
+    }
+
+    & .Name {
+        flex: 1;
+        font-size: 0.85rem;
+        color: var(--color-fg-primary);
+    }
+
+    & .Detail {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--color-fg-secondary);
+    }
+
+    & .Action {
+        flex-shrink: 0;
+    }
+}

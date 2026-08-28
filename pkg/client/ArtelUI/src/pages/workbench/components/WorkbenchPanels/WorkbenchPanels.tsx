@@ -4,6 +4,7 @@ import Chat from "@/pages/workbench/components/Chat/Chat.tsx"
 import SimpleChat from "@/pages/workbench/components/SimpleChat/SimpleChat.tsx"
 import AnimatedTerminalView from "@/pages/workbench/components/TerminalView/AnimatedTerminalView.tsx"
 import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
+import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 import type {WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
 import type {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import type {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
@@ -44,6 +45,7 @@ interface Props {
     onCloseTab: (tabId: string) => void
     simpleChatId?: string
     simpleChatSession: SimpleChatSessionBundle
+    ctx: WorkbenchContext
 }
 
 // The three mutually-exclusive workbench panels (Docker chat, Docker terminal,
@@ -58,7 +60,7 @@ export default function WorkbenchPanels(props: Props) {
                 <Chat key="chat" items={props.chatSession.items} status={props.chatSession.status}
                       sendMessage={props.chatSession.sendMessage}
                       sendPermissionDecision={props.chatSession.sendPermissionDecision}
-                      onNewChat={props.chatSession.startNewChat}/>
+                      onNewChat={props.chatSession.startNewChat} ctx={props.ctx}/>
             )}
             {isDockerRunning && props.view === "terminal" && (
                 <AnimatedTerminalView
@@ -76,6 +78,7 @@ export default function WorkbenchPanels(props: Props) {
                     key="api"
                     chatId={props.simpleChatId}
                     session={props.simpleChatSession}
+                    ctx={props.ctx}
                 />
             )}
         </AnimatePresence>

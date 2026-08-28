@@ -1,6 +1,6 @@
 /* Doubled selector beats chures' injected .Btn/.Ghost base styles, which tie
    with a single-class selector and win on DOM insertion order otherwise. */
-.ThemeToggle.ThemeToggle {
+.ThemeToggleContainer.ThemeToggleContainer {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -14,10 +14,10 @@
     color: var(--color-fg-secondary);
     cursor: pointer;
     transition: all 140ms ease;
-}
 
-.ThemeToggle:hover {
-    color: var(--color-fg-primary);
-    border-color: var(--color-border-light);
-    background: var(--color-bg-hover);
+    &:hover {
+        color: var(--color-fg-primary);
+        border-color: var(--color-border-light);
+        background: var(--color-bg-hover);
+    }
 }

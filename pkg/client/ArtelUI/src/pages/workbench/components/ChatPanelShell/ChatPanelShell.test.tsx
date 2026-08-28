@@ -13,6 +13,8 @@ function renderShell(
     const sendPermissionDecision = vi.fn()
     const onNewChat = vi.fn()
 
+    const ctx = {tweaksOpen: false, tweaksSection: undefined, openTweaks: vi.fn(), closeTweaks: vi.fn()}
+
     const result = render(
         <ChatPanelShell
             items={items}
@@ -22,6 +24,7 @@ function renderShell(
             onNewChat={onNewChat}
             composerDisabled={bannerStatus !== "open"}
             composerPlaceholder="Message the workbench…"
+            ctx={ctx}
         />,
     )
 

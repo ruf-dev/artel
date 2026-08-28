@@ -24,6 +24,8 @@ vi.mock("@/pages/workbench/components/ChatPanelShell/ChatPanelShell.tsx", () => 
     ),
 }))
 
+const ctx = {tweaksOpen: false, tweaksSection: undefined, openTweaks: vi.fn(), closeTweaks: vi.fn()}
+
 function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open") {
     render(
         <Chat
@@ -32,6 +34,7 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             sendMessage={vi.fn()}
             sendPermissionDecision={vi.fn()}
             onNewChat={vi.fn()}
+            ctx={ctx}
         />,
     )
 }

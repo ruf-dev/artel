@@ -30,13 +30,22 @@
 
     .MainColumn {
         display: flex;
+        flex-direction: row;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+    }
 
-        /* WorkbenchTopbar is the last JSX child of .MainColumn, so it always wins
+    .ContentStack {
+        display: flex;
+
+        /* WorkbenchTopbar is the last JSX child of .ContentStack, so it always wins
            paint order against positioned descendants in .Body (terminal/chat
            content) — column-reverse restores the visual order (topbar on top, Body
            below) without touching z-index. See "Never use z-index" in
            pkg/client/ArtelUI/CLAUDE.md. */
         flex-direction: column-reverse;
+        flex: 1;
         min-width: 0;
         min-height: 0;
         height: 100%;

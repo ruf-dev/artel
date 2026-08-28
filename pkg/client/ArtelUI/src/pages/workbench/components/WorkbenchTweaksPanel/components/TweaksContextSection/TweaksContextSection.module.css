@@ -1,0 +1,28 @@
+.TweaksContextSectionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    cursor: not-allowed;
+
+    & .Bar {
+        position: relative;
+        height: 0.375rem;
+        border-radius: 0.1875rem;
+        background: var(--color-bg-input);
+        border: var(--border-thickness) solid var(--color-border);
+        overflow: hidden;
+    }
+
+    & .Bar::after {
+        content: "";
+        position: absolute;
+        inset: 0 66% 0 0;
+        background: var(--color-fg-disabled);
+    }
+
+    & .Label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--color-fg-disabled);
+    }
+}

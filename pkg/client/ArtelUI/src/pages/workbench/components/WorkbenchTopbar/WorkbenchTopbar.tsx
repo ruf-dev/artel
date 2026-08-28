@@ -1,6 +1,7 @@
 import TopbarLeft from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarLeft/TopbarLeft.tsx"
 import TopbarRight from "@/pages/workbench/components/WorkbenchTopbar/components/TopbarRight/TopbarRight.tsx"
 import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
+import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 import type {WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
 import cls from "@/pages/workbench/components/WorkbenchTopbar/WorkbenchTopbar.module.css"
 
@@ -26,6 +27,7 @@ interface Props {
     stopping: boolean
     starting: boolean
     model: ModelProps
+    ctx: WorkbenchContext
 }
 
 // The workbench top bar: sidebar toggle + status + model switcher on the left, the
@@ -63,6 +65,7 @@ export default function WorkbenchTopbar(props: Props) {
                 onStop={props.onStop}
                 stopping={props.stopping}
                 starting={props.starting}
+                ctx={props.ctx}
             />
         </div>
     )

@@ -7,6 +7,7 @@ function renderComposer(value = "", disabled = false) {
     const onChange = vi.fn()
     const onSend = vi.fn()
     const onNewChat = vi.fn()
+    const onOpenTweaks = vi.fn()
 
     render(
         <ChatComposer
@@ -16,10 +17,11 @@ function renderComposer(value = "", disabled = false) {
             onNewChat={onNewChat}
             disabled={disabled}
             placeholder="Message the workbench…"
+            onOpenTweaks={onOpenTweaks}
         />,
     )
 
-    return {onChange, onSend, onNewChat}
+    return {onChange, onSend, onNewChat, onOpenTweaks}
 }
 
 describe("ChatComposer", () => {
@@ -73,5 +75,13 @@ describe("ChatComposer", () => {
         fireEvent.keyDown(screen.getByRole("textbox"), {key: "Enter"})
 
         expect(onSend).not.toHaveBeenCalled()
+    })
+
+    it("a composer chip opens the tweaks panel at its section", () => {
+        const {onOpenTweaks} = renderComposer()
+
+        fireEvent.click(screen.getByRole("button", {name: "Connections"}))
+
+        expect(onOpenTweaks).toHaveBeenCalledWith("connections")
     })
 })

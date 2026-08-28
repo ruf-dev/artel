@@ -2,6 +2,7 @@ import ChatPanelShell from "@/pages/workbench/components/ChatPanelShell/ChatPane
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
+import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 
 interface Props {
     items: ChatItem[]
@@ -9,6 +10,7 @@ interface Props {
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
+    ctx: WorkbenchContext
 }
 
 // Docker workbench chat — a thin shaper over ChatPanelShell. History is now the
@@ -27,6 +29,7 @@ export default function Chat(props: Props) {
             composerDisabled={props.status !== "open"}
             composerPlaceholder="Message the workbench…"
             assistantLabel="Claude Code"
+            ctx={props.ctx}
         />
     )
 }

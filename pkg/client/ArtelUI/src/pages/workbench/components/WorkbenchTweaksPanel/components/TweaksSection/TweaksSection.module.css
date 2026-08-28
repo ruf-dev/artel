@@ -1,0 +1,15 @@
+.TweaksSectionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    & .Label {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--color-fg-secondary);
+    }
+
+    &.Disabled {
+        opacity: 0.55;
+    }
+}

@@ -8,6 +8,7 @@ import ChatComposer from "@/pages/workbench/components/Chat/components/ChatCompo
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
+import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 
 interface Props {
     items: ChatItem[]
@@ -19,6 +20,7 @@ interface Props {
     composerPlaceholder: string
     hideNewChatButton?: boolean
     assistantLabel?: string
+    ctx: WorkbenchContext
 }
 
 // Shared chat-panel body (status banner, message list, composer) reused by the
@@ -63,6 +65,7 @@ export default function ChatPanelShell(props: Props) {
                     disabled={props.composerDisabled}
                     placeholder={props.composerPlaceholder}
                     hideNewChatButton={props.hideNewChatButton}
+                    onOpenTweaks={props.ctx.openTweaks}
                 />
             </div>
         </motion.div>
