@@ -23,6 +23,7 @@ describe("SimpleChat", () => {
         currentModel: "m1",
         modelsLoading: false,
         onChangeModel: vi.fn(),
+        pendingTurn: false,
     }
 
     const ctx = {tweaksOpen: false, tweaksSection: undefined, openTweaks: vi.fn(), closeTweaks: vi.fn()}

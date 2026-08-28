@@ -15,4 +15,41 @@
         white-space: pre-wrap;
         overflow-wrap: anywhere;
     }
+
+    & .RetryRow {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+    }
+
+    & .ActBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.625rem;
+        height: 1.625rem;
+        padding: 0;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        background: none;
+        color: var(--color-fg-tertiary);
+        cursor: pointer;
+        transition: background 150ms ease, color 150ms ease;
+
+        &:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-fg-primary);
+        }
+
+        &[aria-disabled="true"] {
+            opacity: 0.4;
+            cursor: default;
+
+            &:hover {
+                background: none;
+                color: var(--color-fg-tertiary);
+            }
+        }
+    }
 }

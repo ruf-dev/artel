@@ -30,6 +30,7 @@ export function useSimpleChatSession(chatId: string | undefined, initialModel: s
     const [items, setItems] = useState<ChatItem[]>(initialItems)
     const [status, setStatus] = useState<ChatConnectionStatus>("closed")
     const [model, setModel] = useState(initialModel)
+    const [pendingTurn, setPendingTurn] = useState(false)
     const wsRef = useRef<WebSocket | null>(null)
     const backoffRef = useRef(INITIAL_BACKOFF_MS)
     const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -61,6 +62,7 @@ export function useSimpleChatSession(chatId: string | undefined, initialModel: s
         setStatus("connecting")
         setModel(initialModelRef.current)
         modelRef.current = initialModelRef.current
+        setPendingTurn(false)
         lastSeqRef.current = 0
 
         function connect() {
@@ -87,6 +89,9 @@ export function useSimpleChatSession(chatId: string | undefined, initialModel: s
                 }
                 if (typeof parsed.seq === "number" && parsed.seq > 0) {
                     lastSeqRef.current = parsed.seq
+                }
+                if (parsed.type === "turn_done" || parsed.type === "error") {
+                    setPendingTurn(false)
                 }
                 setItems(prev => applyEvent(prev, parsed))
             }
@@ -123,11 +128,13 @@ export function useSimpleChatSession(chatId: string | undefined, initialModel: s
     const sendMessage = useCallback((text: string) => {
         const id = crypto.randomUUID()
         dispatch({type: "user_message", text, id, model: modelRef.current})
+        setPendingTurn(true)
     }, [dispatch])
 
     const sendPermissionDecision = useCallback((id: string, decision: PermissionDecision) => {
         dispatch({type: "permission_decision", id, decision})
+        setPendingTurn(true)
     }, [dispatch])
 
-    return {items, status, sendMessage, sendPermissionDecision, currentModel: model, setModel}
+    return {items, status, sendMessage, sendPermissionDecision, currentModel: model, setModel, pendingTurn}
 }

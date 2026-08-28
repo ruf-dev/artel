@@ -15,13 +15,21 @@ interface Props {
     onRetry: () => void
     retryDisabled?: boolean
     onPermissionDecision: (id: string, decision: PermissionDecision) => void
+    trailingRetry?: {onRetry: () => void; disabled?: boolean}
 }
 
 export default function ChatMessageItem(props: Props) {
     const {item, onPermissionDecision} = props
     switch (item.kind) {
         case "user_message":
-            return <UserMessageBubble text={item.text}/>
+            return (
+                <UserMessageBubble
+                    text={item.text}
+                    showRetry={!!props.trailingRetry}
+                    onRetry={props.trailingRetry?.onRetry}
+                    retryDisabled={props.trailingRetry?.disabled}
+                />
+            )
         case "assistant_message":
             return (
                 <AssistantMessageBubble
@@ -56,7 +64,13 @@ export default function ChatMessageItem(props: Props) {
                 />
             )
         case "error":
-            return <ErrorCard text={item.text}/>
+            return (
+                <ErrorCard
+                    text={item.text}
+                    onRetry={props.trailingRetry?.onRetry}
+                    retryDisabled={props.trailingRetry?.disabled}
+                />
+            )
         default:
             return null
     }

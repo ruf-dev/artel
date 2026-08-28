@@ -14,11 +14,49 @@
         color: var(--color-error);
     }
 
+    & .Content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
     & .Text {
         margin: 0;
         font-size: var(--font-size-base);
         color: var(--color-error);
         line-height: 1.5;
         overflow-wrap: anywhere;
+    }
+
+    & .ActBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.625rem;
+        height: 1.625rem;
+        padding: 0;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        background: none;
+        color: var(--color-fg-tertiary);
+        cursor: pointer;
+        transition: background 150ms ease, color 150ms ease;
+        align-self: flex-start;
+
+        &:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-fg-primary);
+        }
+
+        &[aria-disabled="true"] {
+            opacity: 0.4;
+            cursor: default;
+
+            &:hover {
+                background: none;
+                color: var(--color-fg-tertiary);
+            }
+        }
     }
 }

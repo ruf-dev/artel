@@ -25,6 +25,7 @@ function renderShell(
             sendMessage={sendMessage}
             sendPermissionDecision={sendPermissionDecision}
             onNewChat={onNewChat}
+            pendingTurn={false}
             composerDisabled={bannerStatus !== "open"}
             composerPlaceholder="Message the workbench…"
             ctx={ctx}

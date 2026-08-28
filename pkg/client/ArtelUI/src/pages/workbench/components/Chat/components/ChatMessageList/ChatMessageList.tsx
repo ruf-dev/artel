@@ -11,6 +11,7 @@ interface Props {
     retryDisabled?: boolean
     onRetryMessage?: (text: string) => void
     onPermissionDecision: (id: string, decision: PermissionDecision) => void
+    pending?: {bucket: "normal" | "slow" | "stuck"; label?: string}
 }
 
 // Auto-scrolls to the newest content unless the user has scrolled up to read history —
@@ -45,6 +46,7 @@ export default function ChatMessageList(props: Props) {
                 retryDisabled={props.retryDisabled}
                 onRetryMessage={props.onRetryMessage}
                 onPermissionDecision={props.onPermissionDecision}
+                pending={props.pending}
             />
         </div>
     )

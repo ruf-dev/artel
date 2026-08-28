@@ -1,12 +1,17 @@
 import {motion} from "framer-motion"
+import {Button} from "@vervstack/chures"
 
 import cls from "@/pages/workbench/components/Chat/components/UserMessageBubble/UserMessageBubble.module.css"
+import RetryIcon from "@/pages/workbench/components/Chat/components/icons/RetryIcon.tsx"
 
 interface Props {
     text: string
+    showRetry?: boolean
+    onRetry?: () => void
+    retryDisabled?: boolean
 }
 
-export default function UserMessageBubble({text}: Props) {
+export default function UserMessageBubble({text, showRetry, onRetry, retryDisabled}: Props) {
     return (
         <motion.div
             className={cls.UserMessageBubbleContainer}
@@ -16,6 +21,23 @@ export default function UserMessageBubble({text}: Props) {
             transition={{type: "spring", stiffness: 420, damping: 32}}
         >
             <p className={cls.Text}>{text}</p>
+            {showRetry && (
+                <div className={cls.RetryRow}>
+                    <Button
+                        variant="unstyled"
+                        className={cls.ActBtn}
+                        aria-label="Retry message"
+                        aria-disabled={retryDisabled || undefined}
+                        data-tooltip-id="root-tooltip"
+                        data-tooltip-content={retryDisabled ? "Nothing to retry" : "Retry"}
+                        onClick={() => {
+                            if (!retryDisabled) onRetry?.()
+                        }}
+                    >
+                        <RetryIcon/>
+                    </Button>
+                </div>
+            )}
         </motion.div>
     )
 }

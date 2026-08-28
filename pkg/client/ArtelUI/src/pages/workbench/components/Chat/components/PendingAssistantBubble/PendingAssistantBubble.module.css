@@ -1,0 +1,24 @@
+.PendingAssistantBubbleContainer {
+    align-self: flex-start;
+    max-width: 100%;
+    padding: 0;
+
+    & .StatusRow {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    & .StatusText {
+        font-size: var(--font-size-base);
+        color: var(--color-fg-tertiary);
+        line-height: 1.5;
+    }
+
+    & .RetryButton {
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+}

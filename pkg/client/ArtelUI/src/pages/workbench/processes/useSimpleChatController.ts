@@ -31,8 +31,8 @@ export function useSimpleChatController({chatId, vaultId, active, onChatCreated,
     const initialItems = useMemo(() => simpleChatMessagesToItems(messages), [messages])
     const initialModel = chat?.model || lastUsedModel || recommendedDefaultModel || models[0] || ""
 
-    const {items, status, sendMessage, sendPermissionDecision, currentModel, setModel} =
-        useSimpleChatSession(effectiveChatId, initialModel, initialItems)
+    const session = useSimpleChatSession(effectiveChatId, initialModel, initialItems)
+    const {setModel} = session
 
     // Remembers whatever model ends up selected (explicit switcher change, or the
     // one a new chat gets created with) so the next chat defaults to it — see
@@ -43,7 +43,7 @@ export function useSimpleChatController({chatId, vaultId, active, onChatCreated,
     }, [setModel, setLastUsedModel])
 
     function handleNewChat() {
-        const model = currentModel || lastUsedModel || recommendedDefaultModel || models[0] || ""
+        const model = session.currentModel || lastUsedModel || recommendedDefaultModel || models[0] || ""
         if (model) {
             setLastUsedModel(model)
         }
@@ -53,15 +53,16 @@ export function useSimpleChatController({chatId, vaultId, active, onChatCreated,
     }
 
     return {
-        items,
-        status,
-        sendMessage,
-        sendPermissionDecision,
-        currentModel,
+        items: session.items,
+        status: session.status,
+        sendMessage: session.sendMessage,
+        sendPermissionDecision: session.sendPermissionDecision,
+        currentModel: session.currentModel,
         setModel: handleSetModel,
         models,
         modelsLoading,
         handleNewChat,
+        pendingTurn: session.pendingTurn,
     }
 }
 
@@ -82,5 +83,6 @@ export function toSimpleChatSessionBundle(controller: SimpleChatController) {
         currentModel: controller.currentModel,
         modelsLoading: controller.modelsLoading,
         onChangeModel: controller.setModel,
+        pendingTurn: controller.pendingTurn,
     }
 }

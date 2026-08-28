@@ -15,6 +15,7 @@ interface SimpleChatSessionBundle {
     currentModel: string
     modelsLoading?: boolean
     onChangeModel: (model: string) => void
+    pendingTurn: boolean
 }
 
 interface Props {
@@ -45,6 +46,7 @@ export default function SimpleChat(props: Props) {
                 sendMessage={props.session.sendMessage}
                 sendPermissionDecision={props.session.sendPermissionDecision}
                 onNewChat={props.session.onNewChat}
+                pendingTurn={props.session.pendingTurn}
                 composerDisabled={props.session.status !== "open" || !props.chatId}
                 composerPlaceholder="Message the agent…"
                 assistantLabel={prettyModel(props.session.currentModel)}

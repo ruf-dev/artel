@@ -17,6 +17,7 @@ interface ChatSession {
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     startNewChat: () => void
+    pendingTurn: boolean
 }
 
 interface SimpleChatSessionBundle {
@@ -29,6 +30,7 @@ interface SimpleChatSessionBundle {
     currentModel: string
     modelsLoading?: boolean
     onChangeModel: (model: string) => void
+    pendingTurn: boolean
 }
 
 interface Props {
@@ -62,7 +64,9 @@ export default function WorkbenchPanels(props: Props) {
                 <Chat key="chat" items={props.chatSession.items} status={props.chatSession.status}
                       sendMessage={props.chatSession.sendMessage}
                       sendPermissionDecision={props.chatSession.sendPermissionDecision}
-                      onNewChat={props.chatSession.startNewChat} ctx={props.ctx}
+                      onNewChat={props.chatSession.startNewChat}
+                      pendingTurn={props.chatSession.pendingTurn}
+                      ctx={props.ctx}
                       attachedPaths={props.attachments.paths}
                       onRemoveAttachment={props.attachments.remove}
                       onClearAttachments={props.attachments.clear}/>

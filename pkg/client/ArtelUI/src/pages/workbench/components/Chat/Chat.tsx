@@ -10,6 +10,7 @@ interface Props {
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
+    pendingTurn: boolean
     ctx: WorkbenchContext
     attachedPaths: string[]
     onRemoveAttachment: (path: string) => void
@@ -29,6 +30,7 @@ export default function Chat(props: Props) {
             sendMessage={props.sendMessage}
             sendPermissionDecision={props.sendPermissionDecision}
             onNewChat={props.onNewChat}
+            pendingTurn={props.pendingTurn}
             composerDisabled={props.status !== "open"}
             composerPlaceholder="Message the workbench…"
             assistantLabel="Claude Code"

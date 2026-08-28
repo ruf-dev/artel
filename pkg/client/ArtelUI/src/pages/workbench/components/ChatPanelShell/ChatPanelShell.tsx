@@ -8,8 +8,10 @@ import ChatComposer from "@/pages/workbench/components/Chat/components/ChatCompo
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
+import {deriveTurnState} from "@/pages/workbench/processes/turnState.ts"
 import {withAttachmentsPreamble} from "@/pages/workbench/processes/workbenchAttachments.ts"
 import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
+import {usePendingElapsed} from "@/pages/workbench/processes/usePendingElapsed.ts"
 
 interface Props {
     items: ChatItem[]
@@ -17,6 +19,7 @@ interface Props {
     sendMessage: (text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
+    pendingTurn: boolean
     composerDisabled: boolean
     composerPlaceholder: string
     hideNewChatButton?: boolean
@@ -36,6 +39,10 @@ interface Props {
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
 export default function ChatPanelShell(props: Props) {
     const [draft, setDraft] = useState("")
+    const turnState = deriveTurnState(props.items, props.pendingTurn)
+    const pendingActive = turnState === "working"
+    const lastKey = props.items[props.items.length - 1]?.key
+    const pendingBucket = usePendingElapsed(pendingActive, lastKey)
 
     function handleSend() {
         const text = draft.trim()
@@ -61,6 +68,7 @@ export default function ChatPanelShell(props: Props) {
                     onRetryMessage={props.sendMessage}
                     retryDisabled={props.composerDisabled}
                     onPermissionDecision={props.sendPermissionDecision}
+                    pending={pendingActive ? {bucket: pendingBucket, label: props.assistantLabel} : undefined}
                 />
                 <ChatComposer
                     value={draft}

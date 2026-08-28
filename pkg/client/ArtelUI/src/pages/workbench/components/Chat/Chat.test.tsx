@@ -34,6 +34,7 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             sendMessage={vi.fn()}
             sendPermissionDecision={vi.fn()}
             onNewChat={vi.fn()}
+            pendingTurn={false}
             ctx={ctx}
             attachedPaths={[]}
             onRemoveAttachment={vi.fn()}

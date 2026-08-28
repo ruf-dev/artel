@@ -42,6 +42,7 @@ beforeEach(() => {
         sendPermissionDecision: vi.fn(),
         currentModel: "m1",
         setModel: vi.fn(),
+        pendingTurn: false,
     })
     mockUseLastUsedModel.mockReturnValue({lastUsedModel: undefined, setLastUsedModel: mockSetLastUsedModel})
     mockCreate.mockResolvedValue({id: "new-chat-id"})
@@ -148,6 +149,7 @@ describe("useSimpleChatController - last used model caching", () => {
             sendPermissionDecision: vi.fn(),
             currentModel: "m1",
             setModel: sessionSetModel,
+            pendingTurn: false,
         })
 
         const {result} = renderHook(() => useSimpleChatController({
@@ -197,6 +199,7 @@ describe("toSimpleChatSessionBundle", () => {
             models: ["m1"],
             modelsLoading: false,
             handleNewChat,
+            pendingTurn: false,
         })
 
         expect(bundle).toEqual({
@@ -209,6 +212,7 @@ describe("toSimpleChatSessionBundle", () => {
             currentModel: "m1",
             modelsLoading: false,
             onChangeModel: setModel,
+            pendingTurn: false,
         })
     })
 })

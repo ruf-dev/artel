@@ -26,6 +26,7 @@ export function useChatSession(vaultId: string | undefined) {
     const [items, setItems] = useState<ChatItem[]>([])
     const [status, setStatus] = useState<ChatConnectionStatus>("connecting")
     const [authComplete, setAuthComplete] = useState(false)
+    const [pendingTurn, setPendingTurn] = useState(false)
     const wsRef = useRef<WebSocket | null>(null)
     const backoffRef = useRef(INITIAL_BACKOFF_MS)
     const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -39,6 +40,7 @@ export function useChatSession(vaultId: string | undefined) {
         setItems([])
         setStatus("connecting")
         setAuthComplete(false)
+        setPendingTurn(false)
         lastSeqRef.current = 0
 
         function connect() {
@@ -70,6 +72,9 @@ export function useChatSession(vaultId: string | undefined) {
                     lastSeqRef.current = parsed.seq
                 }
                 if (parsed.type === "auth_complete") setAuthComplete(true)
+                if (parsed.type === "turn_done" || parsed.type === "error" || parsed.type === "new_chat") {
+                    setPendingTurn(false)
+                }
                 setItems(prev => applyEvent(prev, parsed))
             }
             ws.onclose = () => {
@@ -105,15 +110,18 @@ export function useChatSession(vaultId: string | undefined) {
     const sendMessage = useCallback((text: string) => {
         const id = crypto.randomUUID()
         dispatch({type: "user_message", text, id})
+        setPendingTurn(true)
     }, [dispatch])
 
     const sendPermissionDecision = useCallback((id: string, decision: PermissionDecision) => {
         dispatch({type: "permission_decision", id, decision})
+        setPendingTurn(true)
     }, [dispatch])
 
     const startNewChat = useCallback(() => {
         dispatch({type: "new_chat"})
+        setPendingTurn(false)
     }, [dispatch])
 
-    return {items, status, authComplete, sendMessage, sendPermissionDecision, startNewChat}
+    return {items, status, authComplete, sendMessage, sendPermissionDecision, startNewChat, pendingTurn}
 }
