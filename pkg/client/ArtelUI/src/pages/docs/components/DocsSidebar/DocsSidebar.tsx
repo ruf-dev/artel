@@ -1,9 +1,5 @@
-import { useState } from "react"
-
 import { PublicDocsNoteItem } from "@/app/api/artel"
-import DocsFolderNode from "@/pages/docs/components/DocsFolderNode/DocsFolderNode.tsx"
-import DocsTreeItem from "@/pages/docs/components/DocsTreeItem/DocsTreeItem.tsx"
-import { buildFolderTree, getNoteName, sortNotesByName } from "@/pages/docs/processes/docsTree.ts"
+import FileTree from "@/components/FileTree/FileTree.tsx"
 import cls from "@/pages/docs/components/DocsSidebar/DocsSidebar.module.css"
 
 interface DocsSidebarProps {
@@ -14,51 +10,22 @@ interface DocsSidebarProps {
     onSelectNote: (path: string) => void
 }
 
+// Public read-only tree: the shared FileTree component drives folder expand/collapse and note
+// selection. No drag-and-drop, no folder actions — those belong to the authenticated /notes
+// editor. PublicDocsNoteItem ({ path?, mtime? }) already satisfies FileTree's FileTreeItem.
 export default function DocsSidebar(
     { vaultName, folders, notes, selectedPath, onSelectNote }: DocsSidebarProps
 ) {
-    const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
-
-    function toggleFolder(path: string) {
-        setOpenFolders(prev => {
-            const next = new Set(prev)
-            if (next.has(path)) {
-                next.delete(path)
-            } else {
-                next.add(path)
-            }
-            return next
-        })
-    }
-
-    const tree = buildFolderTree(folders)
-    const rootNotes = sortNotesByName(notes.filter(n => n.path && !n.path.includes("/")))
-
     return (
         <div className={cls.DocsSidebarContainer}>
             <div className={cls.Header}>{vaultName ?? "Docs"}</div>
             <div className={cls.ScrollArea}>
-                {tree.map(node => (
-                    <DocsFolderNode
-                        key={node.path}
-                        node={node}
-                        notes={notes}
-                        openFolders={openFolders}
-                        selectedPath={selectedPath}
-                        depth={0}
-                        onToggle={toggleFolder}
-                        onSelectNote={onSelectNote}
-                    />
-                ))}
-                {rootNotes.map(note => (
-                    <DocsTreeItem
-                        key={note.path}
-                        name={getNoteName(note)}
-                        path={note.path}
-                        active={selectedPath === note.path}
-                        onClick={() => note.path && onSelectNote(note.path)}
-                    />
-                ))}
+                <FileTree
+                    folders={folders}
+                    items={notes}
+                    isActive={path => path === selectedPath}
+                    onSelectItem={onSelectNote}
+                />
             </div>
         </div>
     )

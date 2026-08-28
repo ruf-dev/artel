@@ -1,0 +1,23 @@
+.VaultPaneHeaderContainer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.2rem 0.75rem 0.55rem;
+
+    & .Name {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--color-fg-primary);
+    }
+
+    & .Count {
+        flex-shrink: 0;
+        font-size: 0.6875rem;
+        color: var(--color-fg-tertiary);
+    }
+}

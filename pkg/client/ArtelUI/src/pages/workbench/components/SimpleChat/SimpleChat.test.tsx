@@ -31,6 +31,9 @@ describe("SimpleChat", () => {
         chatId: "chat-1",
         session: baseSession,
         ctx,
+        attachedPaths: [],
+        onRemoveAttachment: vi.fn(),
+        onClearAttachments: vi.fn(),
     }
 
     it("always hides ChatPanelShell's own new-chat button, since the sidebar owns it", () => {

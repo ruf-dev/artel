@@ -8,10 +8,13 @@ import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.t
 function renderShell(
     items: ChatItem[] = [],
     bannerStatus: ChatConnectionStatus = "open",
+    attachedPaths: string[] = [],
 ) {
     const sendMessage = vi.fn()
     const sendPermissionDecision = vi.fn()
     const onNewChat = vi.fn()
+    const onRemoveAttachment = vi.fn()
+    const onClearAttachments = vi.fn()
 
     const ctx = {tweaksOpen: false, tweaksSection: undefined, openTweaks: vi.fn(), closeTweaks: vi.fn()}
 
@@ -25,10 +28,16 @@ function renderShell(
             composerDisabled={bannerStatus !== "open"}
             composerPlaceholder="Message the workbench…"
             ctx={ctx}
+            attachedPaths={attachedPaths}
+            onRemoveAttachment={onRemoveAttachment}
+            onClearAttachments={onClearAttachments}
         />,
     )
 
-    return {sendMessage, sendPermissionDecision, onNewChat, container: result.container}
+    return {
+        sendMessage, sendPermissionDecision, onNewChat,
+        onRemoveAttachment, onClearAttachments, container: result.container,
+    }
 }
 
 describe("ChatPanelShell", () => {
@@ -40,6 +49,26 @@ describe("ChatPanelShell", () => {
         fireEvent.click(screen.getByLabelText("Send message"))
 
         expect(sendMessage).toHaveBeenCalledWith("hello there")
+    })
+
+    it("sends the raw text when no vault files are attached", () => {
+        const {sendMessage, onClearAttachments} = renderShell([], "open", [])
+
+        fireEvent.change(screen.getByPlaceholderText("Message the workbench…"), {target: {value: "hello"}})
+        fireEvent.click(screen.getByLabelText("Send message"))
+
+        expect(sendMessage).toHaveBeenCalledWith("hello")
+        expect(onClearAttachments).toHaveBeenCalledTimes(1)
+    })
+
+    it("prepends an attached-vault-files preamble and clears attachments on send", () => {
+        const {sendMessage, onClearAttachments} = renderShell([], "open", ["a/b.md"])
+
+        fireEvent.change(screen.getByPlaceholderText("Message the workbench…"), {target: {value: "hello"}})
+        fireEvent.click(screen.getByLabelText("Send message"))
+
+        expect(sendMessage).toHaveBeenCalledWith("[Attached vault files: a/b.md]\n\nhello")
+        expect(onClearAttachments).toHaveBeenCalledTimes(1)
     })
 
     it("shows the reconnecting banner when the socket drops", () => {

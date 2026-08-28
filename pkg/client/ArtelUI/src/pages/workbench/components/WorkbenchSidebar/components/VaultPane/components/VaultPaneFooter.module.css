@@ -1,0 +1,7 @@
+.VaultPaneFooterContainer {
+    flex-shrink: 0;
+    padding: 0.55rem 0.75rem;
+    border-top: var(--border-thickness) solid var(--color-border);
+    font-size: 0.6875rem;
+    color: var(--color-fg-tertiary);
+}

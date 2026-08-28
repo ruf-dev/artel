@@ -8,6 +8,7 @@ import ChatComposer from "@/pages/workbench/components/Chat/components/ChatCompo
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
 import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
+import {withAttachmentsPreamble} from "@/pages/workbench/processes/workbenchAttachments.ts"
 import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
 
 interface Props {
@@ -21,6 +22,9 @@ interface Props {
     hideNewChatButton?: boolean
     assistantLabel?: string
     ctx: WorkbenchContext
+    attachedPaths: string[]
+    onRemoveAttachment: (path: string) => void
+    onClearAttachments: () => void
 }
 
 // Shared chat-panel body (status banner, message list, composer) reused by the
@@ -36,7 +40,8 @@ export default function ChatPanelShell(props: Props) {
     function handleSend() {
         const text = draft.trim()
         if (!text) return
-        props.sendMessage(text)
+        props.sendMessage(withAttachmentsPreamble(text, props.attachedPaths))
+        props.onClearAttachments()
         setDraft("")
     }
 
@@ -66,6 +71,8 @@ export default function ChatPanelShell(props: Props) {
                     placeholder={props.composerPlaceholder}
                     hideNewChatButton={props.hideNewChatButton}
                     onOpenTweaks={props.ctx.openTweaks}
+                    attachedPaths={props.attachedPaths}
+                    onRemoveAttachment={props.onRemoveAttachment}
                 />
             </div>
         </motion.div>

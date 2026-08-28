@@ -1,6 +1,7 @@
 import Textarea from "@/components/atoms/Textarea/Textarea.tsx"
 import ComposerRow from "@/pages/workbench/components/Chat/components/ComposerRow/ComposerRow.tsx"
 import ComposerChipRow from "@/pages/workbench/components/Chat/components/ComposerChipRow/ComposerChipRow.tsx"
+import ComposerCtxChip from "@/pages/workbench/components/Chat/components/ComposerCtxChip/ComposerCtxChip.tsx"
 import type {TweaksSection} from "@/pages/workbench/processes/workbenchContext.ts"
 import cls from "@/pages/workbench/components/Chat/components/ChatComposer/ChatComposer.module.css"
 
@@ -13,6 +14,8 @@ interface Props {
     placeholder: string
     hideNewChatButton?: boolean
     onOpenTweaks: (section?: TweaksSection) => void
+    attachedPaths: string[]
+    onRemoveAttachment: (path: string) => void
 }
 
 // >6 props — kept as one object instead of exploding into separate destructured
@@ -27,7 +30,11 @@ export default function ChatComposer(props: Props) {
     return (
         <div className={cls.ChatComposerContainer}>
             <div className={cls.Composer}>
-                <div className={cls.CtxRow}/>
+                <div className={cls.CtxRow}>
+                    {props.attachedPaths.map(p => (
+                        <ComposerCtxChip key={p} path={p} onRemove={props.onRemoveAttachment}/>
+                    ))}
+                </div>
                 <Textarea
                     value={props.value}
                     setValue={props.onChange}

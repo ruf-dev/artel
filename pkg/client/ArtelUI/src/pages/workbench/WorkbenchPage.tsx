@@ -27,6 +27,8 @@ import {useWorkbenchLifecycle} from "@/pages/workbench/processes/useWorkbenchLif
 import {useWorkbenchPanelControls} from "@/pages/workbench/processes/useWorkbenchPanelControls.ts"
 import {useWorkbenchModeControls} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
 import {useWorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
+import {useWorkbenchAttachments} from "@/pages/workbench/processes/useWorkbenchAttachments.ts"
+import {useWorkbenchVaultFiles} from "@/pages/workbench/processes/useWorkbenchVaultFiles.ts"
 import {useWorkbenchSidebar} from "@/pages/workbench/processes/useWorkbenchSidebar.ts"
 import {useWorkbenchNavDrawer} from "@/pages/workbench/processes/useWorkbenchNavDrawer.ts"
 import {useWorkbenchViewState} from "@/pages/workbench/processes/useWorkbenchViewState.ts"
@@ -60,14 +62,18 @@ export default function WorkbenchPage() {
     const vaultName = vaults.find(v => v.id === vaultId)?.name ?? "Vault"
 
     const ctx = useWorkbenchContext()
+    const attachments = useWorkbenchAttachments()
+    const vaultFiles = useWorkbenchVaultFiles(vaultId)
 
     const {view, setView, awaitingAuth, genericCentered, terminalViewActive} = useWorkbenchViewState({
         exists, status, isLoading, effectiveMode, showSetup: lifecycle.showSetup,
         authComplete: chatSession.authComplete, pendingAuthMode: lifecycle.pendingAuthMode,
     })
 
+    // The Vault pane reads vaultFiles + attachments: clicking a file row there calls
+    // attachments.toggle, and attached paths render active in the tree.
     const sidebar = useWorkbenchSidebar({
-        effectiveMode, isLoading, exists, status, vaultId, modeControls,
+        effectiveMode, isLoading, exists, status, vaultId, vaultName, modeControls, vaultFiles, attachments,
         startNewDockerChat: chatSession.startNewChat, controller: simpleChatController,
     })
 
@@ -103,6 +109,7 @@ export default function WorkbenchPage() {
                                 pendingTerminalAuthLink={pendingTerminalAuthLink} onSelectTab={handleSelectTab}
                                 onCreateTab={handleCreateTab} onCloseTab={handleCloseTab}
                                 simpleChatId={modeControls.simpleChatId} ctx={ctx}
+                                attachments={attachments}
                                 simpleChatSession={toSimpleChatSessionBundle(simpleChatController)}
                             />
                         )}
@@ -122,21 +129,18 @@ export default function WorkbenchPage() {
                             stopping={lifecycle.stopping} starting={lifecycle.resuming}
                             onToggleNav={toggleNav} showNavToggle={sidebar.show}
                             model={{
-                                models: simpleChatController.models,
-                                value: simpleChatController.currentModel,
-                                isLoading: simpleChatController.modelsLoading,
-                                onChange: simpleChatController.setModel,
+                                models: simpleChatController.models, value: simpleChatController.currentModel,
+                                isLoading: simpleChatController.modelsLoading, onChange: simpleChatController.setModel,
                             }}
                         />
                     )}
                 </div>
-                <WorkbenchTweaksPanel
-                    ctx={ctx} effectiveMode={effectiveMode} status={status} vaultId={vaultId}
-                />
+                <WorkbenchTweaksPanel ctx={ctx} effectiveMode={effectiveMode} status={status} vaultId={vaultId}/>
             </div>
             {sidebar.show && vaultId && (
                 <div className={cls.SidebarSlot}>
-                    <WorkbenchSidebar history={sidebarHistory} navOpen={navOpen} onToggleNav={toggleNav}/>
+                    <WorkbenchSidebar history={sidebarHistory} vault={sidebar.vault}
+                        navOpen={navOpen} onToggleNav={toggleNav}/>
                 </div>
             )}
         </div>

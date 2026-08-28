@@ -3,6 +3,7 @@ import {fireEvent, render, screen} from "@testing-library/react"
 
 import WorkbenchSidebar from "@/pages/workbench/components/WorkbenchSidebar/WorkbenchSidebar.tsx"
 import {WorkbenchHistory} from "@/pages/workbench/processes/useWorkbenchHistory.ts"
+import {VaultPaneBundle} from "@/pages/workbench/processes/useWorkbenchSidebar.ts"
 
 vi.mock("morphicons/react", () => ({MorphIcon: () => null}))
 
@@ -18,6 +19,10 @@ vi.mock("@/pages/workbench/components/WorkbenchSidebar/components/HistoryPane/Hi
     default: () => <div className="history-pane" data-testid="history-pane"/>,
 }))
 
+vi.mock("@/pages/workbench/components/WorkbenchSidebar/components/VaultPane/VaultPane.tsx", () => ({
+    default: () => <div className="vault-pane" data-testid="vault-pane"/>,
+}))
+
 function makeHistory(over: Partial<WorkbenchHistory> = {}): WorkbenchHistory {
     return {
         rows: [],
@@ -30,8 +35,20 @@ function makeHistory(over: Partial<WorkbenchHistory> = {}): WorkbenchHistory {
     }
 }
 
+function makeVaultBundle(over: Partial<VaultPaneBundle> = {}): VaultPaneBundle {
+    return {
+        vaultName: "My Vault",
+        folders: [],
+        notes: [],
+        isLoading: false,
+        attachedPaths: [],
+        onToggleAttach: vi.fn(),
+        ...over,
+    }
+}
+
 function makeProps(over: Partial<Parameters<typeof WorkbenchSidebar>[0]> = {}) {
-    return {history: makeHistory(), navOpen: true, onToggleNav: vi.fn(), ...over}
+    return {history: makeHistory(), vault: makeVaultBundle(), navOpen: true, onToggleNav: vi.fn(), ...over}
 }
 
 describe("WorkbenchSidebar", () => {
@@ -58,14 +75,28 @@ describe("WorkbenchSidebar", () => {
         fireEvent.click(screen.getByRole("button", {name: /tools/i}))
 
         expect(screen.getByTestId("history-pane")).toBeInTheDocument()
+        expect(screen.queryByTestId("vault-pane")).not.toBeInTheDocument()
     })
 
-    it("keeps the History pane when the disabled Vault segment is clicked", () => {
+    it("swaps the History pane for the Vault pane when the Vault segment is clicked", () => {
         render(<WorkbenchSidebar {...makeProps()}/>)
+
+        expect(screen.getByTestId("history-pane")).toBeInTheDocument()
 
         fireEvent.click(screen.getByRole("button", {name: /vault/i}))
 
+        expect(screen.getByTestId("vault-pane")).toBeInTheDocument()
+        expect(screen.queryByTestId("history-pane")).not.toBeInTheDocument()
+    })
+
+    it("swaps back to the History pane when the History segment is clicked again", () => {
+        render(<WorkbenchSidebar {...makeProps()}/>)
+
+        fireEvent.click(screen.getByRole("button", {name: /vault/i}))
+        fireEvent.click(screen.getByRole("button", {name: /history/i}))
+
         expect(screen.getByTestId("history-pane")).toBeInTheDocument()
+        expect(screen.queryByTestId("vault-pane")).not.toBeInTheDocument()
     })
 
     it("hides the History pane and brand when collapsed, keeping the toggle", () => {

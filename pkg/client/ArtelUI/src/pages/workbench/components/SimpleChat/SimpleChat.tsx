@@ -21,6 +21,9 @@ interface Props {
     chatId: string | undefined
     session: SimpleChatSessionBundle
     ctx: WorkbenchContext
+    attachedPaths: string[]
+    onRemoveAttachment: (path: string) => void
+    onClearAttachments: () => void
 }
 
 // Display name for the assistant label: the last path segment of the model id
@@ -47,6 +50,9 @@ export default function SimpleChat(props: Props) {
                 assistantLabel={prettyModel(props.session.currentModel)}
                 hideNewChatButton
                 ctx={props.ctx}
+                attachedPaths={props.attachedPaths}
+                onRemoveAttachment={props.onRemoveAttachment}
+                onClearAttachments={props.onClearAttachments}
             />
         </div>
     )

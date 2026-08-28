@@ -1,15 +1,15 @@
-import { DragEvent, useEffect, useState } from "react"
-import {Button} from "@vervstack/chures"
+import { DragEvent } from "react"
+import { Button } from "@vervstack/chures"
 
 import { cn } from "@/app/utils/cn.ts"
 import { NoteItem } from "@/app/hooks/Notes.ts"
+import FileTreeLeafRow from "@/components/FileTree/FileTreeLeafRow.tsx"
+import FileTreeNode from "@/components/FileTree/FileTreeNode.tsx"
+import { buildFolderTree, sortItemsByName } from "@/components/FileTree/fileTree.ts"
 import PlusIcon from "@/pages/notes/components/icons/PlusIcon.tsx"
 import UploadIcon from "@/pages/notes/components/icons/UploadIcon.tsx"
-import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
-import FolderNodeItem from "@/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx"
-import {
-    buildFolderTree, getAncestorFolderPaths, getNoteName, sortNotesByName,
-} from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import NotesFolderActions from "@/pages/notes/components/NotesSidebar/components/NotesFolderActions/NotesFolderActions.tsx" // eslint-disable-line max-len
+import { useFolderOpenState } from "@/pages/notes/components/NotesSidebar/processes/useFolderOpenState.ts"
 import { useRootDropTarget } from "@/pages/notes/components/NotesSidebar/processes/useRootDropTarget.ts"
 import cls from "@/pages/notes/components/NotesSidebar/components/FolderSection/FolderSection.module.css"
 
@@ -30,38 +30,38 @@ interface FolderSectionProps {
     onFolderDrop: (targetFolderPath: string) => (e: DragEvent<HTMLDivElement>) => void
 }
 
+// Owns the /notes tree's expand/collapse + reveal-in-tree state (via useFolderOpenState);
+// per-row rendering is delegated to the shared FileTree building blocks (FileTreeNode for
+// folders, FileTreeLeafRow for notes). Drag-and-drop and the folder action cluster are wired
+// in via `itemDragProps` / `renderFolderTrailing`.
 export default function FolderSection(props: FolderSectionProps) {
     const { folders, notes, selectedPath, highlightedPath, revealPath, vaultId } = props
     const { onSelectNote, onCreateNote, onDownloadFolder, onDeleteFolder, onUpload } = props
     const { showCreateButton = true, onItemDragStart, onFolderDrop } = props
-    const [openFolders, setOpenFolders] = useState<Set<string>>(new Set())
+    const { openFolders, toggleFolder } = useFolderOpenState(revealPath)
     const rootDrop = useRootDropTarget(onFolderDrop)
 
-    function toggleFolder(path: string) {
-        setOpenFolders(prev => {
-            const next = new Set(prev)
-            if (next.has(path)) {
-                next.delete(path)
-            } else {
-                next.add(path)
-            }
-            return next
-        })
+    function itemDragProps(path: string, isFolder: boolean) {
+        return {
+            draggable: true,
+            onDragStart: onItemDragStart(path, isFolder),
+            onDropTarget: isFolder ? onFolderDrop(path) : undefined,
+        }
     }
 
-    useEffect(() => {
-        if (!revealPath) return
-        const ancestors = getAncestorFolderPaths(revealPath)
-        if (ancestors.length === 0) return
-        setOpenFolders(prev => {
-            const next = new Set(prev)
-            ancestors.forEach(a => next.add(a))
-            return next
-        })
-    }, [revealPath])
+    function renderFolderTrailing(folderPath: string) {
+        return (
+            <NotesFolderActions
+                folderPath={folderPath}
+                onCreateNoteInFolder={onCreateNote}
+                onDownloadFolder={onDownloadFolder}
+                onDeleteFolder={onDeleteFolder}
+            />
+        )
+    }
 
     const tree = buildFolderTree(folders)
-    const rootNotes = sortNotesByName(notes.filter(n => n.path && !n.path.includes("/")))
+    const rootNotes = sortItemsByName(notes.filter(n => n.path && !n.path.includes("/")))
 
     return (
         <>
@@ -85,43 +85,36 @@ export default function FolderSection(props: FolderSectionProps) {
                         </Button>
                     )}
                     {showCreateButton && (
-                        <Button
-                            variant="ghost"
-                            className={cls.CreateNoteBtn}
-                            onClick={() => onCreateNote()}
-                        >
+                        <Button variant="ghost" className={cls.CreateNoteBtn} onClick={() => onCreateNote()}>
                             <PlusIcon/>
                         </Button>
                     )}
                 </div>
             </div>
             {tree.map(node => (
-                <FolderNodeItem
+                <FileTreeNode
                     key={node.path}
                     node={node}
-                    notes={notes}
+                    items={notes}
                     openFolders={openFolders}
-                    selectedPath={selectedPath}
-                    highlightedPath={highlightedPath}
                     depth={0}
-                    onToggle={toggleFolder}
-                    onSelectNote={path => onSelectNote(vaultId, path)}
-                    onCreateNoteInFolder={onCreateNote}
-                    onDownloadFolder={onDownloadFolder}
-                    onDeleteFolder={onDeleteFolder}
-                    onItemDragStart={onItemDragStart}
-                    onFolderDrop={onFolderDrop}
+                    isActive={p => p === selectedPath}
+                    isHighlighted={p => p === highlightedPath}
+                    onToggleFolder={toggleFolder}
+                    onSelectItem={path => onSelectNote(vaultId, path)}
+                    renderFolderTrailing={renderFolderTrailing}
+                    itemDragProps={itemDragProps}
                 />
             ))}
             {rootNotes.map(note => (
-                <TreeItem
+                <FileTreeLeafRow
                     key={note.path}
-                    name={getNoteName(note)}
-                    path={note.path}
-                    active={selectedPath === note.path}
-                    highlighted={!!note.path && highlightedPath === note.path}
-                    onClick={() => note.path && onSelectNote(vaultId, note.path)}
-                    onDragStart={note.path ? onItemDragStart(note.path, false) : undefined}
+                    item={note}
+                    depth={0}
+                    isActive={p => p === selectedPath}
+                    isHighlighted={p => p === highlightedPath}
+                    onSelectItem={path => onSelectNote(vaultId, path)}
+                    itemDragProps={itemDragProps}
                 />
             ))}
         </>

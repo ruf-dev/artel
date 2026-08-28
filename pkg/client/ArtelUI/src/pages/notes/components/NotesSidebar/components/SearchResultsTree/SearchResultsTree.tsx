@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react"
 
 import { NoteItem } from "@/app/hooks/Notes.ts"
-import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
-import FolderNodeItem from "@/pages/notes/components/NotesSidebar/components/FolderNodeItem/FolderNodeItem.tsx"
-import {
-    buildFolderTree, getAncestorFolderPaths, getNoteName, sortNotesByName,
-} from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import FileTreeLeafRow from "@/components/FileTree/FileTreeLeafRow.tsx"
+import FileTreeNode from "@/components/FileTree/FileTreeNode.tsx"
+import { buildFolderTree, getAncestorFolderPaths, sortItemsByName } from "@/components/FileTree/fileTree.ts"
+import NotesFolderActions from "@/pages/notes/components/NotesSidebar/components/NotesFolderActions/NotesFolderActions.tsx" // eslint-disable-line max-len
 
 interface SearchResultsTreeProps {
     folders: string[]
@@ -17,6 +16,9 @@ interface SearchResultsTreeProps {
     onCreateNote: (folderPath?: string) => void
 }
 
+// Filtered variant of FolderSection's tree: same shared FileTree building blocks, but folders
+// carry only the add-note action (no download/delete, no drag-and-drop — moving into a
+// filtered subset is ambiguous).
 export default function SearchResultsTree(props: SearchResultsTreeProps) {
     const { folders, notes, searchQuery, selectedPath, highlightedPath } = props
     const { onSelectNote, onCreateNote } = props
@@ -32,7 +34,7 @@ export default function SearchResultsTree(props: SearchResultsTreeProps) {
     })
 
     const tree = buildFolderTree(Array.from(relevantFolders))
-    const rootNotes = sortNotesByName(matchedNotes.filter(n => n.path && !n.path.includes("/")))
+    const rootNotes = sortItemsByName(matchedNotes.filter(n => n.path && !n.path.includes("/")))
 
     const [openFolders, setOpenFolders] = useState<Set<string>>(relevantFolders)
 
@@ -52,30 +54,34 @@ export default function SearchResultsTree(props: SearchResultsTreeProps) {
         })
     }
 
+    function renderFolderTrailing(folderPath: string) {
+        return <NotesFolderActions folderPath={folderPath} onCreateNoteInFolder={onCreateNote}/>
+    }
+
     return (
         <>
             {tree.map(node => (
-                <FolderNodeItem
+                <FileTreeNode
                     key={node.path}
                     node={node}
-                    notes={matchedNotes}
+                    items={matchedNotes}
                     openFolders={openFolders}
-                    selectedPath={selectedPath}
-                    highlightedPath={highlightedPath}
                     depth={0}
-                    onToggle={toggleFolder}
-                    onSelectNote={onSelectNote}
-                    onCreateNoteInFolder={onCreateNote}
+                    isActive={p => p === selectedPath}
+                    isHighlighted={p => p === highlightedPath}
+                    onToggleFolder={toggleFolder}
+                    onSelectItem={onSelectNote}
+                    renderFolderTrailing={renderFolderTrailing}
                 />
             ))}
             {rootNotes.map(note => (
-                <TreeItem
+                <FileTreeLeafRow
                     key={note.path}
-                    name={getNoteName(note)}
-                    path={note.path}
-                    active={selectedPath === note.path}
-                    highlighted={!!note.path && highlightedPath === note.path}
-                    onClick={() => note.path && onSelectNote(note.path)}
+                    item={note}
+                    depth={0}
+                    isActive={p => p === selectedPath}
+                    isHighlighted={p => p === highlightedPath}
+                    onSelectItem={onSelectNote}
                 />
             ))}
         </>

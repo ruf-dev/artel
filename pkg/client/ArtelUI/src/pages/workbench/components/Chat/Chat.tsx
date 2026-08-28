@@ -11,6 +11,9 @@ interface Props {
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
     ctx: WorkbenchContext
+    attachedPaths: string[]
+    onRemoveAttachment: (path: string) => void
+    onClearAttachments: () => void
 }
 
 // Docker workbench chat — a thin shaper over ChatPanelShell. History is now the
@@ -30,6 +33,9 @@ export default function Chat(props: Props) {
             composerPlaceholder="Message the workbench…"
             assistantLabel="Claude Code"
             ctx={props.ctx}
+            attachedPaths={props.attachedPaths}
+            onRemoveAttachment={props.onRemoveAttachment}
+            onClearAttachments={props.onClearAttachments}
         />
     )
 }

@@ -3,11 +3,12 @@ import {fireEvent, render, screen} from "@testing-library/react"
 
 import ChatComposer from "@/pages/workbench/components/Chat/components/ChatComposer/ChatComposer.tsx"
 
-function renderComposer(value = "", disabled = false) {
+function renderComposer(value = "", disabled = false, attachedPaths: string[] = []) {
     const onChange = vi.fn()
     const onSend = vi.fn()
     const onNewChat = vi.fn()
     const onOpenTweaks = vi.fn()
+    const onRemoveAttachment = vi.fn()
 
     render(
         <ChatComposer
@@ -18,10 +19,12 @@ function renderComposer(value = "", disabled = false) {
             disabled={disabled}
             placeholder="Message the workbench…"
             onOpenTweaks={onOpenTweaks}
+            attachedPaths={attachedPaths}
+            onRemoveAttachment={onRemoveAttachment}
         />,
     )
 
-    return {onChange, onSend, onNewChat, onOpenTweaks}
+    return {onChange, onSend, onNewChat, onOpenTweaks, onRemoveAttachment}
 }
 
 describe("ChatComposer", () => {
@@ -83,5 +86,26 @@ describe("ChatComposer", () => {
         fireEvent.click(screen.getByRole("button", {name: "Connections"}))
 
         expect(onOpenTweaks).toHaveBeenCalledWith("connections")
+    })
+
+    it("renders an attached-file chip per attachedPaths entry", () => {
+        renderComposer("", false, ["notes/a.md", "b.md"])
+
+        expect(screen.getByText("a")).toBeInTheDocument()
+        expect(screen.getByText("b")).toBeInTheDocument()
+    })
+
+    it("renders no attached-file chips when attachedPaths is empty", () => {
+        renderComposer("", false, [])
+
+        expect(screen.queryByRole("button", {name: /^Remove /})).not.toBeInTheDocument()
+    })
+
+    it("calls onRemoveAttachment with the path when a chip's × is clicked", () => {
+        const {onRemoveAttachment} = renderComposer("", false, ["notes/a.md"])
+
+        fireEvent.click(screen.getByRole("button", {name: "Remove notes/a.md"}))
+
+        expect(onRemoveAttachment).toHaveBeenCalledWith("notes/a.md")
     })
 })

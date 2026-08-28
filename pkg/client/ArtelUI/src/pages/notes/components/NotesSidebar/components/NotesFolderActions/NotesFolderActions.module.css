@@ -1,0 +1,27 @@
+.NotesFolderActionsContainer {
+    /* No box of its own: the buttons participate directly in FileTreeRow's flex row,
+       exactly as the old inline TreeItem cluster did. */
+    display: contents;
+
+    & .CopyPathBtn,
+    & .FolderAddBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.2rem;
+        height: 1.2rem;
+        border: none;
+        background: transparent;
+        color: var(--color-fg-disabled);
+        border-radius: 0.25rem;
+        padding: 0;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: opacity 100ms ease, background 120ms ease, color 120ms ease;
+
+        &:hover {
+            background: rgb(255 255 255 / 10%);
+            color: var(--color-fg-secondary);
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import { NoteItem } from "@/app/hooks/Notes.ts"
-import TreeItem from "@/pages/notes/components/NotesSidebar/components/TreeItem/TreeItem.tsx"
-import { getNoteName } from "@/pages/notes/components/NotesSidebar/processes/notesTreeHelpers.ts"
+import FileTreeRow from "@/components/FileTree/FileTreeRow.tsx"
+import { getItemName } from "@/components/FileTree/fileTree.ts"
 
 interface SearchResultsListProps {
     notes: NoteItem[]
@@ -10,6 +10,8 @@ interface SearchResultsListProps {
     onSelectNote: (path: string) => void
 }
 
+// Flat search results (list mode): one FileTreeRow per match, with the containing folder shown
+// as the row subtitle. No folders, no tree recursion.
 export default function SearchResultsList(props: SearchResultsListProps) {
     const { notes, searchQuery, selectedPath, highlightedPath, onSelectNote } = props
     const query = searchQuery.trim().toLowerCase()
@@ -20,9 +22,9 @@ export default function SearchResultsList(props: SearchResultsListProps) {
             {results.map(note => {
                 const dir = note.path ? note.path.split("/").slice(0, -1).join("/") : undefined
                 return (
-                    <TreeItem
+                    <FileTreeRow
                         key={note.path}
-                        name={getNoteName(note)}
+                        name={getItemName(note)}
                         path={note.path}
                         subtitle={dir || undefined}
                         active={selectedPath === note.path}

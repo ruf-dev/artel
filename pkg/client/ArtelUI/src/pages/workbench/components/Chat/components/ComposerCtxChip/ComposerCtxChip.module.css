@@ -1,0 +1,38 @@
+.ComposerCtxChipContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: 100%;
+    padding: 0.28rem 0.5rem 0.28rem 0.55rem;
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: var(--border-radius-pill);
+    background: var(--color-bg-card);
+    color: var(--color-fg-secondary);
+    font-size: 0.74rem;
+
+    & .Label {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    & .Remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 0;
+        color: var(--color-fg-secondary);
+        cursor: pointer;
+        transition: color 140ms ease;
+    }
+
+    & .Remove:hover {
+        color: var(--color-fg-primary);
+    }
+
+    & .RemoveIcon {
+        width: 0.85rem;
+        height: 0.85rem;
+    }
+}

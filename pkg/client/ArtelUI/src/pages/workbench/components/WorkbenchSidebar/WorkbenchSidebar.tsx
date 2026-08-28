@@ -2,10 +2,12 @@ import {useState} from "react"
 
 import SegmentedControl from "@/components/atoms/SegmentedControl/SegmentedControl.tsx"
 import {WorkbenchHistory} from "@/pages/workbench/processes/useWorkbenchHistory.ts"
+import {VaultPaneBundle} from "@/pages/workbench/processes/useWorkbenchSidebar.ts"
 import SidebarBrand from "@/pages/workbench/components/WorkbenchSidebar/components/SidebarBrand/SidebarBrand.tsx"
 // eslint-disable-next-line max-len -- import path too long to wrap under 120 chars
 import SidebarToggleButton from "@/pages/workbench/components/WorkbenchSidebar/components/SidebarToggleButton/SidebarToggleButton.tsx"
 import HistoryPane from "@/pages/workbench/components/WorkbenchSidebar/components/HistoryPane/HistoryPane.tsx"
+import VaultPane from "@/pages/workbench/components/WorkbenchSidebar/components/VaultPane/VaultPane.tsx"
 import SidebarFooter from "@/pages/workbench/components/WorkbenchSidebar/components/SidebarFooter/SidebarFooter.tsx"
 import HistoryTabIcon from "@/pages/workbench/components/WorkbenchSidebar/components/icons/HistoryTabIcon.tsx"
 import ToolsTabIcon from "@/pages/workbench/components/WorkbenchSidebar/components/icons/ToolsTabIcon.tsx"
@@ -15,6 +17,7 @@ import {cn} from "@/app/utils/cn.ts"
 
 interface Props {
     history: WorkbenchHistory
+    vault: VaultPaneBundle
     navOpen: boolean
     onToggleNav: () => void
 }
@@ -22,13 +25,14 @@ interface Props {
 const SEGMENTS = [
     {key: "history", label: "History", icon: <HistoryTabIcon/>},
     {key: "tools", label: "Tools", icon: <ToolsTabIcon/>, disabled: true, tooltip: "Coming soon"},
-    {key: "vault", label: "Vault", icon: <VaultTabIcon/>, disabled: true, tooltip: "Coming soon"},
+    {key: "vault", label: "Vault", icon: <VaultTabIcon/>},
 ]
 
 // Unified persistent left pane for both api mode and running-docker mode. The
 // collapse toggle rides at the top so it stays visible when the column shrinks to
-// the narrow rail. Tools/Vault tabs are disabled placeholders.
-export default function WorkbenchSidebar({history, navOpen, onToggleNav}: Props) {
+// the narrow rail. History/Vault tabs each swap the pane body; Tools is a disabled
+// placeholder.
+export default function WorkbenchSidebar({history, vault, navOpen, onToggleNav}: Props) {
     const [activeTab, setActiveTab] = useState("history")
 
     return (
@@ -48,7 +52,9 @@ export default function WorkbenchSidebar({history, navOpen, onToggleNav}: Props)
                         options={SEGMENTS} active={activeTab} onChange={setActiveTab} collapsed={!navOpen}
                     />
                 </div>
-                {navOpen ? <HistoryPane history={history}/> : <div className={cls.CollapsedFiller}/>}
+                {navOpen && activeTab === "vault" && <VaultPane {...vault}/>}
+                {navOpen && activeTab !== "vault" && <HistoryPane history={history}/>}
+                {!navOpen && <div className={cls.CollapsedFiller}/>}
                 <SidebarFooter collapsed={!navOpen}/>
             </aside>
         </>

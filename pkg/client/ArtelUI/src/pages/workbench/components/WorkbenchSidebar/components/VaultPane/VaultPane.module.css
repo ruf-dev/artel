@@ -1,0 +1,25 @@
+.VaultPaneContainer {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.35rem;
+
+    /* .State / .ScrollArea duplicate the equivalents in HistoryPane.module.css —
+       small shared rules are duplicated per module rather than hoisted (see
+       ArtelUI CLAUDE.md, "CSS Modules"). */
+    & .State {
+        text-align: center;
+        color: var(--color-fg-secondary);
+        font-size: 0.875rem;
+        padding: 2rem 1rem;
+        margin: 0;
+    }
+
+    & .ScrollArea {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0 0.6rem 0.5rem;
+    }
+}

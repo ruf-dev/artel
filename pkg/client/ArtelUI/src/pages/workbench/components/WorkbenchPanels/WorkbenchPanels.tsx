@@ -5,6 +5,7 @@ import SimpleChat from "@/pages/workbench/components/SimpleChat/SimpleChat.tsx"
 import AnimatedTerminalView from "@/pages/workbench/components/TerminalView/AnimatedTerminalView.tsx"
 import type {WorkbenchMode} from "@/pages/workbench/processes/useWorkbenchModeControls.ts"
 import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContext.ts"
+import type {WorkbenchAttachments} from "@/pages/workbench/processes/useWorkbenchAttachments.ts"
 import type {WorkbenchView} from "@/pages/workbench/processes/workbenchView.ts"
 import type {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 import type {ChatConnectionStatus} from "@/pages/workbench/processes/useChatSession.ts"
@@ -46,6 +47,7 @@ interface Props {
     simpleChatId?: string
     simpleChatSession: SimpleChatSessionBundle
     ctx: WorkbenchContext
+    attachments: WorkbenchAttachments
 }
 
 // The three mutually-exclusive workbench panels (Docker chat, Docker terminal,
@@ -60,7 +62,10 @@ export default function WorkbenchPanels(props: Props) {
                 <Chat key="chat" items={props.chatSession.items} status={props.chatSession.status}
                       sendMessage={props.chatSession.sendMessage}
                       sendPermissionDecision={props.chatSession.sendPermissionDecision}
-                      onNewChat={props.chatSession.startNewChat} ctx={props.ctx}/>
+                      onNewChat={props.chatSession.startNewChat} ctx={props.ctx}
+                      attachedPaths={props.attachments.paths}
+                      onRemoveAttachment={props.attachments.remove}
+                      onClearAttachments={props.attachments.clear}/>
             )}
             {isDockerRunning && props.view === "terminal" && (
                 <AnimatedTerminalView
@@ -79,6 +84,9 @@ export default function WorkbenchPanels(props: Props) {
                     chatId={props.simpleChatId}
                     session={props.simpleChatSession}
                     ctx={props.ctx}
+                    attachedPaths={props.attachments.paths}
+                    onRemoveAttachment={props.attachments.remove}
+                    onClearAttachments={props.attachments.clear}
                 />
             )}
         </AnimatePresence>
