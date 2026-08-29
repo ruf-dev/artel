@@ -21,6 +21,7 @@ interface SimpleChatSessionBundle {
 
 interface Props {
     chatId: string | undefined
+    vaultId: string
     session: SimpleChatSessionBundle
     ctx: WorkbenchContext
     attachedPaths: string[]
@@ -45,6 +46,7 @@ export default function SimpleChat(props: Props) {
         <div className={cls.SimpleChatContainer}>
             <ChatPanelShell
                 items={props.session.items}
+                vaultId={props.vaultId}
                 bannerStatus={props.chatId ? props.session.status : "closed"}
                 sendMessage={props.session.sendMessage}
                 onResendMessage={props.session.resendMessage}

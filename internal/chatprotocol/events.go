@@ -69,6 +69,11 @@ type Event struct {
 	// assistant_text_delta / assistant_text_done / user_message / error
 	Text string `json:"text,omitempty"`
 
+	// Attachments carries the vault-relative paths a user_message attached, display-only —
+	// separate from Text so the attached-files preamble is no longer folded into the message
+	// text itself. Populated only on user_message; every other event type leaves it empty.
+	Attachments []string `json:"attachments,omitempty"`
+
 	// tool_call_started / tool_call_result / permission_request
 	ToolName     string          `json:"tool_name,omitempty"`
 	Input        json.RawMessage `json:"input,omitempty"`

@@ -9,6 +9,7 @@ import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
 
 interface Props {
     items: ChatItem[]
+    vaultId: string
     assistantLabel?: string
     retryDisabled?: boolean
     onRetryMessage?: (text: string) => void
@@ -65,6 +66,7 @@ export default function ChatMessageColumn(props: Props) {
                         <ChatMessageItem
                             key={item.key}
                             item={item}
+                            vaultId={props.vaultId}
                             assistantLabel={props.assistantLabel}
                             onCopy={() => navigator.clipboard?.writeText(
                                 item.kind === "assistant_message" ? item.text : "",

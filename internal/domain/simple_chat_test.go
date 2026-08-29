@@ -53,11 +53,12 @@ func TestEncodeDecodeSimpleChatFile_RoundTrip(t *testing.T) {
 
 	messages := []SimpleChatMessage{
 		{
-			ChatUuid:  chatUuid,
-			Role:      string(SimpleChatRoleUser),
-			Content:   "hello",
-			Seq:       1,
-			CreatedAt: now,
+			ChatUuid:    chatUuid,
+			Role:        string(SimpleChatRoleUser),
+			Content:     "hello",
+			Attachments: []string{"notes/a.md", "b.md"},
+			Seq:         1,
+			CreatedAt:   now,
 		},
 		{
 			ChatUuid:   chatUuid,

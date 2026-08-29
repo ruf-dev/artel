@@ -1,7 +1,4 @@
-import { useMemo } from "react"
-import { marked } from "marked"
-import DOMPurify from "dompurify"
-
+import {useSanitizedMarkdownHtml} from "@/app/hooks/useSanitizedMarkdownHtml"
 import cls from "@/pages/docs/components/DocsNoteViewer/DocsNoteViewer.module.css"
 
 interface DocsNoteViewerProps {
@@ -12,12 +9,7 @@ interface DocsNoteViewerProps {
 // local to NotesPage per the colocation rule). Skips the [[wiki-link]] -> chip parsing that
 // NoteContent does — there's no cross-note navigation concept defined for /docs.
 export default function DocsNoteViewer({ content }: DocsNoteViewerProps) {
-    const sanitizedHtml = useMemo(() => {
-        if (content === null) return null
-        if (content === '') return ''
-        const rawHtml = marked.parse(content) as string
-        return DOMPurify.sanitize(rawHtml)
-    }, [content])
+    const sanitizedHtml = useSanitizedMarkdownHtml(content)
 
     return (
         <div className={cls.DocsNoteViewerContainer}>

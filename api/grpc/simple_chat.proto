@@ -60,6 +60,10 @@ message SimpleChatMessage {
     string model       = 6;
     int64  seq         = 7;
     string created_at  = 8;
+    // attachments carries vault-relative paths the member attached to a user-role message —
+    // display metadata only, the content is already folded into `content` via a preamble prefix
+    // (see workbenchAttachments.ts's withAttachmentsPreamble on the frontend).
+    repeated string attachments = 9;
 }
 
 message CreateSimpleChat {

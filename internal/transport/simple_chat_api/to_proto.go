@@ -40,12 +40,13 @@ func chatsToProto(chats []domain.SimpleChat) []*artel_api.SimpleChat {
 // deliberately not exposed — they're internal plumbing for replaying history back to the model.
 func messageToProto(msg domain.SimpleChatMessage) *artel_api.SimpleChatMessage {
 	out := &artel_api.SimpleChatMessage{
-		Id:        msg.Uuid.String(),
-		Role:      msg.Role,
-		Content:   msg.Content,
-		IsError:   msg.IsError,
-		Seq:       msg.Seq,
-		CreatedAt: msg.CreatedAt.UTC().Format(timestampLayout),
+		Id:          msg.Uuid.String(),
+		Role:        msg.Role,
+		Content:     msg.Content,
+		IsError:     msg.IsError,
+		Seq:         msg.Seq,
+		CreatedAt:   msg.CreatedAt.UTC().Format(timestampLayout),
+		Attachments: msg.Attachments,
 	}
 
 	if msg.ToolName != nil {

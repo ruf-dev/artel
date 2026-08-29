@@ -44,6 +44,10 @@ type streamResult struct {
 // model overrides the thread's stored default for this turn only (the "switchable mid-
 // conversation" path); an empty model falls back to chat.Model.
 //
+// attachments carries the vault-relative paths the user attached to this turn, display-only —
+// persisted alongside the user row so a later GetChat replay can render them as chips, but never
+// folded into userText or the message sent to the model.
+//
 // Cancellation: ctx is cancelled when the client disconnects, which tears down the in-flight
 // stream. Persistence deliberately runs on a context.WithoutCancel copy of ctx, so a turn cut
 // off mid-stream still keeps the messages it had already completed rather than losing them to
@@ -51,7 +55,8 @@ type streamResult struct {
 // between an assistant row and its tool-result rows leaves the partial prefix persisted, which
 // replays as valid history because tool rows always carry their own tool_call_id.
 func (s *Service) RunTurn(
-	ctx context.Context, chat domain.SimpleChat, userText, model string, sink chatprotocol.EventSink,
+	ctx context.Context, chat domain.SimpleChat, userText, model string, attachments []string,
+	sink chatprotocol.EventSink,
 ) error {
 	// Writes outlive ctx so a disconnect mid-turn doesn't discard completed work.
 	persistCtx := context.WithoutCancel(ctx)
@@ -75,8 +80,9 @@ func (s *Service) RunTurn(
 	rows := file.Messages
 
 	userRow := domain.SimpleChatMessage{
-		Role:    string(domain.SimpleChatRoleUser),
-		Content: userText,
+		Role:        string(domain.SimpleChatRoleUser),
+		Content:     userText,
+		Attachments: attachments,
 	}
 
 	err = s.appendMessage(persistCtx, chat, userRow)

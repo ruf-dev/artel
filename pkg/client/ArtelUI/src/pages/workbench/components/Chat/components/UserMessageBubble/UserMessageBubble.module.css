@@ -7,6 +7,13 @@
     border-radius: var(--border-radius-lg);
     border-bottom-right-radius: 0.25rem;
 
+    & .AttachmentRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
     & .Text {
         margin: 0;
         font-size: var(--font-size-base);

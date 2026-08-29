@@ -63,7 +63,8 @@ export default function WorkbenchPanels(props: Props) {
     return (
         <AnimatePresence mode="wait">
             {isDockerRunning && !props.awaitingAuth && props.view === "chat" && (
-                <Chat key="chat" items={props.chatSession.items} status={props.chatSession.status}
+                <Chat key="chat" items={props.chatSession.items} vaultId={props.vaultId}
+                      status={props.chatSession.status}
                       sendMessage={props.chatSession.sendMessage}
                       resendMessage={props.chatSession.resendMessage}
                       sendPermissionDecision={props.chatSession.sendPermissionDecision}
@@ -89,6 +90,7 @@ export default function WorkbenchPanels(props: Props) {
                 <SimpleChat
                     key="api"
                     chatId={props.simpleChatId}
+                    vaultId={props.vaultId}
                     session={props.simpleChatSession}
                     ctx={props.ctx}
                     attachedPaths={props.attachments.paths}

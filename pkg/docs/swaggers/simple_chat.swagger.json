@@ -279,6 +279,13 @@
         },
         "createdAt": {
           "type": "string"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "attachments carries vault-relative paths the member attached to a user-role message —\ndisplay metadata only, the content is already folded into `content` via a preamble prefix\n(see workbenchAttachments.ts's withAttachmentsPreamble on the frontend)."
         }
       },
       "description": "SimpleChatMessage is a flat, wire-only projection of domain.SimpleChatMessage —\ntool_call_id/tool_input are internal-only and intentionally omitted here."

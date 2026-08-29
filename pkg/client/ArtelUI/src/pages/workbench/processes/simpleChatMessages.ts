@@ -13,6 +13,8 @@ import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 // / tool_call_result pair), so it maps straight to a `done: true` tool_call item
 // with `content` as the output and `toolName` as the tool name; "error" maps to an
 // error item. Any other/unknown role is dropped rather than rendered as junk.
+// "user" additionally carries `attachments` straight through onto the ChatItem —
+// display metadata only, same as the live user_message path (chatReducer.ts).
 export function simpleChatMessagesToItems(messages: SimpleChatMessage[]): ChatItem[] {
     return messages.reduce<ChatItem[]>((items, m, index) => {
         const item = messageToItem(m, index)
@@ -23,7 +25,10 @@ export function simpleChatMessagesToItems(messages: SimpleChatMessage[]): ChatIt
 function messageToItem(m: SimpleChatMessage, index: number): ChatItem | null {
     switch (m.role) {
         case "user":
-            return {kind: "user_message", key: `user_message-${m.id || index}`, text: m.content, id: m.id}
+            return {
+                kind: "user_message", key: `user_message-${m.id || index}`, text: m.content, id: m.id,
+                attachments: m.attachments,
+            }
         case "assistant":
             return {
                 kind: "assistant_message",

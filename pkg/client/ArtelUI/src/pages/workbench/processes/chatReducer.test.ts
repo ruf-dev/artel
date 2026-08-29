@@ -15,6 +15,16 @@ describe("applyEvent", () => {
         expect(items).toEqual([{kind: "user_message", key: "user_message-0", text: "hi"}])
     })
 
+    it("carries attachments from a user_message event onto the ChatItem", () => {
+        const items = applyEvent([], {
+            type: "user_message", text: "check these out", id: "m1", attachments: ["notes/a.md", "b.md"],
+        })
+        expect(items).toEqual([{
+            kind: "user_message", key: "user_message-0", text: "check these out", id: "m1",
+            attachments: ["notes/a.md", "b.md"],
+        }])
+    })
+
     it("accumulates assistant_text_delta by id and finalizes on assistant_text_done", () => {
         let items: ChatItem[] = []
         items = applyEvent(items, {type: "assistant_text_delta", id: "a1", text: "Hel"})

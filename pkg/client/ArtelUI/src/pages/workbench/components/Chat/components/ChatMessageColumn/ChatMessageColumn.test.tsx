@@ -4,24 +4,33 @@ import {fireEvent, render, screen} from "@testing-library/react"
 import ChatMessageColumn from "@/pages/workbench/components/Chat/components/ChatMessageColumn/ChatMessageColumn.tsx"
 import {ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
 
+// Shared render helper - pulled out so each `it` below stays short enough to
+// keep the describe callback under the max-lines-per-function budget.
+function renderColumn(items: ChatItem[], pending?: {bucket: "normal" | "slow" | "stuck"}) {
+    const onRetryMessage = vi.fn()
+    const onResendMessage = vi.fn()
+
+    render(
+        <ChatMessageColumn
+            items={items}
+            vaultId="v1"
+            onRetryMessage={onRetryMessage}
+            onResendMessage={onResendMessage}
+            onPermissionDecision={vi.fn()}
+            pending={pending}
+        />,
+    )
+
+    return {onRetryMessage, onResendMessage}
+}
+
 describe("ChatMessageColumn", () => {
     it("trailing retry on an error preceded by a user_message with an id"
         + " calls onResendMessage, not onRetryMessage", () => {
-        const items: ChatItem[] = [
+        const {onRetryMessage, onResendMessage} = renderColumn([
             {kind: "user_message", key: "u1", id: "m1", text: "hello"},
             {kind: "error", key: "e1", text: "turn failed"},
-        ]
-        const onRetryMessage = vi.fn()
-        const onResendMessage = vi.fn()
-
-        render(
-            <ChatMessageColumn
-                items={items}
-                onRetryMessage={onRetryMessage}
-                onResendMessage={onResendMessage}
-                onPermissionDecision={vi.fn()}
-            />,
-        )
+        ])
 
         fireEvent.click(screen.getByLabelText("Retry message"))
 
@@ -30,20 +39,9 @@ describe("ChatMessageColumn", () => {
     })
 
     it("trailing retry on a dangling user_message with an id calls onResendMessage, not onRetryMessage", () => {
-        const items: ChatItem[] = [
+        const {onRetryMessage, onResendMessage} = renderColumn([
             {kind: "user_message", key: "u1", id: "m1", text: "hello"},
-        ]
-        const onRetryMessage = vi.fn()
-        const onResendMessage = vi.fn()
-
-        render(
-            <ChatMessageColumn
-                items={items}
-                onRetryMessage={onRetryMessage}
-                onResendMessage={onResendMessage}
-                onPermissionDecision={vi.fn()}
-            />,
-        )
+        ])
 
         fireEvent.click(screen.getByLabelText("Retry message"))
 
@@ -52,20 +50,9 @@ describe("ChatMessageColumn", () => {
     })
 
     it("disables the trailing retry when the failed user_message has no id", () => {
-        const items: ChatItem[] = [
+        const {onRetryMessage, onResendMessage} = renderColumn([
             {kind: "user_message", key: "u1", text: "hello"},
-        ]
-        const onRetryMessage = vi.fn()
-        const onResendMessage = vi.fn()
-
-        render(
-            <ChatMessageColumn
-                items={items}
-                onRetryMessage={onRetryMessage}
-                onResendMessage={onResendMessage}
-                onPermissionDecision={vi.fn()}
-            />,
-        )
+        ])
 
         const retryBtn = screen.getByLabelText("Retry message")
         expect(retryBtn).toHaveAttribute("aria-disabled", "true")
@@ -77,21 +64,10 @@ describe("ChatMessageColumn", () => {
     })
 
     it("mid-transcript hover-retry on a completed assistant_message still calls onRetryMessage, unchanged", () => {
-        const items: ChatItem[] = [
+        const {onRetryMessage, onResendMessage} = renderColumn([
             {kind: "user_message", key: "u1", id: "m1", text: "hi"},
             {kind: "assistant_message", key: "a1", id: "a1", text: "reply", done: true},
-        ]
-        const onRetryMessage = vi.fn()
-        const onResendMessage = vi.fn()
-
-        render(
-            <ChatMessageColumn
-                items={items}
-                onRetryMessage={onRetryMessage}
-                onResendMessage={onResendMessage}
-                onPermissionDecision={vi.fn()}
-            />,
-        )
+        ])
 
         // The assistant message is the last item, so no trailing-failure retry is
         // rendered - only the mid-transcript hover-retry, backed by onRetryMessage.
@@ -102,21 +78,9 @@ describe("ChatMessageColumn", () => {
     })
 
     it("suppresses the trailing-failure retry entirely while a turn is pending", () => {
-        const items: ChatItem[] = [
+        const {onRetryMessage, onResendMessage} = renderColumn([
             {kind: "user_message", key: "u1", id: "m1", text: "hello"},
-        ]
-        const onRetryMessage = vi.fn()
-        const onResendMessage = vi.fn()
-
-        render(
-            <ChatMessageColumn
-                items={items}
-                onRetryMessage={onRetryMessage}
-                onResendMessage={onResendMessage}
-                onPermissionDecision={vi.fn()}
-                pending={{bucket: "stuck"}}
-            />,
-        )
+        ], {bucket: "stuck"})
 
         // The dangling user_message itself shows no retry action while pending...
         expect(screen.queryByLabelText("Retry message")).not.toBeInTheDocument()

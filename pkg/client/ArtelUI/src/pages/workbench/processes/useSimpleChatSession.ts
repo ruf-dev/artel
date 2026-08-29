@@ -147,18 +147,18 @@ export function useSimpleChatSession(chatId: string | undefined, initialModel: s
         setItems(prev => applyEvent(prev, event))
     }, [])
 
-    const sendMessage = useCallback((text: string) => {
+    const sendMessage = useCallback((text: string, attachments?: string[]) => {
         const id = crypto.randomUUID()
-        dispatch({type: "user_message", text, id, model: modelRef.current})
+        dispatch({type: "user_message", text, id, model: modelRef.current, attachments})
         setPendingTurn(true)
     }, [dispatch])
 
     // Resends a failed/dangling user_message reusing its id - see useChatSession.ts's
     // resendMessage doc comment for the full rationale. Also stamps the current
     // model, mirroring sendMessage.
-    const resendMessage = useCallback((id: string, text: string) => {
+    const resendMessage = useCallback((id: string, text: string, attachments?: string[]) => {
         setItems(prev => truncateAfterUserMessage(prev, id))
-        dispatch({type: "user_message", text, id, model: modelRef.current})
+        dispatch({type: "user_message", text, id, model: modelRef.current, attachments})
         setPendingTurn(true)
     }, [dispatch])
 

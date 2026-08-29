@@ -6,6 +6,7 @@ import type {WorkbenchContext} from "@/pages/workbench/processes/workbenchContex
 
 interface Props {
     items: ChatItem[]
+    vaultId: string
     status: ChatConnectionStatus
     sendMessage: (text: string) => void
     resendMessage: (id: string, text: string) => void
@@ -27,6 +28,7 @@ export default function Chat(props: Props) {
     return (
         <ChatPanelShell
             items={props.items}
+            vaultId={props.vaultId}
             bannerStatus={props.status}
             sendMessage={props.sendMessage}
             onResendMessage={props.resendMessage}

@@ -200,10 +200,11 @@ func (h *ChatWsHandler) startTurn(
 	// be switched mid-conversation. Empty falls back to the thread's stored default.
 	model := event.Model
 	text := event.Text
+	attachments := event.Attachments
 
 	turns.Add(1)
 
-	go h.runTurn(ctx, turns, sink, chat, text, model)
+	go h.runTurn(ctx, turns, sink, chat, text, model, attachments)
 }
 
 func (h *ChatWsHandler) runTurn(
@@ -213,10 +214,11 @@ func (h *ChatWsHandler) runTurn(
 	chat domain.SimpleChat,
 	text string,
 	model string,
+	attachments []string,
 ) {
 	defer turns.Done()
 
-	err := h.simpleChatSvc.RunTurn(ctx, chat, text, model, sink)
+	err := h.simpleChatSvc.RunTurn(ctx, chat, text, model, attachments, sink)
 	if err != nil {
 		log.Warn().Err(err).Str("chat_id", chat.Uuid.String()).Msg("simple chat turn failed")
 	}

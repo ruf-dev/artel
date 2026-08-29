@@ -21,6 +21,7 @@ function renderShell(
     const result = render(
         <ChatPanelShell
             items={items}
+            vaultId="v1"
             bannerStatus={bannerStatus}
             sendMessage={sendMessage}
             sendPermissionDecision={sendPermissionDecision}
@@ -49,7 +50,7 @@ describe("ChatPanelShell", () => {
         fireEvent.change(input, {target: {value: "hello there"}})
         fireEvent.click(screen.getByLabelText("Send message"))
 
-        expect(sendMessage).toHaveBeenCalledWith("hello there")
+        expect(sendMessage).toHaveBeenCalledWith("hello there", [])
     })
 
     it("sends the raw text when no vault files are attached", () => {
@@ -58,17 +59,17 @@ describe("ChatPanelShell", () => {
         fireEvent.change(screen.getByPlaceholderText("Message the workbench…"), {target: {value: "hello"}})
         fireEvent.click(screen.getByLabelText("Send message"))
 
-        expect(sendMessage).toHaveBeenCalledWith("hello")
+        expect(sendMessage).toHaveBeenCalledWith("hello", [])
         expect(onClearAttachments).toHaveBeenCalledTimes(1)
     })
 
-    it("prepends an attached-vault-files preamble and clears attachments on send", () => {
+    it("prepends an attached-vault-files preamble, passes attachments separately, and clears on send", () => {
         const {sendMessage, onClearAttachments} = renderShell([], "open", ["a/b.md"])
 
         fireEvent.change(screen.getByPlaceholderText("Message the workbench…"), {target: {value: "hello"}})
         fireEvent.click(screen.getByLabelText("Send message"))
 
-        expect(sendMessage).toHaveBeenCalledWith("[Attached vault files: a/b.md]\n\nhello")
+        expect(sendMessage).toHaveBeenCalledWith("[Attached vault files: a/b.md]\n\nhello", ["a/b.md"])
         expect(onClearAttachments).toHaveBeenCalledTimes(1)
     })
 

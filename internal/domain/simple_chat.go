@@ -41,6 +41,8 @@ type SimpleChat struct {
 // SimpleChatMessage is one turn (or tool step) in a SimpleChat's history — see
 // migrations/076_simple_chat_messages.sql. Role is one of the SimpleChatRole constants above:
 //   - user: ToolCallID/ToolName/ToolInput/Model unset, Content is the member's message text.
+//     Attachments carries the vault-relative paths the member attached, display-only — it plays
+//     no part in what was sent to the model, which stays folded into Content alone.
 //   - assistant: Content is the model's reply text (possibly empty when the turn was pure tool
 //     calls); Model is the model that produced it. ToolCallID/ToolName/ToolInput are unset here
 //     — a requested tool call is recorded as its own row (see below), mirroring how
@@ -48,17 +50,18 @@ type SimpleChat struct {
 //   - tool: one row per tool invocation the agent made — ToolCallID/ToolName/ToolInput carry the
 //     call, Content carries the tool's result (or the error message when IsError is true).
 type SimpleChatMessage struct {
-	Uuid       uuid.UUID
-	ChatUuid   uuid.UUID
-	Role       string
-	Content    string
-	ToolCallID *string
-	ToolName   *string
-	ToolInput  json.RawMessage
-	IsError    bool
-	Model      *string
-	Seq        int64
-	CreatedAt  time.Time
+	Uuid        uuid.UUID
+	ChatUuid    uuid.UUID
+	Role        string
+	Content     string
+	ToolCallID  *string
+	ToolName    *string
+	ToolInput   json.RawMessage
+	IsError     bool
+	Model       *string
+	Attachments []string
+	Seq         int64
+	CreatedAt   time.Time
 }
 
 // ChatHistoryFolderPrefix is the vault-path prefix under which every SimpleChat's JSONL
@@ -120,16 +123,17 @@ func (h SimpleChatHeader) ToSimpleChat() SimpleChat {
 // simpleChatMessageLine is one JSONL line (lines 1..N) of a chat's transcript — the on-disk shape
 // SimpleChatMessage marshals to/from.
 type simpleChatMessageLine struct {
-	Type       simpleChatLineType `json:"type"`
-	Seq        int64              `json:"seq"`
-	Role       string             `json:"role"`
-	Content    string             `json:"content"`
-	ToolCallID *string            `json:"tool_call_id,omitempty"`
-	ToolName   *string            `json:"tool_name,omitempty"`
-	ToolInput  json.RawMessage    `json:"tool_input,omitempty"`
-	IsError    bool               `json:"is_error,omitempty"`
-	Model      *string            `json:"model,omitempty"`
-	CreatedAt  time.Time          `json:"created_at"`
+	Type        simpleChatLineType `json:"type"`
+	Seq         int64              `json:"seq"`
+	Role        string             `json:"role"`
+	Content     string             `json:"content"`
+	ToolCallID  *string            `json:"tool_call_id,omitempty"`
+	ToolName    *string            `json:"tool_name,omitempty"`
+	ToolInput   json.RawMessage    `json:"tool_input,omitempty"`
+	IsError     bool               `json:"is_error,omitempty"`
+	Model       *string            `json:"model,omitempty"`
+	Attachments []string           `json:"attachments,omitempty"`
+	CreatedAt   time.Time          `json:"created_at"`
 }
 
 // SimpleChatFile is a chat's JSONL transcript decoded into memory: the header line plus every
@@ -171,16 +175,17 @@ func EncodeSimpleChatFile(file SimpleChatFile) ([]byte, error) {
 
 	for _, msg := range file.Messages {
 		line := simpleChatMessageLine{
-			Type:       simpleChatLineMessage,
-			Seq:        msg.Seq,
-			Role:       msg.Role,
-			Content:    msg.Content,
-			ToolCallID: msg.ToolCallID,
-			ToolName:   msg.ToolName,
-			ToolInput:  msg.ToolInput,
-			IsError:    msg.IsError,
-			Model:      msg.Model,
-			CreatedAt:  msg.CreatedAt,
+			Type:        simpleChatLineMessage,
+			Seq:         msg.Seq,
+			Role:        msg.Role,
+			Content:     msg.Content,
+			ToolCallID:  msg.ToolCallID,
+			ToolName:    msg.ToolName,
+			ToolInput:   msg.ToolInput,
+			IsError:     msg.IsError,
+			Model:       msg.Model,
+			Attachments: msg.Attachments,
+			CreatedAt:   msg.CreatedAt,
 		}
 
 		lineJSON, marshalErr := json.Marshal(line)
@@ -241,16 +246,17 @@ func DecodeSimpleChatFile(content []byte) (SimpleChatFile, error) {
 			}
 
 			msg := SimpleChatMessage{
-				ChatUuid:   file.Header.Uuid,
-				Role:       msgLine.Role,
-				Content:    msgLine.Content,
-				ToolCallID: msgLine.ToolCallID,
-				ToolName:   msgLine.ToolName,
-				ToolInput:  msgLine.ToolInput,
-				IsError:    msgLine.IsError,
-				Model:      msgLine.Model,
-				Seq:        msgLine.Seq,
-				CreatedAt:  msgLine.CreatedAt,
+				ChatUuid:    file.Header.Uuid,
+				Role:        msgLine.Role,
+				Content:     msgLine.Content,
+				ToolCallID:  msgLine.ToolCallID,
+				ToolName:    msgLine.ToolName,
+				ToolInput:   msgLine.ToolInput,
+				IsError:     msgLine.IsError,
+				Model:       msgLine.Model,
+				Attachments: msgLine.Attachments,
+				Seq:         msgLine.Seq,
+				CreatedAt:   msgLine.CreatedAt,
 			}
 
 			file.Messages = append(file.Messages, msg)

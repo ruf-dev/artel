@@ -135,6 +135,61 @@ describe("useSimpleChatSession", () => {
     })
 })
 
+describe("useSimpleChatSession - attachments", () => {
+    beforeEach(() => {
+        MockWebSocket.instances = []
+        vi.stubGlobal("WebSocket", MockWebSocket)
+    })
+
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
+    it("includes attachments on the dispatched WS payload when sendMessage is passed them", async () => {
+        const {result} = renderHook(() => useSimpleChatSession("c1", "anthropic/claude-sonnet-4"))
+        const ws = MockWebSocket.instances[0]
+
+        act(() => {
+            ws.open()
+        })
+        await waitFor(() => expect(result.current.status).toBe("open"))
+
+        act(() => {
+            result.current.sendMessage("check these out", ["notes/a.md", "b.md"])
+        })
+        await waitFor(() => expect(result.current.items).toHaveLength(1))
+        expect(result.current.items[0]).toMatchObject({
+            kind: "user_message", text: "check these out", attachments: ["notes/a.md", "b.md"],
+        })
+        expect(JSON.parse(ws.sent[0])).toMatchObject({
+            attachments: ["notes/a.md", "b.md"], model: "anthropic/claude-sonnet-4",
+        })
+    })
+
+    it("includes attachments on the dispatched WS payload when resendMessage is passed them", async () => {
+        const {result} = renderHook(() => useSimpleChatSession("c1", "anthropic/claude-sonnet-4"))
+        const ws = MockWebSocket.instances[0]
+
+        act(() => {
+            ws.open()
+        })
+        await waitFor(() => expect(result.current.status).toBe("open"))
+
+        act(() => {
+            result.current.sendMessage("hello")
+        })
+        await waitFor(() => expect(result.current.items).toHaveLength(1))
+        const messageId = JSON.parse(ws.sent[0]).id
+
+        act(() => {
+            result.current.resendMessage(messageId, "hello", ["notes/a.md"])
+        })
+        // Dispatched wire frame carries the new attachments (the local item stays
+        // as truncateAfterUserMessage/dedup left it - resend always reuses the id).
+        expect(JSON.parse(ws.sent[1])).toMatchObject({id: messageId, attachments: ["notes/a.md"]})
+    })
+})
+
 describe("useSimpleChatSession - seeding items once persisted history resolves", () => {
     beforeEach(() => {
         MockWebSocket.instances = []

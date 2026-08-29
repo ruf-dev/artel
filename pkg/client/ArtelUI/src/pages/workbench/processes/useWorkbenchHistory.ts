@@ -93,6 +93,7 @@ export function useWorkbenchHistory(p: Params): WorkbenchHistory {
             .then(items => OpenDialog(createElement(WorkbenchHistoryTranscriptDialog, {
                 title: session?.firstUserMessage || "Untitled session",
                 items,
+                vaultId: p.vaultId,
             })))
             .catch(e => bakeError("Failed to load session transcript", e))
     }

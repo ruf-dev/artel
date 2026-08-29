@@ -36,6 +36,13 @@ export interface ChatEvent {
     // assistant_text_delta / assistant_text_done / user_message / error
     text?: string
 
+    // user_message only. Vault-relative paths of files attached to this message —
+    // display metadata only, the referenced content is already folded into `text`
+    // via the attachments preamble (see workbenchAttachments.ts's
+    // withAttachmentsPreamble), so this field changes nothing about what's sent to
+    // the model or persisted as message content.
+    attachments?: string[]
+
     // tool_call_started / tool_call_result / permission_request
     tool_name?: string
     input?: unknown

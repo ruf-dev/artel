@@ -28,6 +28,7 @@ export type SimpleChatMessage = {
   model?: string;
   seq?: string;
   createdAt?: string;
+  attachments?: string[];
 };
 
 export type CreateSimpleChatRequest = {

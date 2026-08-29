@@ -10,6 +10,7 @@ import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
 
 interface Props {
     item: ChatItem
+    vaultId: string
     assistantLabel?: string
     onCopy: () => void
     onRetry: () => void
@@ -25,6 +26,8 @@ export default function ChatMessageItem(props: Props) {
             return (
                 <UserMessageBubble
                     text={item.text}
+                    attachments={item.attachments}
+                    vaultId={props.vaultId}
                     showRetry={!!props.trailingRetry}
                     onRetry={props.trailingRetry?.onRetry}
                     retryDisabled={props.trailingRetry?.disabled}

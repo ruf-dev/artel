@@ -125,15 +125,19 @@ func (x *SimpleChat) GetLastActivityAt() string {
 // SimpleChatMessage is a flat, wire-only projection of domain.SimpleChatMessage —
 // tool_call_id/tool_input are internal-only and intentionally omitted here.
 type SimpleChatMessage struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Role          string                 `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
-	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
-	ToolName      string                 `protobuf:"bytes,4,opt,name=tool_name,json=toolName,proto3" json:"tool_name,omitempty"`
-	IsError       bool                   `protobuf:"varint,5,opt,name=is_error,json=isError,proto3" json:"is_error,omitempty"`
-	Model         string                 `protobuf:"bytes,6,opt,name=model,proto3" json:"model,omitempty"`
-	Seq           int64                  `protobuf:"varint,7,opt,name=seq,proto3" json:"seq,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Role      string                 `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
+	Content   string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	ToolName  string                 `protobuf:"bytes,4,opt,name=tool_name,json=toolName,proto3" json:"tool_name,omitempty"`
+	IsError   bool                   `protobuf:"varint,5,opt,name=is_error,json=isError,proto3" json:"is_error,omitempty"`
+	Model     string                 `protobuf:"bytes,6,opt,name=model,proto3" json:"model,omitempty"`
+	Seq       int64                  `protobuf:"varint,7,opt,name=seq,proto3" json:"seq,omitempty"`
+	CreatedAt string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// attachments carries vault-relative paths the member attached to a user-role message —
+	// display metadata only, the content is already folded into `content` via a preamble prefix
+	// (see workbenchAttachments.ts's withAttachmentsPreamble on the frontend).
+	Attachments   []string `protobuf:"bytes,9,rep,name=attachments,proto3" json:"attachments,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -222,6 +226,13 @@ func (x *SimpleChatMessage) GetCreatedAt() string {
 		return x.CreatedAt
 	}
 	return ""
+}
+
+func (x *SimpleChatMessage) GetAttachments() []string {
+	if x != nil {
+		return x.Attachments
+	}
+	return nil
 }
 
 type CreateSimpleChat struct {
@@ -754,7 +765,7 @@ const file_simple_chat_proto_rawDesc = "" +
 	"created_at\x18\x06 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
 	"updated_at\x18\a \x01(\tR\tupdatedAt\x12(\n" +
-	"\x10last_activity_at\x18\b \x01(\tR\x0elastActivityAt\"\xd0\x01\n" +
+	"\x10last_activity_at\x18\b \x01(\tR\x0elastActivityAt\"\xf2\x01\n" +
 	"\x11SimpleChatMessage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x18\n" +
@@ -764,7 +775,8 @@ const file_simple_chat_proto_rawDesc = "" +
 	"\x05model\x18\x06 \x01(\tR\x05model\x12\x10\n" +
 	"\x03seq\x18\a \x01(\x03R\x03seq\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\b \x01(\tR\tcreatedAt\"\xa8\x01\n" +
+	"created_at\x18\b \x01(\tR\tcreatedAt\x12 \n" +
+	"\vattachments\x18\t \x03(\tR\vattachments\"\xa8\x01\n" +
 	"\x10CreateSimpleChat\x1a]\n" +
 	"\aRequest\x12\x19\n" +
 	"\bvault_id\x18\x01 \x01(\tR\avaultId\x12!\n" +

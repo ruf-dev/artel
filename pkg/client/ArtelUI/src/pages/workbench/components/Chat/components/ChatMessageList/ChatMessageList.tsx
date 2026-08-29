@@ -7,6 +7,7 @@ import {PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
 
 interface Props {
     items: ChatItem[]
+    vaultId: string
     assistantLabel?: string
     retryDisabled?: boolean
     onRetryMessage?: (text: string) => void
@@ -43,6 +44,7 @@ export default function ChatMessageList(props: Props) {
             {props.items.length === 0 && <p className={cls.EmptyState}>Send a message to start the conversation.</p>}
             <ChatMessageColumn
                 items={props.items}
+                vaultId={props.vaultId}
                 assistantLabel={props.assistantLabel}
                 retryDisabled={props.retryDisabled}
                 onRetryMessage={props.onRetryMessage}

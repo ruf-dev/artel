@@ -25,6 +25,7 @@ export interface SimpleChatMessage {
     model?: string
     seq: string
     createdAt: string
+    attachments?: string[]
 }
 
 function toSimpleChat(c: SimpleChatProto): SimpleChat {
@@ -50,6 +51,7 @@ function toSimpleChatMessage(m: SimpleChatMessageProto): SimpleChatMessage {
         model: m.model,
         seq: m.seq ?? "",
         createdAt: m.createdAt ?? "",
+        attachments: m.attachments,
     }
 }
 

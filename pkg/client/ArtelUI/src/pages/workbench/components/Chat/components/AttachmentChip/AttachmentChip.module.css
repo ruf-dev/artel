@@ -1,0 +1,25 @@
+.AttachmentChipContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: 100%;
+    padding: 0.28rem 0.5rem 0.28rem 0.55rem;
+    border: var(--border-thickness) solid var(--color-border-light);
+    border-radius: var(--border-radius-pill);
+    background: var(--color-bg-card);
+    color: var(--color-fg-secondary);
+    font-size: 0.74rem;
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+
+    &:hover {
+        background: var(--color-bg-hover);
+        color: var(--color-fg-primary);
+    }
+
+    & .Label {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

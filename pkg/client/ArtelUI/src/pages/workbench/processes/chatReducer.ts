@@ -5,7 +5,7 @@ import {ChatEvent, PermissionDecision} from "@/pages/workbench/processes/chatPro
 // useChatSession.ts) into a flat list keyed for React. One item per visible unit in the
 // conversation; system_init/turn_done carry no visible unit and are absorbed silently.
 export type ChatItem =
-    | {kind: "user_message"; key: string; text: string; id?: string}
+    | {kind: "user_message"; key: string; text: string; id?: string; attachments?: string[]}
     | {kind: "assistant_message"; key: string; id: string; text: string; done: boolean}
     | {
         kind: "tool_call"
@@ -42,6 +42,7 @@ function applyUserMessage(prev: ChatItem[], event: ChatEvent): ChatItem[] {
         key: `user_message-${prev.length}`,
         text: event.text ?? "",
         id: event.id,
+        attachments: event.attachments,
     }
     return [...prev, item]
 }

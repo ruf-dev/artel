@@ -31,6 +31,7 @@ describe("SimpleChat", () => {
 
     const defaultProps = {
         chatId: "chat-1",
+        vaultId: "v1",
         session: baseSession,
         ctx,
         attachedPaths: [],

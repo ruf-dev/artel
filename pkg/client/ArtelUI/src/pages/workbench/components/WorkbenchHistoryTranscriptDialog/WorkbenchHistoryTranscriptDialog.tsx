@@ -10,13 +10,14 @@ import cls from "@/pages/workbench/components/WorkbenchHistoryTranscriptDialog/W
 interface Props {
     title: string
     items: ChatItem[]
+    vaultId: string
 }
 
 // Read-only transcript view for a past Docker workbench session, opened via
 // OpenDialog() from useWorkbenchHistory when a docker-mode history row is
 // selected. Docker sessions are closed past transcripts (unlike resumable api
 // chats), so there's nothing to interact with — permission decisions are no-ops.
-export default function WorkbenchHistoryTranscriptDialog({title, items}: Props) {
+export default function WorkbenchHistoryTranscriptDialog({title, items, vaultId}: Props) {
     const {CloseDialog} = useDialog()
 
     return (
@@ -34,7 +35,7 @@ export default function WorkbenchHistoryTranscriptDialog({title, items}: Props) 
                 </Button>
             </div>
             <div className={cls.Body}>
-                <ChatMessageList items={items} onPermissionDecision={() => {}}/>
+                <ChatMessageList items={items} vaultId={vaultId} onPermissionDecision={() => {}}/>
             </div>
         </div>
     )

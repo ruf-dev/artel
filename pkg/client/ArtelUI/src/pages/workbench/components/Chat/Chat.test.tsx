@@ -30,6 +30,7 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
     render(
         <Chat
             items={items}
+            vaultId="v1"
             status={status}
             sendMessage={vi.fn()}
             resendMessage={vi.fn()}

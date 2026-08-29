@@ -1,9 +1,12 @@
 import {create} from 'zustand'
+import {useQuery} from '@tanstack/react-query'
 
 import {NoteItem} from "@/app/api/artel/notes.pb.ts"
 import {
     DeleteFolderResult, ImportConflictAction, ImportResolutionInput, ImportResult, notesService,
 } from "@/processes/Notes.ts"
+import {retryOnStatus} from "@/processes/grpcErrors.ts"
+import useUser from "@/hooks/user/User.ts"
 
 export {ImportConflictAction}
 export type {NoteItem, DeleteFolderResult, ImportResolutionInput, ImportResult}
@@ -214,3 +217,18 @@ export const useNotes = create<NotesState>((set, get) => ({
         })
     },
 }))
+
+export function noteContentQueryKey(vaultId?: string, path?: string) {
+    return ['note-content', vaultId, path] as const
+}
+
+export function useNoteContent(vaultId?: string, path?: string) {
+    const {auth} = useUser()
+    const q = useQuery({
+        queryKey: noteContentQueryKey(vaultId, path),
+        queryFn: () => notesService.getNote(vaultId!, path!),
+        enabled: !!vaultId && !!path && auth.isAuthenticated(),
+        retry: retryOnStatus(),
+    })
+    return {content: q.data ?? null, isLoading: q.isLoading}
+}

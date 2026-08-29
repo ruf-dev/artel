@@ -107,9 +107,9 @@ export function useChatSession(vaultId: string | undefined) {
         setItems(prev => applyEvent(prev, event))
     }, [])
 
-    const sendMessage = useCallback((text: string) => {
+    const sendMessage = useCallback((text: string, attachments?: string[]) => {
         const id = crypto.randomUUID()
-        dispatch({type: "user_message", text, id})
+        dispatch({type: "user_message", text, id, attachments})
         setPendingTurn(true)
     }, [dispatch])
 
@@ -120,9 +120,9 @@ export function useChatSession(vaultId: string | undefined) {
     // trailing state after the target message first (dropping a dangling error item,
     // say), relying on React batching both setItems calls in order so the dispatch's
     // applyEvent sees the truncated array and no-ops on the id match.
-    const resendMessage = useCallback((id: string, text: string) => {
+    const resendMessage = useCallback((id: string, text: string, attachments?: string[]) => {
         setItems(prev => truncateAfterUserMessage(prev, id))
-        dispatch({type: "user_message", text, id})
+        dispatch({type: "user_message", text, id, attachments})
         setPendingTurn(true)
     }, [dispatch])
 

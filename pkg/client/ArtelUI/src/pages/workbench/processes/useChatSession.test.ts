@@ -37,6 +37,18 @@ class MockWebSocket {
     }
 }
 
+// Shared across describes below: renders the hook and waits for its socket to
+// reach "open", returning the mock socket alongside the hook result.
+async function openedSession(vaultId = "v1") {
+    const {result} = renderHook(() => useChatSession(vaultId))
+    const ws = MockWebSocket.instances[MockWebSocket.instances.length - 1]
+    act(() => {
+        ws.open()
+    })
+    await waitFor(() => expect(result.current.status).toBe("open"))
+    return {result, ws}
+}
+
 describe("useChatSession", () => {
     beforeEach(() => {
         MockWebSocket.instances = []
@@ -65,6 +77,19 @@ describe("useChatSession", () => {
         expect(result.current.items[0]).toMatchObject({kind: "assistant_message", text: "hello"})
 
         unmount()
+    })
+
+    it("includes attachments on the dispatched WS payload when sendMessage is passed them", async () => {
+        const {result, ws} = await openedSession()
+
+        act(() => {
+            result.current.sendMessage("check these out", ["notes/a.md", "b.md"])
+        })
+        await waitFor(() => expect(result.current.items).toHaveLength(1))
+        expect(result.current.items[0]).toMatchObject({
+            kind: "user_message", text: "check these out", attachments: ["notes/a.md", "b.md"],
+        })
+        expect(JSON.parse(ws.sent[0])).toMatchObject({attachments: ["notes/a.md", "b.md"]})
     })
 
     it("does nothing when sending a user message while the socket is still connecting", () => {
@@ -238,13 +263,7 @@ describe("useChatSession resendMessage", () => {
     })
 
     it("resends with the same id, replacing a trailing error instead of duplicating the bubble", async () => {
-        const {result} = renderHook(() => useChatSession("v1"))
-        const ws = MockWebSocket.instances[0]
-
-        act(() => {
-            ws.open()
-        })
-        await waitFor(() => expect(result.current.status).toBe("open"))
+        const {result, ws} = await openedSession()
 
         act(() => {
             result.current.sendMessage("hello")
@@ -278,6 +297,23 @@ describe("useChatSession resendMessage", () => {
             ws.emit({type: "user_message", text: "hello", id: messageId, seq: 1})
         })
         expect(result.current.items).toHaveLength(1)
+    })
+
+    it("includes attachments on the dispatched WS payload when resendMessage is passed them", async () => {
+        const {result, ws} = await openedSession()
+
+        act(() => {
+            result.current.sendMessage("hello")
+        })
+        await waitFor(() => expect(result.current.items).toHaveLength(1))
+        const messageId = JSON.parse(ws.sent[0]).id
+
+        act(() => {
+            result.current.resendMessage(messageId, "hello", ["notes/a.md"])
+        })
+        // Dispatched wire frame carries the new attachments (the local item stays
+        // as truncateAfterUserMessage/dedup left it - resend always reuses the id).
+        expect(JSON.parse(ws.sent[1])).toMatchObject({id: messageId, attachments: ["notes/a.md"]})
     })
 
     it("truncation is a no-op when the id isn't present, but the message is still dispatched", () => {

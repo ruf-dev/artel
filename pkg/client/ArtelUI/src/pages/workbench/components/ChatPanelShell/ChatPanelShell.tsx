@@ -15,8 +15,9 @@ import {usePendingElapsed} from "@/pages/workbench/processes/usePendingElapsed.t
 
 interface Props {
     items: ChatItem[]
+    vaultId: string
     bannerStatus: ChatConnectionStatus
-    sendMessage: (text: string) => void
+    sendMessage: (text: string, attachments?: string[]) => void
     onResendMessage?: (id: string, text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
@@ -48,7 +49,7 @@ export default function ChatPanelShell(props: Props) {
     function handleSend() {
         const text = draft.trim()
         if (!text) return
-        props.sendMessage(withAttachmentsPreamble(text, props.attachedPaths))
+        props.sendMessage(withAttachmentsPreamble(text, props.attachedPaths), props.attachedPaths)
         props.onClearAttachments()
         setDraft("")
     }
@@ -65,6 +66,7 @@ export default function ChatPanelShell(props: Props) {
                 <ChatStatusBanner status={props.bannerStatus}/>
                 <ChatMessageList
                     items={props.items}
+                    vaultId={props.vaultId}
                     assistantLabel={props.assistantLabel}
                     onRetryMessage={props.sendMessage}
                     onResendMessage={props.onResendMessage}
