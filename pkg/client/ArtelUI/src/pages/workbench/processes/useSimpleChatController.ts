@@ -10,7 +10,7 @@ interface Params {
     chatId: string | undefined
     vaultId: string
     active: boolean
-    onChatCreated: (chatId: string) => void
+    onChatIdChange: (chatId: string | undefined) => void
     bakeError: (title: string, err: unknown) => void
 }
 
@@ -20,12 +20,12 @@ interface Params {
 // chatSession is only constructed while Docker mode is the effective mode, so
 // switching to Simple Chat mode doesn't leave two sets of network calls/sockets
 // running at once.
-export function useSimpleChatController({chatId, vaultId, active, onChatCreated, bakeError}: Params) {
+export function useSimpleChatController({chatId, vaultId, active, onChatIdChange, bakeError}: Params) {
     const effectiveChatId = active ? chatId : undefined
 
     const {chat, messages} = useSimpleChat(effectiveChatId)
     const {models, recommendedDefaultModel, isLoading: modelsLoading} = useOpenRouterModels(active)
-    const {create} = useSimpleChatMutations(vaultId)
+    const {create, creating} = useSimpleChatMutations(vaultId)
     const {lastUsedModel, setLastUsedModel} = useLastUsedModel()
 
     const initialItems = useMemo(() => simpleChatMessagesToItems(messages), [messages])
@@ -42,13 +42,20 @@ export function useSimpleChatController({chatId, vaultId, active, onChatCreated,
         setLastUsedModel(model)
     }, [setModel, setLastUsedModel])
 
+    // Clears chatId immediately, before the CreateChat round-trip even starts: effectiveChatId
+    // dropping to undefined closes the current session's websocket right away (see
+    // useSimpleChatSession's status/composerDisabled), so there is no window where the old
+    // chat's live socket — and the composer sending into it — is still reachable while the UI's
+    // intent has already moved to "starting a new chat". Without this, a message sent during the
+    // create() round-trip lands on the old thread, with its full history, instead of the new one.
     function handleNewChat() {
         const model = session.currentModel || lastUsedModel || recommendedDefaultModel || models[0] || ""
         if (model) {
             setLastUsedModel(model)
         }
+        onChatIdChange(undefined)
         create({model, vaultAccess: true})
-            .then(newChat => onChatCreated(newChat.id))
+            .then(newChat => onChatIdChange(newChat.id))
             .catch(e => bakeError("Failed to create chat", e))
     }
 
@@ -63,6 +70,7 @@ export function useSimpleChatController({chatId, vaultId, active, onChatCreated,
         models,
         modelsLoading,
         handleNewChat,
+        creatingChat: creating,
         pendingTurn: session.pendingTurn,
     }
 }

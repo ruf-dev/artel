@@ -33,6 +33,7 @@ const base = {
     stopping: false,
     starting: false,
     onNewChat: vi.fn(),
+    newChatDisabled: false,
 }
 
 describe("TopbarRight", () => {
@@ -51,6 +52,12 @@ describe("TopbarRight", () => {
         fireEvent.click(newChatBtn)
 
         expect(onNewChat).toHaveBeenCalledTimes(1)
+    })
+
+    it("New Chat button is disabled when newChatDisabled", () => {
+        render(<TopbarRight {...base} newChatDisabled/>)
+
+        expect(screen.getByRole("button", {name: "New chat"})).toBeDisabled()
     })
 
     it("api mode: no view switch, no start-stop, no settings", () => {

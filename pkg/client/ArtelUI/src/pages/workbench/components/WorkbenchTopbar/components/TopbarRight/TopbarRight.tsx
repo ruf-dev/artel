@@ -21,6 +21,7 @@ interface Props {
     stopping: boolean
     starting: boolean
     onNewChat: () => void
+    newChatDisabled: boolean
 }
 
 // Right cluster of WorkbenchTopbar: the New Chat button, Chat/Terminal switch
@@ -34,7 +35,7 @@ export default function TopbarRight(props: Props) {
 
     return (
         <div className={cls.TopbarRightContainer}>
-            <NewChatButton onClick={props.onNewChat}/>
+            <NewChatButton onClick={props.onNewChat} disabled={props.newChatDisabled}/>
             {showViewSwitch && (
                 <SegmentedControl
                     options={[

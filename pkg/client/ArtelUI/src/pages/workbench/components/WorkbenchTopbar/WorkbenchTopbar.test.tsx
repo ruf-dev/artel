@@ -43,6 +43,7 @@ const base = {
     onToggleNav: vi.fn(),
     showNavToggle: true,
     onNewChat: vi.fn(),
+    newChatDisabled: false,
 }
 
 describe("WorkbenchTopbar", () => {
@@ -116,5 +117,11 @@ describe("WorkbenchTopbar", () => {
 
         fireEvent.click(newChatBtn)
         expect(onNewChat).toHaveBeenCalledTimes(1)
+    })
+
+    it("newChatDisabled disables the New Chat button", () => {
+        render(<WorkbenchTopbar {...base} effectiveMode="api" newChatDisabled/>)
+
+        expect(screen.getByRole("button", {name: "New chat"})).toBeDisabled()
     })
 })

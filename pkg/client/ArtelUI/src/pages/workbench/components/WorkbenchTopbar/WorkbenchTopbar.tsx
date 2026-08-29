@@ -29,6 +29,7 @@ interface Props {
     onToggleNav: () => void
     showNavToggle: boolean
     onNewChat: () => void
+    newChatDisabled: boolean
 }
 
 // The workbench top bar: status + model switcher on the left, the New Chat button
@@ -66,6 +67,7 @@ export default function WorkbenchTopbar(props: Props) {
                 stopping={props.stopping}
                 starting={props.starting}
                 onNewChat={props.onNewChat}
+                newChatDisabled={props.newChatDisabled}
             />
         </div>
     )

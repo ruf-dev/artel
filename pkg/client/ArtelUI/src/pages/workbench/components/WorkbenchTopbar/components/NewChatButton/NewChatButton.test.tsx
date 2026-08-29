@@ -49,4 +49,10 @@ describe("NewChatButton", () => {
 
         expect(onClick).toHaveBeenCalledTimes(1)
     })
+
+    it("is disabled when disabled is true", () => {
+        render(<NewChatButton onClick={vi.fn()} disabled/>)
+
+        expect(screen.getByRole("button", {name: "New chat"})).toBeDisabled()
+    })
 })

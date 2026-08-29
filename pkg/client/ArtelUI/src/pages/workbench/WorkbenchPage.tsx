@@ -56,7 +56,7 @@ export default function WorkbenchPage() {
         chatId: modeControls.simpleChatId,
         vaultId: vaultId ?? "",
         active: effectiveMode === "api",
-        onChatCreated: modeControls.setSimpleChatId,
+        onChatIdChange: modeControls.setSimpleChatId,
         bakeError,
     })
 
@@ -130,6 +130,7 @@ export default function WorkbenchPage() {
                             stopping={lifecycle.stopping} starting={lifecycle.resuming}
                             onToggleNav={toggleNav} showNavToggle={sidebar.show}
                             onNewChat={sidebarHistory.onNewChat}
+                            newChatDisabled={effectiveMode === "api" && simpleChatController.creatingChat}
                             model={{
                                 models: simpleChatController.models, value: simpleChatController.currentModel,
                                 isLoading: simpleChatController.modelsLoading, onChange: simpleChatController.setModel,

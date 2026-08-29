@@ -9,13 +9,14 @@ import {
 const mockUseSimpleChat = vi.fn()
 const mockUseOpenRouterModels = vi.fn()
 const mockCreate = vi.fn()
+const mockCreating = vi.fn(() => false)
 const mockUseSimpleChatSession = vi.fn()
 const mockUseLastUsedModel = vi.fn()
 const mockSetLastUsedModel = vi.fn()
 
 vi.mock("@/app/hooks/SimpleChat.ts", () => ({
     useSimpleChat: (chatId?: string) => mockUseSimpleChat(chatId),
-    useSimpleChatMutations: (vaultId?: string) => ({create: mockCreate, vaultId}),
+    useSimpleChatMutations: (vaultId?: string) => ({create: mockCreate, creating: mockCreating(), vaultId}),
 }))
 
 vi.mock("@/app/hooks/useLastUsedModel.ts", () => ({
@@ -47,6 +48,7 @@ beforeEach(() => {
     })
     mockUseLastUsedModel.mockReturnValue({lastUsedModel: undefined, setLastUsedModel: mockSetLastUsedModel})
     mockCreate.mockResolvedValue({id: "new-chat-id"})
+    mockCreating.mockReturnValue(false)
 })
 
 describe("useSimpleChatController", () => {
@@ -55,7 +57,7 @@ describe("useSimpleChatController", () => {
             chatId: "c1",
             vaultId: "v1",
             active: false,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError: vi.fn(),
         }))
 
@@ -69,7 +71,7 @@ describe("useSimpleChatController", () => {
             chatId: "c1",
             vaultId: "v1",
             active: true,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError: vi.fn(),
         }))
 
@@ -79,19 +81,56 @@ describe("useSimpleChatController", () => {
     })
 
     it("creates a chat with the current model and reports the new id on success", async () => {
-        const onChatCreated = vi.fn()
+        const onChatIdChange = vi.fn()
         const {result} = renderHook(() => useSimpleChatController({
             chatId: undefined,
             vaultId: "v1",
             active: true,
-            onChatCreated,
+            onChatIdChange,
             bakeError: vi.fn(),
         }))
 
         result.current.handleNewChat()
 
-        await waitFor(() => expect(onChatCreated).toHaveBeenCalledWith("new-chat-id"))
+        await waitFor(() => expect(onChatIdChange).toHaveBeenCalledWith("new-chat-id"))
         expect(mockCreate).toHaveBeenCalledWith({model: "m1", vaultAccess: true})
+    })
+
+    it("clears chatId before the create call resolves, so no send can race onto the old chat", () => {
+        const onChatIdChange = vi.fn()
+        let resolveCreate!: (chat: {id: string}) => void
+        mockCreate.mockReturnValue(new Promise(resolve => {
+            resolveCreate = resolve
+        }))
+
+        const {result} = renderHook(() => useSimpleChatController({
+            chatId: "old-chat-id",
+            vaultId: "v1",
+            active: true,
+            onChatIdChange,
+            bakeError: vi.fn(),
+        }))
+
+        result.current.handleNewChat()
+
+        expect(onChatIdChange).toHaveBeenCalledWith(undefined)
+        expect(onChatIdChange).not.toHaveBeenCalledWith("new-chat-id")
+
+        resolveCreate({id: "new-chat-id"})
+    })
+
+    it("exposes creatingChat from the create mutation's pending state", () => {
+        mockCreating.mockReturnValue(true)
+
+        const {result} = renderHook(() => useSimpleChatController({
+            chatId: undefined,
+            vaultId: "v1",
+            active: true,
+            onChatIdChange: vi.fn(),
+            bakeError: vi.fn(),
+        }))
+
+        expect(result.current.creatingChat).toBe(true)
     })
 
     it("bakes an error toast when chat creation fails", async () => {
@@ -101,7 +140,7 @@ describe("useSimpleChatController", () => {
             chatId: undefined,
             vaultId: "v1",
             active: true,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError,
         }))
 
@@ -119,7 +158,7 @@ describe("useSimpleChatController - last used model caching", () => {
             chatId: undefined,
             vaultId: "v1",
             active: true,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError: vi.fn(),
         }))
 
@@ -134,7 +173,7 @@ describe("useSimpleChatController - last used model caching", () => {
             chatId: "c1",
             vaultId: "v1",
             active: true,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError: vi.fn(),
         }))
 
@@ -158,7 +197,7 @@ describe("useSimpleChatController - last used model caching", () => {
             chatId: "c1",
             vaultId: "v1",
             active: true,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError: vi.fn(),
         }))
 
@@ -173,7 +212,7 @@ describe("useSimpleChatController - last used model caching", () => {
             chatId: undefined,
             vaultId: "v1",
             active: true,
-            onChatCreated: vi.fn(),
+            onChatIdChange: vi.fn(),
             bakeError: vi.fn(),
         }))
 
@@ -203,6 +242,7 @@ describe("toSimpleChatSessionBundle", () => {
             models: ["m1"],
             modelsLoading: false,
             handleNewChat,
+            creatingChat: false,
             pendingTurn: false,
         })
 
