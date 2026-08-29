@@ -263,6 +263,33 @@ splitting an existing fat page.
 - Enforced for `.module.css`/`.css` files by the `declaration-no-important` rule in
   `stylelint.config.js` (`bun run lint:css` / `bunx stylelint '**/*.{css,scss}'`).
 
+## Mobile/desktop detection
+
+- **Prefer the shared `--is-mobile` CSS var over a fresh `@media (width <= 45rem)`
+  block** when the responsive change is a *numeric/scalar* toggle (a `flex-grow`,
+  or a length that swaps between two values). `sizes.css` defines it once — `0` on
+  desktop, flipped to `1` inside `@media (orientation: portrait), (width <= 45rem)`
+  (OR'd with portrait so a wide-but-portrait viewport still counts as mobile,
+  mirroring `useIsMobileNav.ts`'s comma-OR technique) — so a component consumes it
+  directly (`flex-grow: var(--is-mobile)`), inverted (`calc(1 - var(--is-mobile))`),
+  or to flip a length (`calc((1 - var(--is-mobile)) * 14rem)`), instead of repeating
+  its own `@media` block. See `ModelSwitcher.module.css` /
+  `WorkbenchTopbar/components/TopbarLeft/TopbarLeft.module.css` /
+  `WorkbenchTopbar.module.css`'s `.Spacer` for the reference.
+- **Don't force this onto a keyword-valued property** (`flex-direction`, `display`,
+  `position`) or a wholesale multi-value shorthand swap (e.g. a `padding` override
+  that changes all three values) — `var()`/`calc()` can't cleanly express "pick
+  keyword A or B," and faking it via a dedicated custom property per file gains
+  nothing over a local `@media` block while fighting the "keep modules
+  self-contained" rule above. Keep those as a plain `@media (width <= 45rem)` block
+  colocated in the component's own file — the repeated *condition text* across
+  files isn't the kind of duplication this project optimizes away (same spirit as
+  "duplicate small shared rules" above).
+- `--is-mobile` is a *toggle*, not a source of new global breakpoint tokens — don't
+  add per-file properties like `--foo-mobile-padding` to `sizes.css` "for DRYness"
+  unless the exact value is already duplicated verbatim across several files (that's
+  the px/rem size-token convention above, not this one).
+
 ## Dialog shells must scroll internally
 
 - Every dialog's outer shell (the top-level `{ComponentName}Container`-style class —
