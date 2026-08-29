@@ -1,11 +1,14 @@
 .ComposerRowContainer {
+    /* Anchored from the top, not the bottom: the default single-line textarea is
+       about as tall as the button itself, so top:0 reads as centered — and staying
+       pinned to the top (rather than re-centering) is what keeps the offset fixed
+       as autoGrow adds height below. */
+    position: absolute;
+    top: 0;
+    right: 0.35rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-
-    & .Spacer {
-        flex: 1;
-    }
+    gap: 0.35rem;
 
     & .NewChatButton {
         display: flex;
@@ -33,5 +36,9 @@
         height: 2.125rem;
         padding: 0;
         border-radius: var(--border-radius-circle);
+    }
+
+    & .SendIcon {
+        flex-shrink: 0;
     }
 }

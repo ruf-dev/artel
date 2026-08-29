@@ -1,8 +1,9 @@
 import {Button} from "@vervstack/chures"
+import {MorphIcon} from "morphicons/react"
+import {Circle, Send} from "lucide"
 
 import {cn} from "@/app/utils/cn.ts"
 import PlusIcon from "@/icons/common/PlusIcon.tsx"
-import SendIcon from "@/pages/workbench/components/Chat/components/icons/SendIcon.tsx"
 import cls from "@/pages/workbench/components/Chat/components/ComposerRow/ComposerRow.module.css"
 
 interface Props {
@@ -10,10 +11,12 @@ interface Props {
     onSend: () => void
     disabled: boolean
     sendDisabled: boolean
+    hasText: boolean
     hideNewChatButton?: boolean
 }
 
-// The bottom control strip of the composer card: new-chat button, spacer, send.
+// Send starts life as a bare circle glyph — nothing to send yet — and morphs into
+// the paper-plane send glyph the moment the composer holds text.
 export default function ComposerRow(props: Props) {
     return (
         <div className={cls.ComposerRowContainer}>
@@ -27,7 +30,6 @@ export default function ComposerRow(props: Props) {
             >
                 <PlusIcon/>
             </Button>
-            <div className={cls.Spacer}/>
             <Button
                 variant="primary"
                 className={cls.SendButton}
@@ -35,7 +37,12 @@ export default function ComposerRow(props: Props) {
                 disabled={props.sendDisabled}
                 aria-label="Send message"
             >
-                <SendIcon/>
+                <MorphIcon
+                    icon={props.hasText ? Send : Circle}
+                    size={15}
+                    strokeWidth={2}
+                    className={cls.SendIcon}
+                />
             </Button>
         </div>
     )

@@ -14,18 +14,19 @@
         border-radius: var(--border-radius-lg);
     }
 
-    & .CtxRow {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem;
-        padding: 0 0.3rem 0.1rem;
+    & .InputRow {
+        position: relative;
 
-        &:empty {
-            display: none;
+        & .Input {
+            width: 100%;
+
+            & textarea {
+                padding-right: 2.75rem;
+            }
+
+            &.InputWide textarea {
+                padding-right: 5.25rem;
+            }
         }
-    }
-
-    & .Input {
-        width: 100%;
     }
 }

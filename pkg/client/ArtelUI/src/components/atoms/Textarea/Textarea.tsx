@@ -14,6 +14,7 @@ interface Props {
     onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void
     autoGrow?: boolean
     maxHeightRem?: number
+    minHeightRem?: number
 }
 
 const DEFAULT_MAX_HEIGHT_REM = 11
@@ -26,10 +27,20 @@ export default function Textarea(props: Props) {
         if (!props.autoGrow) return
         const el = ref.current
         if (!el) return
-        el.style.height = "auto"
         const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+
+        // Empty state gets a fixed height instead of the usual scrollHeight measurement —
+        // font line-box metrics for the composer's font are inconsistent enough that
+        // measuring the "empty" height isn't reliably the same across engines/loads, which
+        // broke vertical-centering against the absolutely-positioned send button. A caller
+        // that cares (ChatComposer) sizes minHeightRem to match that button's own height.
+        if (!props.value.trim() && props.minHeightRem !== undefined) {
+            el.style.height = `${props.minHeightRem * rootFontSize}px`
+            return
+        }
+        el.style.height = "auto"
         el.style.height = `${Math.min(el.scrollHeight, maxHeightRem * rootFontSize)}px`
-    }, [props.value, props.autoGrow, maxHeightRem])
+    }, [props.value, props.autoGrow, maxHeightRem, props.minHeightRem])
 
     return (
         <div className={cn(cls.TextareaContainer, props.autoGrow && cls.AutoGrow, props.className)}>

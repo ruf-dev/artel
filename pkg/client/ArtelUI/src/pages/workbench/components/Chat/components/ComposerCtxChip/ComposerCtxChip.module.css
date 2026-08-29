@@ -22,6 +22,8 @@
         justify-content: center;
         flex-shrink: 0;
         padding: 0;
+        background: transparent;
+        border: var(--border-thickness) solid transparent;
         color: var(--color-fg-secondary);
         cursor: pointer;
         transition: color 140ms ease;
