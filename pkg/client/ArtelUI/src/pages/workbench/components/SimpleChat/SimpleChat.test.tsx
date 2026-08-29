@@ -73,6 +73,24 @@ describe("SimpleChat", () => {
         expect(lastChatPanelShellProps?.composerDisabled).toBe(false)
     })
 
+    it("disables the composer when no model is selected", () => {
+        render(<SimpleChat {...defaultProps} session={{...baseSession, currentModel: ""}}/>)
+
+        expect(lastChatPanelShellProps?.composerDisabled).toBe(true)
+    })
+
+    it("swaps the composer placeholder when no model is selected", () => {
+        render(<SimpleChat {...defaultProps} session={{...baseSession, currentModel: ""}}/>)
+
+        expect(lastChatPanelShellProps?.composerPlaceholder).toBe("Select a model to start chatting…")
+    })
+
+    it("uses the default placeholder when a model is selected", () => {
+        render(<SimpleChat {...defaultProps}/>)
+
+        expect(lastChatPanelShellProps?.composerPlaceholder).toBe("Message the agent…")
+    })
+
     it("renders the chat panel", () => {
         render(<SimpleChat {...defaultProps}/>)
 

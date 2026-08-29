@@ -20,28 +20,30 @@ interface Props {
     onChange: (model: string) => void
     disabled?: boolean
     placeholder?: string
+    needsAttention?: boolean
 }
 
 // Lets the user change the OpenRouter model mid-conversation — wired to
 // useSimpleChatSession's currentModel/setModel, which stamps whatever is
 // currently selected onto every outgoing user_message. `disabled` renders a dimmed,
 // non-interactive trigger (used by the Docker topbar, where the model is fixed to
-// Claude Code and there's nothing to pick).
-export default function ModelSwitcher({models, value, isLoading, onChange, disabled, placeholder}: Props) {
+// Claude Code and there's nothing to pick). `needsAttention` visually flags "no model
+// selected yet" so the user notices where to fix it.
+export default function ModelSwitcher(props: Props) {
     const {likedIds, isLiked, toggleLiked} = useLikedModels()
 
     function handleChange(ids: string[]) {
-        if (disabled) return
+        if (props.disabled) return
         const next = ids[0]
-        if (next) onChange(next)
+        if (next) props.onChange(next)
     }
 
     const groupedModels = useMemo(
-        () => sortLikedToTop(groupModelsByFamily(models), likedIds),
-        [models, likedIds],
+        () => sortLikedToTop(groupModelsByFamily(props.models), likedIds),
+        [props.models, likedIds],
     )
 
-    const latestFlags = useMemo(() => buildLatestModelFlags(models), [models])
+    const latestFlags = useMemo(() => buildLatestModelFlags(props.models), [props.models])
 
     const searchModels = useCallback(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,14 +53,18 @@ export default function ModelSwitcher({models, value, isLoading, onChange, disab
 
     return (
         <div
-            className={cn(cls.ModelSwitcherContainer, disabled && cls.ModelSwitcherDisabled)}
-            aria-disabled={disabled || undefined}
+            className={cn(
+                cls.ModelSwitcherContainer,
+                props.disabled && cls.ModelSwitcherDisabled,
+                props.needsAttention && cls.ModelSwitcherNeedsAttention,
+            )}
+            aria-disabled={props.disabled || undefined}
         >
             <Dropdown
-                placeholder={placeholder ?? "Model…"}
-                isLoading={isLoading}
+                placeholder={props.placeholder ?? "Model…"}
+                isLoading={props.isLoading}
                 options={groupedModels}
-                value={value ? [value] : []}
+                value={props.value ? [props.value] : []}
                 onChange={handleChange}
                 onSearch={searchModels}
                 portal

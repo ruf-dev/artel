@@ -31,6 +31,7 @@ export default function TopbarLeft({effectiveMode, exists, status, model}: Props
                     value={model.value}
                     isLoading={model.isLoading}
                     onChange={model.onChange}
+                    needsAttention={!model.isLoading && !model.value}
                 />
             )}
             {effectiveMode === "docker" && (

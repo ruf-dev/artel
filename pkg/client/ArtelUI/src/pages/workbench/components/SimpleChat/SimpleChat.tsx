@@ -38,6 +38,8 @@ function prettyModel(id: string): string {
 // the page-level WorkbenchSidebar, so this component is just the message
 // panel now. hideNewChatButton stays true: the sidebar owns "new chat".
 export default function SimpleChat(props: Props) {
+    const noModelSelected = !props.session.currentModel
+
     return (
         <div className={cls.SimpleChatContainer}>
             <ChatPanelShell
@@ -47,8 +49,8 @@ export default function SimpleChat(props: Props) {
                 sendPermissionDecision={props.session.sendPermissionDecision}
                 onNewChat={props.session.onNewChat}
                 pendingTurn={props.session.pendingTurn}
-                composerDisabled={props.session.status !== "open" || !props.chatId}
-                composerPlaceholder="Message the agent…"
+                composerDisabled={props.session.status !== "open" || !props.chatId || noModelSelected}
+                composerPlaceholder={noModelSelected ? "Select a model to start chatting…" : "Message the agent…"}
                 assistantLabel={prettyModel(props.session.currentModel)}
                 hideNewChatButton
                 ctx={props.ctx}

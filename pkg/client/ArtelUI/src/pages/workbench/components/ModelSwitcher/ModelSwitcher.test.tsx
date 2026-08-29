@@ -65,4 +65,18 @@ describe("ModelSwitcher", () => {
         expect(wrapper).toHaveAttribute("aria-disabled", "true")
         expect(wrapper.className).toMatch(/ModelSwitcherDisabled/)
     })
+
+    it("adds the needs-attention class when needsAttention is true", () => {
+        const {container} = render(<ModelSwitcher models={models} value="" onChange={vi.fn()} needsAttention/>)
+        const wrapper = container.firstChild as HTMLElement
+
+        expect(wrapper.className).toMatch(/ModelSwitcherNeedsAttention/)
+    })
+
+    it("omits the needs-attention class by default", () => {
+        const {container} = render(<ModelSwitcher models={models} value="" onChange={vi.fn()}/>)
+        const wrapper = container.firstChild as HTMLElement
+
+        expect(wrapper.className).not.toMatch(/ModelSwitcherNeedsAttention/)
+    })
 })

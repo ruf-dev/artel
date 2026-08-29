@@ -8,4 +8,10 @@
         opacity: 0.55;
         pointer-events: none;
     }
+
+    /* Highlight when no model is selected yet so the user notices where to fix it. */
+    &.ModelSwitcherNeedsAttention {
+        border: var(--border-thickness) solid var(--coral);
+        border-radius: var(--border-radius-sm);
+    }
 }
