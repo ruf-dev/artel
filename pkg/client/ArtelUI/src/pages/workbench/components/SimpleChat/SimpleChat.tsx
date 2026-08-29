@@ -9,6 +9,7 @@ interface SimpleChatSessionBundle {
     items: ChatItem[]
     status: ChatConnectionStatus
     sendMessage: (text: string) => void
+    resendMessage: (id: string, text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
     models: string[]
@@ -46,6 +47,7 @@ export default function SimpleChat(props: Props) {
                 items={props.session.items}
                 bannerStatus={props.chatId ? props.session.status : "closed"}
                 sendMessage={props.session.sendMessage}
+                onResendMessage={props.session.resendMessage}
                 sendPermissionDecision={props.session.sendPermissionDecision}
                 onNewChat={props.session.onNewChat}
                 pendingTurn={props.session.pendingTurn}

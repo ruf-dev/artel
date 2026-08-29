@@ -8,6 +8,7 @@ interface Props {
     items: ChatItem[]
     status: ChatConnectionStatus
     sendMessage: (text: string) => void
+    resendMessage: (id: string, text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
     pendingTurn: boolean
@@ -28,6 +29,7 @@ export default function Chat(props: Props) {
             items={props.items}
             bannerStatus={props.status}
             sendMessage={props.sendMessage}
+            onResendMessage={props.resendMessage}
             sendPermissionDecision={props.sendPermissionDecision}
             onNewChat={props.onNewChat}
             pendingTurn={props.pendingTurn}

@@ -39,6 +39,7 @@ beforeEach(() => {
         items: [],
         status: "closed",
         sendMessage: vi.fn(),
+        resendMessage: vi.fn(),
         sendPermissionDecision: vi.fn(),
         currentModel: "m1",
         setModel: vi.fn(),
@@ -146,6 +147,7 @@ describe("useSimpleChatController - last used model caching", () => {
             items: [],
             status: "closed",
             sendMessage: vi.fn(),
+            resendMessage: vi.fn(),
             sendPermissionDecision: vi.fn(),
             currentModel: "m1",
             setModel: sessionSetModel,
@@ -185,6 +187,7 @@ describe("useSimpleChatController - last used model caching", () => {
 describe("toSimpleChatSessionBundle", () => {
     it("maps the controller's fields into the session bundle shape, renaming handleNewChat to onNewChat", () => {
         const sendMessage = vi.fn()
+        const resendMessage = vi.fn()
         const sendPermissionDecision = vi.fn()
         const handleNewChat = vi.fn()
         const setModel = vi.fn()
@@ -193,6 +196,7 @@ describe("toSimpleChatSessionBundle", () => {
             items: [],
             status: "open",
             sendMessage,
+            resendMessage,
             sendPermissionDecision,
             currentModel: "m1",
             setModel,
@@ -206,6 +210,7 @@ describe("toSimpleChatSessionBundle", () => {
             items: [],
             status: "open",
             sendMessage,
+            resendMessage,
             sendPermissionDecision,
             onNewChat: handleNewChat,
             models: ["m1"],

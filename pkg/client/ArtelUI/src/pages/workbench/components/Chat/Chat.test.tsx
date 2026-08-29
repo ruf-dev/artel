@@ -32,6 +32,7 @@ function renderChat(items: ChatItem[] = [], status: ChatConnectionStatus = "open
             items={items}
             status={status}
             sendMessage={vi.fn()}
+            resendMessage={vi.fn()}
             sendPermissionDecision={vi.fn()}
             onNewChat={vi.fn()}
             pendingTurn={false}

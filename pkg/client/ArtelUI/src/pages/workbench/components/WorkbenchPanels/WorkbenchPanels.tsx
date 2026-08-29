@@ -15,6 +15,7 @@ interface ChatSession {
     items: ChatItem[]
     status: ChatConnectionStatus
     sendMessage: (text: string) => void
+    resendMessage: (id: string, text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     startNewChat: () => void
     pendingTurn: boolean
@@ -24,6 +25,7 @@ interface SimpleChatSessionBundle {
     items: ChatItem[]
     status: ChatConnectionStatus
     sendMessage: (text: string) => void
+    resendMessage: (id: string, text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
     models: string[]
@@ -63,6 +65,7 @@ export default function WorkbenchPanels(props: Props) {
             {isDockerRunning && !props.awaitingAuth && props.view === "chat" && (
                 <Chat key="chat" items={props.chatSession.items} status={props.chatSession.status}
                       sendMessage={props.chatSession.sendMessage}
+                      resendMessage={props.chatSession.resendMessage}
                       sendPermissionDecision={props.chatSession.sendPermissionDecision}
                       onNewChat={props.chatSession.startNewChat}
                       pendingTurn={props.chatSession.pendingTurn}

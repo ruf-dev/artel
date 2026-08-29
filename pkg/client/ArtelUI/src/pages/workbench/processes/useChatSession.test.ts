@@ -226,3 +226,79 @@ describe("useChatSession authComplete", () => {
         expect(result.current.authComplete).toBe(false)
     })
 })
+
+describe("useChatSession resendMessage", () => {
+    beforeEach(() => {
+        MockWebSocket.instances = []
+        vi.stubGlobal("WebSocket", MockWebSocket)
+    })
+
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
+    it("resends with the same id, replacing a trailing error instead of duplicating the bubble", async () => {
+        const {result} = renderHook(() => useChatSession("v1"))
+        const ws = MockWebSocket.instances[0]
+
+        act(() => {
+            ws.open()
+        })
+        await waitFor(() => expect(result.current.status).toBe("open"))
+
+        act(() => {
+            result.current.sendMessage("hello")
+        })
+        await waitFor(() => expect(result.current.items).toHaveLength(1))
+        const messageId = JSON.parse(ws.sent[0]).id
+        expect(messageId).toBeDefined()
+
+        // The turn fails: the bridge reports an error, leaving a dangling user_message
+        // followed by a trailing error item.
+        act(() => {
+            ws.emit({type: "error", text: "turn failed"})
+        })
+        await waitFor(() => expect(result.current.items).toHaveLength(2))
+        expect(result.current.items[1]).toMatchObject({kind: "error"})
+
+        act(() => {
+            result.current.resendMessage(messageId, "hello")
+        })
+
+        // The trailing error is gone (truncated), and the outbound frame reuses the
+        // original id rather than minting a new one.
+        expect(result.current.items).toHaveLength(1)
+        expect(result.current.items[0]).toMatchObject({kind: "user_message", text: "hello", id: messageId})
+        expect(ws.sent).toHaveLength(2)
+        expect(JSON.parse(ws.sent[1])).toEqual({type: "user_message", text: "hello", id: messageId})
+
+        // The bridge echoes the resent message back with the same id: dedup absorbs
+        // it, so no duplicate bubble appears.
+        act(() => {
+            ws.emit({type: "user_message", text: "hello", id: messageId, seq: 1})
+        })
+        expect(result.current.items).toHaveLength(1)
+    })
+
+    it("truncation is a no-op when the id isn't present, but the message is still dispatched", () => {
+        const {result} = renderHook(() => useChatSession("v1"))
+        const ws = MockWebSocket.instances[0]
+
+        act(() => {
+            ws.open()
+        })
+
+        // No item with this id exists yet, so the truncate step (idx === -1) leaves
+        // items untouched - dispatch still goes out and applies normally (appending,
+        // not duplicating, since nothing with that id existed to dedupe against).
+        act(() => {
+            result.current.resendMessage("missing-id", "hello")
+        })
+
+        expect(ws.sent).toEqual([
+            JSON.stringify({type: "user_message", text: "hello", id: "missing-id"}),
+        ])
+        expect(result.current.items).toHaveLength(1)
+        expect(result.current.items[0]).toMatchObject({kind: "user_message", text: "hello", id: "missing-id"})
+    })
+})

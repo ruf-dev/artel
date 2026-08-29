@@ -12,6 +12,7 @@ interface Props {
     assistantLabel?: string
     retryDisabled?: boolean
     onRetryMessage?: (text: string) => void
+    onResendMessage?: (id: string, text: string) => void
     onPermissionDecision: (id: string, decision: PermissionDecision) => void
     pending?: {bucket: "normal" | "slow" | "stuck"; label?: string}
 }
@@ -27,22 +28,26 @@ function precedingUserText(items: ChatItem[], index: number): string | undefined
     return undefined
 }
 
-// Last user_message text in the items list, or undefined.
-function lastUserText(items: ChatItem[]): string | undefined {
+// Last user_message in the items list (id + text), or undefined. The id is
+// carried alongside the text so a trailing-failure retry can resend in place
+// (see resendMessage in useChatSession.ts/useSimpleChatSession.ts) instead of
+// minting a new message — id is undefined for a legacy persisted row from
+// before ids were stored, which the caller uses to disable that retry.
+function lastUserMessage(items: ChatItem[]): {id?: string; text: string} | undefined {
     for (let i = items.length - 1; i >= 0; i--) {
         const it = items[i]
-        if (it.kind === "user_message") return it.text
+        if (it.kind === "user_message") return {id: it.id, text: it.text}
     }
     return undefined
 }
 
 // Centered reading column inside the full-width scroll container.
 export default function ChatMessageColumn(props: Props) {
-    const trailingRetryText = !props.pending && (() => {
+    const trailingFailure = !props.pending && (() => {
         const last = props.items[props.items.length - 1]
         if (!last) return undefined
         if (last.kind === "user_message" || last.kind === "error") {
-            return lastUserText(props.items)
+            return lastUserMessage(props.items)
         }
         return undefined
     })()
@@ -55,7 +60,7 @@ export default function ChatMessageColumn(props: Props) {
                         ? precedingUserText(props.items, index)
                         : undefined
                     const isLastItem = index === props.items.length - 1
-                    const showTrailingRetry = isLastItem && trailingRetryText
+                    const showTrailingRetry = isLastItem && trailingFailure
                     return (
                         <ChatMessageItem
                             key={item.key}
@@ -68,8 +73,9 @@ export default function ChatMessageColumn(props: Props) {
                             retryDisabled={props.retryDisabled || !retryText}
                             onPermissionDecision={props.onPermissionDecision}
                             trailingRetry={showTrailingRetry ? {
-                                onRetry: () => trailingRetryText && props.onRetryMessage?.(trailingRetryText),
-                                disabled: props.retryDisabled || !trailingRetryText,
+                                onRetry: () => trailingFailure?.id
+                                    && props.onResendMessage?.(trailingFailure.id, trailingFailure.text),
+                                disabled: props.retryDisabled || !trailingFailure?.id,
                             } : undefined}
                         />
                     )
@@ -80,10 +86,10 @@ export default function ChatMessageColumn(props: Props) {
                         label={props.pending.label}
                         bucket={props.pending.bucket}
                         onRetry={() => {
-                            const t = lastUserText(props.items)
+                            const t = lastUserMessage(props.items)?.text
                             if (t) props.onRetryMessage?.(t)
                         }}
-                        retryDisabled={props.retryDisabled || !lastUserText(props.items)}
+                        retryDisabled={props.retryDisabled || !lastUserMessage(props.items)?.text}
                     />
                 )}
             </AnimatePresence>

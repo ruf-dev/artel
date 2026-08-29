@@ -17,6 +17,7 @@ describe("SimpleChat", () => {
         items: [],
         status: "open" as const,
         sendMessage: vi.fn(),
+        resendMessage: vi.fn(),
         sendPermissionDecision: vi.fn(),
         onNewChat: vi.fn(),
         models: ["m1"],

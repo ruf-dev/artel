@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react"
 
 import {ChatEvent, PermissionDecision} from "@/pages/workbench/processes/chatProtocol.ts"
-import {applyEvent, ChatItem} from "@/pages/workbench/processes/chatReducer.ts"
+import {applyEvent, ChatItem, truncateAfterUserMessage} from "@/pages/workbench/processes/chatReducer.ts"
 
 export type ChatConnectionStatus = "connecting" | "open" | "reconnecting" | "closed"
 
@@ -113,6 +113,19 @@ export function useChatSession(vaultId: string | undefined) {
         setPendingTurn(true)
     }, [dispatch])
 
+    // Resends a failed/dangling user_message by reusing its existing id (rather than
+    // minting a new one like sendMessage does) so both our own optimistic apply and
+    // the bridge's echo hit applyUserMessage's existing id-based dedup - the failed
+    // bubble is replaced in place instead of a duplicate being appended. Truncates any
+    // trailing state after the target message first (dropping a dangling error item,
+    // say), relying on React batching both setItems calls in order so the dispatch's
+    // applyEvent sees the truncated array and no-ops on the id match.
+    const resendMessage = useCallback((id: string, text: string) => {
+        setItems(prev => truncateAfterUserMessage(prev, id))
+        dispatch({type: "user_message", text, id})
+        setPendingTurn(true)
+    }, [dispatch])
+
     const sendPermissionDecision = useCallback((id: string, decision: PermissionDecision) => {
         dispatch({type: "permission_decision", id, decision})
         setPendingTurn(true)
@@ -123,5 +136,5 @@ export function useChatSession(vaultId: string | undefined) {
         setPendingTurn(false)
     }, [dispatch])
 
-    return {items, status, authComplete, sendMessage, sendPermissionDecision, startNewChat, pendingTurn}
+    return {items, status, authComplete, sendMessage, resendMessage, sendPermissionDecision, startNewChat, pendingTurn}
 }

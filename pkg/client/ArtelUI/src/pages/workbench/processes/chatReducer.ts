@@ -123,6 +123,15 @@ function applyPermissionDecision(prev: ChatItem[], event: ChatEvent): ChatItem[]
         : it)
 }
 
+// Truncates the item list to end just after the user_message with the given id -
+// used by resendMessage (useChatSession.ts/useSimpleChatSession.ts) to drop any
+// trailing dangling/error state before re-sending in place. A no-op (returns the
+// same array reference) when no such id is found.
+export function truncateAfterUserMessage(items: ChatItem[], id: string): ChatItem[] {
+    const idx = items.findIndex(i => i.kind === "user_message" && i.id === id)
+    return idx === -1 ? items : items.slice(0, idx + 1)
+}
+
 export function applyEvent(prev: ChatItem[], event: ChatEvent): ChatItem[] {
     switch (event.type) {
         case "system_init":

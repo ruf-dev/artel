@@ -10,6 +10,7 @@ interface Props {
     assistantLabel?: string
     retryDisabled?: boolean
     onRetryMessage?: (text: string) => void
+    onResendMessage?: (id: string, text: string) => void
     onPermissionDecision: (id: string, decision: PermissionDecision) => void
     pending?: {bucket: "normal" | "slow" | "stuck"; label?: string}
 }
@@ -45,6 +46,7 @@ export default function ChatMessageList(props: Props) {
                 assistantLabel={props.assistantLabel}
                 retryDisabled={props.retryDisabled}
                 onRetryMessage={props.onRetryMessage}
+                onResendMessage={props.onResendMessage}
                 onPermissionDecision={props.onPermissionDecision}
                 pending={props.pending}
             />

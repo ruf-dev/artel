@@ -17,6 +17,7 @@ interface Props {
     items: ChatItem[]
     bannerStatus: ChatConnectionStatus
     sendMessage: (text: string) => void
+    onResendMessage?: (id: string, text: string) => void
     sendPermissionDecision: (id: string, decision: PermissionDecision) => void
     onNewChat: () => void
     pendingTurn: boolean
@@ -66,6 +67,7 @@ export default function ChatPanelShell(props: Props) {
                     items={props.items}
                     assistantLabel={props.assistantLabel}
                     onRetryMessage={props.sendMessage}
+                    onResendMessage={props.onResendMessage}
                     retryDisabled={props.composerDisabled}
                     onPermissionDecision={props.sendPermissionDecision}
                     pending={pendingActive ? {bucket: pendingBucket, label: props.assistantLabel} : undefined}
