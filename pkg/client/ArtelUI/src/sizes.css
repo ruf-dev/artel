@@ -16,6 +16,21 @@
     :root { font-size: 12px; }
 }
 
+/* Single-source mobile/portrait toggle: 0 on desktop, 1 when the viewport is
+   narrow (<=45rem, the project's standard mobile breakpoint) or in portrait
+   orientation. Consume via var(--is-mobile) in component rules — e.g.
+   `flex-grow: var(--is-mobile)`, or `calc((1 - var(--is-mobile)) * <value>)`
+   to flip a value — instead of repeating an @media block per file. */
+:root {
+    --is-mobile: 0;
+}
+
+@media (orientation: portrait), (width <= 45rem) {
+    :root {
+        --is-mobile: 1;
+    }
+}
+
 :root {
     --font-size-xs:   0.625rem;
     --font-size-sm:   0.6875rem;

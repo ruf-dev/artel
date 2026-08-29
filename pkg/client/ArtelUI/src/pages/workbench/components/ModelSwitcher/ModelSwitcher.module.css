@@ -1,10 +1,6 @@
 .ModelSwitcherContainer {
-    min-width: 14rem;
-
-    @media (width <= 30rem) {
-        min-width: 0;
-        flex: 1;
-    }
+    min-width: calc((1 - var(--is-mobile)) * 14rem);
+    flex: var(--is-mobile) 1 0;
 
     /* Docker topbar renders this with a fixed "Claude Code" label and nothing to
        pick — dim it and swallow pointer events so the menu can't open. */

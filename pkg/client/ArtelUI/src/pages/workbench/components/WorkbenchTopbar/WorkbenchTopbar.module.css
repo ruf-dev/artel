@@ -12,6 +12,6 @@
     }
 
     & .Spacer {
-        flex: 1;
+        flex-grow: calc(1 - var(--is-mobile));
     }
 }
