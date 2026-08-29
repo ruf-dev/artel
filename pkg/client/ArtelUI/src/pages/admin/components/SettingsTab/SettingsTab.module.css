@@ -60,7 +60,7 @@
 
 @media (width <= 45rem) {
     .SettingsTabContainer {
-        padding: 1.5rem 1.125rem 3.75rem;
+        padding: var(--content-padding-mobile);
 
         & .Section {
             & .ModeButtonGroup {

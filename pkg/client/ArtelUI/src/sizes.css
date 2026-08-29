@@ -51,6 +51,9 @@
     --header-logo-size: 1.875rem;
     --header-logo-gap:  0.625rem;
 
+    /* Shared mobile padding for page content wrappers — see the 15 ContentSegment/*Tab consumers. */
+    --content-padding-mobile: 1.5rem 1.125rem 3.75rem;
+
     /* Viewport-relative sizing — intentionally not rem (see unit-disallowed-list
        override below): these scale with the browser window, not the root font-size. */
     --dialog-width-run-tract:   clamp(22.5rem, 34vw, 32.5rem);
