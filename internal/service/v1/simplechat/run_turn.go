@@ -84,6 +84,10 @@ func (s *Service) RunTurn(
 		return failTurn(sink, rerrors.Wrap(err, "error inserting user message"))
 	}
 
+	if len(rows) == 0 {
+		s.maybeSetTitle(persistCtx, chat, userText)
+	}
+
 	tools, err := s.resolveTools(ctx, chat)
 	if err != nil {
 		return failTurn(sink, rerrors.Wrap(err, "error resolving tools"))
@@ -179,6 +183,61 @@ func (s *Service) finishTurn(
 	}
 
 	return nil
+}
+
+// maxTitleLen caps an auto-derived chat title's length — long enough to be a useful label, short
+// enough for the history sidebar's fixed-width row.
+const maxTitleLen = 60
+
+// maybeSetTitle names chat after its first message — the engine has no separate "generate a
+// title" step, so it just derives one from the message text. Best-effort and idempotent: guarded
+// both before (chat.Title, loaded before this turn) and inside the mutate closure
+// (file.Header.Title, re-checked against the freshly-read file) so a race with a concurrent call
+// never double-names or clobbers a title the user or a later turn already set. A failure here is
+// logged and never fails the turn — mirrors finishTurn's activity-bump.
+func (s *Service) maybeSetTitle(ctx context.Context, chat domain.SimpleChat, userText string) {
+	if chat.Title != nil {
+		return
+	}
+
+	title := deriveTitle(userText)
+	if title == "" {
+		return
+	}
+
+	setTitleFn := func(file *domain.SimpleChatFile) {
+		if file.Header.Title != nil {
+			return
+		}
+
+		file.Header.Title = &title
+	}
+
+	err := s.mutateChatFile(ctx, chat, setTitleFn)
+	if err != nil {
+		log.Warn().Err(err).Str("chat_id", chat.Uuid.String()).Msg("error naming simple chat")
+	}
+}
+
+// deriveTitle turns a user message into a short chat title: trimmed, first line only (a
+// multi-line message's later lines are usually detail, not the topic), capped at maxTitleLen
+// runes with an ellipsis if truncated.
+func deriveTitle(text string) string {
+	text = strings.TrimSpace(text)
+	if text == "" {
+		return ""
+	}
+
+	if idx := strings.IndexByte(text, '\n'); idx >= 0 {
+		text = strings.TrimSpace(text[:idx])
+	}
+
+	runes := []rune(text)
+	if len(runes) <= maxTitleLen {
+		return text
+	}
+
+	return string(runes[:maxTitleLen]) + "…"
 }
 
 // streamOnce runs a single StreamComplete pass, forwarding text deltas to the client as they
