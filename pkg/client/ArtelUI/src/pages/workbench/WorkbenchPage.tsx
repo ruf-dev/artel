@@ -33,6 +33,7 @@ import {useWorkbenchSidebar} from "@/pages/workbench/processes/useWorkbenchSideb
 import {useWorkbenchNavDrawer} from "@/pages/workbench/processes/useWorkbenchNavDrawer.ts"
 import {useWorkbenchViewState} from "@/pages/workbench/processes/useWorkbenchViewState.ts"
 
+// eslint-disable-next-line max-lines-per-function -- root page component with complex setup
 export default function WorkbenchPage() {
     const {vaultId} = useParams()
     const {vaults} = useVaults()
@@ -128,6 +129,7 @@ export default function WorkbenchPage() {
                             onStart={lifecycle.handleStartClick} onStop={lifecycle.handleStop}
                             stopping={lifecycle.stopping} starting={lifecycle.resuming}
                             onToggleNav={toggleNav} showNavToggle={sidebar.show}
+                            onNewChat={sidebarHistory.onNewChat}
                             model={{
                                 models: simpleChatController.models, value: simpleChatController.currentModel,
                                 isLoading: simpleChatController.modelsLoading, onChange: simpleChatController.setModel,

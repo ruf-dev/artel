@@ -28,12 +28,13 @@ interface Props {
     model: ModelProps
     onToggleNav: () => void
     showNavToggle: boolean
+    onNewChat: () => void
 }
 
-// The workbench top bar: status + model switcher on the left, the Chat/Terminal
-// switch + start/stop + settings on the right. Renders for api mode and for a
-// provisioned docker workbench — the loading/picking states are gated out by the
-// caller, and the internal guard drops docker-without-a-workbench.
+// The workbench top bar: status + model switcher on the left, the New Chat button
+// + Chat/Terminal switch + start/stop + settings on the right. Renders for api mode
+// and for a provisioned docker workbench — the loading/picking states are gated out
+// by the caller, and the internal guard drops docker-without-a-workbench.
 //
 // >6 props — kept as one object instead of exploding into separate destructured
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
@@ -64,6 +65,7 @@ export default function WorkbenchTopbar(props: Props) {
                 onStop={props.onStop}
                 stopping={props.stopping}
                 starting={props.starting}
+                onNewChat={props.onNewChat}
             />
         </div>
     )

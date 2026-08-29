@@ -42,6 +42,7 @@ const base = {
     model,
     onToggleNav: vi.fn(),
     showNavToggle: true,
+    onNewChat: vi.fn(),
 }
 
 describe("WorkbenchTopbar", () => {
@@ -93,5 +94,27 @@ describe("WorkbenchTopbar", () => {
         render(<WorkbenchTopbar {...base} showNavToggle={false}/>)
 
         expect(screen.queryByRole("button", {name: "Open menu", hidden: true})).toBeNull()
+    })
+
+    it("api mode: New Chat button renders and calls onNewChat on click", () => {
+        const onNewChat = vi.fn()
+        render(<WorkbenchTopbar {...base} effectiveMode="api" onNewChat={onNewChat}/>)
+
+        const newChatBtn = screen.getByRole("button", {name: "New chat"})
+        expect(newChatBtn).toBeInTheDocument()
+
+        fireEvent.click(newChatBtn)
+        expect(onNewChat).toHaveBeenCalledTimes(1)
+    })
+
+    it("docker mode: New Chat button renders and calls onNewChat on click", () => {
+        const onNewChat = vi.fn()
+        render(<WorkbenchTopbar {...base} effectiveMode="docker" exists status="running" onNewChat={onNewChat}/>)
+
+        const newChatBtn = screen.getByRole("button", {name: "New chat"})
+        expect(newChatBtn).toBeInTheDocument()
+
+        fireEvent.click(newChatBtn)
+        expect(onNewChat).toHaveBeenCalledTimes(1)
     })
 })

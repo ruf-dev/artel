@@ -1,0 +1,29 @@
+.NewChatButtonContainer {
+    display: flex;
+
+    /* Nested two classes deep, so this beats chures' single-class Button rules
+       regardless of injection order — see "Never use !important" in ArtelUI CLAUDE.md. */
+    & .Btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--workbench-topbar-icon-size);
+        height: var(--workbench-topbar-icon-size);
+        padding: 0;
+        border: var(--border-thickness) solid transparent;
+        border-radius: var(--border-radius-sm);
+        background: transparent;
+        color: var(--color-fg-secondary);
+        cursor: pointer;
+        transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+
+        &:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-fg-primary);
+        }
+    }
+
+    & .Icon {
+        flex-shrink: 0;
+    }
+}

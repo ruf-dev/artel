@@ -1,3 +1,4 @@
+import NewChatButton from "@/pages/workbench/components/WorkbenchTopbar/components/NewChatButton/NewChatButton.tsx"
 import SegmentedControl from "@/components/atoms/SegmentedControl/SegmentedControl.tsx"
 import StartStopButton
     from "@/pages/workbench/components/WorkbenchTopbar/components/StartStopButton/StartStopButton.tsx"
@@ -19,10 +20,11 @@ interface Props {
     onStop: () => void
     stopping: boolean
     starting: boolean
+    onNewChat: () => void
 }
 
-// Right cluster of WorkbenchTopbar: the Chat/Terminal switch (running docker only)
-// and start/stop + settings (any provisioned docker workbench).
+// Right cluster of WorkbenchTopbar: the New Chat button, Chat/Terminal switch
+// (running docker only), and start/stop + settings (any provisioned docker workbench).
 //
 // >6 props — kept as one object instead of exploding into separate destructured
 // bindings, per the ObjectPattern[properties.length>6] lint rule.
@@ -32,6 +34,7 @@ export default function TopbarRight(props: Props) {
 
     return (
         <div className={cls.TopbarRightContainer}>
+            <NewChatButton onClick={props.onNewChat}/>
             {showViewSwitch && (
                 <SegmentedControl
                     options={[
