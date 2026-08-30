@@ -10,15 +10,15 @@
 -- UPSERT only (ON CONFLICT (mcp_name, name) DO UPDATE) — never touches existing trello tool rows.
 --
 -- The file runs WITHOUT a transaction (see the NO TRANSACTION directive on line 1): the five
--- ALTER TYPE ... ADD VALUE statements below extend the mcp_tool enum from migration 080, and
+-- ALTER TYPE ... ADD VALUE statements below extend the mcp_tool_name enum from migration 080, and
 -- ADD VALUE cannot run inside a transaction block (and its new label isn't usable in the same
 -- transaction even where it can). IF NOT EXISTS keeps the migration re-runnable.
 
-ALTER TYPE mcp_tool ADD VALUE IF NOT EXISTS 'trello.update_card';
-ALTER TYPE mcp_tool ADD VALUE IF NOT EXISTS 'trello.create_list';
-ALTER TYPE mcp_tool ADD VALUE IF NOT EXISTS 'trello.update_list';
-ALTER TYPE mcp_tool ADD VALUE IF NOT EXISTS 'trello.create_label';
-ALTER TYPE mcp_tool ADD VALUE IF NOT EXISTS 'trello.add_attachment';
+ALTER TYPE mcp_tool_name ADD VALUE IF NOT EXISTS 'trello.update_card';
+ALTER TYPE mcp_tool_name ADD VALUE IF NOT EXISTS 'trello.create_list';
+ALTER TYPE mcp_tool_name ADD VALUE IF NOT EXISTS 'trello.update_list';
+ALTER TYPE mcp_tool_name ADD VALUE IF NOT EXISTS 'trello.create_label';
+ALTER TYPE mcp_tool_name ADD VALUE IF NOT EXISTS 'trello.add_attachment';
 
 INSERT INTO mcp_tools (mcp_name, name, description, input_schema, output_schema, action)
 VALUES (
@@ -242,7 +242,7 @@ ON CONFLICT (mcp_name, name) DO UPDATE
         action        = EXCLUDED.action;
 
 -- +goose Down
--- Only the tool rows are removed. The five 'trello.*' labels this migration adds to the mcp_tool
+-- Only the tool rows are removed. The five 'trello.*' labels this migration adds to the mcp_tool_name
 -- enum are intentionally left in place: Postgres cannot drop an enum value. This is the one spot
 -- the profile's "every migration reverses exactly" rule is knowingly broken — see
 -- docs/profile-drift.md.

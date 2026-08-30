@@ -176,6 +176,11 @@ const (
 	McpToolNameTrellolistLabels            McpToolName = "trello.list_labels"
 	McpToolNameTrellolistLists             McpToolName = "trello.list_lists"
 	McpToolNameTrellomoveCard              McpToolName = "trello.move_card"
+	McpToolNameTrelloupdateCard            McpToolName = "trello.update_card"
+	McpToolNameTrellocreateList            McpToolName = "trello.create_list"
+	McpToolNameTrelloupdateList            McpToolName = "trello.update_list"
+	McpToolNameTrellocreateLabel           McpToolName = "trello.create_label"
+	McpToolNameTrelloaddAttachment         McpToolName = "trello.add_attachment"
 )
 
 func (e *McpToolName) Scan(src interface{}) error {

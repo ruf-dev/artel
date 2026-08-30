@@ -42,7 +42,7 @@ ones you're already touching; don't sweep.
 
 | # | Rule | artel today |
 | --- | --- | --- |
-| 11 | Every migration ships a Down that exactly reverses the Up | `081_trello_write_tools.sql` adds 5 `trello.*` labels to the `mcp_tool` enum via `ALTER TYPE ... ADD VALUE`; its Down removes the tool rows but leaves the labels — Postgres has no `DROP VALUE`. The `mcp_tool` / `mcp_name` enums (migration 080) exist only as a drift-guard reference for `executors.AllMcpTools()` / `AllMcpNames()`, attached to no column, so a stale label is inert. |
+| 11 | Every migration ships a Down that exactly reverses the Up | `081_trello_write_tools.sql` adds 5 `trello.*` labels to the `mcp_tool_name` enum via `ALTER TYPE ... ADD VALUE`; its Down removes the tool rows but leaves the labels — Postgres has no `DROP VALUE`. The `mcp_name` / `mcp_tool_name` enums (migration 080) are consumed through their sqlc-generated Go types (`artel_q.McpName` / `artel_q.McpToolName`) and are attached to no column, so a stale label is inert. |
 
 ## Not drift — deliberately artel-only
 

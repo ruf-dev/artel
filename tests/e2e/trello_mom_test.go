@@ -27,6 +27,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/ruf-dev/artel/internal/config"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	svcv1 "github.com/ruf-dev/artel/internal/service/v1"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 	"github.com/ruf-dev/artel/tests/harness"
@@ -133,7 +134,7 @@ func (s *TrelloMomSuite) SetupSuite() {
 
 	cfg := config.EnvironmentConfig{}
 	redirect := redirectTo(target)
-	middlewareOpt := svcv1.WithMomMcpHttpMiddleware(executors.McpNameTrello, redirect)
+	middlewareOpt := svcv1.WithMomMcpHttpMiddleware(artel_q.McpNameTrello, redirect)
 
 	_, s.svcs, _ = harness.BuildServices(s.T(), s.db, cfg, middlewareOpt)
 }
