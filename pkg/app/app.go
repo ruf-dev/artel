@@ -46,8 +46,9 @@ type options struct {
 }
 
 // WithToolHttpMiddleware scopes an http.RoundTripper middleware to a single MoM tool
-// (momhttp.McpTool*, e.g. momhttp.McpToolTrelloCreateCard) on the MoM http executor.
-func WithToolHttpMiddleware(tool momhttp.McpTool, mw momhttp.Middleware) Option {
+// (a momhttp.McpToolName, e.g. momhttp.McpToolName("trello.create_card")) on the MoM http
+// executor.
+func WithToolHttpMiddleware(tool momhttp.McpToolName, mw momhttp.Middleware) Option {
 	return func(o *options) {
 		o.svcOpts = append(o.svcOpts, svcv1.WithMomToolHttpMiddleware(tool, mw))
 	}

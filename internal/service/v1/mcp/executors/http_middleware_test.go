@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 )
 
 // stubRoundTripper is the base of every wound chain under test: it records the request it was
@@ -83,7 +84,7 @@ func TestHttpExecutor_ToolScopedRegistrationRoutesOnlyThatTool(t *testing.T) {
 	var trace []string
 
 	stub := &stubRoundTripper{}
-	opt := WithToolHttpMiddleware(McpToolTrelloCreateCard, tagMiddleware("create-card-mw", &trace))
+	opt := WithToolHttpMiddleware(artel_q.McpToolNameTrellocreateCard, tagMiddleware("create-card-mw", &trace))
 	e := newHttpExecutor(stub, opt)
 
 	execTool(t, e, "trello", "create_card")
@@ -101,7 +102,7 @@ func TestHttpExecutor_McpScopedRegistrationRoutesEveryToolOfThatMcp(t *testing.T
 	var trace []string
 
 	stub := &stubRoundTripper{}
-	opt := WithMcpHttpMiddleware(McpNameTrello, tagMiddleware("trello-mw", &trace))
+	opt := WithMcpHttpMiddleware(artel_q.McpNameTrello, tagMiddleware("trello-mw", &trace))
 	e := newHttpExecutor(stub, opt)
 
 	execTool(t, e, "trello", "create_card")
@@ -119,8 +120,8 @@ func TestHttpExecutor_ToolAndMcpRegistrationsCompose(t *testing.T) {
 	var trace []string
 
 	stub := &stubRoundTripper{}
-	mcpOpt := WithMcpHttpMiddleware(McpNameTrello, tagMiddleware("mcp", &trace))
-	toolOpt := WithToolHttpMiddleware(McpToolTrelloCreateCard, tagMiddleware("tool", &trace))
+	mcpOpt := WithMcpHttpMiddleware(artel_q.McpNameTrello, tagMiddleware("mcp", &trace))
+	toolOpt := WithToolHttpMiddleware(artel_q.McpToolNameTrellocreateCard, tagMiddleware("tool", &trace))
 	e := newHttpExecutor(stub, mcpOpt, toolOpt)
 
 	execTool(t, e, "trello", "create_card")
@@ -133,8 +134,8 @@ func TestHttpExecutor_SameScopeRegistrationsAreLifo(t *testing.T) {
 	var trace []string
 
 	stub := &stubRoundTripper{}
-	first := WithMcpHttpMiddleware(McpNameTrello, tagMiddleware("A", &trace))
-	second := WithMcpHttpMiddleware(McpNameTrello, tagMiddleware("B", &trace))
+	first := WithMcpHttpMiddleware(artel_q.McpNameTrello, tagMiddleware("A", &trace))
+	second := WithMcpHttpMiddleware(artel_q.McpNameTrello, tagMiddleware("B", &trace))
 	e := newHttpExecutor(stub, first, second)
 
 	execTool(t, e, "trello", "create_card")
@@ -147,8 +148,8 @@ func TestHttpExecutor_ToolClientStillIncludesItsMcpMiddleware(t *testing.T) {
 	var trace []string
 
 	stub := &stubRoundTripper{}
-	mcpOpt := WithMcpHttpMiddleware(McpNameTrello, tagMiddleware("trello-mcp", &trace))
-	toolOpt := WithToolHttpMiddleware(McpToolTrelloCreateCard, tagMiddleware("create-card", &trace))
+	mcpOpt := WithMcpHttpMiddleware(artel_q.McpNameTrello, tagMiddleware("trello-mcp", &trace))
+	toolOpt := WithToolHttpMiddleware(artel_q.McpToolNameTrellocreateCard, tagMiddleware("create-card", &trace))
 	e := newHttpExecutor(stub, mcpOpt, toolOpt)
 
 	execTool(t, e, "trello", "create_card")

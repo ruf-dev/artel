@@ -15,6 +15,7 @@ import (
 	"go.redsock.ru/rerrors"
 
 	"github.com/ruf-dev/artel/internal/domain"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/service/user_errors"
 	"github.com/ruf-dev/artel/internal/utils"
 )
@@ -37,8 +38,8 @@ const secretValuePrefix = "__secrets."
 
 type HttpExecutor struct {
 	base   *http.Client
-	byTool map[McpTool]*http.Client
-	byMcp  map[McpName]*http.Client
+	byTool map[artel_q.McpToolName]*http.Client
+	byMcp  map[artel_q.McpName]*http.Client
 }
 
 // NewHttpExecutor builds a HttpExecutor whose outbound requests all pass through the shared
@@ -69,13 +70,13 @@ func newHttpExecutor(base http.RoundTripper, opts ...HttpExecutorOption) *HttpEx
 // clientFor picks the pre-wound http.Client for a tool: its own per-tool client if one was
 // registered, else its mcp's per-mcp client, else the shared base client.
 func (e *HttpExecutor) clientFor(ident ToolIdent) *http.Client {
-	tool := McpTool(ident.McpName + "." + ident.ToolName)
+	tool := artel_q.McpToolName(ident.McpName + "." + ident.ToolName)
 
 	if c, ok := e.byTool[tool]; ok {
 		return c
 	}
 
-	if c, ok := e.byMcp[McpName(ident.McpName)]; ok {
+	if c, ok := e.byMcp[artel_q.McpName(ident.McpName)]; ok {
 		return c
 	}
 

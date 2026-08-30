@@ -1,11 +1,12 @@
 -- +goose Up
 -- Two Postgres ENUM types that name the currently-seeded MoM tool-sets (mcp_name) and their
--- individual tools (mcp_tool, formatted "<mcp>.<tool>"). Neither enum is attached to any column:
--- the existing mcps.name PK and mcp_tools.mcp_name FK stay TEXT (retyping them is invasive and
--- fights migration reversibility). These types exist purely as the single source of truth that
--- internal/service/v1/mcp/executors/tool_enum.go mirrors in Go — the McpName / McpTool values a
--- caller names when scoping per-mcp / per-tool HTTP middleware — and that
--- tests/e2e/mcp_enum_test.go checks that Go const block against, in both directions.
+-- individual tools (mcp_tool_name, formatted "<mcp>.<tool>"). Neither enum is attached to any
+-- column: the existing mcps.name PK and mcp_tools.mcp_name FK stay TEXT (retyping them is
+-- invasive and fights migration reversibility). The types exist to be consumed through their
+-- sqlc-generated Go types (artel_q.McpName / artel_q.McpToolName) — the values a caller names
+-- when scoping per-mcp / per-tool HTTP middleware. sqlc emits an enum type from a bare CREATE
+-- TYPE with no backing column; mcp_tool (singular) would collide with the mcp_tools table's row
+-- struct, hence mcp_tool_name.
 --
 -- CREATE TYPE is transaction-safe, so this migration stays transactional. A later migration that
 -- needs to add a label uses ALTER TYPE ... ADD VALUE, which is NOT transaction-safe (see the
@@ -17,7 +18,7 @@ CREATE TYPE mcp_name AS ENUM (
     'trello'
 );
 
-CREATE TYPE mcp_tool AS ENUM (
+CREATE TYPE mcp_tool_name AS ENUM (
     'email.list_email_folders',
     'email.list_emails',
     'email.read_email',
@@ -51,5 +52,5 @@ CREATE TYPE mcp_tool AS ENUM (
 );
 
 -- +goose Down
-DROP TYPE mcp_tool;
+DROP TYPE mcp_tool_name;
 DROP TYPE mcp_name;

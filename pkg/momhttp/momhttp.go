@@ -7,64 +7,26 @@
 package momhttp
 
 import (
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 )
 
-// Re-exported executor types, so embedders never import internal/ directly.
+// Re-exported identifiers, so embedders never import internal/ directly.
+//
+// McpName / McpToolName are the sqlc-generated Go types for the Postgres mcp_name / mcp_tool_name
+// enums (migration 080). Scope a middleware to one tool with McpToolName("<mcp>.<tool>") — e.g.
+// McpToolName("trello.create_card") — or to a whole mcp with one of the McpName* constants.
 type (
-	McpName    = executors.McpName
-	McpTool    = executors.McpTool
-	Middleware = executors.HttpMiddleware
-	ToolIdent  = executors.ToolIdent
+	McpName     = artel_q.McpName
+	McpToolName = artel_q.McpToolName
+	Middleware  = executors.HttpMiddleware
+	ToolIdent   = executors.ToolIdent
 )
 
 // Re-exported MoM tool-set identifiers (the Postgres mcp_name enum labels).
 const (
-	McpNameEmail    = executors.McpNameEmail
-	McpNameGitlab   = executors.McpNameGitlab
-	McpNameTelegram = executors.McpNameTelegram
-	McpNameTrello   = executors.McpNameTrello
-)
-
-// Re-exported MoM tool identifiers (the Postgres mcp_tool enum labels, "<mcp>.<tool>").
-const (
-	McpToolEmailListEmailFolders = executors.McpToolEmailListEmailFolders
-	McpToolEmailListEmails       = executors.McpToolEmailListEmails
-	McpToolEmailReadEmail        = executors.McpToolEmailReadEmail
-	McpToolEmailSendEmail        = executors.McpToolEmailSendEmail
-
-	McpToolGitlabAddComment          = executors.McpToolGitlabAddComment
-	McpToolGitlabAddMrComment        = executors.McpToolGitlabAddMrComment
-	McpToolGitlabCreateIssue         = executors.McpToolGitlabCreateIssue
-	McpToolGitlabCreateMergeRequest  = executors.McpToolGitlabCreateMergeRequest
-	McpToolGitlabGetCurrentUser      = executors.McpToolGitlabGetCurrentUser
-	McpToolGitlabGetMergeRequestDiff = executors.McpToolGitlabGetMergeRequestDiff
-	McpToolGitlabListIssues          = executors.McpToolGitlabListIssues
-	McpToolGitlabListMergeRequests   = executors.McpToolGitlabListMergeRequests
-	McpToolGitlabUpdateMergeRequest  = executors.McpToolGitlabUpdateMergeRequest
-
-	McpToolTelegramAnswerCallbackQuery = executors.McpToolTelegramAnswerCallbackQuery
-	McpToolTelegramEditMessageText     = executors.McpToolTelegramEditMessageText
-	McpToolTelegramGetMe               = executors.McpToolTelegramGetMe
-	McpToolTelegramSendMessage         = executors.McpToolTelegramSendMessage
-	McpToolTelegramSetWebhook          = executors.McpToolTelegramSetWebhook
-
-	McpToolTrelloAddComment       = executors.McpToolTrelloAddComment
-	McpToolTrelloAddLabelToCard   = executors.McpToolTrelloAddLabelToCard
-	McpToolTrelloArchiveCard      = executors.McpToolTrelloArchiveCard
-	McpToolTrelloCreateCard       = executors.McpToolTrelloCreateCard
-	McpToolTrelloGetCard          = executors.McpToolTrelloGetCard
-	McpToolTrelloGetCurrentUser   = executors.McpToolTrelloGetCurrentUser
-	McpToolTrelloListBoards       = executors.McpToolTrelloListBoards
-	McpToolTrelloListCardComments = executors.McpToolTrelloListCardComments
-	McpToolTrelloListCards        = executors.McpToolTrelloListCards
-	McpToolTrelloListLabels       = executors.McpToolTrelloListLabels
-	McpToolTrelloListLists        = executors.McpToolTrelloListLists
-	McpToolTrelloMoveCard         = executors.McpToolTrelloMoveCard
-
-	McpToolTrelloUpdateCard    = executors.McpToolTrelloUpdateCard
-	McpToolTrelloCreateList    = executors.McpToolTrelloCreateList
-	McpToolTrelloUpdateList    = executors.McpToolTrelloUpdateList
-	McpToolTrelloCreateLabel   = executors.McpToolTrelloCreateLabel
-	McpToolTrelloAddAttachment = executors.McpToolTrelloAddAttachment
+	McpNameEmail    = artel_q.McpNameEmail
+	McpNameGitlab   = artel_q.McpNameGitlab
+	McpNameTelegram = artel_q.McpNameTelegram
+	McpNameTrello   = artel_q.McpNameTrello
 )

@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/ruf-dev/artel/internal/config"
 	"github.com/ruf-dev/artel/internal/repository/pg"
+	artel_q "github.com/ruf-dev/artel/internal/repository/pg/generated"
 	"github.com/ruf-dev/artel/internal/service"
 	"github.com/ruf-dev/artel/internal/service/v1/admincouchsvc"
 	"github.com/ruf-dev/artel/internal/service/v1/adminsettings"
@@ -73,7 +74,7 @@ type svcConfig struct {
 
 // WithMomToolHttpMiddleware registers an http.RoundTripper middleware scoped to one MoM tool
 // ("<mcp>.<tool>") on the MoM http executor. Appended to the options passed to mom.New.
-func WithMomToolHttpMiddleware(tool executors.McpTool, mw executors.HttpMiddleware) Option {
+func WithMomToolHttpMiddleware(tool artel_q.McpToolName, mw executors.HttpMiddleware) Option {
 	return func(cfg *svcConfig) {
 		momOpt := mom.WithToolHttpMiddleware(tool, mw)
 		cfg.momOpts = append(cfg.momOpts, momOpt)
@@ -82,7 +83,7 @@ func WithMomToolHttpMiddleware(tool executors.McpTool, mw executors.HttpMiddlewa
 
 // WithMomMcpHttpMiddleware registers an http.RoundTripper middleware scoped to every tool of one
 // MoM on the MoM http executor. Appended to the options passed to mom.New.
-func WithMomMcpHttpMiddleware(mcp executors.McpName, mw executors.HttpMiddleware) Option {
+func WithMomMcpHttpMiddleware(mcp artel_q.McpName, mw executors.HttpMiddleware) Option {
 	return func(cfg *svcConfig) {
 		momOpt := mom.WithMcpHttpMiddleware(mcp, mw)
 		cfg.momOpts = append(cfg.momOpts, momOpt)
