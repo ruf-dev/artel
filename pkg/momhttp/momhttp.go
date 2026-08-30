@@ -61,4 +61,10 @@ const (
 	McpToolTrelloListLabels       = executors.McpToolTrelloListLabels
 	McpToolTrelloListLists        = executors.McpToolTrelloListLists
 	McpToolTrelloMoveCard         = executors.McpToolTrelloMoveCard
+
+	McpToolTrelloUpdateCard    = executors.McpToolTrelloUpdateCard
+	McpToolTrelloCreateList    = executors.McpToolTrelloCreateList
+	McpToolTrelloUpdateList    = executors.McpToolTrelloUpdateList
+	McpToolTrelloCreateLabel   = executors.McpToolTrelloCreateLabel
+	McpToolTrelloAddAttachment = executors.McpToolTrelloAddAttachment
 )

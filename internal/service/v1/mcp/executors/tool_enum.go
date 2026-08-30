@@ -52,6 +52,14 @@ const (
 	McpToolTrelloListLabels       McpTool = "trello.list_labels"
 	McpToolTrelloListLists        McpTool = "trello.list_lists"
 	McpToolTrelloMoveCard         McpTool = "trello.move_card"
+
+	// Trello write tools, seeded by migration 081_trello_write_tools.sql (which also adds these
+	// five labels to the mcp_tool enum via ALTER TYPE ... ADD VALUE).
+	McpToolTrelloUpdateCard    McpTool = "trello.update_card"
+	McpToolTrelloCreateList    McpTool = "trello.create_list"
+	McpToolTrelloUpdateList    McpTool = "trello.update_list"
+	McpToolTrelloCreateLabel   McpTool = "trello.create_label"
+	McpToolTrelloAddAttachment McpTool = "trello.add_attachment"
 )
 
 // AllMcpNames returns every McpName const. It backs the enum drift guard in
@@ -101,6 +109,11 @@ func AllMcpTools() []McpTool {
 		McpToolTrelloListLabels,
 		McpToolTrelloListLists,
 		McpToolTrelloMoveCard,
+		McpToolTrelloUpdateCard,
+		McpToolTrelloCreateList,
+		McpToolTrelloUpdateList,
+		McpToolTrelloCreateLabel,
+		McpToolTrelloAddAttachment,
 	}
 }
 

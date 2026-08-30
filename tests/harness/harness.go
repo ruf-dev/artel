@@ -528,7 +528,9 @@ func EnsureWorkbenchNetwork(t *testing.T, ctx context.Context, dockerHostURL str
 // BuildServices wires a repopg.Repos + svcv1.Services pair on top of db, using the same
 // zero-key AES encryptor every e2e suite has used so far. It returns whether that encryptor is
 // plaintext — the credsEncrypted flag transport constructors like auth_api.NewAuthImpl take.
-func BuildServices(t *testing.T, db *sql.DB, cfg config.EnvironmentConfig) (*repopg.Repos, *svcv1.Services, bool) {
+func BuildServices(
+	t *testing.T, db *sql.DB, cfg config.EnvironmentConfig, opts ...svcv1.Option,
+) (*repopg.Repos, *svcv1.Services, bool) {
 	t.Helper()
 
 	encKey := make([]byte, 32)
@@ -538,7 +540,7 @@ func BuildServices(t *testing.T, db *sql.DB, cfg config.EnvironmentConfig) (*rep
 
 	repos := repopg.New(db, encryptor)
 
-	svcs, err := svcv1.New(repos, cfg)
+	svcs, err := svcv1.New(repos, cfg, opts...)
 	require.NoError(t, err, "init services")
 
 	return repos, svcs, encryptor.IsPlainText()
