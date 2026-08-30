@@ -1,0 +1,51 @@
+# night-shift — project wiring for the machine-wide /night-shift skill.
+#
+# The skill lives at ~/.claude/skills/night-shift/ (canonical copy in the Artel
+# vault .profiles/night-shift/). This file is the ONLY project-specific piece and
+# is committed so every clone runs the same shift.
+#
+# board_id and mcp.connection_uuid are placeholders — `/night-shift setup` fills
+# them on first run (see the skill's setup.md). Secrets are never stored here;
+# the Trello key/token live in the linked external_connections row.
+
+tracker: trello-via-artel-mcp
+
+board_id: "REPLACE_ME"            # set by /night-shift setup
+
+mcp:
+  key: trello                     # mcp_tools.mcp_name / mcp_connectors.mcp_key
+  connection_uuid: "REPLACE_ME"   # external_connections row the trello MoM uses
+
+# Column role -> real Trello list name. Roles are fixed (see the skill's
+# tracker-trello.md); only the right-hand names are project-editable.
+lists:
+  intake: "IDEA"
+  product_analysis: "PRODUCT ANALYSIS"
+  architecture: "ARCHITECTURE"
+  needs_approval: "NEEDS SPEC APPROVAL"
+  ready: "Ready to be taken"
+  in_progress: "INPROG"
+  in_review: "IN REVIEW / TESTING"
+  terminal: "RELEASE"
+  reports: "NIGHT REPORTS"
+
+labels:
+  blocked: "blocked"
+  released_prefix: "released:"
+
+# Verification the developer subagent runs. e2e is serialised by the overseer's
+# single e2e token — one developer runs `make test-e2e` at a time.
+build_cmds:
+  - "go build ./..."
+  - "golangci-lint run"
+  - "go test ./..."
+frontend_cmds:
+  - "tsc -b"
+  - "bun run build"
+test_cmd: "make test-e2e"
+
+# graphify update is NOT run overnight — the morning review session runs it once.
+
+file_cap: 10                      # max files per draft PR
+parallelism_default: 2            # max concurrent role subagents (any mix)
+checkpoint_hours: 2               # NIGHT REPORTS rewrite cadence (fixed, not a run param)
