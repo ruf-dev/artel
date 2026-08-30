@@ -279,6 +279,9 @@
         },
         "telegram": {
           "$ref": "#/definitions/artel_authTelegramCredentials"
+        },
+        "miniApp": {
+          "$ref": "#/definitions/artel_authTelegramMiniAppCredentials"
         }
       }
     },
@@ -388,6 +391,14 @@
       "type": "object",
       "properties": {
         "idToken": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_authTelegramMiniAppCredentials": {
+      "type": "object",
+      "properties": {
+        "initData": {
           "type": "string"
         }
       }

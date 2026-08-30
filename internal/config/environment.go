@@ -15,6 +15,7 @@ type EnvironmentConfig struct {
 	OtelEndpoint         string
 	SkipMigrations       bool
 	SubscriptionsEnabled bool
+	TelegramBotToken     string
 	TelegramClientID     string
 }
 

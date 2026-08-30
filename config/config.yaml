@@ -56,6 +56,9 @@ environment:
     - name: subscriptions_enabled
       type: bool
       value: false
+    - name: telegram_bot_token
+      type: string
+      value: ""
     - name: telegram_client_id
       type: string
       value: ""

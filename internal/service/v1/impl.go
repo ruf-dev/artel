@@ -98,7 +98,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	// create_community_connector on CheckIsAdmin and to resolve the caller's email for a new
 	// community connector's Author), which doesn't exist yet mid-construction of the same
 	// struct literal either.
-	authSvc := auth.New(repo, cfg.TelegramClientID, subscriptionSvc)
+	authSvc := auth.New(repo, cfg.TelegramClientID, cfg.TelegramBotToken, subscriptionSvc)
 
 	// Also hoisted ahead of the literal: mcp.New needs service.SkillsService (to dispatch the
 	// list_skills/get_skill_body/create_skill/... builtin tools and to synthesize the dynamic

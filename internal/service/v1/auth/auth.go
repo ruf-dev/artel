@@ -40,12 +40,16 @@ type Service struct {
 	txManager       tx_manager.TxManager
 	tgParser        telegram.TokenParser
 
+	telegramBotToken string
+
 	// noAuthUser is set by EnsureNoAuthUser when the server runs with NoAuthEnabled.
 	// ValidateToken short-circuits to it, ignoring whatever token was presented.
 	noAuthUser *domain.User
 }
 
-func New(repo repository.Repo, telegramClientId string, subscriptions service.SubscriptionService) *Service {
+func New(
+	repo repository.Repo, telegramClientId string, telegramBotToken string, subscriptions service.SubscriptionService,
+) *Service {
 	tgParser := telegram.NewTokenParser(
 		"https://oauth.telegram.org/.well-known/jwks.json",
 		"https://oauth.telegram.org",
@@ -53,14 +57,15 @@ func New(repo repository.Repo, telegramClientId string, subscriptions service.Su
 	)
 
 	return &Service{
-		usersRepo:       repo.Users(),
-		sessionsRepo:    repo.Sessions(),
-		permissionsRepo: repo.UserPermissions(),
-		subsRepo:        repo.Subscriptions(),
-		settingsRepo:    repo.SystemSettings(),
-		subscriptions:   subscriptions,
-		txManager:       repo.TxManager(),
-		tgParser:        tgParser,
+		usersRepo:        repo.Users(),
+		sessionsRepo:     repo.Sessions(),
+		permissionsRepo:  repo.UserPermissions(),
+		subsRepo:         repo.Subscriptions(),
+		settingsRepo:     repo.SystemSettings(),
+		subscriptions:    subscriptions,
+		txManager:        repo.TxManager(),
+		tgParser:         tgParser,
+		telegramBotToken: telegramBotToken,
 	}
 }
 
@@ -239,6 +244,33 @@ func (s *Service) LoginViaTelegram(ctx context.Context, idToken string) (domain.
 	return session, nil
 }
 
+func (s *Service) LoginViaTelegramMiniApp(ctx context.Context, initData string) (domain.Session, error) {
+	settings, err := s.settingsRepo.Get(ctx)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "get system settings")
+	}
+
+	if !settings.SetupCompleted {
+		return domain.Session{}, user_errors.SetupNotCompleted
+	}
+
+	if !settings.TelegramAuthEnabled {
+		return domain.Session{}, user_errors.AuthMethodDisabled
+	}
+
+	claims, err := telegram.ParseAndVerifyWebAppInitData(initData, s.telegramBotToken)
+	if err != nil {
+		return domain.Session{}, rerrors.Wrap(err, "error validating telegram mini app init data")
+	}
+
+	session, err := s.loginOrRegisterFromTelegramClaims(ctx, claims, false)
+	if err != nil {
+		return domain.Session{}, err
+	}
+
+	return session, nil
+}
+
 // LoginOrRegisterAdminViaTelegram is the wizard-only variant of LoginViaTelegram: it bypasses
 // all setup/auth-method checks and promotes the resulting user to administrator, whether they
 // were just created or already existed.
@@ -263,9 +295,18 @@ func (s *Service) loginOrRegisterViaTelegram(
 		)
 	}
 
+	return s.loginOrRegisterFromTelegramClaims(ctx, &claims, promoteToAdmin)
+}
+
+func (s *Service) loginOrRegisterFromTelegramClaims(
+	ctx context.Context, claims *telegram.TgClaims, promoteToAdmin bool,
+) (domain.Session, error) {
 	telegramId := strconv.FormatInt(claims.Id, 10)
 
-	var user domain.User
+	var (
+		user domain.User
+		err  error
+	)
 
 	err = s.txManager.Execute(
 		func(tx *sql.Tx) error {

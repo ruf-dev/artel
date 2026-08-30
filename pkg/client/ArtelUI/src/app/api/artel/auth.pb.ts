@@ -27,6 +27,10 @@ export type TelegramCredentials = {
   idToken?: string;
 };
 
+export type TelegramMiniAppCredentials = {
+  initData?: string;
+};
+
 export type RegisterRequest = {
   email?: string;
   password?: string;
@@ -46,6 +50,7 @@ export type LoginRequest = BaseLoginRequest &
   OneOf<{
     password: PasswordCredentials;
     telegram: TelegramCredentials;
+    miniApp: TelegramMiniAppCredentials;
   }>;
 
 export type LoginResponse = {

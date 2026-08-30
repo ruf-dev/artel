@@ -120,6 +120,50 @@ func (x *TelegramCredentials) GetIdToken() string {
 	return ""
 }
 
+type TelegramMiniAppCredentials struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	InitData      string                 `protobuf:"bytes,1,opt,name=init_data,json=initData,proto3" json:"init_data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TelegramMiniAppCredentials) Reset() {
+	*x = TelegramMiniAppCredentials{}
+	mi := &file_auth_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TelegramMiniAppCredentials) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TelegramMiniAppCredentials) ProtoMessage() {}
+
+func (x *TelegramMiniAppCredentials) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TelegramMiniAppCredentials.ProtoReflect.Descriptor instead.
+func (*TelegramMiniAppCredentials) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TelegramMiniAppCredentials) GetInitData() string {
+	if x != nil {
+		return x.InitData
+	}
+	return ""
+}
+
 type Register struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -128,7 +172,7 @@ type Register struct {
 
 func (x *Register) Reset() {
 	*x = Register{}
-	mi := &file_auth_proto_msgTypes[2]
+	mi := &file_auth_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -140,7 +184,7 @@ func (x *Register) String() string {
 func (*Register) ProtoMessage() {}
 
 func (x *Register) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[2]
+	mi := &file_auth_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -153,7 +197,7 @@ func (x *Register) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Register.ProtoReflect.Descriptor instead.
 func (*Register) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2}
+	return file_auth_proto_rawDescGZIP(), []int{3}
 }
 
 type Login struct {
@@ -164,7 +208,7 @@ type Login struct {
 
 func (x *Login) Reset() {
 	*x = Login{}
-	mi := &file_auth_proto_msgTypes[3]
+	mi := &file_auth_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -176,7 +220,7 @@ func (x *Login) String() string {
 func (*Login) ProtoMessage() {}
 
 func (x *Login) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[3]
+	mi := &file_auth_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -189,7 +233,7 @@ func (x *Login) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Login.ProtoReflect.Descriptor instead.
 func (*Login) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3}
+	return file_auth_proto_rawDescGZIP(), []int{4}
 }
 
 type Logout struct {
@@ -200,7 +244,7 @@ type Logout struct {
 
 func (x *Logout) Reset() {
 	*x = Logout{}
-	mi := &file_auth_proto_msgTypes[4]
+	mi := &file_auth_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -212,7 +256,7 @@ func (x *Logout) String() string {
 func (*Logout) ProtoMessage() {}
 
 func (x *Logout) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[4]
+	mi := &file_auth_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -225,7 +269,7 @@ func (x *Logout) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Logout.ProtoReflect.Descriptor instead.
 func (*Logout) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{4}
+	return file_auth_proto_rawDescGZIP(), []int{5}
 }
 
 type Refresh struct {
@@ -236,7 +280,7 @@ type Refresh struct {
 
 func (x *Refresh) Reset() {
 	*x = Refresh{}
-	mi := &file_auth_proto_msgTypes[5]
+	mi := &file_auth_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -248,7 +292,7 @@ func (x *Refresh) String() string {
 func (*Refresh) ProtoMessage() {}
 
 func (x *Refresh) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[5]
+	mi := &file_auth_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -261,7 +305,7 @@ func (x *Refresh) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Refresh.ProtoReflect.Descriptor instead.
 func (*Refresh) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{5}
+	return file_auth_proto_rawDescGZIP(), []int{6}
 }
 
 type GetConfig struct {
@@ -272,7 +316,7 @@ type GetConfig struct {
 
 func (x *GetConfig) Reset() {
 	*x = GetConfig{}
-	mi := &file_auth_proto_msgTypes[6]
+	mi := &file_auth_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -284,7 +328,7 @@ func (x *GetConfig) String() string {
 func (*GetConfig) ProtoMessage() {}
 
 func (x *GetConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[6]
+	mi := &file_auth_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -297,7 +341,7 @@ func (x *GetConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfig.ProtoReflect.Descriptor instead.
 func (*GetConfig) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{6}
+	return file_auth_proto_rawDescGZIP(), []int{7}
 }
 
 type Permissions struct {
@@ -312,7 +356,7 @@ type Permissions struct {
 
 func (x *Permissions) Reset() {
 	*x = Permissions{}
-	mi := &file_auth_proto_msgTypes[7]
+	mi := &file_auth_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -324,7 +368,7 @@ func (x *Permissions) String() string {
 func (*Permissions) ProtoMessage() {}
 
 func (x *Permissions) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[7]
+	mi := &file_auth_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -337,7 +381,7 @@ func (x *Permissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Permissions.ProtoReflect.Descriptor instead.
 func (*Permissions) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{7}
+	return file_auth_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Permissions) GetIsAdministrator() bool {
@@ -376,7 +420,7 @@ type GetMe struct {
 
 func (x *GetMe) Reset() {
 	*x = GetMe{}
-	mi := &file_auth_proto_msgTypes[8]
+	mi := &file_auth_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -388,7 +432,7 @@ func (x *GetMe) String() string {
 func (*GetMe) ProtoMessage() {}
 
 func (x *GetMe) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[8]
+	mi := &file_auth_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -401,7 +445,7 @@ func (x *GetMe) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMe.ProtoReflect.Descriptor instead.
 func (*GetMe) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{8}
+	return file_auth_proto_rawDescGZIP(), []int{9}
 }
 
 type Register_Request struct {
@@ -414,7 +458,7 @@ type Register_Request struct {
 
 func (x *Register_Request) Reset() {
 	*x = Register_Request{}
-	mi := &file_auth_proto_msgTypes[9]
+	mi := &file_auth_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -426,7 +470,7 @@ func (x *Register_Request) String() string {
 func (*Register_Request) ProtoMessage() {}
 
 func (x *Register_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[9]
+	mi := &file_auth_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -439,7 +483,7 @@ func (x *Register_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Register_Request.ProtoReflect.Descriptor instead.
 func (*Register_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2, 0}
+	return file_auth_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *Register_Request) GetEmail() string {
@@ -466,7 +510,7 @@ type Register_Response struct {
 
 func (x *Register_Response) Reset() {
 	*x = Register_Response{}
-	mi := &file_auth_proto_msgTypes[10]
+	mi := &file_auth_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -478,7 +522,7 @@ func (x *Register_Response) String() string {
 func (*Register_Response) ProtoMessage() {}
 
 func (x *Register_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[10]
+	mi := &file_auth_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -491,7 +535,7 @@ func (x *Register_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Register_Response.ProtoReflect.Descriptor instead.
 func (*Register_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2, 1}
+	return file_auth_proto_rawDescGZIP(), []int{3, 1}
 }
 
 func (x *Register_Response) GetId() string {
@@ -514,6 +558,7 @@ type Login_Request struct {
 	//
 	//	*Login_Request_Password
 	//	*Login_Request_Telegram
+	//	*Login_Request_MiniApp
 	Method        isLogin_Request_Method `protobuf_oneof:"method"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -521,7 +566,7 @@ type Login_Request struct {
 
 func (x *Login_Request) Reset() {
 	*x = Login_Request{}
-	mi := &file_auth_proto_msgTypes[11]
+	mi := &file_auth_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -533,7 +578,7 @@ func (x *Login_Request) String() string {
 func (*Login_Request) ProtoMessage() {}
 
 func (x *Login_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[11]
+	mi := &file_auth_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -546,7 +591,7 @@ func (x *Login_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Login_Request.ProtoReflect.Descriptor instead.
 func (*Login_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3, 0}
+	return file_auth_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *Login_Request) GetMethod() isLogin_Request_Method {
@@ -574,6 +619,15 @@ func (x *Login_Request) GetTelegram() *TelegramCredentials {
 	return nil
 }
 
+func (x *Login_Request) GetMiniApp() *TelegramMiniAppCredentials {
+	if x != nil {
+		if x, ok := x.Method.(*Login_Request_MiniApp); ok {
+			return x.MiniApp
+		}
+	}
+	return nil
+}
+
 type isLogin_Request_Method interface {
 	isLogin_Request_Method()
 }
@@ -586,9 +640,15 @@ type Login_Request_Telegram struct {
 	Telegram *TelegramCredentials `protobuf:"bytes,2,opt,name=telegram,proto3,oneof"`
 }
 
+type Login_Request_MiniApp struct {
+	MiniApp *TelegramMiniAppCredentials `protobuf:"bytes,3,opt,name=mini_app,json=miniApp,proto3,oneof"`
+}
+
 func (*Login_Request_Password) isLogin_Request_Method() {}
 
 func (*Login_Request_Telegram) isLogin_Request_Method() {}
+
+func (*Login_Request_MiniApp) isLogin_Request_Method() {}
 
 type Login_Response struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
@@ -602,7 +662,7 @@ type Login_Response struct {
 
 func (x *Login_Response) Reset() {
 	*x = Login_Response{}
-	mi := &file_auth_proto_msgTypes[12]
+	mi := &file_auth_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -614,7 +674,7 @@ func (x *Login_Response) String() string {
 func (*Login_Response) ProtoMessage() {}
 
 func (x *Login_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[12]
+	mi := &file_auth_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -627,7 +687,7 @@ func (x *Login_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Login_Response.ProtoReflect.Descriptor instead.
 func (*Login_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3, 1}
+	return file_auth_proto_rawDescGZIP(), []int{4, 1}
 }
 
 func (x *Login_Response) GetToken() string {
@@ -666,7 +726,7 @@ type Logout_Request struct {
 
 func (x *Logout_Request) Reset() {
 	*x = Logout_Request{}
-	mi := &file_auth_proto_msgTypes[13]
+	mi := &file_auth_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -678,7 +738,7 @@ func (x *Logout_Request) String() string {
 func (*Logout_Request) ProtoMessage() {}
 
 func (x *Logout_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[13]
+	mi := &file_auth_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -691,7 +751,7 @@ func (x *Logout_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Logout_Request.ProtoReflect.Descriptor instead.
 func (*Logout_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{4, 0}
+	return file_auth_proto_rawDescGZIP(), []int{5, 0}
 }
 
 type Logout_Response struct {
@@ -702,7 +762,7 @@ type Logout_Response struct {
 
 func (x *Logout_Response) Reset() {
 	*x = Logout_Response{}
-	mi := &file_auth_proto_msgTypes[14]
+	mi := &file_auth_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -714,7 +774,7 @@ func (x *Logout_Response) String() string {
 func (*Logout_Response) ProtoMessage() {}
 
 func (x *Logout_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[14]
+	mi := &file_auth_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -727,7 +787,7 @@ func (x *Logout_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Logout_Response.ProtoReflect.Descriptor instead.
 func (*Logout_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{4, 1}
+	return file_auth_proto_rawDescGZIP(), []int{5, 1}
 }
 
 type Refresh_Request struct {
@@ -739,7 +799,7 @@ type Refresh_Request struct {
 
 func (x *Refresh_Request) Reset() {
 	*x = Refresh_Request{}
-	mi := &file_auth_proto_msgTypes[15]
+	mi := &file_auth_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -751,7 +811,7 @@ func (x *Refresh_Request) String() string {
 func (*Refresh_Request) ProtoMessage() {}
 
 func (x *Refresh_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[15]
+	mi := &file_auth_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -764,7 +824,7 @@ func (x *Refresh_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Refresh_Request.ProtoReflect.Descriptor instead.
 func (*Refresh_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{5, 0}
+	return file_auth_proto_rawDescGZIP(), []int{6, 0}
 }
 
 func (x *Refresh_Request) GetRefreshToken() string {
@@ -786,7 +846,7 @@ type Refresh_Response struct {
 
 func (x *Refresh_Response) Reset() {
 	*x = Refresh_Response{}
-	mi := &file_auth_proto_msgTypes[16]
+	mi := &file_auth_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -798,7 +858,7 @@ func (x *Refresh_Response) String() string {
 func (*Refresh_Response) ProtoMessage() {}
 
 func (x *Refresh_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[16]
+	mi := &file_auth_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -811,7 +871,7 @@ func (x *Refresh_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Refresh_Response.ProtoReflect.Descriptor instead.
 func (*Refresh_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{5, 1}
+	return file_auth_proto_rawDescGZIP(), []int{6, 1}
 }
 
 func (x *Refresh_Response) GetToken() string {
@@ -850,7 +910,7 @@ type GetConfig_Request struct {
 
 func (x *GetConfig_Request) Reset() {
 	*x = GetConfig_Request{}
-	mi := &file_auth_proto_msgTypes[17]
+	mi := &file_auth_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -862,7 +922,7 @@ func (x *GetConfig_Request) String() string {
 func (*GetConfig_Request) ProtoMessage() {}
 
 func (x *GetConfig_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[17]
+	mi := &file_auth_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -875,7 +935,7 @@ func (x *GetConfig_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfig_Request.ProtoReflect.Descriptor instead.
 func (*GetConfig_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{6, 0}
+	return file_auth_proto_rawDescGZIP(), []int{7, 0}
 }
 
 type GetConfig_Response struct {
@@ -896,7 +956,7 @@ type GetConfig_Response struct {
 
 func (x *GetConfig_Response) Reset() {
 	*x = GetConfig_Response{}
-	mi := &file_auth_proto_msgTypes[18]
+	mi := &file_auth_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -908,7 +968,7 @@ func (x *GetConfig_Response) String() string {
 func (*GetConfig_Response) ProtoMessage() {}
 
 func (x *GetConfig_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[18]
+	mi := &file_auth_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -921,7 +981,7 @@ func (x *GetConfig_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConfig_Response.ProtoReflect.Descriptor instead.
 func (*GetConfig_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{6, 1}
+	return file_auth_proto_rawDescGZIP(), []int{7, 1}
 }
 
 func (x *GetConfig_Response) GetTelegramClientId() string {
@@ -1002,7 +1062,7 @@ type GetMe_Request struct {
 
 func (x *GetMe_Request) Reset() {
 	*x = GetMe_Request{}
-	mi := &file_auth_proto_msgTypes[19]
+	mi := &file_auth_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1014,7 +1074,7 @@ func (x *GetMe_Request) String() string {
 func (*GetMe_Request) ProtoMessage() {}
 
 func (x *GetMe_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[19]
+	mi := &file_auth_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1027,7 +1087,7 @@ func (x *GetMe_Request) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMe_Request.ProtoReflect.Descriptor instead.
 func (*GetMe_Request) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{8, 0}
+	return file_auth_proto_rawDescGZIP(), []int{9, 0}
 }
 
 type GetMe_Response struct {
@@ -1043,7 +1103,7 @@ type GetMe_Response struct {
 
 func (x *GetMe_Response) Reset() {
 	*x = GetMe_Response{}
-	mi := &file_auth_proto_msgTypes[20]
+	mi := &file_auth_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1055,7 +1115,7 @@ func (x *GetMe_Response) String() string {
 func (*GetMe_Response) ProtoMessage() {}
 
 func (x *GetMe_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[20]
+	mi := &file_auth_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1068,7 +1128,7 @@ func (x *GetMe_Response) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMe_Response.ProtoReflect.Descriptor instead.
 func (*GetMe_Response) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{8, 1}
+	return file_auth_proto_rawDescGZIP(), []int{9, 1}
 }
 
 func (x *GetMe_Response) GetId() string {
@@ -1117,18 +1177,21 @@ const file_auth_proto_rawDesc = "" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"0\n" +
 	"\x13TelegramCredentials\x12\x19\n" +
-	"\bid_token\x18\x01 \x01(\tR\aidToken\"y\n" +
+	"\bid_token\x18\x01 \x01(\tR\aidToken\"9\n" +
+	"\x1aTelegramMiniAppCredentials\x12\x1b\n" +
+	"\tinit_data\x18\x01 \x01(\tR\binitData\"y\n" +
 	"\bRegister\x1a;\n" +
 	"\aRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x1a0\n" +
 	"\bResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\"\xe8\x02\n" +
-	"\x05Login\x1a\x91\x01\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\"\xad\x03\n" +
+	"\x05Login\x1a\xd6\x01\n" +
 	"\aRequest\x12=\n" +
 	"\bpassword\x18\x01 \x01(\v2\x1f.artel_auth.PasswordCredentialsH\x00R\bpassword\x12=\n" +
-	"\btelegram\x18\x02 \x01(\v2\x1f.artel_auth.TelegramCredentialsH\x00R\btelegramB\b\n" +
+	"\btelegram\x18\x02 \x01(\v2\x1f.artel_auth.TelegramCredentialsH\x00R\btelegram\x12C\n" +
+	"\bmini_app\x18\x03 \x01(\v2&.artel_auth.TelegramMiniAppCredentialsH\x00R\aminiAppB\b\n" +
 	"\x06method\x1a\xca\x01\n" +
 	"\bResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x129\n" +
@@ -1199,56 +1262,58 @@ func file_auth_proto_rawDescGZIP() []byte {
 	return file_auth_proto_rawDescData
 }
 
-var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_auth_proto_goTypes = []any{
-	(*PasswordCredentials)(nil),   // 0: artel_auth.PasswordCredentials
-	(*TelegramCredentials)(nil),   // 1: artel_auth.TelegramCredentials
-	(*Register)(nil),              // 2: artel_auth.Register
-	(*Login)(nil),                 // 3: artel_auth.Login
-	(*Logout)(nil),                // 4: artel_auth.Logout
-	(*Refresh)(nil),               // 5: artel_auth.Refresh
-	(*GetConfig)(nil),             // 6: artel_auth.GetConfig
-	(*Permissions)(nil),           // 7: artel_auth.Permissions
-	(*GetMe)(nil),                 // 8: artel_auth.GetMe
-	(*Register_Request)(nil),      // 9: artel_auth.Register.Request
-	(*Register_Response)(nil),     // 10: artel_auth.Register.Response
-	(*Login_Request)(nil),         // 11: artel_auth.Login.Request
-	(*Login_Response)(nil),        // 12: artel_auth.Login.Response
-	(*Logout_Request)(nil),        // 13: artel_auth.Logout.Request
-	(*Logout_Response)(nil),       // 14: artel_auth.Logout.Response
-	(*Refresh_Request)(nil),       // 15: artel_auth.Refresh.Request
-	(*Refresh_Response)(nil),      // 16: artel_auth.Refresh.Response
-	(*GetConfig_Request)(nil),     // 17: artel_auth.GetConfig.Request
-	(*GetConfig_Response)(nil),    // 18: artel_auth.GetConfig.Response
-	(*GetMe_Request)(nil),         // 19: artel_auth.GetMe.Request
-	(*GetMe_Response)(nil),        // 20: artel_auth.GetMe.Response
-	(*timestamppb.Timestamp)(nil), // 21: google.protobuf.Timestamp
+	(*PasswordCredentials)(nil),        // 0: artel_auth.PasswordCredentials
+	(*TelegramCredentials)(nil),        // 1: artel_auth.TelegramCredentials
+	(*TelegramMiniAppCredentials)(nil), // 2: artel_auth.TelegramMiniAppCredentials
+	(*Register)(nil),                   // 3: artel_auth.Register
+	(*Login)(nil),                      // 4: artel_auth.Login
+	(*Logout)(nil),                     // 5: artel_auth.Logout
+	(*Refresh)(nil),                    // 6: artel_auth.Refresh
+	(*GetConfig)(nil),                  // 7: artel_auth.GetConfig
+	(*Permissions)(nil),                // 8: artel_auth.Permissions
+	(*GetMe)(nil),                      // 9: artel_auth.GetMe
+	(*Register_Request)(nil),           // 10: artel_auth.Register.Request
+	(*Register_Response)(nil),          // 11: artel_auth.Register.Response
+	(*Login_Request)(nil),              // 12: artel_auth.Login.Request
+	(*Login_Response)(nil),             // 13: artel_auth.Login.Response
+	(*Logout_Request)(nil),             // 14: artel_auth.Logout.Request
+	(*Logout_Response)(nil),            // 15: artel_auth.Logout.Response
+	(*Refresh_Request)(nil),            // 16: artel_auth.Refresh.Request
+	(*Refresh_Response)(nil),           // 17: artel_auth.Refresh.Response
+	(*GetConfig_Request)(nil),          // 18: artel_auth.GetConfig.Request
+	(*GetConfig_Response)(nil),         // 19: artel_auth.GetConfig.Response
+	(*GetMe_Request)(nil),              // 20: artel_auth.GetMe.Request
+	(*GetMe_Response)(nil),             // 21: artel_auth.GetMe.Response
+	(*timestamppb.Timestamp)(nil),      // 22: google.protobuf.Timestamp
 }
 var file_auth_proto_depIdxs = []int32{
 	0,  // 0: artel_auth.Login.Request.password:type_name -> artel_auth.PasswordCredentials
 	1,  // 1: artel_auth.Login.Request.telegram:type_name -> artel_auth.TelegramCredentials
-	21, // 2: artel_auth.Login.Response.expires_at:type_name -> google.protobuf.Timestamp
-	21, // 3: artel_auth.Login.Response.refresh_expires_at:type_name -> google.protobuf.Timestamp
-	21, // 4: artel_auth.Refresh.Response.expires_at:type_name -> google.protobuf.Timestamp
-	21, // 5: artel_auth.Refresh.Response.refresh_expires_at:type_name -> google.protobuf.Timestamp
-	7,  // 6: artel_auth.GetMe.Response.permissions:type_name -> artel_auth.Permissions
-	9,  // 7: artel_auth.AuthAPI.Register:input_type -> artel_auth.Register.Request
-	11, // 8: artel_auth.AuthAPI.Login:input_type -> artel_auth.Login.Request
-	13, // 9: artel_auth.AuthAPI.Logout:input_type -> artel_auth.Logout.Request
-	15, // 10: artel_auth.AuthAPI.Refresh:input_type -> artel_auth.Refresh.Request
-	17, // 11: artel_auth.AuthAPI.GetConfig:input_type -> artel_auth.GetConfig.Request
-	19, // 12: artel_auth.AuthAPI.GetMe:input_type -> artel_auth.GetMe.Request
-	10, // 13: artel_auth.AuthAPI.Register:output_type -> artel_auth.Register.Response
-	12, // 14: artel_auth.AuthAPI.Login:output_type -> artel_auth.Login.Response
-	14, // 15: artel_auth.AuthAPI.Logout:output_type -> artel_auth.Logout.Response
-	16, // 16: artel_auth.AuthAPI.Refresh:output_type -> artel_auth.Refresh.Response
-	18, // 17: artel_auth.AuthAPI.GetConfig:output_type -> artel_auth.GetConfig.Response
-	20, // 18: artel_auth.AuthAPI.GetMe:output_type -> artel_auth.GetMe.Response
-	13, // [13:19] is the sub-list for method output_type
-	7,  // [7:13] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	2,  // 2: artel_auth.Login.Request.mini_app:type_name -> artel_auth.TelegramMiniAppCredentials
+	22, // 3: artel_auth.Login.Response.expires_at:type_name -> google.protobuf.Timestamp
+	22, // 4: artel_auth.Login.Response.refresh_expires_at:type_name -> google.protobuf.Timestamp
+	22, // 5: artel_auth.Refresh.Response.expires_at:type_name -> google.protobuf.Timestamp
+	22, // 6: artel_auth.Refresh.Response.refresh_expires_at:type_name -> google.protobuf.Timestamp
+	8,  // 7: artel_auth.GetMe.Response.permissions:type_name -> artel_auth.Permissions
+	10, // 8: artel_auth.AuthAPI.Register:input_type -> artel_auth.Register.Request
+	12, // 9: artel_auth.AuthAPI.Login:input_type -> artel_auth.Login.Request
+	14, // 10: artel_auth.AuthAPI.Logout:input_type -> artel_auth.Logout.Request
+	16, // 11: artel_auth.AuthAPI.Refresh:input_type -> artel_auth.Refresh.Request
+	18, // 12: artel_auth.AuthAPI.GetConfig:input_type -> artel_auth.GetConfig.Request
+	20, // 13: artel_auth.AuthAPI.GetMe:input_type -> artel_auth.GetMe.Request
+	11, // 14: artel_auth.AuthAPI.Register:output_type -> artel_auth.Register.Response
+	13, // 15: artel_auth.AuthAPI.Login:output_type -> artel_auth.Login.Response
+	15, // 16: artel_auth.AuthAPI.Logout:output_type -> artel_auth.Logout.Response
+	17, // 17: artel_auth.AuthAPI.Refresh:output_type -> artel_auth.Refresh.Response
+	19, // 18: artel_auth.AuthAPI.GetConfig:output_type -> artel_auth.GetConfig.Response
+	21, // 19: artel_auth.AuthAPI.GetMe:output_type -> artel_auth.GetMe.Response
+	14, // [14:20] is the sub-list for method output_type
+	8,  // [8:14] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_auth_proto_init() }
@@ -1256,9 +1321,10 @@ func file_auth_proto_init() {
 	if File_auth_proto != nil {
 		return
 	}
-	file_auth_proto_msgTypes[11].OneofWrappers = []any{
+	file_auth_proto_msgTypes[12].OneofWrappers = []any{
 		(*Login_Request_Password)(nil),
 		(*Login_Request_Telegram)(nil),
+		(*Login_Request_MiniApp)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1266,7 +1332,7 @@ func file_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_proto_rawDesc), len(file_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

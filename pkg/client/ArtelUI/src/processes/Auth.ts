@@ -12,6 +12,7 @@ export interface Session {
 
 export interface IAuthService {
     LoginViaTelegram: (idToken: string) => Promise<Session>
+    LoginViaMiniApp: (initData: string) => Promise<Session>
     LoginWithPassword: (email: string, password: string) => Promise<Session>
     Register: (email: string, password: string) => Promise<void>
     FetchUserInfo: () => Promise<UserInfo>
@@ -21,6 +22,16 @@ export class AuthService implements IAuthService {
     async LoginViaTelegram(idToken: string): Promise<Session> {
         const r: LoginRequest = {
             telegram: {idToken},
+        } as LoginRequest
+
+        return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({
+            token: res.token ?? "",
+        }))
+    }
+
+    async LoginViaMiniApp(initData: string): Promise<Session> {
+        const r: LoginRequest = {
+            miniApp: {initData},
         } as LoginRequest
 
         return AuthAPI.Login(r, useUser.getState().auth.getInitReq()).then(res => ({

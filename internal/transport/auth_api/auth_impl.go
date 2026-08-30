@@ -88,6 +88,24 @@ func (h *authHandler) Login(ctx context.Context, req *artel_api.Login_Request) (
 		}
 
 		return resp, nil
+	case req.GetMiniApp() != nil:
+		miniAppCreds := req.GetMiniApp()
+
+		session, err := h.authSvc.LoginViaTelegramMiniApp(ctx, miniAppCreds.GetInitData())
+		if err != nil {
+			return nil, rerrors.Wrap(err, "login via telegram mini app")
+		}
+
+		setAuthCookieHeaders(ctx, session)
+
+		resp := &artel_api.Login_Response{
+			Token:            session.Token,
+			ExpiresAt:        timestamppb.New(session.ExpiresAt),
+			RefreshToken:     session.RefreshToken,
+			RefreshExpiresAt: timestamppb.New(session.RefreshExpiresAt),
+		}
+
+		return resp, nil
 	default:
 		return nil, user_errors.UnsupportedLoginMethod
 	}

@@ -57,6 +57,10 @@ message TelegramCredentials {
   string id_token = 1;
 }
 
+message TelegramMiniAppCredentials {
+  string init_data = 1;
+}
+
 message Register {
   message Request {
     string email    = 1;
@@ -71,8 +75,9 @@ message Register {
 message Login {
   message Request {
     oneof method {
-      PasswordCredentials password  = 1;
-      TelegramCredentials telegram  = 2;
+      PasswordCredentials         password  = 1;
+      TelegramCredentials         telegram  = 2;
+      TelegramMiniAppCredentials  mini_app  = 3;
     }
   }
   message Response {

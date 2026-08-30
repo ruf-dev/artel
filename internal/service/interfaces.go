@@ -130,6 +130,10 @@ type AuthService interface {
 	// LoginViaTelegram returns user_errors.SetupNotCompleted if instance setup hasn't finished
 	// yet, or user_errors.AuthMethodDisabled if telegram auth is off.
 	LoginViaTelegram(ctx context.Context, idToken string) (domain.Session, error)
+	// LoginViaTelegramMiniApp validates a Telegram Mini App initData string against the bot
+	// token and logs in or registers by Telegram user id, reusing LoginViaTelegram's path.
+	// Same setup/auth-method guard clauses as LoginViaTelegram.
+	LoginViaTelegramMiniApp(ctx context.Context, initData string) (domain.Session, error)
 	GetMe(ctx context.Context, userUuid uuid.UUID) (domain.UserDetails, error)
 	CheckIsAdmin(ctx context.Context, userUuid uuid.UUID) error
 	// Refresh exchanges a still-valid refresh token for a new access/refresh token pair,

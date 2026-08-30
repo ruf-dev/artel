@@ -1,6 +1,7 @@
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 import {Navigate, useLocation, useNavigate, useRoutes, type RouteObject} from "react-router-dom"
 import { Tooltip } from "react-tooltip"
+import {Loader} from "@vervstack/chures"
 
 import cls from "@/app/routing/Router.module.css"
 import Toaster from "@/segments/Toaster/Toaster.tsx"
@@ -30,6 +31,7 @@ import Dialog from "@/pages/segments/Dialog.tsx"
 import UnsecureBanner from "@/segments/UnsecureBanner/UnsecureBanner.tsx"
 import {authService} from "@/processes/Auth.ts"
 import useUser from "@/hooks/user/User.ts"
+import {useBakeError} from "@/app/hooks/useErrorToast.ts"
 import {useServerStatus} from "@/app/hooks/ServerStatus.ts"
 import {useAppConfig} from "@/app/hooks/AppConfig.ts"
 import ServiceUnavailablePage from "@/pages/service-unavailable/ServiceUnavailablePage.tsx"
@@ -82,6 +84,13 @@ export function isPublicPath(pathname: string): boolean {
     return publicPaths.includes(pathname)
 }
 
+const MINI_APP_AUTH_TIMEOUT_MS = 10000
+
+function hasTelegramMiniAppInitData(): boolean {
+    const initData = window.Telegram?.WebApp?.initData
+    return typeof initData === "string" && initData.length > 0
+}
+
 const routes: RouteObject[] = [
     {
         element: <HomeLayout/>,
@@ -123,45 +132,96 @@ export default function Router() {
     const navigate = useNavigate()
     const {pathname} = useLocation()
 
-    const {auth, setUserInfo} = useUser()
+    const {auth, setUserInfo, login} = useUser()
+    const bakeError = useBakeError()
     const isServerAvailable = useServerStatus()
     const setupCompleted = useAppConfig((s) => s.setupCompleted)
     const routeElement = useRoutes(routes)
+
+    // Opened inside Telegram's Mini App browser, window.Telegram.WebApp.initData
+    // is a signed string the backend's Login `miniApp` arm exchanges for a normal
+    // session. Do that exchange before the login screen renders and gate every
+    // routing decision on it, so an authenticated mini-app user never sees /init.
+    const [miniAppAuthPending, setMiniAppAuthPending] = useState(
+        () => hasTelegramMiniAppInitData() && !auth.isAuthenticated(),
+    )
+
+    useEffect(() => {
+        if (!miniAppAuthPending) return
+
+        const webApp = window.Telegram?.WebApp
+        if (!webApp || !webApp.initData) {
+            setMiniAppAuthPending(false)
+            return
+        }
+
+        webApp.ready()
+
+        // The widget path never blocks render; cap the wait so a hung request
+        // can't either — on timeout we fall through to the normal login screen.
+        const timeoutId = window.setTimeout(() => setMiniAppAuthPending(false), MINI_APP_AUTH_TIMEOUT_MS)
+
+        authService.LoginViaMiniApp(webApp.initData)
+            .then((session) => {
+                login(session)
+                return authService.FetchUserInfo()
+                    .then((info) => login(session, info))
+                    .catch(() => undefined)
+            })
+            .catch((err: unknown) => bakeError("Telegram Mini App login failed", err))
+            .finally(() => {
+                window.clearTimeout(timeoutId)
+                setMiniAppAuthPending(false)
+            })
+    }, [])
 
     // setupCompleted starts at its safe default (true) and only reflects the real value once
     // the first GetConfig response lands — this must re-run when that happens, not just once at
     // mount, or a fresh instance never actually gets routed to /setup.
     useEffect(() => {
+        if (miniAppAuthPending) return
         if (!setupCompleted && location.pathname !== Path.SetupWizard) {
             navigate(Path.SetupWizard)
         }
-    }, [setupCompleted])
+    }, [setupCompleted, miniAppAuthPending])
 
     useEffect(() => {
+        if (miniAppAuthPending) return
         if (!auth.isAuthenticated()) return
 
         authService.FetchUserInfo().then(setUserInfo).catch(() => {})
         if (location.pathname === Path.InitPage) {
             navigate(Path.HomePage)
         }
-    }, [])
+    }, [miniAppAuthPending])
 
     // Keyed on `auth` too, not just `pathname`: logout() swaps in a fresh
     // AuthMiddleware instance without changing the route, so this must re-run on
     // that reference change to bounce the now-unauthenticated user to /init.
     useEffect(() => {
+        if (miniAppAuthPending) return
         if (auth.isAuthenticated()) return
         if (isPublicPath(pathname)) return
 
         localStorage.setItem(REDIRECT_AFTER_LOGIN_KEY, pathname)
         navigate(Path.InitPage)
-    }, [pathname, auth])
+    }, [pathname, auth, miniAppAuthPending])
 
     if (!isServerAvailable) {
         return (
             <div className={cls.Root}>
                 <div className={cls.Content}>
                     <ServiceUnavailablePage/>
+                </div>
+            </div>
+        )
+    }
+
+    if (miniAppAuthPending) {
+        return (
+            <div className={cls.Root}>
+                <div className={cls.Content}>
+                    <Loader/>
                 </div>
             </div>
         )
