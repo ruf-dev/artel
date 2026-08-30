@@ -36,26 +36,60 @@ var (
 const secretValuePrefix = "__secrets."
 
 type HttpExecutor struct {
-	client *http.Client
+	base   *http.Client
+	byTool map[McpTool]*http.Client
+	byMcp  map[McpName]*http.Client
 }
 
-func NewHttpExecutor() *HttpExecutor {
-	c := &http.Client{
-		Timeout:   httpExecutorTimeout,
-		Transport: newLoggingTransport(),
+// NewHttpExecutor builds a HttpExecutor whose outbound requests all pass through the shared
+// logging transport, plus any per-tool / per-mcp middleware wound from opts.
+func NewHttpExecutor(opts ...HttpExecutorOption) *HttpExecutor {
+	return newHttpExecutor(newLoggingTransport(), opts...)
+}
+
+// newHttpExecutor is the construction seam the white-box middleware test uses to inject a stub
+// base transport in place of the real logging transport. It winds every per-tool and per-mcp
+// http.Client once, here — nothing about middleware selection happens per request.
+func newHttpExecutor(base http.RoundTripper, opts ...HttpExecutorOption) *HttpExecutor {
+	cfg := &httpExecutorConfig{}
+
+	for _, opt := range opts {
+		opt(cfg)
 	}
+
+	baseClient, byTool, byMcp := buildHttpClients(cfg, base, httpExecutorTimeout)
 
 	return &HttpExecutor{
-		client: c,
+		base:   baseClient,
+		byTool: byTool,
+		byMcp:  byMcp,
 	}
 }
 
-func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
+// clientFor picks the pre-wound http.Client for a tool: its own per-tool client if one was
+// registered, else its mcp's per-mcp client, else the shared base client.
+func (e *HttpExecutor) clientFor(ident ToolIdent) *http.Client {
+	tool := McpTool(ident.McpName + "." + ident.ToolName)
+
+	if c, ok := e.byTool[tool]; ok {
+		return c
+	}
+
+	if c, ok := e.byMcp[McpName(ident.McpName)]; ok {
+		return c
+	}
+
+	return e.base
+}
+
+func (e *HttpExecutor) Execute(ctx context.Context, ident ToolIdent, action domain.ToolAction,
 	secrets map[string]interface{}, params map[string]interface{},
 ) (string, error) {
 	if action.Http == nil {
 		return "", user_errors.McpActionMissing
 	}
+
+	client := e.clientFor(ident)
 
 	httpAction := action.Http
 
@@ -129,7 +163,7 @@ func (e *HttpExecutor) Execute(ctx context.Context, action domain.ToolAction,
 		req.Header.Set(key, resolved)
 	}
 
-	resp, err := e.client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error executing http request")
 	}

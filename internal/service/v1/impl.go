@@ -13,6 +13,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/dockerhosts"
 	externalconns "github.com/ruf-dev/artel/internal/service/v1/externalconnections"
 	"github.com/ruf-dev/artel/internal/service/v1/mcp"
+	"github.com/ruf-dev/artel/internal/service/v1/mcp/executors"
 	"github.com/ruf-dev/artel/internal/service/v1/mom"
 	"github.com/ruf-dev/artel/internal/service/v1/notes"
 	"github.com/ruf-dev/artel/internal/service/v1/postgresinstances"
@@ -63,7 +64,38 @@ type Services struct {
 	SimpleChat service.SimpleChatService
 }
 
-func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
+// Option configures the Services wiring at construction time.
+type Option func(*svcConfig)
+
+type svcConfig struct {
+	momOpts []mom.Option
+}
+
+// WithMomToolHttpMiddleware registers an http.RoundTripper middleware scoped to one MoM tool
+// ("<mcp>.<tool>") on the MoM http executor. Appended to the options passed to mom.New.
+func WithMomToolHttpMiddleware(tool executors.McpTool, mw executors.HttpMiddleware) Option {
+	return func(cfg *svcConfig) {
+		momOpt := mom.WithToolHttpMiddleware(tool, mw)
+		cfg.momOpts = append(cfg.momOpts, momOpt)
+	}
+}
+
+// WithMomMcpHttpMiddleware registers an http.RoundTripper middleware scoped to every tool of one
+// MoM on the MoM http executor. Appended to the options passed to mom.New.
+func WithMomMcpHttpMiddleware(mcp executors.McpName, mw executors.HttpMiddleware) Option {
+	return func(cfg *svcConfig) {
+		momOpt := mom.WithMcpHttpMiddleware(mcp, mw)
+		cfg.momOpts = append(cfg.momOpts, momOpt)
+	}
+}
+
+func New(repo *pg.Repos, cfg config.EnvironmentConfig, opts ...Option) (*Services, error) {
+	svcCfg := &svcConfig{}
+
+	for _, opt := range opts {
+		opt(svcCfg)
+	}
+
 	oauthCfg := &oauth2.Config{
 		ClientID:     cfg.GoogleClientID,
 		ClientSecret: cfg.GoogleClientSecret,
@@ -82,7 +114,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig) (*Services, error) {
 	// composes service.MomService (to validate gitlab/trello credentials via the MoM http
 	// executor) — those interface values don't exist yet mid-construction of the same struct
 	// literal.
-	momSvc := mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections())
+	momSvc := mom.New(repo.McpDefinitions(), repo.McpConnectors(), repo.ExternalConnections(), svcCfg.momOpts...)
 	externalConnectionsSvc := externalconns.New(
 		repo.ExternalConnections(),
 		repo.PendingAuthCodes(),

@@ -22,17 +22,50 @@ type ServiceImpl struct {
 	httpExecutor   *executors.HttpExecutor
 }
 
+// Option configures a mom.ServiceImpl at construction time.
+type Option func(*momConfig)
+
+type momConfig struct {
+	execOpts []executors.HttpExecutorOption
+}
+
+// WithToolHttpMiddleware registers an http.RoundTripper middleware scoped to one MoM tool
+// ("<mcp>.<tool>") on the MoM http executor. Forwarded verbatim to
+// executors.WithToolHttpMiddleware.
+func WithToolHttpMiddleware(tool executors.McpTool, mw executors.HttpMiddleware) Option {
+	return func(cfg *momConfig) {
+		execOpt := executors.WithToolHttpMiddleware(tool, mw)
+		cfg.execOpts = append(cfg.execOpts, execOpt)
+	}
+}
+
+// WithMcpHttpMiddleware registers an http.RoundTripper middleware scoped to every tool of one
+// MoM on the MoM http executor. Forwarded verbatim to executors.WithMcpHttpMiddleware.
+func WithMcpHttpMiddleware(mcp executors.McpName, mw executors.HttpMiddleware) Option {
+	return func(cfg *momConfig) {
+		execOpt := executors.WithMcpHttpMiddleware(mcp, mw)
+		cfg.execOpts = append(cfg.execOpts, execOpt)
+	}
+}
+
 func New(
 	mcpDefinitions repository.McpDefinitionsRepo,
 	mcpConnectors repository.McpConnectorsRepo,
 	externalConns repository.ExternalConnectionRepo,
+	opts ...Option,
 ) *ServiceImpl {
+	cfg := &momConfig{}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
 	return &ServiceImpl{
 		mcpDefinitions: mcpDefinitions,
 		mcpConnectors:  mcpConnectors,
 		externalConns:  externalConns,
 		emailExecutor:  executors.NewEmailExecutor(),
-		httpExecutor:   executors.NewHttpExecutor(),
+		httpExecutor:   executors.NewHttpExecutor(cfg.execOpts...),
 	}
 }
 
@@ -86,7 +119,9 @@ func (s *ServiceImpl) ExecuteToolForKey(
 				continue
 			}
 
-			return s.dispatch(ctx, connector.ExternalConnectionUuid, tool.Action, params)
+			ident := executors.ToolIdent{McpName: connector.McpName, ToolName: tool.ApiDescription.Name}
+
+			return s.dispatch(ctx, ident, connector.ExternalConnectionUuid, tool.Action, params)
 		}
 	}
 
@@ -117,7 +152,9 @@ func (s *ServiceImpl) ExecuteToolForConnection(
 			continue
 		}
 
-		return s.dispatch(ctx, exConnUuid, tool.Action, params)
+		ident := executors.ToolIdent{McpName: mcpName, ToolName: toolName}
+
+		return s.dispatch(ctx, ident, exConnUuid, tool.Action, params)
 	}
 
 	return "", user_errors.McpToolNotFound
@@ -179,7 +216,9 @@ func (s *ServiceImpl) ExecuteToolWithSecrets(
 			return "", user_errors.McpActionMissing
 		}
 
-		result, err := s.httpExecutor.Execute(ctx, tool.Action, secrets, params)
+		ident := executors.ToolIdent{McpName: mcpName, ToolName: toolName}
+
+		result, err := s.httpExecutor.Execute(ctx, ident, tool.Action, secrets, params)
 		if err != nil {
 			return "", rerrors.Wrap(err, "error executing http tool")
 		}
@@ -192,6 +231,7 @@ func (s *ServiceImpl) ExecuteToolWithSecrets(
 
 func (s *ServiceImpl) dispatch(
 	ctx context.Context,
+	ident executors.ToolIdent,
 	exConnUuid uuid.UUID,
 	action domain.ToolAction,
 	params map[string]interface{},
@@ -205,7 +245,7 @@ func (s *ServiceImpl) dispatch(
 	case action.Imap != nil || action.Smtp != nil:
 		return s.dispatchEmail(ctx, exConn, action, params)
 	case action.Http != nil:
-		return s.dispatchHttp(ctx, exConn, action, params)
+		return s.dispatchHttp(ctx, ident, exConn, action, params)
 	default:
 		return "", user_errors.McpActionMissing
 	}
@@ -234,6 +274,7 @@ func (s *ServiceImpl) dispatchEmail(
 
 func (s *ServiceImpl) dispatchHttp(
 	ctx context.Context,
+	ident executors.ToolIdent,
 	exConn domain.ExternalConnection,
 	action domain.ToolAction,
 	params map[string]interface{},
@@ -255,7 +296,7 @@ func (s *ServiceImpl) dispatchHttp(
 		return "", rerrors.Wrap(err, "error unmarshaling http credentials")
 	}
 
-	result, err := s.httpExecutor.Execute(ctx, action, secrets, params)
+	result, err := s.httpExecutor.Execute(ctx, ident, action, secrets, params)
 	if err != nil {
 		return "", rerrors.Wrap(err, "error executing http tool")
 	}
