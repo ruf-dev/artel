@@ -125,17 +125,20 @@ for things that are genuinely **not** an outbound declarative HTTP call:
   competing tool-execution framework)
 - protocols other than plain JSON/REST that don't fit `http`/`imap`/`smtp` (rare — discuss before adding a new action type)
 
-## Go Coding Rules
+## Coding Rules
 
-If editing any `.go` files, read and follow [docs/go-style.md](docs/go-style.md).
+General language rules (Go, TypeScript/React, CSS, SQL, proto) live in the machine-wide coder
+profile at `~/.claude/rules/` and are injected automatically by a `PreToolUse` hook when a
+matching file is edited — nothing to read manually.
 
-## Frontend Coding Rules
+This repo keeps only its own specifics:
 
-If editing any files under `pkg/client/ArtelUI`, read and follow
-[pkg/client/ArtelUI/CLAUDE.md](pkg/client/ArtelUI/CLAUDE.md) — it covers the
-Feature-Sliced Design layering (pages/widgets/components), when to extract a
-component vs. keep it inline, CSS Modules conventions, component structure rules,
-and error/confirmation handling primitives.
+- [docs/go-style.md](docs/go-style.md) — artel paths, generated files
+- [pkg/client/ArtelUI/CLAUDE.md](pkg/client/ArtelUI/CLAUDE.md) — chures, lint enforcement, artel
+  tokens, reference shapes, known debt
+- [docs/profile-drift.md](docs/profile-drift.md) — **where artel knowingly does not satisfy a
+  profile rule.** Read it before "fixing" a baseline; two of the profile's rules (proto HTTP
+  verbs, transaction helper) currently contradict the whole existing codebase on purpose.
 
 ## graphify
 

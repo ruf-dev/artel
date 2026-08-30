@@ -1,331 +1,100 @@
-# ArtelUI Frontend Rules
+# ArtelUI Frontend Rules — artel specifics
 
-This file applies to everything under `pkg/client/ArtelUI`. It is referenced from the
-repo root [CLAUDE.md](../../../CLAUDE.md) — read it whenever you touch a file in this
-directory.
+General frontend rules — component shape, the 5-tier import hierarchy, colocation, state
+ownership, async style, memoization, CSS structure, the `z-index` and `!important` bans, the
+`--is-mobile` technique, test shape — live in the machine-wide coder profile and are injected
+automatically when a `.ts`/`.tsx`/`.css` file is edited:
 
-## Component hierarchy
+- `~/.claude/rules/40-frontend-react.md`
+- `~/.claude/rules/41-frontend-style.md`
+- `~/.claude/rules/42-css.md`
+- `~/.claude/rules/43-frontend-testing.md`
 
-Five tiers, lowest to highest. **A file may only import from its own tier or a tier
-strictly below it** — never sideways across an unrelated subtree, never upward. This
-is enforced for tiers 2-5 by `import-x/no-restricted-paths` in `eslint.config.js`
-(plus `import-x/no-cycle` catching any cycle regardless of tier); the one thing the
-linter can't check is colocation scope (below), which is a review-time rule.
+**Don't duplicate them here.** This file holds only what's specific to this codebase.
 
-1. **`@vervstack/chures`** — the UI atom library: `Button`, `Input`, `Dropdown`,
-   `Toggle`, `ConfirmDialog`, `InfoDialog`, `ModalActions`, `ModalClose`, `Loader`,
-   `LoadingWrapper`, `Toaster`/`useToaster`, and the `icons/` set. Always reach for a
-   chures component instead of a raw `<input>`, `<button>`, or a bespoke
-   confirm/alert dialog. Enforced by the `no-restricted-syntax` rule banning raw
-   `<button>`/`<input>` JSX (an exception carves out `components/atoms/**`, since the
-   wrapper there has to render the primitive once).
-2. **`components/atoms/<Name>/<Name>.tsx` + `.module.css`** — thin wrappers that
-   exist *only* because chures doesn't cover the need. Every file here must open with
-   a one-line comment explaining the gap, e.g. `// TODO: chures has no multiline
-   variant yet, drop this wrapper once it does`. May only import chures and other
-   atoms (not tier-3 `components/`). `components/shared/Input` predates this
-   convention and is the folder it replaces — don't add new atoms under `shared/`,
-   and give it the TODO comment (and ideally move it under `atoms/`) next time you
-   touch it.
-3. **`components/<Name>/<Name>.tsx`** — project-wide components too specific to the
-   product to be a chures-style atom: a reusable leaf used in 2+ places (a chip, a
-   generic option row, a form field). May import tiers 1-2 only.
-4. **`widgets/<Name>/<Name>.tsx`** and **`segments/<Name>/<Name>.tsx`** — same tier,
-   two different roles:
-   - A **widget** is a unit reused across pages that owns its own related data
-     fetching (`widgets/VaultCard`, `widgets/McpKeyCard`).
-   - A **segment** at this top level (`src/segments/Topbar`) is global app-shell
-     chrome. Keep this set small and deliberate — it's for the handful of things
-     that are genuinely app-wide (the top bar, the global dialog mount), not a
-     general-purpose category. A segment specific to one page/dialog is a *local*
-     segment (see colocation below), not a new entry under `src/segments/`.
+Where artel doesn't currently satisfy a profile rule, it's tracked in
+[docs/profile-drift.md](../../../docs/profile-drift.md) — read that before "fixing" a baseline.
 
-   May import tiers 1-3 only.
-5. **`pages/<Name>/<Name>Page.tsx`** and **`dialogs/<Name>/<Name>.tsx`** — top-level
-   citizens. A page is a route; a dialog is opened via `OpenDialog(<X/>)` from
-   `@/app/hooks/Dialog`. May import tiers 1-4, plus a page may import a dialog to
-   open it (`OpenDialog(<CreateVaultDialog/>)` in `HomePage.tsx`).
+## Tier 1 — the chures atom library
 
-   **Any tier may import from `dialogs/` to call `OpenDialog(<X/>)`** — a dialog is
-   opened from wherever its trigger lives, not just from pages. A `components/` leaf,
-   a `widgets/`/`segments/` unit, or a page can all reach into `dialogs/` for this one
-   purpose (e.g. `OpenDialog(<FastSetupDialog/>)` from `widgets/VaultCard/VaultCard.tsx`).
-   This is the one sanctioned upward exception to the tier rule, carved out of
-   `import-x/no-restricted-paths` for every zone below `dialogs/`. **A dialog must
-   never import a page** (enforced by `no-restricted-paths`) — dialogs don't know who
-   opened them.
+`@vervstack/chures` provides: `Button`, `Input`, `Dropdown`, `Toggle`, `ConfirmDialog`,
+`InfoDialog`, `ModalActions`, `ModalClose`, `Loader`, `LoadingWrapper`, `Toaster`/`useToaster`,
+and the `icons/` set. Always reach for one of these before writing a wrapper.
 
-## Local colocation
+If chures can't do what you need, add a `components/atoms/<Name>/` wrapper with a one-line comment
+naming the gap, e.g. `// TODO: chures has no multiline variant yet, drop this wrapper once it does`.
 
-Any page or dialog can define its own **local** components/widgets/segments in a
-colocated subfolder: `pages/<Page>/components/`, `pages/<Page>/widgets/`,
-`pages/<Page>/segments/`, `dialogs/<Dialog>/components/`, `dialogs/<Dialog>/widgets/`.
-See `pages/tract-canvas/*`, `dialogs/AddTriggerDialog/*`, and
-`dialogs/ManageVaultDialog/*` for the reference shape.
+`components/shared/Input` predates the `atoms/` convention and is the folder it replaces. Don't
+add new atoms under `shared/`; give it the TODO comment (and ideally move it under `atoms/`) next
+time you touch it.
 
-- **One React component per file.** A `.tsx` file renders exactly one component — no
-  private/local helper components defined inline in the same file, however small (a
-  row renderer, a badge, a sub-dialog). Split each into its own file under the
-  nearest colocation folder above. See `dialogs/ManageVaultDialog/components/*`
-  (`MemberRow`, `InviteRow`, `RoleBadge`, `DangerZoneText`, `RoleOption`,
-  `CreateInviteLinkDialog`) for the reference shape — including a dialog-local
-  sub-dialog (`CreateInviteLinkDialog`, opened via `OpenDialog` from within
-  `ManageVaultDialog`) living in the owning dialog's local `components/`, since
-  there's no separate "local dialogs" folder — a local sub-dialog is still a
-  `components/`-tier concept relative to its parent.
-- These are **local by default**: only the owning page/dialog (and its own
-  descendants) may import them. Don't reach into another page's or dialog's local
-  folder from outside it — if the same piece is needed in two places, promote it to
-  the matching global tier (`src/components`, `src/widgets`) instead of importing
-  across subtrees. This isn't linter-enforced (no generic way to express "same
-  subtree only" as a static zone) — same as the `z-index` rule, catch it in review.
-- **Screens** (`dialogs/<Dialog>/screens/`) are a dialog-only concept, one level
-  below the dialog itself, for a dialog with multiple sequential steps (see
-  `AddTriggerDialog/screens/`). Same local-only rule as above.
+## Error and confirmation primitives
 
-## Messy dialog/page logic
+- **Errors**: `useBakeError()` from `@/app/hooks/useErrorToast` → `bakeError(title, err)` inside
+  `.catch()`. Backed by chures' `useToaster`.
+- **Confirmations**: `OpenDialog(<ConfirmDialog ... />)`, imported straight from
+  `@vervstack/chures` — no local wrapper. Props: `title`, `message`, `confirmLabel`,
+  `cancelLabel`, `danger`, `onConfirm` (async). The `onConfirm` callback owns its own error
+  handling; `ConfirmDialog` closes itself in `finally` after it resolves.
 
-If a page or dialog's `.tsx` file is accumulating non-rendering logic (data shaping,
-layout math, orchestration), extract it to a colocated `processes/<name>.ts` file
-(see `pages/tract-canvas/processes/tractCanvasLayout.ts`) instead of letting the
-component file grow — same tool as the project-wide `src/processes/` used by
-`app/hooks`, just colocated when the logic is specific to one page/dialog.
+## Lint enforcement in this repo
 
-## Known debt (documented, not migrated)
+| Profile rule | Enforced by |
+| --- | --- |
+| Tier import direction | `import-x/no-restricted-paths` + `import-x/no-cycle` in `eslint.config.js` |
+| No raw `<button>`/`<input>` | `no-restricted-syntax` (carve-out for `components/atoms/**`) |
+| No template-literal `className` | `no-restricted-syntax` |
+| Max JSX depth 3 | `react/jsx-max-depth` |
+| No `z-index` | `no-restricted-syntax` (JS) + `declaration-property-value-disallowed-list` (stylelint) |
+| No `!important` | `declaration-no-important` |
+| rem size tokens | `unit-disallowed-list` |
+| Dialogs cap height + scroll | custom `artel/dialog-scrollable` rule (`stylelint-rules/dialog-scrollable.js`), scoped to `src/**/*Dialog/*Dialog.module.css` |
 
-- `RunTractDialog`, `StepPickerDialog`, `S3InstanceFormDialog` are dialogs living
-  under `src/components/` instead of `src/dialogs/` — legacy from before this doc
-  existed. Don't repeat the pattern for new dialogs; move these opportunistically if
-  you're already touching one, but it's not worth a dedicated migration.
-- 105 pre-existing `no-restricted-syntax` warnings (raw `<button>`/`<input>`,
-  template-literal `className`) are a known baseline as of this rule's introduction
-  — fix the ones you touch, don't feel obligated to sweep the whole codebase.
-- ~560 pre-existing stylelint `unit-disallowed-list` warnings (`px`/`em`/`vh`/`vw`
-  used where a `rem` size token from `sizes.css` should be) are a known baseline as
-  of this rule's introduction — same deal, fix a file's sizes when you're already
-  touching it, don't sweep the whole codebase in one pass. New code should use an
-  existing `--*` token from `sizes.css` or add a new one there rather than writing a
-  raw non-rem unit.
-- `--standard-button-height` (`sizes.css`) is the shared height for compact/icon
-  action buttons (e.g. `SimpleChat`'s History/New Chat header buttons) — it also
-  backs `--chures-input-height`'s mobile value (`width <= 480px`), so the chat
-  text input, model-selector dropdown, and composer buttons all shrink to the same
-  height on mobile automatically. If you hit an "unsettled" button-height decision
-  (a control's height doesn't match its neighbors, especially at the mobile
-  breakpoint), reuse this token instead of hardcoding a new value.
-- The global dialog mount lives at `pages/segments/Dialog.tsx`, not `src/segments/`
-  where `Topbar` lives — two different locations for the same "app-level segment"
-  concept. New app-level segments go in `src/segments/`; don't add a third location.
+`bun run lint` runs both; `bun run lint:js` / `bun run lint:css` individually.
 
-## When to extract vs. keep inline
+The one thing the linter can't check is **colocation scope** — "only the owning page/dialog may
+import its local `components/`". Catch that in review.
 
-- Extract to `components/` once a piece of UI or logic (a chip renderer, a
-  `connectionLabel`/color-mapping helper, a generic select-option row) is used in
-  **2+ places** — don't duplicate the JSX/logic itself. (Small CSS-module *rules* are
-  fine to duplicate — see below.)
-- Extract to `widgets/` when the thing is rendered per-item in a list and fetches its
-  own related data.
-- Keep things inline in the page when they're page-specific and used exactly once.
+## The `OpenDialog` upward exception
 
-## CSS Modules
+Any tier may import from `dialogs/` solely to call `OpenDialog(<X/>)` — carved out of
+`no-restricted-paths` for every zone below `dialogs/`. A dialog must never import a page (also
+enforced). See `widgets/VaultCard/VaultCard.tsx` opening `FastSetupDialog`.
 
-- Every `widgets/`/`components/` file gets its own `*.module.css`, scoped to what
-  that file renders.
-- **Duplicate small shared rules** (button variants, chip styles, modal chrome)
-  across modules rather than inventing a shared global stylesheet — this matches the
-  existing `HomePage.module.css` / `ManageVaultDialog.module.css` precedent and keeps
-  each file self-contained and movable.
-- **Combining multiple/conditional classes**: never build `className` with a template
-  literal (`` `${cls.Foo} ${cond ? cls.Bar : ""}` ``) — use `cn()` from
-  `@/app/utils/cn.ts` (a `classnames` wrapper) instead, e.g.
-  `cn(cls.Foo, cond && cls.Bar)`. Enforced by the `no-restricted-syntax` ESLint rule
-  banning template literals in `className`.
+## artel tokens worth knowing
 
-## Reference example
+- `--standard-button-height` (`sizes.css`) — shared height for compact/icon action buttons. Also
+  backs `--chures-input-height`'s mobile value, so the chat input, model-selector dropdown, and
+  composer buttons all shrink together. If a control's height doesn't match its neighbours,
+  reuse this rather than inventing a value.
+- `--dialog-max-height` (`80vh`) / `--dialog-max-height-lg` (`90vh`) — reach for `-lg` on dense
+  multi-field forms or dialogs containing a list (`ManageVaultDialog`, `S3InstanceFormDialog`);
+  the plain token is the default (`WebhookDetailsDialog`, `TokenRevealDialog`).
+- `--content-padding-mobile` — shared mobile content padding.
 
-`pages/home/HomePage.tsx` + `widgets/VaultCard/VaultCard.tsx` +
-`components/ManageVaultDialog/ManageVaultDialog.tsx` is the canonical shape. When a
-page file grows past ~300 lines or starts mixing dialog logic, list-item rendering,
-and shared utilities in one file, split it the same way — see the `mcp-keys`
-refactor (`widgets/McpKeyCard`, `components/ManageKeyDialog`,
-`components/ConnectorChip`, `components/SelectOption`) for a worked example of
-splitting an existing fat page.
+## Reference shapes
 
-## Component Structure
+- Canonical page: `pages/home/HomePage.tsx` + `widgets/VaultCard/VaultCard.tsx` +
+  `components/ManageVaultDialog/ManageVaultDialog.tsx`.
+- Splitting a fat page: the `mcp-keys` refactor — `widgets/McpKeyCard`,
+  `components/ManageKeyDialog`, `components/ConnectorChip`, `components/SelectOption`.
+- Colocation: `pages/tract-canvas/*`, `dialogs/AddTriggerDialog/*` (including `screens/`),
+  `dialogs/ManageVaultDialog/components/*` (`MemberRow`, `InviteRow`, `RoleBadge`,
+  `DangerZoneText`, `RoleOption`, and the dialog-local sub-dialog `CreateInviteLinkDialog`).
+- Colocated logic: `pages/tract-canvas/processes/tractCanvasLayout.ts`.
+- Portaled floating UI: `components/TemplateInput/TemplateInput.tsx`.
+- The DOM-reorder + `column-reverse` stacking fix:
+  `pages/notes/components/NotesSidebar/components/SidebarTopBar/*` and the admin
+  `TabBar` / `AdminPage.tsx` `StickyTabsWrapper`.
+- Specificity fix without `!important`: `DrawerCloseButton.tsx`/`.module.css`,
+  `MobileTopBar.module.css`, `DesktopNotesShell.module.css`.
 
-- **Never create components with more than 3 levels of HTML nesting** — split into
-  smaller components instead. This is enforced by the `react/jsx-max-depth` ESLint rule
-  (`max: 3`).
-- Top-level container element's style class must be named `{ComponentName}Container`
-  (e.g., `VaultCardHeaderContainer` in `VaultCardHeader.tsx`) — never a generic name
-  like `Field` or `Root`.
-- All other classes in that component's `.module.css` must be nested inside the
-  `{ComponentName}Container` rule using native CSS nesting (`&`), following the
-  DOM structure — no top-level sibling classes. See `VaultCardHeader.module.css`
-  for the reference pattern.
-- When wrapping another component with a styled div, use `***Wrapper` for that div's
-  style (e.g., `ButtonWrapper`)
+## Known debt — documented, not migrated
 
-## Buttons
-
-- **Never use a raw `<button>` element** — always use `Button` from
-  `@vervstack/chures`. If chures' `Button` can't do what you need, wrap it as a
-  `components/atoms/` component (tier 2 above) with a TODO explaining the gap —
-  never fork the raw element inline. Enforced by `no-restricted-syntax`.
-
-## Error and Confirmation Handling
-
-- **Never use `window.alert` or `window.confirm`** — enforced by
-  `no-restricted-syntax`. Use project-level primitives instead:
-  - **Errors**: `useBakeError()` from `@/app/hooks/useErrorToast` → call
-    `bakeError(title, err)` inside `catch` blocks (backed by chures' `useToaster`)
-  - **Confirmations**: `OpenDialog(<ConfirmDialog ... />)` — `ConfirmDialog` is
-    imported straight from `@vervstack/chures`, no local wrapper
-- `ConfirmDialog` props: `title`, `message`, `confirmLabel`, `cancelLabel`, `danger`
-  (boolean), `onConfirm` (async callback)
-- The `onConfirm` callback is responsible for error handling; `ConfirmDialog`
-  closes itself in `finally` after `onConfirm` resolves
-
-## State ownership in components
-
-- **Private components** (file-local functions, not exported) that need to change **global state** (Zustand stores, `useDialog`, `useNavigate`, etc.) must call the relevant hook directly — do not thread the action down as a prop.
-- **Private components** that need to change **parent local state** (e.g. `useState` in the enclosing component) receive a callback prop for that change — local state belongs to whoever owns it.
-- **Public/exported components** that trigger state changes always receive a callback prop — they must not reach into a specific store themselves, because callers control which state is affected.
-
-## Never use z-index
-
-- **`z-index` is forbidden** in every `.module.css`/`.css` file and in inline `style` props —
-  no exceptions, no "just this once."
-- Stacking order comes from **DOM order** instead: within a stacking context, positioned
-  elements paint in document order, so put the element that should be on top **later in the
-  DOM** (use flexbox `order` if you need it to *look* earlier visually — `order` doesn't
-  affect paint/stacking order, only layout position).
-- Floating UI (dropdowns, popovers, tooltips) that must render above unrelated sibling
-  content should be **portaled to `document.body`** (`createPortal`) and positioned via
-  `getBoundingClientRect()`, not stacked with `z-index` — see
-  `components/TemplateInput/TemplateInput.tsx` for the pattern.
-- **Gotcha: flex/grid items paint as atomic units, one level deep.** "Put the element
-  later in the DOM" only works if the *direct flex/grid item* containing it is later —
-  a `position:absolute` overlay nested inside flex item A still paints underneath flex
-  item B if B comes after A as a sibling, even though the overlay's own DOM position is
-  deeply nested and even though the overlay is `position:absolute`. Flex/grid items
-  paint in (order-modified) document order as atomic blocks; a positioned descendant
-  doesn't escape its own item's paint slot just because it overflows the item's box
-  visually. Symptom: an open dropdown/popover that visually overlaps a later sibling
-  renders (and hit-tests) *underneath* it — clicking the visible dropdown selects the
-  sibling in dev tools instead. Two ways out, prefer in this order: (1) reorder the
-  actual DOM children so the item containing the overlay comes *last*, then use
-  `flex-direction: column-reverse` (or `row-reverse`) to restore the original visual
-  order — see `pages/notes/components/NotesSidebar/components/SidebarTopBar/*` (the
-  vault-picker dropdown DOM-sits after the search bar, `column-reverse` displays it
-  above); (2) if reordering isn't feasible, portal the overlay per the rule above. Do
-  not reach for `z-index` on the flex item either — same rule applies.
-- **Trap: don't reach for `isolation: isolate` to "contain" a nested positioned element
-  (e.g. a chures `Toggle`'s internal `position:relative` track) so it stops leaking into
-  an ancestor's paint order.** `isolation: isolate` forces the element it's on into the
-  *stacking-context-forming* paint bucket — the same DOM-order-ranked bucket as
-  positioned `z-index:auto` siblings — even though the element stays `position:static`.
-  If that element sits **after** a sticky/positioned header in the DOM (the common case:
-  a page's scrollable content container, rendered after a sticky top bar), isolating it
-  makes the *entire* container paint on top of the header, which is strictly worse than
-  the original narrow leak (only the nested positioned descendant overlapping). There is
-  no plain-CSS way to keep a non-positioned container in the earlier "in-flow" paint
-  bucket while also stopping a positioned descendant from leaking out of it — the fix is
-  always the DOM-reorder + `column-reverse` remedy above, applied to the header/overlay
-  itself, not an `isolation` wrapper around the content. See the admin `TabBar` /
-  `AdminPage.tsx` `StickyTabsWrapper` for the reference fix (TabBar moved to be the last
-  JSX child of a `column-reverse` flex wrapper, instead of the first).
-- Global overlays (dialogs, toasts) already work without `z-index` because they're mounted
-  last, as a sibling after `<Routes>`, in `pages/segments/Dialog.tsx` — follow that precedent
-  for any new global overlay instead of reaching for `z-index`.
-- Enforced for JS/TSX by the `no-restricted-syntax` rule banning `zIndex` in `eslint.config.js`,
-  and for `.module.css`/`.css` files by the `declaration-property-value-disallowed-list` rule
-  in `stylelint.config.js` (`bun run lint:css` / `bunx stylelint '**/*.{css,scss}'`).
-
-## Never use `!important`
-
-- **`!important` is forbidden** in every `.module.css`/`.css` file — no exceptions.
-- The case that tempts it most: a component's top-level `{ComponentName}Container`
-  class is applied directly to a chures `Button` (or another chures component) and
-  needs to override one of its base/variant classes. Both are single-class selectors
-  (specificity `0-1-0`), so it's a tie — and chures injects its CSS via a `<style>`
-  tag appended to `document.head` at JS-execution time, which lands *after* this
-  project's compiled CSS in the DOM, so chures wins ties on any conflicting property.
-- Fix this by **adding a real wrapping level**, not `!important`: give the component
-  an outer `{ComponentName}Container` div (per Component Structure above) and put the
-  chures component one level deeper with its own class, nested via `&` — e.g.
-  `.DrawerCloseButtonContainer { & .CloseBtn { ... } }`. The two-class selector
-  (`0-2-0`) always outranks chures' single-class rules regardless of load order, so
-  there's no tie to lose. See `DrawerCloseButton.tsx`/`.module.css` for the pattern,
-  and `MobileTopBar.module.css`'s `.HamburgerBtn`/`.ActionBtn` (nested under
-  `.MobileTopBarContainer`) and `DesktopNotesShell.module.css`'s `.ZoomBtn` for
-  cases where the natural DOM structure already provides that extra nesting level.
-- Enforced for `.module.css`/`.css` files by the `declaration-no-important` rule in
-  `stylelint.config.js` (`bun run lint:css` / `bunx stylelint '**/*.{css,scss}'`).
-
-## Mobile/desktop detection
-
-- **Prefer the shared `--is-mobile` CSS var over a fresh `@media (width <= 45rem)`
-  block** when the responsive change is a *numeric/scalar* toggle (a `flex-grow`,
-  or a length that swaps between two values). `sizes.css` defines it once — `0` on
-  desktop, flipped to `1` inside `@media (orientation: portrait), (width <= 45rem)`
-  (OR'd with portrait so a wide-but-portrait viewport still counts as mobile,
-  mirroring `useIsMobileNav.ts`'s comma-OR technique) — so a component consumes it
-  directly (`flex-grow: var(--is-mobile)`), inverted (`calc(1 - var(--is-mobile))`),
-  or to flip a length (`calc((1 - var(--is-mobile)) * 14rem)`), instead of repeating
-  its own `@media` block. See `ModelSwitcher.module.css` /
-  `WorkbenchTopbar/components/TopbarLeft/TopbarLeft.module.css` /
-  `WorkbenchTopbar.module.css`'s `.Spacer` for the reference.
-- **Don't force this onto a keyword-valued property** (`flex-direction`, `display`,
-  `position`) or a wholesale multi-value shorthand swap (e.g. a `padding` override
-  that changes all three values) — `var()`/`calc()` can't cleanly express "pick
-  keyword A or B," and faking it via a dedicated custom property per file gains
-  nothing over a local `@media` block while fighting the "keep modules
-  self-contained" rule above. Keep those as a plain `@media (width <= 45rem)` block
-  colocated in the component's own file — the repeated *condition text* across
-  files isn't the kind of duplication this project optimizes away (same spirit as
-  "duplicate small shared rules" above).
-- `--is-mobile` is a *toggle*, not a source of new global breakpoint tokens — don't
-  add per-file properties like `--foo-mobile-padding` to `sizes.css` "for DRYness"
-  unless the exact value is already duplicated verbatim across several files (that's
-  the px/rem size-token convention above, not this one).
-
-## Dialog shells must scroll internally
-
-- Every dialog's outer shell (the top-level `{ComponentName}Container`-style class —
-  see Component Structure above; a few legacy files still call it `.Modal`/`.ModalContainer`,
-  don't rename those, just apply the rule below to whatever the outer rule is called)
-  **must set both `max-height` and `overflow-y: auto`**, even if its content looks
-  short today. Content grows (more form fields, a longer list) and viewports shrink
-  (a phone, a small laptop window) — a dialog with no height cap silently overflows
-  the viewport with no way to scroll it, rather than degrading gracefully.
-- Use the `--dialog-max-height` (`80vh`) or `--dialog-max-height-lg` (`90vh`) token
-  from `sizes.css` — never a raw `vh`/`px` value. Reach for `-lg` when the dialog is a
-  dense multi-field form or contains a list (see `ManageVaultDialog.module.css`,
-  `S3InstanceFormDialog.module.css`); the plain token is the default for simpler
-  dialogs (see `WebhookDetailsDialog.module.css`, `TokenRevealDialog.module.css`,
-  `UserSubscriptionDialog.module.css`).
-- This is independent of, and can coexist with, a narrower scrollable region *inside*
-  the dialog (e.g. `UserSessionsDialog.module.css`'s `.SessionsListContainer`, capped
-  shorter so the header/footer never scroll out of view) — that's an extra refinement
-  for a dialog whose header/actions should stay pinned while a long inner list
-  scrolls; the outer cap is required regardless.
-- Enforced by the custom `artel/dialog-scrollable` stylelint rule
-  (`stylelint-rules/dialog-scrollable.js`), scoped to `src/**/*Dialog/*Dialog.module.css`
-  in `stylelint.config.js`.
-
-## Async style
-
-- **Prefer promise chains over `try/catch`** — use `.then().catch().finally()` instead
-  of `async/await` with `try/catch` blocks. Exception: best-effort fire-and-forget
-  where no error surface is needed (silent `catch {}` is fine there).
-
-## Testing frontend changes
-
-- **Do not start the dev server, spin up a browser, or otherwise self-test frontend
-  changes.** Reaching an authenticated screen requires the full Go backend + DB, which
-  isn't worth spinning up for a UI change, and a headless smoke test is a poor
-  substitute for a human actually looking at it.
-- Verify with `tsc -b`/`bun run build` and lint instead, then hand the change back to
-  the user with a short note on what to click through to confirm it visually
-  (which page/component, what interaction to try).
+- `RunTractDialog`, `StepPickerDialog`, `S3InstanceFormDialog` live under `src/components/`
+  instead of `src/dialogs/` — legacy. Don't repeat it; move them opportunistically if you're
+  already in one, but it isn't worth a dedicated migration.
+- The global dialog mount is at `pages/segments/Dialog.tsx`, not `src/segments/` where `Topbar`
+  lives. New app-level segments go in `src/segments/`; don't add a third location.
+- Lint baselines: 105 `no-restricted-syntax` warnings, ~560 stylelint `unit-disallowed-list`
+  warnings. Fix what you touch; don't sweep.
