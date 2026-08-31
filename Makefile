@@ -125,3 +125,11 @@ test-e2e: setup-e2e-env
 	go test -tags e2e ./tests/...; status=$$?; \
 	go test -tags "e2e e2e_bootstrap" -count=1 ./tests/bootstrap/... -run TestEnvCleanup; \
 	exit $$status
+
+# Unit tests only — no build tag, so the e2e-gated suites under tests/ are skipped and no
+# containers are needed.
+.test:
+	go test ./...
+
+# Full test run: unit tests first, then the e2e suites (which bring up their own stack).
+test: .test test-e2e
