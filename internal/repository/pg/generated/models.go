@@ -99,6 +99,125 @@ func (ns NullExternalProviderType) Value() (driver.Value, error) {
 	return string(ns.ExternalProviderType), nil
 }
 
+type McpName string
+
+const (
+	McpNameEmail    McpName = "email"
+	McpNameGitlab   McpName = "gitlab"
+	McpNameTelegram McpName = "telegram"
+	McpNameTrello   McpName = "trello"
+)
+
+func (e *McpName) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = McpName(s)
+	case string:
+		*e = McpName(s)
+	default:
+		return fmt.Errorf("unsupported scan type for McpName: %T", src)
+	}
+	return nil
+}
+
+type NullMcpName struct {
+	McpName McpName
+	Valid   bool // Valid is true if McpName is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullMcpName) Scan(value interface{}) error {
+	if value == nil {
+		ns.McpName, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.McpName.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullMcpName) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.McpName), nil
+}
+
+type McpToolName string
+
+const (
+	McpToolNameEmaillistEmailFolders       McpToolName = "email.list_email_folders"
+	McpToolNameEmaillistEmails             McpToolName = "email.list_emails"
+	McpToolNameEmailreadEmail              McpToolName = "email.read_email"
+	McpToolNameEmailsendEmail              McpToolName = "email.send_email"
+	McpToolNameGitlabaddComment            McpToolName = "gitlab.add_comment"
+	McpToolNameGitlabaddMrComment          McpToolName = "gitlab.add_mr_comment"
+	McpToolNameGitlabcreateIssue           McpToolName = "gitlab.create_issue"
+	McpToolNameGitlabcreateMergeRequest    McpToolName = "gitlab.create_merge_request"
+	McpToolNameGitlabgetCurrentUser        McpToolName = "gitlab.get_current_user"
+	McpToolNameGitlabgetMergeRequestDiff   McpToolName = "gitlab.get_merge_request_diff"
+	McpToolNameGitlablistIssues            McpToolName = "gitlab.list_issues"
+	McpToolNameGitlablistMergeRequests     McpToolName = "gitlab.list_merge_requests"
+	McpToolNameGitlabupdateMergeRequest    McpToolName = "gitlab.update_merge_request"
+	McpToolNameTelegramanswerCallbackQuery McpToolName = "telegram.answer_callback_query"
+	McpToolNameTelegrameditMessageText     McpToolName = "telegram.edit_message_text"
+	McpToolNameTelegramgetMe               McpToolName = "telegram.get_me"
+	McpToolNameTelegramsendMessage         McpToolName = "telegram.send_message"
+	McpToolNameTelegramsetWebhook          McpToolName = "telegram.set_webhook"
+	McpToolNameTrelloaddComment            McpToolName = "trello.add_comment"
+	McpToolNameTrelloaddLabelToCard        McpToolName = "trello.add_label_to_card"
+	McpToolNameTrelloarchiveCard           McpToolName = "trello.archive_card"
+	McpToolNameTrellocreateCard            McpToolName = "trello.create_card"
+	McpToolNameTrellogetCard               McpToolName = "trello.get_card"
+	McpToolNameTrellogetCurrentUser        McpToolName = "trello.get_current_user"
+	McpToolNameTrellolistBoards            McpToolName = "trello.list_boards"
+	McpToolNameTrellolistCardComments      McpToolName = "trello.list_card_comments"
+	McpToolNameTrellolistCards             McpToolName = "trello.list_cards"
+	McpToolNameTrellolistLabels            McpToolName = "trello.list_labels"
+	McpToolNameTrellolistLists             McpToolName = "trello.list_lists"
+	McpToolNameTrellomoveCard              McpToolName = "trello.move_card"
+	McpToolNameTrelloupdateCard            McpToolName = "trello.update_card"
+	McpToolNameTrellocreateList            McpToolName = "trello.create_list"
+	McpToolNameTrelloupdateList            McpToolName = "trello.update_list"
+	McpToolNameTrellocreateLabel           McpToolName = "trello.create_label"
+	McpToolNameTrelloaddAttachment         McpToolName = "trello.add_attachment"
+)
+
+func (e *McpToolName) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = McpToolName(s)
+	case string:
+		*e = McpToolName(s)
+	default:
+		return fmt.Errorf("unsupported scan type for McpToolName: %T", src)
+	}
+	return nil
+}
+
+type NullMcpToolName struct {
+	McpToolName McpToolName
+	Valid       bool // Valid is true if McpToolName is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullMcpToolName) Scan(value interface{}) error {
+	if value == nil {
+		ns.McpToolName, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.McpToolName.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullMcpToolName) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.McpToolName), nil
+}
+
 type TractRunStatus string
 
 const (

@@ -55,6 +55,11 @@ import (
 
 type Custom struct {
 	Transport *transport.ServersManager
+
+	// SvcOptions is threaded into svcv1.New below. cmd/service's generated app.New() leaves it
+	// nil (zero behavior change); pkg/app.New populates it from the functional options an
+	// embedder passes.
+	SvcOptions []svcv1.Option
 }
 
 func (c *Custom) Init(a *App) error {
@@ -88,7 +93,7 @@ func (c *Custom) Init(a *App) error {
 
 	repo := repopg.New(pgConn, encryptor)
 
-	services, err := svcv1.New(repo, a.Cfg.Environment)
+	services, err := svcv1.New(repo, a.Cfg.Environment, c.SvcOptions...)
 	if err != nil {
 		return rerrors.Wrap(err, "init services")
 	}
