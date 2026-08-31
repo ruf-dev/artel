@@ -1,6 +1,7 @@
 import {useState} from "react"
 import {Button} from "@vervstack/chures"
 
+import {getCsrfToken} from "@/app/api/api.ts"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import {Vault} from "@/pages/mcp-auth/processes/vault.ts"
 import VaultList from "@/pages/mcp-auth/components/VaultList/VaultList.tsx"
@@ -28,9 +29,12 @@ export default function VaultSelect(props: VaultSelectProps) {
         setLoading(true)
         setError("")
         try {
-            const res = await fetch("/oauth/vault", {
+            const res = await fetch("/api/oauth/vault", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Csrf-Token": getCsrfToken() ?? "",
+                },
                 body: JSON.stringify({
                     session_token: props.sessionToken,
                     vault_id: vaultId,

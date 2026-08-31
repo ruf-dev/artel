@@ -3,6 +3,7 @@ package mcp_api
 import (
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -14,11 +15,17 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
+	"github.com/ruf-dev/artel/internal/middleware"
 	"github.com/ruf-dev/artel/internal/middleware/user_context"
 	"github.com/ruf-dev/artel/internal/repository"
 	"github.com/ruf-dev/artel/internal/service"
 	"go.redsock.ru/rerrors"
 )
+
+// csrfHeaderName is the request header the browser echoes the csrf_token cookie back in for the
+// cookie-authenticated OAuth consent endpoints. These handlers run outside the grpc-gateway, so
+// the value arrives verbatim rather than under grpc-gateway's "Grpc-Metadata-" prefix.
+const csrfHeaderName = "X-Csrf-Token"
 
 const (
 	randomHexLen               = 16
@@ -140,7 +147,7 @@ func (h *OAuthHandler) ServeRegistration(writer http.ResponseWriter, r *http.Req
 	writeJSON(writer, resp)
 }
 
-// ServeOAuthLogin handles POST /oauth/login — validates Telegram id_token, returns session + vaults.
+// ServeOAuthLogin handles POST /api/oauth/login — validates Telegram id_token, returns session + vaults.
 func (h *OAuthHandler) ServeOAuthLogin(writer http.ResponseWriter, request *http.Request) {
 	var req struct {
 		IdToken string `json:"id_token"`
@@ -194,20 +201,61 @@ func (h *OAuthHandler) ServeOAuthLogin(writer http.ResponseWriter, request *http
 	})
 }
 
-// ServeOAuthVaults handles POST /oauth/vaults — validates existing session and returns vault list.
+// resolveOAuthSessionToken picks the session token for the cookie-or-body-authenticated OAuth
+// consent endpoints (ServeOAuthVaults, ServeOAuthVault). A non-empty bodyToken is the Telegram /
+// localStorage path (McpLogin stores mcpSessionToken and passes it explicitly) — taken as-is,
+// with no cookie and no CSRF check. An empty bodyToken means the httpOnly browser-session path:
+// the token comes from the access_token cookie, and because that path is driven purely by
+// ambient cookies it must clear a double-submit CSRF check (csrf_token cookie vs X-Csrf-Token
+// header). ok == false means a response has already been written and the caller must return.
+func resolveOAuthSessionToken(w http.ResponseWriter, r *http.Request, bodyToken string) (token string, ok bool) {
+	if bodyToken != "" {
+		return bodyToken, true
+	}
+
+	accessCookie, err := r.Cookie(middleware.AccessTokenCookieName)
+	if err != nil || accessCookie.Value == "" {
+		jsonErr(w, "session expired", http.StatusUnauthorized)
+
+		return "", false
+	}
+
+	csrfCookie, err := r.Cookie(middleware.CSRFCookieName)
+	if err != nil || csrfCookie.Value == "" {
+		jsonErr(w, "csrf token missing or invalid", http.StatusForbidden)
+
+		return "", false
+	}
+
+	headerToken := r.Header.Get(csrfHeaderName)
+	if subtle.ConstantTimeCompare([]byte(csrfCookie.Value), []byte(headerToken)) != 1 {
+		jsonErr(w, "csrf token missing or invalid", http.StatusForbidden)
+
+		return "", false
+	}
+
+	return accessCookie.Value, true
+}
+
+// ServeOAuthVaults handles POST /api/oauth/vaults — validates existing session and returns vault list.
 func (h *OAuthHandler) ServeOAuthVaults(writer http.ResponseWriter, r *http.Request) {
 	var req struct {
 		SessionToken string `json:"session_token"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil || req.SessionToken == "" {
+	if err != nil {
 		jsonErr(writer, "invalid request", http.StatusBadRequest)
 
 		return
 	}
 
-	user, err := h.authSvc.ValidateToken(r.Context(), req.SessionToken)
+	token, ok := resolveOAuthSessionToken(writer, r, req.SessionToken)
+	if !ok {
+		return
+	}
+
+	user, err := h.authSvc.ValidateToken(r.Context(), token)
 	if err != nil {
 		jsonErr(writer, "session expired", http.StatusUnauthorized)
 
@@ -238,7 +286,7 @@ func (h *OAuthHandler) ServeOAuthVaults(writer http.ResponseWriter, r *http.Requ
 	writeJSON(writer, map[string]any{"vaults": items})
 }
 
-// ServeOAuthVault handles POST /oauth/vault — creates MCP key and returns redirect URL.
+// ServeOAuthVault handles POST /api/oauth/vault — creates MCP key and returns redirect URL.
 func (h *OAuthHandler) ServeOAuthVault(writer http.ResponseWriter, request *http.Request) {
 	var req struct {
 		SessionToken  string `json:"session_token"`
@@ -256,6 +304,11 @@ func (h *OAuthHandler) ServeOAuthVault(writer http.ResponseWriter, request *http
 		return
 	}
 
+	token, ok := resolveOAuthSessionToken(writer, request, req.SessionToken)
+	if !ok {
+		return
+	}
+
 	vaultID, err := uuid.Parse(req.VaultId)
 	if err != nil {
 		jsonErr(writer, "invalid vault_id", http.StatusBadRequest)
@@ -263,7 +316,7 @@ func (h *OAuthHandler) ServeOAuthVault(writer http.ResponseWriter, request *http
 		return
 	}
 
-	user, err := h.authSvc.ValidateToken(request.Context(), req.SessionToken)
+	user, err := h.authSvc.ValidateToken(request.Context(), token)
 	if err != nil {
 		jsonErr(writer, "session expired", http.StatusUnauthorized)
 

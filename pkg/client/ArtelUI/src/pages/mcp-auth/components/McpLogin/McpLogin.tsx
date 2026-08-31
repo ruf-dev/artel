@@ -27,7 +27,7 @@ export default function McpLogin({botId, clientId, redirectUri, codeChallenge, s
             setLoading(true)
             setError("")
             try {
-                const res = await fetch("/oauth/login", {
+                const res = await fetch("/api/oauth/login", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({id_token: data.id_token}),

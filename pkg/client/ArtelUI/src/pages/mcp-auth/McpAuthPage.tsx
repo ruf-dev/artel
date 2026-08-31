@@ -5,18 +5,21 @@ import cls from "@/pages/mcp-auth/McpAuthPage.module.css"
 import {useDialog} from "@/app/hooks/Dialog.ts"
 import useUser from "@/hooks/user/User.ts"
 import {AuthAPI} from "@/app/api/artel"
-import {apiPrefix} from "@/app/api/api.ts"
+import {apiPrefix, getCsrfToken} from "@/app/api/api.ts"
 import {Vault} from "@/pages/mcp-auth/processes/vault.ts"
 import McpLogin from "@/pages/mcp-auth/components/McpLogin/McpLogin.tsx"
 import VaultSelect from "@/pages/mcp-auth/components/VaultSelect/VaultSelect.tsx"
 
 const SESSION_KEY = "mcpSessionToken"
 
-async function fetchVaults(sessionToken: string): Promise<Vault[]> {
-    const res = await fetch("/oauth/vaults", {
+async function fetchVaults(sessionToken?: string): Promise<Vault[]> {
+    const res = await fetch("/api/oauth/vaults", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({session_token: sessionToken}),
+        headers: {
+            "Content-Type": "application/json",
+            "X-Csrf-Token": getCsrfToken() ?? "",
+        },
+        body: JSON.stringify(sessionToken ? {session_token: sessionToken} : {}),
     })
     if (!res.ok) throw new Error("failed")
     const body = await res.json()
@@ -40,16 +43,15 @@ export default function McpAuthPage() {
             const cfg = await AuthAPI.GetConfig({}, apiPrefix()).catch(() => null)
             const botId = cfg?.telegramClientId ?? ""
 
-            // 1. Try main Artel session token
+            // 1. Try the main Artel browser session (httpOnly access_token cookie + CSRF header)
             if (auth.isAuthenticated()) {
-                const token = auth.getToken()
                 try {
-                    const vaults = await fetchVaults(token)
+                    const vaults = await fetchVaults()
                     OpenDialog(
                         <VaultSelect
                             botId={botId}
                             vaults={vaults}
-                            sessionToken={token}
+                            sessionToken=""
                             clientId={clientId}
                             redirectUri={redirectUri}
                             codeChallenge={codeChallenge}
@@ -58,7 +60,7 @@ export default function McpAuthPage() {
                     )
                     return
                 } catch {
-                    // main token rejected by oauth endpoint — fall through
+                    // cookie session rejected by oauth endpoint — fall through
                 }
             }
 

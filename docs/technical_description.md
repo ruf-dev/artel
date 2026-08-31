@@ -100,9 +100,9 @@ Exposes vault content and email to external AI tools (Claude, etc.) using the [M
 | `/mcp` | `GET` | Server-Sent Events stream |
 | `/.well-known/oauth-authorization-server` | `GET` | OAuth discovery |
 | `/.well-known/oauth-protected-resource` | `GET` | Resource metadata |
-| `/oauth/login` | `POST` | MCP session login |
-| `/oauth/vaults` | `POST` | List vaults for MCP session |
-| `/oauth/vault` | `POST` | Authorize MCP client for a vault |
+| `/api/oauth/login` | `POST` | MCP session login |
+| `/api/oauth/vaults` | `POST` | List vaults for MCP session (session cookie or `session_token` body) |
+| `/api/oauth/vault` | `POST` | Authorize MCP client for a vault (session cookie or `session_token` body) |
 | `/token` | `POST` | OAuth token exchange |
 
 **Auth:** Bearer token (`artel_vtk_{uuid}_{hex_secret}`) resolved to vault + CouchDB credentials on each request.

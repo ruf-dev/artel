@@ -386,9 +386,15 @@ func (c *Custom) Init(a *App) error {
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
 	c.Transport.AddHttpHandler("/.well-known/oauth-protected-resource/mcp", http.HandlerFunc(oauthHandler.ServeProtectedResourceMeta))
 	c.Transport.AddHttpHandler("/register", http.HandlerFunc(oauthHandler.ServeRegistration))
-	c.Transport.AddHttpHandler("/oauth/login", http.HandlerFunc(oauthHandler.ServeOAuthLogin))
-	c.Transport.AddHttpHandler("/oauth/vaults", http.HandlerFunc(oauthHandler.ServeOAuthVaults))
-	c.Transport.AddHttpHandler("/oauth/vault", http.HandlerFunc(oauthHandler.ServeOAuthVault))
+	// Mounted under "/api/oauth/..." rather than "/oauth/..." so the "/api/"-scoped session
+	// cookies (middleware.CookiePath) reach these consent endpoints — same routing trick as
+	// vaults_api.TerminalRoutePattern: a path more specific than any grpc-gateway subtree
+	// pattern is dispatched here by http.ServeMux, and there is no "/api/oauth/" gateway
+	// service to collide with. /token, /register and /.well-known/* stay at the root because
+	// the OAuth client (Claude) calls them directly with no browser cookies.
+	c.Transport.AddHttpHandler("/api/oauth/login", http.HandlerFunc(oauthHandler.ServeOAuthLogin))
+	c.Transport.AddHttpHandler("/api/oauth/vaults", http.HandlerFunc(oauthHandler.ServeOAuthVaults))
+	c.Transport.AddHttpHandler("/api/oauth/vault", http.HandlerFunc(oauthHandler.ServeOAuthVault))
 	c.Transport.AddHttpHandler("/token", http.HandlerFunc(oauthHandler.ServeToken))
 	c.Transport.AddHttpHandler("/", ui.NewHandler())
 
