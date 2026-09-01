@@ -2,6 +2,7 @@ package imap
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"math"
 	"net"
@@ -21,27 +22,59 @@ import (
 )
 
 type Client struct {
-	host     string
-	port     int
-	email    string
-	password string
+	host      string
+	port      int
+	email     string
+	password  string
+	tlsConfig *tls.Config
 }
 
-func New(host string, port int, email, password string) *Client {
-	return &Client{
+// Option customizes a Client at construction time.
+type Option func(*Client)
+
+// WithTLSConfig overrides the *tls.Config passed to the IMAP DialTLS call. A nil config (the
+// default when this option isn't supplied) keeps go-imap's default behavior — a strict handshake
+// against the system roots. Test suites use this to reach a server presenting a self-signed cert
+// (e.g. greenmail) via &tls.Config{InsecureSkipVerify: true}.
+func WithTLSConfig(cfg *tls.Config) Option {
+	return func(c *Client) {
+		c.tlsConfig = cfg
+	}
+}
+
+func New(host string, port int, email, password string, opts ...Option) *Client {
+	c := &Client{
 		host:     host,
 		port:     port,
 		email:    email,
 		password: password,
 	}
+
+	for _, opt := range opts {
+		opt(c)
+	}
+
+	return c
 }
 
 // ListEmailsOptions bounds a list_emails page. AfterUid/BeforeUid are raw UID strings (same
-// format as ReadEmail's uid param); at most one may be set by the caller.
+// format as ReadEmail's uid param); at most one may be set by the caller. Folder is the IMAP
+// mailbox to page through; empty means INBOX.
 type ListEmailsOptions struct {
 	Limit     int
 	AfterUid  *string
 	BeforeUid *string
+	Folder    string
+}
+
+// folderOrInbox returns name unless it's empty, in which case it falls back to the IMAP root
+// mailbox "INBOX".
+func folderOrInbox(name string) string {
+	if name == "" {
+		return "INBOX"
+	}
+
+	return name
 }
 
 func (c *Client) ListEmails(ctx context.Context, opts ListEmailsOptions) (emails []domain.EmailMeta, err error) {
@@ -62,9 +95,11 @@ func (c *Client) ListEmails(ctx context.Context, opts ListEmailsOptions) (emails
 	}
 	defer utils.CallWithLog(conn.Logout, "logout error during listing emails")
 
-	mbox, err := conn.Select("INBOX", true)
+	folder := folderOrInbox(opts.Folder)
+
+	mbox, err := conn.Select(folder, true)
 	if err != nil {
-		return nil, rerrors.Wrap(err, "select inbox")
+		return nil, rerrors.Wrap(err, "select folder")
 	}
 
 	if mbox.Messages == 0 {
@@ -236,7 +271,7 @@ func emailMetaFromMessage(msg *imap.Message) domain.EmailMeta {
 	return meta
 }
 
-func (c *Client) ReadEmail(ctx context.Context, uid string) (message domain.EmailMessage, err error) {
+func (c *Client) ReadEmail(ctx context.Context, uid, folder string) (message domain.EmailMessage, err error) {
 	opStart := time.Now()
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
 
@@ -254,9 +289,9 @@ func (c *Client) ReadEmail(ctx context.Context, uid string) (message domain.Emai
 	}
 	defer utils.CallWithLog(conn.Logout, "logout error during reading emails")
 
-	_, err = conn.Select("INBOX", true)
+	_, err = conn.Select(folderOrInbox(folder), true)
 	if err != nil {
-		return domain.EmailMessage{}, rerrors.Wrap(err, "select inbox")
+		return domain.EmailMessage{}, rerrors.Wrap(err, "select folder")
 	}
 
 	var uidNum uint32
@@ -401,6 +436,126 @@ func (c *Client) ListFolders(ctx context.Context) (names []string, err error) {
 	return folders, nil
 }
 
+// MoveMessage relocates a single message (identified by its UID in sourceFolder) to destFolder.
+// sourceFolder is opened writable; an empty sourceFolder means INBOX. go-imap issues an IMAP MOVE
+// and transparently falls back to COPY + \Deleted + EXPUNGE on servers without the MOVE
+// extension.
+func (c *Client) MoveMessage(ctx context.Context, uid, sourceFolder, destFolder string) (err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "move_message").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "move_message").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err := c.connect(ctx)
+	if err != nil {
+		return err
+	}
+	defer utils.CallWithLog(conn.Logout, "logout error during moving message")
+
+	_, err = conn.Select(folderOrInbox(sourceFolder), false)
+	if err != nil {
+		return rerrors.Wrap(err, "select source folder")
+	}
+
+	uidNum, err := parseUid(uid)
+	if err != nil {
+		return err
+	}
+
+	seqSet := new(imap.SeqSet)
+	seqSet.AddNum(uidNum)
+
+	err = conn.UidMove(seqSet, destFolder)
+	if err != nil {
+		return rerrors.Wrap(err, "move message")
+	}
+
+	return nil
+}
+
+// CreateFolder creates a new IMAP mailbox. It's a no-connect-select operation — CREATE takes an
+// absolute mailbox name and doesn't require a mailbox to be selected first.
+func (c *Client) CreateFolder(ctx context.Context, name string) (err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "create_folder").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "create_folder").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err := c.connect(ctx)
+	if err != nil {
+		return err
+	}
+	defer utils.CallWithLog(conn.Logout, "logout error during creating folder")
+
+	err = conn.Create(name)
+	if err != nil {
+		return rerrors.Wrap(err, "create folder")
+	}
+
+	return nil
+}
+
+// SetSeen adds (seen) or removes (!seen) the \Seen flag on a single message identified by its UID
+// in sourceFolder. sourceFolder is opened writable; an empty sourceFolder means INBOX.
+func (c *Client) SetSeen(ctx context.Context, uid, sourceFolder string, seen bool) (err error) {
+	opStart := time.Now()
+	addr := fmt.Sprintf("%s:%d", c.host, c.port)
+
+	defer func() {
+		if err != nil {
+			log.Ctx(ctx).Error().Err(err).Str("op", "set_flags").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		} else {
+			log.Ctx(ctx).Debug().Str("op", "set_flags").Str("host", addr).Dur("dur", time.Since(opStart)).Msg("imap client")
+		}
+	}()
+
+	conn, err := c.connect(ctx)
+	if err != nil {
+		return err
+	}
+	defer utils.CallWithLog(conn.Logout, "logout error during setting flags")
+
+	_, err = conn.Select(folderOrInbox(sourceFolder), false)
+	if err != nil {
+		return rerrors.Wrap(err, "select source folder")
+	}
+
+	uidNum, err := parseUid(uid)
+	if err != nil {
+		return err
+	}
+
+	seqSet := new(imap.SeqSet)
+	seqSet.AddNum(uidNum)
+
+	var flagsOp imap.FlagsOp = imap.RemoveFlags
+	if seen {
+		flagsOp = imap.AddFlags
+	}
+
+	item := imap.FormatFlagsOp(flagsOp, true)
+	value := []interface{}{imap.SeenFlag}
+
+	err = conn.UidStore(seqSet, item, value, nil)
+	if err != nil {
+		return rerrors.Wrap(err, "store seen flag")
+	}
+
+	return nil
+}
+
 func (c *Client) connect(ctx context.Context) (conn *client.Client, err error) {
 	opStart := time.Now()
 	addr := fmt.Sprintf("%s:%d", c.host, c.port)
@@ -413,7 +568,7 @@ func (c *Client) connect(ctx context.Context) (conn *client.Client, err error) {
 		}
 	}()
 
-	conn, err = client.DialTLS(addr, nil)
+	conn, err = client.DialTLS(addr, c.tlsConfig)
 	if err != nil {
 		return nil, rerrors.Wrap(err, "connect to imap server")
 	}

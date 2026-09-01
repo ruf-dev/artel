@@ -32,6 +32,10 @@
           "before_uid": {
             "type": "string",
             "description": "Only return emails with UID less than this value, also oldest-first. To page further back, pass the id of the first (oldest) email from the previous page. Mutually exclusive with after_uid."
+          },
+          "folder": {
+            "type": "string",
+            "description": "IMAP folder to read from (default INBOX)"
           }
         },
         "required": []
@@ -50,6 +54,10 @@
           "id": {
             "type": "string",
             "description": "Email UID returned by list_emails"
+          },
+          "folder": {
+            "type": "string",
+            "description": "IMAP folder to read from (default INBOX)"
           }
         },
         "required": ["id"]
@@ -83,6 +91,76 @@
       "action": {
         "smtp": {
           "operation": "send"
+        }
+      }
+    },
+    {
+      "api_description": {
+        "name": "move_email",
+        "description": "Move an email to another IMAP folder",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Email UID from list_emails"
+          },
+          "dest_folder": {
+            "type": "string",
+            "description": "Target folder name, e.g. Archive"
+          },
+          "source_folder": {
+            "type": "string",
+            "description": "Folder the message is currently in (default INBOX)"
+          }
+        },
+        "required": ["id", "dest_folder"]
+      },
+      "action": {
+        "imap": {
+          "operation": "move_message"
+        }
+      }
+    },
+    {
+      "api_description": {
+        "name": "create_email_folder",
+        "description": "Create a new IMAP folder in the connected email account",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Folder name to create"
+          }
+        },
+        "required": ["name"]
+      },
+      "action": {
+        "imap": {
+          "operation": "create_folder"
+        }
+      }
+    },
+    {
+      "api_description": {
+        "name": "set_email_read",
+        "description": "Mark an email as read or unread",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Email UID from list_emails"
+          },
+          "seen": {
+            "type": "boolean",
+            "description": "true = mark read, false = mark unread"
+          },
+          "source_folder": {
+            "type": "string",
+            "description": "Folder the message is in (default INBOX)"
+          }
+        },
+        "required": ["id", "seen"]
+      },
+      "action": {
+        "imap": {
+          "operation": "set_flags"
         }
       }
     }

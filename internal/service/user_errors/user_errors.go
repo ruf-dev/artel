@@ -177,6 +177,10 @@ var (
 	McpSubjectRequired   = rerrors.New("subject is required and must be a string", codes.InvalidArgument)
 	McpBodyRequired      = rerrors.New("body is required and must be a string", codes.InvalidArgument)
 
+	McpDestFolderRequired = rerrors.New("dest_folder is required and must be a string", codes.InvalidArgument)
+	McpFolderNameRequired = rerrors.New("name is required and must be a string", codes.InvalidArgument)
+	McpSeenRequired       = rerrors.New("seen is required and must be a boolean", codes.InvalidArgument)
+
 	// mcp executor.
 	McpEmailActionMissing = rerrors.New(
 		"email executor: action must have imap or smtp discriminator",

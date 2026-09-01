@@ -78,10 +78,13 @@ func (e *EmailExecutor) executeImap(
 			return "", user_errors.EmailCursorConflict
 		}
 
+		folder, _ := params["folder"].(string)
+
 		opts := imap.ListEmailsOptions{
 			Limit:     limit,
 			AfterUid:  afterUid,
 			BeforeUid: beforeUid,
+			Folder:    folder,
 		}
 
 		emails, err := imapClient.ListEmails(ctx, opts)
@@ -97,12 +100,71 @@ func (e *EmailExecutor) executeImap(
 			return "", user_errors.McpIdRequired
 		}
 
-		msg, err := imapClient.ReadEmail(ctx, id)
+		folder, _ := params["folder"].(string)
+
+		msg, err := imapClient.ReadEmail(ctx, id, folder)
 		if err != nil {
 			return "", rerrors.Wrap(err, "read email")
 		}
 
 		return marshalResult(msg)
+
+	case domain.IMAP_OP_MOVE_MESSAGE:
+		id, ok := params["id"].(string)
+		if !ok {
+			return "", user_errors.McpIdRequired
+		}
+
+		destFolder, ok := params["dest_folder"].(string)
+		if !ok {
+			return "", user_errors.McpDestFolderRequired
+		}
+
+		sourceFolder, _ := params["source_folder"].(string)
+
+		err := imapClient.MoveMessage(ctx, id, sourceFolder, destFolder)
+		if err != nil {
+			return "", rerrors.Wrap(err, "move message")
+		}
+
+		return "Email moved to " + destFolder, nil
+
+	case domain.IMAP_OP_CREATE_FOLDER:
+		name, ok := params["name"].(string)
+		if !ok {
+			return "", user_errors.McpFolderNameRequired
+		}
+
+		err := imapClient.CreateFolder(ctx, name)
+		if err != nil {
+			return "", rerrors.Wrap(err, "create folder")
+		}
+
+		return "Folder created: " + name, nil
+
+	case domain.IMAP_OP_SET_FLAGS:
+		id, ok := params["id"].(string)
+		if !ok {
+			return "", user_errors.McpIdRequired
+		}
+
+		seen, ok := params["seen"].(bool)
+		if !ok {
+			return "", user_errors.McpSeenRequired
+		}
+
+		sourceFolder, _ := params["source_folder"].(string)
+
+		err := imapClient.SetSeen(ctx, id, sourceFolder, seen)
+		if err != nil {
+			return "", rerrors.Wrap(err, "set seen flag")
+		}
+
+		if seen {
+			return "Email marked as read", nil
+		}
+
+		return "Email marked as unread", nil
 
 	default:
 		return "", user_errors.McpUnknownImapOperation

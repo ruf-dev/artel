@@ -96,6 +96,9 @@ const (
 	IMAP_OP_LIST_FOLDERS  ImapOperation = "list_folders"
 	IMAP_OP_LIST_MESSAGES ImapOperation = "list_messages"
 	IMAP_OP_FETCH_MESSAGE ImapOperation = "fetch_message"
+	IMAP_OP_MOVE_MESSAGE  ImapOperation = "move_message"
+	IMAP_OP_CREATE_FOLDER ImapOperation = "create_folder"
+	IMAP_OP_SET_FLAGS     ImapOperation = "set_flags"
 )
 
 type ImapAction struct {
