@@ -126,6 +126,9 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig, opts ...Option) (*Service
 		repo.CouchInstances(),
 		repo.S3Instances(),
 		repo.PostgresInstances(),
+		repo.Users(),
+		subscriptionSvc,
+		cfg.TelegramBotToken,
 	)
 	// Also hoisted ahead of the literal: mcp.New needs service.AuthService (to gate
 	// create_community_connector on CheckIsAdmin and to resolve the caller's email for a new

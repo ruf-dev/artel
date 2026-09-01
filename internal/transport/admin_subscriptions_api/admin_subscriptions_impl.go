@@ -144,6 +144,7 @@ var allFeatures = []domain.SubscriptionFeature{
 	domain.FeatureSpreadsheets,
 	domain.FeatureConnectors,
 	domain.FeatureTract,
+	domain.FeatureNotify,
 }
 
 func featureSetToProto(features domain.FeatureSet) map[string]bool {

@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -77,9 +78,18 @@ type trelloConnectionMeta struct {
 	FullName string `json:"full_name"`
 }
 
+// managedArtelBot is the telegramConnectionMeta.Managed value marking a telegram
+// external_connections row that EnsureArtelTelegramConnection materialized from the shared Artel
+// bot token plus the owner's captured Telegram user id — as opposed to a BYOK telegram
+// connection the user added themselves through AddTelegramConnection.
+const managedArtelBot = "artel_bot"
+
 // telegramConnectionMeta is stored plaintext in metadata (non-sensitive display data).
 type telegramConnectionMeta struct {
 	BotUsername string `json:"bot_username"`
+	// Managed is set to managedArtelBot for a system-materialized Artel-bot connection (see
+	// EnsureArtelTelegramConnection); empty for a BYOK telegram connection.
+	Managed string `json:"managed,omitempty"`
 }
 
 // anthropicConnectionMeta is stored plaintext in metadata (non-sensitive display data).
@@ -108,6 +118,12 @@ type Service struct {
 	couchInstances        repository.CouchInstances
 	s3Instances           repository.S3Instances
 	postgresInstances     repository.PostgresInstances
+	users                 repository.Users
+	subscriptions         service.SubscriptionService
+	// artelBotToken is the shared Artel Telegram bot token (config.EnvironmentConfig.TelegramBotToken),
+	// used to materialize per-user system-managed telegram connections in
+	// EnsureArtelTelegramConnection. Threaded in the same way auth.New receives it.
+	artelBotToken string
 }
 
 func New(
@@ -120,6 +136,9 @@ func New(
 	couchInstances repository.CouchInstances,
 	s3Instances repository.S3Instances,
 	postgresInstances repository.PostgresInstances,
+	users repository.Users,
+	subscriptions service.SubscriptionService,
+	artelBotToken string,
 ) *Service {
 	return &Service{
 		connections:           connections,
@@ -131,6 +150,9 @@ func New(
 		couchInstances:        couchInstances,
 		s3Instances:           s3Instances,
 		postgresInstances:     postgresInstances,
+		users:                 users,
+		subscriptions:         subscriptions,
+		artelBotToken:         artelBotToken,
 	}
 }
 
@@ -717,6 +739,74 @@ func (s *Service) CheckTelegramConnection(
 	}
 
 	return botUsername, nil
+}
+
+// EnsureArtelTelegramConnection materializes — or refreshes — the caller's system-managed
+// "Artel bot" telegram external connection: the shared Artel bot token paired with the caller's
+// own Telegram user id as the private-chat id, so telegram.send_message can DM the key owner
+// without them running a BYOK bot. Idempotent: a second call refreshes the stored token/chat id
+// and returns the same connection id. There is exactly one telegram row per user (the
+// external_connections user_id+provider unique index), so this shares that slot with any BYOK
+// telegram connection — selecting the Artel bot overwrites a BYOK telegram row's credentials in
+// place, and vice versa, the same way every other single-connection provider's Upsert behaves.
+func (s *Service) EnsureArtelTelegramConnection(ctx context.Context) (uuid.UUID, error) {
+	uc, ok := user_context.GetUserContext(ctx)
+	if !ok {
+		return uuid.Nil, user_errors.Unauthenticated
+	}
+
+	err := s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureNotify)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	telegramId, err := s.users.GetTelegramIdByUserId(ctx, uc.UserUuid)
+	if err != nil {
+		return uuid.Nil, rerrors.Wrap(err, "error resolving caller telegram id")
+	}
+
+	if !telegramId.Valid {
+		return uuid.Nil, user_errors.NotifyNoTelegramIdentity
+	}
+
+	chatId, err := strconv.ParseInt(telegramId.V, 10, 64)
+	if err != nil {
+		return uuid.Nil, rerrors.Wrap(err, "error parsing caller telegram id")
+	}
+
+	creds := domain.TelegramCredentials{
+		BotToken: s.artelBotToken,
+		ChatID:   chatId,
+	}
+
+	credJSON, err := json.Marshal(creds)
+	if err != nil {
+		return uuid.Nil, rerrors.Wrap(err, "error marshaling telegram credentials")
+	}
+
+	meta := telegramConnectionMeta{
+		Managed: managedArtelBot,
+	}
+
+	metaJSON, err := json.Marshal(meta)
+	if err != nil {
+		return uuid.Nil, rerrors.Wrap(err, "error marshaling telegram meta")
+	}
+
+	conn := domain.ExternalConnection{
+		UserUuid:        uc.UserUuid,
+		Provider:        domain.ProviderTelegram,
+		ProviderType:    artel_q.ExternalProviderTypeApiKey,
+		CredentialsJSON: json.RawMessage(credJSON),
+		Metadata:        json.RawMessage(metaJSON),
+	}
+
+	saved, err := s.connections.Upsert(ctx, conn)
+	if err != nil {
+		return uuid.Nil, rerrors.Wrap(err, "error saving artel telegram connection")
+	}
+
+	return saved.Uuid, nil
 }
 
 // SetTelegramWebhook registers publicBaseURL+"/webhooks/telegram/"+connection id as the caller's

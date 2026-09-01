@@ -221,6 +221,19 @@ func (r *UsersRepo) GetTelegramPhotoUrl(ctx context0.Context, userUuid uuid.UUID
 	return photoUrl, nil
 }
 
+func (r *UsersRepo) GetTelegramIdByUserId(ctx context0.Context, userUuid uuid.UUID) (sql.Null[string], error) {
+	telegramId, err := r.q.GetTelegramIdByUserId(ctx, userUuid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.Null[string]{}, nil
+		}
+
+		return sql.Null[string]{}, rerrors.Wrap(err, "get telegram id by user id")
+	}
+
+	return sql.Null[string]{V: telegramId, Valid: true}, nil
+}
+
 func (r *UsersRepo) ListAll(ctx context0.Context, req domain.ListUsersReq) ([]domain.User, int64, error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 

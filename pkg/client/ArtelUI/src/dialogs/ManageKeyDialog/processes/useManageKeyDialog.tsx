@@ -4,6 +4,8 @@ import {ConfirmDialog} from "@vervstack/chures"
 import {McpKeyInfo, McpConnectorInfo, MomCandidate} from "@/app/api/artel/mcp_keys.pb.ts"
 import {useDialog} from "@/app/hooks/Dialog"
 import {useMcpKeys} from "@/app/hooks/McpKeys.ts"
+import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import {resolveConnectionId} from "@/dialogs/ManageKeyDialog/processes/resolveConnectionId.ts"
 
 export type ManageStep = "main" | "vault" | "addConnection" | "selectConnection"
 
@@ -16,6 +18,7 @@ export function useManageKeyDialog(mcpKey: McpKeyInfo) {
     const [editingConnectorName, setEditingConnectorName] = useState<string | null>(null)
 
     const mcpKeysStore = useMcpKeys()
+    const bakeError = useBakeError()
     const {OpenDialog, CloseDialog} = useDialog()
 
     const connectors = mcpKey.id ? mcpKeysStore.connectorsByKey[mcpKey.id] ?? [] : []
@@ -64,11 +67,14 @@ export function useManageKeyDialog(mcpKey: McpKeyInfo) {
         if (!mcpKey.id || !selectedCandidate?.name || !selectedExternalConnectionId) return
         setSaving(true)
         try {
+            const connectionId = await resolveConnectionId(selectedExternalConnectionId, err =>
+                bakeError("Failed to enable notifications", err))
+            if (!connectionId) return
             if (editingConnectorName) {
                 await mcpKeysStore.removeConnector(mcpKey.id, editingConnectorName)
                 setEditingConnectorName(null)
             }
-            await mcpKeysStore.addConnector(mcpKey.id, selectedCandidate.name, selectedExternalConnectionId)
+            await mcpKeysStore.addConnector(mcpKey.id, selectedCandidate.name, connectionId)
             setSelectedCandidate(null)
             setSelectedExternalConnectionId("")
             setStep("main")

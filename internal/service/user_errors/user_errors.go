@@ -333,6 +333,14 @@ var (
 		codes.FailedPrecondition,
 		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
 	)
+	// NotifyNoTelegramIdentity is returned when a user asks to notify over the default Artel bot
+	// but has no linked Telegram login identity, so the bot has no chat it may DM.
+	NotifyNoTelegramIdentity = rerrors.New(
+		"no Telegram identity linked for this user",
+		codes.FailedPrecondition,
+		rerrors.WithHttpStatus(http.StatusPreconditionFailed),
+		rerrors.WithPreconditionFailure("TELEGRAM", "identity", pb.UserErrors_NotifyNoTelegramIdentity.String()),
+	)
 
 	// telegram webhook.
 	TelegramWebhookSecretMismatch = rerrors.New(

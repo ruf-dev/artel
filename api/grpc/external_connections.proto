@@ -136,6 +136,16 @@ service ExternalConnectionsAPI {
     };
   }
 
+  // EnsureArtelTelegramConnection materializes (or refreshes) the caller's system-managed
+  // "Artel bot" telegram connection from the shared Artel bot token + their Telegram login id,
+  // returning its id so the caller can link it as a telegram MoM connector.
+  rpc EnsureArtelTelegramConnection(EnsureArtelTelegramConnection.Request) returns (EnsureArtelTelegramConnection.Response) {
+    option (google.api.http) = {
+      post: "/api/external-connections/telegram/ensure-artel-bot"
+      body: "*"
+    };
+  }
+
   rpc AddAnthropicConnection(AddAnthropicConnection.Request) returns (AddAnthropicConnection.Response) {
     option (google.api.http) = {
       post: "/api/external-connections/anthropic/add"
@@ -433,6 +443,13 @@ message CheckTelegramConnection {
   }
   message Response {
     string bot_username = 1;
+  }
+}
+
+message EnsureArtelTelegramConnection {
+  message Request {}
+  message Response {
+    string external_connection_id = 1;
   }
 }
 

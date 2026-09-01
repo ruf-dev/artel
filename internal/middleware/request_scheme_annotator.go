@@ -22,13 +22,15 @@ func RequestSchemeAnnotator(_ context.Context, r *http.Request) metadata.MD {
 	return metadata.Pairs(RequestSecureKey, RequestSecureValue)
 }
 
-// requestIsSecure detects the request's original scheme. X-Forwarded-Proto wins if present, and
-// must equal "https" exactly (case-insensitive) to count as secure; any other value is treated as
-// insecure rather than falling through to the r.TLS check. Absent the header, r.TLS != nil covers
-// a direct TLS-terminated connection.
+// requestIsSecure detects the request's original scheme. X-Forwarded-Proto wins if present: when
+// several proxies are chained the header arrives comma-separated ("https, http") with the
+// outermost client's scheme first, so only that first token is considered, trimmed, and matched
+// case-insensitively against "https"; anything else counts as insecure rather than falling through
+// to the r.TLS check. Absent the header, r.TLS != nil covers a direct TLS-terminated connection.
 func requestIsSecure(r *http.Request) bool {
 	if proto := r.Header.Get("X-Forwarded-Proto"); proto != "" {
-		return strings.EqualFold(proto, "https")
+		first, _, _ := strings.Cut(proto, ",")
+		return strings.EqualFold(strings.TrimSpace(first), "https")
 	}
 
 	return r.TLS != nil

@@ -14,4 +14,5 @@ export enum UserErrors {
   NoPostgresDatabaseLinked = "NoPostgresDatabaseLinked",
   PostgresConnectionValidationFailed = "PostgresConnectionValidationFailed",
   PostgresDatabaseAlreadyEnabled = "PostgresDatabaseAlreadyEnabled",
+  NotifyNoTelegramIdentity = "NotifyNoTelegramIdentity",
 }

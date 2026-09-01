@@ -251,6 +251,14 @@ export type CheckTelegramConnectionResponse = {
 
 export type CheckTelegramConnection = Record<string, never>;
 
+export type EnsureArtelTelegramConnectionRequest = Record<string, never>;
+
+export type EnsureArtelTelegramConnectionResponse = {
+  externalConnectionId?: string;
+};
+
+export type EnsureArtelTelegramConnection = Record<string, never>;
+
 export type AddAnthropicConnectionRequest = {
   apiKey?: string;
   baseUrl?: string;
@@ -471,6 +479,9 @@ export class ExternalConnectionsAPI {
   }
   static CheckTelegramConnection(this:void, req: CheckTelegramConnectionRequest, initReq?: fm.InitReq): Promise<CheckTelegramConnectionResponse> {
     return fm.fetchRequest<CheckTelegramConnectionResponse>(`/api/external-connections/telegram/check`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+  }
+  static EnsureArtelTelegramConnection(this:void, req: EnsureArtelTelegramConnectionRequest, initReq?: fm.InitReq): Promise<EnsureArtelTelegramConnectionResponse> {
+    return fm.fetchRequest<EnsureArtelTelegramConnectionResponse>(`/api/external-connections/telegram/ensure-artel-bot`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
   }
   static AddAnthropicConnection(this:void, req: AddAnthropicConnectionRequest, initReq?: fm.InitReq): Promise<AddAnthropicConnectionResponse> {
     return fm.fetchRequest<AddAnthropicConnectionResponse>(`/api/external-connections/anthropic/add`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});

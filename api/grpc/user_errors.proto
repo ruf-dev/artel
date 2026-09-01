@@ -16,4 +16,5 @@ enum UserErrors {
   NoPostgresDatabaseLinked = 4; // vault has no enabled (status=ready) Postgres database
   PostgresConnectionValidationFailed = 5; // BYOK Postgres connection check failed
   PostgresDatabaseAlreadyEnabled = 6; // EnablePostgresDatabase called when one already exists
+  NotifyNoTelegramIdentity = 7; // notify target has no linked Telegram identity to DM
 }

@@ -612,6 +612,12 @@ type ExternalConnectionService interface {
 	CheckTrelloConnection(ctx context.Context, apiKey, apiToken string) (fullName string, err error)
 	AddTelegramConnection(ctx context.Context, botToken string) (domain.ExternalConnectionMeta, error)
 	CheckTelegramConnection(ctx context.Context, botToken string) (botUsername string, err error)
+	// EnsureArtelTelegramConnection materializes (or refreshes) the caller's system-managed
+	// "Artel bot" telegram connection and returns its id, so the frontend can link it as a
+	// telegram MoM connector. Requires the domain.FeatureNotify entitlement and a linked
+	// Telegram login identity — returns user_errors.FeatureNotEnabled / NotifyNoTelegramIdentity
+	// respectively otherwise.
+	EnsureArtelTelegramConnection(ctx context.Context) (uuid.UUID, error)
 	AddAnthropicConnection(
 		ctx context.Context, apiKey, baseUrl, defaultModel string,
 	) (domain.ExternalConnectionMeta, error)

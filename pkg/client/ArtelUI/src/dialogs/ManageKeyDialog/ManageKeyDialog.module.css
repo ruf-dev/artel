@@ -27,6 +27,17 @@
 
 .ModalSub b { color: var(--color-fg-primary); font-weight: 600; }
 
+.ArtelBotOption {
+    margin-bottom: 1rem;
+}
+
+.ArtelBotHint {
+    margin: 0.25rem 0 0 1.5rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-fg-tertiary);
+}
+
 .ModalActions {
     display: flex;
     align-items: center;

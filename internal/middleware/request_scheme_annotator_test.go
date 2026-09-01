@@ -39,6 +39,17 @@ func TestRequestIsSecure(t *testing.T) {
 			want:           false,
 		},
 		{
+			name:           "chained proxies, https first",
+			forwardedProto: "https, http",
+			want:           true,
+		},
+		{
+			name:           "chained proxies, http first",
+			tls:            true,
+			forwardedProto: "http, https",
+			want:           false,
+		},
+		{
 			name: "neither tls nor header",
 			want: false,
 		},

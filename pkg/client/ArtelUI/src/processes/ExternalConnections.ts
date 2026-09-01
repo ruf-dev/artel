@@ -28,6 +28,7 @@ export interface IExternalConnectionsService {
     addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<ExternalConnectionInfo>
     generateGitlabWebhookSecret: () => Promise<{connection: ExternalConnectionInfo; webhookSecret: string}>
     addTelegramConnection: (req: AddTelegramConnectionRequest) => Promise<ExternalConnectionInfo>
+    ensureArtelTelegramConnection: () => Promise<string>
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<ExternalConnectionInfo>
     addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<ExternalConnectionInfo>
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
@@ -112,6 +113,11 @@ export class ExternalConnectionsService implements IExternalConnectionsService {
     async addTelegramConnection(req: AddTelegramConnectionRequest): Promise<ExternalConnectionInfo> {
         const res = await ExternalConnectionsAPI.AddTelegramConnection(req, useUser.getState().auth.getInitReq())
         return res.connection!
+    }
+
+    async ensureArtelTelegramConnection(): Promise<string> {
+        const res = await ExternalConnectionsAPI.EnsureArtelTelegramConnection({}, useUser.getState().auth.getInitReq())
+        return res.externalConnectionId ?? ""
     }
 
     async addTrelloConnection(req: AddTrelloConnectionRequest): Promise<ExternalConnectionInfo> {

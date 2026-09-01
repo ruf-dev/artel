@@ -17,6 +17,7 @@ var unlimitedFeatures = domain.FeatureSet{
 	Spreadsheets: true,
 	Connectors:   true,
 	Tract:        true,
+	Notify:       true,
 }
 
 // FreeService is used when config.EnvironmentConfig.SubscriptionsEnabled is false: every check

@@ -913,6 +913,39 @@
         ]
       }
     },
+    "/api/external-connections/telegram/ensure-artel-bot": {
+      "post": {
+        "summary": "EnsureArtelTelegramConnection materializes (or refreshes) the caller's system-managed\n\"Artel bot\" telegram connection from the shared Artel bot token + their Telegram login id,\nreturning its id so the caller can link it as a telegram MoM connector.",
+        "operationId": "ExternalConnectionsAPI_EnsureArtelTelegramConnection",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiEnsureArtelTelegramConnectionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiEnsureArtelTelegramConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExternalConnectionsAPI"
+        ]
+      }
+    },
     "/api/external-connections/trello/add": {
       "post": {
         "operationId": "ExternalConnectionsAPI_AddTrelloConnection",
@@ -1479,6 +1512,17 @@
     },
     "artel_apiDisconnectProviderResponse": {
       "type": "object"
+    },
+    "artel_apiEnsureArtelTelegramConnectionRequest": {
+      "type": "object"
+    },
+    "artel_apiEnsureArtelTelegramConnectionResponse": {
+      "type": "object",
+      "properties": {
+        "externalConnectionId": {
+          "type": "string"
+        }
+      }
     },
     "artel_apiExternalConnectionInfo": {
       "type": "object",

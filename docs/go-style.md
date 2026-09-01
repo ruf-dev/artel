@@ -22,7 +22,7 @@ automatically whenever a `.go` file is edited:
 
 ## Generated — never edit
 
-`internal/app/app.go` and `internal/app/config.go` are verv/rscli-generated.
+`internal/app/app.go` and `internal/app/config.go` are verv-generated (`verv project tidy`).
 `internal/app/custom.go` is the editable counterpart.
 
 ## Known drift from the profile

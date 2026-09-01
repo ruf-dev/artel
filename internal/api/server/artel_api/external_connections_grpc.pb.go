@@ -19,36 +19,37 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName         = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
-	ExternalConnectionsAPI_ListConnections_FullMethodName             = "/artel_api.ExternalConnectionsAPI/ListConnections"
-	ExternalConnectionsAPI_DisconnectProvider_FullMethodName          = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
-	ExternalConnectionsAPI_DisconnectConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/DisconnectConnection"
-	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName        = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
-	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName              = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
-	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName            = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
-	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName           = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
-	ExternalConnectionsAPI_AddEmailConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
-	ExternalConnectionsAPI_CheckEmailConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/CheckEmailConnection"
-	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName   = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
-	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
-	ExternalConnectionsAPI_CheckGitlabConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection"
-	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
-	ExternalConnectionsAPI_AddTrelloConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddTrelloConnection"
-	ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection"
-	ExternalConnectionsAPI_AddTelegramConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddTelegramConnection"
-	ExternalConnectionsAPI_CheckTelegramConnection_FullMethodName     = "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection"
-	ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection"
-	ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName    = "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection"
-	ExternalConnectionsAPI_AddOpenAIConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection"
-	ExternalConnectionsAPI_CheckOpenAIConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection"
-	ExternalConnectionsAPI_AddGenericConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddGenericConnection"
-	ExternalConnectionsAPI_AddS3Connection_FullMethodName             = "/artel_api.ExternalConnectionsAPI/AddS3Connection"
-	ExternalConnectionsAPI_CheckS3Connection_FullMethodName           = "/artel_api.ExternalConnectionsAPI/CheckS3Connection"
-	ExternalConnectionsAPI_AddCouchDBConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection"
-	ExternalConnectionsAPI_CheckCouchDBConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection"
-	ExternalConnectionsAPI_AddPostgresConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/AddPostgresConnection"
-	ExternalConnectionsAPI_CheckPostgresConnection_FullMethodName     = "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection"
-	ExternalConnectionsAPI_GetProviderStatistics_FullMethodName       = "/artel_api.ExternalConnectionsAPI/GetProviderStatistics"
+	ExternalConnectionsAPI_InitiateGoogleOAuth_FullMethodName           = "/artel_api.ExternalConnectionsAPI/InitiateGoogleOAuth"
+	ExternalConnectionsAPI_ListConnections_FullMethodName               = "/artel_api.ExternalConnectionsAPI/ListConnections"
+	ExternalConnectionsAPI_DisconnectProvider_FullMethodName            = "/artel_api.ExternalConnectionsAPI/DisconnectProvider"
+	ExternalConnectionsAPI_DisconnectConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/DisconnectConnection"
+	ExternalConnectionsAPI_GetGooglePickerToken_FullMethodName          = "/artel_api.ExternalConnectionsAPI/GetGooglePickerToken"
+	ExternalConnectionsAPI_AddSpreadsheet_FullMethodName                = "/artel_api.ExternalConnectionsAPI/AddSpreadsheet"
+	ExternalConnectionsAPI_ListSpreadsheets_FullMethodName              = "/artel_api.ExternalConnectionsAPI/ListSpreadsheets"
+	ExternalConnectionsAPI_RemoveSpreadsheet_FullMethodName             = "/artel_api.ExternalConnectionsAPI/RemoveSpreadsheet"
+	ExternalConnectionsAPI_AddEmailConnection_FullMethodName            = "/artel_api.ExternalConnectionsAPI/AddEmailConnection"
+	ExternalConnectionsAPI_CheckEmailConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/CheckEmailConnection"
+	ExternalConnectionsAPI_ListMailServerSuggestions_FullMethodName     = "/artel_api.ExternalConnectionsAPI/ListMailServerSuggestions"
+	ExternalConnectionsAPI_AddGitlabConnection_FullMethodName           = "/artel_api.ExternalConnectionsAPI/AddGitlabConnection"
+	ExternalConnectionsAPI_CheckGitlabConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/CheckGitlabConnection"
+	ExternalConnectionsAPI_GenerateGitlabWebhookSecret_FullMethodName   = "/artel_api.ExternalConnectionsAPI/GenerateGitlabWebhookSecret"
+	ExternalConnectionsAPI_AddTrelloConnection_FullMethodName           = "/artel_api.ExternalConnectionsAPI/AddTrelloConnection"
+	ExternalConnectionsAPI_CheckTrelloConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/CheckTrelloConnection"
+	ExternalConnectionsAPI_AddTelegramConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddTelegramConnection"
+	ExternalConnectionsAPI_CheckTelegramConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckTelegramConnection"
+	ExternalConnectionsAPI_EnsureArtelTelegramConnection_FullMethodName = "/artel_api.ExternalConnectionsAPI/EnsureArtelTelegramConnection"
+	ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/AddAnthropicConnection"
+	ExternalConnectionsAPI_CheckAnthropicConnection_FullMethodName      = "/artel_api.ExternalConnectionsAPI/CheckAnthropicConnection"
+	ExternalConnectionsAPI_AddOpenAIConnection_FullMethodName           = "/artel_api.ExternalConnectionsAPI/AddOpenAIConnection"
+	ExternalConnectionsAPI_CheckOpenAIConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/CheckOpenAIConnection"
+	ExternalConnectionsAPI_AddGenericConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/AddGenericConnection"
+	ExternalConnectionsAPI_AddS3Connection_FullMethodName               = "/artel_api.ExternalConnectionsAPI/AddS3Connection"
+	ExternalConnectionsAPI_CheckS3Connection_FullMethodName             = "/artel_api.ExternalConnectionsAPI/CheckS3Connection"
+	ExternalConnectionsAPI_AddCouchDBConnection_FullMethodName          = "/artel_api.ExternalConnectionsAPI/AddCouchDBConnection"
+	ExternalConnectionsAPI_CheckCouchDBConnection_FullMethodName        = "/artel_api.ExternalConnectionsAPI/CheckCouchDBConnection"
+	ExternalConnectionsAPI_AddPostgresConnection_FullMethodName         = "/artel_api.ExternalConnectionsAPI/AddPostgresConnection"
+	ExternalConnectionsAPI_CheckPostgresConnection_FullMethodName       = "/artel_api.ExternalConnectionsAPI/CheckPostgresConnection"
+	ExternalConnectionsAPI_GetProviderStatistics_FullMethodName         = "/artel_api.ExternalConnectionsAPI/GetProviderStatistics"
 )
 
 // ExternalConnectionsAPIClient is the client API for ExternalConnectionsAPI service.
@@ -76,6 +77,10 @@ type ExternalConnectionsAPIClient interface {
 	CheckTrelloConnection(ctx context.Context, in *CheckTrelloConnection_Request, opts ...grpc.CallOption) (*CheckTrelloConnection_Response, error)
 	AddTelegramConnection(ctx context.Context, in *AddTelegramConnection_Request, opts ...grpc.CallOption) (*AddTelegramConnection_Response, error)
 	CheckTelegramConnection(ctx context.Context, in *CheckTelegramConnection_Request, opts ...grpc.CallOption) (*CheckTelegramConnection_Response, error)
+	// EnsureArtelTelegramConnection materializes (or refreshes) the caller's system-managed
+	// "Artel bot" telegram connection from the shared Artel bot token + their Telegram login id,
+	// returning its id so the caller can link it as a telegram MoM connector.
+	EnsureArtelTelegramConnection(ctx context.Context, in *EnsureArtelTelegramConnection_Request, opts ...grpc.CallOption) (*EnsureArtelTelegramConnection_Response, error)
 	AddAnthropicConnection(ctx context.Context, in *AddAnthropicConnection_Request, opts ...grpc.CallOption) (*AddAnthropicConnection_Response, error)
 	CheckAnthropicConnection(ctx context.Context, in *CheckAnthropicConnection_Request, opts ...grpc.CallOption) (*CheckAnthropicConnection_Response, error)
 	AddOpenAIConnection(ctx context.Context, in *AddOpenAIConnection_Request, opts ...grpc.CallOption) (*AddOpenAIConnection_Response, error)
@@ -260,6 +265,15 @@ func (c *externalConnectionsAPIClient) CheckTelegramConnection(ctx context.Conte
 	return out, nil
 }
 
+func (c *externalConnectionsAPIClient) EnsureArtelTelegramConnection(ctx context.Context, in *EnsureArtelTelegramConnection_Request, opts ...grpc.CallOption) (*EnsureArtelTelegramConnection_Response, error) {
+	out := new(EnsureArtelTelegramConnection_Response)
+	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_EnsureArtelTelegramConnection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *externalConnectionsAPIClient) AddAnthropicConnection(ctx context.Context, in *AddAnthropicConnection_Request, opts ...grpc.CallOption) (*AddAnthropicConnection_Response, error) {
 	out := new(AddAnthropicConnection_Response)
 	err := c.cc.Invoke(ctx, ExternalConnectionsAPI_AddAnthropicConnection_FullMethodName, in, out, opts...)
@@ -393,6 +407,10 @@ type ExternalConnectionsAPIServer interface {
 	CheckTrelloConnection(context.Context, *CheckTrelloConnection_Request) (*CheckTrelloConnection_Response, error)
 	AddTelegramConnection(context.Context, *AddTelegramConnection_Request) (*AddTelegramConnection_Response, error)
 	CheckTelegramConnection(context.Context, *CheckTelegramConnection_Request) (*CheckTelegramConnection_Response, error)
+	// EnsureArtelTelegramConnection materializes (or refreshes) the caller's system-managed
+	// "Artel bot" telegram connection from the shared Artel bot token + their Telegram login id,
+	// returning its id so the caller can link it as a telegram MoM connector.
+	EnsureArtelTelegramConnection(context.Context, *EnsureArtelTelegramConnection_Request) (*EnsureArtelTelegramConnection_Response, error)
 	AddAnthropicConnection(context.Context, *AddAnthropicConnection_Request) (*AddAnthropicConnection_Response, error)
 	CheckAnthropicConnection(context.Context, *CheckAnthropicConnection_Request) (*CheckAnthropicConnection_Response, error)
 	AddOpenAIConnection(context.Context, *AddOpenAIConnection_Request) (*AddOpenAIConnection_Response, error)
@@ -465,6 +483,9 @@ func (UnimplementedExternalConnectionsAPIServer) AddTelegramConnection(context.C
 }
 func (UnimplementedExternalConnectionsAPIServer) CheckTelegramConnection(context.Context, *CheckTelegramConnection_Request) (*CheckTelegramConnection_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckTelegramConnection not implemented")
+}
+func (UnimplementedExternalConnectionsAPIServer) EnsureArtelTelegramConnection(context.Context, *EnsureArtelTelegramConnection_Request) (*EnsureArtelTelegramConnection_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnsureArtelTelegramConnection not implemented")
 }
 func (UnimplementedExternalConnectionsAPIServer) AddAnthropicConnection(context.Context, *AddAnthropicConnection_Request) (*AddAnthropicConnection_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddAnthropicConnection not implemented")
@@ -840,6 +861,24 @@ func _ExternalConnectionsAPI_CheckTelegramConnection_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExternalConnectionsAPI_EnsureArtelTelegramConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnsureArtelTelegramConnection_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExternalConnectionsAPIServer).EnsureArtelTelegramConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExternalConnectionsAPI_EnsureArtelTelegramConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExternalConnectionsAPIServer).EnsureArtelTelegramConnection(ctx, req.(*EnsureArtelTelegramConnection_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ExternalConnectionsAPI_AddAnthropicConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddAnthropicConnection_Request)
 	if err := dec(in); err != nil {
@@ -1134,6 +1173,10 @@ var ExternalConnectionsAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckTelegramConnection",
 			Handler:    _ExternalConnectionsAPI_CheckTelegramConnection_Handler,
+		},
+		{
+			MethodName: "EnsureArtelTelegramConnection",
+			Handler:    _ExternalConnectionsAPI_EnsureArtelTelegramConnection_Handler,
 		},
 		{
 			MethodName: "AddAnthropicConnection",

@@ -28,6 +28,9 @@ ON CONFLICT (telegram_id) DO UPDATE SET updated_at = NOW();
 -- name: GetTelegramPhotoUrlByUserId :one
 SELECT photo_url FROM users WHERE id = $1;
 
+-- name: GetTelegramIdByUserId :one
+SELECT telegram_id FROM identities_telegram WHERE user_id = $1;
+
 -- name: UpdateUserPhotoUrl :exec
 UPDATE users SET photo_url = $2 WHERE id = $1;
 

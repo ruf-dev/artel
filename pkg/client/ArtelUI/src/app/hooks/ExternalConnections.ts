@@ -33,6 +33,7 @@ interface ExternalConnectionsState {
     addGitlabConnection: (req: AddGitlabConnectionRequest) => Promise<void>
     generateGitlabWebhookSecret: () => Promise<string>
     addTelegramConnection: (req: AddTelegramConnectionRequest) => Promise<void>
+    ensureArtelTelegramConnection: () => Promise<string>
     addTrelloConnection: (req: AddTrelloConnectionRequest) => Promise<void>
     addAnthropicConnection: (req: AddAnthropicConnectionRequest) => Promise<void>
     checkAnthropicConnection: (req: CheckAnthropicConnectionRequest) => Promise<CheckAnthropicConnectionResponse>
@@ -121,6 +122,12 @@ export const useExternalConnections = create<ExternalConnectionsState>((set, get
     addTelegramConnection: async (req: AddTelegramConnectionRequest) => {
         await externalConnectionsService.addTelegramConnection(req)
         await get().fetch()
+    },
+
+    ensureArtelTelegramConnection: async () => {
+        const id = await externalConnectionsService.ensureArtelTelegramConnection()
+        await get().fetch()
+        return id
     },
 
     addTrelloConnection: async (req: AddTrelloConnectionRequest) => {

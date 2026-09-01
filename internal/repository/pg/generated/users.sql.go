@@ -86,6 +86,17 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getTelegramIdByUserId = `-- name: GetTelegramIdByUserId :one
+SELECT telegram_id FROM identities_telegram WHERE user_id = $1
+`
+
+func (q *Queries) GetTelegramIdByUserId(ctx context.Context, userID uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getTelegramIdByUserId, userID)
+	var telegram_id string
+	err := row.Scan(&telegram_id)
+	return telegram_id, err
+}
+
 const getTelegramPhotoUrlByUserId = `-- name: GetTelegramPhotoUrlByUserId :one
 SELECT photo_url FROM users WHERE id = $1
 `

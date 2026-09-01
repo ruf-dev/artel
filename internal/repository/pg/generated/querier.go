@@ -79,6 +79,7 @@ type Querier interface {
 	GetSubscriptionWithPlan(ctx context.Context, userID uuid.UUID) (GetSubscriptionWithPlanRow, error)
 	GetSystemSettings(ctx context.Context) (SystemSetting, error)
 	GetSystemSettingsForUpdate(ctx context.Context) (SystemSetting, error)
+	GetTelegramIdByUserId(ctx context.Context, userID uuid.UUID) (string, error)
 	GetTelegramPhotoUrlByUserId(ctx context.Context, id uuid.UUID) (string, error)
 	GetTract(ctx context.Context, id uuid.UUID) (Tract, error)
 	GetTractRun(ctx context.Context, id uuid.UUID) (TractRun, error)

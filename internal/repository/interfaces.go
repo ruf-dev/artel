@@ -67,6 +67,7 @@ type Users interface {
 	CreateByUsername(ctx context.Context, username, photoUrl string) (domain.User, error)
 	UpsertTelegramIdentity(ctx context.Context, identity domain.TelegramIdentity) error
 	GetTelegramPhotoUrl(ctx context.Context, userUuid uuid.UUID) (string, error)
+	GetTelegramIdByUserId(ctx context.Context, userUuid uuid.UUID) (sql.Null[string], error)
 	UpdatePhotoUrl(ctx context.Context, userUuid uuid.UUID, photoUrl string) error
 	UpdatePasswordHash(ctx context.Context, userUuid uuid.UUID, passwordHash string) error
 

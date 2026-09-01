@@ -48,6 +48,15 @@ func (s *ServiceImpl) AddConnector(
 		return domain.McpConnector{}, rerrors.Wrap(user_errors.NotFound, "external connection not found")
 	}
 
+	// Linking a telegram connector is the "enable owner notifications" gesture — gate it on the
+	// dedicated notify entitlement. Every other connector (gitlab/trello/email/...) is untouched.
+	if mcpName == domain.ProviderTelegram {
+		err = s.subscriptions.CheckFeature(ctx, uc.UserUuid, domain.FeatureNotify)
+		if err != nil {
+			return domain.McpConnector{}, err
+		}
+	}
+
 	connector, err := s.mcpConnectors.Insert(ctx, domain.McpConnector{
 		McpKeyUuid:             keyID,
 		McpName:                mcpName,
