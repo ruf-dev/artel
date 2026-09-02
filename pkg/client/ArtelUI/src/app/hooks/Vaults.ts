@@ -25,6 +25,14 @@ export function useVaults() {
         queryFn: () => vaultService.ListVaults(),
         enabled: auth.isAuthenticated(),
         retry: retryOnStatus(),
+        // Persisted to localStorage (app/queryPersist.ts): a refresh rehydrates
+        // this list and paints it immediately. staleTime keeps SPA navigation
+        // from refetching on every mount; the rehydrated entry is always past
+        // it, so returning to the page still triggers one background refetch.
+        // gcTime must outlast the persist window so an unmounted-but-cached
+        // entry isn't dropped before it can be re-persisted.
+        staleTime: 1000 * 30,
+        gcTime: 1000 * 60 * 60 * 24,
     })
 
     return {

@@ -123,6 +123,20 @@ function fromLocalStorage(): StoredAuth | undefined {
     }
 }
 
+// Prefix of the localStorage key react-query's persister writes to. Lives here
+// so logout can wipe it; the full per-user key is built in queryPersist.ts.
+export const queryCacheKeyPrefix = "artel_query_cache"
+
+export function getStoredUserId(): string | undefined {
+    return fromLocalStorage()?.userInfo?.id
+}
+
 function clearLocalStorage() {
     localStorage.removeItem("artel_session")
+    // The persisted react-query cache is keyed per user (queryPersist.ts). Drop
+    // every user's entry on logout so a shared browser never rehydrates the
+    // previous account's vault list.
+    for (const key of Object.keys(localStorage)) {
+        if (key.startsWith(queryCacheKeyPrefix)) localStorage.removeItem(key)
+    }
 }
