@@ -261,12 +261,15 @@ func (c *Custom) Init(a *App) error {
 		// notes.Service.CheckImportConflicts) to confirm none of them mutate state before
 		// being added here.
 		//
-		// Login/Register are also exempt despite being writes: they establish a session rather
-		// than acting on one, so there is no session for double-submit CSRF to protect. The
-		// annotator marks a request "authenticated via cookie" on the mere *presence* of an
-		// access_token cookie, so a stale/orphaned cookie (e.g. left behind when logout clears
-		// the readable csrf_token cookie but the async server-side Logout loses the race) would
-		// otherwise reject re-authentication with "csrf token missing or invalid".
+		// Login/Register/Refresh are also exempt despite being writes: they establish or rotate a
+		// session rather than acting on one, so there is no session for double-submit CSRF to
+		// protect. Each gates on its own credential (Refresh on the refresh_token cookie/body,
+		// independent of the access_token). The annotator marks a request "authenticated via
+		// cookie" on the mere *presence* of an access_token cookie, so a stale/orphaned cookie
+		// (e.g. left behind when logout clears the readable csrf_token cookie but the async
+		// server-side Logout loses the race) would otherwise reject re-authentication — and,
+		// worse for Refresh, kill the silent token-refresh recovery path — with "csrf token
+		// missing or invalid".
 		middleware.GrpcCSRFInterceptor(
 			pb.AdminCouchAPI_GetUserDatabaseAccess_FullMethodName,
 			pb.AdminCouchAPI_ListCouchDatabases_FullMethodName,
@@ -279,6 +282,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AuthAPI_GetConfig_FullMethodName,
 			pb.AuthAPI_GetMe_FullMethodName,
 			pb.AuthAPI_Login_FullMethodName,
+			pb.AuthAPI_Refresh_FullMethodName,
 			pb.AuthAPI_Register_FullMethodName,
 			pb.CouchInstancesAPI_GetCouchInstance_FullMethodName,
 			pb.CouchInstancesAPI_GetCouchInstanceStatus_FullMethodName,
@@ -314,7 +318,16 @@ func (c *Custom) Init(a *App) error {
 			pb.PublicDocsAPI_ListFolders_FullMethodName,
 			pb.PublicDocsAPI_ListNotes_FullMethodName,
 			pb.PublicDocsAPI_ListTags_FullMethodName,
+			// The four setup-wizard writes below gate on the bespoke wizardSessionToken carried
+			// in each request, not on a session — same as GetStatus, and the same reason
+			// Login/Register are exempt above. A stale/orphaned access_token cookie left in the
+			// browser would otherwise make GrpcCSRFInterceptor reject the whole wizard with
+			// "csrf token missing or invalid".
 			pb.SetupWizardAPI_GetStatus_FullMethodName,
+			pb.SetupWizardAPI_SubmitToken_FullMethodName,
+			pb.SetupWizardAPI_SelectAuthMethods_FullMethodName,
+			pb.SetupWizardAPI_SelectRegistrationMode_FullMethodName,
+			pb.SetupWizardAPI_CompleteSetup_FullMethodName,
 			pb.TaskTrackersAPI_ListTaskTrackers_FullMethodName,
 			pb.TaskTrackersAPI_ListTrelloBoards_FullMethodName,
 			pb.TractsAPI_GetRun_FullMethodName,
