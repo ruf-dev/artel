@@ -24,11 +24,12 @@ export default function HomePage() {
     const {auth, isAdmin} = useUser()
     const navigate = useNavigate()
 
-    // Default to "available" while loading — a false-positive briefly-enabled button just
-    // falls back on the existing NoCouchDbInstance submit-time error, whereas a
-    // false-positive briefly-disabled button would flash wrong on every normal page load.
-    const [isCouchAvailable, setIsCouchAvailable] = useState(true)
-    // Same rationale as isCouchAvailable above.
+    // Default to "unavailable" until GetConfig resolves — the "New vault" button stays
+    // disabled while the check is in flight and if it fails, and only enables once the
+    // backend confirms a CouchDB instance exists.
+    const [isCouchAvailable, setIsCouchAvailable] = useState(false)
+    // Default to "available" while loading — a false-positive briefly-disabled workbench
+    // button would flash wrong on every normal page load.
     const [isWorkbenchAvailable, setIsWorkbenchAvailable] = useState(true)
 
     useEffect(() => {
@@ -115,7 +116,8 @@ export default function HomePage() {
             {!isCouchAvailable && (
                 <Tooltip id="create-vault-tooltip" clickable noArrow>
                     {isAdmin
-                        ? <>No CouchDB instances configured. <Link to={Path.Admin}>Add one in Admin</Link></>
+                        ? <>No CouchDB instances configured. <Link
+                            to={`${Path.Admin}?tab=couchdb&dialog=true`}>Add one in Admin</Link></>
                         : "New vaults require a CouchDB instance to be configured. Contact an administrator."}
                 </Tooltip>
             )}

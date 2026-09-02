@@ -9,9 +9,10 @@ import CouchUsersSubTabIcon from "@/pages/admin/components/icons/CouchUsersSubTa
 interface CouchDbTabProps {
     subTab: CouchSubTab
     onSubTabChange: (t: CouchSubTab) => void
+    autoOpenInstanceDialog?: boolean
 }
 
-export default function CouchDbTab({subTab, onSubTabChange}: CouchDbTabProps) {
+export default function CouchDbTab({subTab, onSubTabChange, autoOpenInstanceDialog}: CouchDbTabProps) {
     return (
         <div className={cls.CouchDbTabContainer}>
             <Tabs
@@ -22,7 +23,7 @@ export default function CouchDbTab({subTab, onSubTabChange}: CouchDbTabProps) {
                 active={subTab}
                 onChange={(key) => onSubTabChange(key as CouchSubTab)}
             />
-            {subTab === "instances" && <InstancesTab/>}
+            {subTab === "instances" && <InstancesTab autoOpenAddDialog={autoOpenInstanceDialog}/>}
             {subTab === "users" && <UsersTab/>}
         </div>
     )

@@ -66,12 +66,20 @@ export default function AdminPage() {
     }
 
     const autoOpenDockerDialog = tab === "docker_api" && searchParams.get("dialog") === "true"
+    const autoOpenCouchInstanceDialog =
+        tab === "couchdb" && subTab === "instances" && searchParams.get("dialog") === "true"
 
     return (
         <div className={cls.AdminPageContainer}>
             <AdminHero tab={tab} subTab={subTab}/>
             <div className={cls.StickyTabsWrapper}>
-                {tab === "couchdb" && <CouchDbTab subTab={subTab} onSubTabChange={handleSubTabChange}/>}
+                {tab === "couchdb" && (
+                    <CouchDbTab
+                        subTab={subTab}
+                        onSubTabChange={handleSubTabChange}
+                        autoOpenInstanceDialog={autoOpenCouchInstanceDialog}
+                    />
+                )}
                 {tab === "users" && <ArtelUsersTab/>}
                 {tab === "s3_instances" && (
                     <div className={cls.ContentContainer}>

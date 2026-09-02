@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from "react"
+import {useState, useEffect, useCallback, useRef} from "react"
 
 import cls from "@/pages/admin/components/InstancesTab/InstancesTab.module.css"
 import {CouchInstancesAPI, GetCouchInstanceResponse} from "@/app/api/artel/couch_instances.pb.ts"
@@ -10,11 +10,16 @@ import InstanceList from "@/pages/admin/components/InstancesTab/components/Insta
 import InstanceFormDialog
     from "@/pages/admin/components/InstancesTab/components/InstanceFormDialog/InstanceFormDialog.tsx"
 
-export default function InstancesTab() {
+interface Props {
+    autoOpenAddDialog?: boolean
+}
+
+export default function InstancesTab({autoOpenAddDialog}: Props) {
     const {auth} = useUser()
     const {OpenDialog} = useDialog()
     const [instances, setInstances] = useState<GetCouchInstanceResponse[]>([])
     const [loading, setLoading] = useState(true)
+    const autoOpenHandled = useRef(false)
 
     const loadInstances = useCallback(async () => {
         setLoading(true)
@@ -58,6 +63,13 @@ export default function InstancesTab() {
             />
         )
     }
+
+    useEffect(() => {
+        if (autoOpenAddDialog && !autoOpenHandled.current) {
+            autoOpenHandled.current = true
+            openAddDialog()
+        }
+    }, [autoOpenAddDialog])
 
     return (
         <div className={cls.InstancesTabContainer}>
