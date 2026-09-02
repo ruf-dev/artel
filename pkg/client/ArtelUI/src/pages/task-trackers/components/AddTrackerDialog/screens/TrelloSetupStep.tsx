@@ -41,8 +41,10 @@ export default function TrelloSetupStep({onSuccess, onBack, onClose}: {
                     <ModalClose onClick={onClose} disabled={connecting}/>
                 </div>
                 <p className={cls.ModalSub}>
-                    Get your credentials from the{" "}
-                    <a href="https://trello.com/app-key" target="_blank" rel="noopener noreferrer">Trello API key page</a>
+                    Get your credentials by{" "}
+                    <a href="https://trello.com/power-ups/admin/" target="_blank" rel="noopener noreferrer">
+                        creating a Power-Up
+                    </a>
                     {". "}
                     See the{" "}
                     <a href="https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/" target="_blank" rel="noopener noreferrer">

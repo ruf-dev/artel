@@ -9,7 +9,7 @@ import DialogHead from "@/dialogs/ManageTrelloDialog/components/DialogHead/Dialo
 import TrelloCheckButton from "@/dialogs/ManageTrelloDialog/components/TrelloCheckButton/TrelloCheckButton.tsx"
 import cls from "@/dialogs/ManageTrelloDialog/components/TrelloAddDialog/TrelloAddDialog.module.css"
 
-const API_KEY_URL = "https://trello.com/app-key"
+const API_KEY_URL = "https://trello.com/power-ups/admin/"
 
 function tokenAuthorizeUrl(apiKey: string): string | null {
     if (!apiKey.trim()) return null
@@ -65,8 +65,7 @@ export default function TrelloAddDialog() {
                 <Input type="text" value={apiKey} setValue={handleApiKeyChange} disabled={connecting}
                     autoComplete="off"/>
                 <div className={cls.TokenHint}>
-                    Click{" "}
-                    <a href={API_KEY_URL} target="_blank" rel="noopener noreferrer">here</a>
+                    <a href={API_KEY_URL} target="_blank" rel="noopener noreferrer">Create a Power-Up</a>
                     {" "}to get your API key
                 </div>
             </label>
