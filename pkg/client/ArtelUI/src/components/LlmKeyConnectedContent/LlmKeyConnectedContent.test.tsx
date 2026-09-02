@@ -1,6 +1,10 @@
 /* eslint-disable func-style, max-lines-per-function */
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it, vi} from 'vitest'
 import {render, screen} from '@testing-library/react'
+
+vi.mock('@/app/hooks/useLikedModels.ts', () => ({
+    useLikedModels: () => ({likedIds: [], isLiked: () => false, toggleLiked: () => {}}),
+}))
 
 import LlmKeyConnectedContent from '@/components/LlmKeyConnectedContent/LlmKeyConnectedContent.tsx'
 

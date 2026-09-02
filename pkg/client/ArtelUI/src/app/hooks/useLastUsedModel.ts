@@ -1,33 +1,38 @@
-import {useCallback, useState} from "react"
+import {useCallback} from "react"
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query"
 
-const STORAGE_KEY = "artel.lastUsedSimpleChatModel"
-
-function readLastUsedModel(): string | undefined {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        return raw || undefined
-    } catch {
-        // Garbage/inaccessible localStorage: default to no remembered model
-        // rather than throwing.
-        return undefined
-    }
-}
+import {useBakeError} from "@/app/hooks/useErrorToast.ts"
+import {retryOnStatus} from "@/processes/grpcErrors.ts"
+import {UserSettings, userSettingsQueryKey, userSettingsService} from "@/processes/UserSettings.ts"
+import useUser from "@/hooks/user/User.ts"
 
 // Remembers the last OpenRouter model the user picked in Simple Chat, so a new
 // chat (or a chat with no model of its own yet) defaults to it instead of
-// always falling back to the connection's recommendedDefaultModel. See
-// useLikedModels.ts for the identical localStorage-backed-hook shape.
+// always falling back to the connection's recommendedDefaultModel. Reads the
+// same GetUserSettings row as useLikedModels.ts under the same query key, so
+// the two hooks share one cached fetch instead of double-fetching.
 export function useLastUsedModel() {
-    const [lastUsedModel, setLastUsedModelState] = useState<string | undefined>(() => readLastUsedModel())
+    const {auth} = useUser()
+    const bakeError = useBakeError()
+    const queryClient = useQueryClient()
+
+    const q = useQuery({
+        queryKey: userSettingsQueryKey(),
+        queryFn: () => userSettingsService.getUserSettings(),
+        enabled: auth.isAuthenticated(),
+        retry: retryOnStatus(),
+    })
+
+    const mutation = useMutation({
+        mutationFn: (model: string) => userSettingsService.setLastUsedModel(model),
+        onError: err => bakeError("Failed to save last used model", err),
+    })
 
     const setLastUsedModel = useCallback((model: string) => {
-        setLastUsedModelState(model)
-        try {
-            localStorage.setItem(STORAGE_KEY, model)
-        } catch {
-            // Best-effort persistence only.
-        }
-    }, [])
+        queryClient.setQueryData<UserSettings>(userSettingsQueryKey(), current =>
+            current ? {...current, lastUsedModel: model} : current)
+        mutation.mutate(model)
+    }, [queryClient, mutation.mutate])
 
-    return {lastUsedModel, setLastUsedModel}
+    return {lastUsedModel: q.data?.lastUsedModel, setLastUsedModel}
 }

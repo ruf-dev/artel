@@ -513,6 +513,8 @@ type SystemSettingsRepo interface {
 
 type UserSettingsRepo interface {
 	Get(ctx context.Context, userID uuid.UUID) (domain.UserSettings, error)
+	UpsertLikedModels(ctx context.Context, userID uuid.UUID, modelIds []string) error
+	UpsertLastUsedModel(ctx context.Context, userID uuid.UUID, model string) error
 }
 
 // TractTriggerLink is a read-side join projection — see TriggersRepo doc comments above for

@@ -1,91 +1,127 @@
-import {act, renderHook} from "@testing-library/react"
-import {beforeEach, describe, expect, it} from "vitest"
+import {createElement} from "react"
+import type {ReactNode} from "react"
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
+import {act, renderHook, waitFor} from "@testing-library/react"
+import {beforeEach, describe, expect, it, vi} from "vitest"
+
+const h = vi.hoisted(() => ({
+    getUserSettings: vi.fn(),
+    setLikedModels: vi.fn(),
+    authenticated: true,
+}))
+const mockBakeError = vi.fn()
+
+vi.mock("@/processes/UserSettings.ts", async importOriginal => {
+    const actual = await importOriginal<typeof import("@/processes/UserSettings.ts")>()
+    return {
+        ...actual,
+        userSettingsService: {
+            getUserSettings: h.getUserSettings,
+            setLikedModels: h.setLikedModels,
+        },
+    }
+})
+
+vi.mock("@/hooks/user/User.ts", () => ({
+    default: () => ({auth: {isAuthenticated: () => h.authenticated}}),
+}))
+
+vi.mock("@/app/hooks/useErrorToast.ts", () => ({
+    useBakeError: () => mockBakeError,
+}))
 
 import {useLikedModels} from "@/app/hooks/useLikedModels.ts"
+import {userSettingsQueryKey} from "@/processes/UserSettings.ts"
 
-const STORAGE_KEY = "artel.likedOpenRouterModels"
+function makeWrapper(client: QueryClient) {
+    return function Wrapper({children}: {children: ReactNode}) {
+        return createElement(QueryClientProvider, {client}, children)
+    }
+}
 
 beforeEach(() => {
-    localStorage.clear()
+    vi.clearAllMocks()
+    h.authenticated = true
+    h.getUserSettings.mockResolvedValue({userPrompt: "", likedOpenrouterModels: [], lastUsedModel: undefined})
+    h.setLikedModels.mockResolvedValue(undefined)
 })
 
 describe("useLikedModels", () => {
-    it("defaults to an empty liked list when localStorage is empty", () => {
-        const {result} = renderHook(() => useLikedModels())
+    it("defaults to an empty liked list before the settings load", () => {
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLikedModels(), {wrapper: makeWrapper(client)})
 
         expect(result.current.likedIds).toEqual([])
         expect(result.current.isLiked("openai/gpt-4")).toBe(false)
     })
 
-    it("defaults to an empty liked list when localStorage holds invalid JSON", () => {
-        localStorage.setItem(STORAGE_KEY, "{not valid json")
+    it("does not fetch when the user is not authenticated", () => {
+        h.authenticated = false
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
 
-        const {result} = renderHook(() => useLikedModels())
+        renderHook(() => useLikedModels(), {wrapper: makeWrapper(client)})
 
-        expect(result.current.likedIds).toEqual([])
+        expect(h.getUserSettings).not.toHaveBeenCalled()
     })
 
-    it("defaults to an empty liked list when localStorage holds valid JSON that isn't an array", () => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({foo: "bar"}))
+    it("reads the liked list from GetUserSettings", async () => {
+        h.getUserSettings.mockResolvedValue({
+            userPrompt: "",
+            likedOpenrouterModels: ["openai/gpt-4"],
+            lastUsedModel: undefined,
+        })
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
 
-        const {result} = renderHook(() => useLikedModels())
+        const {result} = renderHook(() => useLikedModels(), {wrapper: makeWrapper(client)})
 
-        expect(result.current.likedIds).toEqual([])
-    })
-
-    it("filters out non-string entries from a malformed stored array", () => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(["openai/gpt-4", 42, null, "anthropic/claude"]))
-
-        const {result} = renderHook(() => useLikedModels())
-
-        expect(result.current.likedIds).toEqual(["openai/gpt-4", "anthropic/claude"])
-    })
-
-    it("reads an existing liked list from localStorage", () => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(["openai/gpt-4"]))
-
-        const {result} = renderHook(() => useLikedModels())
-
-        expect(result.current.likedIds).toEqual(["openai/gpt-4"])
+        await waitFor(() => expect(result.current.likedIds).toEqual(["openai/gpt-4"]))
         expect(result.current.isLiked("openai/gpt-4")).toBe(true)
         expect(result.current.isLiked("anthropic/claude")).toBe(false)
     })
 
-    it("toggleLiked adds an id, persists it, and isLiked reflects it", () => {
-        const {result} = renderHook(() => useLikedModels())
+    it("toggleLiked adds an id optimistically and calls SetLikedModels with the full array", async () => {
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLikedModels(), {wrapper: makeWrapper(client)})
+        await waitFor(() => expect(client.getQueryData(userSettingsQueryKey())).toBeDefined())
 
         act(() => {
             result.current.toggleLiked("openai/gpt-4")
         })
 
-        expect(result.current.likedIds).toEqual(["openai/gpt-4"])
-        expect(result.current.isLiked("openai/gpt-4")).toBe(true)
-        expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toEqual(["openai/gpt-4"])
+        await waitFor(() => expect(result.current.likedIds).toEqual(["openai/gpt-4"]))
+        await waitFor(() => expect(h.setLikedModels).toHaveBeenCalledWith(["openai/gpt-4"]))
     })
 
-    it("toggleLiked removes an already-liked id and persists the removal", () => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(["openai/gpt-4", "anthropic/claude"]))
-        const {result} = renderHook(() => useLikedModels())
+    it("toggleLiked removes an already-liked id", async () => {
+        h.getUserSettings.mockResolvedValue({
+            userPrompt: "",
+            likedOpenrouterModels: ["openai/gpt-4", "anthropic/claude"],
+            lastUsedModel: undefined,
+        })
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLikedModels(), {wrapper: makeWrapper(client)})
+        await waitFor(() => expect(result.current.likedIds).toEqual(["openai/gpt-4", "anthropic/claude"]))
 
         act(() => {
             result.current.toggleLiked("openai/gpt-4")
         })
 
-        expect(result.current.likedIds).toEqual(["anthropic/claude"])
-        expect(result.current.isLiked("openai/gpt-4")).toBe(false)
-        expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toEqual(["anthropic/claude"])
+        await waitFor(() => expect(result.current.likedIds).toEqual(["anthropic/claude"]))
+        await waitFor(() => expect(h.setLikedModels).toHaveBeenCalledWith(["anthropic/claude"]))
     })
 
-    it("persists across separate hook instances via localStorage", () => {
-        const first = renderHook(() => useLikedModels())
+    it("rolls back the optimistic update and bakes an error when SetLikedModels fails", async () => {
+        h.setLikedModels.mockRejectedValue(new Error("boom"))
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLikedModels(), {wrapper: makeWrapper(client)})
+        await waitFor(() => expect(client.getQueryData(userSettingsQueryKey())).toBeDefined())
 
         act(() => {
-            first.result.current.toggleLiked("openai/gpt-4")
+            result.current.toggleLiked("openai/gpt-4")
         })
 
-        const second = renderHook(() => useLikedModels())
-
-        expect(second.result.current.likedIds).toEqual(["openai/gpt-4"])
-        expect(second.result.current.isLiked("openai/gpt-4")).toBe(true)
+        await waitFor(() =>
+            expect(mockBakeError).toHaveBeenCalledWith("Failed to update liked models", expect.any(Error)))
+        expect(result.current.likedIds).toEqual([])
     })
 })

@@ -234,6 +234,16 @@ type SimpleChatService interface {
 	) error
 }
 
+// UserSettingsService is per-user preference storage, synced across devices — replaces what used
+// to be pure localStorage on the frontend. The caller is always resolved from ctx via
+// user_context.GetUserContext; there is no id parameter, every method operates on the caller's
+// own row.
+type UserSettingsService interface {
+	GetUserSettings(ctx context.Context) (domain.UserSettings, error)
+	SetLikedModels(ctx context.Context, modelIds []string) error
+	SetLastUsedModel(ctx context.Context, model string) error
+}
+
 type WorkbenchService interface {
 	CreateWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)
 	GetWorkbench(ctx context.Context, vaultID uuid.UUID) (domain.Workbench, error)

@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package artel_api;
+
+import "google/api/annotations.proto";
+
+option go_package = "/artel_api";
+
+// UserSettingsAPI is per-user preference storage, synced across devices — replaces what used to
+// be pure localStorage on the frontend (liked OpenRouter models, last used model). The caller is
+// always the authenticated user; there is no id parameter, every method operates on the caller's
+// own row.
+service UserSettingsAPI {
+    rpc GetUserSettings(GetUserSettings.Request) returns (GetUserSettings.Response) {
+        option (google.api.http) = {
+            get: "/api/user-settings/get"
+        };
+    }
+
+    rpc SetLikedModels(SetLikedModels.Request) returns (SetLikedModels.Response) {
+        option (google.api.http) = {
+            post: "/api/user-settings/set-liked-models"
+            body: "*"
+        };
+    }
+
+    rpc SetLastUsedModel(SetLastUsedModel.Request) returns (SetLastUsedModel.Response) {
+        option (google.api.http) = {
+            post: "/api/user-settings/set-last-used-model"
+            body: "*"
+        };
+    }
+}
+
+message GetUserSettings {
+    message Request {}
+    message Response {
+        string           user_prompt              = 1;
+        repeated string  liked_openrouter_models  = 2;
+        string           last_used_model          = 3;
+    }
+}
+
+message SetLikedModels {
+    message Request {
+        repeated string liked_openrouter_models = 1;
+    }
+    message Response {}
+}
+
+message SetLastUsedModel {
+    message Request {
+        string model = 1;
+    }
+    message Response {}
+}

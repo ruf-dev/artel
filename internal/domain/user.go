@@ -19,8 +19,10 @@ type User struct {
 }
 
 type UserSettings struct {
-	UserUuid   uuid.UUID
-	UserPrompt string
+	UserUuid              uuid.UUID
+	UserPrompt            string
+	LikedOpenrouterModels []string
+	LastUsedModel         string
 }
 
 type TelegramIdentity struct {

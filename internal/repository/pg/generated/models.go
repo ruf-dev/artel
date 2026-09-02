@@ -181,6 +181,9 @@ const (
 	McpToolNameTrelloupdateList            McpToolName = "trello.update_list"
 	McpToolNameTrellocreateLabel           McpToolName = "trello.create_label"
 	McpToolNameTrelloaddAttachment         McpToolName = "trello.add_attachment"
+	McpToolNameEmailmoveEmail              McpToolName = "email.move_email"
+	McpToolNameEmailcreateEmailFolder      McpToolName = "email.create_email_folder"
+	McpToolNameEmailsetEmailRead           McpToolName = "email.set_email_read"
 )
 
 func (e *McpToolName) Scan(src interface{}) error {
@@ -729,10 +732,12 @@ type UserPermission struct {
 }
 
 type UserSetting struct {
-	UserID     uuid.UUID
-	UserPrompt string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	UserID                uuid.UUID
+	UserPrompt            string
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+	LikedOpenrouterModels []string
+	LastUsedModel         string
 }
 
 type Vault struct {

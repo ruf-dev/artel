@@ -19,7 +19,43 @@ func (r *Repo) Get(ctx context.Context, userID uuid.UUID) (domain.UserSettings, 
 	if err != nil {
 		return domain.UserSettings{}, rerrors.Wrap(err, "error getting user settings")
 	}
-	return domain.UserSettings{UserUuid: row.UserID, UserPrompt: row.UserPrompt}, nil
+
+	settings := domain.UserSettings{
+		UserUuid:              row.UserID,
+		UserPrompt:            row.UserPrompt,
+		LikedOpenrouterModels: row.LikedOpenrouterModels,
+		LastUsedModel:         row.LastUsedModel,
+	}
+
+	return settings, nil
+}
+
+func (r *Repo) UpsertLikedModels(ctx context.Context, userID uuid.UUID, modelIds []string) error {
+	params := artel_q.UpsertLikedModelsParams{
+		UserID:                userID,
+		LikedOpenrouterModels: modelIds,
+	}
+
+	err := r.q.UpsertLikedModels(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error upserting liked models")
+	}
+
+	return nil
+}
+
+func (r *Repo) UpsertLastUsedModel(ctx context.Context, userID uuid.UUID, model string) error {
+	params := artel_q.UpsertLastUsedModelParams{
+		UserID:        userID,
+		LastUsedModel: model,
+	}
+
+	err := r.q.UpsertLastUsedModel(ctx, params)
+	if err != nil {
+		return rerrors.Wrap(err, "error upserting last used model")
+	}
+
+	return nil
 }
 
 var _ repository.UserSettingsRepo = (*Repo)(nil)

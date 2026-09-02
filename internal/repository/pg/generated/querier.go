@@ -218,6 +218,8 @@ type Querier interface {
 	UpdateVaultStatus(ctx context.Context, arg UpdateVaultStatusParams) error
 	UpsertCouchAccount(ctx context.Context, arg UpsertCouchAccountParams) error
 	UpsertExternalConnection(ctx context.Context, arg UpsertExternalConnectionParams) (ExternalConnection, error)
+	UpsertLastUsedModel(ctx context.Context, arg UpsertLastUsedModelParams) error
+	UpsertLikedModels(ctx context.Context, arg UpsertLikedModelsParams) error
 	UpsertMcpDefinition(ctx context.Context, arg UpsertMcpDefinitionParams) (Mcp, error)
 	UpsertMcpTool(ctx context.Context, arg UpsertMcpToolParams) (McpTool, error)
 	UpsertSubscription(ctx context.Context, arg UpsertSubscriptionParams) (Subscription, error)

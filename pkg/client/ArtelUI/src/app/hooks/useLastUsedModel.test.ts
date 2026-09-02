@@ -1,49 +1,105 @@
-import {act, renderHook} from "@testing-library/react"
-import {beforeEach, describe, expect, it} from "vitest"
+import {createElement} from "react"
+import type {ReactNode} from "react"
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
+import {act, renderHook, waitFor} from "@testing-library/react"
+import {beforeEach, describe, expect, it, vi} from "vitest"
+
+const h = vi.hoisted(() => ({
+    getUserSettings: vi.fn(),
+    setLastUsedModel: vi.fn(),
+    authenticated: true,
+}))
+const mockBakeError = vi.fn()
+
+vi.mock("@/processes/UserSettings.ts", async importOriginal => {
+    const actual = await importOriginal<typeof import("@/processes/UserSettings.ts")>()
+    return {
+        ...actual,
+        userSettingsService: {
+            getUserSettings: h.getUserSettings,
+            setLastUsedModel: h.setLastUsedModel,
+        },
+    }
+})
+
+vi.mock("@/hooks/user/User.ts", () => ({
+    default: () => ({auth: {isAuthenticated: () => h.authenticated}}),
+}))
+
+vi.mock("@/app/hooks/useErrorToast.ts", () => ({
+    useBakeError: () => mockBakeError,
+}))
 
 import {useLastUsedModel} from "@/app/hooks/useLastUsedModel.ts"
+import {userSettingsQueryKey} from "@/processes/UserSettings.ts"
 
-const STORAGE_KEY = "artel.lastUsedSimpleChatModel"
+function makeWrapper(client: QueryClient) {
+    return function Wrapper({children}: {children: ReactNode}) {
+        return createElement(QueryClientProvider, {client}, children)
+    }
+}
 
 beforeEach(() => {
-    localStorage.clear()
+    vi.clearAllMocks()
+    h.authenticated = true
+    h.getUserSettings.mockResolvedValue({userPrompt: "", likedOpenrouterModels: [], lastUsedModel: undefined})
+    h.setLastUsedModel.mockResolvedValue(undefined)
 })
 
 describe("useLastUsedModel", () => {
-    it("defaults to undefined when localStorage is empty", () => {
-        const {result} = renderHook(() => useLastUsedModel())
+    it("defaults to undefined before the settings load", () => {
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLastUsedModel(), {wrapper: makeWrapper(client)})
 
         expect(result.current.lastUsedModel).toBeUndefined()
     })
 
-    it("reads an existing value from localStorage", () => {
-        localStorage.setItem(STORAGE_KEY, "openai/gpt-4")
+    it("does not fetch when the user is not authenticated", () => {
+        h.authenticated = false
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
 
-        const {result} = renderHook(() => useLastUsedModel())
+        renderHook(() => useLastUsedModel(), {wrapper: makeWrapper(client)})
 
-        expect(result.current.lastUsedModel).toBe("openai/gpt-4")
+        expect(h.getUserSettings).not.toHaveBeenCalled()
     })
 
-    it("setLastUsedModel updates state and persists to localStorage", () => {
-        const {result} = renderHook(() => useLastUsedModel())
+    it("reads the last used model from GetUserSettings", async () => {
+        h.getUserSettings.mockResolvedValue({
+            userPrompt: "",
+            likedOpenrouterModels: [],
+            lastUsedModel: "openai/gpt-4",
+        })
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+
+        const {result} = renderHook(() => useLastUsedModel(), {wrapper: makeWrapper(client)})
+
+        await waitFor(() => expect(result.current.lastUsedModel).toBe("openai/gpt-4"))
+    })
+
+    it("setLastUsedModel updates the cache immediately and calls SetLastUsedModel", async () => {
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLastUsedModel(), {wrapper: makeWrapper(client)})
+        await waitFor(() => expect(client.getQueryData(userSettingsQueryKey())).toBeDefined())
 
         act(() => {
             result.current.setLastUsedModel("anthropic/claude")
         })
 
-        expect(result.current.lastUsedModel).toBe("anthropic/claude")
-        expect(localStorage.getItem(STORAGE_KEY)).toBe("anthropic/claude")
+        await waitFor(() => expect(result.current.lastUsedModel).toBe("anthropic/claude"))
+        await waitFor(() => expect(h.setLastUsedModel).toHaveBeenCalledWith("anthropic/claude"))
     })
 
-    it("persists across separate hook instances via localStorage", () => {
-        const first = renderHook(() => useLastUsedModel())
+    it("bakes an error when SetLastUsedModel fails", async () => {
+        h.setLastUsedModel.mockRejectedValue(new Error("boom"))
+        const client = new QueryClient({defaultOptions: {queries: {retry: false}}})
+        const {result} = renderHook(() => useLastUsedModel(), {wrapper: makeWrapper(client)})
+        await waitFor(() => expect(client.getQueryData(userSettingsQueryKey())).toBeDefined())
 
         act(() => {
-            first.result.current.setLastUsedModel("anthropic/claude")
+            result.current.setLastUsedModel("anthropic/claude")
         })
 
-        const second = renderHook(() => useLastUsedModel())
-
-        expect(second.result.current.lastUsedModel).toBe("anthropic/claude")
+        await waitFor(() =>
+            expect(mockBakeError).toHaveBeenCalledWith("Failed to save last used model", expect.any(Error)))
     })
 })

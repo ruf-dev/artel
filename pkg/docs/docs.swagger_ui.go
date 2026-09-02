@@ -107,6 +107,10 @@ func Swagger() (p string, handler http.HandlerFunc) {
 					URL:  path.Join(swaggerPath, "user_errors.swagger.json"),
 				},
 				{
+					Name: "UserSettings",
+					URL:  path.Join(swaggerPath, "user_settings.swagger.json"),
+				},
+				{
 					Name: "Vaults",
 					URL:  path.Join(swaggerPath, "vaults.swagger.json"),
 				},

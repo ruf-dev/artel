@@ -1,0 +1,178 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "user_settings.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "UserSettingsAPI"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/user-settings/get": {
+      "get": {
+        "operationId": "UserSettingsAPI_GetUserSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiGetUserSettingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "UserSettingsAPI"
+        ]
+      }
+    },
+    "/api/user-settings/set-last-used-model": {
+      "post": {
+        "operationId": "UserSettingsAPI_SetLastUsedModel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetLastUsedModelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetLastUsedModelRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserSettingsAPI"
+        ]
+      }
+    },
+    "/api/user-settings/set-liked-models": {
+      "post": {
+        "operationId": "UserSettingsAPI_SetLikedModels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetLikedModelsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/artel_apiSetLikedModelsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserSettingsAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "artel_apiGetUserSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "userPrompt": {
+          "type": "string"
+        },
+        "likedOpenrouterModels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lastUsedModel": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiSetLastUsedModelRequest": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        }
+      }
+    },
+    "artel_apiSetLastUsedModelResponse": {
+      "type": "object"
+    },
+    "artel_apiSetLikedModelsRequest": {
+      "type": "object",
+      "properties": {
+        "likedOpenrouterModels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artel_apiSetLikedModelsResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

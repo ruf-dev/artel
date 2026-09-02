@@ -25,6 +25,7 @@ import (
 	"github.com/ruf-dev/artel/internal/service/v1/skills"
 	"github.com/ruf-dev/artel/internal/service/v1/subscription"
 	"github.com/ruf-dev/artel/internal/service/v1/tasktracker"
+	"github.com/ruf-dev/artel/internal/service/v1/usersettings"
 	"github.com/ruf-dev/artel/internal/service/v1/vault"
 	"golang.org/x/oauth2"
 	googleoauth "golang.org/x/oauth2/google"
@@ -51,6 +52,7 @@ type Services struct {
 	AdminSettings       service.AdminSystemSettingsService
 	PostgresInstance    service.PostgresInstanceService
 	Skills              service.SkillsService
+	UserSettings        service.UserSettingsService
 	// Tract is constructed in internal/app/custom.go (not here) — it depends on Mcp and Mom,
 	// which must already exist as service.McpService/service.MomService values to compose the
 	// tract.ToolExecutor without the tract package importing internal/service/v1/mcp.
@@ -176,6 +178,7 @@ func New(repo *pg.Repos, cfg config.EnvironmentConfig, opts ...Option) (*Service
 		AdminSettings:       adminsettings.New(repo.SystemSettings(), repo.Vaults()),
 		PostgresInstance:    postgresinstances.New(repo),
 		Skills:              skillsSvc,
+		UserSettings:        usersettings.New(repo.UserSettings()),
 	}
 
 	return services, nil
@@ -278,4 +281,8 @@ func (s *Services) PostgresInstanceService() service.PostgresInstanceService {
 
 func (s *Services) SkillsService() service.SkillsService {
 	return s.Skills
+}
+
+func (s *Services) UserSettingsService() service.UserSettingsService {
+	return s.UserSettings
 }

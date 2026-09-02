@@ -50,6 +50,7 @@ import (
 	"github.com/ruf-dev/artel/internal/transport/tract_webhook"
 	"github.com/ruf-dev/artel/internal/transport/tracts_api"
 	"github.com/ruf-dev/artel/internal/transport/ui"
+	"github.com/ruf-dev/artel/internal/transport/user_settings_api"
 	"github.com/ruf-dev/artel/internal/transport/vaults_api"
 )
 
@@ -194,6 +195,7 @@ func (c *Custom) Init(a *App) error {
 	tractWebhookHandler := tract_webhook.New(a.Ctx, repo.Triggers(), services.TractService())
 	tractsImpl := tracts_api.New(a.Ctx, services.TractService())
 	simpleChatImpl := simple_chat_api.New(services.SimpleChatService())
+	userSettingsImpl := user_settings_api.New(services.UserSettingsService())
 	// Registered as a raw http handler rather than an RPC: the live Simple Chat turn is a
 	// chatprotocol.Event WebSocket exchange, which the grpc-gateway can't carry. Running outside
 	// the gRPC interceptor chain, it authenticates each connection itself from the session
@@ -372,7 +374,7 @@ func (c *Custom) Init(a *App) error {
 			pb.AdminSystemSettingsAPI_UpdateDefaultDocsVault_FullMethodName,
 		),
 	)
-	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, skillsImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl, simpleChatImpl)
+	c.Transport.AddImplementation(a.Ctx, authImpl, vaultsImpl, couchInstancesImpl, s3InstancesImpl, dockerHostsImpl, adminCouchImpl, adminUsersImpl, adminSubscriptionsImpl, mcpKeysImpl, promptsImpl, taskTrackersImpl, notesImpl, skillsImpl, externalConnectionsImpl, tractsImpl, publicDocsImpl, setupWizardImpl, adminSystemSettingsImpl, simpleChatImpl, userSettingsImpl)
 
 	c.Transport.AddHttpHandler("/api/external-connections/google/exchange", http.HandlerFunc(externalConnectionsImpl.HandleGoogleExchange))
 	c.Transport.AddHttpHandler(vaults_api.TerminalRoutePattern, workbenchTerminalHandler)

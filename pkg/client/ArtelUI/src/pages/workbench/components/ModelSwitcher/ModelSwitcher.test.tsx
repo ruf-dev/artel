@@ -1,6 +1,10 @@
 import {describe, expect, it, vi} from "vitest"
 import {fireEvent, render, screen} from "@testing-library/react"
 
+vi.mock("@/app/hooks/useLikedModels.ts", () => ({
+    useLikedModels: () => ({likedIds: [], isLiked: () => false, toggleLiked: () => {}}),
+}))
+
 import ModelSwitcher from "@/pages/workbench/components/ModelSwitcher/ModelSwitcher.tsx"
 
 interface MockDropdownProps {
